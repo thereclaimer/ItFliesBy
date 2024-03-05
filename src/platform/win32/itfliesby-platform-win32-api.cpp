@@ -69,7 +69,7 @@ itfliesby_platform_win32_api_opengl_initialize(
     HGLRC dummy_opengl_rendering_context = wglCreateContext(dummy_context);
     ITFLIESBY_ASSERT(wglMakeCurrent(dummy_context, dummy_opengl_rendering_context));
 
-    ReclaimerPlatformWin32WglApi wgl_api = {0};
+    ItfliesbyPlatformWin32WglApi wgl_api = {0};
     wgl_api.create_context      = (func_itfliesby_platform_win32_wgl_create_context_attribs_arb_type)wglGetProcAddress("wglCreateContextAttribsARB");
     wgl_api.choose_pixel_format = (func_itfliesby_platform_win32_wgl_choose_pixel_format_arb_type)wglGetProcAddress("wglChoosePixelFormatARB");
 

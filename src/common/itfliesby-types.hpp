@@ -1,8 +1,6 @@
 #ifndef ITFLIESBY_TYPES_HPP
 #define ITFLIESBY_TYPES_HPP
 
-
-
 #define internal static
 #define local    static
 #define global   static
@@ -35,5 +33,11 @@ typedef void* handle;
 
 typedef u8    byte;
 typedef byte* memory;
+
+struct ItfliesbyViewportDimensions {
+    u32 width;
+    u32 height;
+};
+
 
 #endif //ITFLIESBY_TYPES_HPP
