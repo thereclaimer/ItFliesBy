@@ -1,5 +1,7 @@
-#ifndef IFB_TYPES_HPP
-#define IFB_TYPES_HPP
+#ifndef ITFLIESBY_TYPES_HPP
+#define ITFLIESBY_TYPES_HPP
+
+
 
 #define internal static
 #define local    static
@@ -7,6 +9,10 @@
 #define external extern "C" __declspec(dllexport)
 #define api      extern "C" __declspec(dllimport)
 #define null     0
+
+#define ITFLIESBY_ASSERT(condition) if(!(condition)) *((int*)(NULL)) = 1
+#define ITFLIESBY_NOP()   ITFLIESBY_ASSERT(true)
+#define ITFLIESBY_PANIC() ITFLIESBY_ASSERT(false)
 
 typedef char  s8;
 typedef short s16;
@@ -30,4 +36,4 @@ typedef void* handle;
 typedef u8    byte;
 typedef byte* memory;
 
-#endif //IFB_TYPES_HPP
+#endif //ITFLIESBY_TYPES_HPP
