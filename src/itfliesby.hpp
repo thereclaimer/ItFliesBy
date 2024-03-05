@@ -6,6 +6,9 @@
 #include <common/itfliesby-types.hpp>
 #include <common/itfliesby-platform-api.hpp>
 #include <common/itfliesby-user-input.hpp>
+#include <common/itfliesby-game.hpp>
+#include <common/itfliesby-engine.hpp>
+#include <common/itfliesby-renderer.hpp>
 
 #include <itfliesby-dependencies.hpp>
 
