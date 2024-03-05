@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Windows.h>
+#include "ifb-platform-win32.hpp"
 
 int WINAPI 
-wWinMain(
+ifb_platform_win32_main(
     HINSTANCE hInstance, 
     HINSTANCE hPrevInstance, 
     PWSTR pCmdLine, 
