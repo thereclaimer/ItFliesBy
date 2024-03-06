@@ -6,7 +6,9 @@
 typedef handle itfliesby_engine;
 
 api itfliesby_engine
-itfliesby_engine_create();
+itfliesby_engine_create(
+    ItfliesbyPlatformApi* platform
+);
 
 api void
 itfliesby_engine_destroy(

@@ -2,7 +2,17 @@
 #define ITFLIESBY_PLATFORM_WIN32_HPP
 
 #include <Windows.h>
+#include <windowsx.h>
+#include <Xinput.h>
+#include <tlhelp32.h>
 #include <itfliesby.hpp>
+
+#define GLEW_STATIC
+
+#include "glew/glew.h"
+#include "glew/wglew.h"
+#include "glew/glew.c"
+
 
 #define itfliesby_platform_win32_main wWinMain
 
@@ -13,10 +23,11 @@ struct ItfliesbyPlatformWin32Window {
     bool                        maximized;
     u64                         window_style;
     u64                         window_ex_style;
-    ItfliesbyViewportDimensions viewport_dimensions;
-    ItfliesbyUserInput          user_input;
     bool                        running;
     HGLRC                       opengl_context;
+    ItfliesbyViewportDimensions viewport_dimensions;
+    ItfliesbyUserInput          user_input;
+    itfliesby_game              game;
 };
 
 typedef HGLRC

@@ -4,9 +4,9 @@
 
 global u64 bytes_read = 0;
 
-internal memory
+internal handle
 itfliesby_platform_win32_api_opengl_initialize(
-    memory window_reference) {
+    handle window_reference) {
     
     ItfliesbyPlatformWin32Window* window = (ItfliesbyPlatformWin32Window*)window_reference;
     
@@ -131,7 +131,7 @@ itfliesby_platform_win32_api_opengl_initialize(
 
     window->opengl_context = opengl_rendering_context;
 
-    return((memory)opengl_rendering_context);
+    return((handle)opengl_rendering_context);
 }
 
 
@@ -186,7 +186,7 @@ itfliesby_platform_win32_api_close_file(
 
 
 internal void
-itfliesby_platform_win32_api_read_file_handle(
+itfliesby_platform_win32_api_read_file(
     HANDLE file_handle,
     u64    offset,
     u64    allocated_buffer_size,

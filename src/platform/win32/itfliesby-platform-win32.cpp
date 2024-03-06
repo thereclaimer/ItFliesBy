@@ -2,15 +2,339 @@
 
 #include "itfliesby-platform-win32.hpp"
 #include "itfliesby-platform-win32-api.cpp"
+#include "itfliesby-platform-win32-user-input.cpp"
 
-int WINAPI 
-itfliesby_platform_win32_main(
-    HINSTANCE hInstance, 
-    HINSTANCE hPrevInstance, 
-    PWSTR pCmdLine, 
-    int nCmdShow) {
+ItfliesbyPlatformWin32Window game_window;
 
+
+internal void
+itfliesby_platform_win32_toggle_full_screen() {
+
+    //https://stackoverflow.com/questions/2382464/win32-full-screen-and-hiding-taskbar
     
+    game_window.full_screen = !game_window.full_screen;
+
+    if (game_window.full_screen) {
+
+        //we need to save the current window dimensions
+        game_window.window_style    = GetWindowLong(game_window.window_handle, GWL_STYLE);
+        game_window.window_ex_style = GetWindowLong(game_window.window_handle, GWL_EXSTYLE);
+
+        SetWindowLong(
+            game_window.window_handle,
+            GWL_STYLE,
+            game_window.window_style & ~(WS_CAPTION | WS_THICKFRAME)
+        );
+    
+        SetWindowLong(
+            game_window.window_handle,
+            GWL_EXSTYLE,
+            game_window.window_ex_style & ~(
+                WS_EX_DLGMODALFRAME | 
+                WS_EX_WINDOWEDGE |
+                WS_EX_CLIENTEDGE |
+                WS_EX_STATICEDGE
+                )
+        );
+
+        HMONITOR monitor_handle = MonitorFromWindow(game_window.window_handle,MONITOR_DEFAULTTONEAREST);
+        MONITORINFO monitor_info = {0};
+        monitor_info.cbSize = sizeof(monitor_info);
+        GetMonitorInfo(monitor_handle,&monitor_info);
+
+        RECT window_rect = monitor_info.rcMonitor;
+        SetWindowPos(
+            game_window.window_handle, 
+            NULL, 
+            window_rect.left,
+            window_rect.top,
+            window_rect.right,
+            window_rect.bottom,
+                    SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
+
+
+        game_window.viewport_dimensions.width  = (window_rect.right - window_rect.left);
+        game_window.viewport_dimensions.height = (window_rect.bottom - window_rect.top);
+    }
+    else {
+        
+        //we need to update the window with the saved dimesions
+        SetWindowLong(game_window.window_handle, GWL_STYLE,   game_window.window_style);
+        SetWindowLong(game_window.window_handle, GWL_EXSTYLE, game_window.window_ex_style);
+        //restore maximized
+        SendMessage(game_window.window_handle, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
+    }
+}
+
+
+internal void
+itfliesby_platform_win32_process_pending_messages(
+    HWND window_handle) {
+
+    game_window.user_input.mouse_x_delta = 0;
+    game_window.user_input.mouse_y_delta = 0;
+    game_window.user_input.mouse_wheel   = 0;
+
+    // local ImGuiIO& imgui_io = ImGui::GetIO();
+
+    // b32 dev_tools_capture_keyboard = (imgui_io.WantCaptureKeyboard || imgui_io.WantTextInput);
+    // b32 dev_tools_capture_mouse = (imgui_io.WantCaptureMouse || imgui_io.WantSetMousePos);
+
+    //if we have a set of pending messages, loop through them until we have processed
+    //them all
+    MSG window_message = {0};
+    while (PeekMessage(&window_message, 0,0,0, PM_REMOVE)) {
+
+        //basically, we want all user input to be processed before Windows has a chance to intercept and dispatch it
+        switch (window_message.message) {
+
+            //keyboard input
+            case WM_KEYDOWN:
+            case WM_SYSKEYDOWN: {
+                // if (dev_tools_capture_keyboard) {
+                //     break;
+                // }
+                // u32 itfliesby_keycode = win32_translate_user_keycode((u32)window_message.wParam);
+                // USER_INPUT_SET_KEY(game_window.user_input, itfliesby_keycode);
+
+                // switch((u32)window_message.wParam) {
+                //     case VK_F11: {
+                //         win32_toggle_full_screen(window_handle);
+                //     } break;
+                // }
+
+            } break;
+
+            case WM_KEYUP:
+            case WM_SYSKEYUP: {
+                // if (dev_tools_capture_keyboard) {
+                //     break;
+                // }
+                // u32 itfliesby_keycode = win32_translate_user_keycode((u32)window_message.wParam);
+                // USER_INPUT_CLEAR_KEY(game_window.user_input, itfliesby_keycode);
+            } break;
+
+            //mouse inputs
+            case WM_LBUTTONDOWN: {
+                // if (dev_tools_capture_mouse) {
+                //     break;
+                // }
+                game_window.user_input.mouse_button_left = true;
+            } break;
+
+            case WM_RBUTTONDOWN: {
+                // if (dev_tools_capture_mouse) {
+                //     break;
+                // }
+                game_window.user_input.mouse_button_right = true;
+            } break;
+
+            case WM_LBUTTONUP: {
+                // if (dev_tools_capture_mouse) {
+                //     break;
+                // }
+                game_window.user_input.mouse_button_left = false;
+            } break;
+
+            case WM_RBUTTONUP: {
+                // if (dev_tools_capture_mouse) {
+                //     break;
+                // }
+                game_window.user_input.mouse_button_right = false;
+            } break;
+
+            case WM_MOUSEMOVE: {
+                // if (dev_tools_capture_mouse) {
+                //     break;
+                // }
+
+                //this will persist between mouse move events
+                local POINT previous_cursor_position;
+
+                //get the current mouse position and update delta mouse position
+                POINT current_cursor_position = {0};
+                GetCursorPos(&current_cursor_position);
+
+                game_window.user_input.mouse_x_current = current_cursor_position.x;
+                game_window.user_input.mouse_y_current = current_cursor_position.y;
+                game_window.user_input.mouse_x_delta   = (current_cursor_position.x - previous_cursor_position.x);
+                game_window.user_input.mouse_y_delta   = (current_cursor_position.y - previous_cursor_position.y);
+
+                //update the previous cursor position for the next mouse event
+                previous_cursor_position = current_cursor_position;
+
+            } break;
+
+            case WM_MOUSEWHEEL: {
+                // if (dev_tools_capture_mouse) {
+                //     break;
+                // }
+
+                game_window.user_input.mouse_wheel = GET_WHEEL_DELTA_WPARAM(window_message.wParam);
+
+            } break;
+
+            //anything not related to keyboard or mouse input, we can let windows handle
+            //at which point, our window callback function will be called
+            default: {
+                TranslateMessage(&window_message);
+                DispatchMessage(&window_message);
+            } break;
+        }
+
+        // ImGui_ImplWin32_WndProcHandler(
+        //     window_message.hwnd,
+        //     window_message.message,
+        //     window_message.wParam,
+        //     window_message.lParam
+        // );
+    }
+}
+
+LRESULT CALLBACK
+itfliesby_platform_win32_window_callback(HWND window_handle,
+                      u32 message,
+                      WPARAM w_param,
+                      LPARAM l_param) {
+
+    local RECT window_rect = {0};
+
+    switch (message) {
+
+        case WM_ACTIVATEAPP: {
+            
+            XInputEnable(true);
+
+        } break;
+
+        //window resize
+        case WM_SIZE: {
+            GetClientRect(game_window.window_handle, &window_rect);
+            if (game_window.game) {
+                game_window.viewport_dimensions.width  = (window_rect.right - window_rect.left);
+                game_window.viewport_dimensions.height = (window_rect.bottom - window_rect.top);
+            }
+
+            game_window.maximized = w_param == SIZE_MAXIMIZED;
+
+        } break;
+
+        //window close
+        case WM_CLOSE:
+        case WM_DESTROY: {
+            game_window.running = false;
+        } break;
+
+        default: {
+            return DefWindowProc(window_handle, message, w_param, l_param);
+        }
+    }
+
+    return 0;
+}
+
+internal int
+itfliesby_platform_win32_main(
+    HINSTANCE instance,
+    HINSTANCE prev_isntance,
+    PWSTR     cmd_line,
+    int       cmd_show) {
+
+    // Register the main window class.
+    WNDCLASS window_class      = {0};
+    window_class.style         = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
+    window_class.lpfnWndProc   = (WNDPROC)itfliesby_platform_win32_window_callback;
+    window_class.hInstance     = instance;
+    window_class.lpszClassName = "ItfliesbyWindowClass";
+
+    ITFLIESBY_ASSERT(RegisterClass(&window_class));
+
+    game_window = {0};
+    game_window.window_handle = CreateWindowEx(
+        0,
+        window_class.lpszClassName,
+        "The Itfliesby",
+        WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_MAXIMIZE,
+        CW_USEDEFAULT,
+        CW_USEDEFAULT,
+        CW_USEDEFAULT,
+        CW_USEDEFAULT,
+        0,
+        0,
+        instance,
+        0);
+
+    ITFLIESBY_ASSERT(game_window.window_handle);
+
+    game_window.device_context = GetDC(game_window.window_handle);
+
+    //put the platform api together
+    ItfliesbyPlatformApi win32_platform_api = {0};
+
+    win32_platform_api.window = (handle)&game_window;
+
+    win32_platform_api.file_size         = itfliesby_platform_win32_api_file_get_file_size_bytes;
+    win32_platform_api.file_read         = itfliesby_platform_win32_api_read_file;
+    win32_platform_api.file_write        = itfliesby_platform_win32_api_write_file;
+    win32_platform_api.file_open         = itfliesby_platform_win32_api_open_file;
+    win32_platform_api.file_close        = itfliesby_platform_win32_api_close_file;
+    win32_platform_api.memory_allocate   = itfliesby_platform_win32_api_allocate_memory;
+    win32_platform_api.memory_free       = itfliesby_platform_win32_api_free_memory;
+    win32_platform_api.graphics_api_init = itfliesby_platform_win32_api_opengl_initialize;
+
+    //toggle full screen
+    game_window.full_screen = false;
+    itfliesby_platform_win32_toggle_full_screen();
+    
+    //initialize the game
+    game_window.game = itfliesby_game_create(&win32_platform_api);
+
+    ItfliesbyGamepadInput gamepad = {0};
+
+    game_window.running = true;
+
+    while (game_window.running) {
+
+        //get system ticks to calculate delta time
+        // LARGE_INTEGER win32_large_int = {0};
+        // QueryPerformanceCounter(&win32_large_int);
+        // u64 pre_frame_ticks = win32_large_int.QuadPart;
+
+        //process incoming messages
+        itfliesby_platform_win32_process_pending_messages(game_window.window_handle);
+        if (!game_window.running) {
+            break;
+        }
+
+        //get xinput state for game pads
+        game_window.user_input.game_pad =
+            itfliesby_platform_win32_get_xinput_state(&gamepad)
+                ? &gamepad
+                : NULL;
+
+        //update and render the game
+        // game_window.running = 
+        //     itfliesby_game_update_and_render_frame(
+        //         game_window.game,
+        //         game_window.viewport_dimensions,
+        //         game_window.user_input
+        // );
+
+
+        // itfliesby_dev_tools_update(game_window.itfliesby_state);
+        SwapBuffers(game_window.device_context);
+
+        //lastly, get the fps
+        // QueryPerformanceCounter(&win32_large_int);
+        // u64 post_frame_ticks = win32_large_int.QuadPart;
+        // QueryPerformanceFrequency(&win32_large_int);
+        // f32 frequency = win32_large_int.QuadPart;
+        // f64 elapsed_ticks = post_frame_ticks - pre_frame_ticks;
+        // f64 elapsed_seconds = elapsed_ticks / frequency;
+        // frames_per_second = 1 / elapsed_seconds;
+    }
+
+    itfliesby_game_destroy(game_window.game);
 
     return(0);
 }

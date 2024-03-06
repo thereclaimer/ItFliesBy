@@ -6,7 +6,9 @@
 typedef handle itfliesby_game;
 
 api itfliesby_game
-itfliesby_game_create();
+itfliesby_game_create(
+    ItfliesbyPlatformApi* platform
+);
 
 api void
 itfliesby_game_destroy(

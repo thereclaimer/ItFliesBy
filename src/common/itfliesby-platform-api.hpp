@@ -17,7 +17,7 @@ typedef void
 );
 
 typedef  u64 
-(*func_itfliesby_platform_file_size_get)
+(*func_itfliesby_platform_file_size)
 (
     handle file_path
 );
@@ -59,9 +59,7 @@ typedef handle
     handle window
 );
 
-#define RECLAIMER_PLATFORM_API_NAME "ReclaimerPlatformApi"
-
-struct ReclaimerPlatformApi  {
+struct ItfliesbyPlatformApi  {
 
     //Use this as a pointer to whatever window data the platform is
     //using. This will need to be passed back to the platform when
@@ -69,7 +67,8 @@ struct ReclaimerPlatformApi  {
     handle                                          window;
     
     //platform fuctions
-    func_itfliesby_platform_file_size_get           file_size_get;
+    func_itfliesby_platform_file_size               file_size;
+    func_itfliesby_platform_file_read               file_read;
     func_itfliesby_platform_file_write              file_write;
     func_itfliesby_platform_file_open               file_open;
     func_itfliesby_platform_file_close              file_close;
