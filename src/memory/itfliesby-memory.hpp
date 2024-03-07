@@ -11,10 +11,10 @@ struct ItfliesbyMemoryBlock {
 };
 
 //an arena is a distinct partition managed by a collection of allocators
-struct ItfliesbyMemoryArena {
+struct ItfliesbyMemoryPartition {
     u64                           size;
     char[32]                      tag;
-    ItfliesbyMemoryArena*         next;
+    ItfliesbyMemoryPartition*     next;
     memory                        memory;
     ItfliesbyMemoryAllocatorNode* allocators;
 };  
@@ -23,7 +23,7 @@ struct ItfliesbyMemoryArena {
 struct ItfliesbyMemory {
     u64                       size;
     memory                    memory;
-    ItfliesbyMemoryArena*     arenas;
+    ItfliesbyMemoryPartition* partitions;
 };
 
 
@@ -56,7 +56,7 @@ struct ItfliesbyMemoryAllocatorBlock {
 
 struct ItfliesbyMemoryAllocatorNode {
     ItfliesbyMemoryAllocatorType  type;
-    ItfliesbyMemoryArena*         arena;
+    ItfliesbyMemoryPartition*     partition;
     ItfliesbyMemoryAllocatorNode* next;
     union ItfliesbyMemoryAllocator {
         ItfliesbyMemoryAllocatorStack stack;
