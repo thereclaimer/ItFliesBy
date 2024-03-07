@@ -5,16 +5,18 @@
 
 //this is the base unit that the allocators return
 struct ItfliesbyMemoryBlock {
+    handle allocator;
     u64    size;
     memory memory
 };
 
-//the arenas are a linked list of distinct partitions, where the allocators live
+//an arena is a distinct partition managed by a collection of allocators
 struct ItfliesbyMemoryArena {
-    u64                       size;
-    char[32]                  tag;
-    ItfliesbyMemoryArena*     next;
-    memory                    memory;
+    u64                           size;
+    char[32]                      tag;
+    ItfliesbyMemoryArena*         next;
+    memory                        memory;
+    ItfliesbyMemoryAllocatorNode* allocators;
 };  
 
 //the memory structure is a collection of all the arenas
@@ -24,15 +26,43 @@ struct ItfliesbyMemory {
     ItfliesbyMemoryArena*     arenas;
 };
 
+
+enum ItfliesbyMemoryAllocatorType {
+    ITFLIESBY_MEMORY_ALLOCATOR_TYPE_BLOCK
+    ITFLIESBY_MEMORY_ALLOCATOR_TYPE_STACK
+    ITFLIESBY_MEMORY_ALLOCATOR_TYPE_LIST
+};
+
+
 //allocator that allocates in a stack/LIFO structure
-struct ItfliesbyMemoryStackAllocator {
-    ItfliesbyMemoryArena*                   arena;
+struct ItfliesbyMemoryAllocatorStack { 
     struct ItfliesbyMemoryStackAllocatorNode {
         ItfliesbyMemoryBlock*              block;
         ItfliesbyMemoryStackAllocatorNode* next;
     } *nodes;
 };
 
+//a block allocator divides its memory space by a number of blocks of the same size
+//we contain a linked list of blocks for easy reference of which ones are allocated
+struct ItfliesbyMemoryAllocatorBlock {
+    u64    block_size;
+    u64    num_blocks;
+    memory block_memory;
+    struct ItfliesbyMemoryAllocatorBlockNode {
+        ItfliesbyMemoryBlock*              block;
+        ItfliesbyMemoryAllocatorBlockNode* next;
+    } *nodes;
+};
+
+struct ItfliesbyMemoryAllocatorNode {
+    ItfliesbyMemoryAllocatorType  type;
+    ItfliesbyMemoryArena*         arena;
+    ItfliesbyMemoryAllocatorNode* next;
+    union ItfliesbyMemoryAllocator {
+        ItfliesbyMemoryAllocatorStack stack;
+        ItfliesbyMemoryAllocatorBlock block;
+    } allocator;
+};
 
 api ItfliesbyMemory* 
 itfliesby_memory_create(
