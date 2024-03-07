@@ -10,4 +10,6 @@
 #include <common/itfliesby-engine.hpp>
 #include <common/itfliesby-renderer.hpp>
 
+#include <math/itfliesby-math.hpp>
+
 #endif //ITFLIESBY_HPP

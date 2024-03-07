@@ -3,9 +3,12 @@
 
 #include <itfliesby.hpp>
 
+#define ITFLIESBY_GAME_MEMORY_SIZE ITFLIESBY_MATH_MEGABYTES(512)
+
 struct ItfliesbyGame {
     ItfliesbyPlatformApi platform;
     itfliesby_engine     engine;
+    memory               core_memory;
 };
 
 api ItfliesbyGame*
