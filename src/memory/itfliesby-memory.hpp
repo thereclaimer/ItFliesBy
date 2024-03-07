@@ -3,16 +3,13 @@
 
 #include <itfliesby.hpp>
 
-//my thoughts are this is a simple header only library
-//we allocate memory on the platform, then pass it here to
-//convert it to an arena. From there, we can create as 
-//many sub arenas using whatever type of allocators we want
-
+//this is the base unit that the allocators return
 struct ItfliesbyMemoryBlock {
     u64    size;
     memory memory
 };
 
+//the arenas are a linked list of distinct partitions, where the allocators live
 struct ItfliesbyMemoryArena {
     u64                       size;
     char[32]                  tag;
@@ -20,26 +17,26 @@ struct ItfliesbyMemoryArena {
     memory                    memory;
 };  
 
+//the memory structure is a collection of all the arenas
 struct ItfliesbyMemory {
     u64                       size;
     memory                    memory;
     ItfliesbyMemoryArena*     arenas;
 };
 
-struct ItfliesbyMemoryBlockStackAllocatorNode {
-    ItfliesbyMemoryBlock*                   block;
-    ItfliesbyMemoryBlockStackAllocatorNode* next;
-};
-
-struct ItfliesbyMemoryBlockStackAllocator {
+//allocator that allocates in a stack/LIFO structure
+struct ItfliesbyMemoryStackAllocator {
     ItfliesbyMemoryArena*                   arena;
-    ItfliesbyMemoryBlockStackAllocatorNode* nodes;
+    struct ItfliesbyMemoryStackAllocatorNode {
+        ItfliesbyMemoryBlock*              block;
+        ItfliesbyMemoryStackAllocatorNode* next;
+    } *nodes;
 };
 
 
 api ItfliesbyMemory* 
 itfliesby_memory_create(
-    memory core_memory, 
+    memory core_memory,                                    
     u64 size);
 
 api void 
@@ -56,38 +53,38 @@ itfliesby_memory_arena_destroy(
     ItfliesbyMemoryArena*
 );
 
-api ItfliesbyMemoryBlockStackAllocator* 
+api ItfliesbyMemoryStackAllocator* 
 itfliesby_memory_stack_allocator_create(
     ItfliesbyMemory* memory,
     u64 size);
 
 api void
 itfliesby_memory_stack_allocator_destroy(
-    ItfliesbyMemoryBlockStackAllocator* stack_allocator);
+    ItfliesbyMemoryStackAllocator* stack_allocator);
 
 api ItfliesbyMemoryBlock*
 itfliesby_memory_stack_allocator_push(
-    ItfliesbyMemoryBlockStackAllocator* stack_allocator,
+    ItfliesbyMemoryStackAllocator* stack_allocator,
     u64 size);
 
 void
 itfliesby_memory_stack_allocator_pop(
-    ItfliesbyMemoryBlockStackAllocator* stack_allocator);
+    ItfliesbyMemoryStackAllocator* stack_allocator);
 
 void
 itfliesby_memory_stack_allocator_clear(
-    ItfliesbyMemoryBlockStackAllocator* stack_allocator);
+    ItfliesbyMemoryStackAllocator* stack_allocator);
 
 u64
 itfliesby_memory_stack_allocator_size_total(
-    ItfliesbyMemoryBlockStackAllocator* stack_allocator);
+    ItfliesbyMemoryStackAllocator* stack_allocator);
 
 u64
 itfliesby_memory_stack_allocator_size_free(
-    ItfliesbyMemoryBlockStackAllocator* stack_allocator);
+    ItfliesbyMemoryStackAllocator* stack_allocator);
 
 u64
 itfliesby_memory_stack_allocator_size_occupied(
-    ItfliesbyMemoryBlockStackAllocator* stack_allocator);
+    ItfliesbyMemoryStackAllocator* stack_allocator);
 
 #endif //ITFLIESBY_MEMORY_HPP
