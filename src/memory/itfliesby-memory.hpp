@@ -1,120 +1,458 @@
 #ifndef ITFLIESBY_MEMORY_HPP
 #define ITFLIESBY_MEMORY_HPP
 
-#include <itfliesby.hpp>
+#include <cstring>
+#include "itfliesby-types.hpp"
 
-//this is the base unit that the allocators return
-struct ItfliesbyMemoryBlock {
-    handle allocator;
-    u64    size;
-    memory memory
+typedef struct ItfliesbyMemoryArena;
+typedef struct ItfliesbyMemoryPartition;
+typedef struct ItfliesbyMemoryBlock;
+typedef struct ItfliesbyMemoryAllocatorHeader;
+typedef union  ItfliesbyMemoryAllocator;
+typedef struct ItfliesbyMemoryAllocatorScratch;
+typedef struct ItfliesbyMemoryAllocatorStack;
+typedef struct ItfliesbyMemoryAllocatorBlock;
+typedef struct ItfliesbyMemoryAllocatorHeap;
+
+#define ITFLIESBY_MEMORY_ARENA_MINIMUM_SIZE (sizeof(ItfliesbyMemoryArena) + sizeof(ItfliesbyMemoryPartition) + sizeof(ItfliesbyMemoryAllocatorHeader) + sizeof(ItfliesbyMemoryAllocatorScratch) + 1)
+
+enum ItfliesbyMemoryReturnCode : s32{
+    ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS                     = 0x00000001,
+    ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_ARENA_MEMORY     = 0x80000000,
+    ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_PARTITION_MEMORY = 0x80000001,
+    ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_ALLOCATOR_MEMORY = 0x80000002,
+    ITFLIESBY_MEMORY_RETURN_CODE_CORE_MEMORY_NULL            = 0x80000003,
+    ITFLIESBY_MEMORY_RETURN_CODE_INVALID_ARGUMENT            = 0x80000005,
+
 };
 
-//an arena is a distinct partition managed by a collection of allocators
-struct ItfliesbyMemoryPartition {
-    u64                           size;
-    char[32]                      tag;
-    ItfliesbyMemoryPartition*     next;
-    memory                        memory;
-    ItfliesbyMemoryAllocatorNode* allocators;
-};  
+enum ItfliesbyMemoryAllocatorType {
+    ITFLIESBY_MEMORY_ALLOCATOR_TYPE_STACK   = 0,
+    ITFLIESBY_MEMORY_ALLOCATOR_TYPE_QUEUE   = 1,
+    ITFLIESBY_MEMORY_ALLOCATOR_TYPE_BLOCK   = 2,
+    ITFLIESBY_MEMORY_ALLOCATOR_TYPE_SCRATCH = 3,
+    ITFLIESBY_MEMORY_ALLOCATOR_TYPE_HEAP    = 4
+};
 
-//the memory structure is a collection of all the arenas
-struct ItfliesbyMemory {
+struct ItfliesbyMemoryBlock {
+    ItfliesbyMemoryAllocatorHeader* allocator_header;
     u64                       size;
-    memory                    memory;
+};
+
+/*-------------------------------------------------
+ * MEMORY CORE
+ *-------------------------------------------------*/
+
+struct ItfliesbyMemoryArena {
+    char                tag[16];
+    u64                 size;
     ItfliesbyMemoryPartition* partitions;
 };
 
-
-enum ItfliesbyMemoryAllocatorType {
-    ITFLIESBY_MEMORY_ALLOCATOR_TYPE_BLOCK
-    ITFLIESBY_MEMORY_ALLOCATOR_TYPE_STACK
-    ITFLIESBY_MEMORY_ALLOCATOR_TYPE_LIST
-};
-
-
-//allocator that allocates in a stack/LIFO structure
-struct ItfliesbyMemoryAllocatorStack { 
-    struct ItfliesbyMemoryStackAllocatorNode {
-        ItfliesbyMemoryBlock*              block;
-        ItfliesbyMemoryStackAllocatorNode* next;
-    } *nodes;
-};
-
-//a block allocator divides its memory space by a number of blocks of the same size
-//we contain a linked list of blocks for easy reference of which ones are allocated
-struct ItfliesbyMemoryAllocatorBlock {
-    u64    block_size;
-    u64    num_blocks;
-    memory block_memory;
-    struct ItfliesbyMemoryAllocatorBlockNode {
-        ItfliesbyMemoryBlock*              block;
-        ItfliesbyMemoryAllocatorBlockNode* next;
-    } *nodes;
-};
-
-struct ItfliesbyMemoryAllocatorNode {
-    ItfliesbyMemoryAllocatorType  type;
-    ItfliesbyMemoryPartition*     partition;
-    ItfliesbyMemoryAllocatorNode* next;
-    union ItfliesbyMemoryAllocator {
-        ItfliesbyMemoryAllocatorStack stack;
-        ItfliesbyMemoryAllocatorBlock block;
-    } allocator;
-};
-
-api ItfliesbyMemory* 
-itfliesby_memory_create(
-    memory core_memory,                                    
-    u64 size);
-
-api void 
-itfliesby_memory_destroy(
-    ItfliesbyMemoryArena* memory);
-
-api ItfliesbyMemoryArena* 
+api ItfliesbyMemoryReturnCode
 itfliesby_memory_arena_create(
-    ItfliesbyMemory* memory,
-    u64              size);
-
-api void 
-itfliesby_memory_arena_destroy(
-    ItfliesbyMemoryArena*
+    char            arena_tag[16],
+    u64             arena_size,
+    memory          arena_memory,
+    ItfliesbyMemoryArena* arena
 );
 
-api ItfliesbyMemoryStackAllocator* 
-itfliesby_memory_stack_allocator_create(
-    ItfliesbyMemory* memory,
-    u64 size);
+api void
+itfliesby_memory_arena_destroy(
+    ItfliesbyMemoryArena*  arena
+);
+
+
+api u64
+itfliesby_memory_arena_size_total(
+    ItfliesbyMemoryArena*  arena
+);
+
+api u64
+itfliesby_memory_arena_size_free(
+    ItfliesbyMemoryArena*  arena
+);
+
+api u64
+itfliesby_memory_arena_size_occupied(
+    ItfliesbyMemoryArena*  arena
+);
+
+/*-------------------------------------------------
+ * PARTITIONS
+ *-------------------------------------------------*/
+
+struct ItfliesbyMemoryPartition {
+    char                      tag[16];
+    u64                       size;
+    ItfliesbyMemoryPartition*       next;
+    ItfliesbyMemoryAllocatorHeader* allocators;
+    ItfliesbyMemoryArena*           arena;
+};  
+
+api ItfliesbyMemoryReturnCode
+itfliesby_memory_partition_create(
+    ItfliesbyMemoryArena*      arena,
+    char                 partition_tag[16],
+    u64                  partition_size,
+    ItfliesbyMemoryPartition*  partition
+);
+
+api u64
+itfliesby_memory_partition_space_total(
+    ItfliesbyMemoryPartition* partition
+);
+
+api u64
+itfliesby_memory_partition_space_free(
+    ItfliesbyMemoryPartition* partition
+);
+
+api u64
+itfliesby_memory_partition_space_occupied(
+    ItfliesbyMemoryPartition* partition
+);
+
+/*-------------------------------------------------
+ * SCRATCH ALLOCATOR
+ *-------------------------------------------------*/
+
+struct ItfliesbyMemoryAllocatorScratch {
+    ItfliesbyMemoryAllocatorHeader*  header;
+    u64                        used_space;
+};
+
+api ItfliesbyMemoryReturnCode
+itfliesby_memory_allocator_scratch_create(
+    ItfliesbyMemoryPartition*        partition,
+    char                       allocator_tag[16],
+    u64                        allocator_size,
+    ItfliesbyMemoryAllocatorScratch* allocator
+);
+
+api ItfliesbyMemoryReturnCode
+itfliesby_memory_allocator_scratch_destroy(
+    ItfliesbyMemoryAllocatorScratch*  allocator
+);
+
+api ItfliesbyMemoryReturnCode
+itfliesby_memory_allocator_scratch_allocate(
+    ItfliesbyMemoryAllocatorScratch*  allocator,
+    u64                         allocation_size,
+    memory                      allocation
+);
+
+api ItfliesbyMemoryReturnCode
+itfliesby_memory_allocator_scratch_reset(
+    ItfliesbyMemoryAllocatorScratch* allocator
+);
+
+api u64
+itfliesby_memory_allocator_scratch_space_total(
+    ItfliesbyMemoryAllocatorScratch* allocator
+);
+
+api u64
+itfliesby_memory_allocator_scratch_space_clear(
+    ItfliesbyMemoryAllocatorScratch* allocator
+);
+
+api u64
+itfliesby_memory_allocator_scratch_space_occupied(
+    ItfliesbyMemoryAllocatorScratch* allocator
+);
+
+/*-------------------------------------------------
+ * STACK ALLOCATOR
+ *-------------------------------------------------*/
+
+struct ItfliesbyMemoryAllocatorStackNode {
+    ItfliesbyMemoryBlock*           block;
+    ItfliesbyMemoryAllocatorStack*  next;
+};
+
+struct ItfliesbyMemoryAllocatorStack {
+    ItfliesbyMemoryAllocatorHeader*    header;
+    ItfliesbyMemoryAllocatorStackNode* nodes;
+};
+
+api ItfliesbyMemoryReturnCode
+itfliesby_memory_allocator_stack_create(
+    ItfliesbyMemoryPartition*      partition,
+    char                     allocator_tag[16],
+    u64                      allocator_size,
+    ItfliesbyMemoryAllocatorStack* allocator
+);
 
 api void
-itfliesby_memory_stack_allocator_destroy(
-    ItfliesbyMemoryStackAllocator* stack_allocator);
+itfliesby_memory_allocator_stack_destroy(
+    ItfliesbyMemoryAllocatorStack* allocator
+);
 
-api ItfliesbyMemoryBlock*
-itfliesby_memory_stack_allocator_push(
-    ItfliesbyMemoryStackAllocator* stack_allocator,
-    u64 size);
+api ItfliesbyMemoryReturnCode
+itfliesby_memory_allocator_stack_push(
+    ItfliesbyMemoryAllocatorStack* allocator,
+    u64                      allocation_size,
+    memory                   allocation
+);
 
-void
-itfliesby_memory_stack_allocator_pop(
-    ItfliesbyMemoryStackAllocator* stack_allocator);
+api ItfliesbyMemoryReturnCode
+itfliesby_memory_allocator_stack_pop(
+    ItfliesbyMemoryAllocatorStack* allocator,
+    memory                   allocation
+);
 
-void
-itfliesby_memory_stack_allocator_clear(
-    ItfliesbyMemoryStackAllocator* stack_allocator);
+api void
+itfliesby_memory_allocator_stack_clear(
+    ItfliesbyMemoryAllocatorStack* allocator
+);
 
-u64
-itfliesby_memory_stack_allocator_size_total(
-    ItfliesbyMemoryStackAllocator* stack_allocator);
+api void
+itfliesby_memory_allocator_stack_space_total(
+    ItfliesbyMemoryAllocatorStack* allocator
+);
 
-u64
-itfliesby_memory_stack_allocator_size_free(
-    ItfliesbyMemoryStackAllocator* stack_allocator);
+api void
+itfliesby_memory_allocator_stack_space_free(
+    ItfliesbyMemoryAllocatorStack* allocator
+);
 
-u64
-itfliesby_memory_stack_allocator_size_occupied(
-    ItfliesbyMemoryStackAllocator* stack_allocator);
+api void
+itfliesby_memory_allocator_stack_space_occupied(
+    ItfliesbyMemoryAllocatorStack* allocator
+);
+
+/*-------------------------------------------------
+ * QUEUE ALLOCATOR
+ *-------------------------------------------------*/
+
+struct ItfliesbyMemoryAllocatorQueue {
+    ItfliesbyMemoryAllocatorHeader* header;
+    ItfliesbyMemoryBlock            block;           
+    ItfliesbyMemoryAllocatorQueue*  next;
+};
+
+api ItfliesbyMemoryReturnCode
+itfliesby_memory_allocator_queue_create(
+    ItfliesbyMemoryPartition*        partition,
+    char                       allocator_tag[16],
+    u64                        allocator_size,
+    ItfliesbyMemoryAllocatorQueue*   allocator
+);
+
+api void
+itfliesby_memory_allocator_queue_destroy(
+    ItfliesbyMemoryAllocatorQueue* allocator
+);
+
+api ItfliesbyMemoryReturnCode
+itfliesby_memory_allocator_queue_push(
+    ItfliesbyMemoryAllocatorQueue* allocator,
+    memory                   allocation
+);
+
+api ItfliesbyMemoryReturnCode
+itfliesby_memory_allocator_queue_pop(
+    ItfliesbyMemoryAllocatorQueue* allocator,
+    memory                   allocation
+);
+
+api void
+itfliesby_memory_allocator_queue_clear(
+    ItfliesbyMemoryAllocatorQueue* allocator
+);
+
+api void
+itfliesby_memory_allocator_queue_space_total(
+    ItfliesbyMemoryAllocatorQueue* allocator
+);
+
+api void
+itfliesby_memory_allocator_queue_space_free(
+    ItfliesbyMemoryAllocatorQueue* allocator
+);
+
+api void
+itfliesby_memory_allocator_queue_space_occupied(
+    ItfliesbyMemoryAllocatorQueue* allocator
+);
+
+/*-------------------------------------------------
+ * BLOCK ALLOCATOR
+ *-------------------------------------------------*/
+
+struct ItfliesbyMemoryAllocatorBlock {
+    ItfliesbyMemoryAllocatorHeader*  header;
+    u64                        block_size;
+    u64                        num_blocks;
+    struct ItfliesbyMemoryAllocatorBlockList {
+        ItfliesbyMemoryBlock*              block;
+        ItfliesbyMemoryAllocatorBlockList* next;
+    } *blocks;
+};
+
+api ItfliesbyMemoryReturnCode
+itfliesby_memory_allocator_block_create(
+    ItfliesbyMemoryPartition*  partition,
+    char                 allocator_tag[16],
+    u64                  block_size,
+    u64                  block_count
+);
+
+api void
+itfliesby_memory_allocator_block_destroy(
+    ItfliesbyMemoryAllocatorBlock* allocator
+);
+
+api ItfliesbyMemoryReturnCode
+itfliesby_memory_allocator_block_allocate(
+    ItfliesbyMemoryAllocatorBlock* allocator,
+    memory                   memory
+);
+
+api void
+itfliesby_memory_allocator_block_free(
+    ItfliesbyMemoryAllocatorBlock* allocator,
+    memory                   memory
+);
+
+api void
+itfliesby_memory_allocator_block_clear(
+    ItfliesbyMemoryAllocatorBlock* allocator,
+    memory                   memory
+);
+
+api void
+itfliesby_memory_allocator_block_blocks_total(
+    ItfliesbyMemoryAllocatorBlock* allocator
+);
+
+api void
+itfliesby_memory_allocator_block_blocks_free(
+    ItfliesbyMemoryAllocatorBlock* allocator
+);
+
+api void
+itfliesby_memory_allocator_block_blocks_occupied(
+    ItfliesbyMemoryAllocatorBlock* allocator
+);
+
+api void
+itfliesby_memory_allocator_block_space_total(
+    ItfliesbyMemoryAllocatorBlock* allocator
+);
+
+api void
+itfliesby_memory_allocator_block_space_free(
+    ItfliesbyMemoryAllocatorBlock* allocator
+);
+
+api void
+itfliesby_memory_allocator_block_space_occupied(
+    ItfliesbyMemoryAllocatorBlock* allocator
+);
+
+api ItfliesbyMemoryReturnCode
+itfliesby_memory_allocator_block_at_index(
+    ItfliesbyMemoryAllocatorBlock*   allocator,
+    u64                        block_index,
+    memory                     allocation
+);
+
+api ItfliesbyMemoryReturnCode
+itfliesby_memory_allocator_block_iterate(
+    ItfliesbyMemoryAllocatorBlock* allocator,
+    memory                   allocation
+);
+
+/*-------------------------------------------------
+ * HEAP ALLOCATOR
+ *-------------------------------------------------*/
+
+struct ItfliesbyMemoryAllocatorHeap {
+    ItfliesbyMemoryAllocatorHeader* header;
+
+    struct ItfliesbyMemoryAllocatorHeapList {
+        ItfliesbyMemoryBlock              block;
+        ItfliesbyMemoryAllocatorHeapList* next;
+    } *blocks;
+    
+    struct ItfliesbyMemoryAllocatorHeapAddressMap {
+        memory                            old_address;
+        memory                            new_address;
+        ItfliesbyMemoryAllocatorHeapAddressMap* next;
+    } *address_map;
+};
+
+
+api ItfliesbyMemoryReturnCode
+itfliesby_memory_allocator_heap_create(
+    ItfliesbyMemoryPartition*       partition,
+    char                      allocator_tag[16],
+    u64                       allocator_size,
+    ItfliesbyMemoryAllocatorHeap*   allocator
+);
+
+api ItfliesbyMemoryReturnCode
+itfliesby_memory_allocator_heap_destroy(
+    ItfliesbyMemoryAllocatorHeap* allocator
+);
+
+api ItfliesbyMemoryReturnCode
+itfliesby_memory_allocator_heap_allocate(
+    ItfliesbyMemoryAllocatorHeap* allocator,
+    u64                       allocation_size,
+    memory                    allocation
+);
+
+api ItfliesbyMemoryReturnCode
+itfliesby_memory_allocator_heap_free(
+    ItfliesbyMemoryAllocatorHeap* allocator,
+    u64                     allocation_size,
+    memory                  allocation
+);
+
+api ItfliesbyMemoryReturnCode
+itfliesby_memory_allocator_heap_register_pointer(
+    ItfliesbyMemoryAllocatorHeap* allocator,
+    handle                  pointer,
+    memory                  allocation
+);
+
+api void
+itfliesby_memory_allocator_heap_defrag(
+    ItfliesbyMemoryAllocatorHeap* allocator
+);
+
+api void
+itfliesby_memory_allocator_heap_space_total(
+    ItfliesbyMemoryAllocatorHeap* allocator
+);
+
+api void
+itfliesby_memory_allocator_heap_space_free(
+    ItfliesbyMemoryAllocatorHeap* allocator
+);
+
+api void
+itfliesby_memory_allocator_heap_space_occupied(
+    ItfliesbyMemoryAllocatorHeap* allocator
+);
+
+union ItfliesbyMemoryAllocator {
+    ItfliesbyMemoryAllocatorScratch scratch;
+    ItfliesbyMemoryAllocatorStack   stack;
+    ItfliesbyMemoryAllocatorBlock   block;
+    ItfliesbyMemoryAllocatorHeap    heap;
+};
+
+struct ItfliesbyMemoryAllocatorHeader {
+    ItfliesbyMemoryAllocatorType    type;
+    char                      tag[16];
+    u64                       size;
+    ItfliesbyMemoryAllocator        allocator;
+    ItfliesbyMemoryPartition*       partition;
+    ItfliesbyMemoryAllocatorHeader* next;
+};
 
 #endif //ITFLIESBY_MEMORY_HPP
