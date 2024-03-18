@@ -4,9 +4,9 @@
 
 external ItfliesbyMemoryReturnCode
 itfliesby_memory_arena_create(
-    char            arena_tag[16],
-    u64             arena_size,
-    memory          arena_memory,
+    char                  arena_tag[16],
+    u64                   arena_size,
+    memory                arena_memory,
     ItfliesbyMemoryArena* arena) {
     
     if (!arena_memory) {

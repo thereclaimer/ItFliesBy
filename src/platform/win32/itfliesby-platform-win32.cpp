@@ -240,6 +240,7 @@ itfliesby_platform_win32_main(
     PWSTR     cmd_line,
     int       cmd_show) {
 
+
     // Register the main window class.
     WNDCLASS window_class      = {0};
     window_class.style         = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
@@ -286,8 +287,16 @@ itfliesby_platform_win32_main(
     game_window.full_screen = false;
     itfliesby_platform_win32_toggle_full_screen();
     
+    //allocate the memory
+    memory game_memory = itfliesby_platform_win32_api_allocate_memory(ITFLIESBY_GAME_MEMORY_SIZE); 
+    ITFLIESBY_ASSERT(game_memory);
+
     //initialize the game
-    game_window.game = itfliesby_game_create(&win32_platform_api);
+    game_window.game = itfliesby_game_create(
+        &win32_platform_api,
+        game_memory,
+        ITFLIESBY_GAME_MEMORY_SIZE
+    );
 
     ItfliesbyGamepadInput gamepad = {0};
 
@@ -334,7 +343,11 @@ itfliesby_platform_win32_main(
         // frames_per_second = 1 / elapsed_seconds;
     }
 
+    //destroy the game
     itfliesby_game_destroy(game_window.game);
+
+    //deallocate the memory
+    itfliesby_platform_win32_api_free_memory(game_memory,ITFLIESBY_GAME_MEMORY_SIZE);
 
     return(0);
 }

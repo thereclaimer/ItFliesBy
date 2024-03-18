@@ -2,19 +2,19 @@
 #define ITFLIESBY_MEMORY_HPP
 
 #include <cstring>
-#include "itfliesby-types.hpp"
+#include <itfliesby.hpp> 
 
 typedef struct ItfliesbyMemoryArena;
 typedef struct ItfliesbyMemoryPartition;
 typedef struct ItfliesbyMemoryBlock;
 typedef struct ItfliesbyMemoryAllocatorHeader;
 typedef union  ItfliesbyMemoryAllocator;
-typedef struct ItfliesbyMemoryAllocatorScratch;
+typedef struct ItfliesbyMemoryAllocatorLinear;
 typedef struct ItfliesbyMemoryAllocatorStack;
 typedef struct ItfliesbyMemoryAllocatorBlock;
 typedef struct ItfliesbyMemoryAllocatorHeap;
 
-#define ITFLIESBY_MEMORY_ARENA_MINIMUM_SIZE (sizeof(ItfliesbyMemoryArena) + sizeof(ItfliesbyMemoryPartition) + sizeof(ItfliesbyMemoryAllocatorHeader) + sizeof(ItfliesbyMemoryAllocatorScratch) + 1)
+#define ITFLIESBY_MEMORY_ARENA_MINIMUM_SIZE (sizeof(ItfliesbyMemoryArena) + sizeof(ItfliesbyMemoryPartition) + sizeof(ItfliesbyMemoryAllocatorHeader) + sizeof(ItfliesbyMemoryAllocatorLinear) + 1)
 
 enum ItfliesbyMemoryReturnCode : s32{
     ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS                     = 0x00000001,
@@ -30,13 +30,13 @@ enum ItfliesbyMemoryAllocatorType {
     ITFLIESBY_MEMORY_ALLOCATOR_TYPE_STACK   = 0,
     ITFLIESBY_MEMORY_ALLOCATOR_TYPE_QUEUE   = 1,
     ITFLIESBY_MEMORY_ALLOCATOR_TYPE_BLOCK   = 2,
-    ITFLIESBY_MEMORY_ALLOCATOR_TYPE_SCRATCH = 3,
+    ITFLIESBY_MEMORY_ALLOCATOR_TYPE_LINEAR = 3,
     ITFLIESBY_MEMORY_ALLOCATOR_TYPE_HEAP    = 4
 };
 
 struct ItfliesbyMemoryBlock {
     ItfliesbyMemoryAllocatorHeader* allocator_header;
-    u64                       size;
+    u64                             size;
 };
 
 /*-------------------------------------------------
@@ -114,52 +114,52 @@ itfliesby_memory_partition_space_occupied(
 );
 
 /*-------------------------------------------------
- * SCRATCH ALLOCATOR
+ * LINEAR ALLOCATOR
  *-------------------------------------------------*/
 
-struct ItfliesbyMemoryAllocatorScratch {
+struct ItfliesbyMemoryAllocatorLinear {
     ItfliesbyMemoryAllocatorHeader*  header;
-    u64                        used_space;
+    u64                              used_space;
 };
 
 api ItfliesbyMemoryReturnCode
-itfliesby_memory_allocator_scratch_create(
-    ItfliesbyMemoryPartition*        partition,
-    char                       allocator_tag[16],
-    u64                        allocator_size,
-    ItfliesbyMemoryAllocatorScratch* allocator
+itfliesby_memory_allocator_linear_create(
+    ItfliesbyMemoryPartition*       partition,
+    char                            allocator_tag[16],
+    u64                             allocator_size,
+    ItfliesbyMemoryAllocatorLinear* allocator
 );
 
 api ItfliesbyMemoryReturnCode
-itfliesby_memory_allocator_scratch_destroy(
-    ItfliesbyMemoryAllocatorScratch*  allocator
+itfliesby_memory_allocator_linear_destroy(
+    ItfliesbyMemoryAllocatorLinear*  allocator
 );
 
 api ItfliesbyMemoryReturnCode
-itfliesby_memory_allocator_scratch_allocate(
-    ItfliesbyMemoryAllocatorScratch*  allocator,
+itfliesby_memory_allocator_linear_allocate(
+    ItfliesbyMemoryAllocatorLinear*  allocator,
     u64                         allocation_size,
     memory                      allocation
 );
 
 api ItfliesbyMemoryReturnCode
-itfliesby_memory_allocator_scratch_reset(
-    ItfliesbyMemoryAllocatorScratch* allocator
+itfliesby_memory_allocator_linear_reset(
+    ItfliesbyMemoryAllocatorLinear* allocator
 );
 
 api u64
-itfliesby_memory_allocator_scratch_space_total(
-    ItfliesbyMemoryAllocatorScratch* allocator
+itfliesby_memory_allocator_linear_space_total(
+    ItfliesbyMemoryAllocatorLinear* allocator
 );
 
 api u64
-itfliesby_memory_allocator_scratch_space_clear(
-    ItfliesbyMemoryAllocatorScratch* allocator
+itfliesby_memory_allocator_linear_space_clear(
+    ItfliesbyMemoryAllocatorLinear* allocator
 );
 
 api u64
-itfliesby_memory_allocator_scratch_space_occupied(
-    ItfliesbyMemoryAllocatorScratch* allocator
+itfliesby_memory_allocator_linear_space_occupied(
+    ItfliesbyMemoryAllocatorLinear* allocator
 );
 
 /*-------------------------------------------------
@@ -440,7 +440,7 @@ itfliesby_memory_allocator_heap_space_occupied(
 );
 
 union ItfliesbyMemoryAllocator {
-    ItfliesbyMemoryAllocatorScratch scratch;
+    ItfliesbyMemoryAllocatorLinear linear;
     ItfliesbyMemoryAllocatorStack   stack;
     ItfliesbyMemoryAllocatorBlock   block;
     ItfliesbyMemoryAllocatorHeap    heap;

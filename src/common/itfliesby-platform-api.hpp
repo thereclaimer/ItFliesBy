@@ -3,7 +3,7 @@
 
 #include "itfliesby-types.hpp"
 
-typedef handle 
+typedef memory 
 (*func_itfliesby_platform_memory_allocate)
 (
     u64 size

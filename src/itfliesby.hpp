@@ -9,6 +9,7 @@
 #include <common/itfliesby-game.hpp>
 #include <common/itfliesby-engine.hpp>
 #include <common/itfliesby-renderer.hpp>
+#include <common/itfliesby-memory.hpp>
 
 #include <math/itfliesby-math.hpp>
 

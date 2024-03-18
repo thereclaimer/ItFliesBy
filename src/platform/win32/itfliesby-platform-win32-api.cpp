@@ -239,12 +239,12 @@ itfliesby_platform_win32_api_write_file(
     // );
 }
 
-internal handle
+internal memory
 itfliesby_platform_win32_api_allocate_memory(u64 size) {
 
-    handle memory = VirtualAlloc(0,size,MEM_COMMIT,PAGE_READWRITE);
+    memory mem = (memory)VirtualAlloc(0,size,MEM_COMMIT,PAGE_READWRITE);
 
-    return (memory);
+    return(mem);
 }
 
 internal void
