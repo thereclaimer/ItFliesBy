@@ -39,22 +39,52 @@ itfliesby_memory_arena_create(
 
 api void
 itfliesby_memory_arena_destroy(
-    itfliesby_memory_arena  arena
+    itfliesby_memory_arena arena
 );
 
 api u64
 itfliesby_memory_arena_size_total(
-    itfliesby_memory_arena  arena
+    itfliesby_memory_arena arena
 );
 
 api u64
 itfliesby_memory_arena_size_free(
-    itfliesby_memory_arena  arena
+    itfliesby_memory_arena arena
 );
 
 api u64
 itfliesby_memory_arena_size_occupied(
-    itfliesby_memory_arena  arena
+    itfliesby_memory_arena arena
+);
+
+/*-------------------------------------------------
+ * PARTITIONS
+ *------------------------------------------------- 
+ * Distinct chunks of the core memory, partitions
+ * are managed by a linked list of allocators 
+-------------------------------------------------*/
+
+api itfliesby_memory_return_code
+itfliesby_memory_partition_create(
+    itfliesby_memory_arena     arena,
+    char                       partition_tag[16],
+    u64                        partition_size,
+    itfliesby_memory_partition partition
+);
+
+api u64
+itfliesby_memory_partition_space_total(
+    itfliesby_memory_partition partition
+);
+
+api u64
+itfliesby_memory_partition_space_free(
+    itfliesby_memory_partition partition
+);
+
+api u64
+itfliesby_memory_partition_space_occupied(
+    itfliesby_memory_partition partition
 );
 
 

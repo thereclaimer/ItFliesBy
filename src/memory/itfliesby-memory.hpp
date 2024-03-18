@@ -83,8 +83,8 @@ itfliesby_memory_arena_size_occupied(
  *-------------------------------------------------*/
 
 struct ItfliesbyMemoryPartition {
-    char                      tag[16];
-    u64                       size;
+    char                            tag[16];
+    u64                             size;
     ItfliesbyMemoryPartition*       next;
     ItfliesbyMemoryAllocatorHeader* allocators;
     ItfliesbyMemoryArena*           arena;
@@ -92,10 +92,10 @@ struct ItfliesbyMemoryPartition {
 
 api ItfliesbyMemoryReturnCode
 itfliesby_memory_partition_create(
-    ItfliesbyMemoryArena*      arena,
-    char                 partition_tag[16],
-    u64                  partition_size,
-    ItfliesbyMemoryPartition*  partition
+    ItfliesbyMemoryArena*     arena,
+    char                      partition_tag[16],
+    u64                       partition_size,
+    ItfliesbyMemoryPartition* partition
 );
 
 api u64

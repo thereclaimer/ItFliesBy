@@ -25,7 +25,17 @@ itfliesby_game_create(
     ITFLIESBY_ASSERT(memory_return_code == ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS);
 
     ItfliesbyGameMemoryArena game_memory_arena = {0};
-    game_memory_stuff.arena = memory_arena;
+    game_memory_arena.arena = memory_arena;
+
+    //core partition
+    memory_return_code = itfliesby_memory_partition_create(
+        game_memory_arena.arena,
+        "CORE SYSTEMS",
+        ITFLIESBY_MATH_MEGABYTES(128),
+        game_memory_arena.partitions.game_core
+    );
+    ITFLIESBY_ASSERT(memory_return_code == ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS);
+
 
     return(NULL);
 }
