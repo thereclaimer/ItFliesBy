@@ -49,13 +49,12 @@ struct ItfliesbyMemoryArena {
     ItfliesbyMemoryPartition* partitions;
 };
 
-api ItfliesbyMemoryReturnCode
+api ItfliesbyMemoryArena*
 itfliesby_memory_arena_create(
-    char            arena_tag[16],
-    u64             arena_size,
-    memory          arena_memory,
-    ItfliesbyMemoryArena* arena
-);
+    char                       arena_tag[16],
+    u64                        arena_size,
+    memory                     arena_memory,
+    ItfliesbyMemoryReturnCode* result = NULL);
 
 api void
 itfliesby_memory_arena_destroy(
@@ -90,12 +89,12 @@ struct ItfliesbyMemoryPartition {
     ItfliesbyMemoryArena*           arena;
 };  
 
-api ItfliesbyMemoryReturnCode
+api ItfliesbyMemoryPartition* 
 itfliesby_memory_partition_create(
-    ItfliesbyMemoryArena*     arena,
-    char                      partition_tag[16],
-    u64                       partition_size,
-    ItfliesbyMemoryPartition* partition
+    ItfliesbyMemoryArena*      arena,
+    char                       partition_tag[16],
+    u64                        partition_size,
+    ItfliesbyMemoryReturnCode* result = NULL
 );
 
 api u64

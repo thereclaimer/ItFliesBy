@@ -29,12 +29,12 @@ enum itfliesby_memory_return_code {
  * list of partitions
 -------------------------------------------------*/
 
-api itfliesby_memory_return_code
+api itfliesby_memory_arena 
 itfliesby_memory_arena_create(
-    char                   arena_tag[16],
-    u64                    arena_size,
-    memory                 arena_core,
-    itfliesby_memory_arena arena
+    char                          arena_tag[16],
+    u64                           arena_size,
+    memory                        arena_memory,
+    itfliesby_memory_return_code* result = NULL
 );
 
 api void
@@ -64,12 +64,12 @@ itfliesby_memory_arena_size_occupied(
  * are managed by a linked list of allocators 
 -------------------------------------------------*/
 
-api itfliesby_memory_return_code
+api itfliesby_memory_partition 
 itfliesby_memory_partition_create(
-    itfliesby_memory_arena     arena,
-    char                       partition_tag[16],
-    u64                        partition_size,
-    itfliesby_memory_partition partition
+    itfliesby_memory_arena        arena,
+    char                          partition_tag[16],
+    u64                           partition_size,
+    itfliesby_memory_return_code* result
 );
 
 api u64

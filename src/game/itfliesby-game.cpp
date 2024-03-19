@@ -12,30 +12,30 @@ itfliesby_game_create(
     ITFLIESBY_ASSERT(game_memory_size == ITFLIESBY_GAME_MEMORY_SIZE);
 
     itfliesby_memory_return_code memory_return_code;
-    itfliesby_memory_arena       memory_arena;
+    ItfliesbyGameMemoryArena game_memory_arena = {0};
 
-    memory_return_code = 
+    game_memory_arena.arena = 
         itfliesby_memory_arena_create(
             "GAME ARENA",
             game_memory_size,
             game_memory,
-            memory_arena
+            &memory_return_code
     );
 
     ITFLIESBY_ASSERT(memory_return_code == ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS);
-
-    ItfliesbyGameMemoryArena game_memory_arena = {0};
-    game_memory_arena.arena = memory_arena;
+    ITFLIESBY_ASSERT(game_memory_arena.arena);
 
     //core partition
-    memory_return_code = itfliesby_memory_partition_create(
+    game_memory_arena.partitions.game_core = itfliesby_memory_partition_create(
         game_memory_arena.arena,
         "CORE SYSTEMS",
         ITFLIESBY_MATH_MEGABYTES(128),
-        game_memory_arena.partitions.game_core
+        &memory_return_code
     );
     ITFLIESBY_ASSERT(memory_return_code == ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS);
+    ITFLIESBY_ASSERT(game_memory_arena.partitions.game_core);
 
+    //allocators
 
     return(NULL);
 }

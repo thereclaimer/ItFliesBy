@@ -2,25 +2,27 @@
 
 #include "itfliesby-memory.hpp"
 
-external ItfliesbyMemoryReturnCode
+external ItfliesbyMemoryPartition* 
 itfliesby_memory_partition_create(
-    ItfliesbyMemoryArena*     arena,
-    char                      partition_tag[16],
-    u64                       partition_size,
-    ItfliesbyMemoryPartition* partition) {
+    ItfliesbyMemoryArena*      arena,
+    char                       partition_tag[16],
+    u64                        partition_size,
+    ItfliesbyMemoryReturnCode* result) {
+
+    ItfliesbyMemoryReturnCode result_local = ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS; 
 
     //check arguments
     if (!arena || partition_size < sizeof(ItfliesbyMemoryPartition)) {
-        return(ITFLIESBY_MEMORY_RETURN_CODE_INVALID_ARGUMENT);
+        result_local = ITFLIESBY_MEMORY_RETURN_CODE_INVALID_ARGUMENT;
     }
     if ((sizeof(ItfliesbyMemoryPartition) + partition_size) < arena->size) {
-        return(ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_ALLOCATOR_MEMORY);
+        result_local = ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_ALLOCATOR_MEMORY;
     }
 
     //if this is the first partition, set it and we're done
     if (!arena->partitions) {
         
-        partition             = (ItfliesbyMemoryPartition*)(arena + sizeof(ItfliesbyMemoryArena));
+        ItfliesbyMemoryPartition* partition = (ItfliesbyMemoryPartition*)(arena + sizeof(ItfliesbyMemoryArena));
         partition->allocators = NULL;
         partition->arena      = arena;
         partition->next       = NULL;
@@ -29,7 +31,11 @@ itfliesby_memory_partition_create(
 
         arena->partitions = partition;
 
-        return(ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS);
+        if (result) {
+            *result = result_local; 
+        }
+
+        return(partition);
     }
     
     //go to the end of the partitions
@@ -41,7 +47,7 @@ itfliesby_memory_partition_create(
     }
 
     //put the new partition at the end of the list
-    partition = current_partition + sizeof(ItfliesbyMemoryPartition) + current_partition->size;
+    ItfliesbyMemoryPartition* partition = current_partition + sizeof(ItfliesbyMemoryPartition) + current_partition->size;
     partition->allocators = NULL;
     partition->arena      = arena;
     partition->next       = NULL;
@@ -49,7 +55,7 @@ itfliesby_memory_partition_create(
 
     current_partition->next = partition;
 
-    return(ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS);
+    return(partition);
 }
 
 external u64

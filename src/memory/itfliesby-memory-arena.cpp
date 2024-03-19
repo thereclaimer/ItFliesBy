@@ -2,28 +2,34 @@
 
 #include "itfliesby-memory.hpp"
 
-external ItfliesbyMemoryReturnCode
+external ItfliesbyMemoryArena*
 itfliesby_memory_arena_create(
-    char                  arena_tag[16],
-    u64                   arena_size,
-    memory                arena_memory,
-    ItfliesbyMemoryArena* arena) {
+    char                       arena_tag[16],
+    u64                        arena_size,
+    memory                     arena_memory,
+    ItfliesbyMemoryReturnCode* result) {
     
+    ItfliesbyMemoryReturnCode result_local = ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS; 
+
     if (!arena_memory) {
-        return (ITFLIESBY_MEMORY_RETURN_CODE_CORE_MEMORY_NULL);
+        result_local = ITFLIESBY_MEMORY_RETURN_CODE_CORE_MEMORY_NULL;
     }
 
     //we need to make sure there's enough memory for a basic scratch allocator
     if (arena_size < ITFLIESBY_MEMORY_ARENA_MINIMUM_SIZE) {
-        return(ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_ARENA_MEMORY);
+        result_local = ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_ARENA_MEMORY;
     }
 
-    arena = (ItfliesbyMemoryArena*)arena_memory;
-    strcpy(arena->tag,arena_tag);
+    ItfliesbyMemoryArena* arena = (ItfliesbyMemoryArena*)arena_memory;
     arena->partitions = NULL;
     arena->size       = arena_size - sizeof(ItfliesbyMemoryArena);
+    strcpy(arena->tag,arena_tag);
 
-    return(ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS);
+    if (result) {
+        *result = result_local;
+    }
+
+    return(arena);
 }
 
 external void
