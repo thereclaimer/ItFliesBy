@@ -64,28 +64,40 @@ itfliesby_memory_allocator_linear_create(
     return(&allocator_header->allocator.linear);
 }
 
-external ItfliesbyMemoryReturnCode
-itfliesby_memory_allocator_linear_destroy(
-    ItfliesbyMemoryAllocatorLinear*  allocator) {
-
-
-    return(ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS);
-}
-
 external memory
 itfliesby_memory_allocator_linear_allocate(
     ItfliesbyMemoryAllocatorLinear* allocator,
     u64                             allocation_size,
     ItfliesbyMemoryReturnCode*      result) {
 
+    if (!allocator || allocation_size == 0) {
+        *result = ITFLIESBY_MEMORY_RETURN_CODE_INVALID_ARGUMENT;
+        return(NULL);
+    }
+
     ItfliesbyMemoryAllocatorHeader* allocator_header = allocator->header;
 
-    return(NULL);
+    //check available space
+    u64 space_available = allocator_header->size - allocator->used_space;
+    if (space_available < allocation_size) {
+        *result = ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_ALLOCATOR_MEMORY;
+        return(NULL);
+    }
+
+    memory allocation = (memory)allocator_header + sizeof(ItfliesbyMemoryAllocatorHeader) + allocator->used_space;
+
+    return(allocation);
 }
 
 external ItfliesbyMemoryReturnCode
 itfliesby_memory_allocator_linear_reset(
     ItfliesbyMemoryAllocatorLinear* allocator) {
+
+    if (!allocator) {
+        return(ITFLIESBY_MEMORY_RETURN_CODE_INVALID_ARGUMENT);
+    }
+
+    allocator->used_space = 0;
 
     return(ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS);
 }
@@ -94,19 +106,31 @@ external u64
 itfliesby_memory_allocator_linear_space_total(
     ItfliesbyMemoryAllocatorLinear* allocator) {
     
-    return(ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS);
+    u64 space_total = allocator
+        ? allocator->header->size
+        : 0;
+
+    return(space_total);
 }
 
 external u64
 itfliesby_memory_allocator_linear_space_clear(
-    ItfliesbyMemoryAllocatorLinear* allocator
-) {
-    return(ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS);
+    ItfliesbyMemoryAllocatorLinear* allocator) {
+
+    u64 space_available = allocator
+        ? allocator->header->size - allocator->used_space
+        : 0;
+
+    return(space_available);
 }
 
 external u64
 itfliesby_memory_allocator_linear_space_occupied(
-    ItfliesbyMemoryAllocatorLinear* allocator
-) {
-    return(ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS);
+    ItfliesbyMemoryAllocatorLinear* allocator) {
+
+    u64 space_used = allocator
+        ? allocator->used_space
+        : 0;
+
+    return(space_used);
 }
