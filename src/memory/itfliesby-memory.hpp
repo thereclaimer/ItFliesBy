@@ -121,24 +121,19 @@ struct ItfliesbyMemoryAllocatorLinear {
     u64                              used_space;
 };
 
-api ItfliesbyMemoryReturnCode
+api ItfliesbyMemoryAllocatorLinear* 
 itfliesby_memory_allocator_linear_create(
     ItfliesbyMemoryPartition*       partition,
     char                            allocator_tag[16],
     u64                             allocator_size,
-    ItfliesbyMemoryAllocatorLinear* allocator
+    ItfliesbyMemoryReturnCode*      result = NULL
 );
 
-api ItfliesbyMemoryReturnCode
-itfliesby_memory_allocator_linear_destroy(
-    ItfliesbyMemoryAllocatorLinear*  allocator
-);
-
-api ItfliesbyMemoryReturnCode
+api memory
 itfliesby_memory_allocator_linear_allocate(
-    ItfliesbyMemoryAllocatorLinear*  allocator,
-    u64                         allocation_size,
-    memory                      allocation
+    ItfliesbyMemoryAllocatorLinear* allocator,
+    u64                             allocation_size,
+    ItfliesbyMemoryReturnCode*      result = NULL
 );
 
 api ItfliesbyMemoryReturnCode

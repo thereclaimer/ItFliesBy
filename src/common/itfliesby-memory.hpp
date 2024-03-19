@@ -87,5 +87,46 @@ itfliesby_memory_partition_space_occupied(
     itfliesby_memory_partition partition
 );
 
+/*-------------------------------------------------
+ * LINEAR ALLOCATOR
+ *-------------------------------------------------*/
+
+api itfliesby_memory_allocator_linear 
+itfliesby_memory_allocator_linear_create(
+    itfliesby_memory_partition    partition,
+    char                          allocator_tag[16],
+    u64                           allocator_size,
+    itfliesby_memory_return_code* result
+);
+
+
+api memory
+itfliesby_memory_allocator_linear_allocate(
+    itfliesby_memory_allocator_linear allocator,
+    u64                               allocation_size,
+    itfliesby_memory_return_code*     result
+);
+
+api itfliesby_memory_return_code
+itfliesby_memory_allocator_linear_reset(
+    itfliesby_memory_allocator_linear allocator
+);
+
+api u64
+itfliesby_memory_allocator_linear_space_total(
+    itfliesby_memory_allocator_linear allocator
+);
+
+api u64
+itfliesby_memory_allocator_linear_space_clear(
+    itfliesby_memory_allocator_linear allocator
+);
+
+api u64
+itfliesby_memory_allocator_linear_space_occupied(
+    itfliesby_memory_allocator_linear allocator
+);
+
+
 
 #endif //ITFLIESBY_MEMORY_HPP

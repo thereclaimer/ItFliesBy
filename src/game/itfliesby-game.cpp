@@ -28,7 +28,7 @@ itfliesby_game_create(
     //core partition
     game_memory_arena.partitions.game_core = itfliesby_memory_partition_create(
         game_memory_arena.arena,
-        "CORE SYSTEMS",
+        "CORE SYS",
         ITFLIESBY_MATH_MEGABYTES(128),
         &memory_return_code
     );
@@ -36,8 +36,27 @@ itfliesby_game_create(
     ITFLIESBY_ASSERT(game_memory_arena.partitions.game_core);
 
     //allocators
+    game_memory_arena.allocators.game_core_system_allocator = 
+        itfliesby_memory_allocator_linear_create(
+            game_memory_arena.partitions.game_core,
+            "CORE SYS",
+            512,
+            &memory_return_code
+    );
+    ITFLIESBY_ASSERT(memory_return_code == ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS);
+    ITFLIESBY_ASSERT(game_memory_arena.allocators.game_core_system_allocator);
 
-    return(NULL);
+
+    //allocate core systems
+    ItfliesbyGame* game = (ItfliesbyGame*)itfliesby_memory_allocator_linear_allocate(
+        game_memory_arena.allocators.game_core_system_allocator,
+        sizeof(ItfliesbyGame),
+        &memory_return_code
+    );
+    ITFLIESBY_ASSERT(memory_return_code == ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS);
+    ITFLIESBY_ASSERT(game);
+
+    return(game);
 }
 
 external void

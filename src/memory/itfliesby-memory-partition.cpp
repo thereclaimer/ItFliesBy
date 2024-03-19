@@ -11,12 +11,16 @@ itfliesby_memory_partition_create(
 
     ItfliesbyMemoryReturnCode result_local = ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS; 
 
+    u64 arena_space_available = itfliesby_memory_arena_size_free(arena);
+
     //check arguments
-    if (!arena || partition_size < sizeof(ItfliesbyMemoryPartition)) {
+    if (!arena) {
         result_local = ITFLIESBY_MEMORY_RETURN_CODE_INVALID_ARGUMENT;
+        return(NULL);
     }
-    if ((sizeof(ItfliesbyMemoryPartition) + partition_size) < arena->size) {
-        result_local = ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_ALLOCATOR_MEMORY;
+    if ((sizeof(ItfliesbyMemoryPartition) + partition_size) > arena_space_available) {
+        result_local = ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_ARENA_MEMORY;
+        return(NULL);
     }
 
     //if this is the first partition, set it and we're done
@@ -81,7 +85,7 @@ itfliesby_memory_partition_space_free(
 
     for (
         ItfliesbyMemoryAllocatorHeader* current_allocator_header = partition->allocators;
-        current_allocator_header->next != NULL;
+        current_allocator_header != NULL && current_allocator_header->next != NULL;
         current_allocator_header = current_allocator_header->next) {
         
         space_free -= sizeof(ItfliesbyMemoryAllocatorHeader) + current_allocator_header->size; 
@@ -94,7 +98,7 @@ external u64
 itfliesby_memory_partition_space_occupied(
     ItfliesbyMemoryPartition* partition) {
 
-    if (!partition) {
+    if (!partition || !partition->allocators) {
         return(0L);
     }
 
