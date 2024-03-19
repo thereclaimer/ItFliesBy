@@ -21,6 +21,7 @@ itfliesby_memory_allocator_linear_create(
         result_local = ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_PARTITION_MEMORY;
     }
 
+    //determine the address of our next allocator
     ItfliesbyMemoryAllocatorHeader* allocator_header = NULL;
     ItfliesbyMemoryAllocatorHeader* previous_allocator_header = NULL;
 
@@ -36,6 +37,7 @@ itfliesby_memory_allocator_linear_create(
 
     ITFLIESBY_ASSERT(allocator_header);
 
+    //initialize linear allocator
     ItfliesbyMemoryAllocatorLinear linear_allocator = {0};
     linear_allocator.header = allocator_header;
 
@@ -50,6 +52,7 @@ itfliesby_memory_allocator_linear_create(
         *result = result_local;
     }
 
+    //add the allocator to the list in the partition
     if (previous_allocator_header) {
         previous_allocator_header->next = allocator_header;
     } 
@@ -57,6 +60,7 @@ itfliesby_memory_allocator_linear_create(
         partition->allocators = allocator_header;
     }
 
+    //return the address to the new linear allocator
     return(&allocator_header->allocator.linear);
 }
 
