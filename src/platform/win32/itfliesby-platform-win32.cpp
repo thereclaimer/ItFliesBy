@@ -321,13 +321,7 @@ itfliesby_platform_win32_main(
                 ? &gamepad
                 : NULL;
 
-        //update and render the game
-        // game_window.running = 
-        //     itfliesby_game_update_and_render_frame(
-        //         game_window.game,
-        //         game_window.viewport_dimensions,
-        //         game_window.user_input
-        // );
+        itfliesby_game_update_and_render(game_window.game);
 
 
         // itfliesby_dev_tools_update(game_window.itfliesby_state);

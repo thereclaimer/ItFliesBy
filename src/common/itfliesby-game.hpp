@@ -19,4 +19,9 @@ itfliesby_game_destroy(
     itfliesby_game game
 );
 
+api void
+itfliesby_game_update_and_render(
+    itfliesby_game game
+);
+
 #endif //ITFLIESBY_GAME_HPP

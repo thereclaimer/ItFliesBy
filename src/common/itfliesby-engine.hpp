@@ -17,4 +17,9 @@ itfliesby_engine_destroy(
     itfliesby_engine engine
 );
 
+api void
+itfliesby_engine_update_and_render(
+    itfliesby_engine engine
+);
+
 #endif //ITFLIESBY_ENGINE_HPP

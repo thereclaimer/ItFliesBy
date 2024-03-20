@@ -50,3 +50,12 @@ itfliesby_engine_destroy(
     ItfliesbyEngine* engine) {
 
 }
+
+external void
+itfliesby_engine_update_and_render(
+    ItfliesbyEngine* engine) {
+
+    itfliesby_renderer renderer = engine->renderer;
+
+    itfliesby_renderer_update_and_render(renderer);
+}

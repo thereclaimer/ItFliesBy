@@ -43,7 +43,7 @@ itfliesby_game_create(
     *game = {0};
     game->memory_arena = game_memory_arena;
     game->platform     = platform;
-    // game->engine       = engine;
+    game->engine       = engine;
 
     return(game);
 }
@@ -51,5 +51,12 @@ itfliesby_game_create(
 external void
 itfliesby_game_destroy(
     ItfliesbyGame* game) {
+}
 
+external void
+itfliesby_game_update_and_render(ItfliesbyGame* game) {
+
+    itfliesby_engine engine = game->engine;
+
+    itfliesby_engine_update_and_render(engine);
 }

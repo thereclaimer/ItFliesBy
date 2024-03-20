@@ -28,6 +28,17 @@ itfliesby_renderer_create(
 
     *renderer = {0};
     renderer->memory = renderer_memory;
+    renderer->platform = platform;
+
+    //initialize opengl
+    renderer->gl_context = platform.graphics_api_init(platform.window);
+
+    glClearColor(
+        0.157f,
+        0.157f,
+        0.157f,
+        1.0f
+    );
 
     return(renderer);
 }
@@ -36,4 +47,11 @@ external void
 itfliesby_renderer_destroy(
     ItfliesbyRenderer* renderer) {
 
+}
+
+external void
+itfliesby_renderer_update_and_render(
+    ItfliesbyRenderer* renderer) {
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

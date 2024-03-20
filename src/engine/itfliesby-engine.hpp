@@ -43,6 +43,14 @@ itfliesby_engine_create(
 
 api void
 itfliesby_engine_destroy(
-    ItfliesbyEngine* engine);
+    ItfliesbyEngine* engine
+);
+
+
+api void
+itfliesby_engine_update_and_render(
+    ItfliesbyEngine* engine
+);
+
 
 #endif //ITFLIESBY_ENGINE_HPP

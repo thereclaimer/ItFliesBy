@@ -3,6 +3,13 @@
 
 #include <itfliesby.hpp>
 
+#define GLEW_STATIC
+
+#include <glew/glew.h>
+#include <glew/wglew.h>
+#include <glew/glew.c>
+
+
 #define ITFLIESBY_RENDERER_MEMORY_SIZE_ARENA           ITFLIESBY_MATH_MEGABYTES(64)
 #define ITFLIESBY_RENDERER_MEMORY_SIZE_PARTITION_CORE  ITFLIESBY_MATH_KILOBYTES(2)
 #define ITFLIESBY_RENDERER_MEMORY_SIZE_ALLLOCATOR_CORE ITFLIESBY_MATH_KILOBYTES(1)
@@ -25,6 +32,7 @@ struct ItfliesbyRendererMemory {
 struct ItfliesbyRenderer {
     ItfliesbyRendererMemory memory;
     handle                  gl_context;
+    ItfliesbyPlatformApi    platform;
 };
 
 api ItfliesbyRenderer*
@@ -36,6 +44,11 @@ itfliesby_renderer_create(
 
 api void
 itfliesby_renderer_destroy(
+    ItfliesbyRenderer* renderer
+);
+
+api void
+itfliesby_renderer_update_and_render(
     ItfliesbyRenderer* renderer
 );
 

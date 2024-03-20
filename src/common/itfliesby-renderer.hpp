@@ -5,15 +5,20 @@
 
 typedef handle itfliesby_renderer;
 
-external itfliesby_renderer
+api itfliesby_renderer
 itfliesby_renderer_create(
     ItfliesbyPlatformApi platform,
     memory               memory,
     u64                  memory_size
 );
 
-external void
+api void
 itfliesby_renderer_destroy(
+    itfliesby_renderer renderer
+);
+
+api void
+itfliesby_renderer_update_and_render(
     itfliesby_renderer renderer
 );
 
