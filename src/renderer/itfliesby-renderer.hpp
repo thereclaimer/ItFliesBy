@@ -9,10 +9,14 @@ struct ItfliesbyRenderer {
 
 api ItfliesbyRenderer*
 itfliesby_renderer_create(
-    ItfliesbyPlatformApi* platform);
+    ItfliesbyPlatformApi platform,
+    memory               memory,
+    u64                  memory_size
+);
 
 api void
 itfliesby_renderer_destroy(
-    ItfliesbyRenderer* renderer);
+    ItfliesbyRenderer* renderer
+);
 
 #endif //ITFLIESBY_RENDERER_HPP

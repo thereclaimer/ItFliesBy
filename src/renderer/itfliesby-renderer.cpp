@@ -4,7 +4,9 @@
 
 external ItfliesbyRenderer*
 itfliesby_renderer_create(
-    ItfliesbyPlatformApi* platform) {
+    ItfliesbyPlatformApi platform,
+    memory               mem,
+    u64                  mem_size) {
 
     return(NULL);
 }

@@ -5,7 +5,7 @@
 external ItfliesbyMemoryAllocatorLinear* 
 itfliesby_memory_allocator_linear_create(
     ItfliesbyMemoryPartition*       partition,
-    char                            allocator_tag[16],
+    char                            allocator_tag[32],
     u64                             allocator_size,
     ItfliesbyMemoryReturnCode*      result) {
 

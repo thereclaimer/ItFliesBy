@@ -3,7 +3,7 @@
 
 #include <itfliesby.hpp>
 
-#define ITFLIESBY_GAME_MEMORY_SIZE ITFLIESBY_MATH_GIGABYTES(2)
+#define ITFLIESBY_GAME_MEMORY_SIZE ITFLIESBY_MATH_GIGABYTES(1)
 
 struct ItfliesbyGameMemoryAllocators {
     itfliesby_memory_allocator_linear game_core_system_allocator;
@@ -11,6 +11,7 @@ struct ItfliesbyGameMemoryAllocators {
 
 struct ItfliesbyGameMemoryPartitions {
     itfliesby_memory_partition game_core;
+    itfliesby_memory_partition game_engine;
 };
 
 struct ItfliesbyGameMemoryArena {
@@ -27,7 +28,7 @@ struct ItfliesbyGame {
 
 api ItfliesbyGame*
 itfliesby_game_create(
-    ItfliesbyPlatformApi* platform,
+    ItfliesbyPlatformApi  platform,
     memory                game_memory,
     size                  game_memory_size
 );

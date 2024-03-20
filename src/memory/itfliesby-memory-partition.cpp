@@ -5,7 +5,7 @@
 external ItfliesbyMemoryPartition* 
 itfliesby_memory_partition_create(
     ItfliesbyMemoryArena*      arena,
-    char                       partition_tag[16],
+    char                       partition_tag[32],
     u64                        partition_size,
     ItfliesbyMemoryReturnCode* result) {
 
@@ -51,7 +51,9 @@ itfliesby_memory_partition_create(
     }
 
     //put the new partition at the end of the list
-    ItfliesbyMemoryPartition* partition = current_partition + sizeof(ItfliesbyMemoryPartition) + current_partition->size;
+    ItfliesbyMemoryPartition* partition = (ItfliesbyMemoryPartition*)(current_partition + sizeof(ItfliesbyMemoryPartition) + current_partition->size);
+    *partition = {0};
+
     partition->allocators = NULL;
     partition->arena      = arena;
     partition->next       = NULL;
@@ -60,6 +62,19 @@ itfliesby_memory_partition_create(
     current_partition->next = partition;
 
     return(partition);
+}
+
+external memory
+itfliesby_memory_partition_raw_memory(
+    ItfliesbyMemoryPartition* partition) {
+
+    if (!partition) {
+        return(NULL);
+    }
+
+    memory partition_memory = (memory)partition + sizeof(ItfliesbyMemoryPartition);
+        
+    return(partition_memory);
 }
 
 external u64

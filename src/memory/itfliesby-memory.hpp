@@ -44,14 +44,14 @@ struct ItfliesbyMemoryBlock {
  *-------------------------------------------------*/
 
 struct ItfliesbyMemoryArena {
-    char                tag[16];
+    char                tag[32];
     u64                 size;
     ItfliesbyMemoryPartition* partitions;
 };
 
 api ItfliesbyMemoryArena*
 itfliesby_memory_arena_create(
-    char                       arena_tag[16],
+    char                       arena_tag[32],
     u64                        arena_size,
     memory                     arena_memory,
     ItfliesbyMemoryReturnCode* result = NULL);
@@ -82,7 +82,7 @@ itfliesby_memory_arena_size_occupied(
  *-------------------------------------------------*/
 
 struct ItfliesbyMemoryPartition {
-    char                            tag[16];
+    char                            tag[32];
     u64                             size;
     ItfliesbyMemoryPartition*       next;
     ItfliesbyMemoryAllocatorHeader* allocators;
@@ -92,9 +92,14 @@ struct ItfliesbyMemoryPartition {
 api ItfliesbyMemoryPartition* 
 itfliesby_memory_partition_create(
     ItfliesbyMemoryArena*      arena,
-    char                       partition_tag[16],
+    char                       partition_tag[32],
     u64                        partition_size,
     ItfliesbyMemoryReturnCode* result = NULL
+);
+
+api memory
+itfliesby_memory_partition_raw_memory(
+    ItfliesbyMemoryPartition* partition
 );
 
 api u64
@@ -124,7 +129,7 @@ struct ItfliesbyMemoryAllocatorLinear {
 api ItfliesbyMemoryAllocatorLinear* 
 itfliesby_memory_allocator_linear_create(
     ItfliesbyMemoryPartition*       partition,
-    char                            allocator_tag[16],
+    char                            allocator_tag[32],
     u64                             allocator_size,
     ItfliesbyMemoryReturnCode*      result = NULL
 );
@@ -173,7 +178,7 @@ struct ItfliesbyMemoryAllocatorStack {
 api ItfliesbyMemoryReturnCode
 itfliesby_memory_allocator_stack_create(
     ItfliesbyMemoryPartition*      partition,
-    char                     allocator_tag[16],
+    char                     allocator_tag[32],
     u64                      allocator_size,
     ItfliesbyMemoryAllocatorStack* allocator
 );
@@ -229,7 +234,7 @@ struct ItfliesbyMemoryAllocatorQueue {
 api ItfliesbyMemoryReturnCode
 itfliesby_memory_allocator_queue_create(
     ItfliesbyMemoryPartition*        partition,
-    char                       allocator_tag[16],
+    char                       allocator_tag[32],
     u64                        allocator_size,
     ItfliesbyMemoryAllocatorQueue*   allocator
 );
@@ -288,7 +293,7 @@ struct ItfliesbyMemoryAllocatorBlock {
 api ItfliesbyMemoryReturnCode
 itfliesby_memory_allocator_block_create(
     ItfliesbyMemoryPartition*  partition,
-    char                 allocator_tag[16],
+    char                 allocator_tag[32],
     u64                  block_size,
     u64                  block_count
 );
@@ -382,7 +387,7 @@ struct ItfliesbyMemoryAllocatorHeap {
 api ItfliesbyMemoryReturnCode
 itfliesby_memory_allocator_heap_create(
     ItfliesbyMemoryPartition*       partition,
-    char                      allocator_tag[16],
+    char                      allocator_tag[32],
     u64                       allocator_size,
     ItfliesbyMemoryAllocatorHeap*   allocator
 );
@@ -442,7 +447,7 @@ union ItfliesbyMemoryAllocator {
 
 struct ItfliesbyMemoryAllocatorHeader {
     ItfliesbyMemoryAllocatorType    type;
-    char                      tag[16];
+    char                      tag[32];
     u64                       size;
     ItfliesbyMemoryAllocator        allocator;
     ItfliesbyMemoryPartition*       partition;

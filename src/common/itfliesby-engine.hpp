@@ -7,7 +7,9 @@ typedef handle itfliesby_engine;
 
 api itfliesby_engine
 itfliesby_engine_create(
-    ItfliesbyPlatformApi* platform
+    ItfliesbyPlatformApi platform,
+    memory               mem,
+    u64                  mem_size
 );
 
 api void

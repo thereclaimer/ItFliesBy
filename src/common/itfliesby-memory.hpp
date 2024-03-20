@@ -31,7 +31,7 @@ enum itfliesby_memory_return_code {
 
 api itfliesby_memory_arena 
 itfliesby_memory_arena_create(
-    char                          arena_tag[16],
+    char                          arena_tag[32],
     u64                           arena_size,
     memory                        arena_memory,
     itfliesby_memory_return_code* result = NULL
@@ -67,9 +67,14 @@ itfliesby_memory_arena_size_occupied(
 api itfliesby_memory_partition 
 itfliesby_memory_partition_create(
     itfliesby_memory_arena        arena,
-    char                          partition_tag[16],
+    char                          partition_tag[32],
     u64                           partition_size,
-    itfliesby_memory_return_code* result
+    itfliesby_memory_return_code* result = NULL
+);
+
+api memory
+itfliesby_memory_partition_raw_memory(
+    itfliesby_memory_partition partition
 );
 
 api u64
@@ -94,9 +99,9 @@ itfliesby_memory_partition_space_occupied(
 api itfliesby_memory_allocator_linear 
 itfliesby_memory_allocator_linear_create(
     itfliesby_memory_partition    partition,
-    char                          allocator_tag[16],
+    char                          allocator_tag[32],
     u64                           allocator_size,
-    itfliesby_memory_return_code* result
+    itfliesby_memory_return_code* result = NULL
 );
 
 
@@ -104,7 +109,7 @@ api memory
 itfliesby_memory_allocator_linear_allocate(
     itfliesby_memory_allocator_linear allocator,
     u64                               allocation_size,
-    itfliesby_memory_return_code*     result
+    itfliesby_memory_return_code*     result = NULL
 );
 
 api itfliesby_memory_return_code
@@ -126,7 +131,5 @@ api u64
 itfliesby_memory_allocator_linear_space_occupied(
     itfliesby_memory_allocator_linear allocator
 );
-
-
 
 #endif //ITFLIESBY_MEMORY_HPP

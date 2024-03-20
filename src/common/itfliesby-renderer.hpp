@@ -7,7 +7,9 @@ typedef handle itfliesby_renderer;
 
 external itfliesby_renderer
 itfliesby_renderer_create(
-    ItfliesbyPlatformApi* platform
+    ItfliesbyPlatformApi platform,
+    memory               memory,
+    u64                  memory_size
 );
 
 external void

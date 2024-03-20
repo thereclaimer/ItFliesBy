@@ -4,7 +4,7 @@
 
 external ItfliesbyMemoryArena*
 itfliesby_memory_arena_create(
-    char                       arena_tag[16],
+    char                       arena_tag[32],
     u64                        arena_size,
     memory                     arena_memory,
     ItfliesbyMemoryReturnCode* result) {

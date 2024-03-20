@@ -5,13 +5,13 @@
 
 typedef handle itfliesby_game;
 
-#define ITFLIESBY_GAME_MEMORY_SIZE ITFLIESBY_MATH_GIGABYTES(2)
+#define ITFLIESBY_GAME_MEMORY_SIZE ITFLIESBY_MATH_GIGABYTES(1)
 
 api itfliesby_game
 itfliesby_game_create(
-    ItfliesbyPlatformApi* platform,
-    memory                game_memory,
-    size                  game_memory_size
+    ItfliesbyPlatformApi platform,
+    memory               game_memory,
+    size                 game_memory_size
 );
 
 api void

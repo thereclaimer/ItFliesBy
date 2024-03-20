@@ -293,7 +293,7 @@ itfliesby_platform_win32_main(
 
     //initialize the game
     game_window.game = itfliesby_game_create(
-        &win32_platform_api,
+        win32_platform_api,
         game_memory,
         ITFLIESBY_GAME_MEMORY_SIZE
     );
