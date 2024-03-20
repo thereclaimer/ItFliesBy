@@ -5,7 +5,7 @@ del /q bin\\*.*
 cl.exe /DLL /w /I dependencies /I src\\ /LD /Zi src\\memory\\itfliesby-memory.cpp /Fd: bin\\ItFliesBy.Memory.pdb /Fo: bin\\ItFliesBy.Memory.obj /Fe: bin\\ItFliesBy.Memory.dll 
 
 ::renderer
-cl.exe /DLL /w /I dependencies /I src\\ /LD /Zi src\\renderer\\itfliesby-renderer.cpp /Fd: bin\\ItFliesBy.Renderer.pdb /Fo: bin\\ItFliesBy.Renderer.obj /Fe: bin\\ItFliesBy.Renderer.dll 
+cl.exe /DLL /w /I dependencies /I src\\ /LD /Zi src\\renderer\\itfliesby-renderer.cpp /Fd: bin\\ItFliesBy.Renderer.pdb /Fo: bin\\ItFliesBy.Renderer.obj /Fe: bin\\ItFliesBy.Renderer.dll bin\\ItFliesBy.Memory.lib
 
 ::engine
 cl.exe /DLL /w /I dependencies /I src\\ /LD /Zi src\\engine\\itfliesby-engine.cpp /Fd: bin\\ItFliesBy.Engine.pdb /Fo: bin\\ItFliesBy.Engine.obj /Fe: bin\\ItFliesBy.Engine.dll /link bin\\ItFliesBy.Renderer.lib bin\\ItFliesBy.Memory.lib
