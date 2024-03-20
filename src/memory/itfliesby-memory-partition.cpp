@@ -9,59 +9,52 @@ itfliesby_memory_partition_create(
     u64                        partition_size,
     ItfliesbyMemoryReturnCode* result) {
 
-    ItfliesbyMemoryReturnCode result_local = ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS; 
-
     u64 arena_space_available = itfliesby_memory_arena_size_free(arena);
+
+    if (result) *result = ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS;
 
     //check arguments
     if (!arena) {
-        result_local = ITFLIESBY_MEMORY_RETURN_CODE_INVALID_ARGUMENT;
+        if (result) *result = ITFLIESBY_MEMORY_RETURN_CODE_INVALID_ARGUMENT; 
         return(NULL);
     }
     if ((sizeof(ItfliesbyMemoryPartition) + partition_size) > arena_space_available) {
-        result_local = ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_ARENA_MEMORY;
+        if (result) *result = ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_ARENA_MEMORY;
         return(NULL);
     }
 
-    //if this is the first partition, set it and we're done
-    if (!arena->partitions) {
-        
-        ItfliesbyMemoryPartition* partition = (ItfliesbyMemoryPartition*)(arena + sizeof(ItfliesbyMemoryArena));
-        partition->allocators = NULL;
-        partition->arena      = arena;
-        partition->next       = NULL;
-        partition->size       = partition_size;
-        strcpy(partition->tag,partition_tag);
-
-        arena->partitions = partition;
-
-        if (result) {
-            *result = result_local; 
-        }
-
-        return(partition);
-    }
-    
-    //go to the end of the partitions
-    ItfliesbyMemoryPartition* current_partition = arena->partitions;
+    //find the previous partition, if we have one
+    ItfliesbyMemoryPartition* previous_partition = arena->partitions;
     for (
-        current_partition;
-        current_partition->next != NULL;
-        current_partition = current_partition->next) {
+        previous_partition;
+        previous_partition != NULL && previous_partition->next != NULL;
+        previous_partition = previous_partition->next);
+
+    //determine the address of our new partition
+    ItfliesbyMemoryPartition* new_partition = NULL;
+    if (previous_partition) {
+
+        u64 partition_offset = sizeof(ItfliesbyMemoryPartition) + previous_partition->size;
+        new_partition = (ItfliesbyMemoryPartition*)((memory)previous_partition + partition_offset); 
+        previous_partition->next = new_partition;
+    }
+    else {
+
+        new_partition = (ItfliesbyMemoryPartition*)((memory)arena + sizeof(ItfliesbyMemoryArena));
+        arena->partitions = new_partition;
     }
 
-    //put the new partition at the end of the list
-    ItfliesbyMemoryPartition* partition = (ItfliesbyMemoryPartition*)(current_partition + sizeof(ItfliesbyMemoryPartition) + current_partition->size);
-    *partition = {0};
+    //we need to have a usable address at this point
+    ITFLIESBY_ASSERT(new_partition);
 
-    partition->allocators = NULL;
-    partition->arena      = arena;
-    partition->next       = NULL;
-    partition->size       = partition_size;
+    //initialize the partition
+    new_partition->allocators = NULL;
+    new_partition->arena      = arena;
+    new_partition->next       = NULL;
+    new_partition->size       = partition_size;
+    strcpy(new_partition->tag,partition_tag);
 
-    current_partition->next = partition;
-
-    return(partition);
+    return(new_partition);
 }
 
 external memory

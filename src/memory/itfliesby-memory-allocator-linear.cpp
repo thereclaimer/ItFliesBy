@@ -9,59 +9,65 @@ itfliesby_memory_allocator_linear_create(
     u64                             allocator_size,
     ItfliesbyMemoryReturnCode*      result) {
 
-    ItfliesbyMemoryReturnCode result_local = ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS; 
+    if (result) *result = ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS; 
 
     u64 partition_space_available = itfliesby_memory_partition_space_free(partition);
 
     //check arguments
     if (!partition) {
-        result_local = ITFLIESBY_MEMORY_RETURN_CODE_INVALID_ARGUMENT;
+        if (result) *result = ITFLIESBY_MEMORY_RETURN_CODE_INVALID_ARGUMENT;
+        return(NULL);
     }
     if ((sizeof(ItfliesbyMemoryAllocatorHeader) + allocator_size) > partition_space_available) {
-        result_local = ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_PARTITION_MEMORY;
+        if (result) *result = ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_PARTITION_MEMORY;
+        return(NULL);
     }
 
-    //determine the address of our next allocator
-    ItfliesbyMemoryAllocatorHeader* allocator_header = NULL;
+    //find the previous allocator, if we have one
     ItfliesbyMemoryAllocatorHeader* previous_allocator_header = NULL;
-
     for (
         previous_allocator_header;
         previous_allocator_header != NULL && previous_allocator_header->next != NULL;
-        previous_allocator_header = previous_allocator_header->next) {
+        previous_allocator_header = previous_allocator_header->next);
+
+    //determine the address of our next allocator
+    ItfliesbyMemoryAllocatorHeader* new_allocator_header = NULL;
+    if (previous_allocator_header) {
+
+        u64 allocator_offset             = sizeof(ItfliesbyMemoryAllocatorHeader) + previous_allocator_header->size;
+        memory previous_allocator_memory = (memory)previous_allocator_header;
+
+        memory new_allocator_memory = previous_allocator_memory + allocator_offset;
+        new_allocator_header = (ItfliesbyMemoryAllocatorHeader*)new_allocator_memory;
+
+        previous_allocator_header->next = new_allocator_header;
+    }
+    else {
+
+        u64 partition_offset    = sizeof(ItfliesbyMemoryPartition);
+        memory partition_memory = (memory)partition;
+
+        memory new_allocator_memory = partition_memory + partition_offset;
+        new_allocator_header = (ItfliesbyMemoryAllocatorHeader*)new_allocator_memory;
+
+        partition->allocators = new_allocator_header;
     }
 
-    allocator_header = previous_allocator_header 
-        ? previous_allocator_header + sizeof(ItfliesbyMemoryAllocatorHeader) + previous_allocator_header->size
-        : (ItfliesbyMemoryAllocatorHeader*)(partition + sizeof(ItfliesbyMemoryPartition));
-
-    ITFLIESBY_ASSERT(allocator_header);
+    ITFLIESBY_ASSERT(new_allocator_header);
 
     //initialize linear allocator
     ItfliesbyMemoryAllocatorLinear linear_allocator = {0};
-    linear_allocator.header = allocator_header;
+    linear_allocator.header = new_allocator_header;
 
-    allocator_header->allocator.linear = linear_allocator;
-    allocator_header->next             = NULL;
-    allocator_header->partition        = partition;
-    allocator_header->size             = allocator_size;
-    allocator_header->type             = ITFLIESBY_MEMORY_ALLOCATOR_TYPE_LINEAR;
-    strcpy(allocator_header->tag,allocator_tag);
-
-    if (result) {
-        *result = result_local;
-    }
-
-    //add the allocator to the list in the partition
-    if (previous_allocator_header) {
-        previous_allocator_header->next = allocator_header;
-    } 
-    else {
-        partition->allocators = allocator_header;
-    }
+    new_allocator_header->allocator.linear = linear_allocator;
+    new_allocator_header->next             = NULL;
+    new_allocator_header->partition        = partition;
+    new_allocator_header->size             = allocator_size;
+    new_allocator_header->type             = ITFLIESBY_MEMORY_ALLOCATOR_TYPE_LINEAR;
+    strcpy(new_allocator_header->tag,allocator_tag);
 
     //return the address to the new linear allocator
-    return(&allocator_header->allocator.linear);
+    return(&new_allocator_header->allocator.linear);
 }
 
 external memory
