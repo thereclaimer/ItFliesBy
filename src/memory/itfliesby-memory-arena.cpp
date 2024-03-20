@@ -9,25 +9,22 @@ itfliesby_memory_arena_create(
     memory                     arena_memory,
     ItfliesbyMemoryReturnCode* result) {
     
-    ItfliesbyMemoryReturnCode result_local = ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS; 
-
-    if (!arena_memory) {
-        result_local = ITFLIESBY_MEMORY_RETURN_CODE_CORE_MEMORY_NULL;
-    }
+    if (result) *result = ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS; 
 
     //we need to make sure there's enough memory for a basic scratch allocator
+    if (!arena_memory) {
+        if (result) *result = ITFLIESBY_MEMORY_RETURN_CODE_CORE_MEMORY_NULL;
+        return(NULL);
+    }
     if (arena_size < ITFLIESBY_MEMORY_ARENA_MINIMUM_SIZE) {
-        result_local = ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_ARENA_MEMORY;
+        if (result) *result = ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_ARENA_MEMORY;
+        return(NULL);
     }
 
     ItfliesbyMemoryArena* arena = (ItfliesbyMemoryArena*)arena_memory;
     arena->partitions = NULL;
     arena->size       = arena_size - sizeof(ItfliesbyMemoryArena);
     strcpy(arena->tag,arena_tag);
-
-    if (result) {
-        *result = result_local;
-    }
 
     return(arena);
 }

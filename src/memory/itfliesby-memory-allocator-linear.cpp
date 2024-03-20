@@ -77,7 +77,7 @@ itfliesby_memory_allocator_linear_allocate(
     ItfliesbyMemoryReturnCode*      result) {
 
     if (!allocator || allocation_size == 0) {
-        *result = ITFLIESBY_MEMORY_RETURN_CODE_INVALID_ARGUMENT;
+        if (result) *result = ITFLIESBY_MEMORY_RETURN_CODE_INVALID_ARGUMENT;
         return(NULL);
     }
 
@@ -86,7 +86,7 @@ itfliesby_memory_allocator_linear_allocate(
     //check available space
     u64 space_available = allocator_header->size - allocator->used_space;
     if (space_available < allocation_size) {
-        *result = ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_ALLOCATOR_MEMORY;
+        if (result) *result = ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_ALLOCATOR_MEMORY;
         return(NULL);
     }
 
