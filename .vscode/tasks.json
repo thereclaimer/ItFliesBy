@@ -13,6 +13,19 @@
 				"$msCompile"
 			],
 			"group": "build"
+		},
+		{
+			"label": "Build Assets",
+			"command": "scripts\\ifb-build-assets.bat",
+			"args":[
+            ],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build"
 		}
 	]
 }
