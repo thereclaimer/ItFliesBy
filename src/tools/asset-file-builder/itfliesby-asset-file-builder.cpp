@@ -137,8 +137,8 @@ itfliesby_asset_file_builder_error_code_string(
 
 void CALLBACK
 itfliesby_asset_file_builder_file_completion_routine(
-    u64 error_code,
-    u64 bytes_transferred,
+    DWORD        error_code,
+    DWORD        bytes_transferred,
     LPOVERLAPPED lpOverlapped) {
         
     bytes_read = bytes_transferred;

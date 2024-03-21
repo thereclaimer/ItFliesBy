@@ -6,8 +6,8 @@ global u64 bytes_read = 0;
 
 void CALLBACK
 itfliesby_platform_win32_api_file_io_completion_routine(
-    u64 error_code,
-    u64 bytes_transferred,
+    DWORD error_code,
+    DWORD bytes_transferred,
     LPOVERLAPPED lpOverlapped) {
         
     bytes_read = bytes_transferred;
@@ -208,13 +208,13 @@ itfliesby_platform_win32_api_read_file(
 
     overlapped.Offset = offset;
 
-    // bool read_result = 
-    //     ReadFileEx(file_handle,
-    //         allocated_buffer,
-    //         actual_file_size,
-    //         &overlapped,
-    //         itfliesby_platform_win32_api_file_io_completion_routine
-    // );
+    bool read_result = 
+        ReadFileEx(file_handle,
+            allocated_buffer,
+            actual_file_size,
+            &overlapped,
+            itfliesby_platform_win32_api_file_io_completion_routine
+    );
 
     allocated_buffer[null_terminator_index] = '\0';
 }
@@ -230,13 +230,13 @@ itfliesby_platform_win32_api_write_file(
 
     overlapped.Offset = offset;
 
-    // bool read_result = WriteFileEx(
-    //     file_handle,
-    //     allocated_buffer,
-    //     allocated_buffer_size,
-    //     &overlapped,
-    //     itfliesby_platform_win32_api_file_io_completion_routine
-    // );
+    bool read_result = WriteFileEx(
+        file_handle,
+        allocated_buffer,
+        allocated_buffer_size,
+        &overlapped,
+        itfliesby_platform_win32_api_file_io_completion_routine
+    );
 }
 
 internal memory
