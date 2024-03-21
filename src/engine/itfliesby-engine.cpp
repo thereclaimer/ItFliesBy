@@ -1,6 +1,7 @@
 #pragma once
 
 #include "itfliesby-engine.hpp"
+#include "itfliesby-engine-assets.cpp"
 
 external ItfliesbyEngine*
 itfliesby_engine_create(
@@ -9,6 +10,8 @@ itfliesby_engine_create(
     u64                  mem_size) {
 
     ITFLIESBY_ASSERT(mem_size == ITFLIESBY_ENGINE_MEMORY_SIZE);
+
+    platform_api = platform;
 
     //initialize engine memory
     ItfliesbyEngineMemory engine_memory = {0};
@@ -31,7 +34,7 @@ itfliesby_engine_create(
     engine_memory.allocators.core_system_allocator = itfliesby_memory_allocator_linear_create(engine_memory.partitions.core,"ENGINE SYST ALCTR",ITFLIESBY_ENGINE_ALLOCATOR_SIZE_CORE_SYSTEMS);
     
     //renderer
-    memory renderer_memory = itfliesby_memory_partition_raw_memory(engine_memory.partitions.renderer);
+    memory renderer_memory      = itfliesby_memory_partition_raw_memory(engine_memory.partitions.renderer);
     itfliesby_renderer renderer = itfliesby_renderer_create(platform,renderer_memory,ITFLIESBY_ENGINE_PARTITION_SIZE_RENDERER);
     ITFLIESBY_ASSERT(renderer);
 
@@ -56,6 +59,9 @@ itfliesby_engine_update_and_render(
     ItfliesbyEngine* engine) {
 
     itfliesby_renderer renderer = engine->renderer;
+    ItfliesbyAssets* assets     = &engine->assets;
+
+    itfliesby_engine_assets_load_files(assets);
 
     itfliesby_renderer_update_and_render(renderer);
 }
