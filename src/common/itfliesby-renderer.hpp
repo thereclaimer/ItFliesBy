@@ -64,7 +64,7 @@ api itfliesby_renderer_object
 itfliesby_renderer_object_create(
     const itfliesby_renderer_vertex_buffer  vertex_buffer,
     const itfliesby_renderer_texture_buffer texture_buffer,
-    const itfliesby_renderer_shader_program shader_program,
+    const itfliesby_renderer_shader_program shader_program
 );
 
 void
