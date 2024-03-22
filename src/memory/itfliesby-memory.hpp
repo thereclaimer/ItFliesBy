@@ -1,6 +1,13 @@
 #ifndef ITFLIESBY_MEMORY_HPP
 #define ITFLIESBY_MEMORY_HPP
 
+//NOTES
+/**
+ * - I'm thinking we can separate the headers from the actual memory
+ * the headers can be stored as a stack that grows continuously at the end
+ * of the blocks, but we can worry about that later 
+ */
+
 #include <cstring>
 #include <itfliesby.hpp> 
 
@@ -282,8 +289,8 @@ itfliesby_memory_allocator_queue_space_occupied(
 
 struct ItfliesbyMemoryAllocatorBlock {
     ItfliesbyMemoryAllocatorHeader*  header;
-    u64                        block_size;
-    u64                        num_blocks;
+    u64                              block_size;
+    u64                              num_blocks;
     struct ItfliesbyMemoryAllocatorBlockList {
         ItfliesbyMemoryBlock*              block;
         ItfliesbyMemoryAllocatorBlockList* next;
@@ -453,5 +460,44 @@ struct ItfliesbyMemoryAllocatorHeader {
     ItfliesbyMemoryPartition*       partition;
     ItfliesbyMemoryAllocatorHeader* next;
 };
+
+inline ItfliesbyMemoryAllocatorHeader*
+itfliesby_memory_allocator_header_create(
+    ItfliesbyMemoryPartition* partition) {
+
+    //find the previous allocator, if we have one
+    ItfliesbyMemoryAllocatorHeader* previous_allocator_header;
+    for (
+        previous_allocator_header = partition->allocators;
+        previous_allocator_header != NULL && previous_allocator_header->next != NULL;
+        previous_allocator_header = previous_allocator_header->next);
+
+    //determine the address of our next allocator
+    ItfliesbyMemoryAllocatorHeader* new_allocator_header = NULL;
+    if (previous_allocator_header) {
+
+        u64 allocator_offset             = sizeof(ItfliesbyMemoryAllocatorHeader) + previous_allocator_header->size;
+        memory previous_allocator_memory = (memory)previous_allocator_header;
+
+        memory new_allocator_memory = previous_allocator_memory + allocator_offset;
+        new_allocator_header = (ItfliesbyMemoryAllocatorHeader*)new_allocator_memory;
+
+        previous_allocator_header->next = new_allocator_header;
+    }
+    else {
+
+        u64 partition_offset    = sizeof(ItfliesbyMemoryPartition);
+        memory partition_memory = (memory)partition;
+
+        memory new_allocator_memory = partition_memory + partition_offset;
+        new_allocator_header = (ItfliesbyMemoryAllocatorHeader*)new_allocator_memory;
+
+        partition->allocators = new_allocator_header;
+    }
+
+    ITFLIESBY_ASSERT(new_allocator_header);
+
+    return(new_allocator_header);
+}
 
 #endif //ITFLIESBY_MEMORY_HPP

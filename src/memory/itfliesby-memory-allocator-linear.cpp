@@ -9,51 +9,25 @@ itfliesby_memory_allocator_linear_create(
     u64                             allocator_size,
     ItfliesbyMemoryReturnCode*      result) {
 
-    if (result) *result = ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS; 
-
-    u64 partition_space_available = itfliesby_memory_partition_space_free(partition);
 
     //check arguments
     if (!partition) {
         if (result) *result = ITFLIESBY_MEMORY_RETURN_CODE_INVALID_ARGUMENT;
         return(NULL);
     }
+
+    u64 partition_space_available = itfliesby_memory_partition_space_free(partition);
+    
     if ((sizeof(ItfliesbyMemoryAllocatorHeader) + allocator_size) > partition_space_available) {
         if (result) *result = ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_PARTITION_MEMORY;
         return(NULL);
     }
 
-    //find the previous allocator, if we have one
-    ItfliesbyMemoryAllocatorHeader* previous_allocator_header = NULL;
-    for (
-        previous_allocator_header;
-        previous_allocator_header != NULL && previous_allocator_header->next != NULL;
-        previous_allocator_header = previous_allocator_header->next);
+    if (result) *result = ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS; 
 
-    //determine the address of our next allocator
-    ItfliesbyMemoryAllocatorHeader* new_allocator_header = NULL;
-    if (previous_allocator_header) {
-
-        u64 allocator_offset             = sizeof(ItfliesbyMemoryAllocatorHeader) + previous_allocator_header->size;
-        memory previous_allocator_memory = (memory)previous_allocator_header;
-
-        memory new_allocator_memory = previous_allocator_memory + allocator_offset;
-        new_allocator_header = (ItfliesbyMemoryAllocatorHeader*)new_allocator_memory;
-
-        previous_allocator_header->next = new_allocator_header;
-    }
-    else {
-
-        u64 partition_offset    = sizeof(ItfliesbyMemoryPartition);
-        memory partition_memory = (memory)partition;
-
-        memory new_allocator_memory = partition_memory + partition_offset;
-        new_allocator_header = (ItfliesbyMemoryAllocatorHeader*)new_allocator_memory;
-
-        partition->allocators = new_allocator_header;
-    }
-
-    ITFLIESBY_ASSERT(new_allocator_header);
+    //get the next available allocator
+    ItfliesbyMemoryAllocatorHeader* new_allocator_header = 
+        itfliesby_memory_allocator_header_create(partition);
 
     //initialize linear allocator
     ItfliesbyMemoryAllocatorLinear linear_allocator = {0};
