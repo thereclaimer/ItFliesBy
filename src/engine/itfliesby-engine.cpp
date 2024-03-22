@@ -45,6 +45,8 @@ itfliesby_engine_create(
     engine->memory   = engine_memory;
     engine->renderer = renderer;
 
+    itfliesby_engine_assets_init(&engine->assets);
+
     return(engine);
 }
 
@@ -61,7 +63,7 @@ itfliesby_engine_update_and_render(
     itfliesby_renderer renderer = engine->renderer;
     ItfliesbyAssets* assets     = &engine->assets;
 
-    itfliesby_engine_assets_load_files(assets);
+    itfliesby_engine_assets_file_handles_load(&assets->file_handles);
 
     itfliesby_renderer_update_and_render(renderer);
 }

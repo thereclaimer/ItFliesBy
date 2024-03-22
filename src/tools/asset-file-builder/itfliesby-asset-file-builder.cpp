@@ -534,9 +534,9 @@ internal s32
     //build the header and indexes
     ItfliesbyAssetsGameAssetFile* asset_file = &asset_file_builder->asset_file;
     asset_file->file_handle = file_handle;
-    asset_file->file_header.verfication[0] = 'R';
-    asset_file->file_header.verfication[1] = 'A';
-    asset_file->file_header.verfication[2] = 'F';
+    asset_file->file_header.verification[0] = 'I';
+    asset_file->file_header.verification[1] = 'F';
+    asset_file->file_header.verification[2] = 'B';
     asset_file->file_header.num_indexs = asset_file_builder->csv_file.num_entries;
 
     asset_file_builder->index_memory = 

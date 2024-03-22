@@ -54,7 +54,7 @@ struct ItfliesbyAssetFileBuilderCsvEntry {
 };
 
 struct ItfliesbyAssetFileBuilderCsvFile {
-    asset_handle                          file_handle;   
+    asset_handle                          file_handle;  
     u32                                   num_entries;
     u64                                   file_size;
     str                                   buffer;
@@ -70,7 +70,7 @@ struct ItfliesbyAssetFileindex {
 };
 
 struct ItfliesbyAssetFileHeader {
-    char                     verfication[3];
+    char                     verification[3];
     u16                      num_indexs;
     ItfliesbyAssetFileindex* indexes;
 };

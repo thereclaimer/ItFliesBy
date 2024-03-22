@@ -3,7 +3,68 @@
 #include "itfliesby-engine.hpp"
 
 internal void
-itfliesby_engine_assets_load_files(
+itfliesby_engine_assets_init(
     ItfliesbyAssets* assets) {
 
+    *assets = {0};
+    ItfliesbyAssetsFileHandles* file_handles = &assets->file_handles;
+
+    //the assets are starting out in the unloaded state
+    for (
+        s32 file_index = 0;
+        file_index < ITFLIESBY_ASSETS_FILE_ID_COUNT;
+        ++file_index
+    ) {
+        file_handles->unloaded_files[file_index] = (ItfliesbyAssetsFileId)file_index;
+        ++file_handles->unloaded_files_count;
+    }
+}
+
+internal void
+itfliesby_engine_assets_update(
+    ItfliesbyAssets* assets) {
+
+}
+
+internal void
+itfliesby_engine_assets_file_handles_load(
+    ItfliesbyAssetsFileHandles* file_handles) {
+
+    //cache the stuff we'll need
+    ItfliesbyAssetsFileId* unloaded_files = file_handles->unloaded_files;
+    ItfliesbyAssetsFileId* missing_files  = file_handles->missing_files;
+    handle* file_handle_array             = file_handles->array;
+
+    ItfliesbyAssetsFileId asset_id_to_load;
+    u32 missing_files_count = 0;
+
+    for (
+        u32 unloaded_file_index = 0;
+        unloaded_file_index < file_handles->unloaded_files_count;
+        ++unloaded_file_index) {
+
+        //get the next asset id
+        asset_id_to_load = file_handles->unloaded_files[unloaded_file_index];
+
+        //get the file handle
+        file_handle_array[asset_id_to_load] = 
+            platform_api.file_open(
+                (str)ITFLIESBY_ENGINE_ASSETS_FILE_PATHS[asset_id_to_load],
+                false
+            );
+        
+        //if the file failed to load, add it to the missing files table
+        if (!file_handle_array[asset_id_to_load]) {
+            missing_files[missing_files_count];
+            ++missing_files_count;
+        }
+    }
+
+    file_handles->unloaded_files_count = 0;
+    file_handles->missing_files_count  = missing_files_count;
+
+    if (missing_files_count > 0) {
+        //TODO: error message
+        ITFLIESBY_PANIC();
+    }
 }
