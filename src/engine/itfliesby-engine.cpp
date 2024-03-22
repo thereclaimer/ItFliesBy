@@ -1,6 +1,7 @@
 #pragma once
 
 #include "itfliesby-engine.hpp"
+#include "itfliesby-engine-memory.cpp"
 #include "itfliesby-engine-assets.cpp"
 
 external ItfliesbyEngine*
