@@ -3,7 +3,93 @@
 	"tasks": [
 		{
 			"label": "Build All",
-			"command": "scripts\\ifb-build-all.bat",
+			"dependsOn":[
+                "Build Tools ",
+                "Build Assets",
+				"Build Win32",
+				"Build Memory",
+				"Build Game",
+				"Build Engine",
+                "Build Renderer",
+			],
+			"args":[
+            ],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Build Win32",
+			"command": "scripts\\ifb-build-win32.bat",
+			"args":[
+            ],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Build Memory",
+			"command": "scripts\\ifb-build-memory.bat",
+			"args":[
+            ],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Build Game",
+			"command": "scripts\\ifb-build-game.bat",
+			"args":[
+            ],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Build Engine",
+			"command": "scripts\\ifb-build-engine.bat",
+			"args":[
+            ],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Build Renderer",
+			"command": "scripts\\ifb-build-renderer.bat",
+			"args":[
+            ],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Build Tools",
+			"command": "scripts\\ifb-build-tools.bat",
 			"args":[
             ],
 			"options": {
@@ -26,6 +112,6 @@
 				"$msCompile"
 			],
 			"group": "build"
-		}
+		},
 	]
 }
