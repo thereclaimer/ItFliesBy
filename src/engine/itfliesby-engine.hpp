@@ -10,7 +10,7 @@ global ItfliesbyPlatformApi platform_api;
 struct ItfliesbyEngine {
     itfliesby_renderer    renderer;
     ItfliesbyEngineMemory memory;
-    ItfliesbyAssets       assets;
+    ItfliesbyEngineAssets assets;
 };
 
 api ItfliesbyEngine*

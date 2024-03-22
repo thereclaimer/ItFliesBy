@@ -4,10 +4,10 @@
 
 internal void
 itfliesby_engine_assets_init(
-    ItfliesbyAssets* assets) {
+    ItfliesbyEngineAssets* assets) {
 
     *assets = {0};
-    ItfliesbyAssetsFileHandles* file_handles = &assets->file_handles;
+    ItfliesbyEngineAssetsFileHandles* file_handles = &assets->file_handles;
 
     //the assets are starting out in the unloaded state
     for (
@@ -15,36 +15,37 @@ itfliesby_engine_assets_init(
         file_index < ITFLIESBY_ASSETS_FILE_ID_COUNT;
         ++file_index
     ) {
-        file_handles->unloaded_files[file_index] = (ItfliesbyAssetsFileId)file_index;
+        file_handles->unloaded_files[file_index] = (ItfliesbyEngineAssetsFileId)file_index;
         ++file_handles->unloaded_files_count;
     }
 }
 
 internal void
 itfliesby_engine_assets_update(
-    ItfliesbyAssets* assets) {
+    ItfliesbyEngineAssets* assets) {
 
+    itfliesby_engine_assets_file_handles_load(&assets->file_handles);
 }
 
 internal void
 itfliesby_engine_assets_file_handles_load(
-    ItfliesbyAssetsFileHandles* file_handles) {
+    ItfliesbyEngineAssetsFileHandles* file_handles) {
 
     //cache the stuff we'll need
-    ItfliesbyAssetsFileId* unloaded_files = file_handles->unloaded_files;
-    ItfliesbyAssetsFileId* missing_files  = file_handles->missing_files;
+    ItfliesbyEngineAssetsFileId* unloaded_files = file_handles->unloaded_files;
+    ItfliesbyEngineAssetsFileId* missing_files  = file_handles->missing_files;
     handle* file_handle_array             = file_handles->array;
+    u32 unloaded_files_count              = file_handles->unloaded_files_count;
+    u32 missing_files_count               = 0;
 
-    ItfliesbyAssetsFileId asset_id_to_load;
-    u32 missing_files_count = 0;
-
+    ItfliesbyEngineAssetsFileId asset_id_to_load;
     for (
         u32 unloaded_file_index = 0;
-        unloaded_file_index < file_handles->unloaded_files_count;
+        unloaded_file_index < unloaded_files_count;
         ++unloaded_file_index) {
 
         //get the next asset id
-        asset_id_to_load = file_handles->unloaded_files[unloaded_file_index];
+        asset_id_to_load = unloaded_files[unloaded_file_index];
 
         //get the file handle
         file_handle_array[asset_id_to_load] = 

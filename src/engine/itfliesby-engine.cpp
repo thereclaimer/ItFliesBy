@@ -61,10 +61,7 @@ external void
 itfliesby_engine_update_and_render(
     ItfliesbyEngine* engine) {
 
-    itfliesby_renderer renderer = engine->renderer;
-    ItfliesbyAssets* assets     = &engine->assets;
+    itfliesby_engine_assets_update(&engine->assets);
 
-    itfliesby_engine_assets_file_handles_load(&assets->file_handles);
-
-    itfliesby_renderer_update_and_render(renderer);
+    itfliesby_renderer_update_and_render(engine->renderer);
 }
