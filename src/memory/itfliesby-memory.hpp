@@ -287,33 +287,31 @@ itfliesby_memory_allocator_queue_space_occupied(
  * BLOCK ALLOCATOR
  *-------------------------------------------------*/
 
-struct ItfliesbyMemoryAllocatorBlock {
-    ItfliesbyMemoryAllocatorHeader*  header;
-    u64                              block_size;
-    u64                              num_blocks;
-    struct ItfliesbyMemoryAllocatorBlockList {
-        ItfliesbyMemoryBlock*              block;
-        ItfliesbyMemoryAllocatorBlockList* next;
-    } *blocks;
+struct ItfliesbyMemoryAllocatorBlockNode {
+    ItfliesbyMemoryBlock*              block;
+    ItfliesbyMemoryAllocatorBlockNode* next;
 };
 
-api ItfliesbyMemoryReturnCode
+struct ItfliesbyMemoryAllocatorBlock {
+    ItfliesbyMemoryAllocatorHeader*    header;
+    u64                                block_size;
+    u64                                num_blocks;
+    ItfliesbyMemoryAllocatorBlockNode* blocks;
+};
+
+api ItfliesbyMemoryAllocatorBlock* 
 itfliesby_memory_allocator_block_create(
     ItfliesbyMemoryPartition*  partition,
-    char                 allocator_tag[32],
-    u64                  block_size,
-    u64                  block_count
+    char                       allocator_tag[32],
+    u64                        block_size,
+    u64                        block_count,
+    ItfliesbyMemoryReturnCode* result = NULL
 );
 
-api void
-itfliesby_memory_allocator_block_destroy(
-    ItfliesbyMemoryAllocatorBlock* allocator
-);
-
-api ItfliesbyMemoryReturnCode
+api memory 
 itfliesby_memory_allocator_block_allocate(
     ItfliesbyMemoryAllocatorBlock* allocator,
-    memory                   memory
+    ItfliesbyMemoryReturnCode*     result = NULL
 );
 
 api void
