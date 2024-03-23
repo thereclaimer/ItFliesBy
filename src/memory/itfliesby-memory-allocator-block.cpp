@@ -11,7 +11,7 @@ itfliesby_memory_allocator_block_create(
     ItfliesbyMemoryReturnCode* result) {
 
     //check arguments
-    if (!partition) {
+    if (!partition || block_count == 0) {
         if (result) *result = ITFLIESBY_MEMORY_RETURN_CODE_INVALID_ARGUMENT;
         return(NULL);
     }
@@ -36,7 +36,7 @@ itfliesby_memory_allocator_block_create(
     block_allocator->header     = new_allocator_header;
     block_allocator->block_size = block_size;
     block_allocator->num_blocks = block_count;
-    block_allocator->blocks     = (ItfliesbyMemoryAllocatorBlockNode*)((memory)block_allocator + sizeof(ItfliesbyMemoryAllocatorHeader));
+    block_allocator->blocks     = NULL;
 
     new_allocator_header->next             = NULL;
     new_allocator_header->partition        = partition;
@@ -44,57 +44,69 @@ itfliesby_memory_allocator_block_create(
     new_allocator_header->type             = ITFLIESBY_MEMORY_ALLOCATOR_TYPE_BLOCK;
     strcpy(new_allocator_header->tag,allocator_tag);
 
-    u64 block_node_size = 
-        sizeof(ItfliesbyMemoryAllocatorBlockNode) + 
+    //these sizes will help us calculate our addresses
+    u64 block_memory_size = 
         sizeof(ItfliesbyMemoryBlock) + 
         block_size;
 
-    ItfliesbyMemoryAllocatorBlockNode* current_block_node = block_allocator->blocks;
-    ItfliesbyMemoryAllocatorBlockNode* next_block_node    = 
-            (ItfliesbyMemoryAllocatorBlockNode*)(
-                (memory)current_block_node + 
-                block_node_size
-            );
+    u64 block_node_size = 
+        sizeof(ItfliesbyMemoryAllocatorBlockNode) + 
+        sizeof(ItfliesbyMemoryBlock) +
+        block_memory_size;
 
-    ItfliesbyMemoryBlock* new_block = NULL;
-    ItfliesbyMemoryAllocatorBlockNode* previous_node = block_allocator->blocks;
+    //we are going to initialize the first node manually
+    ItfliesbyMemoryAllocatorBlockNode* first_node = 
+        (ItfliesbyMemoryAllocatorBlockNode*)(
+            (memory)new_allocator_header + 
+            sizeof(ItfliesbyMemoryAllocatorHeader)
+        );
+    
+    //get our new block of memory
+    ItfliesbyMemoryBlock* new_block =
+        (ItfliesbyMemoryBlock*)(
+            (memory)first_node + 
+            sizeof(ItfliesbyMemoryAllocatorBlockNode)
+    ); 
+    new_block->allocator_header = new_allocator_header;
+    new_block->size             = block_size;
+    
+    first_node->next = NULL;
+    first_node->block = new_block;
 
-    // for (
-    //     u32 block_index = 0;
-    //     block_index < block_count;
-    //     ++block_index) {
-        
-    //     //clear the data in the current node
-    //     *current_block_node = {0};
-
-    //     //calculate the address of the new memory block
-    //     new_block = 
-    //         (ItfliesbyMemoryBlock*)(
-    //             (memory)current_block_node +
-    //             sizeof(ItfliesbyMemoryAllocatorBlockNode) +
-    //             block_size
-    //         );
-
-    //     //initialize the current block node
-    //     current_block_node->block = new_block;
-    //     current_block_node->next  = next_block_node; 
-
-    //     next_block_node = 
-    //         (ItfliesbyMemoryAllocatorBlockNode*)(
-    //             (memory)current_block_node + 
-    //             sizeof(ItfliesbyMemoryAllocatorBlockNode) + 
-    //             sizeof(ItfliesbyMemoryBlock) + 
-    //             block_size
-    //         );
-    // }
+    //initialize stuff we'll need for the rest of the nodes, if we have any
+    ItfliesbyMemoryAllocatorBlockNode* previous_node = first_node;
+    ItfliesbyMemoryAllocatorBlockNode* next_node     = first_node->next;
 
     for (
-        u32 block_index = 0;
+        u32 block_index = 1;
         block_index < block_count;
         ++block_index) {
 
+        //find the address of our next node
+        next_node = 
+            (ItfliesbyMemoryAllocatorBlockNode*)(
+                (memory)previous_node +
+                block_node_size 
+            );
         
+        //find the address for the next memory block
+        new_block = 
+            (ItfliesbyMemoryBlock*)(
+                next_node +
+                sizeof(ItfliesbyMemoryAllocatorBlockNode)
+            );
 
+        
+        //initialize the block
+        new_block->allocator_header = new_allocator_header;
+        new_block->size             = block_size;
+
+        //initialize the node
+        next_node->block = new_block;
+        next_node->next = NULL;
+
+        //update the previous node for the next iteration
+        previous_node   = next_node;
     }
 
 
