@@ -297,7 +297,7 @@ struct ItfliesbyMemoryAllocatorBlock {
     u64                                num_blocks;
     u64                                num_free_blocks;
     ItfliesbyMemoryAllocatorHeader*    header;
-    u64*                               free_blocks;
+    s64*                               free_blocks;
     ItfliesbyMemoryAllocatorBlockNode* blocks;
 };
 
@@ -319,7 +319,7 @@ itfliesby_memory_allocator_block_allocate(
 api void
 itfliesby_memory_allocator_block_free(
     ItfliesbyMemoryAllocatorBlock* allocator,
-    memory                   memory
+    memory                         memory
 );
 
 api void

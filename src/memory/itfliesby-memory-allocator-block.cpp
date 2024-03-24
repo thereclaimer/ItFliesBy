@@ -41,16 +41,16 @@ itfliesby_memory_allocator_block_create(
 
     //these free blocks are offsets relative to the address of the allocator
     block_allocator->free_blocks = 
-        (u64*)(
+        (s64*)(
             (memory)block_allocator + 
             sizeof(ItfliesbyMemoryAllocatorBlock)
         );
 
     //initialize the header
-    new_allocator_header->next             = NULL;
-    new_allocator_header->partition        = partition;
-    new_allocator_header->size             = data_memory_size;
-    new_allocator_header->type             = ITFLIESBY_MEMORY_ALLOCATOR_TYPE_BLOCK;
+    new_allocator_header->next      = NULL;
+    new_allocator_header->partition = partition;
+    new_allocator_header->size      = data_memory_size;
+    new_allocator_header->type      = ITFLIESBY_MEMORY_ALLOCATOR_TYPE_BLOCK;
     strcpy(new_allocator_header->tag,allocator_tag);
 
     //these sizes will help us calculate our addresses
@@ -64,7 +64,7 @@ itfliesby_memory_allocator_block_create(
         block_memory_size;
 
     u64 free_block_info_size = 
-        sizeof(u64) * 
+        sizeof(s64) * 
         block_count;
 
     u64 header_size =
@@ -87,11 +87,11 @@ itfliesby_memory_allocator_block_create(
     new_block->allocator_header = new_allocator_header;
     new_block->size             = block_size;
     
-    first_node->next = NULL;
+    first_node->next  = NULL;
     first_node->block = new_block;
 
     block_allocator->free_blocks[0] = 
-        (u64)(
+        (s64)(
             ((memory)new_block + sizeof(ItfliesbyMemoryBlock)) -
             (memory)block_allocator 
         );
@@ -120,8 +120,8 @@ itfliesby_memory_allocator_block_create(
                 sizeof(ItfliesbyMemoryAllocatorBlockNode)
             );
 
-        u64 new_block_offset = 
-            (u64)(
+        s64 new_block_offset = 
+            (s64)(
                 ((memory)new_block + sizeof(ItfliesbyMemoryBlock)) -
                 (memory)block_allocator 
             );
@@ -167,9 +167,9 @@ itfliesby_memory_allocator_block_allocate(
     }
 
     //find the next available relative address
-    u64* addresses     = allocator->free_blocks;
+    s64* addresses     = allocator->free_blocks;
     u32  num_blocks    = allocator->num_blocks;
-    u64  free_address  = -1;
+    s64  free_address  = -1;
     u32  address_index = 0;
 
     for (
@@ -190,4 +190,45 @@ itfliesby_memory_allocator_block_allocate(
     //return the block memory
     memory block_memory = (memory)allocator + free_address;
     return(block_memory);
+}
+
+external void
+itfliesby_memory_allocator_block_free(
+    ItfliesbyMemoryAllocatorBlock* allocator,
+    memory                         block) {
+
+    //check arguments 
+    if (!allocator || !block) {
+        return;
+    }
+
+    //check the bounds of this memory
+    b8 out_of_bounds = false;
+
+    out_of_bounds |= ((memory)allocator > block);
+
+    //TODO: bounds checking not complete, fuck around and find out
+    if (out_of_bounds) {
+        return;
+    }
+
+    //calculate our relative address
+    u64 address = (u64)(block - (memory)allocator);
+
+    //find the next unavailable relative address index
+    s64* addresses     = allocator->free_blocks;
+    u32  num_blocks    = allocator->num_blocks;
+    s64  used_address  = 1;
+    u32  address_index = 0;
+
+    for (
+        address_index = 0;
+        address_index < num_blocks && used_address;
+        ++address_index) {
+
+        used_address = addresses[address_index];
+    }
+
+    addresses[address_index] = used_address;
+    ++allocator->num_free_blocks;
 }
