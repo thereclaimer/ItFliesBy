@@ -25,8 +25,8 @@ itfliesby_engine_assets_init(
     ITFLIESBY_ASSERT(assets->memory.partition);    
 
     //allocators
-    assets->memory.index_allocator      = itfliesby_memory_allocator_block_create(assets->memory.index_allocator,"ASSET INDEX ALCTR",ITFLIESBY_ENGINE_ASSETS_MEMORY_BLOCK_SIZE_INDEX,ITFLIESBY_ASSETS_FILE_ID_COUNT);
-    assets->memory.asset_data_allocator = itfliesby_memory_allocator_block_create(assets->memory.index_allocator,"ASSET DATA ALCTR",ITFLIESBY_ENGINE_ASSETS_MEMORY_BLOCK_SIZE_ASSET_DATA,ITFLIESBY_ASSETS_FILE_ID_COUNT);
+    assets->memory.index_allocator      = itfliesby_memory_allocator_block_create(assets->memory.partition,"ASSET INDEX ALCTR",ITFLIESBY_ENGINE_ASSETS_MEMORY_BLOCK_SIZE_INDEX,     ITFLIESBY_ASSETS_FILE_ID_COUNT);
+    assets->memory.asset_data_allocator = itfliesby_memory_allocator_block_create(assets->memory.partition,"ASSET DATA ALCTR", ITFLIESBY_ENGINE_ASSETS_MEMORY_BLOCK_SIZE_ASSET_DATA,ITFLIESBY_ASSETS_FILE_ID_COUNT);
     ITFLIESBY_ASSERT(assets->memory.index_allocator);    
     ITFLIESBY_ASSERT(assets->memory.asset_data_allocator);    
 }
