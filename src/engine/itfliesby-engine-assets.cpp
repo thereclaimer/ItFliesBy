@@ -45,9 +45,9 @@ itfliesby_engine_assets_file_handles_load(
     //cache the stuff we'll need
     ItfliesbyEngineAssetsFileId* unloaded_files = file_handles->unloaded_files;
     ItfliesbyEngineAssetsFileId* missing_files  = file_handles->missing_files;
-    handle* file_handle_array             = file_handles->array;
-    u32 unloaded_files_count              = file_handles->unloaded_files_count;
-    u32 missing_files_count               = 0;
+    handle* file_handle_array                   = file_handles->array;
+    u32 unloaded_files_count                    = file_handles->unloaded_files_count;
+    u32 missing_files_count                     = 0;
 
     ItfliesbyEngineAssetsFileId asset_id_to_load;
     for (

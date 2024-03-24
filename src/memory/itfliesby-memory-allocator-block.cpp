@@ -161,6 +161,33 @@ itfliesby_memory_allocator_block_allocate(
         return(NULL); 
     }
 
+    if (allocator->num_free_blocks == 0) {
+        if (result) *result = ITFLIESBY_MEMORY_RETURN_CODE_NOT_ENOUGH_ALLOCATOR_MEMORY;
+        return(NULL); 
+    }
 
+    //find the next available relative address
+    u64* addresses     = allocator->free_blocks;
+    u32  num_blocks    = allocator->num_blocks;
+    u64  free_address  = -1;
+    u32  address_index = 0;
 
+    for (
+        address_index = 0;
+        address_index < num_blocks && !free_address;
+        ++address_index) {
+
+        free_address = addresses[address_index];
+    }
+
+    //we already did a check for available addresses, so we should have one
+    ITFLIESBY_ASSERT(free_address);
+
+    //mark this address as unavailable
+    --allocator->num_free_blocks;
+    addresses[address_index] = -1;
+
+    //return the block memory
+    memory block_memory = (memory)allocator + free_address;
+    return(block_memory);
 }
