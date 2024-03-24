@@ -293,9 +293,11 @@ struct ItfliesbyMemoryAllocatorBlockNode {
 };
 
 struct ItfliesbyMemoryAllocatorBlock {
-    ItfliesbyMemoryAllocatorHeader*    header;
     u64                                block_size;
     u64                                num_blocks;
+    u64                                num_free_blocks;
+    ItfliesbyMemoryAllocatorHeader*    header;
+    u64*                               free_blocks;
     ItfliesbyMemoryAllocatorBlockNode* blocks;
 };
 
@@ -445,15 +447,15 @@ itfliesby_memory_allocator_heap_space_occupied(
 
 union ItfliesbyMemoryAllocator {
     ItfliesbyMemoryAllocatorLinear linear;
-    ItfliesbyMemoryAllocatorStack   stack;
-    ItfliesbyMemoryAllocatorBlock   block;
-    ItfliesbyMemoryAllocatorHeap    heap;
+    ItfliesbyMemoryAllocatorStack  stack;
+    ItfliesbyMemoryAllocatorBlock  block;
+    ItfliesbyMemoryAllocatorHeap   heap;
 };
 
 struct ItfliesbyMemoryAllocatorHeader {
     ItfliesbyMemoryAllocatorType    type;
-    char                      tag[32];
-    u64                       size;
+    char                            tag[32];
+    u64                             size;
     ItfliesbyMemoryAllocator        allocator;
     ItfliesbyMemoryPartition*       partition;
     ItfliesbyMemoryAllocatorHeader* next;

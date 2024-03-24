@@ -48,6 +48,10 @@ itfliesby_engine_create(
 
     itfliesby_engine_assets_init(&engine->assets);
 
+    auto test_partition = itfliesby_memory_partition_create(engine_memory.arena,"BLOCK TEST",256);
+    auto test_allocator = itfliesby_memory_allocator_block_create(
+        test_partition,"TEST BLOCK",32,4);
+
     return(engine);
 }
 

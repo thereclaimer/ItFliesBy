@@ -132,4 +132,23 @@ itfliesby_memory_allocator_linear_space_occupied(
     itfliesby_memory_allocator_linear allocator
 );
 
+/*-------------------------------------------------
+ * BLOCK ALLOCATOR
+ *-------------------------------------------------*/
+
+api itfliesby_memory_allocator_block 
+itfliesby_memory_allocator_block_create(
+    itfliesby_memory_partition    partition,
+    char                          allocator_tag[32],
+    u64                           block_size,
+    u64                           block_count,
+    itfliesby_memory_return_code* result = NULL
+);
+
+api memory 
+itfliesby_memory_allocator_block_allocate(
+    itfliesby_memory_allocator_block allocator,
+    itfliesby_memory_return_code*    result = NULL
+);
+
 #endif //ITFLIESBY_MEMORY_HPP
