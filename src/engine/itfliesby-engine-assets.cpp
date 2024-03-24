@@ -4,7 +4,8 @@
 
 internal void
 itfliesby_engine_assets_init(
-    ItfliesbyEngineAssets* assets) {
+    ItfliesbyEngineAssets* assets,
+    itfliesby_memory_arena arena) {
 
     *assets = {0};
     ItfliesbyEngineAssetsFileHandles* file_handles = &assets->file_handles;
@@ -18,6 +19,16 @@ itfliesby_engine_assets_init(
         file_handles->unloaded_files[file_index] = (ItfliesbyEngineAssetsFileId)file_index;
         ++file_handles->unloaded_files_count;
     }
+
+    //initialize memory
+    assets->memory.partition = itfliesby_memory_partition_create(arena,"ENGINE ASSETS PRTN",  ITFLIESBY_ENGINE_ASSETS_MEMORY_PARTITION_SIZE);
+    ITFLIESBY_ASSERT(assets->memory.partition);    
+
+    //allocators
+    assets->memory.index_allocator      = itfliesby_memory_allocator_block_create(assets->memory.index_allocator,"ASSET INDEX ALCTR",ITFLIESBY_ENGINE_ASSETS_MEMORY_BLOCK_SIZE_INDEX,ITFLIESBY_ASSETS_FILE_ID_COUNT);
+    assets->memory.asset_data_allocator = itfliesby_memory_allocator_block_create(assets->memory.index_allocator,"ASSET DATA ALCTR",ITFLIESBY_ENGINE_ASSETS_MEMORY_BLOCK_SIZE_ASSET_DATA,ITFLIESBY_ASSETS_FILE_ID_COUNT);
+    ITFLIESBY_ASSERT(assets->memory.index_allocator);    
+    ITFLIESBY_ASSERT(assets->memory.asset_data_allocator);    
 }
 
 internal void

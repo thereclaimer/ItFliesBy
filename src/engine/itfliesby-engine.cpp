@@ -21,12 +21,10 @@ itfliesby_engine_create(
     ITFLIESBY_ASSERT(engine_memory.arena);
 
     //initialize partitions
-    engine_memory.partitions.assets   = itfliesby_memory_partition_create(engine_memory.arena,"ENGINE ASSETS PRTN",  ITFLIESBY_ENGINE_PARTITION_SIZE_ASSETS);
     engine_memory.partitions.physics  = itfliesby_memory_partition_create(engine_memory.arena,"ENGINE PHYSICS PRTN", ITFLIESBY_ENGINE_PARTITION_SIZE_PHYSICS);
     engine_memory.partitions.renderer = itfliesby_memory_partition_create(engine_memory.arena,"ENGINE RENDERER PRTN",ITFLIESBY_ENGINE_PARTITION_SIZE_RENDERER);
     engine_memory.partitions.core     = itfliesby_memory_partition_create(engine_memory.arena,"ENGINE CORE PRTN",    ITFLIESBY_ENGINE_PARTITION_SIZE_CORE);
     
-    ITFLIESBY_ASSERT(engine_memory.partitions.assets);
     ITFLIESBY_ASSERT(engine_memory.partitions.physics);
     ITFLIESBY_ASSERT(engine_memory.partitions.renderer);
     ITFLIESBY_ASSERT(engine_memory.partitions.core);
@@ -46,11 +44,10 @@ itfliesby_engine_create(
     engine->memory   = engine_memory;
     engine->renderer = renderer;
 
-    itfliesby_engine_assets_init(&engine->assets);
-
-    auto test_partition = itfliesby_memory_partition_create(engine_memory.arena,"BLOCK TEST",256);
-    auto test_allocator = itfliesby_memory_allocator_block_create(
-        test_partition,"TEST BLOCK",32,4);
+    itfliesby_engine_assets_init(
+        &engine->assets,
+        &engine->memory
+    );
 
     return(engine);
 }

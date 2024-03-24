@@ -3,9 +3,14 @@
 
 #include "itfliesby-engine.hpp"
 
+#define ITFLIESBY_ENGINE_ASSETS_MEMORY_PARTITION_SIZE         ITFLIESBY_MATH_MEGABYTES(64)
+#define ITFLIESBY_ENGINE_ASSETS_MEMORY_BLOCK_SIZE_INDEX       ITFLIESBY_MATH_KILOBYTES(128)
+#define ITFLIESBY_ENGINE_ASSETS_MEMORY_BLOCK_SIZE_ASSET_DATA  ITFLIESBY_MATH_MEGABYTES(8)
+
 struct ItfliesbyEngineAssetsMemory {
     itfliesby_memory_partition        partition;
-    itfliesby_memory_allocator_linear index_allocator;
+    itfliesby_memory_allocator_block  index_allocator;
+    itfliesby_memory_allocator_block  asset_data_allocator;
 };
 
 struct ItfliesbyEngineAssetsFileindex {
@@ -17,7 +22,7 @@ struct ItfliesbyEngineAssetsFileindex {
 
 struct ItfliesbyEngineAssetsFileIndexStore {
     ItfliesbyEngineAssetsFileindex* shader_indexes;
-    u32                      num_shader_indexes;
+    u32                             num_shader_indexes;
 };
 
 const char* ITFLIESBY_ENGINE_ASSETS_FILE_PATHS[] = {
@@ -47,12 +52,13 @@ struct ItfliesbyEngineAssetsFileHandles {
     };
     ItfliesbyEngineAssetsFileId unloaded_files[ITFLIESBY_ASSETS_FILE_ID_COUNT];
     ItfliesbyEngineAssetsFileId missing_files[ITFLIESBY_ASSETS_FILE_ID_COUNT];
-    u32                   unloaded_files_count;
-    u32                   missing_files_count;
+    u32                         unloaded_files_count;
+    u32                         missing_files_count;
 
 };
 
 struct ItfliesbyEngineAssets {
+    ItfliesbyEngineAssetsMemory         memory;
     ItfliesbyEngineAssetsFileHandles    file_handles;
     ItfliesbyEngineAssetsFileIndexStore file_index_store;
 };
@@ -60,7 +66,8 @@ struct ItfliesbyEngineAssets {
 
 void
 itfliesby_engine_assets_init(
-    ItfliesbyEngineAssets* assets
+    ItfliesbyEngineAssets* assets,
+    itfliesby_memory_arena arena
 );
 
 internal void
