@@ -41,6 +41,7 @@ struct ItfliesbyEngineAssetsFileindex {
 
 struct ItfliesbyEngineAssetsFileIndexStore {
     ItfliesbyEngineAssetsFileindex shader_indexes[ITFLIESBY_ENGINE_ASSETS_SHADER_COUNT];
+    u32                            shader_indexes_loaded;
 };
 
 const char* ITFLIESBY_ENGINE_ASSETS_FILE_PATHS[] = {
@@ -53,7 +54,7 @@ struct ItfliesbyEngineAssetsFileHandles {
             handle shader_asset_file;
         };
         handle array[ITFLIESBY_ASSETS_FILE_ID_COUNT];
-    };
+    } handles; 
     ItfliesbyEngineAssetsFileId unloaded_files[ITFLIESBY_ASSETS_FILE_ID_COUNT];
     ItfliesbyEngineAssetsFileId missing_files[ITFLIESBY_ASSETS_FILE_ID_COUNT];
     u32                         unloaded_files_count;
@@ -66,7 +67,6 @@ struct ItfliesbyEngineAssets {
     ItfliesbyEngineAssetsFileHandles    file_handles;
     ItfliesbyEngineAssetsFileIndexStore file_index_store;
 };
-
 
 void
 itfliesby_engine_assets_init(

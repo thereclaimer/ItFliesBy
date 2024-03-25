@@ -32,6 +32,8 @@ itfliesby_engine_assets_init(
 
     *assets = {0};
     ItfliesbyEngineAssetsFileHandles* file_handles = &assets->file_handles;
+    *file_handles = {0};
+    file_handles->unloaded_files_count = 0;
 
     //the assets are starting out in the unloaded state
     for (
@@ -44,6 +46,7 @@ itfliesby_engine_assets_init(
     }
 
     //initialize memory
+    //TODO: we got a serious issue here, check the unloaded files count before and after initializing this partition
     assets->memory.partition = itfliesby_memory_partition_create(arena,"ENGINE ASSETS PRTN",  ITFLIESBY_ENGINE_ASSETS_MEMORY_PARTITION_SIZE);
     ITFLIESBY_ASSERT(assets->memory.partition);    
 
@@ -52,14 +55,7 @@ itfliesby_engine_assets_init(
     assets->memory.asset_data_allocator = itfliesby_memory_allocator_block_create(assets->memory.partition,"ASSET DATA ALCTR", ITFLIESBY_ENGINE_ASSETS_MEMORY_BLOCK_SIZE_ASSET_DATA,ITFLIESBY_ASSETS_FILE_ID_COUNT);
     ITFLIESBY_ASSERT(assets->memory.index_allocator);    
     ITFLIESBY_ASSERT(assets->memory.asset_data_allocator);    
-
-    //load indexes
-    itfliesby_engine_assets_indexes_load(
-        assets->file_handles.shader_asset_file,
-        assets->file_index_store.shader_indexes,
-        ITFLIESBY_ENGINE_ASSETS_SHADER_COUNT,
-        assets->memory.index_allocator
-    );
+    
 }
 
 internal void
@@ -76,7 +72,7 @@ itfliesby_engine_assets_file_handles_load(
     //cache the stuff we'll need
     ItfliesbyEngineAssetsFileId* unloaded_files = file_handles->unloaded_files;
     ItfliesbyEngineAssetsFileId* missing_files  = file_handles->missing_files;
-    handle* file_handle_array                   = file_handles->array;
+    handle* file_handle_array                   = file_handles->handles.array;
     u32 unloaded_files_count                    = file_handles->unloaded_files_count;
     u32 missing_files_count                     = 0;
 

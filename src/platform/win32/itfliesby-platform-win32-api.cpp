@@ -144,9 +144,6 @@ itfliesby_platform_win32_api_opengl_initialize(
     return((handle)opengl_rendering_context);
 }
 
-
-
-
 internal u64
 itfliesby_platform_win32_api_file_get_file_size_bytes(
     HANDLE file_handle) {
@@ -215,6 +212,8 @@ itfliesby_platform_win32_api_read_file(
             &overlapped,
             itfliesby_platform_win32_api_file_io_completion_routine
     );
+
+    auto error = GetLastError();
 
     allocated_buffer[null_terminator_index] = '\0';
 }
