@@ -3,6 +3,29 @@
 #include "itfliesby-engine.hpp"
 
 internal void
+itfliesby_engine_assets_indexes_load(
+    const handle                                  asset_file_handle,
+    const ItfliesbyEngineAssetsFileindex*         indexes,
+    const u32                                     indexes_count,
+    const itfliesby_engine_assets_allocator_index index_allocator) {
+    
+    ITFLIESBY_ASSERT(asset_file_handle);
+    
+    //get the next block for our indexes
+    memory index_memory = itfliesby_memory_allocator_block_allocate(index_allocator);
+    ITFLIESBY_ASSERT(index_memory);
+
+    //read the asset header data 
+    itfliesby_engine_assets_file_header_read(
+        asset_file_handle,
+        index_memory
+    );
+
+    ITFLIESBY_NOP();
+
+}
+
+internal void
 itfliesby_engine_assets_init(
     ItfliesbyEngineAssets* assets,
     itfliesby_memory_arena arena) {
@@ -14,8 +37,8 @@ itfliesby_engine_assets_init(
     for (
         s32 file_index = 0;
         file_index < ITFLIESBY_ASSETS_FILE_ID_COUNT;
-        ++file_index
-    ) {
+        ++file_index) {
+
         file_handles->unloaded_files[file_index] = (ItfliesbyEngineAssetsFileId)file_index;
         ++file_handles->unloaded_files_count;
     }
@@ -29,6 +52,14 @@ itfliesby_engine_assets_init(
     assets->memory.asset_data_allocator = itfliesby_memory_allocator_block_create(assets->memory.partition,"ASSET DATA ALCTR", ITFLIESBY_ENGINE_ASSETS_MEMORY_BLOCK_SIZE_ASSET_DATA,ITFLIESBY_ASSETS_FILE_ID_COUNT);
     ITFLIESBY_ASSERT(assets->memory.index_allocator);    
     ITFLIESBY_ASSERT(assets->memory.asset_data_allocator);    
+
+    //load indexes
+    itfliesby_engine_assets_indexes_load(
+        assets->file_handles.shader_asset_file,
+        assets->file_index_store.shader_indexes,
+        ITFLIESBY_ENGINE_ASSETS_SHADER_COUNT,
+        assets->memory.index_allocator
+    );
 }
 
 internal void

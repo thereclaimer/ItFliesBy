@@ -2,10 +2,9 @@
 #define ITFLIESBY_ENGINE_HPP
 
 #include <itfliesby.hpp>
+#include "itfliesby-engine-globals.hpp"
 #include "itfliesby-engine-assets.hpp"
 #include "itfliesby-engine-memory.hpp"
-
-global ItfliesbyPlatformApi platform_api;
 
 struct ItfliesbyEngine {
     itfliesby_renderer    renderer;
