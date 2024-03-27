@@ -479,7 +479,7 @@ itfliesby_memory_allocator_header_create(
         u64 allocator_offset             = sizeof(ItfliesbyMemoryAllocatorHeader) + previous_allocator_header->size;
         memory previous_allocator_memory = (memory)previous_allocator_header;
 
-        memory new_allocator_memory = previous_allocator_memory + allocator_offset;
+        memory new_allocator_memory = previous_allocator_memory + allocator_offset + 1;
         new_allocator_header = (ItfliesbyMemoryAllocatorHeader*)new_allocator_memory;
 
         previous_allocator_header->next = new_allocator_header;
@@ -489,7 +489,7 @@ itfliesby_memory_allocator_header_create(
         u64 partition_offset    = sizeof(ItfliesbyMemoryPartition);
         memory partition_memory = (memory)partition;
 
-        memory new_allocator_memory = partition_memory + partition_offset;
+        memory new_allocator_memory = partition_memory + partition_offset + 1;
         new_allocator_header = (ItfliesbyMemoryAllocatorHeader*)new_allocator_memory;
 
         partition->allocators = new_allocator_header;

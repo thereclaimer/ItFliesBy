@@ -29,15 +29,15 @@ itfliesby_engine_create(
     ITFLIESBY_ASSERT(engine_memory.partitions.renderer);
     ITFLIESBY_ASSERT(engine_memory.partitions.core);
 
-    //initialize allocators
+    // initialize allocators
     engine_memory.allocators.core_system_allocator = itfliesby_memory_allocator_linear_create(engine_memory.partitions.core,"ENGINE SYST ALCTR",ITFLIESBY_ENGINE_ALLOCATOR_SIZE_CORE_SYSTEMS);
     
-    //renderer
+    // renderer
     memory renderer_memory      = itfliesby_memory_partition_raw_memory(engine_memory.partitions.renderer);
     itfliesby_renderer renderer = itfliesby_renderer_create(platform,renderer_memory,ITFLIESBY_ENGINE_PARTITION_SIZE_RENDERER);
     ITFLIESBY_ASSERT(renderer);
 
-    //allocate engine systems
+    // allocate engine systems
     ItfliesbyEngine* engine = (ItfliesbyEngine*)itfliesby_memory_allocator_linear_allocate(engine_memory.allocators.core_system_allocator,sizeof(ItfliesbyEngine));
     ITFLIESBY_ASSERT(engine);
 
@@ -46,7 +46,7 @@ itfliesby_engine_create(
 
     itfliesby_engine_assets_init(
         &engine->assets,
-        &engine->memory
+        engine->memory.arena
     );
 
     return(engine);
