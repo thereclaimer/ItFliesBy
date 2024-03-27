@@ -3,14 +3,24 @@
 
 #include <common/itfliesby-types.hpp>
 
-typedef handle itfliesby_memory_arena;
-typedef handle itfliesby_memory_partition;
-typedef handle itfliesby_memory_block;
-typedef handle itfliesby_memory_allocator_stack;
-typedef handle itfliesby_memory_allocator_queue;
-typedef handle itfliesby_memory_allocator_block;
-typedef handle itfliesby_memory_allocator_linear;
-typedef handle itfliesby_memory_allocator_heap;
+typedef void ItfliesbyMemoryArena;
+typedef void ItfliesbyMemoryPartition;
+typedef void ItfliesbyMemoryBlock;
+typedef void ItfliesbyMemoryAllocatorHeader;
+typedef void ItfliesbyMemoryAllocator;
+typedef void ItfliesbyMemoryAllocatorLinear;
+typedef void ItfliesbyMemoryAllocatorStack;
+typedef void ItfliesbyMemoryAllocatorBlock;
+typedef void ItfliesbyMemoryAllocatorHeap;
+
+typedef ItfliesbyMemoryArena*           itfliesby_memory_arena;
+typedef ItfliesbyMemoryPartition*       itfliesby_memory_partition;
+typedef ItfliesbyMemoryBlock*           itfliesby_memory_block;
+typedef ItfliesbyMemoryAllocatorStack*  itfliesby_memory_allocator_stack;
+typedef handle                          itfliesby_memory_allocator_queue;
+typedef ItfliesbyMemoryAllocatorBlock*  itfliesby_memory_allocator_block;
+typedef ItfliesbyMemoryAllocatorLinear* itfliesby_memory_allocator_linear;
+typedef ItfliesbyMemoryAllocatorHeap*   itfliesby_memory_allocator_heap;
 
 enum itfliesby_memory_return_code {
     ITFLIESBY_MEMORY_RETURN_CODE_SUCCESS                     = 0x00000001,
