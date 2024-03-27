@@ -5,7 +5,7 @@
 internal void
 itfliesby_engine_assets_indexes_load(
     const handle                                  asset_file_handle,
-    const ItfliesbyEngineAssetsFileindex*         indexes,
+    ItfliesbyEngineAssetsFileindex*         indexes,
     const u32                                     indexes_count,
     const itfliesby_engine_assets_allocator_index index_allocator) {
     
@@ -16,16 +16,30 @@ itfliesby_engine_assets_indexes_load(
     ITFLIESBY_ASSERT(index_memory);
 
     //read the asset header data 
-    itfliesby_engine_assets_file_header_read(
-        asset_file_handle,
-        index_memory
+    u32 read_index_count =
+        itfliesby_engine_assets_file_header_read(
+            asset_file_handle,
+            index_memory
     );
+
+    ITFLIESBY_ASSERT(read_index_count == indexes_count);
+
+    ItfliesbyEngineAssetsFileindex* read_indexes = (ItfliesbyEngineAssetsFileindex*)index_memory;
+
+    for (
+        u32 index = 0;
+        index < ITFLIESBY_ENGINE_ASSETS_SHADER_COUNT;
+        ++index) {
+
+        indexes[index] = read_indexes[index];
+    }
+
 
     ITFLIESBY_NOP();
 
 }
 
-internal void
+internal void 
 itfliesby_engine_assets_init(
     ItfliesbyEngineAssets* assets,
     itfliesby_memory_arena arena) {

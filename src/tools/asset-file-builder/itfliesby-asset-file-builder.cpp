@@ -51,11 +51,17 @@ itfliesby_asset_file_builer_console_log(
 
 internal u32
 itfliesby_asset_file_builder_asset_header_size(
-    u32 num_indexes) {
+    bool packed,
+    u32  num_indexes) {
 
-    u32 header_size =         
-        (sizeof(ItfliesbyAssetFileHeader) - sizeof(ItfliesbyAssetFileindex*)) + 
-        (sizeof(ItfliesbyAssetFileindex) *  num_indexes); 
+    u32 header_size = packed
+        ?
+            (sizeof(ItfliesbyAssetFileHeader) - sizeof(ItfliesbyAssetFileindex*)) + 
+            (sizeof(ItfliesbyAssetFileindex) *  num_indexes)
+        :
+            sizeof(ItfliesbyAssetFileHeaderPacked) + 
+            (sizeof(ItfliesbyAssetFileindex) *  num_indexes);
+
 
     return(header_size);
 }
@@ -587,8 +593,17 @@ internal s32
         );
     }
 
+    //pack the header info
+    ItfliesbyAssetFileHeaderPacked packed_header = {0};
+    packed_header.num_indexs   = asset_file->file_header.num_indexs; 
+    packed_header.verification[0] = 'I';
+    packed_header.verification[1] = 'F';
+    packed_header.verification[2] = 'B';
+
     //allocate space for the header
-    u32 header_size = itfliesby_asset_file_builder_asset_header_size(asset_file->file_header.num_indexs); 
+    u32 header_size = itfliesby_asset_file_builder_asset_header_size(true, asset_file->file_header.num_indexs); 
+    u32 header_start = header_size - (sizeof(ItfliesbyAssetFileindex) * asset_file->file_header.num_indexs);
+
 
     ItfliesbyAssetFileBuilderMemoryBlock* header_memory_block = 
         itfliesby_asset_file_builder_memory_block_push(
@@ -601,12 +616,12 @@ internal s32
     //write the header to the file
     memmove(
         asset_file_builder->header_data,
-        &asset_file->file_header,
-        sizeof(ItfliesbyAssetFileHeader) - sizeof(ItfliesbyAssetFileindex*)
+        &packed_header,
+        header_start
     );
 
     memmove(
-        &asset_file_builder->header_data[sizeof(ItfliesbyAssetFileHeader) - sizeof(ItfliesbyAssetFileindex*)],
+        &asset_file_builder->header_data[header_start],
         asset_file->file_header.indexes,
         sizeof(ItfliesbyAssetFileindex) * asset_file->file_header.num_indexs
     );

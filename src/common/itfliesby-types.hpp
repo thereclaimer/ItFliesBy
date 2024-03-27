@@ -14,6 +14,14 @@
 #define ITFLIESBY_NOP()   ITFLIESBY_ASSERT(true)
 #define ITFLIESBY_PANIC() ITFLIESBY_ASSERT(false)
 
+#ifdef __GNUC__
+#define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
+#endif
+
+#ifdef _MSC_VER
+#define PACK( __Declaration__ ) __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop))
+#endif
+
 typedef int8_t  s8;
 typedef int16_t s16;
 typedef int32_t s32;
