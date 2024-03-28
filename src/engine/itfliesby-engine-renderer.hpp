@@ -61,7 +61,8 @@ struct ItfliesbyEngineRendererShaderProgramStore {
 };
 
 struct ItfliesbyEngineRendererMemory {
-    itfliesby_memory_partition partition;
+    itfliesby_memory_partition        partition;
+    itfliesby_memory_allocator_linear shader_asset_composite_allocator;
 };
 
 struct ItfliesbyEngineRenderer {
@@ -76,5 +77,10 @@ void
 itfliesby_engine_renderer_init(
     ItfliesbyEngineRenderer* renderer,
     itfliesby_memory_arena   arena);
+
+ void
+itfliesby_engine_renderer_update(
+    ItfliesbyEngineRenderer* renderer,
+    ItfliesbyEngineAssets*   assets);
 
 #endif //ITFLIESBY_ENGINE_RENDERER_HPP
