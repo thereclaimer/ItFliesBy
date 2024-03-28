@@ -110,12 +110,16 @@ internal void
 itfliesby_engine_assets_update(
     ItfliesbyEngineAssets* assets) {
 
-    itfliesby_engine_assets_file_handles_load(&assets->file_handles);
+    ItfliesbyEngineAssetsFileHandles*    file_handles = &assets->file_handles;
+    ItfliesbyEngineAssetsFileIndexStore* index_store  = &assets->file_index_store;
+    ItfliesbyEngineAssetsMemory*         asset_memory = &assets->memory;
+
+    itfliesby_engine_assets_file_handles_load(file_handles);
 
     itfliesby_engine_asset_indexes_load(
-        &assets->file_handles,
-        &assets->file_index_store,
-        assets->memory.index_allocator
+        file_handles,
+        index_store,
+        asset_memory->index_allocator
     );
 }
 
