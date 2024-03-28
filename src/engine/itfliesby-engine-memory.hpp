@@ -4,14 +4,12 @@
 #define ITFLIESBY_ENGINE_MEMORY_SIZE                  ITFLIESBY_MATH_MEGABYTES(512)
 
 #define ITFLIESBY_ENGINE_PARTITION_SIZE_PHYSICS       ITFLIESBY_MATH_MEGABYTES(64)
-#define ITFLIESBY_ENGINE_PARTITION_SIZE_RENDERER      ITFLIESBY_MATH_MEGABYTES(64)
 #define ITFLIESBY_ENGINE_PARTITION_SIZE_CORE          ITFLIESBY_MATH_MEGABYTES(64)
 
 #define ITFLIESBY_ENGINE_ALLOCATOR_SIZE_CORE_SYSTEMS  ITFLIESBY_MATH_KILOBYTES(1)
 
 struct ItfliesbyEngineMemoryPartitions {
     itfliesby_memory_partition physics;
-    itfliesby_memory_partition renderer;
     itfliesby_memory_partition core;
 };
 

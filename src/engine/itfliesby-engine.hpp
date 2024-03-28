@@ -5,11 +5,12 @@
 #include "itfliesby-engine-globals.hpp"
 #include "itfliesby-engine-assets.hpp"
 #include "itfliesby-engine-memory.hpp"
+#include "itfliesby-engine-renderer.hpp"
 
 struct ItfliesbyEngine {
-    itfliesby_renderer    renderer;
-    ItfliesbyEngineMemory memory;
-    ItfliesbyEngineAssets assets;
+    ItfliesbyEngineMemory   memory;
+    ItfliesbyEngineAssets   assets;
+    ItfliesbyEngineRenderer renderer;
 };
 
 api ItfliesbyEngine*
