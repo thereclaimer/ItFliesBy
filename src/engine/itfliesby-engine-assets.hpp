@@ -39,9 +39,21 @@ struct ItfliesbyEngineAssetsFileindex {
     u32  offset;          // the index of the first byte of asset data in the file
 };
 
+struct ItfliesbyEngineAssetsFileIndexCollection {
+    union {
+        ItfliesbyEngineAssetsFileindex* indexes;
+        memory                          index_memory;
+    };
+    u32 index_count;
+};
+
 struct ItfliesbyEngineAssetsFileIndexStore {
-    ItfliesbyEngineAssetsFileindex shader_indexes[ITFLIESBY_ENGINE_ASSETS_SHADER_COUNT];
-    u32                            shader_indexes_loaded;
+    union {
+        struct {
+            ItfliesbyEngineAssetsFileIndexCollection shader_indexes;
+        } collections;
+        ItfliesbyEngineAssetsFileIndexCollection array[ITFLIESBY_ASSETS_FILE_ID_COUNT];
+    };
 };
 
 const char* ITFLIESBY_ENGINE_ASSETS_FILE_PATHS[] = {
@@ -83,41 +95,5 @@ void
 itfliesby_engine_assets_file_handles_load(
     ItfliesbyEngineAssetsFileHandles* assets
 );
-
-inline u32
-itfliesby_engine_assets_file_header_read(
-    const handle asset_handle,
-    const memory asset_header_memory) {
-
-    //TODO: there's no overflow protection here
-
-    char header_buffer[8] = {0};
-
-    platform_api.file_read(
-        asset_handle,
-        0,
-        8,
-        (memory)header_buffer
-    );
-
-    ITFLIESBY_ASSERT(
-        header_buffer[0] == 'I' &&
-        header_buffer[1] == 'F' &&
-        header_buffer[2] == 'B'
-    );
-
-    u16 num_indexes = *(u16*)&header_buffer[3];
-
-    u32 index_data_size = sizeof(ItfliesbyEngineAssetsFileindex) * num_indexes;
-
-    platform_api.file_read(
-        asset_handle,
-        8,
-        index_data_size,
-        asset_header_memory
-    );
-
-    return(num_indexes);
-}
 
 #endif //ITFLIESBY_ENGINE_ASSETS_HPP
