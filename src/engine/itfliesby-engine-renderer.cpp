@@ -103,14 +103,11 @@ itfliesby_engine_renderer_shader_stage_asset_composite_reset(
 }
 
 internal void
-itfliesby_engine_renderer_shader_stages_update(
-    ItfliesbyEngineRendererShaderStageStore* shader_stages,
-    ItfliesbyEngineRendererMemory*           memory,
-    ItfliesbyEngineAssets*                   assets) {
+itfliesby_engine_renderer_shader_stages_vertex_update(
+    ItfliesbyEngineRendererShaderStageStoreVertex* vertex_shader_store,
+    ItfliesbyEngineRendererMemory*                 memory,
+    ItfliesbyEngineAssets*                         assets) {
 
-
-    //update the vertex shaders
-    ItfliesbyEngineRendererShaderStageStoreVertex* vertex_shader_store   = &shader_stages->vertex; 
     itfliesby_renderer_vertex_shader*              vertex_renderer_stage = vertex_shader_store->renderer_stage; 
     ItfliesbyEngineAssetsShader*                   vertex_asset          = vertex_shader_store->asset; 
     ItfliesbyEngineRendererShaderStageStatus*      vertex_status         = vertex_shader_store->status; 
@@ -139,10 +136,14 @@ itfliesby_engine_renderer_shader_stages_update(
         }
     }
     vertex_shader_asset_composite.count = composite_count;
+}
 
+internal void
+itfliesby_engine_renderer_shader_stages_fragment_update(
+    ItfliesbyEngineRendererShaderStageStoreFragment* fragment_shader_store,
+    ItfliesbyEngineRendererMemory*                   memory,
+    ItfliesbyEngineAssets*                           assets) {
 
-    //update the fragment shaders
-    ItfliesbyEngineRendererShaderStageStoreFragment* fragment_shader_store   = &shader_stages->fragment;
     itfliesby_renderer_fragment_shader*              fragment_renderer_stage = fragment_shader_store->renderer_stage; 
     ItfliesbyEngineAssetsShader*                     fragment_asset          = fragment_shader_store->asset; 
     ItfliesbyEngineRendererShaderStageStatus*        fragment_status         = fragment_shader_store->status; 
@@ -153,10 +154,10 @@ itfliesby_engine_renderer_shader_stages_update(
             ITFLIESBY_ENGINE_RENDERER_SHADER_STAGE_FRAGMENT_COUNT
         );
 
-    composite_engine_shaders   = fragment_shader_asset_composite.engine_shader_id;
-    composite_renderer_shaders = fragment_shader_asset_composite.render_shader_id;
-    composite_assets           = fragment_shader_asset_composite.asset_id;
-    composite_count            = 0;
+    s32* composite_engine_shaders   = fragment_shader_asset_composite.engine_shader_id;
+    s32* composite_renderer_shaders = fragment_shader_asset_composite.render_shader_id;
+    s32* composite_assets           = fragment_shader_asset_composite.asset_id;
+    u32  composite_count            = 0;
 
     for (
         s32 fragment_shader_index = 0;
@@ -171,6 +172,21 @@ itfliesby_engine_renderer_shader_stages_update(
         }
     }
     fragment_shader_asset_composite.count = composite_count;
+}
+
+internal void
+itfliesby_engine_renderer_shader_stages_update(
+    ItfliesbyEngineRendererShaderStageStore* shader_stages,
+    ItfliesbyEngineRendererMemory*           memory,
+    ItfliesbyEngineAssets*                   assets) {
+
+
+    //update the vertex shaders
+    ItfliesbyEngineRendererShaderStageStoreVertex*   vertex_shader_store   = &shader_stages->vertex; 
+    ItfliesbyEngineRendererShaderStageStoreFragment* fragment_shader_store = &shader_stages->fragment;
+
+    itfliesby_engine_renderer_shader_stages_vertex_update(vertex_shader_store,memory,assets);
+    itfliesby_engine_renderer_shader_stages_fragment_update(fragment_shader_store,memory,assets);
 }
 
 internal void
