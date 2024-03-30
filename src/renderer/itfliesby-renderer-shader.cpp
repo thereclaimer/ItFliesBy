@@ -9,14 +9,15 @@ itfliesby_renderer_shaders_init(
     ITFLIESBY_ASSERT(shaders);
     *shaders = {0};
 
-    ItfliesbyRendererShaderStageStore* shader_store = &shaders->shader_stage_store;
+    ItfliesbyRendererShaderStageStore* shader_store =    &shaders->shader_stage_store;
+    ItfliesbyRendererShaderProgramStore* program_store = &shaders->shader_program_store;
 
     b8 shader_init_success = true;
 
-    s32* gl_id_shader_stage_vertex = shader_store->gl_id_shader_stage_vertex;
-    s32* fragment_shader_gl_id     = shader_store->gl_id_shader_stage_fragment;
+    GLint* gl_id_shader_stage_vertex = shader_store->gl_id_shader_stage_vertex;
+    GLint* fragment_shader_gl_id     = shader_store->gl_id_shader_stage_fragment;
 
-    //let's ask the GPU to give us shader handles ahead of time
+    //get gl shader ids
     for (
         u8 shader_index = 0;
         shader_index < ITFLIESBY_RENDERER_SHADER_STAGE_MAX;
@@ -25,8 +26,19 @@ itfliesby_renderer_shaders_init(
         shader_init_success &= (gl_id_shader_stage_vertex[shader_index] = glCreateShader(GL_VERTEX_SHADER))   != 0;
         shader_init_success &= (fragment_shader_gl_id[shader_index]     = glCreateShader(GL_FRAGMENT_SHADER)) != 0;
     }
-
     ITFLIESBY_ASSERT(shader_init_success);
+
+    //get gl program ids
+    GLint* programs = program_store->gl_id_shader_program;
+    b8 program_init_success = true; 
+    for (
+        u8 program_index = 0;
+        program_index < ITFLIESBY_RENDERER_SHADER_PROGRAM_MAX;
+        ++program_index) {
+
+        program_init_success &= (programs[program_index] = glCreateProgram() != 0);
+    }
+    ITFLIESBY_ASSERT(program_init_success);
 }
 
 internal void

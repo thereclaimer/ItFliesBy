@@ -56,22 +56,34 @@ itfliesby_engine_renderer_init(
     
     auto renderer_memory = &renderer->memory;
 
-    renderer_memory->partition = itfliesby_memory_partition_create(arena,"ENGINE RENDERER PRTN",ITFLIESBY_ENGINE_RENDERER_MEMORY_PARTITION_SIZE);
+    //initialize partitions
+    renderer_memory->partition                   = itfliesby_memory_partition_create(arena,"ENGINE RENDERER PRTN",ITFLIESBY_ENGINE_RENDERER_MEMORY_PARTITION_SIZE);
+    renderer_memory->rendering_context_partition = itfliesby_memory_partition_create(arena,"RNDR CNTXT PRTN"     ,ITFLIESBY_ENGINE_RENDERER_MEMORY_PARTITION_CONTEXT_SIZE);
     ITFLIESBY_ASSERT(renderer_memory->partition);
+    ITFLIESBY_ASSERT(renderer_memory->rendering_context_partition);
 
+    //initialize allocators
     renderer_memory->shader_asset_composite_allocator = itfliesby_memory_allocator_linear_create(renderer_memory->partition,"SHADER ASSET ALCTR",512);
     ITFLIESBY_ASSERT(renderer_memory->shader_asset_composite_allocator);
 
-    //shaders
+    //initialize the shader definitions
     auto vertex_store   = &renderer->shader_stage_store.vertex;
     auto fragment_store = &renderer->shader_stage_store.fragment;
     auto program_store  = &renderer->shader_programs;
 
-    //initialize the shader definitions
     itfliesby_engine_renderer_vertex_shaders_init(vertex_store);
     itfliesby_engine_renderer_fragment_shaders_init(fragment_store);
     itfliesby_engine_renderer_programs_init(program_store);
 
+    //initialize the renderer
+    memory render_context_memory = itfliesby_memory_partition_raw_memory(renderer_memory->rendering_context_partition);
+    ITFLIESBY_ASSERT(render_context_memory);
+    renderer->renderer_handle =
+        itfliesby_renderer_api_create(
+            platform_api,
+            render_context_memory,
+            ITFLIESBY_ENGINE_RENDERER_MEMORY_PARTITION_CONTEXT_SIZE
+    );
 
     ITFLIESBY_NOP();
 }
