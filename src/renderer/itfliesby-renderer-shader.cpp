@@ -18,12 +18,12 @@ itfliesby_renderer_shaders_init(
 
     //let's ask the GPU to give us shader handles ahead of time
     for (
-        u32 shader_index = 0;
+        u8 shader_index = 0;
         shader_index < ITFLIESBY_RENDERER_SHADER_STAGE_MAX;
         ++shader_index) {
         
-        shader_init_success &= (gl_id_shader_stage_vertex[shader_index]   = glCreateShader(GL_VERTEX_SHADER))   != 0;
-        shader_init_success &= (fragment_shader_gl_id[shader_index] = glCreateShader(GL_FRAGMENT_SHADER)) != 0;
+        shader_init_success &= (gl_id_shader_stage_vertex[shader_index] = glCreateShader(GL_VERTEX_SHADER))   != 0;
+        shader_init_success &= (fragment_shader_gl_id[shader_index]     = glCreateShader(GL_FRAGMENT_SHADER)) != 0;
     }
 
     ITFLIESBY_ASSERT(shader_init_success);
@@ -32,15 +32,16 @@ itfliesby_renderer_shaders_init(
 internal void
 itfliesby_renderer_shader_compile_vertex_shaders(
     ItfliesbyRendererShaderStageStore* shader_store,
-    const char*                   shader_buffer,
-    const u32*                    shader_offsets,
-    const u32                     shader_count,
-    s32*                          shader_results) {
+    const char*                        shader_buffer,
+    const u64*                         shader_offsets,
+    const u8                           shader_count,
+    u8*                                shader_results) {
 
     ITFLIESBY_ASSERT(
         shader_store       &&
         shader_buffer      &&
         shader_offsets     &&
+        shader_results     &&
         shader_count   > 0 &&
         shader_count   < ITFLIESBY_RENDERER_SHADER_STAGE_MAX
     );
@@ -48,14 +49,14 @@ itfliesby_renderer_shader_compile_vertex_shaders(
     //cache our stuff
     const char** current_shader        = NULL;
     GLint*       vertex_shader_gl_id   = shader_store->gl_id_shader_stage_vertex;
-    u32          current_shader_offset;
+    u64          current_shader_offset;
     GLint        current_shader_gl_id;
     GLint        current_compile_status;
     b8           compile_success = true;
-    u32          shader_store_count = shader_store->count_gl_id_shader_stage_vertex;
+    u8           shader_store_count = shader_store->count_gl_id_shader_stage_vertex;
 
     for (
-        u32 shader_index = 0;
+        u8 shader_index = 0;
         shader_index < shader_count;
         ++shader_index) {
 
@@ -83,15 +84,16 @@ itfliesby_renderer_shader_compile_vertex_shaders(
 internal void
 itfliesby_renderer_shader_compile_fragment_shaders(
     ItfliesbyRendererShaderStageStore* shader_store,
-    const char*                   shader_buffer,
-    const u32*                    shader_offsets,
-    const u32                     shader_count,
-    s32*                          shader_results) {
+    const char*                        shader_buffer,
+    const u64*                         shader_offsets,
+    const u8                           shader_count,
+    u8*                                shader_results) {
 
     ITFLIESBY_ASSERT(
         shader_store       &&
         shader_buffer      &&
         shader_offsets     &&
+        shader_results     &&
         shader_count   > 0 &&
         shader_count   < ITFLIESBY_RENDERER_SHADER_STAGE_MAX
     );
@@ -99,14 +101,14 @@ itfliesby_renderer_shader_compile_fragment_shaders(
     //cache our stuff
     const char** current_shader        = NULL;
     GLint*       fragment_shader_gl_id = shader_store->gl_id_shader_stage_fragment;
-    u32          current_shader_offset;
+    u64          current_shader_offset;
     GLint        current_shader_gl_id;
     GLint        current_compile_status;
     b8           compile_success = true;
-    u32          shader_store_count = shader_store->count_gl_id_shader_stage_fragment;
+    u8           shader_store_count = shader_store->count_gl_id_shader_stage_fragment;
 
     for (
-        u32 shader_index = 0;
+        u8 shader_index = 0;
         shader_index < shader_count;
         ++shader_index) {
 
@@ -132,18 +134,20 @@ itfliesby_renderer_shader_compile_fragment_shaders(
 }
 
 internal void
-itfliesby_rendering_shader_programs_create(
-    ItfliesbyRendererShaderProgramStore* program_store,    
-    const ItfliesbyRendererShaderStageStore*  shader_store,
-    const s32*                           vertex_stage_indexes,
-    const s32*                           fragment_stage_indexes,
-    s32                                  count_programs) {
+itfliesby_renderer_shader_programs_create(
+    ItfliesbyRendererShaderProgramStore*     program_store,    
+    const ItfliesbyRendererShaderStageStore* shader_store,
+    const u8*                                vertex_stage_indexes,
+    const u8*                                fragment_stage_indexes,
+    u8                                       count_programs,
+    u8*                                      program_results) {
 
     ITFLIESBY_ASSERT(
         program_store          &&
         shader_store           &&
         vertex_stage_indexes   &&
         fragment_stage_indexes &&
+        program_results        &&
         count_programs > 0     &&
         count_programs < ITFLIESBY_RENDERER_SHADER_PROGRAM_MAX
     );
@@ -153,18 +157,18 @@ itfliesby_rendering_shader_programs_create(
     const GLint* stage_store_fragment_shader_gl_id = shader_store->gl_id_shader_stage_fragment; 
 
     //cache our program info
-    u32    program_gl_ids_count                      = program_store->count_gl_id_shader_program;
+    u8     program_gl_ids_count                      = program_store->count_gl_id_shader_program;
     GLint* program_gl_ids                            = &program_store->gl_id_shader_program[program_gl_ids_count];
-    u32*   program_vertex_shader_stage_store_index   = &program_store->shader_stage_store_index_vertex[program_gl_ids_count];
-    u32*   program_fragment_shader_stage_store_index = &program_store->shader_stage_store_index_fragment[program_gl_ids_count];
+    u8*    program_vertex_shader_stage_store_index   = &program_store->shader_stage_store_index_vertex[program_gl_ids_count];
+    u8*    program_fragment_shader_stage_store_index = &program_store->shader_stage_store_index_fragment[program_gl_ids_count];
     
     //first, lets prefetch a list of gl ids for our programs
     GLint program_gl_id_vertex[ITFLIESBY_RENDERER_SHADER_PROGRAM_MAX];
     GLint program_gl_id_fragment[ITFLIESBY_RENDERER_SHADER_PROGRAM_MAX];
-    u32   current_shader_store_vertex_index;
-    u32   current_shader_store_fragment_index;
+    u8    current_shader_store_vertex_index;
+    u8    current_shader_store_fragment_index;
     for (
-        u32 program_index = 0;
+        u8 program_index = 0;
         program_index < count_programs;
         ++program_index) {
 
@@ -186,13 +190,14 @@ itfliesby_rendering_shader_programs_create(
     GLint current_shader_link_status;
     b8    shader_create_succes = true;
     for (
-        u32 program_index = 0;
+        u8 program_index = 0;
         program_index < count_programs;
         ++program_index) {
 
         current_program_gl_id_vertex   = program_gl_id_vertex[program_index]; 
         current_program_gl_id_fragment = program_gl_id_fragment[program_index]; 
         current_program_gl_id          = program_gl_ids[program_index];
+        program_results[program_index] = current_program_gl_id;
 
         glAttachShader(current_program_gl_id, current_program_gl_id_vertex);
         glAttachShader(current_program_gl_id, current_program_gl_id_fragment);

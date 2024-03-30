@@ -35,9 +35,10 @@ struct ItfliesbyRendererMemory {
 };
 
 struct ItfliesbyRenderer {
-    ItfliesbyRendererMemory memory;
-    handle                  gl_context;
-    ItfliesbyPlatformApi    platform;
+    ItfliesbyRendererMemory  memory;
+    handle                   gl_context;
+    ItfliesbyPlatformApi     platform;
+    ItfliesbyRendererShaders shaders;
 };
 
 api ItfliesbyRenderer*
