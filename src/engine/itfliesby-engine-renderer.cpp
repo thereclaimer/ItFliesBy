@@ -150,6 +150,9 @@ itfliesby_engine_renderer_shader_stages_vertex_update(
         }
     }
     vertex_shader_asset_composite.count = composite_count;
+
+    //now, we need to load the shader data
+    
 }
 
 internal void

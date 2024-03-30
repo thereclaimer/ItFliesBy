@@ -165,3 +165,34 @@ itfliesby_engine_assets_file_handles_load(
         ITFLIESBY_PANIC();
     }
 }
+
+internal u64
+itfliesby_engine_assets_index_allocation_size(
+    ItfliesbyEngineAssetsFileIndexCollection* index_collection,
+    s32*                                      index_ids,
+    s32                                       index_ids_count) {
+
+    ITFLIESBY_ASSERT(
+        index_collection    && 
+        index_ids           && 
+        index_ids_count > 0 &&
+        index_ids_count < index_collection->index_count);
+
+    ItfliesbyEngineAssetsFileindex* indexes = index_collection->indexes;
+    ItfliesbyEngineAssetsFileindex current_index;
+    u64 index_memory_size = 0;
+    u32 current_index_id;
+
+    for (
+        u32 index = 0;
+        index < index_ids_count;
+        ++index) {
+
+        //get the index size
+        current_index_id = index_ids[index];
+        current_index     = indexes[current_index_id];
+        index_memory_size += current_index.allocation_size;
+    }
+
+    return(index_memory_size);
+}
