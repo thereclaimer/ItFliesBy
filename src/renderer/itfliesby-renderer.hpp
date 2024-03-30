@@ -2,32 +2,22 @@
 #define ITFLIESBY_RENDERER_HPP
 
 #include <itfliesby.hpp>
-
-#define GLEW_STATIC
-
-#include <glew/glew.h>
-#include <glew/wglew.h>
-#include <glew/glew.c>
-
+#include "itfliesby-renderer-gl.hpp"
+#include "itfliesby-renderer-shader.hpp"
 
 #define ITFLIESBY_RENDERER_MEMORY_SIZE_ARENA           ITFLIESBY_MATH_MEGABYTES(64)
 #define ITFLIESBY_RENDERER_MEMORY_SIZE_PARTITION_CORE  ITFLIESBY_MATH_KILOBYTES(2)
 #define ITFLIESBY_RENDERER_MEMORY_SIZE_ALLLOCATOR_CORE ITFLIESBY_MATH_KILOBYTES(1)
 
-#define ITFLIESBY_RENDERER_MAX_SHADERS 32
+#define ITFLIESBY_RENDERER_MAX_SHADER_STAGES   128
+#define ITFLIESBY_RENDERER_MAX_SHADER_PROGRAMS 128
 
 struct ItfliesbyRendererShaderStages {
-    s32 vertex_shader_gl_ids[ITFLIESBY_RENDERER_MAX_SHADERS];
-    s32 fragment_shader_gl_ids[ITFLIESBY_RENDERER_MAX_SHADERS];
+    s32 vertex_shader_gl_ids[ITFLIESBY_RENDERER_MAX_SHADER_STAGES];
+    s32 fragment_shader_gl_ids[ITFLIESBY_RENDERER_MAX_SHADER_STAGES];
     u32 vertex_shader_count;
     u32 fragment_shader_count;
 };
-
-struct ItfliesbyRendererShaderPrograms {
-    s32 program_gl_ids[ITFLIESBY_RENDERER_MAX_SHADERS];
-    u32 program_count;
-};
-
 
 
 struct ItfliesbyRendererAllocators {

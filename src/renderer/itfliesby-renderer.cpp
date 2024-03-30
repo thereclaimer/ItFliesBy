@@ -2,6 +2,8 @@
 
 #include "itfliesby-renderer.hpp"
 
+#include "itfliesby-renderer-shader.cpp"
+
 external ItfliesbyRenderer*
 itfliesby_renderer_create(
     ItfliesbyPlatformApi platform,
