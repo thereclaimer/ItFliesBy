@@ -84,6 +84,8 @@ itfliesby_engine_renderer_init(
             render_context_memory,
             ITFLIESBY_ENGINE_RENDERER_MEMORY_PARTITION_CONTEXT_SIZE
     );
+    ITFLIESBY_ASSERT(renderer->renderer_handle);
+
 
     ITFLIESBY_NOP();
 }
@@ -211,4 +213,6 @@ itfliesby_engine_renderer_update(
         &renderer->memory,
         assets
     );
+
+    itfliesby_renderer_api_update_and_render(renderer->renderer_handle);
 }

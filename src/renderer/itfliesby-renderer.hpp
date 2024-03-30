@@ -6,8 +6,8 @@
 #include "itfliesby-renderer-shader.hpp"
 
 #define ITFLIESBY_RENDERER_MEMORY_SIZE_ARENA           ITFLIESBY_MATH_MEGABYTES(64)
-#define ITFLIESBY_RENDERER_MEMORY_SIZE_PARTITION_CORE  ITFLIESBY_MATH_KILOBYTES(2)
-#define ITFLIESBY_RENDERER_MEMORY_SIZE_ALLLOCATOR_CORE ITFLIESBY_MATH_KILOBYTES(1)
+#define ITFLIESBY_RENDERER_MEMORY_SIZE_PARTITION_CORE  ITFLIESBY_MATH_KILOBYTES(8)
+#define ITFLIESBY_RENDERER_MEMORY_SIZE_ALLLOCATOR_CORE ITFLIESBY_MATH_KILOBYTES(2)
 
 #define ITFLIESBY_RENDERER_MAX_SHADER_STAGES   128
 #define ITFLIESBY_RENDERER_MAX_SHADER_PROGRAMS 128
@@ -18,7 +18,6 @@ struct ItfliesbyRendererShaderStages {
     u32 vertex_shader_count;
     u32 fragment_shader_count;
 };
-
 
 struct ItfliesbyRendererAllocators {
     itfliesby_memory_allocator_linear core_system_allocator;
