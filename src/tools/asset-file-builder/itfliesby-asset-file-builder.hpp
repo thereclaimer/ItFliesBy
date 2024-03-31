@@ -61,13 +61,14 @@ struct ItfliesbyAssetFileBuilderCsvFile {
     ItfliesbyAssetFileBuilderMemoryBlock* memory;
     ItfliesbyAssetFileBuilderCsvEntry*    entries;
 };
-
-struct ItfliesbyAssetFileindex {
-    char tag[32];         // plaintext identifier for the entity the asset belongs to
-    u32  file_size;       // size of the data is stored in the file
-    u32  allocation_size; // the size of the space we need to allocate when storing the asset data in memory
-    u32  offset;          // the index of the first byte of asset data in the file
-};
+PACK(
+    struct ItfliesbyAssetFileindex {
+        char tag[32];         // plaintext identifier for the entity the asset belongs to
+        u32  file_size;       // size of the data is stored in the file
+        u32  allocation_size; // the size of the space we need to allocate when storing the asset data in memory
+        u32  offset;          // the index of the first byte of asset data in the file
+    };
+);
 
 struct ItfliesbyAssetFileHeader {
     char                     verification[3];
@@ -75,7 +76,7 @@ struct ItfliesbyAssetFileHeader {
     ItfliesbyAssetFileindex* indexes;
 };
 
-#define ITFLIESBY_ASSET_FILE_INDEX_SIZE ((sizeof(u32) * 3) + (sizeof(char) * 32))
+
 
 PACK(
     struct ItfliesbyAssetFileHeaderPacked {
@@ -84,7 +85,10 @@ PACK(
     };
 );
 
-#define ITFLIESBY_ASSET_FILE_HEADER_SIZE (sizeof(u32) + (sizeof(char) * 3))
+#define ITFLIESBY_ASSET_FILE_INDEX_SIZE                    ((sizeof(u32) * 3) + 32)
+#define ITFLIESBY_ASSET_FILE_INDEX_SIZE_TOTAL(num_indexes) (ITFLIESBY_ASSET_FILE_INDEX_SIZE * num_indexes)
+#define ITFLIESBY_ASSET_FILE_VERIFICATION_SIZE             (sizeof(u32) + 3)
+#define ITFLIESBY_ASSET_FILE_HEADER_SIZE(num_indexes)      (ITFLIESBY_ASSET_FILE_VERIFICATION_SIZE + ITFLIESBY_ASSET_FILE_INDEX_SIZE_TOTAL(num_indexes))
 
 struct ItfliesbyAssetsGameAssetFile {
     file_handle              file_handle;

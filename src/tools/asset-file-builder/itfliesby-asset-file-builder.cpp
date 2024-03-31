@@ -56,11 +56,11 @@ itfliesby_asset_file_builder_asset_header_size(
 
     u32 header_size = packed
         ?
-            ITFLIESBY_ASSET_FILE_HEADER_SIZE + 
+            ITFLIESBY_ASSET_FILE_VERIFICATION_SIZE + 
             (ITFLIESBY_ASSET_FILE_INDEX_SIZE *  num_indexes)
 
         :
-            (ITFLIESBY_ASSET_FILE_HEADER_SIZE) + 
+            (ITFLIESBY_ASSET_FILE_VERIFICATION_SIZE) + 
             (ITFLIESBY_ASSET_FILE_INDEX_SIZE *  num_indexes);
 
 
@@ -549,13 +549,11 @@ internal s32
     asset_file_builder->index_memory = 
         itfliesby_asset_file_builder_memory_block_push(
             asset_file_builder,
-            sizeof(ItfliesbyAssetFileindex) * asset_file->file_header.num_indexs
+            ITFLIESBY_ASSET_FILE_INDEX_SIZE_TOTAL(asset_file->file_header.num_indexs)
     );
     asset_file->file_header.indexes = (ItfliesbyAssetFileindex*)asset_file_builder->index_memory->data;
 
-    u32 asset_index_offset = 
-        sizeof(ItfliesbyAssetFileHeaderPacked) + 
-        (sizeof(ItfliesbyAssetFileindex) * asset_file->file_header.num_indexs); 
+    u32 asset_index_offset = ITFLIESBY_ASSET_FILE_HEADER_SIZE(asset_file->file_header.num_indexs);
 
     HANDLE tmp_file_handle;
     for (
@@ -604,6 +602,8 @@ internal s32
         asset_index_offset += asset_index->allocation_size;
     }
 
+    u32 total_header_size = ITFLIESBY_ASSET_FILE_HEADER_SIZE(asset_file->file_header.num_indexs);
+
     //pack the header info
     ItfliesbyAssetFileHeaderPacked packed_header = {0};
     packed_header.num_indexs   = asset_file->file_header.num_indexs; 
@@ -612,9 +612,8 @@ internal s32
     packed_header.verification[2] = 'B';
 
     //allocate space for the header
-    u32 header_size  = itfliesby_asset_file_builder_asset_header_size(true, asset_file->file_header.num_indexs); 
-    u32 header_start = header_size - (ITFLIESBY_ASSET_FILE_INDEX_SIZE * asset_file->file_header.num_indexs);
-
+    u32 header_size  = ITFLIESBY_ASSET_FILE_HEADER_SIZE(asset_file->file_header.num_indexs); 
+    u32 header_start = ITFLIESBY_ASSET_FILE_VERIFICATION_SIZE; 
 
     ItfliesbyAssetFileBuilderMemoryBlock* header_memory_block = 
         itfliesby_asset_file_builder_memory_block_push(
@@ -757,11 +756,11 @@ internal s32
         );
 
         //write the asset memory to the file
-        // itfliesby_asset_file_builder_append_file(
-        //     asset_file_builder->asset_file.file_handle,
-        //     asset_memory_block->data_size,
-        //     asset_memory_block->data
-        // );
+        itfliesby_asset_file_builder_append_file(
+            asset_file_builder->asset_file.file_handle,
+            asset_memory_block->data_size,
+            asset_memory_block->data
+        );
 
         //reset everything for the next asset
         itfliesby_asset_file_builder_memory_block_pop(asset_file_builder);

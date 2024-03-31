@@ -1,3 +1,4 @@
 - Libraries to consider
+https://github.com/raizam/gamedev_libraries/blob/master/README.md
     - Asset Consolidation:
         https://icculus.org/physfs/
