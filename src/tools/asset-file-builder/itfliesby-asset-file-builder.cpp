@@ -56,11 +56,12 @@ itfliesby_asset_file_builder_asset_header_size(
 
     u32 header_size = packed
         ?
-            (sizeof(ItfliesbyAssetFileHeader) - sizeof(ItfliesbyAssetFileindex*)) + 
-            (sizeof(ItfliesbyAssetFileindex) *  num_indexes)
+            ITFLIESBY_ASSET_FILE_HEADER_SIZE + 
+            (ITFLIESBY_ASSET_FILE_INDEX_SIZE *  num_indexes)
+
         :
-            sizeof(ItfliesbyAssetFileHeaderPacked) + 
-            (sizeof(ItfliesbyAssetFileindex) *  num_indexes);
+            (ITFLIESBY_ASSET_FILE_HEADER_SIZE) + 
+            (ITFLIESBY_ASSET_FILE_INDEX_SIZE *  num_indexes);
 
 
     return(header_size);
@@ -612,7 +613,7 @@ internal s32
 
     //allocate space for the header
     u32 header_size = itfliesby_asset_file_builder_asset_header_size(true, asset_file->file_header.num_indexs); 
-    u32 header_start = header_size - (sizeof(ItfliesbyAssetFileindex) * asset_file->file_header.num_indexs);
+    u32 header_start = header_size - (ITFLIESBY_ASSET_FILE_INDEX_SIZE * asset_file->file_header.num_indexs);
 
 
     ItfliesbyAssetFileBuilderMemoryBlock* header_memory_block = 
@@ -630,11 +631,30 @@ internal s32
         header_start
     );
 
-    memmove(
-        &asset_file_builder->header_data[header_start],
-        asset_file->file_header.indexes,
-        sizeof(ItfliesbyAssetFileindex) * asset_file->file_header.num_indexs
-    );
+    u32 offset = header_start;
+    for (
+        u32 index = 0;
+        index < packed_header.num_indexs;
+        ++index) {
+
+        ItfliesbyAssetFileindex file_index = asset_file->file_header.indexes[index];
+
+        //copy the tag
+        memmove(
+            &asset_file_builder->header_data[offset],
+            file_index.tag,
+            32
+        );
+        offset += 32;
+
+        //copy the rest of the index info
+        memmove(
+            &asset_file_builder->header_data[offset],
+            &file_index.file_size,
+            sizeof(u32) * 3
+        );
+        offset += sizeof(u32) * 3;
+    }
 
     if (!itfliesby_asset_file_builder_write_file(
         asset_file->file_handle,
@@ -643,7 +663,6 @@ internal s32
 
         return(ITFLIESBY_ASSET_FILE_BUILDER_RETURN_CODE_ASSET_FILE_CREATE_FAILURE);
     }
-
 
     //now, we are going to write the actual header data
     itfliesby_asset_file_builder_debug_output_line(
@@ -704,8 +723,7 @@ internal s32
         if (!itfliesby_asset_file_builder_read_file(
             asset_file_handle,
             file_contents_block->data_size,
-            file_contents_block->data
-        )) {
+            file_contents_block->data)) {
             
             itfliesby_asset_file_builder_debug_output_line(
                 asset_file_builder,
@@ -739,11 +757,11 @@ internal s32
         );
 
         //write the asset memory to the file
-        itfliesby_asset_file_builder_append_file(
-            asset_file_builder->asset_file.file_handle,
-            asset_memory_block->data_size,
-            asset_memory_block->data
-        );
+        // itfliesby_asset_file_builder_append_file(
+        //     asset_file_builder->asset_file.file_handle,
+        //     asset_memory_block->data_size,
+        //     asset_memory_block->data
+        // );
 
         //reset everything for the next asset
         itfliesby_asset_file_builder_memory_block_pop(asset_file_builder);

@@ -71,16 +71,20 @@ struct ItfliesbyAssetFileindex {
 
 struct ItfliesbyAssetFileHeader {
     char                     verification[3];
-    u16                      num_indexs;
+    u32                      num_indexs;
     ItfliesbyAssetFileindex* indexes;
 };
+
+#define ITFLIESBY_ASSET_FILE_INDEX_SIZE ((sizeof(u32) * 3) + (sizeof(char) * 32))
 
 PACK(
     struct ItfliesbyAssetFileHeaderPacked {
         char                     verification[3];
-        u16                      num_indexs;
+        u32                      num_indexs;
     };
 );
+
+#define ITFLIESBY_ASSET_FILE_HEADER_SIZE (sizeof(u32) + (sizeof(char) * 3))
 
 struct ItfliesbyAssetsGameAssetFile {
     file_handle              file_handle;
