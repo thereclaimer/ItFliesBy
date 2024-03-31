@@ -196,3 +196,62 @@ itfliesby_engine_assets_index_allocation_size(
 
     return(index_memory_size);
 }
+
+internal void
+itfliesby_engine_assets_load_asset_from_index(
+    ItfliesbyEngineAssetsFileindex asset_file_index,
+    handle                         asset_file_handle,
+    memory                         asset_file_memory) {
+
+    platform_api.file_read(
+        asset_file_handle,
+        asset_file_index.offset,
+        asset_file_index.allocation_size,
+        asset_file_memory   
+    );
+}
+
+internal void
+itfliesby_engine_assets_load_shaders(
+    ItfliesbyEngineAssets* assets,
+    s32*                   shader_index_ids,
+    memory                 shader_memory,
+    u64*                   shader_offsets,
+    u32                    shader_count) {
+
+    ITFLIESBY_ASSERT(
+        assets && 
+        shader_memory &&
+        shader_count > 0);
+
+    //NOTE: we are assuming here you have allocated the memory
+    //fuck around and find out
+
+    ItfliesbyEngineAssetsFileindex* shader_file_indexes = assets->file_index_store.collections.shader_indexes.indexes;
+    handle                          shader_file_handle  = assets->file_handles.handles.shader_asset_file;
+    ItfliesbyEngineAssetsFileindex  current_shader_file_index;
+    memory                          current_shader_memory;
+    u64                             current_shader_offset = 0;
+
+    for (
+        u32 shader_index = 0;
+        shader_index < shader_count;
+        ++shader_index) {
+
+        //get info for the current shader
+        current_shader_memory     = &shader_memory[current_shader_offset];
+        current_shader_file_index = shader_file_indexes[shader_index];
+
+        //load the shader
+        itfliesby_engine_assets_load_asset_from_index(
+            current_shader_file_index,
+            shader_file_handle,
+            current_shader_memory
+        );
+    
+        //update the offsets
+        shader_offsets[shader_index] = current_shader_offset;
+        current_shader_offset       += current_shader_file_index.allocation_size;
+    }
+
+}

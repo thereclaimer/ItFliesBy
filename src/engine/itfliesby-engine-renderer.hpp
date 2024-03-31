@@ -4,8 +4,10 @@
 #include "itfliesby-engine.hpp"
 #include "itfliesby-engine-globals.hpp"
 
-#define ITFLIESBY_ENGINE_RENDERER_MEMORY_PARTITION_SIZE         ITFLIESBY_MATH_MEGABYTES(64)
-#define ITFLIESBY_ENGINE_RENDERER_MEMORY_PARTITION_CONTEXT_SIZE ITFLIESBY_MATH_MEGABYTES(64)
+#define ITFLIESBY_ENGINE_RENDERER_MEMORY_PARTITION_SIZE             ITFLIESBY_MATH_MEGABYTES(64)
+#define ITFLIESBY_ENGINE_RENDERER_MEMORY_PARTITION_CONTEXT_SIZE     ITFLIESBY_MATH_MEGABYTES(64)
+#define ITFLIESBY_ENGINE_RENDERER_MEMORY_ALLOCATOR_SIZE_COMPOSITE   512
+#define ITFLIESBY_ENGINE_RENDERER_MEMORY_ALLOCATOR_SIZE_SHADER_DATA ITFLIESBY_MATH_MEGABYTES(4)
 
 enum ItfliesbyEngineRendererShaderStageStatus : s32{
     ITFLIESBY_ENGINE_RENDERER_SHADER_STAGE_STATUS_UNLOADED = 0,
@@ -65,6 +67,7 @@ struct ItfliesbyEngineRendererMemory {
     itfliesby_memory_partition        partition;
     itfliesby_memory_partition        rendering_context_partition;
     itfliesby_memory_allocator_linear shader_asset_composite_allocator;
+    itfliesby_memory_allocator_linear shader_asset_data_allocator;
 };
 
 struct ItfliesbyEngineRenderer {

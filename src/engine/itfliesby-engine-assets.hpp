@@ -100,5 +100,13 @@ itfliesby_engine_assets_index_allocation_size(
     ItfliesbyEngineAssetsFileIndexCollection* index_collection,
     s32*                                      index_ids,
     s32                                       index_ids_count);
-    
+
+void
+itfliesby_engine_assets_load_shaders(
+    ItfliesbyEngineAssets* assets,
+    s32*                   shader_index_ids,
+    memory                 shader_memory,
+    u64*                   shader_offsets,
+    u32                    shader_count);
+
 #endif //ITFLIESBY_ENGINE_ASSETS_HPP

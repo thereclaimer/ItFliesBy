@@ -552,6 +552,10 @@ internal s32
     );
     asset_file->file_header.indexes = (ItfliesbyAssetFileindex*)asset_file_builder->index_memory->data;
 
+    u32 asset_index_offset = 
+        sizeof(ItfliesbyAssetFileHeaderPacked) + 
+        (sizeof(ItfliesbyAssetFileindex) * asset_file->file_header.num_indexs); 
+
     HANDLE tmp_file_handle;
     for (
         u32 index = 0;
@@ -594,6 +598,9 @@ internal s32
 
         //TODO: we need to account for other types of file allocations
         asset_index->allocation_size = asset_index->file_size;
+        asset_index->offset = asset_index_offset;
+
+        asset_index_offset += asset_index->allocation_size;
     }
 
     //pack the header info
