@@ -87,9 +87,6 @@ itfliesby_engine_renderer_init(
             ITFLIESBY_ENGINE_RENDERER_MEMORY_PARTITION_CONTEXT_SIZE
     );
     ITFLIESBY_ASSERT(renderer->renderer_handle);
-
-
-    ITFLIESBY_NOP();
 }
 
 //TODO: these can all be converted to u8*
@@ -158,7 +155,7 @@ itfliesby_engine_renderer_shader_stages_vertex_update(
 
     //get the size of our shader data
     u64 allocation_size = itfliesby_engine_assets_index_allocation_size(
-        &assets->file_index_store.collections.shader_indexes,
+        assets->file_index_store.shader_indexes,
         composite_assets,
         composite_count
     );
@@ -167,52 +164,52 @@ itfliesby_engine_renderer_shader_stages_vertex_update(
     //if we don't have enough space, but for now we are assuming we can fit everything here
 
     //allocate space for the shader data    
-    ITFLIESBY_ASSERT(allocation_size < ITFLIESBY_ENGINE_RENDERER_MEMORY_ALLOCATOR_SIZE_SHADER_DATA);
-    memory shader_memory = 
-        itfliesby_memory_allocator_linear_allocate(
-            renderer_memory->shader_asset_data_allocator,
-            allocation_size
-    );
-    ITFLIESBY_ASSERT(shader_memory);
+    // ITFLIESBY_ASSERT(allocation_size < ITFLIESBY_ENGINE_RENDERER_MEMORY_ALLOCATOR_SIZE_SHADER_DATA);
+    // memory shader_memory = 
+    //     itfliesby_memory_allocator_linear_allocate(
+    //         renderer_memory->shader_asset_data_allocator,
+    //         allocation_size
+    // );
+    // ITFLIESBY_ASSERT(shader_memory);
 
-    //IDGAF
-    u64 offsets[ITFLIESBY_ENGINE_RENDERER_SHADER_STAGE_VERTEX_COUNT];
+    // //IDGAF
+    // u64 offsets[ITFLIESBY_ENGINE_RENDERER_SHADER_STAGE_VERTEX_COUNT];
 
-    //read the shader data
-    itfliesby_engine_assets_load_shaders(
-        assets,
-        composite_assets,
-        shader_memory,
-        offsets,
-        composite_count
-    );
+    // //read the shader data
+    // itfliesby_engine_assets_load_shaders(
+    //     assets,
+    //     composite_assets,
+    //     shader_memory,
+    //     offsets,
+    //     composite_count
+    // );
 
-    //now we can compile the shaders
-    itfliesby_renderer_api_shader_compile_vertex_shaders(
-        renderer,
-        (const char*)shader_memory,
-        offsets,
-        composite_count,
-        composite_renderer_shaders
-    );
+    // //now we can compile the shaders
+    // itfliesby_renderer_api_shader_compile_vertex_shaders(
+    //     renderer,
+    //     (const char*)shader_memory,
+    //     offsets,
+    //     composite_count,
+    //     composite_renderer_shaders
+    // );
 
-    //write the results back to our shader store
-    u32 current_renderer_vertex_id;
-    u32 current_engine_vertex_shader_index;
-    for (
-        u32 composite_index = 0;
-        composite_index < composite_count;
-        ++composite_index) {
+    // //write the results back to our shader store
+    // u32 current_renderer_vertex_id;
+    // u32 current_engine_vertex_shader_index;
+    // for (
+    //     u32 composite_index = 0;
+    //     composite_index < composite_count;
+    //     ++composite_index) {
         
-        current_engine_vertex_shader_index = composite_engine_shaders[composite_index];
-        current_renderer_vertex_id         = composite_renderer_shaders[composite_index];
+    //     current_engine_vertex_shader_index = composite_engine_shaders[composite_index];
+    //     current_renderer_vertex_id         = composite_renderer_shaders[composite_index];
 
-        vertex_renderer_stage[current_engine_vertex_shader_index] = current_renderer_vertex_id;
-        vertex_status[current_engine_vertex_shader_index]         = ITFLIESBY_ENGINE_RENDERER_SHADER_STAGE_STATUS_COMPILED;
-    }
+    //     vertex_renderer_stage[current_engine_vertex_shader_index] = current_renderer_vertex_id;
+    //     vertex_status[current_engine_vertex_shader_index]         = ITFLIESBY_ENGINE_RENDERER_SHADER_STAGE_STATUS_COMPILED;
+    // }
 
-    //reset the memory
-    itfliesby_memory_allocator_linear_reset(renderer_memory->shader_asset_data_allocator);
+    // //reset the memory
+    // itfliesby_memory_allocator_linear_reset(renderer_memory->shader_asset_data_allocator);
 }
 
 internal void

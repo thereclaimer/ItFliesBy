@@ -72,12 +72,13 @@ itfliesby_renderer_shader_compile_vertex_shaders(
         shader_index < shader_count;
         ++shader_index) {
 
-        //get our next shader buffer
+        // get our next shader buffer
         current_shader_offset = shader_offsets[shader_index];
-        auto current_shader        = &shader_buffer[current_shader_offset];
-        
-        //compile the shader
+        auto current_shader   = &shader_buffer[current_shader_offset];
+
+        // compile the shader
         glShaderSource( vertex_shader_gl_id[shader_index],1,&current_shader,NULL);
+        auto error = glGetError();
         glCompileShader(vertex_shader_gl_id[shader_index]);
         glGetShaderiv(  vertex_shader_gl_id[shader_index], GL_COMPILE_STATUS, &current_compile_status);
 

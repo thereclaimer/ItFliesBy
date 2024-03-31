@@ -51,19 +51,8 @@ PACK(
 #define ITFLIESBY_ASSET_FILE_VERIFICATION_SIZE             (sizeof(u32) + 3)
 #define ITFLIESBY_ASSET_FILE_HEADER_SIZE(num_indexes)      (ITFLIESBY_ASSET_FILE_VERIFICATION_SIZE + ITFLIESBY_ASSET_FILE_INDEX_SIZE_TOTAL(num_indexes))
 
-
-struct ItfliesbyEngineAssetsFileIndexCollection {
-    ItfliesbyEngineAssetsFileindex* indexes;
-    u32                             indexes_count;
-};
-
 struct ItfliesbyEngineAssetsFileIndexStore {
-    union {
-        struct {
-            ItfliesbyEngineAssetsFileIndexCollection shader_indexes;
-        } collections;
-        ItfliesbyEngineAssetsFileIndexCollection array[ITFLIESBY_ASSETS_FILE_ID_COUNT];
-    };
+    ItfliesbyEngineAssetsFileindex shader_indexes[ITFLIESBY_ENGINE_ASSETS_SHADER_COUNT];
 };
 
 const char* ITFLIESBY_ENGINE_ASSETS_FILE_PATHS[] = {
@@ -76,12 +65,7 @@ struct ItfliesbyEngineAssetsFileHandles {
             handle shader_asset_file;
         };
         handle array[ITFLIESBY_ASSETS_FILE_ID_COUNT];
-    } handles; 
-    ItfliesbyEngineAssetsFileId unloaded_files[ITFLIESBY_ASSETS_FILE_ID_COUNT];
-    ItfliesbyEngineAssetsFileId missing_files[ITFLIESBY_ASSETS_FILE_ID_COUNT];
-    u32                         unloaded_files_count;
-    u32                         missing_files_count;
-
+    }; 
 };
 
 struct ItfliesbyEngineAssets {
@@ -103,14 +87,13 @@ itfliesby_engine_assets_update(
 
 void
 itfliesby_engine_assets_file_handles_load(
-    ItfliesbyEngineAssetsFileHandles* assets
-);
+    ItfliesbyEngineAssetsFileHandles* assets);
 
 u64
 itfliesby_engine_assets_index_allocation_size(
-    ItfliesbyEngineAssetsFileIndexCollection* index_collection,
-    s32*                                      index_ids,
-    s32                                       index_ids_count);
+    ItfliesbyEngineAssetsFileindex* indexes,
+    s32*                            index_ids,
+    s32                             index_ids_count);
 
 void
 itfliesby_engine_assets_load_shaders(
