@@ -612,7 +612,7 @@ internal s32
     packed_header.verification[2] = 'B';
 
     //allocate space for the header
-    u32 header_size = itfliesby_asset_file_builder_asset_header_size(true, asset_file->file_header.num_indexs); 
+    u32 header_size  = itfliesby_asset_file_builder_asset_header_size(true, asset_file->file_header.num_indexs); 
     u32 header_start = header_size - (ITFLIESBY_ASSET_FILE_INDEX_SIZE * asset_file->file_header.num_indexs);
 
 
