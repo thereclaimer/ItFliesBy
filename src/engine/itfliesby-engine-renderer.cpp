@@ -152,6 +152,13 @@ itfliesby_engine_renderer_shader_stages_vertex_update(
     vertex_shader_asset_composite.count = composite_count;
 
     //now, we need to load the shader data
+    u64 allocation_size = itfliesby_engine_assets_index_allocation_size(
+        &assets->file_index_store.collections.shader_indexes,
+        composite_assets,
+        composite_count
+    );
+
+    ITFLIESBY_NOP();
     
 }
 

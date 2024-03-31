@@ -85,7 +85,7 @@ itfliesby_engine_assets_init(
     itfliesby_memory_arena arena
 );
 
-internal void
+void
 itfliesby_engine_assets_update(
     ItfliesbyEngineAssets* assets
 );
@@ -95,4 +95,10 @@ itfliesby_engine_assets_file_handles_load(
     ItfliesbyEngineAssetsFileHandles* assets
 );
 
+u64
+itfliesby_engine_assets_index_allocation_size(
+    ItfliesbyEngineAssetsFileIndexCollection* index_collection,
+    s32*                                      index_ids,
+    s32                                       index_ids_count);
+    
 #endif //ITFLIESBY_ENGINE_ASSETS_HPP

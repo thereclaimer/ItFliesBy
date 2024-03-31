@@ -591,6 +591,9 @@ internal s32
             asset_index->tag,
             file_type_string
         );
+
+        //TODO: we need to account for other types of file allocations
+        asset_index->allocation_size = asset_index->file_size;
     }
 
     //pack the header info
@@ -716,6 +719,7 @@ internal s32
                 //by default we treat this as a text file
                 //to do that, just make the asset memory the same as the file memory
                 asset_memory_block = file_contents_block;
+                header_index->allocation_size = asset_memory_block->data_size;
             } break;
         }
 
