@@ -1,0 +1,3 @@
+- Libraries to consider
+    - Asset Consolidation:
+        https://icculus.org/physfs/
