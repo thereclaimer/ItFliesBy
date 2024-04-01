@@ -95,6 +95,12 @@ itfliesby_engine_assets_index_allocation_size(
     s32*                            index_ids,
     s32                             index_ids_count);
 
+u64
+itfliesby_engine_assets_shader_allocation_size(
+    ItfliesbyEngineAssets* assets,
+    s32*                   shader_index_ids,
+    s32                    shader_index_ids_count);
+
 void
 itfliesby_engine_assets_load_shaders(
     ItfliesbyEngineAssets* assets,

@@ -50,6 +50,7 @@ itfliesby_engine_create(
 
     itfliesby_engine_renderer_init(
         &engine->renderer,
+        &engine->assets,
         engine->memory.arena
     );
 

@@ -2,6 +2,9 @@
 
 #include "itfliesby-engine.hpp"
 
+
+
+
 internal u32
 itfliesby_engine_assets_file_header_num_indexes(
     const handle asset_handle) {
@@ -248,6 +251,40 @@ itfliesby_engine_assets_index_allocation_size(
     }
 
     return(index_memory_size);
+}
+
+internal u64
+itfliesby_engine_assets_shader_allocation_size(
+    ItfliesbyEngineAssets* assets,
+    s32*                   shader_index_ids,
+    s32                    shader_index_ids_count) {
+
+    ITFLIESBY_ASSERT(
+        assets                     &&
+        shader_index_ids           &&
+        shader_index_ids_count > 0 &&
+        shader_index_ids_count < ITFLIESBY_ENGINE_ASSETS_SHADER_COUNT
+    );
+
+    ItfliesbyEngineAssetsFileindex* shader_file_indexes = assets->file_index_store.shader_indexes;
+
+    ItfliesbyEngineAssetsFileindex current_index;
+    u64 shader_allocation_size = 0;
+    u64 index_memory_size      = 0;
+    u32 current_index_id       = 0;
+
+    for (
+        u32 index = 0;
+        index < shader_index_ids_count;
+        ++index) {
+
+        //get the index size
+        current_index_id  = shader_index_ids[index];
+        current_index     = shader_file_indexes[current_index_id];
+        index_memory_size += current_index.allocation_size;
+    }
+
+    return(shader_allocation_size);
 }
 
 internal void
