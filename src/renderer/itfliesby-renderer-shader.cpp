@@ -78,9 +78,10 @@ itfliesby_renderer_shader_compile_vertex_shaders(
 
         // compile the shader
         glShaderSource( vertex_shader_gl_id[shader_index],1,&current_shader,NULL);
-        auto error = glGetError();
         glCompileShader(vertex_shader_gl_id[shader_index]);
         glGetShaderiv(  vertex_shader_gl_id[shader_index], GL_COMPILE_STATUS, &current_compile_status);
+
+        b8 success = 
 
         //store the result
         shader_results[shader_index] = shader_store_count;

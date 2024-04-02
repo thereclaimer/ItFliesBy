@@ -43,6 +43,8 @@ itfliesby_core_renderer_create(
         1.0f
     );
 
+    itfliesby_renderer_shaders_init(&renderer->shaders);
+
     return(renderer);
 }
 

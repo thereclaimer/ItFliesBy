@@ -9,7 +9,9 @@ out vec2 fragment_uv;
 
 void main()
 {
-    gl_Position = transform * vec3(vertex_position, 1.0);
+    vec3 transformed_vertex_position = transform * vec3(vertex_position, 1.0);
+
+    gl_Position = vec4(transformed_vertex_position.xy, 0.0, 1.0);
 
     fragment_uv = vertex_uv;
 }
