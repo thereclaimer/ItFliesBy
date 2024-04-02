@@ -97,16 +97,16 @@ itfliesby_engine_assets_index_allocation_size(
 
 u64
 itfliesby_engine_assets_shader_allocation_size(
-    ItfliesbyEngineAssets* assets,
-    s32*                   shader_index_ids,
-    s32                    shader_index_ids_count);
+    ItfliesbyEngineAssets*       assets,
+    ItfliesbyEngineAssetsShader* shader_index_ids,
+    s32                          shader_index_ids_count);
 
 void
 itfliesby_engine_assets_load_shaders(
-    ItfliesbyEngineAssets* assets,
-    s32*                   shader_index_ids,
-    memory                 shader_memory,
-    u64*                   shader_offsets,
-    u32                    shader_count);
+    ItfliesbyEngineAssets*       assets,
+    ItfliesbyEngineAssetsShader* shader_index_ids,
+    memory                       shader_memory,
+    u64*                         shader_offsets,
+    u32                          shader_count);
 
 #endif //ITFLIESBY_ENGINE_ASSETS_HPP

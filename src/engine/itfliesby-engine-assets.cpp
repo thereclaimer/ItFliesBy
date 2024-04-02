@@ -255,9 +255,9 @@ itfliesby_engine_assets_index_allocation_size(
 
 internal u64
 itfliesby_engine_assets_shader_allocation_size(
-    ItfliesbyEngineAssets* assets,
-    s32*                   shader_index_ids,
-    s32                    shader_index_ids_count) {
+    ItfliesbyEngineAssets*       assets,
+    ItfliesbyEngineAssetsShader* shader_index_ids,
+    s32                          shader_index_ids_count) {
 
     ITFLIESBY_ASSERT(
         assets                     &&
@@ -270,7 +270,6 @@ itfliesby_engine_assets_shader_allocation_size(
 
     ItfliesbyEngineAssetsFileindex current_index;
     u64 shader_allocation_size = 0;
-    u64 index_memory_size      = 0;
     u32 current_index_id       = 0;
 
     for (
@@ -279,9 +278,9 @@ itfliesby_engine_assets_shader_allocation_size(
         ++index) {
 
         //get the index size
-        current_index_id  = shader_index_ids[index];
-        current_index     = shader_file_indexes[current_index_id];
-        index_memory_size += current_index.allocation_size;
+        current_index_id        = shader_index_ids[index];
+        current_index           = shader_file_indexes[current_index_id];
+        shader_allocation_size += current_index.allocation_size;
     }
 
     return(shader_allocation_size);
@@ -303,11 +302,11 @@ itfliesby_engine_assets_load_asset_from_index(
 
 internal void
 itfliesby_engine_assets_load_shaders(
-    ItfliesbyEngineAssets* assets,
-    s32*                   shader_index_ids,
-    memory                 shader_memory,
-    u64*                   shader_offsets,
-    u32                    shader_count) {
+    ItfliesbyEngineAssets*       assets,
+    ItfliesbyEngineAssetsShader* shader_index_ids,
+    memory                       shader_memory,
+    u64*                         shader_offsets,
+    u32                          shader_count) {
 
     ITFLIESBY_ASSERT(
         assets && 

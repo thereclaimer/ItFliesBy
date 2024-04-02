@@ -56,7 +56,8 @@ void
 itfliesby_engine_renderer_shader_store_init(
     ItfliesbyEngineRendererShaderStageStore* shader_stage_store,
     ItfliesbyEngineRendererMemory*           renderer_memory,
-    ItfliesbyEngineAssets*                   assets);
+    ItfliesbyEngineAssets*                   assets,
+    itfliesby_renderer                       render_context);
 
 void
 itfliesby_engine_renderer_init(

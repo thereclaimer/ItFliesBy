@@ -34,6 +34,7 @@ itfliesby_core_renderer_create(
 
     //initialize opengl
     renderer->gl_context = platform.graphics_api_init(platform.window);
+    ITFLIESBY_ASSERT(glewInit() == GLEW_OK);
 
     glClearColor(
         0.157f,
