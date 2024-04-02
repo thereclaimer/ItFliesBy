@@ -15,48 +15,46 @@ itfliesby_engine_renderer_shader_store_init(
         assets
     );
 
-    const u32 count_shader_stages_vertex   = 1;
-    const u32 count_shader_stages_fragment = 1;
-
+    //get the info and allocation sizes of our shaders
     auto shader_stage_id_vertex   = shader_stage_store->renderer_stage_id_vertex;
     auto shader_stage_id_fragment = shader_stage_store->renderer_stage_id_fragment;
+
+    const u32 count_shader_stages_vertex   = 1;
+    const u32 count_shader_stages_fragment = 1;
 
     ItfliesbyEngineAssetsShader shader_stage_asset_id_vertex[count_shader_stages_vertex] = {
         ITFLIESBY_ENGINE_ASSETS_SHADER_TEXTURED_QUAD_VERTEX_SHADER
     };
 
-    const u64 memory_size_shader_stages_vertex = 
-        itfliesby_engine_assets_shader_allocation_size(
-            assets,shader_stage_asset_id_vertex,count_shader_stages_vertex
-        );
+    ItfliesbyEngineAssetsShader shader_stage_asset_id_fragment[count_shader_stages_fragment] = {
+        ITFLIESBY_ENGINE_ASSETS_SHADER_TEXTURED_QUAD_FRAGMENT_SHADER
+    };
+
+    const u64 memory_size_shader_stages_vertex   = itfliesby_engine_assets_shader_allocation_size(assets, shader_stage_asset_id_vertex,   count_shader_stages_vertex);
+    const u64 memory_size_shader_stages_fragment = itfliesby_engine_assets_shader_allocation_size(assets, shader_stage_asset_id_fragment, count_shader_stages_fragment);
 
     ITFLIESBY_ASSERT(memory_size_shader_stages_vertex > 0);
+    ITFLIESBY_ASSERT(memory_size_shader_stages_fragment > 0);
 
+    //allocate space for the shaders
     auto shader_asset_data_allocator = renderer_memory->shader_asset_data_allocator;
 
-    memory memory_shader_stage_vertex = itfliesby_memory_allocator_linear_allocate(
-        shader_asset_data_allocator,
-        memory_size_shader_stages_vertex
-    );
+    memory memory_shader_stage_vertex   = itfliesby_memory_allocator_linear_allocate(shader_asset_data_allocator,memory_size_shader_stages_vertex);
+    memory memory_shader_stage_fragment = itfliesby_memory_allocator_linear_allocate(shader_asset_data_allocator,memory_size_shader_stages_fragment);
+
     ITFLIESBY_ASSERT(memory_shader_stage_vertex);
+    ITFLIESBY_ASSERT(memory_size_shader_stages_fragment);
 
-    u64 offsets[count_shader_stages_vertex] = {0};
+    u64 offsets_vertex[count_shader_stages_vertex]     = {0};
+    u64 offsets_fragment[count_shader_stages_fragment] = {0};
 
-    itfliesby_engine_assets_load_shaders(
-        assets,
-        shader_stage_asset_id_vertex,
-        memory_shader_stage_vertex,
-        offsets,
-        count_shader_stages_vertex
-    );
+    //load the shaders
+    itfliesby_engine_assets_load_shaders(assets, shader_stage_asset_id_vertex,   memory_shader_stage_vertex,   offsets_vertex,   count_shader_stages_vertex);
+    itfliesby_engine_assets_load_shaders(assets, shader_stage_asset_id_fragment, memory_shader_stage_fragment, offsets_fragment, count_shader_stages_fragment);
 
-    itfliesby_renderer_api_shader_compile_vertex_shaders(
-        render_context,
-        (const char*)memory_shader_stage_vertex,
-        offsets,
-        count_shader_stages_vertex,
-        shader_stage_id_vertex
-    );
+    //compile the shaders
+    itfliesby_renderer_api_shader_compile_vertex_shaders(  render_context,(const char*)memory_shader_stage_vertex,   offsets_vertex,   count_shader_stages_vertex, shader_stage_id_vertex);
+    itfliesby_renderer_api_shader_compile_fragment_shaders(render_context,(const char*)memory_shader_stage_fragment, offsets_fragment, count_shader_stages_fragment, shader_stage_id_fragment);
 }
 
 internal void

@@ -66,6 +66,8 @@ itfliesby_memory_allocator_linear_allocate(
 
     memory allocation = (memory)allocator_header + sizeof(ItfliesbyMemoryAllocatorHeader) + allocator->used_space;
 
+    allocator->used_space += allocation_size;
+
     return(allocation);
 }
 

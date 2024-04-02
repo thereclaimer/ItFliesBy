@@ -59,7 +59,6 @@ itfliesby_renderer_shader_compile_vertex_shaders(
     );
 
     //cache our stuff
-    // const char** current_shader        = NULL;
     GLint*       vertex_shader_gl_id   = shader_store->gl_id_shader_stage_vertex;
     u64          current_shader_offset;
     GLint        current_shader_gl_id;
@@ -80,8 +79,6 @@ itfliesby_renderer_shader_compile_vertex_shaders(
         glShaderSource( vertex_shader_gl_id[shader_index],1,&current_shader,NULL);
         glCompileShader(vertex_shader_gl_id[shader_index]);
         glGetShaderiv(  vertex_shader_gl_id[shader_index], GL_COMPILE_STATUS, &current_compile_status);
-
-        b8 success = 
 
         //store the result
         shader_results[shader_index] = shader_store_count;
@@ -113,7 +110,6 @@ itfliesby_renderer_shader_compile_fragment_shaders(
     );
 
     //cache our stuff
-    const char** current_shader        = NULL;
     GLint*       fragment_shader_gl_id = shader_store->gl_id_shader_stage_fragment;
     u64          current_shader_offset;
     GLint        current_shader_gl_id;
@@ -128,10 +124,10 @@ itfliesby_renderer_shader_compile_fragment_shaders(
 
         //get our next shader buffer
         current_shader_offset = shader_offsets[shader_index];
-        current_shader        = (const char**)&shader_buffer[current_shader_offset];
+        auto current_shader   = &shader_buffer[current_shader_offset];
         
         //compile the shader
-        glShaderSource( fragment_shader_gl_id[shader_index],1,current_shader,NULL);
+        glShaderSource( fragment_shader_gl_id[shader_index],1,&current_shader,NULL);
         glCompileShader(fragment_shader_gl_id[shader_index]);
         glGetShaderiv(  fragment_shader_gl_id[shader_index], GL_COMPILE_STATUS, &current_compile_status);
 

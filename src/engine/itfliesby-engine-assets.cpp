@@ -113,8 +113,8 @@ itfliesby_engine_asset_indexes_load(
             ITFLIESBY_ASSET_FILE_INDEX_SIZE - 32
         );
 
-        //for some reason, 5 bytes get lost in translation
-        current_index->allocation_size += 5;
+        //for some reason,som bytes are getting lost in translation 
+        current_index->allocation_size += 4;
     }
 
     //destroy the index buffer and reset the allocator
@@ -321,15 +321,16 @@ itfliesby_engine_assets_load_shaders(
     ItfliesbyEngineAssetsFileindex  current_shader_file_index;
     memory                          current_shader_memory;
     u64                             current_shader_offset = 0;
-
+    ItfliesbyEngineAssetsShader     current_shader_index_id;
     for (
         u32 shader_index = 0;
         shader_index < shader_count;
         ++shader_index) {
 
         //get info for the current shader
+        current_shader_index_id   = shader_index_ids[shader_index];
         current_shader_memory     = &shader_memory[current_shader_offset];
-        current_shader_file_index = shader_file_indexes[shader_index];
+        current_shader_file_index = shader_file_indexes[current_shader_index_id];
 
         //load the shader
         itfliesby_engine_assets_load_asset_from_index(
