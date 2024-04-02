@@ -316,12 +316,12 @@ itfliesby_engine_assets_load_shaders(
     //NOTE: we are assuming here you have allocated the memory
     //fuck around and find out
 
-    ItfliesbyEngineAssetsFileindex* shader_file_indexes = assets->file_index_store.shader_indexes;
-    handle                          shader_file_handle  = assets->file_handles.shader_asset_file;
-    ItfliesbyEngineAssetsFileindex  current_shader_file_index;
-    memory                          current_shader_memory;
-    u64                             current_shader_offset = 0;
-    ItfliesbyEngineAssetsShader     current_shader_index_id;
+    ItfliesbyEngineAssetsFileindex* shader_file_indexes       = assets->file_index_store.shader_indexes;
+    handle                          shader_file_handle        = assets->file_handles.shader_asset_file;
+    ItfliesbyEngineAssetsFileindex  current_shader_file_index = {0};
+    memory                          current_shader_memory     = NULL;
+    u64                             current_shader_offset     = 0;
+    ItfliesbyEngineAssetsShader     current_shader_index_id   = ITFLIESBY_ENGINE_ASSETS_SHADER_INVALID;
     for (
         u32 shader_index = 0;
         shader_index < shader_count;
