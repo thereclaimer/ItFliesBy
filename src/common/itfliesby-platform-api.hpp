@@ -19,7 +19,8 @@ typedef void
 typedef  u64 
 (*func_itfliesby_platform_file_size)
 (
-    handle file_path
+    handle file_path,
+    b8     terminate
 );
 
 typedef handle
@@ -50,7 +51,8 @@ typedef void
     handle file_handle,
     u64    offset,
     u64    allocated_buffer_size,
-    memory allocated_buffer
+    memory allocated_buffer,
+    b8     terminate
 );
 
 typedef handle

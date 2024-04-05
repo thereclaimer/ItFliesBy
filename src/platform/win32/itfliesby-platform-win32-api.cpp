@@ -146,12 +146,34 @@ itfliesby_platform_win32_api_opengl_initialize(
 
 internal u64
 itfliesby_platform_win32_api_file_get_file_size_bytes(
-    HANDLE file_handle) {
+    HANDLE file_handle,
+    b8     terminate) {
 
+    //get the initial file size
     u64 file_size = 
         (file_handle == INVALID_HANDLE_VALUE)
         ? 0
         : GetFileSize(file_handle, NULL);
+
+    //if we dont care about termination, we're done
+    if (!terminate) {
+        return(file_size);
+    }
+
+    //if we do care, get the last byte
+    overlapped.Offset = file_size - 1;
+    u8 last_byte;
+    bool read_result = 
+        ReadFileEx(
+            file_handle,
+            &last_byte,
+            1,
+            &overlapped,
+            itfliesby_platform_win32_api_file_io_completion_routine
+        );
+
+    //if its not terminated, account for a null terminator
+    file_size += last_byte == '\0' ? 0 : 1;
 
     return(file_size);
 }
@@ -190,28 +212,33 @@ itfliesby_platform_win32_api_read_file(
     HANDLE file_handle,
     u64    offset,
     u64    allocated_buffer_size,
-    memory allocated_buffer) {
+    memory allocated_buffer,
+    b8     terminate) {
 
     ITFLIESBY_ASSERT(file_handle);
     ITFLIESBY_ASSERT(allocated_buffer);
 
     OVERLAPPED overlapped = {0};
 
-    //these happen to be the same value, but they have 2 different meanings
-    //one is size, one is an index
-    //DONT GET CONFUSED!!!
-    u64 actual_file_size      = allocated_buffer_size - 1;
-    u64 null_terminator_index = allocated_buffer_size - 1;
-
     overlapped.Offset = offset;
 
+    u64 adjusted_size = terminate ? allocated_buffer_size - 1 : allocated_buffer_size;
+
     bool read_result = 
-        ReadFileEx(file_handle,
+        ReadFileEx(
+            file_handle,
             allocated_buffer,
-            actual_file_size,
+            adjusted_size,
             &overlapped,
             itfliesby_platform_win32_api_file_io_completion_routine
     );
+
+    if (!terminate) {
+        return;
+    }
+
+    
+
 
     auto error = GetLastError();
 
