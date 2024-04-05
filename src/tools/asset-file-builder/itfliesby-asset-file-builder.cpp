@@ -155,7 +155,8 @@ internal bool
 itfliesby_asset_file_builder_read_file(
     HANDLE   file_handle,
     u64      allocated_buffer_size,
-    mem_data allocated_buffer) {
+    mem_data allocated_buffer,
+    b8       terminate) {
 
     OVERLAPPED overlapped = {0};
     bool read_result = 
@@ -702,7 +703,7 @@ internal s32
         file_contents_block = 
             itfliesby_asset_file_builder_memory_block_push(
                 asset_file_builder,
-                asset_file_size + 1
+                asset_file_size
             );
 
         if (!file_contents_block) {

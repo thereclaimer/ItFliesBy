@@ -161,6 +161,8 @@ itfliesby_platform_win32_api_file_get_file_size_bytes(
     }
 
     //if we do care, get the last byte
+    OVERLAPPED overlapped = {0};
+
     overlapped.Offset = file_size - 1;
     u8 last_byte;
     bool read_result = 
@@ -222,7 +224,8 @@ itfliesby_platform_win32_api_read_file(
 
     overlapped.Offset = offset;
 
-    u64 adjusted_size = terminate ? allocated_buffer_size - 1 : allocated_buffer_size;
+    u64 adjusted_size   = terminate ? allocated_buffer_size - 1 : allocated_buffer_size;
+    u64 last_byte_index = adjusted_size - 1;
 
     bool read_result = 
         ReadFileEx(
@@ -233,16 +236,13 @@ itfliesby_platform_win32_api_read_file(
             itfliesby_platform_win32_api_file_io_completion_routine
     );
 
-    if (!terminate) {
+    DWORD error = GetLastError();
+    
+    if (!terminate || allocated_buffer[last_byte_index] == '\0') {
         return;
     }
 
-    
-
-
-    auto error = GetLastError();
-
-    allocated_buffer[null_terminator_index] = '\0';
+    allocated_buffer[last_byte_index] = '\0';
 }
 
 internal void
