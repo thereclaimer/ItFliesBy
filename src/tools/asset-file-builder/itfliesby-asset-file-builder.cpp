@@ -282,8 +282,7 @@ itfliesby_asset_file_builder_memory_block_push(
         for (
             last_block = asset_file_builder->allocated_memory;
             last_block->next != NULL;
-            last_block = last_block->next
-        ) {
+            last_block = last_block->next) {
         }
 
         last_block->next = new_block;
@@ -463,8 +462,8 @@ itfliesby_asset_file_builder_process_input_file(
     for (
         u32 index = 0;
         index < csv_file.file_size;
-        ++index
-    ) {
+        ++index) {
+            
         char character = csv_file.buffer[index];
         if (character == '\n') {
             ++csv_file.num_entries;
