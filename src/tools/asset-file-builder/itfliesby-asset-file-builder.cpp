@@ -9,6 +9,10 @@
                      
 internal u64 bytes_read = 0;
 
+#define DO_TERMINATE_FILE     true
+#define DO_NOT_TERMINATE_FILE false
+
+
 internal void
 itfliesby_asset_file_builer_console_log(
     ItfliesbyAssetFileBuilder* asset_file_builder,
@@ -450,7 +454,8 @@ itfliesby_asset_file_builder_process_input_file(
     if (!itfliesby_asset_file_builder_read_file(
         csv_file.file_handle,
         csv_file.file_size,
-        csv_file.memory->data
+        csv_file.memory->data,
+        DO_TERMINATE_FILE
     )) {
         return(ITFLIESBY_ASSET_FILE_BUILDER_RETURN_CODE_CSV_READ_FAILURE);
     }
@@ -549,8 +554,9 @@ internal s32
     asset_file_builder->index_memory = 
         itfliesby_asset_file_builder_memory_block_push(
             asset_file_builder,
-            ITFLIESBY_ASSET_FILE_INDEX_SIZE_TOTAL(asset_file->file_header.num_indexs)
+            sizeof(ItfliesbyAssetFileindex) * asset_file->file_header.num_indexs
     );
+
     asset_file->file_header.indexes = (ItfliesbyAssetFileindex*)asset_file_builder->index_memory->data;
 
     u32 asset_index_offset = ITFLIESBY_ASSET_FILE_HEADER_SIZE(asset_file->file_header.num_indexs);
@@ -722,7 +728,8 @@ internal s32
         if (!itfliesby_asset_file_builder_read_file(
             asset_file_handle,
             file_contents_block->data_size,
-            file_contents_block->data)) {
+            file_contents_block->data,
+            DO_NOT_TERMINATE_FILE)) {
             
             itfliesby_asset_file_builder_debug_output_line(
                 asset_file_builder,
