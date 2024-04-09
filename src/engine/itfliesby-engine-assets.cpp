@@ -14,8 +14,9 @@ itfliesby_engine_assets_file_header_num_indexes(
     platform_api.file_read(
         asset_handle,
         0,
-        8,
-        (memory)header_buffer
+        7,
+        (memory)header_buffer,
+        false
     );
 
     ITFLIESBY_ASSERT(
@@ -49,9 +50,10 @@ itfliesby_engine_assets_file_header_allocate_and_read(
     //read the indexes into the buffer
     platform_api.file_read(
         asset_handle,
-        7,
+        8,
         asset_data_size,
-        asset_index_data
+        asset_index_data,
+        false
     );
 
     return(asset_index_data);
@@ -296,7 +298,8 @@ itfliesby_engine_assets_load_asset_from_index(
         asset_file_handle,
         asset_file_index.offset,
         asset_file_index.allocation_size,
-        asset_file_memory   
+        asset_file_memory,
+        false
     );
 }
 
