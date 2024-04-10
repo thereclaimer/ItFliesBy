@@ -10,14 +10,7 @@ itfliesby_guesstimater_processor_info_get(
     DWORD                                 win32_processor_info_buffer_length = 0;                                 
 
     //we call this the first time to get the length of the buffer
-    b8 processor_info_result = 
-        GetLogicalProcessorInformation(
-            win32_processor_info_buffer,
-            &win32_processor_info_buffer_length);
-
-    if (!processor_info_result) {
-        return(false);
-    }
+    GetLogicalProcessorInformation(NULL,&win32_processor_info_buffer_length);
 
     //allocate space for the info buffer
     win32_processor_info_buffer =  
@@ -31,22 +24,31 @@ itfliesby_guesstimater_processor_info_get(
     u32 num_entries = win32_processor_info_buffer_length / sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION);
 
     //now get the actual processor info
-    processor_info_result = 
-        GetLogicalProcessorInformation(
-            win32_processor_info_buffer,
-            &win32_processor_info_buffer_length);
+    b8 processor_info_result = GetLogicalProcessorInformation(win32_processor_info_buffer,&win32_processor_info_buffer_length);
+    if (!processor_info_result) {
+        free(win32_processor_info_buffer);
+        return(false);
+    }
 
     SYSTEM_LOGICAL_PROCESSOR_INFORMATION processor_info_entry;
+    s32 cache_line_bytes = 0;
     for (
         u32 index = 0;
         index < num_entries;
-        ++num_entries) {
+        ++index) {
 
         processor_info_entry = win32_processor_info_buffer[index];
-
-        ITFLIESBY_NOP();
-
+        
+        //save the largest cache line size, that is our target
+        cache_line_bytes = 
+            processor_info_entry.Cache.LineSize > cache_line_bytes
+            ? processor_info_entry.Cache.LineSize
+            : cache_line_bytes;
     }
+
+    free(win32_processor_info_buffer);
+
+    processor_info->cache_line_bytes = cache_line_bytes;
 
     return(true);
 }

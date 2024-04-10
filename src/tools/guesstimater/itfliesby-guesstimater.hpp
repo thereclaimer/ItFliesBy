@@ -17,15 +17,15 @@
 #define itfliesby_guesstimater_main WINAPI wWinMain
 
 struct ItfliesbyGuesstimaterProcessorInfo {
-   s32 num_cores;
-
+   u32 num_cores;
+   u32 cache_line_bytes;
 };
 
 struct ItfliesbyGuesstimaterFrameCycles {
-    s32 cycles_per_frame_030fps;
-    s32 cycles_per_frame_060fps;
-    s32 cycles_per_frame_120fps;
-    s32 cycles_per_frame_240fps;
+    u32 cycles_per_frame_030fps;
+    u32 cycles_per_frame_060fps;
+    u32 cycles_per_frame_120fps;
+    u32 cycles_per_frame_240fps;
 };
 
 struct ItfliesbyGuesstimater {
