@@ -50,7 +50,7 @@ itfliesby_engine_assets_file_header_allocate_and_read(
     //read the indexes into the buffer
     platform_api.file_read(
         asset_handle,
-        8,
+        7,
         asset_data_size,
         asset_index_data,
         false
