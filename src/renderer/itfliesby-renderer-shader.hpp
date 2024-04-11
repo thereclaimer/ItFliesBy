@@ -10,17 +10,14 @@
 #define ITFLIESBY_RENDERER_SHADER_INVALID 0
 
 struct ItfliesbyRendererShaderStageStore  {
-    GLint gl_id_shader_stage_vertex[ITFLIESBY_RENDERER_SHADER_STAGE_MAX];
-    GLint gl_id_shader_stage_fragment[ITFLIESBY_RENDERER_SHADER_STAGE_MAX];
-    u8    count_gl_id_shader_stage_vertex;
-    u8    count_gl_id_shader_stage_fragment;
+    GLuint gl_id_shader_stage_vertex[ITFLIESBY_RENDERER_SHADER_STAGE_MAX];
+    GLuint gl_id_shader_stage_fragment[ITFLIESBY_RENDERER_SHADER_STAGE_MAX];
 };
 
 struct ItfliesbyRendererShaderProgramStore {
-    GLint gl_id_shader_program[ITFLIESBY_RENDERER_SHADER_PROGRAM_MAX];
-    u8    shader_stage_store_index_vertex[ITFLIESBY_RENDERER_SHADER_PROGRAM_MAX];
-    u8    shader_stage_store_index_fragment[ITFLIESBY_RENDERER_SHADER_PROGRAM_MAX];
-    u8    count_gl_id_shader_program;
+    GLuint gl_id_shader_program[ITFLIESBY_RENDERER_SHADER_PROGRAM_MAX];
+    u8     shader_stage_store_index_vertex[ITFLIESBY_RENDERER_SHADER_PROGRAM_MAX];
+    u8     shader_stage_store_index_fragment[ITFLIESBY_RENDERER_SHADER_PROGRAM_MAX];
 };
 
 struct ItfliesbyRendererShaders {

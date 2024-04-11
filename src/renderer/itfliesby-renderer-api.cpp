@@ -75,7 +75,7 @@ itfliesby_renderer_api_shader_programs_create(
     ItfliesbyRenderer* renderer,
     const u8*          vertex_stages,
     const u8*          fragment_stages,
-    u8                 count_programs,
+    const u8           count_programs,
     u8*                program_results) {
 
     ITFLIESBY_ASSERT(renderer);
