@@ -116,7 +116,7 @@ itfliesby_engine_asset_indexes_load(
         );
 
         //for some reason,som bytes are getting lost in translation 
-        current_index->allocation_size += 4;
+        // current_index->allocation_size += 4;
     }
 
     //destroy the index buffer and reset the allocator

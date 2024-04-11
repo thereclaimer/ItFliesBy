@@ -155,6 +155,18 @@ itfliesby_asset_file_builder_file_completion_routine(
     bytes_read = bytes_transferred;
 }
 
+internal u64
+itfliesby_asset_file_builder_file_size(
+    HANDLE file_handle,
+    b8     terminate) {
+
+    u64 file_size = GetFileSize(file_handle,NULL);
+
+    file_size += terminate ? 1 : 0;
+
+    return(file_size);
+}
+
 internal bool
 itfliesby_asset_file_builder_read_file(
     HANDLE   file_handle,
@@ -449,8 +461,8 @@ itfliesby_asset_file_builder_process_input_file(
         return(ITFLIESBY_ASSET_FILE_BUILDER_RETURN_CODE_INVALID_INPUT_FILE);
     }
     
-    csv_file.file_size = GetFileSize(csv_file.file_handle,NULL);
-    csv_file.memory    = itfliesby_asset_file_builder_memory_block_push(asset_file_builder,csv_file.file_size + 1);
+    csv_file.file_size = itfliesby_asset_file_builder_file_size(csv_file.file_handle,DO_TERMINATE_FILE); 
+    csv_file.memory    = itfliesby_asset_file_builder_memory_block_push(asset_file_builder,csv_file.file_size);
     if (!itfliesby_asset_file_builder_read_file(
         csv_file.file_handle,
         csv_file.file_size,
@@ -586,6 +598,7 @@ internal s32
 
         *asset_index = {0};
         asset_index->file_size = GetFileSize(tmp_file_handle,NULL);
+        asset_index->file_size = itfliesby_asset_file_builder_file_size(tmp_file_handle,DO_NOT_TERMINATE_FILE);
         strcpy(asset_index->tag,csv_entry.asset_tag);
     
         itfliesby_asset_file_builder_file_close(tmp_file_handle);
@@ -602,7 +615,7 @@ internal s32
         );
 
         //TODO: we need to account for other types of file allocations
-        asset_index->allocation_size = asset_index->file_size;
+        asset_index->allocation_size = asset_index->file_size + 1;
         asset_index->offset = asset_index_offset;
 
         asset_index_offset += asset_index->allocation_size;
@@ -702,8 +715,8 @@ internal s32
             continue;
         }
 
-        u32 asset_file_size = GetFileSize(asset_file_handle,NULL);
-
+        u32 asset_file_size = itfliesby_asset_file_builder_file_size(asset_file_handle,true);
+        
         //allocate space for the asset
         file_contents_block = 
             itfliesby_asset_file_builder_memory_block_push(
@@ -729,7 +742,7 @@ internal s32
             asset_file_handle,
             file_contents_block->data_size,
             file_contents_block->data,
-            DO_NOT_TERMINATE_FILE)) {
+            DO_TERMINATE_FILE)) {
             
             itfliesby_asset_file_builder_debug_output_line(
                 asset_file_builder,

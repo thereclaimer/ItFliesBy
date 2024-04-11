@@ -19,6 +19,7 @@
 struct ItfliesbyGuesstimaterProcessorInfo {
    u32 num_cores;
    u32 cache_line_bytes;
+   u32 speed_mhz;
 };
 
 struct ItfliesbyGuesstimaterFrameCycles {
