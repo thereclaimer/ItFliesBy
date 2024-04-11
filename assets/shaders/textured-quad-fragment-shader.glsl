@@ -10,4 +10,4 @@ out vec4 fragment_color_out;
 void main()
 {
     fragment_color_out = texture(texture_sampler, fragment_uv).rgba;
-}   
+}
