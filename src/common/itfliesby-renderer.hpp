@@ -51,7 +51,7 @@ itfliesby_renderer_api_shader_programs_create(
     itfliesby_renderer                        renderer,
     const itfliesby_renderer_vertex_shader*   vertex_stages,
     const itfliesby_renderer_fragment_shader* fragment_stages,
-    u8                                        count_programs,
+    const u8                                  count_programs,
     itfliesby_renderer_shader_program*        program_results);
 
 #endif //ITFLIESBY_RENDERER_HPP

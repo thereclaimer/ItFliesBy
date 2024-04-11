@@ -2,7 +2,41 @@
 
 #pragma once
 
-void 
+internal void
+itfliesby_engine_renderer_shader_program_store_init(
+    ItfliesbyEngineRendererShaderProgramStore* shader_program_store,
+    ItfliesbyEngineRendererShaderStageStore*   shader_stage_store,
+    itfliesby_renderer                         render_context) {
+
+    ITFLIESBY_ASSERT(
+        shader_program_store &&
+        shader_stage_store
+    );
+
+    ItfliesbyEngineRendererShaderStageVertex*   engine_shader_stage_store_id_vertex   = shader_program_store->shader_stage_store_id_vertex;
+    ItfliesbyEngineRendererShaderStageFragment* engine_shader_stage_store_id_fragment = shader_program_store->shader_stage_store_id_fragment;
+
+    itfliesby_renderer_vertex_shader*   renderer_stage_id_vertex   = shader_stage_store->renderer_stage_id_vertex; 
+    itfliesby_renderer_fragment_shader* renderer_stage_id_fragment = shader_stage_store->renderer_stage_id_fragment;
+    itfliesby_renderer_shader_program*  render_shader_program_id   = shader_program_store->shader_program_id;
+
+    //textured quad
+    engine_shader_stage_store_id_vertex[ITFLIESBY_ENGINE_RENDERER_SHADER_PROGRAM_TEXTURED_QUAD]   = ITFLIESBY_ENGINE_RENDERER_SHADER_STAGE_VERTEX_TEXTURED_QUAD;
+    engine_shader_stage_store_id_fragment[ITFLIESBY_ENGINE_RENDERER_SHADER_PROGRAM_TEXTURED_QUAD] = ITFLIESBY_ENGINE_RENDERER_SHADER_STAGE_FRAGMENT_TEXTURED_QUAD;
+
+    const u8 shader_program_count = ITFLIESBY_ENGINE_RENDERER_SHADER_PROGRAM_COUNT;
+
+    itfliesby_renderer_api_shader_programs_create(
+        render_context,
+        shader_stage_store_id_vertex,
+        shader_stage_store_id_fragment,
+        shader_program_count,
+        shader_program_id
+    );
+
+}
+
+internal void 
 itfliesby_engine_renderer_shader_store_init(
     ItfliesbyEngineRendererShaderStageStore* shader_stage_store,
     ItfliesbyEngineRendererMemory*           renderer_memory,
