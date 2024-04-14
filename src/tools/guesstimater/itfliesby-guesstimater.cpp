@@ -2,9 +2,8 @@
 
 #include "itfliesby-guesstimater.hpp"
 
-internal bool
-itfliesby_guesstimater_processor_info_get(
-    ItfliesbyGuesstimaterProcessorInfo* processor_info) {
+internal u32
+itfliesby_guesstimater_cache_line_size_get() {
 
     PSYSTEM_LOGICAL_PROCESSOR_INFORMATION win32_processor_info_buffer        = NULL;
     DWORD                                 win32_processor_info_buffer_length = 0;                                 
@@ -17,7 +16,7 @@ itfliesby_guesstimater_processor_info_get(
         (PSYSTEM_LOGICAL_PROCESSOR_INFORMATION)malloc(win32_processor_info_buffer_length);
     
     if (!win32_processor_info_buffer) {
-        return(false);
+        return(0);
     }
 
     //get the number of processor infos
@@ -27,7 +26,7 @@ itfliesby_guesstimater_processor_info_get(
     b8 processor_info_result = GetLogicalProcessorInformation(win32_processor_info_buffer,&win32_processor_info_buffer_length);
     if (!processor_info_result) {
         free(win32_processor_info_buffer);
-        return(false);
+        return(0);
     }
 
     SYSTEM_LOGICAL_PROCESSOR_INFORMATION processor_info_entry;
@@ -48,9 +47,17 @@ itfliesby_guesstimater_processor_info_get(
 
     free(win32_processor_info_buffer);
 
-    processor_info->cache_line_bytes = cache_line_bytes;
+    return(cache_line_bytes);
+}
 
-    return(true);
+internal u32
+itfliesby_guesstimater_cores_count_get() {
+
+    SYSTEM_INFO system_info = {0};
+
+    GetSystemInfo(&system_info);
+
+    return(system_info.dwNumberOfProcessors);
 }
 
 internal s32
@@ -63,7 +70,8 @@ itfliesby_guesstimater_main(
     ItfliesbyGuesstimater guesstimater = {0};
 
     //get processor info
-    itfliesby_guesstimater_processor_info_get(&guesstimater.processor_info);
+    u32 cache_line_size = itfliesby_guesstimater_cache_line_size_get();
+    u32 cores_count     = itfliesby_guesstimater_cores_count_get();
 
     return(0);
 }
