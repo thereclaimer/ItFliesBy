@@ -13,8 +13,20 @@
 
 #include <Windows.h>
 #include <stdio.h>
+#include <powerbase.h>
+#include <ntstatus.h>
+
 
 #define itfliesby_guesstimater_main WINAPI wWinMain
+
+struct Win32ProcessorPowerInformation {
+  u64 Number;
+  u64 MaxMhz;
+  u64 CurrentMhz;
+  u64 MhzLimit;
+  u64 MaxIdleState;
+  u64 CurrentIdleState;
+};
 
 struct ItfliesbyGuesstimaterProcessorInfo {
    u32 num_cores;

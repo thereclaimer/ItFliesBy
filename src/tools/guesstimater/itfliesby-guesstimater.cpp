@@ -51,6 +51,36 @@ itfliesby_guesstimater_cache_line_size_get() {
 }
 
 internal u32
+itfliesby_guesstimater_cpu_speed_get(
+    const u32 cores_count) {
+
+    u32 cpu_speed = 0;
+
+    Win32ProcessorPowerInformation* core_power_info = 
+        (Win32ProcessorPowerInformation*)malloc(sizeof(Win32ProcessorPowerInformation) * cores_count);
+    
+     if (!core_power_info) {
+        return(0);
+    }
+
+
+    u32 core_power_info_bytes = sizeof(Win32ProcessorPowerInformation) * cores_count;
+
+    NTSTATUS result = 
+        CallNtPowerInformation(
+            ProcessorInformation,
+            NULL,
+            0,
+            core_power_info,
+            core_power_info_bytes
+    );
+
+    free(core_power_info);
+
+    return(cpu_speed);
+}
+
+internal u32
 itfliesby_guesstimater_cores_count_get() {
 
     SYSTEM_INFO system_info = {0};
@@ -72,6 +102,7 @@ itfliesby_guesstimater_main(
     //get processor info
     u32 cache_line_size = itfliesby_guesstimater_cache_line_size_get();
     u32 cores_count     = itfliesby_guesstimater_cores_count_get();
+    u32 cpu_speed       = itfliesby_guesstimater_cpu_speed_get(cores_count);
 
     return(0);
 }
