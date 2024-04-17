@@ -14,18 +14,18 @@
 #include <Windows.h>
 #include <stdio.h>
 #include <powerbase.h>
-#include <ntstatus.h>
 
 
 #define itfliesby_guesstimater_main WINAPI wWinMain
 
+// Processor Power Informatio
 struct Win32ProcessorPowerInformation {
-  u64 Number;
-  u64 MaxMhz;
-  u64 CurrentMhz;
-  u64 MhzLimit;
-  u64 MaxIdleState;
-  u64 CurrentIdleState;
+	ULONG number;
+	ULONG max_mhz;
+	ULONG current_mhz;
+	ULONG mhz_limit;
+	ULONG max_idle_state;
+	ULONG current_idle_state;
 };
 
 struct ItfliesbyGuesstimaterProcessorInfo {

@@ -55,27 +55,37 @@ itfliesby_guesstimater_cpu_speed_get(
     const u32 cores_count) {
 
     u32 cpu_speed = 0;
-
-    Win32ProcessorPowerInformation* core_power_info = 
-        (Win32ProcessorPowerInformation*)malloc(sizeof(Win32ProcessorPowerInformation) * cores_count);
+    u32 power_info_buffer_size_bytes = sizeof(Win32ProcessorPowerInformation) * cores_count;
+    void* power_info_buffer = malloc(power_info_buffer_size_bytes);
     
-     if (!core_power_info) {
+    if (!power_info_buffer) {
         return(0);
     }
-
-
-    u32 core_power_info_bytes = sizeof(Win32ProcessorPowerInformation) * cores_count;
 
     NTSTATUS result = 
         CallNtPowerInformation(
             ProcessorInformation,
             NULL,
             0,
-            core_power_info,
-            core_power_info_bytes
+            power_info_buffer,
+            power_info_buffer_size_bytes
     );
 
-    free(core_power_info);
+    if (result != 0) {
+        free(power_info_buffer);
+        return(0);
+    }
+
+    for (
+        u32 processor_index = 0;
+        processor_index < cores_count;
+        ++processor_index) {
+
+        Win32ProcessorPowerInformation processor_info = ((Win32ProcessorPowerInformation*)power_info_buffer)[processor_index];
+        cpu_speed = processor_info.max_mhz > cpu_speed ? processor_info.max_mhz : 0;
+    }
+
+    free(power_info_buffer);
 
     return(cpu_speed);
 }
