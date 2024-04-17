@@ -82,7 +82,7 @@ itfliesby_guesstimater_cpu_speed_get(
         ++processor_index) {
 
         Win32ProcessorPowerInformation processor_info = ((Win32ProcessorPowerInformation*)power_info_buffer)[processor_index];
-        cpu_speed = processor_info.max_mhz > cpu_speed ? processor_info.max_mhz : 0;
+        cpu_speed = processor_info.max_mhz > cpu_speed ? processor_info.max_mhz : cpu_speed;
     }
 
     free(power_info_buffer);
@@ -100,6 +100,17 @@ itfliesby_guesstimater_cores_count_get() {
     return(system_info.dwNumberOfProcessors);
 }
 
+internal void
+itfliesby_guesstimater_frame_cycles_get(
+    ItfliesbyGuesstimaterFrameCycles* frame_cycles,
+    u32                               speed_mhz) {
+
+    frame_cycles->cycles_per_frame_fps_030 = (u32)(speed_mhz / 30)  * 1000000;
+    frame_cycles->cycles_per_frame_fps_060 = (u32)(speed_mhz / 60)  * 1000000;
+    frame_cycles->cycles_per_frame_fps_120 = (u32)(speed_mhz / 120) * 1000000;
+    frame_cycles->cycles_per_frame_fps_240 = (u32)(speed_mhz / 240) * 1000000;
+}
+
 internal s32
 itfliesby_guesstimater_main(
     HINSTANCE instance,
@@ -110,9 +121,17 @@ itfliesby_guesstimater_main(
     ItfliesbyGuesstimater guesstimater = {0};
 
     //get processor info
-    u32 cache_line_size = itfliesby_guesstimater_cache_line_size_get();
-    u32 cores_count     = itfliesby_guesstimater_cores_count_get();
-    u32 cpu_speed       = itfliesby_guesstimater_cpu_speed_get(cores_count);
+    ItfliesbyGuesstimaterProcessorInfo* processor_info = &guesstimater.processor_info;
+    processor_info->cache_line_size_bytes = itfliesby_guesstimater_cache_line_size_get();
+    processor_info->cores_count           = itfliesby_guesstimater_cores_count_get();
+    processor_info->speed_mhz             = itfliesby_guesstimater_cpu_speed_get(processor_info->cores_count);
+
+    //get our theoretical speeds
+    ItfliesbyGuesstimaterFrameCycles* frame_cycles_theoretical = &guesstimater.frame_cycles_theoretical;
+    itfliesby_guesstimater_frame_cycles_get(
+        frame_cycles_theoretical,
+        processor_info->speed_mhz
+    );
 
     return(0);
 }

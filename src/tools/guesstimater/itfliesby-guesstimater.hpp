@@ -29,16 +29,16 @@ struct Win32ProcessorPowerInformation {
 };
 
 struct ItfliesbyGuesstimaterProcessorInfo {
-   u32 num_cores;
-   u32 cache_line_bytes;
+   u32 cores_count;
+   u32 cache_line_size_bytes;
    u32 speed_mhz;
 };
 
 struct ItfliesbyGuesstimaterFrameCycles {
-    u32 cycles_per_frame_030fps;
-    u32 cycles_per_frame_060fps;
-    u32 cycles_per_frame_120fps;
-    u32 cycles_per_frame_240fps;
+    u32 cycles_per_frame_fps_030;
+    u32 cycles_per_frame_fps_060;
+    u32 cycles_per_frame_fps_120;
+    u32 cycles_per_frame_fps_240;
 };
 
 struct ItfliesbyGuesstimater {
