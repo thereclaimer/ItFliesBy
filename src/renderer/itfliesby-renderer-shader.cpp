@@ -110,7 +110,7 @@ itfliesby_renderer_shader_compile_fragment_shaders(
     GLuint* fragment_shader_gl_id = shader_store->gl_id_shader_stage_fragment;
     u64     current_shader_offset;
     GLuint  current_shader_gl_id;
-    GLuint  current_compile_status;
+    GLint  current_compile_status;
     b8      compile_success = true;
 
     for (
@@ -202,10 +202,14 @@ itfliesby_renderer_shader_programs_create(
         current_program_gl_id          = program_gl_ids[program_index];
         program_results[program_index] = current_program_gl_id;
 
+        u32 program_error;
         glAttachShader(current_program_gl_id, current_program_gl_id_vertex);
+        program_error = glGetError();
         glAttachShader(current_program_gl_id, current_program_gl_id_fragment);
+        program_error = glGetError();
         glLinkProgram(current_program_gl_id);   
-        u32 program_error = glGetError();
+        program_error = glGetError();
+        
 
         glGetProgramiv(current_program_gl_id, GL_LINK_STATUS, &current_shader_link_status);
         shader_create_succes &= (current_shader_link_status == GL_TRUE);
