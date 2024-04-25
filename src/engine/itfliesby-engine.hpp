@@ -7,7 +7,14 @@
 #include "itfliesby-engine-memory.hpp"
 
 struct ItfliesbyEngineShaderStore {
-    ItfliesbyRendererShaderIndex textured_quad_shader_index;
+    union {
+        struct {
+            ItfliesbyRendererShaderIndex textured_quad_shader_index;
+            ItfliesbyRendererShaderIndex solid_quad_shader_index;
+        } instances;
+        
+        ItfliesbyRendererShaderIndex array[sizeof(instances) / sizeof(ItfliesbyRendererShaderIndex)];
+    };
 };
 
 struct ItfliesbyEngineRendererMemory {

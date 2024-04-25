@@ -23,7 +23,9 @@ enum ItfliesbyEngineAssetsShader : s32 {
     ITFLIESBY_ENGINE_ASSETS_SHADER_INVALID                       = -1,
     ITFLIESBY_ENGINE_ASSETS_SHADER_TEXTURED_QUAD_VERTEX_SHADER   = 0,
     ITFLIESBY_ENGINE_ASSETS_SHADER_TEXTURED_QUAD_FRAGMENT_SHADER = 1,
-    ITFLIESBY_ENGINE_ASSETS_SHADER_COUNT                         = 2,
+    ITFLIESBY_ENGINE_ASSETS_SHADER_SOLID_QUAD_VERTEX_SHADER      = 2,
+    ITFLIESBY_ENGINE_ASSETS_SHADER_SOLID_QUAD_FRAGMENT_SHADER    = 3,
+    ITFLIESBY_ENGINE_ASSETS_SHADER_COUNT                         = 4,
 };  
 
 typedef itfliesby_memory_allocator_block  itfliesby_engine_assets_allocator_index;

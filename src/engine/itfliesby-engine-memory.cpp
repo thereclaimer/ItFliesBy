@@ -125,3 +125,9 @@ itfliesby_engine_memory_assets_file_header_reset(
     itfliesby_memory_allocator_linear_reset(asset_memory.asset_header_allocator);
     asset_header_memory = NULL;
 }
+
+internal void
+itfliesby_engine_memory_renderer_shader_reset() {
+
+    itfliesby_memory_allocator_linear_reset(renderer_memory.shader_asset_data_allocator);
+}
