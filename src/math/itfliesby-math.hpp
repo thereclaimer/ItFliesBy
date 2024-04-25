@@ -8,6 +8,4 @@
 #define ITFLIESBY_MATH_MEGABYTES(value) ((long long)(ITFLIESBY_MATH_KILOBYTES(value) * 1024))
 #define ITFLIESBY_MATH_GIGABYTES(value) ((long long)(ITFLIESBY_MATH_MEGABYTES(value) * 1024))
 
-
-
 #endif //ITFLIESBY_MATH_HPP

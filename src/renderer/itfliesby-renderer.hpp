@@ -1,50 +1,68 @@
 #ifndef ITFLIESBY_RENDERER_HPP
 #define ITFLIESBY_RENDERER_HPP
 
-#include <itfliesby.hpp>
-#include "itfliesby-renderer-gl.hpp"
-#include "itfliesby-renderer-shader.hpp"
+#define GLEW_STATIC
 
-#define ITFLIESBY_RENDERER_MEMORY_SIZE_ARENA           ITFLIESBY_MATH_MEGABYTES(64)
-#define ITFLIESBY_RENDERER_MEMORY_SIZE_PARTITION_CORE  ITFLIESBY_MATH_KILOBYTES(8)
-#define ITFLIESBY_RENDERER_MEMORY_SIZE_ALLLOCATOR_CORE ITFLIESBY_MATH_KILOBYTES(2)
+#include <glew/glew.h>
+#include <glew/wglew.h>
+#include <glew/glew.c>
 
-struct ItfliesbyRendererAllocators {
-    itfliesby_memory_allocator_linear core_system_allocator;
+#include <common/itfliesby-types.hpp>
+#include <common/itfliesby-platform-api.hpp>
+#include <common/itfliesby-memory.hpp>
+#include <math/itfliesby-math.hpp>
+
+#define ITFLIESBY_RENDERER_MEMORY_SIZE_BYTES                       ITFLIESBY_MATH_MEGABYTES(64)
+#define ITFLIESBY_RENDERER_MEMORY_PARTITION_CORE_SIZE_BYTES        ITFLIESBY_MATH_KILOBYTES(2)
+#define ITFLIESBY_RENDERER_MEMORY_ALLOCATOR_CORE_SYSTEM_SIZE_BYTES ITFLIESBY_MATH_KILOBYTES(1)
+
+global ItfliesbyPlatformApi platform;
+
+struct ItfliesbyRendererShader {
+    GLuint program_id;
+    GLuint stage_id_vertex;
+    GLuint stage_id_fragment;
 };
 
-struct ItfliesbyRendererPartitions {
-    itfliesby_memory_partition core;
+#define ITFLIESBY_RENDERER_SHADER_COUNT 16
+
+typedef s8 ItfliesbyRendererShaderIndex;
+
+enum ItfliesbyRendererShaderError {
+    ITFLIESBY_RENDERER_SHADER_ERROR_OKAY                             = 0x01,
+    ITFLIESBY_RENDERER_SHADER_ERROR                                  = 0x80,
+    ITFLIESBY_RENDERER_SHADER_ERROR_FAILED_TO_COMPILE                = 0x81,
+    ITFLIESBY_RENDERER_SHADER_ERROR_FAILED_TO_COMPILE_STAGE_VERTEX   = 0x82,
+    ITFLIESBY_RENDERER_SHADER_ERROR_FAILED_TO_COMPILE_STAGE_FRAGMENT = 0x83,
+    ITFLIESBY_RENDERER_SHADER_ERROR_FAILED_TO_LINK                   = 0x84,
+    ITFLIESBY_RENDERER_SHADER_ERROR_MAX_SHADERS                      = 0x85
+};
+struct ItfliesbyRendererShaderStore {
+    ItfliesbyRendererShader shaders[ITFLIESBY_RENDERER_SHADER_COUNT];
 };
 
+struct ItfliesbyRendererShaderStageBuffer {
+    memory                       shader_stage_data;
+    ItfliesbyRendererShaderError result;
+
+};
 struct ItfliesbyRendererMemory {
-    itfliesby_memory_arena      arena;
-    ItfliesbyRendererPartitions partitions;
-    ItfliesbyRendererAllocators allocators;
+
+    itfliesby_memory_arena arena;
+    
+    struct {
+        itfliesby_memory_partition core;
+    } partitions;
+
+    struct {
+        itfliesby_memory_allocator_linear core_system_allocator;
+    } allocators;
 };
 
 struct ItfliesbyRenderer {
-    ItfliesbyRendererMemory  memory;
-    handle                   gl_context;
-    ItfliesbyPlatformApi     platform;
-    ItfliesbyRendererShaders shaders;
+    handle                       gl_context;
+    ItfliesbyPlatformApi         platform;
+    ItfliesbyRendererShaderStore shader_store;
 };
-
-api ItfliesbyRenderer*
-itfliesby_renderer_create(
-    ItfliesbyPlatformApi platform,
-    memory               memory,
-    u64                  memory_size
-);
-
-api void
-itfliesby_renderer_destroy(
-    ItfliesbyRenderer* renderer
-);
-
-api void
-itfliesby_renderer_update_and_render(
-    ItfliesbyRenderer* renderer
-);
 
 #endif //ITFLIESBY_RENDERER_HPP

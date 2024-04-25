@@ -112,7 +112,7 @@ itfliesby_engine_renderer_init(
     //initialize partitions
     renderer_memory->partition                   = itfliesby_memory_partition_create(arena,"ENGINE RENDERER PRTN",ITFLIESBY_ENGINE_RENDERER_MEMORY_PARTITION_SIZE);
     renderer_memory->rendering_context_partition = itfliesby_memory_partition_create(arena,"RNDR CNTXT PRTN"     ,ITFLIESBY_ENGINE_RENDERER_MEMORY_PARTITION_CONTEXT_SIZE);
-        ITFLIESBY_ASSERT(renderer_memory->partition);
+    ITFLIESBY_ASSERT(renderer_memory->partition);
     ITFLIESBY_ASSERT(renderer_memory->rendering_context_partition);
 
     //initialize allocators

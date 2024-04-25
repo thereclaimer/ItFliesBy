@@ -2,215 +2,154 @@
 
 #include "itfliesby-renderer.hpp"
 
-internal void
-itfliesby_renderer_shaders_init(
-    ItfliesbyRendererShaders* shaders) {
+internal b8
+itfliesby_renderer_shader_is_free(
+    const ItfliesbyRendererShader* shader) {
 
-    ITFLIESBY_ASSERT(shaders);
-    *shaders = {0};
+    ITFLIESBY_ASSERT(shader);
 
-    ItfliesbyRendererShaderStageStore* shader_store =    &shaders->shader_stage_store;
-    ItfliesbyRendererShaderProgramStore* program_store = &shaders->shader_program_store;
+    b8 shader_free = (
+        shader->program_id      || 
+        shader->stage_id_vertex || 
+        shader->stage_id_fragment) == 0;
 
-    b8 shader_init_success = true;
-
-    GLuint* gl_id_shader_stage_vertex   = shader_store->gl_id_shader_stage_vertex;
-    GLuint* gl_id_shader_stage_fragment = shader_store->gl_id_shader_stage_fragment;
-
-    //get gl shader ids
-    for (
-        u8 shader_index = 0;
-        shader_index < ITFLIESBY_RENDERER_SHADER_STAGE_MAX;
-        ++shader_index) {
-        
-        shader_init_success &= (gl_id_shader_stage_vertex[shader_index]   = glCreateShader(GL_VERTEX_SHADER))   != 0;
-        shader_init_success &= (gl_id_shader_stage_fragment[shader_index] = glCreateShader(GL_FRAGMENT_SHADER)) != 0;
-    }
-    ITFLIESBY_ASSERT(shader_init_success);
-
-    //get gl program ids
-    GLuint* programs = program_store->gl_id_shader_program;
-    b8 program_init_success = true; 
-    for (
-        u8 program_index = 0;
-        program_index < ITFLIESBY_RENDERER_SHADER_PROGRAM_MAX;
-        ++program_index) {
-
-        program_init_success &= (programs[program_index] = glCreateProgram() != 0);
-    }
-    ITFLIESBY_ASSERT(program_init_success);
+    return(shader_free);
 }
 
-internal void
-itfliesby_renderer_shader_compile_vertex_shaders(
-    ItfliesbyRendererShaderStageStore* shader_store,
-    const char*                        shader_buffer,
-    const u64*                         shader_offsets,
-    const u8                           shader_count,
-    u8*                                shader_results) {
+internal ItfliesbyRendererShaderIndex
+itfliesby_renderer_shader_next_free(
+    ItfliesbyRendererShaderStore* shader_store) {
 
-    ITFLIESBY_ASSERT(
-        shader_store       &&
-        shader_buffer      &&
-        shader_offsets     &&
-        shader_results     &&
-        shader_count   > 0 &&
-        shader_count   < ITFLIESBY_RENDERER_SHADER_STAGE_MAX
-    );
+    ITFLIESBY_ASSERT(shader_store);
 
-    //cache our stuff
-    GLuint* vertex_shader_gl_id   = shader_store->gl_id_shader_stage_vertex;
-    u64     current_shader_offset;
-    GLuint  current_shader_gl_id;
-    GLint   current_compile_status;
-    b8      compile_success = true;
-
-    for (
-        u8 shader_index = 0;
-        shader_index < shader_count;
-        ++shader_index) {
-
-        // get our next shader buffer
-        current_shader_offset = shader_offsets[shader_index];
-        auto current_shader   = &shader_buffer[current_shader_offset];
-
-        // compile the shader
-        glShaderSource( vertex_shader_gl_id[shader_index],1,&current_shader,NULL);
-        glCompileShader(vertex_shader_gl_id[shader_index]);
-        glGetShaderiv(  vertex_shader_gl_id[shader_index], GL_COMPILE_STATUS, &current_compile_status);
-
-        //store the result
-        shader_results[shader_index] = shader_index;
-
-        compile_success &= (current_compile_status == GL_TRUE);
-    }
-
-    ITFLIESBY_ASSERT(compile_success);
-
-}
-
-internal void
-itfliesby_renderer_shader_compile_fragment_shaders(
-    ItfliesbyRendererShaderStageStore* shader_store,
-    const char*                        shader_buffer,
-    const u64*                         shader_offsets,
-    const u8                           shader_count,
-    u8*                                shader_results) {
-
-    ITFLIESBY_ASSERT(
-        shader_store       &&
-        shader_buffer      &&
-        shader_offsets     &&
-        shader_results     &&
-        shader_count   > 0 &&
-        shader_count   < ITFLIESBY_RENDERER_SHADER_STAGE_MAX
-    );
-
-    //cache our stuff
-    GLuint* fragment_shader_gl_id = shader_store->gl_id_shader_stage_fragment;
-    u64     current_shader_offset;
-    GLuint  current_shader_gl_id;
-    GLuint  current_compile_status;
-    b8      compile_success = true;
-
-    for (
-        u8 shader_index = 0;
-        shader_index < shader_count;
-        ++shader_index) {
-
-        //get our next shader buffer
-        current_shader_offset = shader_offsets[shader_index];
-        auto current_shader   = &shader_buffer[current_shader_offset];
-        
-        //compile the shader
-        glShaderSource( fragment_shader_gl_id[shader_index],1,&current_shader,NULL);
-        glCompileShader(fragment_shader_gl_id[shader_index]);
-        glGetShaderiv(  fragment_shader_gl_id[shader_index], GL_COMPILE_STATUS, &current_compile_status);
-
-        //store the result
-        shader_results[shader_index] = shader_index;
-
-        compile_success &= (current_compile_status == GL_TRUE);
-    }
-
-    ITFLIESBY_ASSERT(compile_success);
-
-}
-
-internal void
-itfliesby_renderer_shader_programs_create(
-    ItfliesbyRendererShaderProgramStore*     program_store,    
-    const ItfliesbyRendererShaderStageStore* shader_store,
-    const u8*                                vertex_stage_indexes,
-    const u8*                                fragment_stage_indexes,
-    u8                                       count_programs,
-    u8*                                      program_results) {
-
-    ITFLIESBY_ASSERT(
-        program_store          &&
-        shader_store           &&
-        vertex_stage_indexes   &&
-        fragment_stage_indexes &&
-        program_results        &&
-        count_programs > 0     &&
-        count_programs < ITFLIESBY_RENDERER_SHADER_PROGRAM_MAX
-    );
-
-    //cache our stage info
-    const GLuint* stage_store_vertex_shader_gl_id   = shader_store->gl_id_shader_stage_vertex; 
-    const GLuint* stage_store_fragment_shader_gl_id = shader_store->gl_id_shader_stage_fragment; 
-
-    //cache our program info
-    GLuint* program_gl_ids                            = program_store->gl_id_shader_program;
-    u8*     program_vertex_shader_stage_store_index   = program_store->shader_stage_store_index_vertex;
-    u8*     program_fragment_shader_stage_store_index = program_store->shader_stage_store_index_fragment;
+    ItfliesbyRendererShader* shaders = shader_store->shaders;
     
-    //first, lets prefetch a list of gl ids for our programs
-    GLuint program_gl_id_vertex[ITFLIESBY_RENDERER_SHADER_PROGRAM_MAX];
-    GLuint program_gl_id_fragment[ITFLIESBY_RENDERER_SHADER_PROGRAM_MAX];
-    u8     current_shader_store_vertex_index;
-    u8     current_shader_store_fragment_index;
+    ITFLIESBY_ASSERT(shaders);
+    
+    ItfliesbyRendererShader* current_shader = NULL;
+    b8                       shader_free    = false;
+
     for (
-        u8 program_index = 0;
-        program_index < count_programs;
-        ++program_index) {
+        ItfliesbyRendererShaderIndex index = 0;
+        index < ITFLIESBY_RENDERER_SHADER_COUNT;
+        ++index) {
 
-        current_shader_store_vertex_index   = vertex_stage_indexes[program_index]; 
-        current_shader_store_fragment_index = fragment_stage_indexes[program_index]; 
+        current_shader = &shaders[index];
 
-        program_gl_id_vertex[program_index]   = stage_store_vertex_shader_gl_id[current_shader_store_vertex_index]; 
-        program_gl_id_fragment[program_index] = stage_store_fragment_shader_gl_id[current_shader_store_fragment_index];
-
-        //while we're here, we can set the program stage info
-        program_vertex_shader_stage_store_index[program_index]   = current_shader_store_vertex_index;
-        program_fragment_shader_stage_store_index[program_index] = current_shader_store_fragment_index;
+        shader_free = itfliesby_renderer_shader_is_free(current_shader);
+        if (shader_free) {
+            return(index);
+        }
     }
 
-    //now we can create our programs
-    GLuint current_program_gl_id_vertex;
-    GLuint current_program_gl_id_fragment;
-    GLuint current_program_gl_id;
-    GLint  current_shader_link_status;
-    b8     shader_create_succes = true;
-    for (
-        u8 program_index = 0;
-        program_index < count_programs;
-        ++program_index) {
+    return(ITFLIESBY_RENDERER_SHADER_ERROR_MAX_SHADERS);
+}
 
-        current_program_gl_id_vertex   = program_gl_id_vertex[program_index]; 
-        current_program_gl_id_fragment = program_gl_id_fragment[program_index]; 
-        current_program_gl_id          = program_gl_ids[program_index];
-        program_results[program_index] = current_program_gl_id;
+external void
+itfliesby_renderer_shader_destroy(
+    ItfliesbyRenderer*           renderer,
+    ItfliesbyRendererShaderIndex shader_index) {
 
-        glAttachShader(current_program_gl_id, current_program_gl_id_vertex);
-        glAttachShader(current_program_gl_id, current_program_gl_id_fragment);
-        glLinkProgram(current_program_gl_id);   
-        u32 program_error = glGetError();
+    ITFLIESBY_ASSERT(renderer);
+    ITFLIESBY_ASSERT(shader_index > 0 && shader_index < ITFLIESBY_RENDERER_SHADER_COUNT);
 
-        glGetProgramiv(current_program_gl_id, GL_LINK_STATUS, &current_shader_link_status);
-        shader_create_succes &= (current_shader_link_status == GL_TRUE);
+    ItfliesbyRendererShaderStore* shader_store      = &renderer->shader_store;
+    ItfliesbyRendererShader*      shaders           = shader_store->shaders;
+    ItfliesbyRendererShader*      shader_to_destroy = &shaders[shader_index];
 
+    glDeleteShader(shader_to_destroy->stage_id_vertex);
+    glDeleteShader(shader_to_destroy->stage_id_fragment);
+    glDeleteProgram(shader_to_destroy->program_id);
+
+    shader_to_destroy->stage_id_vertex   = 0;
+    shader_to_destroy->stage_id_fragment = 0;
+    shader_to_destroy->program_id        = 0;
+}
+
+external ItfliesbyRendererShaderIndex
+itfliesby_renderer_shader_compile_and_link(
+    ItfliesbyRenderer*                  renderer,
+    ItfliesbyRendererShaderStageBuffer* shader_stage_buffer_vertex,
+    ItfliesbyRendererShaderStageBuffer* shader_stage_buffer_fragment) {
+
+    ITFLIESBY_ASSERT(
+        renderer         &&
+        shader_stage_buffer_vertex &&
+        shader_stage_buffer_fragment
+    );
+
+    ItfliesbyRendererShaderStore* shader_stage_store = &renderer->shader_store;
+
+    //get the next free shader index
+    ItfliesbyRendererShaderIndex shader_index = itfliesby_renderer_shader_next_free(shader_stage_store);
+    if (!shader_index) {
+        return(shader_index);
     }
 
-    ITFLIESBY_ASSERT(shader_create_succes);
+    //create the ids for our shader
+    GLuint shader_program_id        = glCreateProgram(); 
+    GLuint shader_stage_id_vertex   = glCreateShader(GL_VERTEX_SHADER);
+    GLuint shader_stage_id_fragment = glCreateShader(GL_FRAGMENT_SHADER);
+
+    //upload the shader source
+    glShaderSource(shader_stage_id_vertex,   1, (const char**)&shader_stage_buffer_vertex->shader_stage_data,   NULL);
+    glShaderSource(shader_stage_id_fragment, 1, (const char**)&shader_stage_buffer_fragment->shader_stage_data, NULL);
+
+    //compile the shaders
+    glCompileShader(shader_stage_id_vertex);
+    glCompileShader(shader_stage_id_fragment);
+
+    //check the compile status
+    GLint stage_status_vertex   = 0;
+    GLint stage_status_fragment = 0;
+    
+    glGetShaderiv(shader_stage_id_vertex,   GL_COMPILE_STATUS, &stage_status_vertex);
+    glGetShaderiv(shader_stage_id_fragment, GL_COMPILE_STATUS, &stage_status_fragment);
+    
+    b8 shader_compiled_vertex    = (stage_status_vertex   == GL_TRUE);
+    b8 shader_compiled_fragement = (stage_status_fragment == GL_TRUE);
+
+    shader_stage_buffer_vertex->result   = shader_compiled_vertex    ? ITFLIESBY_RENDERER_SHADER_ERROR_OKAY : ITFLIESBY_RENDERER_SHADER_ERROR_FAILED_TO_COMPILE_STAGE_VERTEX; 
+    shader_stage_buffer_fragment->result = shader_compiled_fragement ? ITFLIESBY_RENDERER_SHADER_ERROR_OKAY : ITFLIESBY_RENDERER_SHADER_ERROR_FAILED_TO_COMPILE_STAGE_FRAGMENT; 
+    
+    //if we failed to compile, return    
+    if (!shader_compiled_vertex || !shader_compiled_fragement) {
+        itfliesby_renderer_shader_destroy(renderer,shader_index);
+        return(ITFLIESBY_RENDERER_SHADER_ERROR_FAILED_TO_COMPILE);
+    }    
+
+    //now, link the program
+    glAttachShader(shader_program_id,shader_stage_id_vertex);
+    glAttachShader(shader_program_id,shader_stage_id_fragment);
+    glLinkProgram(shader_program_id);
+    
+    //check the link status
+    GLint program_status;
+    glGetProgramiv(shader_program_id,GL_LINK_STATUS,(GLint*)&program_status);
+    b8 program_linked = (program_status == GL_TRUE);
+
+    //if we failed to link, return
+    if (!program_linked) {
+        itfliesby_renderer_shader_destroy(renderer,shader_index);
+        return(ITFLIESBY_RENDERER_SHADER_ERROR_FAILED_TO_LINK);
+    }    
+
+    //sanity check
+    ITFLIESBY_ASSERT(
+        shader_compiled_vertex    &&
+        shader_compiled_fragement &&
+        program_linked
+    );
+    
+    //detach shaders
+    glDetachShader(shader_program_id,shader_stage_id_vertex);
+    glDetachShader(shader_program_id,shader_stage_id_fragment);
+    
+    //write our shader ids back to the store
+    ItfliesbyRendererShader* shader = &shader_stage_store->shaders[shader_index];
+    shader->program_id        = shader_program_id;
+    shader->stage_id_vertex   = shader_stage_id_vertex;
+    shader->stage_id_fragment = shader_stage_id_fragment;
+
+    return(shader_index);
 }
