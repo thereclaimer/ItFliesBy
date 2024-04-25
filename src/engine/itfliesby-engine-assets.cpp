@@ -2,9 +2,6 @@
 
 #include "itfliesby-engine.hpp"
 
-
-
-
 internal u32
 itfliesby_engine_assets_file_header_num_indexes(
     const handle asset_handle) {

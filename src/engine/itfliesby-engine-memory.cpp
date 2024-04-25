@@ -2,8 +2,9 @@
 
 #include "itfliesby-engine.hpp"
 
-global ItfliesbyEngineMemory       engine_memory;
-global ItfliesbyEngineAssetsMemory asset_memory;
+global ItfliesbyEngineMemory         engine_memory;
+global ItfliesbyEngineAssetsMemory   asset_memory;
+global ItfliesbyEngineRendererMemory renderer_memory;
 
 internal void
 itfliesby_engine_memory_create(
@@ -18,7 +19,6 @@ itfliesby_engine_memory_create(
     //initialize partitions
     engine_memory.partitions.physics  = itfliesby_memory_partition_create(engine_memory.arena,"ENGINE PHYSICS PRTN", ITFLIESBY_ENGINE_PARTITION_SIZE_PHYSICS);
     engine_memory.partitions.core     = itfliesby_memory_partition_create(engine_memory.arena,"ENGINE CORE PRTN",    ITFLIESBY_ENGINE_PARTITION_SIZE_CORE);
-    engine_memory.partitions.renderer = itfliesby_memory_partition_create(engine_memory.arena,"ENGINE RENDER PRTN",  ITFLIESBY_ENGINE_PARTITION_SIZE_RENDERER);
 
     ITFLIESBY_ASSERT(engine_memory.partitions.physics);
     ITFLIESBY_ASSERT(engine_memory.partitions.core);
@@ -28,13 +28,13 @@ itfliesby_engine_memory_create(
 }
 
 internal memory
-itfliesby_engine_memory_renderer() {
+itfliesby_engine_memory_renderer_context() {
     
-    memory renderer_memory = itfliesby_memory_partition_raw_memory(engine_memory.partitions.renderer);
+    memory renderer_context_memory = itfliesby_memory_partition_raw_memory(renderer_memory.rendering_context_partition);
 
-    ITFLIESBY_ASSERT(renderer_memory);
+    ITFLIESBY_ASSERT(renderer_context_memory);
 
-    return(renderer_memory);
+    return(renderer_context_memory);
 }
 
 internal void
@@ -54,6 +54,37 @@ itfliesby_engine_memory_assets_create() {
     ITFLIESBY_ASSERT(asset_memory.index_allocator);    
     ITFLIESBY_ASSERT(asset_memory.asset_data_allocator);    
     ITFLIESBY_ASSERT(asset_memory.asset_header_allocator);    
+}
+
+internal void
+itfliesby_engine_memory_renderer_create() {
+
+    renderer_memory = {0};
+
+    //initialize partitions
+    renderer_memory.partition                   = itfliesby_memory_partition_create(engine_memory.arena,"ENGINE RENDERER PRTN",ITFLIESBY_ENGINE_RENDERER_MEMORY_PARTITION_SIZE);
+    renderer_memory.rendering_context_partition = itfliesby_memory_partition_create(engine_memory.arena,"RNDR CNTXT PRTN"     ,ITFLIESBY_ENGINE_RENDERER_MEMORY_PARTITION_CONTEXT_SIZE);
+    
+    ITFLIESBY_ASSERT(renderer_memory.partition);
+    ITFLIESBY_ASSERT(renderer_memory.rendering_context_partition);
+
+    //initialize allocators
+    renderer_memory.shader_asset_data_allocator = itfliesby_memory_allocator_linear_create(renderer_memory.partition,"SHADER ASSET DATA ALCTR",ITFLIESBY_ENGINE_RENDERER_MEMORY_ALLOCATOR_SIZE_SHADER_DATA);
+    ITFLIESBY_ASSERT(renderer_memory.shader_asset_data_allocator);
+}
+
+internal memory
+itfliesby_engine_memory_renderer_shader_allocate(
+    u64 shader_data_size_bytes) {
+
+    memory shader_memory = 
+        itfliesby_memory_allocator_linear_allocate(
+            renderer_memory.shader_asset_data_allocator,
+            shader_data_size_bytes);
+
+    ITFLIESBY_ASSERT(shader_memory);
+
+    return(shader_memory);
 }
 
 internal ItfliesbyEngine*

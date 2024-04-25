@@ -25,7 +25,10 @@ itfliesby_engine_create(
 
     //initialize assets
     itfliesby_engine_assets_init(&engine->assets);
-    engine->renderer = itfliesby_engine_rendering_init();
+    engine->renderer = itfliesby_engine_rendering_init(
+        &engine->assets,
+        &engine->shaders
+    );
 
 
     return(engine);

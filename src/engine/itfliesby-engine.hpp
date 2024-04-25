@@ -10,6 +10,16 @@ struct ItfliesbyEngineShaderStore {
     ItfliesbyRendererShaderIndex textured_quad_shader_index;
 };
 
+struct ItfliesbyEngineRendererMemory {
+    itfliesby_memory_partition        partition;
+    itfliesby_memory_partition        rendering_context_partition;
+    itfliesby_memory_allocator_linear shader_asset_data_allocator;
+};
+
+#define ITFLIESBY_ENGINE_RENDERER_MEMORY_PARTITION_SIZE             ITFLIESBY_MATH_MEGABYTES(64)
+#define ITFLIESBY_ENGINE_RENDERER_MEMORY_PARTITION_CONTEXT_SIZE     ITFLIESBY_MATH_MEGABYTES(64)
+#define ITFLIESBY_ENGINE_RENDERER_MEMORY_ALLOCATOR_SIZE_SHADER_DATA ITFLIESBY_MATH_MEGABYTES(4)
+
 struct ItfliesbyEngine {
     ItfliesbyEngineAssets      assets;
     ItfliesbyEngineShaderStore shaders;

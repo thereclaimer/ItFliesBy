@@ -13,7 +13,6 @@
 struct ItfliesbyEngineMemoryPartitions {
     itfliesby_memory_partition physics;
     itfliesby_memory_partition core;
-    itfliesby_memory_partition renderer;
 };
 
 struct ItfliesbyEngineMemoryAllocators {

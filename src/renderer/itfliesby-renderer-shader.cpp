@@ -82,7 +82,7 @@ itfliesby_renderer_shader_compile_and_link(
 
     //get the next free shader index
     ItfliesbyRendererShaderIndex shader_index = itfliesby_renderer_shader_next_free(shader_stage_store);
-    if (!shader_index) {
+    if (shader_index < 0) {
         return(shader_index);
     }
 
