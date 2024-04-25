@@ -59,9 +59,39 @@ struct ItfliesbyRendererMemory {
     } allocators;
 };
 
+
+
+struct ItfliesbyRendererQuadBuffers {
+    union {
+    
+        struct {
+            GLuint indices; 
+            GLuint square_quad_vertices; 
+        } instances;
+        
+        GLuint array[sizeof(instances) / sizeof(GLuint)];
+    };
+};
+
+#define ITFLIESBY_RENDERER_QUAD_BUFFERS_COUNT (sizeof(ItfliesbyRendererQuadBuffers::instances) / sizeof(GLuint))
+
 struct ItfliesbyRenderer {
     handle                       gl_context;
     ItfliesbyRendererShaderStore shader_store;
+    ItfliesbyRendererQuadBuffers quad_buffers;
+};
+
+
+const f32 ITFLIESBY_RENDERER_VERTICES_SQUARE_QUAD[] = {
+    -0.5f,  0.5f,
+     0.5f, -0.5f,
+    -0.5f, -0.5f,
+     0.5f,  0.5f
+};
+
+const u32 ITFLIESBY_RENDERER_INDICES_QUAD[] = {
+    0, 1, 2, 
+    0, 3, 1  
 };
 
 #endif //ITFLIESBY_RENDERER_HPP

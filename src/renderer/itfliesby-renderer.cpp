@@ -3,6 +3,7 @@
 #include "itfliesby-renderer.hpp"
 #include "itfliesby-renderer-shader.cpp"
 #include "itfliesby-renderer-memory.cpp"
+#include "itfliesby-renderer-quad.cpp"
 
 external ItfliesbyRenderer*
 itfliesby_renderer_create_and_init(
@@ -33,6 +34,9 @@ itfliesby_renderer_create_and_init(
         0.157f,
         1.0f
     );
+
+    //initialize our quad buffers
+    renderer->quad_buffers = itfliesby_renderer_quad_buffers_init();
 
     return(renderer);
 }
