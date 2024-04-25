@@ -69,7 +69,6 @@ struct ItfliesbyEngineAssetsFileHandles {
 };
 
 struct ItfliesbyEngineAssets {
-    ItfliesbyEngineAssetsMemory         memory;
     ItfliesbyEngineAssetsFileHandles    file_handles;
     ItfliesbyEngineAssetsFileIndexStore file_index_store;
 };

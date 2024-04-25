@@ -33,19 +33,13 @@ itfliesby_engine_assets_file_header_num_indexes(
 internal memory
 itfliesby_engine_assets_file_header_allocate_and_read(
     const handle                             asset_handle,
-    const u32                                asset_header_num_indexes,
-    itfliesby_engine_assets_allocator_header asset_header_allocator) {
+    const u32                                asset_header_num_indexes) {
 
     //calculate the index buffer suze
     u64 asset_data_size = ITFLIESBY_ASSET_FILE_INDEX_SIZE_TOTAL(asset_header_num_indexes);
 
     //allocate space for the index buffer
-    memory asset_index_data = 
-        itfliesby_memory_allocator_linear_allocate(
-            asset_header_allocator,
-            asset_data_size
-    );
-    ITFLIESBY_ASSERT(asset_index_data);
+    memory asset_index_data = itfliesby_engine_memory_assets_file_header_allocate(asset_data_size);
 
     //read the indexes into the buffer
     platform_api.file_read(
@@ -60,21 +54,10 @@ itfliesby_engine_assets_file_header_allocate_and_read(
 }
 
 internal void
-itfliesby_engine_assets_file_header_destroy(
-    itfliesby_engine_assets_allocator_header asset_header_allocator,
-    memory                                   asset_header_memory) {
-
-    itfliesby_memory_allocator_linear_reset(asset_header_allocator);
-    asset_header_memory = NULL;
-}
-
-internal void
 itfliesby_engine_asset_indexes_load(
     ItfliesbyEngineAssetsFileindex*          file_indexes,
     handle                                   file_handle,
-    u32                                      file_indexes_count,
-    itfliesby_engine_assets_allocator_header header_allocator,
-    itfliesby_engine_assets_allocator_index  index_allocator) {
+    u32                                      file_indexes_count) {
 
     //make sure the indexes in the file match what we expect
     u32 file_indexes_count_actual = itfliesby_engine_assets_file_header_num_indexes(file_handle);
@@ -84,9 +67,7 @@ itfliesby_engine_asset_indexes_load(
     memory file_index_memory = 
         itfliesby_engine_assets_file_header_allocate_and_read(
             file_handle,
-            file_indexes_count,
-            header_allocator
-    );
+            file_indexes_count);
 
     ItfliesbyEngineAssetsFileindex* current_file_index;
 
@@ -120,18 +101,13 @@ itfliesby_engine_asset_indexes_load(
     }
 
     //destroy the index buffer and reset the allocator
-    itfliesby_engine_assets_file_header_destroy(
-        header_allocator,
-        file_index_memory
-    );
+    itfliesby_engine_memory_assets_file_header_reset(file_index_memory);
 }
 
 internal void
 itfliesby_engine_asset_indexes_load_all(
     ItfliesbyEngineAssetsFileHandles*        asset_file_handles,
-    ItfliesbyEngineAssetsFileIndexStore*     asset_index_store,
-    itfliesby_engine_assets_allocator_index  index_allocator,
-    itfliesby_engine_assets_allocator_header header_allocator) {
+    ItfliesbyEngineAssetsFileIndexStore*     asset_index_store) {
 
     handle* asset_file_handle_array = asset_file_handles->array;
     handle  asset_file_handle;
@@ -140,39 +116,24 @@ itfliesby_engine_asset_indexes_load_all(
     itfliesby_engine_asset_indexes_load(
         asset_index_store->shader_indexes,
         asset_file_handles->shader_asset_file,
-        ITFLIESBY_ENGINE_ASSETS_SHADER_COUNT,
-        header_allocator,
-        index_allocator
+        ITFLIESBY_ENGINE_ASSETS_SHADER_COUNT
     );
 }
 
 internal void 
 itfliesby_engine_assets_init(
-    ItfliesbyEngineAssets* assets,
-    itfliesby_memory_arena arena) {
+    ItfliesbyEngineAssets* assets) {
+
+    itfliesby_engine_memory_assets_create();
 
     *assets = {0};
     ItfliesbyEngineAssetsFileHandles* file_handles = &assets->file_handles;
-
-    //initialize memory
-    assets->memory.partition = itfliesby_memory_partition_create(arena,"ENGINE ASSETS PRTN",  ITFLIESBY_ENGINE_ASSETS_MEMORY_PARTITION_SIZE);
-    ITFLIESBY_ASSERT(assets->memory.partition);    
-
-    //allocators
-    assets->memory.index_allocator        = itfliesby_memory_allocator_block_create(assets->memory.partition,"ASSET INDEX ALCTR",ITFLIESBY_ENGINE_ASSETS_MEMORY_BLOCK_SIZE_INDEX,     ITFLIESBY_ASSETS_FILE_ID_COUNT);
-    assets->memory.asset_data_allocator   = itfliesby_memory_allocator_block_create(assets->memory.partition,"ASSET DATA ALCTR", ITFLIESBY_ENGINE_ASSETS_MEMORY_BLOCK_SIZE_ASSET_DATA,ITFLIESBY_ASSETS_FILE_ID_COUNT);
-    assets->memory.asset_header_allocator = itfliesby_memory_allocator_linear_create(assets->memory.partition,"ASSET HEADER ALCTR",ITFLIESBY_ENGINE_ASSETS_MEMORY_ALLOCATOR_HEADER_SIZE);
-    ITFLIESBY_ASSERT(assets->memory.index_allocator);    
-    ITFLIESBY_ASSERT(assets->memory.asset_data_allocator);    
-    ITFLIESBY_ASSERT(assets->memory.asset_header_allocator);    
 
     itfliesby_engine_assets_file_handles_load(file_handles);
 
     itfliesby_engine_asset_indexes_load_all(
         file_handles,
-        &assets->file_index_store,
-        assets->memory.index_allocator,
-        assets->memory.asset_header_allocator
+        &assets->file_index_store
     );
 }
 
@@ -182,7 +143,6 @@ itfliesby_engine_assets_update(
 
     ItfliesbyEngineAssetsFileHandles*    file_handles = &assets->file_handles;
     ItfliesbyEngineAssetsFileIndexStore* index_store  = &assets->file_index_store;
-    ItfliesbyEngineAssetsMemory*         asset_memory = &assets->memory;
 
 
 }

@@ -5,12 +5,15 @@
 #include "itfliesby-engine-globals.hpp"
 #include "itfliesby-engine-assets.hpp"
 #include "itfliesby-engine-memory.hpp"
-#include "itfliesby-engine-renderer.hpp"
+
+struct ItfliesbyEngineShaderStore {
+    ItfliesbyRendererShaderIndex textured_quad_shader_index;
+};
 
 struct ItfliesbyEngine {
-    ItfliesbyEngineMemory   memory;
-    ItfliesbyEngineAssets   assets;
-    ItfliesbyEngineRenderer renderer;
+    ItfliesbyEngineAssets      assets;
+    ItfliesbyEngineShaderStore shaders;
+    ItfliesbyRendererHandle    renderer;
 };
 
 api ItfliesbyEngine*
