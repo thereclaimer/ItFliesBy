@@ -2,7 +2,7 @@
 #define ITFLIESBY_MATH_MAT2
 
 #include <common/itfliesby-types.hpp>
-#include <immintrin.h> // Include the Intel Intrinsics header
+#include <immintrin.h> 
 
 
 struct ItfliesbyMathMat2 {

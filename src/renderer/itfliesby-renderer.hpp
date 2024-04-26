@@ -75,6 +75,22 @@ struct ItfliesbyRendererQuadBuffers {
 
 #define ITFLIESBY_RENDERER_QUAD_BUFFERS_COUNT (sizeof(ItfliesbyRendererQuadBuffers::instances) / sizeof(GLuint))
 
+
+struct ItfliesbyRendererColor {
+    u8 r;
+    u8 g;
+    u8 b;
+    u8 a;
+};
+
+#define ITFLIESBY_RENDERER_SOLID_QUADS_MAX 128
+
+struct ItfliesbyRendererSolidQuads {
+    ItfliesbyMathMat3      model_transforms[ITFLIESBY_RENDERER_SOLID_QUADS_MAX];
+    ItfliesbyRendererColor colors[ITFLIESBY_RENDERER_SOLID_QUADS_MAX];
+    f32                    scale_factors[ITFLIESBY_RENDERER_SOLID_QUADS_MAX];
+};
+
 struct ItfliesbyRenderer {
     handle                       gl_context;
     ItfliesbyRendererShaderStore shader_store;
