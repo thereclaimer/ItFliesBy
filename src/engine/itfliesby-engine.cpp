@@ -30,6 +30,15 @@ itfliesby_engine_create(
         &engine->shaders
     );
 
+    //TEST QUAD RENDERING
+    
+    ItfliesbyRendererSolidQuadId quad_id = 
+        itfliesby_renderer_quad_solid_quads_create_instance(
+            engine->renderer,
+            {235,219,178,255});
+    
+    //TEST QUAD RENDERING
+
 
     return(engine);
 }

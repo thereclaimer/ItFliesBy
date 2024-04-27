@@ -13,8 +13,8 @@
 #include <math/itfliesby-math.hpp>
 
 #define ITFLIESBY_RENDERER_MEMORY_SIZE_BYTES                       ITFLIESBY_MATH_MEGABYTES(64)
-#define ITFLIESBY_RENDERER_MEMORY_PARTITION_CORE_SIZE_BYTES        ITFLIESBY_MATH_KILOBYTES(2)
-#define ITFLIESBY_RENDERER_MEMORY_ALLOCATOR_CORE_SYSTEM_SIZE_BYTES ITFLIESBY_MATH_KILOBYTES(1)
+#define ITFLIESBY_RENDERER_MEMORY_PARTITION_CORE_SIZE_BYTES        ITFLIESBY_MATH_KILOBYTES(32)
+#define ITFLIESBY_RENDERER_MEMORY_ALLOCATOR_CORE_SYSTEM_SIZE_BYTES ITFLIESBY_MATH_KILOBYTES(16)
 
 global ItfliesbyPlatformApi platform;
 
@@ -76,25 +76,94 @@ struct ItfliesbyRendererQuadBuffers {
 #define ITFLIESBY_RENDERER_QUAD_BUFFERS_COUNT (sizeof(ItfliesbyRendererQuadBuffers::instances) / sizeof(GLuint))
 
 
-struct ItfliesbyRendererColor {
+struct ItfliesbyRendererColorHex {
     u8 r;
     u8 g;
     u8 b;
     u8 a;
 };
 
+
+//the normalizing factor is (1/255) as a decimal
+#define ITFLIESBY_RENDERER_QUAD_COLOR_NORMALIZING_FACTOR 0.00392157
+
+struct ItfliesbyRendererColorNormalized {
+    f32 r;
+    f32 g;
+    f32 b;
+    f32 a;
+};
+
+inline ItfliesbyRendererColorNormalized
+itfliesby_renderer_color_normalize(
+    ItfliesbyRendererColorHex color_hex) {
+
+    ItfliesbyRendererColorNormalized color_normalized = {0};
+    
+    color_normalized.r = color_hex.r * ITFLIESBY_RENDERER_QUAD_COLOR_NORMALIZING_FACTOR;  
+    color_normalized.g = color_hex.g * ITFLIESBY_RENDERER_QUAD_COLOR_NORMALIZING_FACTOR; 
+    color_normalized.b = color_hex.b * ITFLIESBY_RENDERER_QUAD_COLOR_NORMALIZING_FACTOR; 
+    color_normalized.a = color_hex.a * ITFLIESBY_RENDERER_QUAD_COLOR_NORMALIZING_FACTOR;
+
+    return(color_normalized);
+}
+
+
 #define ITFLIESBY_RENDERER_SOLID_QUADS_MAX 128
 
+#define ITFLIESBY_RENDERER_SOLID_QUAD_ID_INVALID -1
+
+
+typedef s8 ItfliesbyRendererSolidQuadId;
+typedef u8 ItfliesbyRendererSolidQuadInstanceGroup;
+
+inline b8 
+itfliesby_renderer_solid_quad_id_valid(
+    ItfliesbyRendererSolidQuadId solid_quad_id) {
+    return (solid_quad_id > ITFLIESBY_RENDERER_SOLID_QUAD_ID_INVALID);
+}
+
+#define ITFLIESBY_RENDERER_SOLID_QUAD_INSTANCE_GROUPS_COUNT (ITFLIESBY_RENDERER_SOLID_QUADS_MAX / 8)
+#define ITFLIESBY_RENDERER_SOLID_QUAD_INSTANCE_GROUP_FULL   0xFF
+#define ITFLIESBY_RENDERER_SOLID_QUAD_INSTANCE_GROUP_EMPTY  0x00
+
+inline b8
+itfliesby_renderer_solid_quad_instance_group_available(
+    ItfliesbyRendererSolidQuadInstanceGroup group) {
+
+    return (group < ITFLIESBY_RENDERER_SOLID_QUAD_INSTANCE_GROUP_FULL);
+}
+
+struct ItfliesbyRendererSolidQuadInstances {
+    ItfliesbyRendererSolidQuadInstanceGroup instance_groups[ITFLIESBY_RENDERER_SOLID_QUAD_INSTANCE_GROUPS_COUNT];
+};
+
+inline ItfliesbyRendererSolidQuadId
+itfliesby_renderer_solid_quad_id_find_next(
+    ItfliesbyRendererSolidQuadInstances solid_quad_instances) {
+    
+    ItfliesbyRendererSolidQuadId next_solid_quad_id = ITFLIESBY_RENDERER_SOLID_QUAD_ID_INVALID;
+
+    return(next_solid_quad_id);
+}
+
+
 struct ItfliesbyRendererSolidQuads {
-    ItfliesbyMathMat3      model_transforms[ITFLIESBY_RENDERER_SOLID_QUADS_MAX];
-    ItfliesbyRendererColor colors[ITFLIESBY_RENDERER_SOLID_QUADS_MAX];
-    f32                    scale_factors[ITFLIESBY_RENDERER_SOLID_QUADS_MAX];
+    ItfliesbyMathMat3                   model_transforms[ITFLIESBY_RENDERER_SOLID_QUADS_MAX];
+    ItfliesbyRendererColorNormalized    colors[ITFLIESBY_RENDERER_SOLID_QUADS_MAX];
+    ItfliesbyRendererSolidQuadInstances instances;
+};
+
+struct ItfliesbyRendererQuadManager {
+    ItfliesbyRendererQuadBuffers quad_buffers;
+    ItfliesbyRendererSolidQuads  solid_quads;
+    
 };
 
 struct ItfliesbyRenderer {
     handle                       gl_context;
     ItfliesbyRendererShaderStore shader_store;
-    ItfliesbyRendererQuadBuffers quad_buffers;
+    ItfliesbyRendererQuadManager quad_manager;
 };
 
 
@@ -109,5 +178,6 @@ const u32 ITFLIESBY_RENDERER_INDICES_QUAD[] = {
     0, 1, 2, 
     0, 3, 1  
 };
+
 
 #endif //ITFLIESBY_RENDERER_HPP

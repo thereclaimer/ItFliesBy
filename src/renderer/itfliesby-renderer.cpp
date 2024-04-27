@@ -36,8 +36,8 @@ itfliesby_renderer_create_and_init(
     );
 
     //initialize our quad buffers
-    renderer->quad_buffers = itfliesby_renderer_quad_buffers_init();
-
+    renderer->quad_manager = itfliesby_renderer_quad_manager_init();
+    
     return(renderer);
 }
 

@@ -11,8 +11,8 @@ typedef void* ItfliesbyRendererHandle;
 #define ITFLIESBY_RENDERER_MEMORY_PARTITION_CORE_SIZE_BYTES        ITFLIESBY_MATH_KILOBYTES(2)
 #define ITFLIESBY_RENDERER_MEMORY_ALLOCATOR_CORE_SYSTEM_SIZE_BYTES ITFLIESBY_MATH_KILOBYTES(1)
 
-
 typedef s8 ItfliesbyRendererShaderIndex;
+typedef s8 ItfliesbyRendererSolidQuadId;
 
 enum ItfliesbyRendererShaderError {
     ITFLIESBY_RENDERER_SHADER_ERROR_OKAY                             = 0x01,
@@ -27,6 +27,13 @@ enum ItfliesbyRendererShaderError {
 struct ItfliesbyRendererShaderStageBuffer {
     memory                       shader_stage_data;
     ItfliesbyRendererShaderError result;
+};
+
+struct ItfliesbyRendererColorHex {
+    u8 r;
+    u8 g;
+    u8 b;
+    u8 a;
 };
 
 //----------------------------------------------------------------
@@ -57,6 +64,16 @@ api void
 itfliesby_renderer_shader_destroy(
     ItfliesbyRendererHandle      renderer,
     ItfliesbyRendererShaderIndex shader_index);
+
+//----------------------------------------------------------------
+// QUADS
+//----------------------------------------------------------------
+
+api ItfliesbyRendererSolidQuadId
+itfliesby_renderer_quad_solid_quads_create_instance(
+    ItfliesbyRendererHandle   renderer,
+    ItfliesbyRendererColorHex color_hex
+);
 
 
 #endif //ITFLIESBY_RENDERER_HPP
