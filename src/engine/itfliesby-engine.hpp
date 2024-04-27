@@ -5,6 +5,8 @@
 #include "itfliesby-engine-globals.hpp"
 #include "itfliesby-engine-assets.hpp"
 #include "itfliesby-engine-memory.hpp"
+#include "itfliesby-engine-physics.hpp"
+#include "itfliesby-engine-sprites.hpp"
 
 struct ItfliesbyEngineShaderStore {
     union {
@@ -31,6 +33,7 @@ struct ItfliesbyEngine {
     ItfliesbyEngineAssets      assets;
     ItfliesbyEngineShaderStore shaders;
     ItfliesbyRendererHandle    renderer;
+    ItfliesbyEnginePhysics     physics;
 };
 
 api ItfliesbyEngine*

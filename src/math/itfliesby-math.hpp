@@ -4,6 +4,7 @@
 #include "itfliesby-math-vec2.hpp"
 #include "itfliesby-math-mat2.hpp"
 #include "itfliesby-math-mat3.hpp"
+#include "itfliesby-math-trig.hpp"
 
 #define ITFLIESBY_MATH_KILOBYTES(value) ((long long)(value * 1024))
 #define ITFLIESBY_MATH_MEGABYTES(value) ((long long)(ITFLIESBY_MATH_KILOBYTES(value) * 1024))

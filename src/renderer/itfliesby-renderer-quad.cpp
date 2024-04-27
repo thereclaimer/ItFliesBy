@@ -89,7 +89,7 @@ itfliesby_renderer_quad_manager_init() {
     return(quad_manager);
 }
 
-internal ItfliesbyRendererSolidQuadId
+internal ItfliesbyQuadId
 itfliesby_renderer_quad_solid_quads_find_next_instance(
     ItfliesbyRendererSolidQuadInstances* instances) {
     
@@ -117,9 +117,10 @@ itfliesby_renderer_quad_solid_quads_find_next_instance(
     }
     
     ItfliesbyRendererSolidQuadId next_id = 0;
-
+    u8 instance_index = 0;
+    
     for (
-        u8 instance_index = 0;
+        instance_index;
         instance_index < 8;
         ++instance_index) {
 
@@ -133,10 +134,16 @@ itfliesby_renderer_quad_solid_quads_find_next_instance(
         }
     }
 
-    return(next_id);
+    ItfliesbyRendererSolidQuadInstanceKey instance_key = {0};
+
+    instance_key.members.group          = group_index;
+    instance_key.members.solid_quad_id  = next_id;
+    instance_key.members.instance_index = instance_index;
+
+    return(instance_key.value);
 }
 
-external ItfliesbyRendererSolidQuadId
+external ItfliesbyQuadId
 itfliesby_renderer_quad_solid_quads_create_instance(
     ItfliesbyRenderer*        renderer,
     ItfliesbyRendererColorHex color_hex) {
@@ -144,7 +151,7 @@ itfliesby_renderer_quad_solid_quads_create_instance(
     ItfliesbyRendererSolidQuads*         solid_quads          = &renderer->quad_manager.solid_quads;
     ItfliesbyRendererSolidQuadInstances* solid_quad_instances = &solid_quads->instances;
 
-    ItfliesbyRendererSolidQuadId solid_quad_id = 
+    ItfliesbyQuadId solid_quad_id = 
         itfliesby_renderer_quad_solid_quads_find_next_instance(
             solid_quad_instances
         );
@@ -157,4 +164,21 @@ itfliesby_renderer_quad_solid_quads_create_instance(
     solid_quads->model_transforms[solid_quad_id] = itfliesby_math_mat3_identity();
 
     return(solid_quad_id);
+}
+
+//TODO: this logic is flawed, we need to fix it
+external void
+itfliesby_renderer_quad_solid_quads_destroy_instance(
+    ItfliesbyRenderer*           renderer,
+    ItfliesbyQuadId              solid_quad_id) {
+
+    ItfliesbyRendererSolidQuadInstanceKey instance_key = {0};
+    instance_key.value = solid_quad_id;
+
+    ItfliesbyRendererSolidQuads*         solid_quads          = &renderer->quad_manager.solid_quads;
+    ItfliesbyRendererSolidQuadInstances* solid_quad_instances = &solid_quads->instances;
+
+    solid_quad_instances->instance_groups[instance_key.members.group] &= ~(1 << (7 - (instance_key.members.instance_index)));
+
+    ITFLIESBY_NOP();
 }

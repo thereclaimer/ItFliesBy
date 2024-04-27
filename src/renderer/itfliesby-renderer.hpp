@@ -114,8 +114,23 @@ itfliesby_renderer_color_normalize(
 #define ITFLIESBY_RENDERER_SOLID_QUAD_ID_INVALID -1
 
 
-typedef s8 ItfliesbyRendererSolidQuadId;
-typedef u8 ItfliesbyRendererSolidQuadInstanceGroup;
+typedef s8  ItfliesbyRendererSolidQuadId;
+typedef u8  ItfliesbyRendererSolidQuadInstanceGroup;
+typedef s32 ItfliesbyQuadId;
+
+struct ItfliesbyRendererSolidQuadInstanceKey {
+    
+    union {
+
+        struct {
+            ItfliesbyRendererSolidQuadId             solid_quad_id;
+            ItfliesbyRendererSolidQuadInstanceGroup  group;
+            u8                                       instance_index;
+        } members;
+
+        ItfliesbyQuadId value;
+    };
+};
 
 inline b8 
 itfliesby_renderer_solid_quad_id_valid(
@@ -123,7 +138,8 @@ itfliesby_renderer_solid_quad_id_valid(
     return (solid_quad_id > ITFLIESBY_RENDERER_SOLID_QUAD_ID_INVALID);
 }
 
-#define ITFLIESBY_RENDERER_SOLID_QUAD_INSTANCE_GROUPS_COUNT (ITFLIESBY_RENDERER_SOLID_QUADS_MAX / 8)
+#define ITFLIESBY_RENDERER_SOLID_QUAD_INSTANCE_GROUP_SIZE   8
+#define ITFLIESBY_RENDERER_SOLID_QUAD_INSTANCE_GROUPS_COUNT (ITFLIESBY_RENDERER_SOLID_QUADS_MAX / ITFLIESBY_RENDERER_SOLID_QUAD_INSTANCE_GROUP_SIZE)
 #define ITFLIESBY_RENDERER_SOLID_QUAD_INSTANCE_GROUP_FULL   0xFF
 #define ITFLIESBY_RENDERER_SOLID_QUAD_INSTANCE_GROUP_EMPTY  0x00
 

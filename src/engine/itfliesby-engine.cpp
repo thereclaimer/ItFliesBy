@@ -4,6 +4,7 @@
 #include "itfliesby-engine-memory.cpp"
 #include "itfliesby-engine-assets.cpp"
 #include "itfliesby-engine-rendering.cpp"
+#include "itfliesby-engine-physics.cpp"
 
 external ItfliesbyEngine*
 itfliesby_engine_create(
@@ -30,12 +31,13 @@ itfliesby_engine_create(
         &engine->shaders
     );
 
+    engine->physics = itfliesby_engine_physics_create_and_init();
+
     //TEST QUAD RENDERING
     
-    ItfliesbyRendererSolidQuadId quad_id = 
-        itfliesby_renderer_quad_solid_quads_create_instance(
-            engine->renderer,
-            {235,219,178,255});
+    ItfliesbyQuadId quad_id_0 = itfliesby_renderer_quad_solid_quads_create_instance(engine->renderer,{235,219,178,255});
+    ItfliesbyQuadId quad_id_1 = itfliesby_renderer_quad_solid_quads_create_instance(engine->renderer,{235,219,178,255});
+    ItfliesbyQuadId quad_id_2 = itfliesby_renderer_quad_solid_quads_create_instance(engine->renderer,{235,219,178,255});
     
     //TEST QUAD RENDERING
 
@@ -55,6 +57,13 @@ itfliesby_engine_update_and_render(
 
     ItfliesbyEngineAssets*  assets   = &engine->assets;
     ItfliesbyRendererHandle renderer = engine->renderer;
+
+    ItfliesbyEnginePhysicsTransformPayload physics_payload = {0};
+
+    itfliesby_engine_physics_update(
+        &engine->physics,
+        &physics_payload
+    );
 
     itfliesby_engine_assets_update(assets);
     itfliesby_renderer_update_and_render(renderer);

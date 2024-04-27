@@ -11,8 +11,10 @@ typedef void* ItfliesbyRendererHandle;
 #define ITFLIESBY_RENDERER_MEMORY_PARTITION_CORE_SIZE_BYTES        ITFLIESBY_MATH_KILOBYTES(2)
 #define ITFLIESBY_RENDERER_MEMORY_ALLOCATOR_CORE_SYSTEM_SIZE_BYTES ITFLIESBY_MATH_KILOBYTES(1)
 
-typedef s8 ItfliesbyRendererShaderIndex;
-typedef s8 ItfliesbyRendererSolidQuadId;
+typedef s8  ItfliesbyRendererShaderIndex;
+typedef s8  ItfliesbyRendererSolidQuadId;
+typedef s32 ItfliesbyQuadId;
+
 
 enum ItfliesbyRendererShaderError {
     ITFLIESBY_RENDERER_SHADER_ERROR_OKAY                             = 0x01,
@@ -69,11 +71,15 @@ itfliesby_renderer_shader_destroy(
 // QUADS
 //----------------------------------------------------------------
 
-api ItfliesbyRendererSolidQuadId
+api ItfliesbyQuadId
 itfliesby_renderer_quad_solid_quads_create_instance(
     ItfliesbyRendererHandle   renderer,
     ItfliesbyRendererColorHex color_hex
 );
 
+api void
+itfliesby_renderer_quad_solid_quads_destroy_instance(
+    ItfliesbyRendererHandle      renderer,
+    ItfliesbyRendererSolidQuadId solid_quad_id);
 
 #endif //ITFLIESBY_RENDERER_HPP
