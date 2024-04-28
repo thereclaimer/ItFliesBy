@@ -9,7 +9,6 @@
 typedef s8 ItfliesbyEngineSpriteId;
 
 struct ItfliesbyEngineSprite {
-    ItfliesbyQuadId          render_quad_id;
     ItfliesbyEnginePhysicsId physics_id;
 };
 

@@ -40,6 +40,7 @@ struct ItfliesbyRendererShaderStageBuffer {
 
 
 #define ITFLIESBY_RENDERER_SHADER_UNIFORM_SOLID_QUAD_UPDATE "solid_quad_update"
+
 struct ItfliesbyRendererShaderUniformsSolidQuad {
     GLuint gl_block_index_solid_quad_update;
     GLuint gl_solid_quad_update_ubo;

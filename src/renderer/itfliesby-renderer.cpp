@@ -42,7 +42,7 @@ itfliesby_renderer_create_and_init(
 }
 
 external void
-itfliesby_renderer_update_and_render(
+itfliesby_renderer_render(
     ItfliesbyRenderer* renderer) {
 
     //clear the screen

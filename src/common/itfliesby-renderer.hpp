@@ -61,7 +61,7 @@ itfliesby_renderer_create_and_init(
     u64                  renderer_memory_size_bytes);
 
 api void
-itfliesby_renderer_update_and_render(
+itfliesby_renderer_render(
     ItfliesbyRendererHandle renderer); 
 
 //----------------------------------------------------------------
@@ -95,22 +95,9 @@ itfliesby_renderer_ready(
 // QUADS
 //----------------------------------------------------------------
 
-api ItfliesbyQuadId
-itfliesby_renderer_quad_solid_quads_create_instance(
-    ItfliesbyRendererHandle   renderer,
-    ItfliesbyRendererColorHex color_hex
-);
-
-api void
-itfliesby_renderer_quad_solid_quads_destroy_instance(
-    ItfliesbyRendererHandle      renderer,
-    ItfliesbyRendererSolidQuadId solid_quad_id);
-
 api void
 itfliesby_renderer_quad_solid_quads_batch_update(
     ItfliesbyRendererHandle                renderer,
     ItfliesbyRendererSolidQuadUpdateBatch* solid_quad_update_batch); 
-
-
 
 #endif //ITFLIESBY_RENDERER_HPP

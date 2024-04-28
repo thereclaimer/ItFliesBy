@@ -112,5 +112,6 @@ itfliesby_engine_update_and_render(
     );
 
     itfliesby_engine_assets_update(assets);
-    itfliesby_renderer_update_and_render(renderer);
+    
+    itfliesby_renderer_render(renderer);
 }

@@ -38,28 +38,13 @@ itfliesby_engine_sprites_solid_create(
         return(ITFLIESBY_ENGINE_SPRITE_ID_INVALID);
     }
     itfliesby_engine_physics_update_position(physics, physics_id, position);
-    
 
-    //find the next renderer id
-    ItfliesbyQuadId render_quad_id = 
-        itfliesby_renderer_quad_solid_quads_create_instance(
-            renderer,
-            color);
-    //TODO: error code
-    if (render_quad_id == -1) {
-        return(ITFLIESBY_ENGINE_SPRITE_ID_INVALID);
-    }
-
-
-    new_sprite->physics_id     = physics_id;
-    new_sprite->render_quad_id = render_quad_id;
+    new_sprite->physics_id = physics_id;
 
     //sanity check
     ITFLIESBY_ASSERT(
         new_solid_sprite >= 0 &&
-        physics_id >= 0 &&
-        render_quad_id >= 0
-    );
+        physics_id       >= 0);
 
     return(new_solid_sprite);
 }
