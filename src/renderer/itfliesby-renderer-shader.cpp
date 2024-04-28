@@ -142,14 +142,7 @@ ifliesby_renderer_shader_uniforms_solid_quad(
     
     glBindBuffer(GL_UNIFORM_BUFFER,solid_quad_uniforms->gl_solid_quad_update_ubo);
     glBufferData(GL_UNIFORM_BUFFER,data_size,NULL,GL_STATIC_DRAW);
-    glBindBuffer(GL_UNIFORM_BUFFER,0);
-
-    glBindBufferRange(
-        GL_UNIFORM_BUFFER,
-        0,
-        solid_quad_uniforms->gl_solid_quad_update_ubo,
-        0,
-        data_size);    
+    glBindBuffer(GL_UNIFORM_BUFFER,0); 
 }
 
 external b8

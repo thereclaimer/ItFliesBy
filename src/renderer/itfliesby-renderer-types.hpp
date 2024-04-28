@@ -34,9 +34,4 @@ itfliesby_renderer_color_normalize(
     return(color_normalized);
 }
 
-
-
-typedef ItfliesbyMathMat3 ItfliesbyRendererModelTransform;
-
-
 #endif //ITFLIESBY_RENDERER_TYPES_HPP

@@ -112,4 +112,5 @@ itfliesby_engine_physics_update_position(
     ItfliesbyEnginePhysicsPosition position) {
 
     physics->transforms.positions[physics_id] = position;
+    physics->transforms.scale[physics_id]     = {1.0f, 1.0f};
 }

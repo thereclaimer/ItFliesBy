@@ -116,22 +116,32 @@ itfliesby_renderer_quad_solid_quads_render(
     glBindVertexArray(quad_manager->gl_quad_vao);
 
     //bind the uniform buffer
-    glBindBufferBase(
+    glBindBuffer(
         GL_UNIFORM_BUFFER,
-        solid_quad_uniforms->gl_block_index_solid_quad_update,
         solid_quad_uniforms->gl_solid_quad_update_ubo);
 
     //set the uniform buffer data
+    u32 data_size = sizeof(ItfliesbyRendererSolidQuadUpdate) * solid_quad_batch->count; 
+
     glBufferSubData(
         GL_UNIFORM_BUFFER,
         0,
-        sizeof(ItfliesbyRendererSolidQuadUpdate) * solid_quad_batch->count,
+        sizeof(ItfliesbyRendererSolidQuadUpdate),
         (void*)solid_quad_batch->batch);
+
+    glBindBufferRange(
+        GL_UNIFORM_BUFFER,
+        solid_quad_uniforms->gl_block_index_solid_quad_update,
+        solid_quad_uniforms->gl_solid_quad_update_ubo,
+        0,
+        data_size
+    );  
 
     //bind the element buffer
     glBindBuffer(
         GL_ELEMENT_ARRAY_BUFFER,
         quad_manager->quad_buffers.instances.indices);
+
 
     glDrawElements(
         GL_TRIANGLES,

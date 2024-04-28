@@ -40,8 +40,8 @@ const u32 ITFLIESBY_RENDERER_INDICES_QUAD[] = {
 #define ITFLIESBY_RENDERER_VERTICES_QUAD_COUNT 8
 
 struct ItfliesbyRendererSolidQuadUpdate {
-    ItfliesbyRendererModelTransform transform;
-    ItfliesbyRendererColorHex       color;
+    f32                       transform[9];
+    ItfliesbyRendererColorHex color;
 };
 
 #define ITFLIESBY_RENDERER_SOLID_QUAD_UPDATE_SIZE() sizeof(ItfliesbyRendererSolidQuadUpdate)

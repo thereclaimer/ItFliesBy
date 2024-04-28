@@ -77,7 +77,11 @@ itfliesby_engine_fetch_graphics_information(
             ItfliesbyEnginePhysicsTransform current_transform = physics_payload->transforms[index]; 
             ItfliesbyRendererColorHex       current_color     = sprites->solid_sprite_colors[index];
 
-            solid_quad_update_batch.batch[solid_quad_count].transform = current_transform;
+            memmove(
+                &solid_quad_update_batch.batch[solid_quad_count].transform[0],
+                &current_transform.m[0],
+                sizeof(f32) * 9
+            );
             solid_quad_update_batch.batch[solid_quad_count].color     = current_color;
             ++solid_quad_count;
         }

@@ -39,8 +39,8 @@ struct ItfliesbyRendererColorHex {
 };
 
 struct ItfliesbyRendererSolidQuadUpdate {
-    ItfliesbyRendererModelTransform transform;
-    ItfliesbyRendererColorHex       color;
+    f32                       transform[9];
+    ItfliesbyRendererColorHex color;
 };
 
 #define ITFLIESBY_RENDERER_SOLID_QUAD_COUNT_MAX 128
