@@ -9,9 +9,9 @@ itfliesby_renderer_shader_is_free(
     ITFLIESBY_ASSERT(shader);
 
     b8 shader_free = (
-        shader->program_id      || 
-        shader->stage_id_vertex || 
-        shader->stage_id_fragment) == 0;
+        shader->gl_program_id      || 
+        shader->gl_stage_id_vertex || 
+        shader->gl_stage_id_fragment) == 0;
 
     return(shader_free);
 }
@@ -57,13 +57,13 @@ itfliesby_renderer_shader_destroy(
     ItfliesbyRendererShader*      shaders           = shader_store->shaders;
     ItfliesbyRendererShader*      shader_to_destroy = &shaders[shader_index];
 
-    glDeleteShader(shader_to_destroy->stage_id_vertex);
-    glDeleteShader(shader_to_destroy->stage_id_fragment);
-    glDeleteProgram(shader_to_destroy->program_id);
+    glDeleteShader(shader_to_destroy->gl_stage_id_vertex);
+    glDeleteShader(shader_to_destroy->gl_stage_id_fragment);
+    glDeleteProgram(shader_to_destroy->gl_program_id);
 
-    shader_to_destroy->stage_id_vertex   = 0;
-    shader_to_destroy->stage_id_fragment = 0;
-    shader_to_destroy->program_id        = 0;
+    shader_to_destroy->gl_stage_id_vertex   = 0;
+    shader_to_destroy->gl_stage_id_fragment = 0;
+    shader_to_destroy->gl_program_id        = 0;
 }
 
 external ItfliesbyRendererShaderIndex
@@ -87,24 +87,24 @@ itfliesby_renderer_shader_compile_and_link(
     }
 
     //create the ids for our shader
-    GLuint shader_program_id        = glCreateProgram(); 
-    GLuint shader_stage_id_vertex   = glCreateShader(GL_VERTEX_SHADER);
-    GLuint shader_stage_id_fragment = glCreateShader(GL_FRAGMENT_SHADER);
+    GLuint gl_shader_program_id        = glCreateProgram(); 
+    GLuint gl_shader_stage_id_vertex   = glCreateShader(GL_VERTEX_SHADER);
+    GLuint gl_shader_stage_id_fragment = glCreateShader(GL_FRAGMENT_SHADER);
 
     //upload the shader source
-    glShaderSource(shader_stage_id_vertex,   1, (const char**)&shader_stage_buffer_vertex->shader_stage_data,   NULL);
-    glShaderSource(shader_stage_id_fragment, 1, (const char**)&shader_stage_buffer_fragment->shader_stage_data, NULL);
+    glShaderSource(gl_shader_stage_id_vertex,   1, (const char**)&shader_stage_buffer_vertex->shader_stage_data,   NULL);
+    glShaderSource(gl_shader_stage_id_fragment, 1, (const char**)&shader_stage_buffer_fragment->shader_stage_data, NULL);
 
     //compile the shaders
-    glCompileShader(shader_stage_id_vertex);
-    glCompileShader(shader_stage_id_fragment);
+    glCompileShader(gl_shader_stage_id_vertex);
+    glCompileShader(gl_shader_stage_id_fragment);
 
     //check the compile status
     GLint stage_status_vertex   = 0;
     GLint stage_status_fragment = 0;
     
-    glGetShaderiv(shader_stage_id_vertex,   GL_COMPILE_STATUS, &stage_status_vertex);
-    glGetShaderiv(shader_stage_id_fragment, GL_COMPILE_STATUS, &stage_status_fragment);
+    glGetShaderiv(gl_shader_stage_id_vertex,   GL_COMPILE_STATUS, &stage_status_vertex);
+    glGetShaderiv(gl_shader_stage_id_fragment, GL_COMPILE_STATUS, &stage_status_fragment);
     
     b8 shader_compiled_vertex    = (stage_status_vertex   == GL_TRUE);
     b8 shader_compiled_fragement = (stage_status_fragment == GL_TRUE);
@@ -119,13 +119,13 @@ itfliesby_renderer_shader_compile_and_link(
     }    
 
     //now, link the program
-    glAttachShader(shader_program_id,shader_stage_id_vertex);
-    glAttachShader(shader_program_id,shader_stage_id_fragment);
-    glLinkProgram(shader_program_id);
+    glAttachShader(gl_shader_program_id,gl_shader_stage_id_vertex);
+    glAttachShader(gl_shader_program_id,gl_shader_stage_id_fragment);
+    glLinkProgram(gl_shader_program_id);
     
     //check the link status
     GLint program_status;
-    glGetProgramiv(shader_program_id,GL_LINK_STATUS,(GLint*)&program_status);
+    glGetProgramiv(gl_shader_program_id,GL_LINK_STATUS,(GLint*)&program_status);
     b8 program_linked = (program_status == GL_TRUE);
 
     //if we failed to link, return
@@ -142,14 +142,14 @@ itfliesby_renderer_shader_compile_and_link(
     );
     
     //detach shaders
-    glDetachShader(shader_program_id,shader_stage_id_vertex);
-    glDetachShader(shader_program_id,shader_stage_id_fragment);
+    glDetachShader(gl_shader_program_id,gl_shader_stage_id_vertex);
+    glDetachShader(gl_shader_program_id,gl_shader_stage_id_fragment);
     
     //write our shader ids back to the store
     ItfliesbyRendererShader* shader = &shader_stage_store->shaders[shader_index];
-    shader->program_id        = shader_program_id;
-    shader->stage_id_vertex   = shader_stage_id_vertex;
-    shader->stage_id_fragment = shader_stage_id_fragment;
+    shader->gl_program_id        = gl_shader_program_id;
+    shader->gl_stage_id_vertex   = gl_shader_stage_id_vertex;
+    shader->gl_stage_id_fragment = gl_shader_stage_id_fragment;
 
     return(shader_index);
 }
