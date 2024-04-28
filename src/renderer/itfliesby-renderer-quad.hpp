@@ -103,10 +103,13 @@ const u32 ITFLIESBY_RENDERER_INDICES_QUAD[] = {
     0, 3, 1  
 };
 
+
 struct ItfliesbyRendererSolidQuadUpdate {
     ItfliesbyRendererModelTransform transform;
     ItfliesbyRendererColorHex       color;
 };
+
+#define ITFLIESBY_RENDERER_SOLID_QUAD_UPDATE_SIZE() sizeof(ItfliesbyRendererSolidQuadUpdate)
 
 struct ItfliesbyRendererSolidQuadUpdateBatch {
     ItfliesbyRendererSolidQuadUpdate batch[ITFLIESBY_RENDERER_SOLID_QUADS_MAX];

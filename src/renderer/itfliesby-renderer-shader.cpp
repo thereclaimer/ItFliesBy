@@ -120,6 +120,38 @@ itfliesby_renderer_shader_compile_and_link(
     return(shader_type);
 }
 
+internal void
+ifliesby_renderer_shader_uniforms_solid_quad(
+    ItfliesbyRendererShaderUniformsSolidQuad* solid_quad_uniforms,
+    GLuint                                    solid_quad_program_id,
+    GLuint                                    solid_quad_update_ubo) {
+
+    solid_quad_uniforms->gl_block_index_solid_quad_update = 
+        glGetUniformBlockIndex(
+            solid_quad_program_id,
+            ITFLIESBY_RENDERER_SHADER_UNIFORM_SOLID_QUAD_UPDATE);
+
+    glUniformBlockBinding(
+        solid_quad_program_id,
+        solid_quad_uniforms->gl_block_index_solid_quad_update,
+        0);
+
+    u32 data_size = ITFLIESBY_RENDERER_SOLID_QUAD_UPDATE_SIZE();
+
+    solid_quad_uniforms->gl_solid_quad_update_ubo = solid_quad_update_ubo;
+    
+    glBindBuffer(GL_UNIFORM_BUFFER,solid_quad_uniforms->gl_solid_quad_update_ubo);
+    glBufferData(GL_UNIFORM_BUFFER,data_size,NULL,GL_STATIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER,0);
+
+    glBindBufferRange(
+        GL_UNIFORM_BUFFER,
+        0,
+        solid_quad_uniforms->gl_solid_quad_update_ubo,
+        0,
+        data_size);    
+}
+
 external b8
 itfliesby_renderer_ready(
     ItfliesbyRenderer* renderer) {
@@ -127,9 +159,10 @@ itfliesby_renderer_ready(
     //make sure the renderer has everything it needs
     b8 ready = true;
 
-    ItfliesbyRendererShaderStore* shader_store = &renderer->shader_store;
-    ItfliesbyRendererShader*      shader_array = shader_store->shaders;
-    ItfliesbyRendererShader  shader;
+    ItfliesbyRendererShaderStore*    shader_store = &renderer->shader_store;
+    ItfliesbyRendererShader*         shader_array = shader_store->shaders;
+    ItfliesbyRendererShader          shader;
+    ItfliesbyRendererShaderUniforms* shader_uniforms = &renderer->shader_store.uniforms;
 
     //make sure the shader ids are initialized
     for (
@@ -146,19 +179,17 @@ itfliesby_renderer_ready(
         return(false);
     }
 
-    //now set the uniform data
-    ItfliesbyRendererShaderUniforms* uniforms = &renderer->shader_store.uniforms;
+    //generate the ubos we will need
+    const u32 num_ubos = 1;
+    GLuint gl_ubos[num_ubos] = {0};
+    glGenBuffers(num_ubos,gl_ubos);
 
-    //solid quad uniforms
-    uniforms->solid_quad_uniforms.gl_block_index_solid_quad_update = 
-        glGetUniformBlockIndex(
-            shader_store->types.solid_quad.gl_program_id,
-            ITFLIESBY_RENDERER_SHADER_UNIFORM_SOLID_QUAD_UPDATE);
-
-    glUniformBlockBinding(
+    //solid quad uniform data
+    ifliesby_renderer_shader_uniforms_solid_quad(
+        &shader_uniforms->solid_quad_uniforms,
         shader_store->types.solid_quad.gl_program_id,
-        uniforms->solid_quad_uniforms.gl_block_index_solid_quad_update,
-        0);
+        gl_ubos[0]
+    );
 
     return(ready);
 }
