@@ -182,3 +182,11 @@ itfliesby_renderer_quad_solid_quads_destroy_instance(
 
     ITFLIESBY_NOP();
 }
+
+external void
+itfliesby_renderer_quad_solid_quads_batch_update(
+    ItfliesbyRenderer*                     renderer,
+    ItfliesbyRendererSolidQuadUpdateBatch* solid_quad_update_batch) {
+
+    ITFLIESBY_NOP();
+}

@@ -19,6 +19,7 @@ struct ItfliesbyEngineShaderStore {
     };
 };
 
+
 struct ItfliesbyEngineRendererMemory {
     itfliesby_memory_partition        partition;
     itfliesby_memory_partition        rendering_context_partition;
@@ -34,6 +35,7 @@ struct ItfliesbyEngine {
     ItfliesbyEngineShaderStore shaders;
     ItfliesbyRendererHandle    renderer;
     ItfliesbyEnginePhysics     physics;
+    ItfliesbyEngineSprites     sprites;
 };
 
 api ItfliesbyEngine*

@@ -12,7 +12,7 @@ itfliesby_engine_physics_dynamics(
 
     for (
         u32 index = 0;
-        index < ITFLIESBY_ENGINE_PHYSICS_DYNAMIC_OBJECTS_MAX;
+        index < ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX;
         ++index) {
 
         //update positions
@@ -34,13 +34,13 @@ itfliesby_engine_physics_transforms(
     ItfliesbyEnginePhysicsRotationDegrees* rotation  = in_transform_properties->rotation;
     ItfliesbyEnginePhysicsTransform*       transform = out_transform_payload->transforms;
 
-    ItfliesbyEnginePhysicsTransform transform_translation[ITFLIESBY_ENGINE_PHYSICS_DYNAMIC_OBJECTS_MAX] = {0};
-    ItfliesbyEnginePhysicsTransform transform_scale[ITFLIESBY_ENGINE_PHYSICS_DYNAMIC_OBJECTS_MAX]       = {0};
-    ItfliesbyEnginePhysicsTransform transform_rotation[ITFLIESBY_ENGINE_PHYSICS_DYNAMIC_OBJECTS_MAX]    = {0};
+    ItfliesbyEnginePhysicsTransform transform_translation[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX] = {0};
+    ItfliesbyEnginePhysicsTransform transform_scale[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX]       = {0};
+    ItfliesbyEnginePhysicsTransform transform_rotation[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX]    = {0};
 
     for (
         u32 index = 0;
-        index < ITFLIESBY_ENGINE_PHYSICS_DYNAMIC_OBJECTS_MAX;
+        index < ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX;
         ++index) {
 
         transform_translation[index] = itfliesby_math_mat3_translation(positions[index].x, positions[index].y);
@@ -49,7 +49,7 @@ itfliesby_engine_physics_transforms(
     }
 
     itfliesby_math_mat3_transform_trs(
-        ITFLIESBY_ENGINE_PHYSICS_DYNAMIC_OBJECTS_MAX,
+        ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX,
         transform_translation,
         transform_scale,
         transform_rotation,
@@ -75,10 +75,41 @@ itfliesby_engine_physics_update(
     );
 }
 
+internal ItfliesbyEnginePhysicsId
+itfliesby_engine_physics_id_get_next(
+    ItfliesbyEnginePhysics* physics) {
+
+    ItfliesbyEnginePhysicsId next_physics_id = ITFLIESBY_ENGINE_PHYSICS_OBJECT_INVALID;
+    b8* objects_used = physics->object_used;
+
+    for (
+        u32 index = 0;
+        index < ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX;
+        ++index) {
+
+        if (!objects_used[index]) {
+            next_physics_id = index;
+            objects_used[index] = true;
+            break;
+        }
+    }
+
+    return(next_physics_id);
+}
+
 internal ItfliesbyEnginePhysics
 itfliesby_engine_physics_create_and_init() {
 
     ItfliesbyEnginePhysics physics = {0};
 
     return(physics);
+}
+
+internal void
+itfliesby_engine_physics_update_position(
+    ItfliesbyEnginePhysics*        physics,
+    ItfliesbyEnginePhysicsId       physics_id,
+    ItfliesbyEnginePhysicsPosition position) {
+
+    physics->transforms.positions[physics_id] = position;
 }

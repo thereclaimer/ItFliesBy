@@ -114,9 +114,11 @@ itfliesby_renderer_color_normalize(
 #define ITFLIESBY_RENDERER_SOLID_QUAD_ID_INVALID -1
 
 
-typedef s8  ItfliesbyRendererSolidQuadId;
-typedef u8  ItfliesbyRendererSolidQuadInstanceGroup;
-typedef s32 ItfliesbyQuadId;
+typedef s8                ItfliesbyRendererSolidQuadId;
+typedef u8                ItfliesbyRendererSolidQuadInstanceGroup;
+typedef s32               ItfliesbyQuadId;
+typedef ItfliesbyMathMat3 ItfliesbyRendererModelTransform;
+
 
 struct ItfliesbyRendererSolidQuadInstanceKey {
     
@@ -182,6 +184,15 @@ struct ItfliesbyRenderer {
     ItfliesbyRendererQuadManager quad_manager;
 };
 
+struct ItfliesbyRendererSolidQuadUpdate {
+    ItfliesbyRendererModelTransform transform;
+    ItfliesbyRendererColorHex       color;
+};
+
+struct ItfliesbyRendererSolidQuadUpdateBatch {
+    ItfliesbyRendererSolidQuadUpdate batch[ITFLIESBY_RENDERER_SOLID_QUADS_MAX];
+    u8                               count;
+};
 
 const f32 ITFLIESBY_RENDERER_VERTICES_SQUARE_QUAD[] = {
     -0.5f,  0.5f,

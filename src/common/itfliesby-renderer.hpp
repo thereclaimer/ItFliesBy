@@ -11,10 +11,10 @@ typedef void* ItfliesbyRendererHandle;
 #define ITFLIESBY_RENDERER_MEMORY_PARTITION_CORE_SIZE_BYTES        ITFLIESBY_MATH_KILOBYTES(2)
 #define ITFLIESBY_RENDERER_MEMORY_ALLOCATOR_CORE_SYSTEM_SIZE_BYTES ITFLIESBY_MATH_KILOBYTES(1)
 
-typedef s8  ItfliesbyRendererShaderIndex;
-typedef s8  ItfliesbyRendererSolidQuadId;
-typedef s32 ItfliesbyQuadId;
-
+typedef s8                ItfliesbyRendererShaderIndex;
+typedef s8                ItfliesbyRendererSolidQuadId;
+typedef s32               ItfliesbyQuadId;
+typedef ItfliesbyMathMat3 ItfliesbyRendererModelTransform;
 
 enum ItfliesbyRendererShaderError {
     ITFLIESBY_RENDERER_SHADER_ERROR_OKAY                             = 0x01,
@@ -36,6 +36,18 @@ struct ItfliesbyRendererColorHex {
     u8 g;
     u8 b;
     u8 a;
+};
+
+struct ItfliesbyRendererSolidQuadUpdate {
+    ItfliesbyRendererModelTransform transform;
+    ItfliesbyRendererColorHex       color;
+};
+
+#define ITFLIESBY_RENDERER_SOLID_QUAD_COUNT_MAX 128
+
+struct ItfliesbyRendererSolidQuadUpdateBatch {
+    ItfliesbyRendererSolidQuadUpdate batch[ITFLIESBY_RENDERER_SOLID_QUAD_COUNT_MAX];
+    u8                               count;
 };
 
 //----------------------------------------------------------------
@@ -81,5 +93,12 @@ api void
 itfliesby_renderer_quad_solid_quads_destroy_instance(
     ItfliesbyRendererHandle      renderer,
     ItfliesbyRendererSolidQuadId solid_quad_id);
+
+api void
+itfliesby_renderer_quad_solid_quads_batch_update(
+    ItfliesbyRendererHandle                renderer,
+    ItfliesbyRendererSolidQuadUpdateBatch* solid_quad_update_batch); 
+
+
 
 #endif //ITFLIESBY_RENDERER_HPP

@@ -5,6 +5,7 @@
 #include "itfliesby-engine-assets.cpp"
 #include "itfliesby-engine-rendering.cpp"
 #include "itfliesby-engine-physics.cpp"
+#include "itfliesby-engine-sprites.cpp"
 
 external ItfliesbyEngine*
 itfliesby_engine_create(
@@ -32,13 +33,18 @@ itfliesby_engine_create(
     );
 
     engine->physics = itfliesby_engine_physics_create_and_init();
-
+    engine->sprites = itfliesby_engine_sprites_create_and_init();
+    
     //TEST QUAD RENDERING
     
-    ItfliesbyQuadId quad_id_0 = itfliesby_renderer_quad_solid_quads_create_instance(engine->renderer,{235,219,178,255});
-    ItfliesbyQuadId quad_id_1 = itfliesby_renderer_quad_solid_quads_create_instance(engine->renderer,{235,219,178,255});
-    ItfliesbyQuadId quad_id_2 = itfliesby_renderer_quad_solid_quads_create_instance(engine->renderer,{235,219,178,255});
-    
+    ItfliesbyEngineSpriteId test_sprite_0 = 
+        itfliesby_engine_sprites_solid_create(
+            &engine->sprites,
+            &engine->physics,
+            {0.0,0.0},
+            engine->renderer,
+            {235,219,178,255});
+
     //TEST QUAD RENDERING
 
 
@@ -49,6 +55,40 @@ external void
 itfliesby_engine_destroy(
     ItfliesbyEngine* engine) {
 
+}
+
+internal void
+itfliesby_engine_fetch_graphics_information(
+    ItfliesbyEngine*                        engine,
+    ItfliesbyEnginePhysicsTransformPayload* physics_payload) {
+
+    ItfliesbyRendererSolidQuadUpdateBatch solid_quad_update_batch = {0};
+    u8 solid_quad_count = 0;
+
+    ItfliesbyEngineSprites* sprites = &engine->sprites;
+
+    for (
+        u32 index = 0;
+        index < ITFLIESBY_ENGINE_SPRITE_TABLE_COUNT_MAX;
+        ++index) {
+
+        if (sprites->used_tables.solid_used[index]) {
+
+            ItfliesbyEnginePhysicsTransform current_transform = physics_payload->transforms[index]; 
+            ItfliesbyRendererColorHex       current_color     = sprites->solid_sprite_colors[index];
+
+            solid_quad_update_batch.batch[solid_quad_count].transform = current_transform;
+            solid_quad_update_batch.batch[solid_quad_count].color     = current_color;
+            ++solid_quad_count;
+        }
+    }
+
+    solid_quad_update_batch.count = solid_quad_count;
+
+    itfliesby_renderer_quad_solid_quads_batch_update(
+        engine->renderer,
+        &solid_quad_update_batch
+    );
 }
 
 external void
@@ -62,6 +102,12 @@ itfliesby_engine_update_and_render(
 
     itfliesby_engine_physics_update(
         &engine->physics,
+        &physics_payload
+    );
+
+    //now we need to zip up the payload we are sending to the GPU
+    itfliesby_engine_fetch_graphics_information(
+        engine,
         &physics_payload
     );
 
