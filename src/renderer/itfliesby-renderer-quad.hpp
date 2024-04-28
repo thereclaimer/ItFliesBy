@@ -36,6 +36,9 @@ const u32 ITFLIESBY_RENDERER_INDICES_QUAD[] = {
     0, 3, 1  
 };
 
+#define ITFLIESBY_RENDERER_INDICES_QUAD_COUNT  6
+#define ITFLIESBY_RENDERER_VERTICES_QUAD_COUNT 8
+
 struct ItfliesbyRendererSolidQuadUpdate {
     ItfliesbyRendererModelTransform transform;
     ItfliesbyRendererColorHex       color;
@@ -50,7 +53,8 @@ struct ItfliesbyRendererSolidQuadUpdateBatch {
 
 
 struct ItfliesbyRendererQuadManager {
-    ItfliesbyRendererQuadBuffers quad_buffers;
+    GLuint                                gl_quad_vao;
+    ItfliesbyRendererQuadBuffers          quad_buffers;
     ItfliesbyRendererSolidQuadUpdateBatch solid_quad_batch;
 };
 

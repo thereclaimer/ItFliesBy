@@ -45,6 +45,18 @@ external void
 itfliesby_renderer_render(
     ItfliesbyRenderer* renderer) {
 
+    ItfliesbyRendererShader*                  solid_quad_shader   = &renderer->shader_store.types.solid_quad; 
+    ItfliesbyRendererQuadManager*             quad_manager        = &renderer->quad_manager; 
+    ItfliesbyRendererShaderUniformsSolidQuad* solid_quad_uniforms = &renderer->shader_store.uniforms.solid_quad_uniforms;
+    ItfliesbyRendererSolidQuadUpdateBatch*    solid_quad_batch    = &renderer->quad_manager.solid_quad_batch;  
+
     //clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    itfliesby_renderer_quad_solid_quads_render(
+        solid_quad_shader,
+        quad_manager,
+        solid_quad_uniforms,
+        solid_quad_batch
+    );
 }
