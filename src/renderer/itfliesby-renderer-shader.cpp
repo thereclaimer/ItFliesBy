@@ -3,59 +3,30 @@
 #include "itfliesby-renderer.hpp"
 
 internal b8
-itfliesby_renderer_shader_is_free(
+itfliesby_renderer_shader_is_valid(
     const ItfliesbyRendererShader* shader) {
 
     ITFLIESBY_ASSERT(shader);
 
-    b8 shader_free = (
-        shader->gl_program_id      || 
-        shader->gl_stage_id_vertex || 
-        shader->gl_stage_id_fragment) == 0;
+    b8 shader_valid = (
+        shader->gl_program_id        > 0 && 
+        shader->gl_stage_id_vertex   > 0 && 
+        shader->gl_stage_id_fragment > 0);
 
-    return(shader_free);
-}
-
-internal ItfliesbyRendererShaderIndex
-itfliesby_renderer_shader_next_free(
-    ItfliesbyRendererShaderStore* shader_store) {
-
-    ITFLIESBY_ASSERT(shader_store);
-
-    ItfliesbyRendererShader* shaders = shader_store->shaders;
-    
-    ITFLIESBY_ASSERT(shaders);
-    
-    ItfliesbyRendererShader* current_shader = NULL;
-    b8                       shader_free    = false;
-
-    for (
-        ItfliesbyRendererShaderIndex index = 0;
-        index < ITFLIESBY_RENDERER_SHADER_COUNT;
-        ++index) {
-
-        current_shader = &shaders[index];
-
-        shader_free = itfliesby_renderer_shader_is_free(current_shader);
-        if (shader_free) {
-            return(index);
-        }
-    }
-
-    return(ITFLIESBY_RENDERER_SHADER_ERROR_MAX_SHADERS);
+    return(shader_valid);
 }
 
 external void
 itfliesby_renderer_shader_destroy(
     ItfliesbyRenderer*           renderer,
-    ItfliesbyRendererShaderIndex shader_index) {
+    ItfliesbyRendererShaderType  shader_type) {
 
     ITFLIESBY_ASSERT(renderer);
-    ITFLIESBY_ASSERT(shader_index > 0 && shader_index < ITFLIESBY_RENDERER_SHADER_COUNT);
+    ITFLIESBY_ASSERT(shader_type >= 0 && shader_type < ITFLIESBY_RENDERER_SHADER_TYPE_COUNT);
 
     ItfliesbyRendererShaderStore* shader_store      = &renderer->shader_store;
     ItfliesbyRendererShader*      shaders           = shader_store->shaders;
-    ItfliesbyRendererShader*      shader_to_destroy = &shaders[shader_index];
+    ItfliesbyRendererShader*      shader_to_destroy = &shaders[shader_type];
 
     glDeleteShader(shader_to_destroy->gl_stage_id_vertex);
     glDeleteShader(shader_to_destroy->gl_stage_id_fragment);
@@ -69,6 +40,7 @@ itfliesby_renderer_shader_destroy(
 external ItfliesbyRendererShaderIndex
 itfliesby_renderer_shader_compile_and_link(
     ItfliesbyRenderer*                  renderer,
+    ItfliesbyRendererShaderType         shader_type,
     ItfliesbyRendererShaderStageBuffer* shader_stage_buffer_vertex,
     ItfliesbyRendererShaderStageBuffer* shader_stage_buffer_fragment) {
 
@@ -79,12 +51,7 @@ itfliesby_renderer_shader_compile_and_link(
     );
 
     ItfliesbyRendererShaderStore* shader_stage_store = &renderer->shader_store;
-
-    //get the next free shader index
-    ItfliesbyRendererShaderIndex shader_index = itfliesby_renderer_shader_next_free(shader_stage_store);
-    if (shader_index < 0) {
-        return(shader_index);
-    }
+    ItfliesbyRendererShader* shader = &shader_stage_store->shaders[shader_type];
 
     //create the ids for our shader
     GLuint gl_shader_program_id        = glCreateProgram(); 
@@ -114,7 +81,7 @@ itfliesby_renderer_shader_compile_and_link(
     
     //if we failed to compile, return    
     if (!shader_compiled_vertex || !shader_compiled_fragement) {
-        itfliesby_renderer_shader_destroy(renderer,shader_index);
+        itfliesby_renderer_shader_destroy(renderer,shader_type);
         return(ITFLIESBY_RENDERER_SHADER_ERROR_FAILED_TO_COMPILE);
     }    
 
@@ -130,7 +97,7 @@ itfliesby_renderer_shader_compile_and_link(
 
     //if we failed to link, return
     if (!program_linked) {
-        itfliesby_renderer_shader_destroy(renderer,shader_index);
+        itfliesby_renderer_shader_destroy(renderer,shader_type);
         return(ITFLIESBY_RENDERER_SHADER_ERROR_FAILED_TO_LINK);
     }    
 
@@ -146,10 +113,52 @@ itfliesby_renderer_shader_compile_and_link(
     glDetachShader(gl_shader_program_id,gl_shader_stage_id_fragment);
     
     //write our shader ids back to the store
-    ItfliesbyRendererShader* shader = &shader_stage_store->shaders[shader_index];
     shader->gl_program_id        = gl_shader_program_id;
     shader->gl_stage_id_vertex   = gl_shader_stage_id_vertex;
     shader->gl_stage_id_fragment = gl_shader_stage_id_fragment;
 
-    return(shader_index);
+    return(shader_type);
+}
+
+external b8
+itfliesby_renderer_ready(
+    ItfliesbyRenderer* renderer) {
+    
+    //make sure the renderer has everything it needs
+    b8 ready = true;
+
+    ItfliesbyRendererShaderStore* shader_store = &renderer->shader_store;
+    ItfliesbyRendererShader*      shader_array = shader_store->shaders;
+    ItfliesbyRendererShader  shader;
+
+    //make sure the shader ids are initialized
+    for (
+        u8 shader_index = 0;
+        shader_index < ITFLIESBY_RENDERER_SHADER_TYPE_COUNT;
+        ++shader_index) {
+
+        shader = shader_array[shader_index];
+
+        ready &= itfliesby_renderer_shader_is_valid(&shader);
+    }
+
+    if (!ready) {
+        return(false);
+    }
+
+    //now set the uniform data
+    ItfliesbyRendererShaderUniforms* uniforms = &renderer->shader_store.uniforms;
+
+    //solid quad uniforms
+    uniforms->solid_quad_uniforms.gl_block_index_solid_quad_update = 
+        glGetUniformBlockIndex(
+            shader_store->types.solid_quad.gl_program_id,
+            ITFLIESBY_RENDERER_SHADER_UNIFORM_SOLID_QUAD_UPDATE);
+
+    glUniformBlockBinding(
+        shader_store->types.solid_quad.gl_program_id,
+        uniforms->solid_quad_uniforms.gl_block_index_solid_quad_update,
+        0);
+
+    return(ready);
 }

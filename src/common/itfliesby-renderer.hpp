@@ -68,9 +68,17 @@ itfliesby_renderer_update_and_render(
 // SHADERS
 //----------------------------------------------------------------
 
+enum ItfliesbyRendererShaderType {
+    ITFLIESBY_RENDERER_SHADER_TYPE_INVALID       = -1,
+    ITFLIESBY_RENDERER_SHADER_TYPE_TEXTURED_QUAD = 0,
+    ITFLIESBY_RENDERER_SHADER_TYPE_SOLID_QUAD    = 1,
+    ITFLIESBY_RENDERER_SHADER_TYPE_COUNT         = 2,
+};
+
 api ItfliesbyRendererShaderIndex
 itfliesby_renderer_shader_compile_and_link(
     ItfliesbyRendererHandle             renderer,
+    ItfliesbyRendererShaderType         shader_type,
     ItfliesbyRendererShaderStageBuffer* shader_stage_buffer_vertex,
     ItfliesbyRendererShaderStageBuffer* shader_stage_buffer_fragment);
 
@@ -78,6 +86,10 @@ api void
 itfliesby_renderer_shader_destroy(
     ItfliesbyRendererHandle      renderer,
     ItfliesbyRendererShaderIndex shader_index);
+
+api b8
+itfliesby_renderer_ready(
+    ItfliesbyRenderer* renderer); 
 
 //----------------------------------------------------------------
 // QUADS

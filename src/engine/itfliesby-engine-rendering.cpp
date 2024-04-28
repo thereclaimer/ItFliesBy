@@ -51,10 +51,17 @@ itfliesby_engine_rendering_shader_programs_init(
 
     auto shader_array = shader_store->array;
 
+    const ItfliesbyRendererShaderType shader_types[shaders_count] = {
+        ITFLIESBY_RENDERER_SHADER_TYPE_TEXTURED_QUAD,
+        ITFLIESBY_RENDERER_SHADER_TYPE_SOLID_QUAD
+    };
+
     for (
         u32 shader_index = 0;
         shader_index < shaders_count;
         ++shader_index) {
+
+        ItfliesbyRendererShaderType shader_type = shader_types[shader_index];
 
         renderer_shader_stage_buffer_vertex   = {0};
         renderer_shader_stage_buffer_fragment = {0};
@@ -68,6 +75,7 @@ itfliesby_engine_rendering_shader_programs_init(
         ItfliesbyRendererShaderIndex new_shader = 
             itfliesby_renderer_shader_compile_and_link(
                 renderer,
+                shader_type,
                 &renderer_shader_stage_buffer_vertex,
                 &renderer_shader_stage_buffer_fragment);
 
@@ -75,6 +83,10 @@ itfliesby_engine_rendering_shader_programs_init(
     }
 
     itfliesby_engine_memory_renderer_shader_reset();
+
+    //make sure we are ready to go
+    b8 renderer_ready = itfliesby_renderer_ready(renderer);
+    ITFLIESBY_ASSERT(renderer_ready);
 }
 
 internal ItfliesbyRendererHandle

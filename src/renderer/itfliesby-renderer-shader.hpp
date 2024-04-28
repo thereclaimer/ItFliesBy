@@ -12,8 +12,6 @@ struct ItfliesbyRendererShader {
     GLuint gl_stage_id_fragment;
 };
 
-#define ITFLIESBY_RENDERER_SHADER_COUNT 16
-
 typedef s8 ItfliesbyRendererShaderIndex;
 
 enum ItfliesbyRendererShaderError {
@@ -25,21 +23,45 @@ enum ItfliesbyRendererShaderError {
     ITFLIESBY_RENDERER_SHADER_ERROR_FAILED_TO_LINK                   = 0x84,
     ITFLIESBY_RENDERER_SHADER_ERROR_MAX_SHADERS                      = 0x85
 };
-struct ItfliesbyRendererShaderStore {
-    ItfliesbyRendererShader shaders[ITFLIESBY_RENDERER_SHADER_COUNT];
+
+enum ItfliesbyRendererShaderType : s32 {
+    ITFLIESBY_RENDERER_SHADER_TYPE_INVALID       = -1,
+    ITFLIESBY_RENDERER_SHADER_TYPE_TEXTURED_QUAD =  0,
+    ITFLIESBY_RENDERER_SHADER_TYPE_SOLID_QUAD    =  1,
+    ITFLIESBY_RENDERER_SHADER_TYPE_COUNT         =  2,
 };
+
 
 struct ItfliesbyRendererShaderStageBuffer {
     memory                       shader_stage_data;
     ItfliesbyRendererShaderError result;
-
 };
+
 
 #define ITFLIESBY_RENDERER_SHADER_UNIFORM_SOLID_QUAD_UPDATE "solid_quad_update"
-
-struct ItfliesbyRendererShaderSolidQuadData {
-    ItfliesbyRendererShaderIndex shader_store_index;
-    GLuint                       uniform_block_index_solid_quad_update;
+struct ItfliesbyRendererShaderUniformsSolidQuad {
+    GLuint gl_block_index_solid_quad_update;
 };
+
+struct ItfliesbyRendererShaderUniforms {
+    ItfliesbyRendererShaderUniformsSolidQuad solid_quad_uniforms;
+};
+
+struct ItfliesbyRendererShaderStore {
+
+    union {
+        struct {
+            ItfliesbyRendererShader textured_quad;
+            ItfliesbyRendererShader solid_quad;
+        } types;
+
+        ItfliesbyRendererShader shaders[ITFLIESBY_RENDERER_SHADER_TYPE_COUNT];
+    };
+
+    ItfliesbyRendererShaderUniforms uniforms;
+};
+
+
+
 
 #endif //ITFLIESBY_RENDERER_SHADER_HPP
