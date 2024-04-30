@@ -23,23 +23,46 @@ struct ItfliesbyEnginePhysicsTransformPayload {
     ItfliesbyEnginePhysicsTransform transforms[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
 };
 
-
-struct ItfliesbyEnginePhysicsTransformProperties {
-    ItfliesbyEnginePhysicsPosition        positions[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
-    ItfliesbyEnginePhysicsScale           scale[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
-    ItfliesbyEnginePhysicsRotationDegrees rotation[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
+struct ItfliesbyEnginePhysicsTablePosition {
+    f32 x[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
+    f32 y[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
 };
 
-struct ItfliesbyEnginePhysicsDynamicProperties {
-    ItfliesbyEnginePhysicsVelocity velocity[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
+struct ItfliesbyEnginePhysicsTableScale {
+    f32 x[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
+    f32 y[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
 };
+
+struct ItfliesbyEnginePhysicsTableRotation {
+    f32 radians[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
+};
+
+struct ItfliesbyEnginePhysicsTablesTransforms {
+    ItfliesbyEnginePhysicsTablePosition position;
+    ItfliesbyEnginePhysicsTableScale    scale;
+    ItfliesbyEnginePhysicsTableRotation rotation;
+};
+
+struct ItfliesbyEnginePhysicsTableVelocity {
+    f32 x[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
+    f32 y[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
+}
+
+struct ItfliesbyEnginePhysicsTablesDynamics {
+    ItfliesbyEnginePhysicsTableVelocity velocity;
+};
+
+struct ItfliesbyEnginePhysicsTables {
+    ItfliesbyEnginePhysicsTablesTransforms transforms;
+    ItfliesbyEnginePhysicsTablesDynamics   dynamics;
+};
+
 
 struct ItfliesbyEnginePhysics {
     //TODO: this is really lazy, we'll fix later
     b8 object_used[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
     ItfliesbyEnginePhysicsMemory              memory;
-    ItfliesbyEnginePhysicsTransformProperties transforms;
-    ItfliesbyEnginePhysicsDynamicProperties   dynamics;
+    ItfliesbyEnginePhysicsTables              tables;
 };
 
 ItfliesbyEnginePhysicsId

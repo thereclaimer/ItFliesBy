@@ -87,6 +87,24 @@ itfliesby_math_mat3_rotation_degrees(
     return(m3);
 }
 
+inline ItfliesbyMathMat3
+itfliesby_math_mat3_rotation_radians(
+    f32 radians) {
+
+    f32 cos_r = cosf(radians);
+    f32 sin_r = sinf(radians);
+    
+    ItfliesbyMathMat3 m3 = itfliesby_math_mat3_identity();
+
+    m3.rows.row_0[0] = cos_r;
+    m3.rows.row_0[1] = -(sin_r);
+
+    m3.rows.row_1[0] = sin_r;
+    m3.rows.row_1[1] = cos_r;
+
+    return(m3);
+}
+
 //scale,rotate,translate
 inline void
 itfliesby_math_mat3_transform_srt(

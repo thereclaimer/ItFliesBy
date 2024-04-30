@@ -4,11 +4,17 @@
 
 internal void
 itfliesby_engine_physics_dynamics(
-    ItfliesbyEnginePhysicsDynamicProperties*   in_dynamic_properties,
-    ItfliesbyEnginePhysicsTransformProperties* out_transform_properties) {
+    ItfliesbyEnginePhysicsTablesTransforms* tables_transforms,
+    ItfliesbyEnginePhysicsTablesDynamics*   tables_dynamics) {
 
-    ItfliesbyEnginePhysicsVelocity* dynamic_property_velocity   = in_dynamic_properties->velocity;
-    ItfliesbyEnginePhysicsPosition* transform_property_position = out_transform_properties->positions;
+    ItfliesbyEnginePhysicsTablePosition* table_transforms_position = &tables_transforms->position;
+    ItfliesbyEnginePhysicsTableVelocity* table_dynamics_velocity   = &tables_dynamics->velocity;
+
+    f32* position_x = table_transforms_position->x;
+    f32* position_y = table_transforms_position->y;
+
+    f32* velocity_x = table_dynamics_velocity->x;
+    f32* velocity_y = table_dynamics_velocity->y;
 
     for (
         u32 index = 0;
@@ -16,23 +22,30 @@ itfliesby_engine_physics_dynamics(
         ++index) {
 
         //update positions
-        transform_property_position[index].x += dynamic_property_velocity[index].x; 
-        transform_property_position[index].y += dynamic_property_velocity[index].y; 
-        
-        dynamic_property_velocity[index].x = 0.0f;
-        dynamic_property_velocity[index].y = 0.0f;
+        position_x[index] += velocity_x[index];
+        position_y[index] += velocity_y[index];
+
+        velocity_x[index] = 0.0f;
+        velocity_y[index] = 0.0f;
     }
 }
 
 internal void
 itfliesby_engine_physics_transforms(
-    ItfliesbyEnginePhysicsTransformProperties*  in_transform_properties,
-    ItfliesbyEnginePhysicsTransformPayload*     out_transform_payload) {
+    ItfliesbyEnginePhysicsTablesTransforms*  in_tables_properties,
+    ItfliesbyEnginePhysicsTransformPayload*  out_transform_payload) {
 
-    ItfliesbyEnginePhysicsPosition*        positions = in_transform_properties->positions;
-    ItfliesbyEnginePhysicsScale*           scale     = in_transform_properties->scale;
-    ItfliesbyEnginePhysicsRotationDegrees* rotation  = in_transform_properties->rotation;
-    ItfliesbyEnginePhysicsTransform*       transform = out_transform_payload->transforms;
+    ItfliesbyEnginePhysicsTablePosition* table_transforms_position = &in_tables_properties->position;
+    ItfliesbyEnginePhysicsTableScale*    table_transforms_scale    = &in_tables_properties->scale;
+    ItfliesbyEnginePhysicsTableRotation* table_transforms_rotation = &in_tables_properties->rotation;
+    
+    f32* table_position_x       = table_transforms_position->x;
+    f32* table_position_y       = table_transforms_position->y;
+    f32* table_scale_x          = table_transforms_scale->x;
+    f32* table_scale_y          = table_transforms_scale->y;
+    f32* table_rotation_radians = table_transforms_rotation->radians;
+
+    ItfliesbyEnginePhysicsTransform*     transform                 = out_transform_payload->transforms;
 
     ItfliesbyEnginePhysicsTransform transform_translation[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX] = {0};
     ItfliesbyEnginePhysicsTransform transform_scale[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX]       = {0};
@@ -43,11 +56,25 @@ itfliesby_engine_physics_transforms(
         index < ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX;
         ++index) {
 
-        transform_translation[index] = itfliesby_math_mat3_translation(positions[index].x, positions[index].y);
-        transform_scale[index]       = itfliesby_math_mat3_scaling(scale[index].x, scale[index].y);
-        transform_rotation[index]    = itfliesby_math_mat3_rotation_degrees(rotation[index]);
+        //translation
+        transform_translation[index] = 
+            itfliesby_math_mat3_translation(
+                table_position_x[index],
+                table_position_y[index]);
+        
+        //scale
+        transform_scale[index] = 
+            itfliesby_math_mat3_scaling(
+                table_scale_x[index], 
+                table_scale_y[index]);
+        
+        //rotation
+        transform_rotation[index] = 
+            itfliesby_math_mat3_rotation_radians(
+                table_rotation_radians[index]);
     }
 
+    //put the transforms together
     itfliesby_math_mat3_transform_trs(
         ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX,
         transform_translation,
