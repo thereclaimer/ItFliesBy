@@ -46,7 +46,7 @@ struct ItfliesbyEnginePhysicsTablesTransforms {
 struct ItfliesbyEnginePhysicsTableVelocity {
     f32 x[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
     f32 y[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
-}
+};
 
 struct ItfliesbyEnginePhysicsTablesDynamics {
     ItfliesbyEnginePhysicsTableVelocity velocity;

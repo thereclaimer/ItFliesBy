@@ -88,16 +88,16 @@ itfliesby_engine_physics_update(
     ItfliesbyEnginePhysics*                 physics,
     ItfliesbyEnginePhysicsTransformPayload* payload) {
 
-    ItfliesbyEnginePhysicsDynamicProperties*   dynamic_properties   = &physics->dynamics;
-    ItfliesbyEnginePhysicsTransformProperties* transform_properties = &physics->transforms;
+    ItfliesbyEnginePhysicsTablesTransforms* physics_table_transforms = &physics->tables.transforms;
+    ItfliesbyEnginePhysicsTablesDynamics*   physics_table_dynamics   = &physics->tables.dynamics;
 
     itfliesby_engine_physics_dynamics(
-        dynamic_properties,
-        transform_properties
+        physics_table_transforms,
+        physics_table_dynamics
     );
 
     itfliesby_engine_physics_transforms(
-        transform_properties,
+        physics_table_transforms,
         payload
     );
 }
@@ -138,6 +138,85 @@ itfliesby_engine_physics_update_position(
     ItfliesbyEnginePhysicsId       physics_id,
     ItfliesbyEnginePhysicsPosition position) {
 
-    physics->transforms.positions[physics_id] = position;
-    physics->transforms.scale[physics_id]     = {1.0f, 1.0f};
+    ItfliesbyEnginePhysicsTablesTransforms* physics_table_transforms          = &physics->tables.transforms;
+    ItfliesbyEnginePhysicsTablePosition*    physics_table_transforms_position = &physics_table_transforms->position;
+
+    f32* position_x = physics_table_transforms_position->x;
+    f32* position_y = physics_table_transforms_position->y;
+
+    position_x[physics_id] = position.x;
+    position_y[physics_id] = position.y;
+}
+
+internal void
+itfliesby_engine_physics_update_scale(
+    ItfliesbyEnginePhysics*        physics,
+    ItfliesbyEnginePhysicsId       physics_id,
+    ItfliesbyEnginePhysicsScale    scale) {
+
+    ItfliesbyEnginePhysicsTablesTransforms* physics_table_transforms       = &physics->tables.transforms;
+    ItfliesbyEnginePhysicsTableScale*       physics_table_transforms_scale = &physics_table_transforms->scale;
+
+    f32* scale_x = physics_table_transforms_scale->x;
+    f32* scale_y = physics_table_transforms_scale->y;
+
+    scale_x[physics_id] = scale.x;    
+    scale_y[physics_id] = scale.y;
+}
+
+
+internal void
+itfliesby_engine_physics_update_rotation_degrees(
+    ItfliesbyEnginePhysics*        physics,
+    ItfliesbyEnginePhysicsId       physics_id,
+    f32                            rotation_degrees) {
+
+    ItfliesbyEnginePhysicsTablesTransforms* physics_table_transforms          = &physics->tables.transforms;
+    ItfliesbyEnginePhysicsTableRotation*    physics_table_transforms_rotation = &physics_table_transforms->rotation;
+
+    f32* table_rotation_radians = physics_table_transforms_rotation->radians;
+
+    f32 rotation_radians = itfliesby_math_trig_degrees_to_radians(rotation_degrees);
+
+    table_rotation_radians[physics_id] = rotation_radians; 
+}
+
+internal void
+itfliesby_engine_physics_update_rotation_radians(
+    ItfliesbyEnginePhysics*        physics,
+    ItfliesbyEnginePhysicsId       physics_id,
+    f32                            rotation_radians) {
+
+    ItfliesbyEnginePhysicsTablesTransforms* physics_table_transforms          = &physics->tables.transforms;
+    ItfliesbyEnginePhysicsTableRotation*    physics_table_transforms_rotation = &physics_table_transforms->rotation;
+
+    f32* table_rotation_radians = physics_table_transforms_rotation->radians;
+
+    table_rotation_radians[physics_id] = rotation_radians; 
+}
+internal void
+itfliesby_engine_physics_update_id(
+    ItfliesbyEnginePhysics*        physics,
+    ItfliesbyEnginePhysicsId       physics_id,
+    ItfliesbyEnginePhysicsPosition position,
+    ItfliesbyEnginePhysicsScale    scale,
+    f32                            rotation_radians) {
+
+    ItfliesbyEnginePhysicsTablesTransforms* physics_table_transforms          = &physics->tables.transforms;
+    
+    ItfliesbyEnginePhysicsTablePosition*    physics_table_transforms_position = &physics_table_transforms->position;
+    ItfliesbyEnginePhysicsTableScale*       physics_table_transforms_scale    = &physics_table_transforms->scale;
+    ItfliesbyEnginePhysicsTableRotation*    physics_table_transforms_rotation = &physics_table_transforms->rotation;
+
+    f32* position_x = physics_table_transforms_position->x;
+    f32* position_y = physics_table_transforms_position->y;
+    f32* scale_x    = physics_table_transforms_scale->x;
+    f32* scale_y    = physics_table_transforms_scale->y;
+    f32* radians    = physics_table_transforms_rotation->radians;
+
+    position_x[physics_id] = position.x;
+    position_y[physics_id] = position.y;
+    scale_x[physics_id]    = scale.x;    
+    scale_y[physics_id]    = scale.y;
+    radians[physics_id]    = rotation_radians; 
 }
