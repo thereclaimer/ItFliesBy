@@ -1,7 +1,6 @@
 #ifndef ITFLIESBY_RENDERER_TYPES_HPP
 #define ITFLIESBY_RENDERER_TYPES_HPP
 
-
 struct ItfliesbyRendererColorHex {
     u8 r;
     u8 g;

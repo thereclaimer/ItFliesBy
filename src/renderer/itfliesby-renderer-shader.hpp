@@ -59,9 +59,11 @@ struct ItfliesbyRendererShaderUniformsSolidQuad {
         };
         GLint offsets[2];
     };
-    GLint  block_data_size;
-    GLuint gl_block_index_solid_quad_update;
-    GLuint gl_solid_quad_update_ubo;
+    
+    GLint   block_data_size;
+    GLuint  gl_block_index_solid_quad_update;
+    GLuint  gl_solid_quad_update_ubo;
+    GLbyte* gl_uniform_buffer_memory;
 };
 
 struct ItfliesbyRendererShaderUniforms {

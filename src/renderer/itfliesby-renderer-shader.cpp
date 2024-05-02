@@ -1,6 +1,8 @@
 #pragma once
 
 #include "itfliesby-renderer.hpp"
+#include "itfliesby-renderer-memory.hpp"
+#include "itfliesby-renderer-memory.cpp"
 
 internal b8
 itfliesby_renderer_shader_is_valid(
@@ -167,11 +169,19 @@ ifliesby_renderer_shader_uniforms_solid_quad(
         solid_quad_uniforms->offsets
     );
 
+    //bind the ubo information
     solid_quad_uniforms->gl_solid_quad_update_ubo = solid_quad_update_ubo;
-    
     glBindBuffer(GL_UNIFORM_BUFFER,solid_quad_uniforms->gl_solid_quad_update_ubo);
     glBufferData(GL_UNIFORM_BUFFER,solid_quad_uniforms->block_data_size,NULL,GL_STATIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER,0); 
+
+    //allocate space for the uniform buffer
+    solid_quad_uniforms->gl_uniform_buffer_memory = 
+        itfliesby_renderer_memory_allocate_uniform_buffer_memory(
+            solid_quad_uniforms->block_data_size,
+            ITFLIESBY_RENDERER_SOLID_QUADS_MAX);
+
+    ITFLIESBY_NOP();
 }
 
 external b8
