@@ -38,7 +38,13 @@ out vec4 out_vertex_color;
 
 void main()
 {
-    gl_Position = vec4(model * vec3(in_vertex_position, 1.0), 1.0);
+    mat3 identity = mat3(
+    1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0
+    );
+
+    gl_Position = vec4(identity * vec3(in_vertex_position, 1.0), 1.0);
 
     out_vertex_color = color;
 }

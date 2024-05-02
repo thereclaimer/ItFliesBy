@@ -76,4 +76,10 @@ itfliesby_engine_physics_update_position(
     ItfliesbyEnginePhysicsId       physics_id,
     ItfliesbyEnginePhysicsPosition position);
 
+void
+itfliesby_engine_physics_update_scale(
+    ItfliesbyEnginePhysics*        physics,
+    ItfliesbyEnginePhysicsId       physics_id,
+    ItfliesbyEnginePhysicsScale    scale);
+
 #endif //ITFLIESBY_ENGINE_PHYSICS_HPP

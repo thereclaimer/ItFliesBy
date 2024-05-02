@@ -148,7 +148,6 @@ itfliesby_engine_physics_update_position(
     position_y[physics_id] = position.y;
 }
 
-
 internal void
 itfliesby_engine_physics_update_scale(
     ItfliesbyEnginePhysics*        physics,
@@ -164,7 +163,6 @@ itfliesby_engine_physics_update_scale(
     scale_x[physics_id] = scale.x;    
     scale_y[physics_id] = scale.y;
 }
-
 
 internal void
 itfliesby_engine_physics_update_rotation_degrees(

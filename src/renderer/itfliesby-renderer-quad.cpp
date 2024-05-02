@@ -130,15 +130,21 @@ itfliesby_renderer_quad_solid_quads_render(
         uniform_offset_model = uniform_index_offset + solid_quad_uniforms->offset_model;
         uniform_offset_color = uniform_index_offset + solid_quad_uniforms->offset_color;
 
-        memmove(
-            &solid_quad_uniforms->gl_uniform_buffer_memory[uniform_offset_model],
-            &current_quad.transform,
-            sizeof(ItfliesbyMathMat3));
+        //copy matrix
+        for (
+            u32 matrix_index = 0;
+            matrix_index < 9;
+            ++matrix_index) {
 
-        memmove(
-            &solid_quad_uniforms->gl_uniform_buffer_memory[uniform_offset_color],
-            &current_quad.color,
-            sizeof(ItfliesbyMathVec2));
+            solid_quad_uniforms->gl_uniform_buffer_memory[uniform_offset_model + matrix_index] =
+                current_quad.transform[matrix_index]; 
+        }
+
+        //copy color
+        solid_quad_uniforms->gl_uniform_buffer_memory[uniform_offset_color]     = current_quad.color.r;
+        solid_quad_uniforms->gl_uniform_buffer_memory[uniform_offset_color + 1] = current_quad.color.g;
+        solid_quad_uniforms->gl_uniform_buffer_memory[uniform_offset_color + 2] = current_quad.color.b;
+        solid_quad_uniforms->gl_uniform_buffer_memory[uniform_offset_color + 3] = current_quad.color.a;
     }
 
     //bind the program

@@ -37,7 +37,14 @@ itfliesby_engine_sprites_solid_create(
     if (physics_id == ITFLIESBY_ENGINE_PHYSICS_OBJECT_INVALID) {
         return(ITFLIESBY_ENGINE_SPRITE_ID_INVALID);
     }
+
+    ItfliesbyEnginePhysicsScale default_scale = {0};
+    default_scale.x = 1.0f;
+    default_scale.y = 1.0f;
+
     itfliesby_engine_physics_update_position(physics, physics_id, position);
+    itfliesby_engine_physics_update_scale(physics, physics_id, default_scale);
+
 
     new_sprite->physics_id = physics_id;
 
