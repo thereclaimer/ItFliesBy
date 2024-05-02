@@ -32,16 +32,34 @@ enum ItfliesbyRendererShaderType : s32 {
     ITFLIESBY_RENDERER_SHADER_TYPE_COUNT         =  2,
 };
 
-
 struct ItfliesbyRendererShaderStageBuffer {
     memory                       shader_stage_data;
     ItfliesbyRendererShaderError result;
 };
 
 
-#define ITFLIESBY_RENDERER_SHADER_UNIFORM_SOLID_QUAD_UPDATE "solid_quad_update"
+#define ITFLIESBY_RENDERER_SHADER_UNIFORM_SOLID_QUAD_UPDATE        "solid_quad_update"
+#define ITFLIESBY_RENDERER_SHADER_UNIFORM_SOLID_QUAD_UPDATE_MODEL  "model"
+#define ITFLIESBY_RENDERER_SHADER_UNIFORM_SOLID_QUAD_UPDATE_COLOR  "color"
+#define ITFLIESBY_RENDERER_SHADER_UNIFORM_SOLID_QUAD_BINDING_POINT 0
 
 struct ItfliesbyRendererShaderUniformsSolidQuad {
+    union {
+        struct {
+            GLuint index_model;
+            GLuint index_color;
+        };
+        GLuint indices[2];
+    };
+    
+    union {
+        struct {
+            GLint offset_model;
+            GLint offset_color;
+        };
+        GLint offsets[2];
+    };
+    GLint  block_data_size;
     GLuint gl_block_index_solid_quad_update;
     GLuint gl_solid_quad_update_ubo;
 };

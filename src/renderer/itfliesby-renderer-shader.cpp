@@ -126,22 +126,51 @@ ifliesby_renderer_shader_uniforms_solid_quad(
     GLuint                                    solid_quad_program_id,
     GLuint                                    solid_quad_update_ubo) {
 
+    //get the block index
     solid_quad_uniforms->gl_block_index_solid_quad_update = 
         glGetUniformBlockIndex(
             solid_quad_program_id,
             ITFLIESBY_RENDERER_SHADER_UNIFORM_SOLID_QUAD_UPDATE);
 
+    //set the block binding point
     glUniformBlockBinding(
         solid_quad_program_id,
         solid_quad_uniforms->gl_block_index_solid_quad_update,
-        0);
+        ITFLIESBY_RENDERER_SHADER_UNIFORM_SOLID_QUAD_BINDING_POINT);
 
-    u32 data_size = ITFLIESBY_RENDERER_SOLID_QUAD_UPDATE_SIZE();
+    //get the data size
+    glGetActiveUniformBlockiv(
+        solid_quad_program_id,
+        solid_quad_uniforms->gl_block_index_solid_quad_update,  
+        GL_UNIFORM_BLOCK_DATA_SIZE,
+        &solid_quad_uniforms->block_data_size      
+    );
+
+    //get the indices
+    const GLchar* block_members[] = {
+        ITFLIESBY_RENDERER_SHADER_UNIFORM_SOLID_QUAD_UPDATE_MODEL,
+        ITFLIESBY_RENDERER_SHADER_UNIFORM_SOLID_QUAD_UPDATE_COLOR
+    };
+    glGetUniformIndices(
+        solid_quad_program_id,
+        2,
+        block_members,
+        solid_quad_uniforms->indices
+    );
+
+    //get the offsets
+    glGetActiveUniformsiv(
+        solid_quad_program_id,
+        2,
+        solid_quad_uniforms->indices,
+        GL_UNIFORM_OFFSET,
+        solid_quad_uniforms->offsets
+    );
 
     solid_quad_uniforms->gl_solid_quad_update_ubo = solid_quad_update_ubo;
     
     glBindBuffer(GL_UNIFORM_BUFFER,solid_quad_uniforms->gl_solid_quad_update_ubo);
-    glBufferData(GL_UNIFORM_BUFFER,data_size,NULL,GL_STATIC_DRAW);
+    glBufferData(GL_UNIFORM_BUFFER,solid_quad_uniforms->block_data_size,NULL,GL_STATIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER,0); 
 }
 
