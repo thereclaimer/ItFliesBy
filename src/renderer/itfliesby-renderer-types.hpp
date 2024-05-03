@@ -2,10 +2,17 @@
 #define ITFLIESBY_RENDERER_TYPES_HPP
 
 struct ItfliesbyRendererColorHex {
-    u8 r;
-    u8 g;
-    u8 b;
-    u8 a;
+    union {
+
+        struct {
+            u8 r;
+            u8 g;
+            u8 b;
+            u8 a;
+        };
+    
+        u32 value;
+    };
 };
 
 

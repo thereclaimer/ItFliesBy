@@ -9,7 +9,7 @@
 #include "itfliesby-renderer-opengl.hpp"
 #include "itfliesby-renderer-types.hpp"
 
-struct ItfliesbyRendererQuadBuffers {
+struct  ItfliesbyRendererQuadBuffers {
     union {
     
         struct {

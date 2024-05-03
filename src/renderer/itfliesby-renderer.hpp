@@ -13,10 +13,15 @@
 
 global ItfliesbyPlatformApi platform;
 
+struct ItfliesbyRendererBatches{
+    ItfliesbyRendererTestBatch test;
+};
+
 struct ItfliesbyRenderer {
     handle                       gl_context;
     ItfliesbyRendererShaderStore shader_store;
     ItfliesbyRendererQuadManager quad_manager;
+    ItfliesbyRendererBatches     batches;
 };
 
 #endif //ITFLIESBY_RENDERER_HPP

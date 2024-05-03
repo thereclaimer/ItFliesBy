@@ -4,6 +4,7 @@
 #include "itfliesby-renderer-shader.cpp"
 #include "itfliesby-renderer-memory.cpp"
 #include "itfliesby-renderer-quad.cpp"
+#include "itfliesby-renderer-test.cpp"
 
 external ItfliesbyRenderer*
 itfliesby_renderer_create_and_init(

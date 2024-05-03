@@ -4,7 +4,9 @@
 #include <common/itfliesby-types.hpp>
 #include <common/itfliesby-platform-api.hpp>
 #include <common/itfliesby-memory.hpp>
+#include <math/itfliesby-math.hpp>
 #include "itfliesby-renderer-opengl.hpp"
+#include "itfliesby-renderer-types.hpp"
 
 struct ItfliesbyRendererShader {
     GLuint gl_program_id;
@@ -81,6 +83,20 @@ struct ItfliesbyRendererShaderUniformsTest{
     };
 };
 
+struct ItfliesbyRendererShaderBuffersTest {
+    GLuint gl_vao;
+    GLuint gl_vbo_quad_indices;
+};
+
+
+#define ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX 32
+
+struct ItfliesbyRendererTestBatch {
+    ItfliesbyMathMat3         transform[ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX];
+    ItfliesbyRendererColorHex color[ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX];
+    size_t            count;
+};
+
 struct ItfliesbyRendererShaderUniforms {
     ItfliesbyRendererShaderUniformsSolidQuad solid_quad_uniforms;
     ItfliesbyRendererShaderUniformsTest      test;
@@ -100,8 +116,5 @@ struct ItfliesbyRendererShaderStore {
 
     ItfliesbyRendererShaderUniforms uniforms;
 };
-
-
-
 
 #endif //ITFLIESBY_RENDERER_SHADER_HPP
