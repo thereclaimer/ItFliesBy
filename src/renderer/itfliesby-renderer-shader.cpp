@@ -169,10 +169,14 @@ ifliesby_renderer_shader_uniforms_solid_quad(
         solid_quad_uniforms->offsets
     );
 
+    u32 uniform_data_buffer_size =             
+        solid_quad_uniforms->block_data_size *
+        ITFLIESBY_RENDERER_SOLID_QUADS_MAX;
+
     //bind the ubo information
     solid_quad_uniforms->gl_solid_quad_update_ubo = solid_quad_update_ubo;
     glBindBuffer(GL_UNIFORM_BUFFER,solid_quad_uniforms->gl_solid_quad_update_ubo);
-    glBufferData(GL_UNIFORM_BUFFER,solid_quad_uniforms->block_data_size,NULL,GL_STATIC_DRAW);
+    glBufferData(GL_UNIFORM_BUFFER,uniform_data_buffer_size,NULL,GL_STATIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER,0); 
 
     //allocate space for the uniform buffer

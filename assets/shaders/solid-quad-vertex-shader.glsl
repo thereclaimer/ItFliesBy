@@ -29,7 +29,7 @@
 
 layout (location = 0) in vec2 in_vertex_position;
 
-uniform solid_quad_update {
+layout(std140) uniform solid_quad_update {
     mat3 model;
     vec4 color;
 };
@@ -44,7 +44,7 @@ void main()
     0.0, 0.0, 1.0
     );
 
-    gl_Position = vec4(identity * vec3(in_vertex_position, 1.0), 1.0);
+    gl_Position = vec4(model * vec3(in_vertex_position, 1.0), 1.0);
 
     out_vertex_color = color;
 }

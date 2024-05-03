@@ -25,6 +25,7 @@ itfliesby_renderer_create_and_init(
     //initialize opengl
     renderer->gl_context = platform.graphics_api_init(platform.window);    
     ITFLIESBY_ASSERT(renderer->gl_context);
+    glewExperimental = TRUE;
     ITFLIESBY_ASSERT(glewInit() == GLEW_OK);
 
     //set the clear color
