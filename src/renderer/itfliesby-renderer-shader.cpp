@@ -188,6 +188,17 @@ ifliesby_renderer_shader_uniforms_solid_quad(
     ITFLIESBY_NOP();
 }
 
+internal void
+itfliesby_renderer_shader_uniforms_test(
+    ItfliesbyRendererShaderUniformsTest* test_uniforms,
+    GLuint                               test_program_id) {
+
+    test_uniforms->index_transform = glGetUniformLocation(test_program_id,ITFLIESBY_RENDERER_SHADER_UNIFORM_TEST_TRANSFORM);
+    test_uniforms->index_color     = glGetUniformLocation(test_program_id,ITFLIESBY_RENDERER_SHADER_UNIFORM_TEST_COLOR);
+
+    ITFLIESBY_NOP();
+}
+
 external b8
 itfliesby_renderer_ready(
     ItfliesbyRenderer* renderer) {
@@ -225,6 +236,11 @@ itfliesby_renderer_ready(
         &shader_uniforms->solid_quad_uniforms,
         shader_store->types.solid_quad.gl_program_id,
         gl_ubos[0]
+    );
+    
+    itfliesby_renderer_shader_uniforms_test(
+        &shader_uniforms->test,
+        shader_store->types.test.gl_program_id
     );
 
     return(ready);

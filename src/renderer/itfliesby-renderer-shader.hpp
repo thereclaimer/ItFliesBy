@@ -29,14 +29,14 @@ enum ItfliesbyRendererShaderType : s32 {
     ITFLIESBY_RENDERER_SHADER_TYPE_INVALID       = -1,
     ITFLIESBY_RENDERER_SHADER_TYPE_TEXTURED_QUAD =  0,
     ITFLIESBY_RENDERER_SHADER_TYPE_SOLID_QUAD    =  1,
-    ITFLIESBY_RENDERER_SHADER_TYPE_COUNT         =  2,
+    ITFLIESBY_RENDERER_SHADER_TYPE_TEST          =  2,
+    ITFLIESBY_RENDERER_SHADER_TYPE_COUNT         =  3,
 };
 
 struct ItfliesbyRendererShaderStageBuffer {
     memory                       shader_stage_data;
     ItfliesbyRendererShaderError result;
 };
-
 
 #define ITFLIESBY_RENDERER_SHADER_UNIFORM_SOLID_QUAD_UPDATE        "solid_quad_update"
 #define ITFLIESBY_RENDERER_SHADER_UNIFORM_SOLID_QUAD_UPDATE_MODEL  "model"
@@ -66,8 +66,24 @@ struct ItfliesbyRendererShaderUniformsSolidQuad {
     GLbyte* gl_uniform_buffer_memory;
 };
 
+#define ITFLIESBY_RENDERER_SHADER_UNIFORM_TEST_TRANSFORM "transform"
+#define ITFLIESBY_RENDERER_SHADER_UNIFORM_TEST_COLOR     "color"
+
+
+struct ItfliesbyRendererShaderUniformsTest{
+    
+    union {
+        struct {
+            GLuint index_transform;
+            GLuint index_color;
+        };
+        GLuint indices[2];
+    };
+};
+
 struct ItfliesbyRendererShaderUniforms {
     ItfliesbyRendererShaderUniformsSolidQuad solid_quad_uniforms;
+    ItfliesbyRendererShaderUniformsTest      test;
 };
 
 struct ItfliesbyRendererShaderStore {
@@ -76,6 +92,7 @@ struct ItfliesbyRendererShaderStore {
         struct {
             ItfliesbyRendererShader textured_quad;
             ItfliesbyRendererShader solid_quad;
+            ItfliesbyRendererShader test;
         } types;
 
         ItfliesbyRendererShader shaders[ITFLIESBY_RENDERER_SHADER_TYPE_COUNT];

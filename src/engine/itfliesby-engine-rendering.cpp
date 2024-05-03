@@ -14,15 +14,17 @@ itfliesby_engine_rendering_shader_programs_init(
         renderer &&
         shader_store);
     
-    const u32 shaders_count = 2;
+    const u32 shaders_count = ITFLIESBY_RENDERER_SHADER_TYPE_COUNT;
 
     const ItfliesbyEngineAssetsShader shader_stage_asset_id_vertex[shaders_count] = {
         ITFLIESBY_ENGINE_ASSETS_SHADER_TEXTURED_QUAD_VERTEX_SHADER,
-        ITFLIESBY_ENGINE_ASSETS_SHADER_SOLID_QUAD_VERTEX_SHADER
+        ITFLIESBY_ENGINE_ASSETS_SHADER_SOLID_QUAD_VERTEX_SHADER,
+        ITFLIESBY_ENGINE_ASSETS_SHADER_TEST_VERTEX_SHADER
     };
     const ItfliesbyEngineAssetsShader shader_stage_asset_id_fragment[shaders_count] = {
         ITFLIESBY_ENGINE_ASSETS_SHADER_TEXTURED_QUAD_FRAGMENT_SHADER,
-        ITFLIESBY_ENGINE_ASSETS_SHADER_SOLID_QUAD_FRAGMENT_SHADER
+        ITFLIESBY_ENGINE_ASSETS_SHADER_SOLID_QUAD_FRAGMENT_SHADER,
+        ITFLIESBY_ENGINE_ASSETS_SHADER_TEST_FRAGMENT_SHADER
     };
 
     //allocate space for the shaders
@@ -53,7 +55,8 @@ itfliesby_engine_rendering_shader_programs_init(
 
     const ItfliesbyRendererShaderType shader_types[shaders_count] = {
         ITFLIESBY_RENDERER_SHADER_TYPE_TEXTURED_QUAD,
-        ITFLIESBY_RENDERER_SHADER_TYPE_SOLID_QUAD
+        ITFLIESBY_RENDERER_SHADER_TYPE_SOLID_QUAD,
+        ITFLIESBY_RENDERER_SHADER_TYPE_TEST
     };
 
     for (
