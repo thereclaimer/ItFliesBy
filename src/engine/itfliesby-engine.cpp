@@ -95,6 +95,37 @@ itfliesby_engine_fetch_graphics_information(
     );
 }
 
+internal void
+itfliesby_engine_test_render(
+    ItfliesbyRendererHandle renderer,
+    b8                      run) {
+
+    if (!run) {
+        return;
+    }
+
+    ItfliesbyRendererTestBatch test_batch = {0};
+
+    ItfliesbyEnginePhysicsTransform transform = itfliesby_math_mat3_identity();    
+    ItfliesbyRendererColorHex color = {0};
+    color.r = 255;
+    color.g = 0;
+    color.b = 0;
+    color.a = 255;
+
+    test_batch.transform[0] = transform;
+    test_batch.color[0]     = color;
+
+    test_batch.count = 1;
+
+    itfliesby_renderer_test_batch(
+        renderer,
+        &test_batch
+    );
+}
+
+
+
 external void
 itfliesby_engine_update_and_render(
     ItfliesbyEngine* engine) {
@@ -114,6 +145,10 @@ itfliesby_engine_update_and_render(
         engine,
         &physics_payload
     );
+
+    itfliesby_engine_test_render(
+        renderer,
+        true);
 
     itfliesby_engine_assets_update(assets);
     

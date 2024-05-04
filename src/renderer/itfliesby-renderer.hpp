@@ -17,11 +17,16 @@ struct ItfliesbyRendererBatches{
     ItfliesbyRendererTestBatch test;
 };
 
+struct ItfliesbyRendererBuffers {
+    ItfliesbyRendererShaderBuffersTest test;
+};
+
 struct ItfliesbyRenderer {
     handle                       gl_context;
     ItfliesbyRendererShaderStore shader_store;
     ItfliesbyRendererQuadManager quad_manager;
     ItfliesbyRendererBatches     batches;
+    ItfliesbyRendererBuffers     buffers;
 };
 
 #endif //ITFLIESBY_RENDERER_HPP

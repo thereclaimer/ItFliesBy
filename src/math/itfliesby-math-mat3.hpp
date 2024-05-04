@@ -41,6 +41,30 @@ itfliesby_math_mat3_identity() {
     return(m3);
 }
 
+inline void
+itfliesby_math_mat3_transpose(
+    ItfliesbyMathMat3* m3) {
+
+    f32* m    = m3->m;
+    f32  temp = 0.0f;
+
+    for (
+        u8 i = 0; 
+        i < 3; 
+        i++) {
+
+        for (
+            u8 j = i + 1; 
+            j < 3; 
+            j++) {
+
+            temp         = m[i * 3 + j];
+            m[i * 3 + j] = m[j * 3 + i];
+            m[j * 3 + i] = temp;
+        }
+    }
+}
+
 inline ItfliesbyMathMat3
 itfliesby_math_mat3_translation(
     f32 x,
@@ -157,6 +181,60 @@ itfliesby_math_mat3_transform_srt(
     }
 }
 
+//scale,rotate,translate,transpose
+inline void
+itfliesby_math_mat3_transform_and_transpose_srt(
+    const size_t             transform_count,
+    const ItfliesbyMathMat3* in_transform_translate, 
+    const ItfliesbyMathMat3* in_transform_scale,
+    const ItfliesbyMathMat3* in_transform_rotate,
+          ItfliesbyMathMat3* out_transform) {
+
+    ItfliesbyMathMat3 a = {0};
+    ItfliesbyMathMat3 b = {0};
+    ItfliesbyMathMat3 c = {0};
+    ItfliesbyMathMat3 transform = {0};
+    ItfliesbyMathMat3 temp      = {0};
+
+    for (
+        size_t transform_index = 0;
+        transform_index < transform_count;
+        ++transform_index) {
+
+        a = in_transform_scale[transform_index];
+        b = in_transform_rotate[transform_index];
+        c = in_transform_translate[transform_index];
+
+        temp.rows.row_0[0] = (a.rows.row_0[0] * b.rows.row_0[0]) + (a.rows.row_0[1] * b.rows.row_1[0]) + (a.rows.row_0[2] * b.rows.row_2[0]); 
+        temp.rows.row_0[1] = (a.rows.row_0[0] * b.rows.row_0[1]) + (a.rows.row_0[1] * b.rows.row_1[1]) + (a.rows.row_0[2] * b.rows.row_2[1]);
+        temp.rows.row_0[2] = (a.rows.row_0[0] * b.rows.row_0[2]) + (a.rows.row_0[1] * b.rows.row_1[2]) + (a.rows.row_0[2] * b.rows.row_2[2]);
+
+        temp.rows.row_1[0] = (a.rows.row_1[0] * b.rows.row_0[0]) + (a.rows.row_1[1] * b.rows.row_1[0]) + (a.rows.row_1[2] * b.rows.row_2[0]);
+        temp.rows.row_1[1] = (a.rows.row_1[0] * b.rows.row_0[1]) + (a.rows.row_1[1] * b.rows.row_1[1]) + (a.rows.row_1[2] * b.rows.row_2[1]);
+        temp.rows.row_1[2] = (a.rows.row_1[0] * b.rows.row_0[2]) + (a.rows.row_1[1] * b.rows.row_1[2]) + (a.rows.row_1[2] * b.rows.row_2[2]);
+
+        temp.rows.row_2[0] = (a.rows.row_2[0] * b.rows.row_0[0]) + (a.rows.row_2[1] * b.rows.row_1[0]) + (a.rows.row_2[2] * b.rows.row_2[0]);
+        temp.rows.row_2[1] = (a.rows.row_2[0] * b.rows.row_0[1]) + (a.rows.row_2[1] * b.rows.row_1[1]) + (a.rows.row_2[2] * b.rows.row_2[1]);
+        temp.rows.row_2[2] = (a.rows.row_2[0] * b.rows.row_0[2]) + (a.rows.row_2[1] * b.rows.row_1[2]) + (a.rows.row_2[2] * b.rows.row_2[2]);
+
+        transform.rows.row_0[0] = (temp.rows.row_0[0] * c.rows.row_0[0]) + (temp.rows.row_0[1] * c.rows.row_1[0]) + (temp.rows.row_0[2] * c.rows.row_2[0]); 
+        transform.rows.row_0[1] = (temp.rows.row_0[0] * c.rows.row_0[1]) + (temp.rows.row_0[1] * c.rows.row_1[1]) + (temp.rows.row_0[2] * c.rows.row_2[1]);
+        transform.rows.row_0[2] = (temp.rows.row_0[0] * c.rows.row_0[2]) + (temp.rows.row_0[1] * c.rows.row_1[2]) + (temp.rows.row_0[2] * c.rows.row_2[2]);
+        
+        transform.rows.row_1[0] = (temp.rows.row_1[0] * c.rows.row_0[0]) + (temp.rows.row_1[1] * c.rows.row_1[0]) + (temp.rows.row_1[2] * c.rows.row_2[0]);
+        transform.rows.row_1[1] = (temp.rows.row_1[0] * c.rows.row_0[1]) + (temp.rows.row_1[1] * c.rows.row_1[1]) + (temp.rows.row_1[2] * c.rows.row_2[1]);
+        transform.rows.row_1[2] = (temp.rows.row_1[0] * c.rows.row_0[2]) + (temp.rows.row_1[1] * c.rows.row_1[2]) + (temp.rows.row_1[2] * c.rows.row_2[2]);
+        
+        transform.rows.row_2[0] = (temp.rows.row_2[0] * c.rows.row_0[0]) + (temp.rows.row_2[1] * c.rows.row_1[0]) + (temp.rows.row_2[2] * c.rows.row_2[0]);
+        transform.rows.row_2[1] = (temp.rows.row_2[0] * c.rows.row_0[1]) + (temp.rows.row_2[1] * c.rows.row_1[1]) + (temp.rows.row_2[2] * c.rows.row_2[1]);
+        transform.rows.row_2[2] = (temp.rows.row_2[0] * c.rows.row_0[2]) + (temp.rows.row_2[1] * c.rows.row_1[2]) + (temp.rows.row_2[2] * c.rows.row_2[2]);
+
+        itfliesby_math_mat3_transpose(&transform);
+
+        out_transform[transform_index] =  transform;
+    }
+}
+
 //translate,rotate,scale
 inline void
 itfliesby_math_mat3_transform_trs(
@@ -204,6 +282,60 @@ itfliesby_math_mat3_transform_trs(
         transform.rows.row_2[0] = (temp.rows.row_2[0] * c.rows.row_0[0]) + (temp.rows.row_2[1] * c.rows.row_1[0]) + (temp.rows.row_2[2] * c.rows.row_2[0]);
         transform.rows.row_2[1] = (temp.rows.row_2[0] * c.rows.row_0[1]) + (temp.rows.row_2[1] * c.rows.row_1[1]) + (temp.rows.row_2[2] * c.rows.row_2[1]);
         transform.rows.row_2[2] = (temp.rows.row_2[0] * c.rows.row_0[2]) + (temp.rows.row_2[1] * c.rows.row_1[2]) + (temp.rows.row_2[2] * c.rows.row_2[2]);
+
+        out_transform[transform_index] = transform;
+    }
+}
+
+//translate,rotate,scale,transpose
+inline void
+itfliesby_math_mat3_transform_and_transpose_trs(
+    const size_t             transform_count,
+    const ItfliesbyMathMat3* in_transform_translate, 
+    const ItfliesbyMathMat3* in_transform_scale,
+    const ItfliesbyMathMat3* in_transform_rotate,
+          ItfliesbyMathMat3* out_transform) {
+
+    ItfliesbyMathMat3 a = {0};
+    ItfliesbyMathMat3 b = {0};
+    ItfliesbyMathMat3 c = {0};
+    ItfliesbyMathMat3 transform = {0};
+    ItfliesbyMathMat3 temp      = {0};
+
+    for (
+        size_t transform_index = 0;
+        transform_index < transform_count;
+        ++transform_index) {
+
+        a = in_transform_translate[transform_index];
+        b = in_transform_rotate[transform_index];
+        c = in_transform_scale[transform_index];
+
+        temp.rows.row_0[0] = (a.rows.row_0[0] * b.rows.row_0[0]) + (a.rows.row_0[1] * b.rows.row_1[0]) + (a.rows.row_0[2] * b.rows.row_2[0]); 
+        temp.rows.row_0[1] = (a.rows.row_0[0] * b.rows.row_0[1]) + (a.rows.row_0[1] * b.rows.row_1[1]) + (a.rows.row_0[2] * b.rows.row_2[1]);
+        temp.rows.row_0[2] = (a.rows.row_0[0] * b.rows.row_0[2]) + (a.rows.row_0[1] * b.rows.row_1[2]) + (a.rows.row_0[2] * b.rows.row_2[2]);
+
+        temp.rows.row_1[0] = (a.rows.row_1[0] * b.rows.row_0[0]) + (a.rows.row_1[1] * b.rows.row_1[0]) + (a.rows.row_1[2] * b.rows.row_2[0]);
+        temp.rows.row_1[1] = (a.rows.row_1[0] * b.rows.row_0[1]) + (a.rows.row_1[1] * b.rows.row_1[1]) + (a.rows.row_1[2] * b.rows.row_2[1]);
+        temp.rows.row_1[2] = (a.rows.row_1[0] * b.rows.row_0[2]) + (a.rows.row_1[1] * b.rows.row_1[2]) + (a.rows.row_1[2] * b.rows.row_2[2]);
+
+        temp.rows.row_2[0] = (a.rows.row_2[0] * b.rows.row_0[0]) + (a.rows.row_2[1] * b.rows.row_1[0]) + (a.rows.row_2[2] * b.rows.row_2[0]);
+        temp.rows.row_2[1] = (a.rows.row_2[0] * b.rows.row_0[1]) + (a.rows.row_2[1] * b.rows.row_1[1]) + (a.rows.row_2[2] * b.rows.row_2[1]);
+        temp.rows.row_2[2] = (a.rows.row_2[0] * b.rows.row_0[2]) + (a.rows.row_2[1] * b.rows.row_1[2]) + (a.rows.row_2[2] * b.rows.row_2[2]);
+
+        transform.rows.row_0[0] = (temp.rows.row_0[0] * c.rows.row_0[0]) + (temp.rows.row_0[1] * c.rows.row_1[0]) + (temp.rows.row_0[2] * c.rows.row_2[0]); 
+        transform.rows.row_0[1] = (temp.rows.row_0[0] * c.rows.row_0[1]) + (temp.rows.row_0[1] * c.rows.row_1[1]) + (temp.rows.row_0[2] * c.rows.row_2[1]);
+        transform.rows.row_0[2] = (temp.rows.row_0[0] * c.rows.row_0[2]) + (temp.rows.row_0[1] * c.rows.row_1[2]) + (temp.rows.row_0[2] * c.rows.row_2[2]);
+        
+        transform.rows.row_1[0] = (temp.rows.row_1[0] * c.rows.row_0[0]) + (temp.rows.row_1[1] * c.rows.row_1[0]) + (temp.rows.row_1[2] * c.rows.row_2[0]);
+        transform.rows.row_1[1] = (temp.rows.row_1[0] * c.rows.row_0[1]) + (temp.rows.row_1[1] * c.rows.row_1[1]) + (temp.rows.row_1[2] * c.rows.row_2[1]);
+        transform.rows.row_1[2] = (temp.rows.row_1[0] * c.rows.row_0[2]) + (temp.rows.row_1[1] * c.rows.row_1[2]) + (temp.rows.row_1[2] * c.rows.row_2[2]);
+        
+        transform.rows.row_2[0] = (temp.rows.row_2[0] * c.rows.row_0[0]) + (temp.rows.row_2[1] * c.rows.row_1[0]) + (temp.rows.row_2[2] * c.rows.row_2[0]);
+        transform.rows.row_2[1] = (temp.rows.row_2[0] * c.rows.row_0[1]) + (temp.rows.row_2[1] * c.rows.row_1[1]) + (temp.rows.row_2[2] * c.rows.row_2[1]);
+        transform.rows.row_2[2] = (temp.rows.row_2[0] * c.rows.row_0[2]) + (temp.rows.row_2[1] * c.rows.row_1[2]) + (temp.rows.row_2[2] * c.rows.row_2[2]);
+
+        itfliesby_math_mat3_transpose(&transform);
 
         out_transform[transform_index] = transform;
     }

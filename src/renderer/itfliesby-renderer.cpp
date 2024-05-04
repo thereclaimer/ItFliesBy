@@ -39,7 +39,8 @@ itfliesby_renderer_create_and_init(
 
     //initialize our quad buffers
     renderer->quad_manager = itfliesby_renderer_quad_manager_init();
-    
+    renderer->buffers.test = itfliesby_renderer_shader_test_buffers_create();
+
     return(renderer);
 }
 
@@ -51,6 +52,7 @@ itfliesby_renderer_render(
     ItfliesbyRendererQuadManager*             quad_manager        = &renderer->quad_manager; 
     ItfliesbyRendererShaderUniformsSolidQuad* solid_quad_uniforms = &renderer->shader_store.uniforms.solid_quad_uniforms;
     ItfliesbyRendererSolidQuadUpdateBatch*    solid_quad_batch    = &renderer->quad_manager.solid_quad_batch;  
+    ItfliesbyRendererTestBatch*               test_batch          = &renderer->batches.test;
 
     //clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -60,5 +62,12 @@ itfliesby_renderer_render(
         quad_manager,
         solid_quad_uniforms,
         solid_quad_batch
+    );
+
+    itfliesby_renderer_test_render(
+        &renderer->shader_store.uniforms.test,
+        &renderer->buffers.test,
+        test_batch,
+        renderer->shader_store.types.test.gl_program_id
     );
 }

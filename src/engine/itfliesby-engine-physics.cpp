@@ -75,7 +75,7 @@ itfliesby_engine_physics_transforms(
     }
 
     //put the transforms together
-    itfliesby_math_mat3_transform_trs(
+    itfliesby_math_mat3_transform_and_transpose_trs(
         ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX,
         transform_translation,
         transform_scale,

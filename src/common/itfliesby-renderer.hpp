@@ -70,10 +70,10 @@ itfliesby_renderer_render(
 
 enum ItfliesbyRendererShaderType {
     ITFLIESBY_RENDERER_SHADER_TYPE_INVALID       = -1,
-    ITFLIESBY_RENDERER_SHADER_TYPE_TEXTURED_QUAD = 0,
-    ITFLIESBY_RENDERER_SHADER_TYPE_SOLID_QUAD    = 1,
-    ITFLIESBY_RENDERER_SHADER_TYPE_TEST          = 2,
-    ITFLIESBY_RENDERER_SHADER_TYPE_COUNT         = 3,
+    ITFLIESBY_RENDERER_SHADER_TYPE_TEXTURED_QUAD =  0,
+    ITFLIESBY_RENDERER_SHADER_TYPE_SOLID_QUAD    =  1,
+    ITFLIESBY_RENDERER_SHADER_TYPE_TEST          =  2,
+    ITFLIESBY_RENDERER_SHADER_TYPE_COUNT         =  3,
 };
 
 api ItfliesbyRendererShaderIndex
@@ -100,5 +100,23 @@ api void
 itfliesby_renderer_quad_solid_quads_batch_update(
     ItfliesbyRendererHandle                renderer,
     ItfliesbyRendererSolidQuadUpdateBatch* solid_quad_update_batch); 
+
+//----------------------------------------------------------------
+// TEST
+//----------------------------------------------------------------
+
+#define ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX 32
+
+struct ItfliesbyRendererTestBatch {
+    ItfliesbyMathMat3         transform[ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX];
+    ItfliesbyRendererColorHex color[ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX];
+    size_t                    count;
+};
+
+api void
+itfliesby_renderer_test_batch(
+    ItfliesbyRendererHandle     renderer,
+    ItfliesbyRendererTestBatch* batch);
+
 
 #endif //ITFLIESBY_RENDERER_HPP
