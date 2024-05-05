@@ -177,7 +177,7 @@ itfliesby_renderer_quad_solid_quads_render(
         GL_TRIANGLES,
         ITFLIESBY_RENDERER_INDICES_QUAD_COUNT,
         GL_UNSIGNED_INT,
-        (void*)0);
+        NULL);
 
     glBindVertexArray(0);
 }

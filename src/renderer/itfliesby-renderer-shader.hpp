@@ -92,8 +92,8 @@ struct ItfliesbyRendererShaderBuffersTest {
 #define ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX 32
 
 struct ItfliesbyRendererTestBatch {
-    ItfliesbyMathMat3         transform[ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX];
-    ItfliesbyRendererColorHex color[ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX];
+    ItfliesbyMathMat3                transform[ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX];
+    ItfliesbyRendererColorNormalized color[ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX];
     size_t            count;
 };
 

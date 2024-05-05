@@ -40,4 +40,18 @@ itfliesby_renderer_color_normalize(
     return(color_normalized);
 }
 
+inline ItfliesbyRendererColorHex
+itfliesby_renderer_color_hex(
+ ItfliesbyRendererColorNormalized color_normal) {
+
+    ItfliesbyRendererColorHex color_hex = {0};
+    
+    color_hex.r = (u8)(color_normal.r * 255);  
+    color_hex.g = (u8)(color_normal.g * 255); 
+    color_hex.b = (u8)(color_normal.b * 255); 
+    color_hex.a = (u8)(color_normal.a * 255);
+
+    return(color_hex);
+}
+
 #endif //ITFLIESBY_RENDERER_TYPES_HPP

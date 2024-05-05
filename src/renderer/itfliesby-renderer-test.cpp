@@ -64,8 +64,8 @@ itfliesby_renderer_test_render(
     ItfliesbyRendererTestBatch*          batch,
     GLuint                               gl_program) {
 
-    ItfliesbyMathMat3*         batch_transforms = batch->transform;
-    ItfliesbyRendererColorHex* batch_colors     = batch->color; 
+    ItfliesbyMathMat3*                batch_transforms = batch->transform;
+    ItfliesbyRendererColorNormalized* batch_colors     = batch->color; 
 
     //use program
     glUseProgram(gl_program);
@@ -78,9 +78,8 @@ itfliesby_renderer_test_render(
         GL_ARRAY_BUFFER,
         buffers->gl_vbo_quad_indices);
     
-    ItfliesbyMathMat3                current_transform        = {0};
-    ItfliesbyRendererColorHex        current_color            = {0};
-    ItfliesbyRendererColorNormalized current_color_normalized = {0};
+    ItfliesbyMathMat3                current_transform = {0};
+    ItfliesbyRendererColorNormalized current_color     = {0};
 
     for (
         u32 index = 0;
@@ -91,11 +90,10 @@ itfliesby_renderer_test_render(
         current_transform = batch_transforms[index];
 
         //update the color
-        current_color_normalized = itfliesby_renderer_color_normalize(current_color);
         glUniform4fv(
             uniforms->index_color,
-            4,
-            (f32*)&current_color_normalized);
+            1,
+            (f32*)&current_color);
     
         //update the transform
         glUniformMatrix3fv(

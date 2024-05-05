@@ -6,11 +6,11 @@
 			"dependsOn":[
                 "Build Tools ",
                 "Build Assets",
-				"Build Win32",
 				"Build Memory",
-				"Build Game",
-				"Build Engine",
+				"Build Win32",
                 "Build Renderer",
+				"Build Engine",
+				"Build Game",
 			],
 			"args":[
             ],

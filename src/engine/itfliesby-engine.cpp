@@ -113,8 +113,12 @@ itfliesby_engine_test_render(
     color.b = 0;
     color.a = 255;
 
+    transform.rows.row_0[1] = 1.0f;
+    transform.rows.row_1[1] = 1.0f;
+
+    itfliesby_math_mat3_transpose(&transform);
     test_batch.transform[0] = transform;
-    test_batch.color[0]     = color;
+    test_batch.color[0]     = itfliesby_renderer_color_normalize(color);
 
     test_batch.count = 1;
 
@@ -141,10 +145,10 @@ itfliesby_engine_update_and_render(
     );
 
     //now we need to zip up the payload we are sending to the GPU
-    itfliesby_engine_fetch_graphics_information(
-        engine,
-        &physics_payload
-    );
+    // itfliesby_engine_fetch_graphics_information(
+    //     engine,
+    //     &physics_payload
+    // );
 
     itfliesby_engine_test_render(
         renderer,
