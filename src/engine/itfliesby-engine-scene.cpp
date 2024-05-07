@@ -96,20 +96,19 @@ itfliesby_engine_scene_process_active(
     ItfliesbyEnginePhysicsId       connor_physics_id = itfliesby_engine_sprites_physics_id_get(engine_sprites,connor_sprite_id);
     ItfliesbyEnginePhysicsVelocity connor_velocity   = {0};
 
-
     //update the velocity based on the user input
     ItfliesbyUserInput engine_user_input = *engine->user_input;
     if (ITFLIESBY_KEYCODE_STATE_W(engine_user_input)) {
-        connor_velocity.y = 0.001f; 
+        connor_velocity.y = 0.1f; 
     }
     if (ITFLIESBY_KEYCODE_STATE_S(engine_user_input)) {
-        connor_velocity.y = 0.001f; 
+        connor_velocity.y = 0.1f; 
     }
     if (ITFLIESBY_KEYCODE_STATE_A(engine_user_input)) {
-        connor_velocity.x = 0.001f; 
+        connor_velocity.x = 0.1f; 
     }
     if (ITFLIESBY_KEYCODE_STATE_D(engine_user_input)) {
-        connor_velocity.x = 0.001f; 
+        connor_velocity.x = 0.1f; 
     }
 
     itfliesby_engine_physics_update_velocity(
