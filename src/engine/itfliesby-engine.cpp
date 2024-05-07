@@ -104,9 +104,8 @@ itfliesby_engine_test_render(
         return;
     }
 
-    ItfliesbyRendererBatchSimpleQuad simple_quad_batch = {0};
-    ItfliesbyEnginePhysicsTransform  transform         = itfliesby_math_mat3_identity();    
-    ItfliesbyRendererColorHex        color             = {0};
+    ItfliesbyRendererColorHex        color     = {0};
+    ItfliesbyEnginePhysicsTransform  transform = itfliesby_math_mat3_identity();    
 
     color.r = 255;
     color.g = 0;
@@ -115,13 +114,13 @@ itfliesby_engine_test_render(
 
     itfliesby_math_mat3_transpose(&transform);
     
-    simple_quad_batch.transform[0] = transform;
-    simple_quad_batch.color[0]     = itfliesby_renderer_color_normalize(color);
-    simple_quad_batch.count        = 1;
+    ItfliesbyRendererSimpleQuad simple_quad = {0};
+    simple_quad.transform = transform;
+    simple_quad.color     = itfliesby_renderer_color_normalize(color);
 
-    itfliesby_renderer_simple_quad_batch(
+    itfliesby_renderer_simple_quad_push(
         renderer,
-        &simple_quad_batch
+        simple_quad
     );
 }
 

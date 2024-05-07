@@ -49,12 +49,64 @@ itfliesby_renderer_shader_simple_quad_buffers_create() {
     return(simple_quad_buffers);
 }
 
-external void
-itfliesby_renderer_simple_quad_batch(
-    ItfliesbyRenderer*                renderer,
-    ItfliesbyRendererBatchSimpleQuad* batch) {
+external u32
+itfliesby_renderer_simple_quad_push(
+          ItfliesbyRenderer*          renderer,
+    const ItfliesbyRendererSimpleQuad simple_quad) {
 
-    renderer->batches.simple_quad = *batch;
+    ItfliesbyRendererBatchSimpleQuad* simple_quad_batch = &renderer->batches.simple_quad;
+
+    if (simple_quad_batch->count == ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX) {
+        //TODO: we should have proper error codes
+        return(-1);
+    }
+
+    u32 new_quad_index = simple_quad_batch->count;
+
+    simple_quad_batch->color[new_quad_index]     = simple_quad.color;
+    simple_quad_batch->transform[new_quad_index] = simple_quad.transform;
+
+    ++simple_quad_batch->count;
+
+    return(new_quad_index);
+}
+
+external void
+itfliesby_renderer_simple_quad_push_batch(
+    ItfliesbyRenderer*                 renderer,
+    const size_t                       simple_quad_count,
+    const ItfliesbyRendererSimpleQuad* simple_quad,
+          u32*                         simple_quad_indices) {
+
+    ItfliesbyRendererBatchSimpleQuad* simple_quad_batch = &renderer->batches.simple_quad;
+
+    //TODO: we could push ones that actually fit
+    if (simple_quad_batch->count + simple_quad_count >= ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX) {
+        for (
+            size_t index = 0;
+            index < simple_quad_count;
+            ++index) {
+                simple_quad_indices[index] = -1;
+        }
+    }
+
+    u32 starting_quad_index = simple_quad_batch->count;
+    ItfliesbyRendererSimpleQuad i_simple_quad = {0};
+    size_t simple_quad_index = 0;
+
+    for (
+        size_t index = 0;
+        index < simple_quad_count;
+        ++index) {
+
+        simple_quad_index = index + starting_quad_index;
+
+        i_simple_quad = simple_quad[simple_quad_index];
+        simple_quad_batch->color[simple_quad_index]     = i_simple_quad.color;
+        simple_quad_batch->transform[simple_quad_index] = i_simple_quad.transform;
+        
+        simple_quad_indices[index] = simple_quad_index;
+    }
 }
 
 internal void

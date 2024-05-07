@@ -91,10 +91,15 @@ struct ItfliesbyRendererShaderBuffersSimpleQuad {
 
 #define ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX 32
 
+struct ItfliesbyRendererSimpleQuad {
+    ItfliesbyMathMat3                 transform;
+    ItfliesbyRendererColorNormalized  color;
+};
+
 struct ItfliesbyRendererBatchSimpleQuad {
     ItfliesbyMathMat3                transform[ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX];
     ItfliesbyRendererColorNormalized color[ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX];
-    size_t            count;
+    size_t                           count;
 };
 
 struct ItfliesbyRendererShaderUniforms {
