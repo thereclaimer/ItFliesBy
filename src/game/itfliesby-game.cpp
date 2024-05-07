@@ -33,7 +33,7 @@ itfliesby_game_create(
     memory engine_memory    = itfliesby_memory_partition_raw_memory(game_memory_arena.partitions.game_engine);
     u64 engine_memory_size  = itfliesby_memory_partition_space_total(game_memory_arena.partitions.game_engine);
     
-    itfliesby_engine engine = itfliesby_engine_create(platform,engine_memory,engine_memory_size); 
+    ItfliesbyEngineHandle engine = itfliesby_engine_create(platform,engine_memory,engine_memory_size); 
     ITFLIESBY_ASSERT(engine);
 
     //allocate core systems
@@ -58,7 +58,7 @@ itfliesby_game_update_and_render(
           ItfliesbyGame*      game,
     const ItfliesbyUserInput* user_input) {
 
-    itfliesby_engine engine = game->engine;
+    ItfliesbyEngineHandle engine = game->engine;
 
     itfliesby_engine_update_and_render(
         engine,

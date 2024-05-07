@@ -3,9 +3,14 @@
 
 #include "itfliesby-types.hpp"
 
-typedef handle itfliesby_engine;
+typedef void             ItfliesbyEngine;
+typedef ItfliesbyEngine* ItfliesbyEngineHandle;
 
-api itfliesby_engine
+//----------------------------------------------------------------
+// ENGINE
+//----------------------------------------------------------------
+
+api ItfliesbyEngineHandle
 itfliesby_engine_create(
     ItfliesbyPlatformApi platform,
     memory               mem,
@@ -14,13 +19,38 @@ itfliesby_engine_create(
 
 api void
 itfliesby_engine_destroy(
-    itfliesby_engine engine
+    ItfliesbyEngineHandle engine
 );
 
 api void
 itfliesby_engine_update_and_render(
-          itfliesby_engine    engine,
-    const ItfliesbyUserInput* user_input
+          ItfliesbyEngineHandle engine,
+    const ItfliesbyUserInput*   user_input
 );
+
+//----------------------------------------------------------------
+// SCENES
+//----------------------------------------------------------------
+
+typedef s8 ItfliesbyEngineSceneId; 
+
+api ItfliesbyEngineSceneId
+itfliesby_engine_scene_create(
+    ItfliesbyEngineHandle engine);
+
+api void
+itfliesby_engine_scene_destroy(
+    ItfliesbyEngineHandle  engine,
+    ItfliesbyEngineSceneId scene_id);
+
+api void
+itfliesby_engine_scene_set_active(
+    ItfliesbyEngineHandle  engine,
+    ItfliesbyEngineSceneId scene_id);
+
+api void
+itfliesby_engine_scene_connor_test(
+    ItfliesbyEngineHandle  engine,
+    ItfliesbyEngineSceneId scene_id);
 
 #endif //ITFLIESBY_ENGINE_HPP

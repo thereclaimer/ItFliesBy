@@ -7,6 +7,7 @@
 #include "itfliesby-engine-memory.hpp"
 #include "itfliesby-engine-physics.hpp"
 #include "itfliesby-engine-sprites.hpp"
+#include "itfliesby-engine-scene.hpp"
 
 struct ItfliesbyEngineShaderStore {
     union {
@@ -31,11 +32,12 @@ struct ItfliesbyEngineRendererMemory {
 #define ITFLIESBY_ENGINE_RENDERER_MEMORY_ALLOCATOR_SIZE_SHADER_DATA ITFLIESBY_MATH_MEGABYTES(4)
 
 struct ItfliesbyEngine {
-    ItfliesbyEngineAssets      assets;
-    ItfliesbyEngineShaderStore shaders;
-    ItfliesbyRendererHandle    renderer;
-    ItfliesbyEnginePhysics     physics;
-    ItfliesbyEngineSprites     sprites;
+    ItfliesbyEngineAssets       assets;
+    ItfliesbyEngineShaderStore  shaders;
+    ItfliesbyRendererHandle     renderer;
+    ItfliesbyEnginePhysics      physics;
+    ItfliesbyEngineSprites      sprites;
+    ItfliesbyEngineSceneManager scenes;
 };
 
 api ItfliesbyEngine*
@@ -55,5 +57,24 @@ itfliesby_engine_update_and_render(
           ItfliesbyEngine*    engine,
     const ItfliesbyUserInput* user_input);
 
+
+api ItfliesbyEngineSceneId
+itfliesby_engine_scene_create(
+    ItfliesbyEngine* engine);
+
+api void
+itfliesby_engine_scene_destroy(
+    ItfliesbyEngine*       engine,
+    ItfliesbyEngineSceneId scene_id);
+
+api void
+itfliesby_engine_scene_set_active(
+    ItfliesbyEngine*       engine,
+    ItfliesbyEngineSceneId scene_id);
+
+api void
+itfliesby_engine_scene_connor_test(
+    ItfliesbyEngine*       engine,
+    ItfliesbyEngineSceneId scene_id);
 
 #endif //ITFLIESBY_ENGINE_HPP

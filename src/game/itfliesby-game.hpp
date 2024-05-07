@@ -20,9 +20,10 @@ struct ItfliesbyGameMemoryArena {
     ItfliesbyGameMemoryAllocators allocators;
 };
 
+
 struct ItfliesbyGame {
     ItfliesbyPlatformApi     platform;
-    itfliesby_engine         engine;
+    ItfliesbyEngineHandle    engine;
     ItfliesbyGameMemoryArena memory_arena;
 };
 

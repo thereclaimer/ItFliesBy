@@ -36,4 +36,10 @@ struct ItfliesbyEngineSprites {
     ItfliesbyRendererColorHex solid_sprite_colors[ITFLIESBY_ENGINE_SPRITE_TABLE_COUNT_MAX];
 };
 
+#define ITFLIESBY_ENGINE_SPRITE_COLOR_CONOR {111,149,98,255}
+
+void
+itfliesby_engine_sprites_connor_test(
+    ItfliesbyEngineSprites* sprites);
+
 #endif //ITFLIESBY_ENGINE_SPRITES_HPP

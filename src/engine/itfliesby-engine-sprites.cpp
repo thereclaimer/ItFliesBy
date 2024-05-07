@@ -32,19 +32,17 @@ itfliesby_engine_sprites_solid_create(
         return(ITFLIESBY_ENGINE_SPRITE_ID_INVALID);
     }
 
-    //find the next physics id
-    ItfliesbyEnginePhysicsId physics_id = itfliesby_engine_physics_id_get_next(physics);
+    //create the physics transforms
+    ItfliesbyEnginePhysicsId physics_id = 
+        itfliesby_engine_physics_transforms_create(
+            physics,     // physics
+            {0.0f,0.0f}, // position
+            {1.0f,1.0f}, // scale
+            0.0f);       // rotation degrees
+
     if (physics_id == ITFLIESBY_ENGINE_PHYSICS_OBJECT_INVALID) {
         return(ITFLIESBY_ENGINE_SPRITE_ID_INVALID);
     }
-
-    ItfliesbyEnginePhysicsScale default_scale = {0};
-    default_scale.x = 1.0f;
-    default_scale.y = 1.0f;
-
-    itfliesby_engine_physics_update_position(physics, physics_id, position);
-    itfliesby_engine_physics_update_scale(physics, physics_id, default_scale);
-
 
     new_sprite->physics_id = physics_id;
 
@@ -62,4 +60,57 @@ itfliesby_engine_sprites_create_and_init() {
     ItfliesbyEngineSprites sprites = {0};
 
     return(sprites);
+}
+
+internal ItfliesbyEngineSpriteId
+itfliesby_engine_sprites_connor_test(
+    ItfliesbyEngineSprites*        sprites,
+    ItfliesbyEnginePhysics*        physics,
+    ItfliesbyEnginePhysicsPosition position,
+    ItfliesbyRendererHandle        renderer) {
+
+    ItfliesbyEngineSpriteId connor_sprite_id = ITFLIESBY_ENGINE_SPRITE_ID_INVALID;
+    ItfliesbyEngineSprite*  connor_sprite    = NULL;
+
+    //find the next sprite
+    for (
+        u32 index = 0;
+        index < ITFLIESBY_ENGINE_SPRITE_TABLE_COUNT_MAX;
+        ++index) {
+
+        if (!sprites->used_tables.solid_used[index]) {
+            connor_sprite_id = index;
+            break;
+        }
+    }
+
+    if (connor_sprite_id == ITFLIESBY_ENGINE_SPRITE_ID_INVALID) {
+        return(ITFLIESBY_ENGINE_SPRITE_ID_INVALID);
+    }
+
+    //activate the new sprite        
+    sprites->used_tables.solid_used[connor_sprite_id] = true;
+    connor_sprite    = &sprites->sprite_tables.sprites_solid[connor_sprite_id];
+    sprites->solid_sprite_colors[connor_sprite_id] = ITFLIESBY_ENGINE_SPRITE_COLOR_CONOR;
+
+    //create the physics transforms
+    ItfliesbyEnginePhysicsId physics_id = 
+        itfliesby_engine_physics_transforms_create(
+            physics,     // physics
+            {0.0f,0.0f}, // position
+            {1.0f,1.0f}, // scale
+            0.0f);       // rotation degrees
+
+    if (physics_id == ITFLIESBY_ENGINE_PHYSICS_OBJECT_INVALID) {
+        return(ITFLIESBY_ENGINE_SPRITE_ID_INVALID);
+    }
+
+    connor_sprite->physics_id = physics_id;
+
+    //sanity check
+    ITFLIESBY_ASSERT(
+        connor_sprite_id >= 0 &&
+        physics_id       >= 0);
+
+    return(connor_sprite_id);
 }

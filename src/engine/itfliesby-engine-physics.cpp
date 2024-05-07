@@ -124,6 +124,37 @@ itfliesby_engine_physics_id_get_next(
     return(next_physics_id);
 }
 
+internal ItfliesbyEnginePhysicsId
+itfliesby_engine_physics_transforms_create(
+    ItfliesbyEnginePhysics*               physics,
+    ItfliesbyEnginePhysicsPosition        position,
+    ItfliesbyEnginePhysicsScale           scale,
+    ItfliesbyEnginePhysicsRotationDegrees rotation_degrees) {
+
+    ItfliesbyEnginePhysicsId next_physics_id = ITFLIESBY_ENGINE_PHYSICS_OBJECT_INVALID;
+    b8* objects_used = physics->object_used;
+
+    for (
+        u32 index = 0;
+        index < ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX;
+        ++index) {
+
+        if (!objects_used[index]) {
+            next_physics_id = index;
+            objects_used[index] = true;
+            break;
+        }
+    }
+
+    physics->tables.transforms.position.x[next_physics_id]       = position.x;
+    physics->tables.transforms.position.y[next_physics_id]       = position.y;
+    physics->tables.transforms.scale.x[next_physics_id]          = scale.x;
+    physics->tables.transforms.scale.y[next_physics_id]          = scale.y;
+    physics->tables.transforms.rotation.radians[next_physics_id] = itfliesby_math_trig_degrees_to_radians(rotation_degrees);
+
+    return(next_physics_id);
+}
+
 internal ItfliesbyEnginePhysics
 itfliesby_engine_physics_create_and_init() {
 

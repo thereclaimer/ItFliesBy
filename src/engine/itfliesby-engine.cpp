@@ -6,6 +6,7 @@
 #include "itfliesby-engine-rendering.cpp"
 #include "itfliesby-engine-physics.cpp"
 #include "itfliesby-engine-sprites.cpp"
+#include "itfliesby-engine-scene.cpp"
 
 external ItfliesbyEngine*
 itfliesby_engine_create(
