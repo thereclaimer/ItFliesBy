@@ -104,27 +104,24 @@ itfliesby_engine_test_render(
         return;
     }
 
-    ItfliesbyRendererTestBatch test_batch = {0};
+    ItfliesbyRendererBatchSimpleQuad simple_quad_batch = {0};
+    ItfliesbyEnginePhysicsTransform  transform         = itfliesby_math_mat3_identity();    
+    ItfliesbyRendererColorHex        color             = {0};
 
-    ItfliesbyEnginePhysicsTransform transform = itfliesby_math_mat3_identity();    
-    ItfliesbyRendererColorHex color = {0};
     color.r = 255;
     color.g = 0;
     color.b = 0;
     color.a = 255;
 
-    transform.rows.row_0[1] = 1.0f;
-    transform.rows.row_1[1] = 1.0f;
-
     itfliesby_math_mat3_transpose(&transform);
-    test_batch.transform[0] = transform;
-    test_batch.color[0]     = itfliesby_renderer_color_normalize(color);
+    
+    simple_quad_batch.transform[0] = transform;
+    simple_quad_batch.color[0]     = itfliesby_renderer_color_normalize(color);
+    simple_quad_batch.count        = 1;
 
-    test_batch.count = 1;
-
-    itfliesby_renderer_test_batch(
+    itfliesby_renderer_simple_quad_batch(
         renderer,
-        &test_batch
+        &simple_quad_batch
     );
 }
 

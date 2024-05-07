@@ -2,7 +2,7 @@
 
 #include "itfliesby-renderer.hpp"
 
-const f32 TEST_VERTEX_BUFFER[] = {
+const f32 SIMPLE_QUAD_VERTEX_BUFFER[] = {
     -0.5f,  0.5f,  // Top-left
     -0.5f, -0.5f,  // Bottom-left
      0.5f, -0.5f,  // Bottom-right
@@ -12,25 +12,25 @@ const f32 TEST_VERTEX_BUFFER[] = {
      0.5f, -0.5f   // Bottom-right
 };
 
-internal ItfliesbyRendererShaderBuffersTest
-itfliesby_renderer_shader_test_buffers_create() {
+internal ItfliesbyRendererShaderBuffersSimpleQuad
+itfliesby_renderer_shader_simple_quad_buffers_create() {
 
-    ItfliesbyRendererShaderBuffersTest test_buffers = {0};
+    ItfliesbyRendererShaderBuffersSimpleQuad simple_quad_buffers = {0};
 
     //create and bind the VAO
-    glGenVertexArrays(1,&test_buffers.gl_vao);
-    glBindVertexArray(test_buffers.gl_vao);
+    glGenVertexArrays(1,&simple_quad_buffers.gl_vao);
+    glBindVertexArray(simple_quad_buffers.gl_vao);
 
     //create the buffer
-    glGenBuffers(1,&test_buffers.gl_vbo_quad_indices);
+    glGenBuffers(1,&simple_quad_buffers.gl_vbo_quad_indices);
     glBindBuffer(
         GL_ARRAY_BUFFER,
-        test_buffers.gl_vbo_quad_indices);
+        simple_quad_buffers.gl_vbo_quad_indices);
 
     glBufferData(
         GL_ARRAY_BUFFER,
         sizeof(f32) * 12,
-        TEST_VERTEX_BUFFER,
+        SIMPLE_QUAD_VERTEX_BUFFER,
         GL_STATIC_DRAW);
 
     //define layout of the vertices
@@ -46,23 +46,23 @@ itfliesby_renderer_shader_test_buffers_create() {
     //unbind the vao
     glBindVertexArray(0);
 
-    return(test_buffers);
+    return(simple_quad_buffers);
 }
 
 external void
-itfliesby_renderer_test_batch(
-    ItfliesbyRenderer*          renderer,
-    ItfliesbyRendererTestBatch* batch) {
+itfliesby_renderer_simple_quad_batch(
+    ItfliesbyRenderer*                renderer,
+    ItfliesbyRendererBatchSimpleQuad* batch) {
 
-    renderer->batches.test = *batch;
+    renderer->batches.simple_quad = *batch;
 }
 
 internal void
-itfliesby_renderer_test_render(
-    ItfliesbyRendererShaderUniformsTest* uniforms,
-    ItfliesbyRendererShaderBuffersTest*  buffers,
-    ItfliesbyRendererTestBatch*          batch,
-    GLuint                               gl_program) {
+itfliesby_renderer_simple_quad_render(
+    ItfliesbyRendererShaderUniformsSimpleQuad* uniforms,
+    ItfliesbyRendererShaderBuffersSimpleQuad*  buffers,
+    ItfliesbyRendererBatchSimpleQuad*          batch,
+    GLuint                                     gl_program) {
 
     ItfliesbyMathMat3*                batch_transforms = batch->transform;
     ItfliesbyRendererColorNormalized* batch_colors     = batch->color; 

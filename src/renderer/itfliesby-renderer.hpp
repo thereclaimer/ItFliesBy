@@ -14,11 +14,11 @@
 global ItfliesbyPlatformApi platform;
 
 struct ItfliesbyRendererBatches{
-    ItfliesbyRendererTestBatch test;
+    ItfliesbyRendererBatchSimpleQuad simple_quad;
 };
 
 struct ItfliesbyRendererBuffers {
-    ItfliesbyRendererShaderBuffersTest test;
+    ItfliesbyRendererShaderBuffersSimpleQuad simple_quad;
 };
 
 struct ItfliesbyRenderer {

@@ -159,16 +159,16 @@ itfliesby_renderer_quad_solid_quads_batch_update(
 
 #define ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX 32
 
-struct ItfliesbyRendererTestBatch {
+struct ItfliesbyRendererBatchSimpleQuad {
     ItfliesbyMathMat3                transform[ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX];
     ItfliesbyRendererColorNormalized color[ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX];
-    size_t                    count;
+    size_t                           count;
 };
 
 api void
-itfliesby_renderer_test_batch(
-    ItfliesbyRendererHandle     renderer,
-    ItfliesbyRendererTestBatch* batch);
+itfliesby_renderer_simple_quad_batch(
+    ItfliesbyRendererHandle           renderer,
+    ItfliesbyRendererBatchSimpleQuad* batch);
 
 
 #endif //ITFLIESBY_RENDERER_HPP

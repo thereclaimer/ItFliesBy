@@ -189,12 +189,12 @@ ifliesby_renderer_shader_uniforms_solid_quad(
 }
 
 internal void
-itfliesby_renderer_shader_uniforms_test(
-    ItfliesbyRendererShaderUniformsTest* test_uniforms,
-    GLuint                               test_program_id) {
+itfliesby_renderer_shader_uniforms_simple_quad(
+    ItfliesbyRendererShaderUniformsSimpleQuad* simple_quad_uniforms,
+    GLuint                                     simple_quad_program_id) {
 
-    test_uniforms->index_transform = glGetUniformLocation(test_program_id,ITFLIESBY_RENDERER_SHADER_UNIFORM_TEST_TRANSFORM);
-    test_uniforms->index_color     = glGetUniformLocation(test_program_id,ITFLIESBY_RENDERER_SHADER_UNIFORM_TEST_COLOR);
+    simple_quad_uniforms->index_transform = glGetUniformLocation(simple_quad_program_id,ITFLIESBY_RENDERER_SHADER_UNIFORM_SIMPLE_QUAD_TRANSFORM);
+    simple_quad_uniforms->index_color     = glGetUniformLocation(simple_quad_program_id,ITFLIESBY_RENDERER_SHADER_UNIFORM_SIMPLE_QUAD_COLOR);
 
     ITFLIESBY_NOP();
 }
@@ -238,9 +238,9 @@ itfliesby_renderer_ready(
         gl_ubos[0]
     );
     
-    itfliesby_renderer_shader_uniforms_test(
-        &shader_uniforms->test,
-        shader_store->types.test.gl_program_id
+    itfliesby_renderer_shader_uniforms_simple_quad(
+        &shader_uniforms->simple_quad,
+        shader_store->types.simple_quad.gl_program_id
     );
 
     return(ready);
