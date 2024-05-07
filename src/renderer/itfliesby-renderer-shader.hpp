@@ -68,11 +68,11 @@ struct ItfliesbyRendererShaderUniformsSolidQuad {
     GLbyte* gl_uniform_buffer_memory;
 };
 
-#define ITFLIESBY_RENDERER_SHADER_UNIFORM_TEST_TRANSFORM "transform"
-#define ITFLIESBY_RENDERER_SHADER_UNIFORM_TEST_COLOR     "color"
+#define ITFLIESBY_RENDERER_SHADER_UNIFORM_SIMPLE_QUAD_TRANSFORM "transform"
+#define ITFLIESBY_RENDERER_SHADER_UNIFORM_SIMPLE_QUAD_COLOR     "color"
 
 
-struct ItfliesbyRendererShaderUniformsTest{
+struct ItfliesbyRendererShaderUniformsSimpleQuad{
     
     union {
         struct {
@@ -83,7 +83,7 @@ struct ItfliesbyRendererShaderUniformsTest{
     };
 };
 
-struct ItfliesbyRendererShaderBuffersTest {
+struct ItfliesbyRendererShaderBuffersSimpleQuad {
     GLuint gl_vao;
     GLuint gl_vbo_quad_indices;
 };
@@ -91,15 +91,20 @@ struct ItfliesbyRendererShaderBuffersTest {
 
 #define ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX 32
 
-struct ItfliesbyRendererTestBatch {
+struct ItfliesbyRendererSimpleQuad {
+    ItfliesbyMathMat3                 transform;
+    ItfliesbyRendererColorNormalized  color;
+};
+
+struct ItfliesbyRendererBatchSimpleQuad {
     ItfliesbyMathMat3                transform[ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX];
     ItfliesbyRendererColorNormalized color[ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX];
-    size_t            count;
+    size_t                           count;
 };
 
 struct ItfliesbyRendererShaderUniforms {
-    ItfliesbyRendererShaderUniformsSolidQuad solid_quad_uniforms;
-    ItfliesbyRendererShaderUniformsTest      test;
+    ItfliesbyRendererShaderUniformsSolidQuad  solid_quad_uniforms;
+    ItfliesbyRendererShaderUniformsSimpleQuad simple_quad;
 };
 
 struct ItfliesbyRendererShaderStore {
@@ -108,7 +113,7 @@ struct ItfliesbyRendererShaderStore {
         struct {
             ItfliesbyRendererShader textured_quad;
             ItfliesbyRendererShader solid_quad;
-            ItfliesbyRendererShader test;
+            ItfliesbyRendererShader simple_quad;
         } types;
 
         ItfliesbyRendererShader shaders[ITFLIESBY_RENDERER_SHADER_TYPE_COUNT];

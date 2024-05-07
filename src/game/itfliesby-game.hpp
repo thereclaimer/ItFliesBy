@@ -40,7 +40,8 @@ itfliesby_game_destroy(
 
 api void
 itfliesby_game_update_and_render(
-    ItfliesbyGame* game
+          ItfliesbyGame*      game,
+    const ItfliesbyUserInput* user_input
 );
 
 #endif //ITFLIESBY_GAME_HPP
