@@ -62,10 +62,9 @@ itfliesby_engine_fetch_graphics_information(
     ItfliesbyEngine*                        engine,
     ItfliesbyEnginePhysicsTransformPayload* physics_payload) {
 
-    ItfliesbyRendererSolidQuadUpdateBatch solid_quad_update_batch = {0};
-    u8 solid_quad_count = 0;
-
-    ItfliesbyEngineSprites* sprites = &engine->sprites;
+    ItfliesbyEngineSprites*     sprites     = &engine->sprites;
+    ItfliesbyRendererHandle     renderer    = engine->renderer;
+    ItfliesbyRendererSimpleQuad simple_quad = {0};
 
     for (
         u32 index = 0;
@@ -76,23 +75,19 @@ itfliesby_engine_fetch_graphics_information(
 
             ItfliesbyEnginePhysicsTransform current_transform = physics_payload->transforms[index]; 
             ItfliesbyRendererColorHex       current_color     = sprites->solid_sprite_colors[index];
+            
+            itfliesby_math_mat3_transpose(&current_transform);
 
-            memmove(
-                &solid_quad_update_batch.batch[solid_quad_count].transform[0],
-                &current_transform.m[0],
-                sizeof(f32) * 9
+            simple_quad.color     = itfliesby_renderer_color_normalize(current_color);
+            simple_quad.transform = current_transform; 
+
+            itfliesby_renderer_simple_quad_push(
+                renderer,
+                simple_quad
             );
-            solid_quad_update_batch.batch[solid_quad_count].color     = current_color;
-            ++solid_quad_count;
         }
     }
 
-    solid_quad_update_batch.count = solid_quad_count;
-
-    itfliesby_renderer_quad_solid_quads_batch_update(
-        engine->renderer,
-        &solid_quad_update_batch
-    );
 }
 
 internal void
@@ -141,14 +136,14 @@ itfliesby_engine_update_and_render(
     );
 
     //now we need to zip up the payload we are sending to the GPU
-    // itfliesby_engine_fetch_graphics_information(
-    //     engine,
-    //     &physics_payload
-    // );
+    itfliesby_engine_fetch_graphics_information(
+        engine,
+        &physics_payload
+    );
 
-    itfliesby_engine_test_render(
-        renderer,
-        true);
+    // itfliesby_engine_test_render(
+    //     renderer,
+    //     true);
 
     itfliesby_engine_assets_update(assets);
     
