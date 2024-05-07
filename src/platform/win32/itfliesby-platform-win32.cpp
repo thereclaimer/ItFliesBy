@@ -324,7 +324,8 @@ itfliesby_platform_win32_main(
         //update the game
         itfliesby_game_update_and_render(
             game_window.game,
-            &game_window.user_input);
+            &game_window.user_input,
+            pre_frame_ticks);
 
 
         // itfliesby_dev_tools_update(game_window.itfliesby_state);

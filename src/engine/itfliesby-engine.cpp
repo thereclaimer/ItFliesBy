@@ -38,13 +38,13 @@ itfliesby_engine_create(
     
     //TEST QUAD RENDERING
     
-    ItfliesbyEngineSpriteId test_sprite_0 = 
-        itfliesby_engine_sprites_solid_create(
-            &engine->sprites,
-            &engine->physics,
-            {0.0,0.0},
-            engine->renderer,
-            {235,219,178,255});
+    // ItfliesbyEngineSpriteId test_sprite_0 = 
+    //     itfliesby_engine_sprites_solid_create(
+    //         &engine->sprites,
+    //         &engine->physics,
+    //         {0.0,0.0},
+    //         engine->renderer,
+    //         {235,219,178,255});
 
     //TEST QUAD RENDERING
 
@@ -121,14 +121,19 @@ itfliesby_engine_test_render(
 }
 
 external void
-itfliesby_engine_update_and_render(
+itfliesby_engine_render_scene(
           ItfliesbyEngine*    engine,
-    const ItfliesbyUserInput* user_input) {
+          ItfliesbyUserInput* user_input,
+    const u64                 delta_time_ticks) {
+
+    engine->user_input = user_input;
 
     ItfliesbyEngineAssets*  assets   = &engine->assets;
     ItfliesbyRendererHandle renderer = engine->renderer;
 
     ItfliesbyEnginePhysicsTransformPayload physics_payload = {0};
+
+    itfliesby_engine_scene_process_active(engine);
 
     itfliesby_engine_physics_update(
         &engine->physics,

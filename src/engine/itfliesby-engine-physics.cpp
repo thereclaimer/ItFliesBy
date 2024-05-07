@@ -250,3 +250,19 @@ itfliesby_engine_physics_update_id(
     scale_y[physics_id]    = scale.y;
     radians[physics_id]    = rotation_radians; 
 }
+
+internal void
+itfliesby_engine_physics_update_velocity(
+    ItfliesbyEnginePhysics*        physics,
+    ItfliesbyEnginePhysicsId       physics_id,
+    ItfliesbyEnginePhysicsVelocity velocity) {
+
+    ItfliesbyEnginePhysicsTablesDynamics* physics_dynamics = &physics->tables.dynamics;
+    ItfliesbyEnginePhysicsTableVelocity*  physics_dynamics_table_velocity = &physics_dynamics->velocity;
+    
+    f32* physics_dynamics_table_velocity_x = physics_dynamics_table_velocity->x;  
+    f32* physics_dynamics_table_velocity_y = physics_dynamics_table_velocity->y;  
+
+    physics_dynamics_table_velocity_x[physics_id] = velocity.x;
+    physics_dynamics_table_velocity_y[physics_id] = velocity.y;
+}

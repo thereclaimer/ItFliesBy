@@ -23,6 +23,8 @@ struct ItfliesbyEnginePhysicsTransformPayload {
     ItfliesbyEnginePhysicsTransform transforms[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
 };
 
+#define ITFLIESBY_ENGINE_PHYSICS_POSITION_CENTER {0.0f,0.0f}
+
 struct ItfliesbyEnginePhysicsTablePosition {
     f32 x[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
     f32 y[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
@@ -81,5 +83,12 @@ itfliesby_engine_physics_update_scale(
     ItfliesbyEnginePhysics*        physics,
     ItfliesbyEnginePhysicsId       physics_id,
     ItfliesbyEnginePhysicsScale    scale);
+
+void
+itfliesby_engine_physics_update_velocity(
+    ItfliesbyEnginePhysics*        physics,
+    ItfliesbyEnginePhysicsId       physics_id,
+    ItfliesbyEnginePhysicsVelocity velocity); 
+
 
 #endif //ITFLIESBY_ENGINE_PHYSICS_HPP

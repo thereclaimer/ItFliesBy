@@ -66,8 +66,7 @@ internal ItfliesbyEngineSpriteId
 itfliesby_engine_sprites_connor_test(
     ItfliesbyEngineSprites*        sprites,
     ItfliesbyEnginePhysics*        physics,
-    ItfliesbyEnginePhysicsPosition position,
-    ItfliesbyRendererHandle        renderer) {
+    ItfliesbyEnginePhysicsPosition position) {
 
     ItfliesbyEngineSpriteId connor_sprite_id = ITFLIESBY_ENGINE_SPRITE_ID_INVALID;
     ItfliesbyEngineSprite*  connor_sprite    = NULL;
@@ -96,10 +95,10 @@ itfliesby_engine_sprites_connor_test(
     //create the physics transforms
     ItfliesbyEnginePhysicsId physics_id = 
         itfliesby_engine_physics_transforms_create(
-            physics,     // physics
-            {0.0f,0.0f}, // position
-            {1.0f,1.0f}, // scale
-            0.0f);       // rotation degrees
+            physics,       // physics
+            position,      // position
+            {0.25f,0.25f}, // scale
+            0.0f);         // rotation degrees
 
     if (physics_id == ITFLIESBY_ENGINE_PHYSICS_OBJECT_INVALID) {
         return(ITFLIESBY_ENGINE_SPRITE_ID_INVALID);
@@ -113,4 +112,15 @@ itfliesby_engine_sprites_connor_test(
         physics_id       >= 0);
 
     return(connor_sprite_id);
+}
+
+
+internal ItfliesbyEnginePhysicsId
+itfliesby_engine_sprites_physics_id_get(
+    ItfliesbyEngineSprites*        sprites,
+    ItfliesbyEngineSpriteId        sprite_id) {
+
+    ItfliesbyEngineSprite sprite = sprites->all_sprites[sprite_id];
+
+    return(sprite.physics_id);
 }

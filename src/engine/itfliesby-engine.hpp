@@ -38,6 +38,7 @@ struct ItfliesbyEngine {
     ItfliesbyEnginePhysics      physics;
     ItfliesbyEngineSprites      sprites;
     ItfliesbyEngineSceneManager scenes;
+    ItfliesbyUserInput*         user_input;
 };
 
 api ItfliesbyEngine*
@@ -53,9 +54,10 @@ itfliesby_engine_destroy(
 );
 
 api void
-itfliesby_engine_update_and_render(
+itfliesby_engine_render_scene(
           ItfliesbyEngine*    engine,
-    const ItfliesbyUserInput* user_input);
+          ItfliesbyUserInput* user_input,
+    const u64                 delta_time_ticks);
 
 
 api ItfliesbyEngineSceneId
@@ -72,7 +74,7 @@ itfliesby_engine_scene_set_active(
     ItfliesbyEngine*       engine,
     ItfliesbyEngineSceneId scene_id);
 
-api void
+api ItfliesbyEngineSpriteId
 itfliesby_engine_scene_connor_test(
     ItfliesbyEngine*       engine,
     ItfliesbyEngineSceneId scene_id);

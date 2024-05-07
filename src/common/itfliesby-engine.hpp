@@ -14,25 +14,34 @@ api ItfliesbyEngineHandle
 itfliesby_engine_create(
     ItfliesbyPlatformApi platform,
     memory               mem,
-    u64                  mem_size
-);
+    u64                  mem_size);
 
 api void
 itfliesby_engine_destroy(
-    ItfliesbyEngineHandle engine
-);
+    ItfliesbyEngineHandle engine);
 
 api void
-itfliesby_engine_update_and_render(
+itfliesby_engine_render_scene(
           ItfliesbyEngineHandle engine,
-    const ItfliesbyUserInput*   user_input
-);
+          ItfliesbyUserInput*   user_input,
+    const u64                   delta_time_ticks);
+
+//----------------------------------------------------------------
+// SPRITES
+//----------------------------------------------------------------
+
+typedef s8 ItfliesbyEngineSpriteId;
+
+#define ITFLIESBY_ENGINE_SPRITE_ID_INVALID -1
 
 //----------------------------------------------------------------
 // SCENES
 //----------------------------------------------------------------
 
 typedef s8 ItfliesbyEngineSceneId; 
+
+#define ITFLIESBY_ENGINE_SCENE_INVALID -1
+#define ITFLIESBY_ENGINE_SCENE_COUNT_MAX 8
 
 api ItfliesbyEngineSceneId
 itfliesby_engine_scene_create(
@@ -48,7 +57,7 @@ itfliesby_engine_scene_set_active(
     ItfliesbyEngineHandle  engine,
     ItfliesbyEngineSceneId scene_id);
 
-api void
+api ItfliesbyEngineSpriteId
 itfliesby_engine_scene_connor_test(
     ItfliesbyEngineHandle  engine,
     ItfliesbyEngineSceneId scene_id);

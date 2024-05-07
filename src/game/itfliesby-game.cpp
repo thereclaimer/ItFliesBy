@@ -1,6 +1,7 @@
 #pragma once
 
 #include "itfliesby-game.hpp"
+#include "itfliesby-game-scene-test.cpp"
 
 external ItfliesbyGame*
 itfliesby_game_create(
@@ -44,6 +45,7 @@ itfliesby_game_create(
     game->memory_arena = game_memory_arena;
     game->platform     = platform;
     game->engine       = engine;
+    game->scenes       = itfliesby_game_scenes_init();
 
     return(game);
 }
@@ -56,11 +58,19 @@ itfliesby_game_destroy(
 external void
 itfliesby_game_update_and_render(
           ItfliesbyGame*      game,
-    const ItfliesbyUserInput* user_input) {
+          ItfliesbyUserInput* user_input,
+    const u64                 time_ticks) {
+
+    game->delta_time_ticks = game->previous_time_ticks - time_ticks;
 
     ItfliesbyEngineHandle engine = game->engine;
 
-    itfliesby_engine_update_and_render(
+    itfliesby_game_scene_test(game);
+
+    itfliesby_engine_render_scene(
         engine,
-        user_input);
+        user_input,
+        game->delta_time_ticks);
+
+    game->previous_time_ticks = time_ticks;
 }
