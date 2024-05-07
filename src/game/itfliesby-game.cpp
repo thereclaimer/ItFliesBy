@@ -54,7 +54,9 @@ itfliesby_game_destroy(
 }
 
 external void
-itfliesby_game_update_and_render(ItfliesbyGame* game) {
+itfliesby_game_update_and_render(
+          ItfliesbyGame*      game,
+    const ItfliesbyUserInput* user_input) {
 
     itfliesby_engine engine = game->engine;
 

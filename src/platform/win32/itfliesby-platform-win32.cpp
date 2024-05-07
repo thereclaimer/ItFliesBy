@@ -94,14 +94,14 @@ itfliesby_platform_win32_process_pending_messages(
                 // if (dev_tools_capture_keyboard) {
                 //     break;
                 // }
-                // u32 itfliesby_keycode = win32_translate_user_keycode((u32)window_message.wParam);
-                // USER_INPUT_SET_KEY(game_window.user_input, itfliesby_keycode);
+                u32 itfliesby_keycode = itfliesby_platform_win32_translate_user_keycode((u32)window_message.wParam);
+                USER_INPUT_SET_KEY(game_window.user_input, itfliesby_keycode);
 
-                // switch((u32)window_message.wParam) {
-                //     case VK_F11: {
-                //         win32_toggle_full_screen(window_handle);
-                //     } break;
-                // }
+                switch((u32)window_message.wParam) {
+                    case VK_F11: {
+                        itfliesby_platform_win32_toggle_full_screen();
+                    } break;
+                }
 
             } break;
 
@@ -110,8 +110,8 @@ itfliesby_platform_win32_process_pending_messages(
                 // if (dev_tools_capture_keyboard) {
                 //     break;
                 // }
-                // u32 itfliesby_keycode = win32_translate_user_keycode((u32)window_message.wParam);
-                // USER_INPUT_CLEAR_KEY(game_window.user_input, itfliesby_keycode);
+                u32 itfliesby_keycode = itfliesby_platform_win32_translate_user_keycode((u32)window_message.wParam);
+                USER_INPUT_CLEAR_KEY(game_window.user_input, itfliesby_keycode);
             } break;
 
             //mouse inputs
@@ -304,10 +304,10 @@ itfliesby_platform_win32_main(
 
     while (game_window.running) {
 
-        //get system ticks to calculate delta time
-        // LARGE_INTEGER win32_large_int = {0};
-        // QueryPerformanceCounter(&win32_large_int);
-        // u64 pre_frame_ticks = win32_large_int.QuadPart;
+        // get system ticks to calculate delta time
+        LARGE_INTEGER win32_large_int = {0};
+        QueryPerformanceCounter(&win32_large_int);
+        u64 pre_frame_ticks = win32_large_int.QuadPart;
 
         //process incoming messages
         itfliesby_platform_win32_process_pending_messages(game_window.window_handle);
@@ -321,20 +321,26 @@ itfliesby_platform_win32_main(
                 ? &gamepad
                 : NULL;
 
-        itfliesby_game_update_and_render(game_window.game);
+        //update the game
+        itfliesby_game_update_and_render(
+            game_window.game,
+            &game_window.user_input);
 
 
         // itfliesby_dev_tools_update(game_window.itfliesby_state);
         SwapBuffers(game_window.device_context);
 
+        //clear user input
+        game_window.user_input = {0};
+
         //lastly, get the fps
-        // QueryPerformanceCounter(&win32_large_int);
-        // u64 post_frame_ticks = win32_large_int.QuadPart;
-        // QueryPerformanceFrequency(&win32_large_int);
-        // f32 frequency = win32_large_int.QuadPart;
-        // f64 elapsed_ticks = post_frame_ticks - pre_frame_ticks;
-        // f64 elapsed_seconds = elapsed_ticks / frequency;
-        // frames_per_second = 1 / elapsed_seconds;
+        QueryPerformanceCounter(&win32_large_int);
+        u64 post_frame_ticks = win32_large_int.QuadPart;
+        QueryPerformanceFrequency(&win32_large_int);
+        f32 frequency = win32_large_int.QuadPart;
+        f64 elapsed_ticks = post_frame_ticks - pre_frame_ticks;
+        f64 elapsed_seconds = elapsed_ticks / frequency;
+        f32 frames_per_second = 1 / elapsed_seconds;
     }
 
     //destroy the game
