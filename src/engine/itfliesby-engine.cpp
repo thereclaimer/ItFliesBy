@@ -119,11 +119,10 @@ itfliesby_engine_test_render(
     );
 }
 
-
-
 external void
 itfliesby_engine_update_and_render(
-    ItfliesbyEngine* engine) {
+          ItfliesbyEngine*    engine,
+    const ItfliesbyUserInput* user_input) {
 
     ItfliesbyEngineAssets*  assets   = &engine->assets;
     ItfliesbyRendererHandle renderer = engine->renderer;
@@ -140,10 +139,6 @@ itfliesby_engine_update_and_render(
         engine,
         &physics_payload
     );
-
-    // itfliesby_engine_test_render(
-    //     renderer,
-    //     true);
 
     itfliesby_engine_assets_update(assets);
     

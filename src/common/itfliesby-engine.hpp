@@ -19,7 +19,8 @@ itfliesby_engine_destroy(
 
 api void
 itfliesby_engine_update_and_render(
-    itfliesby_engine engine
+          itfliesby_engine    engine,
+    const ItfliesbyUserInput* user_input
 );
 
 #endif //ITFLIESBY_ENGINE_HPP

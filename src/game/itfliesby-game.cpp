@@ -60,5 +60,7 @@ itfliesby_game_update_and_render(
 
     itfliesby_engine engine = game->engine;
 
-    itfliesby_engine_update_and_render(engine);
+    itfliesby_engine_update_and_render(
+        engine,
+        user_input);
 }

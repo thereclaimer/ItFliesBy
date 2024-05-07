@@ -50,11 +50,10 @@ itfliesby_engine_destroy(
     ItfliesbyEngine* engine
 );
 
-
 api void
 itfliesby_engine_update_and_render(
-    ItfliesbyEngine* engine
-);
+          ItfliesbyEngine*    engine,
+    const ItfliesbyUserInput* user_input);
 
 
 #endif //ITFLIESBY_ENGINE_HPP
