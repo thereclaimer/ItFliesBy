@@ -6,6 +6,7 @@
 #include "itfliesby-engine-rendering.cpp"
 #include "itfliesby-engine-physics.cpp"
 #include "itfliesby-engine-sprites.cpp"
+#include "itfliesby-engine-scene.cpp"
 
 external ItfliesbyEngine*
 itfliesby_engine_create(
@@ -34,19 +35,6 @@ itfliesby_engine_create(
 
     engine->physics = itfliesby_engine_physics_create_and_init();
     engine->sprites = itfliesby_engine_sprites_create_and_init();
-    
-    //TEST QUAD RENDERING
-    
-    ItfliesbyEngineSpriteId test_sprite_0 = 
-        itfliesby_engine_sprites_solid_create(
-            &engine->sprites,
-            &engine->physics,
-            {0.0,0.0},
-            engine->renderer,
-            {235,219,178,255});
-
-    //TEST QUAD RENDERING
-
 
     return(engine);
 }
@@ -76,7 +64,7 @@ itfliesby_engine_fetch_graphics_information(
             ItfliesbyEnginePhysicsTransform current_transform = physics_payload->transforms[index]; 
             ItfliesbyRendererColorHex       current_color     = sprites->solid_sprite_colors[index];
             
-            itfliesby_math_mat3_transpose(&current_transform);
+            // itfliesby_math_mat3_transpose(&current_transform);
 
             simple_quad.color     = itfliesby_renderer_color_normalize(current_color);
             simple_quad.transform = current_transform; 
@@ -87,49 +75,24 @@ itfliesby_engine_fetch_graphics_information(
             );
         }
     }
-
 }
-
-internal void
-itfliesby_engine_test_render(
-    ItfliesbyRendererHandle renderer,
-    b8                      run) {
-
-    if (!run) {
-        return;
-    }
-
-    ItfliesbyRendererColorHex        color     = {0};
-    ItfliesbyEnginePhysicsTransform  transform = itfliesby_math_mat3_identity();    
-
-    color.r = 255;
-    color.g = 0;
-    color.b = 0;
-    color.a = 255;
-
-    itfliesby_math_mat3_transpose(&transform);
-    
-    ItfliesbyRendererSimpleQuad simple_quad = {0};
-    simple_quad.transform = transform;
-    simple_quad.color     = itfliesby_renderer_color_normalize(color);
-
-    itfliesby_renderer_simple_quad_push(
-        renderer,
-        simple_quad
-    );
-}
-
-
 
 external void
-itfliesby_engine_update_and_render(
-    ItfliesbyEngine* engine) {
+itfliesby_engine_render_scene(
+          ItfliesbyEngine*    engine,
+          ItfliesbyUserInput* user_input,
+    const u64                 delta_time_ticks) {
+
+    engine->user_input = user_input;
 
     ItfliesbyEngineAssets*  assets   = &engine->assets;
     ItfliesbyRendererHandle renderer = engine->renderer;
 
-    ItfliesbyEnginePhysicsTransformPayload physics_payload = {0};
+    //process the active scene
+    itfliesby_engine_scene_process_active(engine);
 
+    //udpate the physics system
+    ItfliesbyEnginePhysicsTransformPayload physics_payload = {0};
     itfliesby_engine_physics_update(
         &engine->physics,
         &physics_payload
@@ -141,11 +104,8 @@ itfliesby_engine_update_and_render(
         &physics_payload
     );
 
-    // itfliesby_engine_test_render(
-    //     renderer,
-    //     true);
-
     itfliesby_engine_assets_update(assets);
     
+    //render the scene
     itfliesby_renderer_render(renderer);
 }

@@ -61,6 +61,58 @@ itfliesby_engine_physics_transforms(
             itfliesby_math_mat3_translation(
                 table_position_x[index],
                 table_position_y[index]);
+                        
+        //scale
+        transform_scale[index] = 
+            itfliesby_math_mat3_scaling(
+                table_scale_x[index], 
+                table_scale_y[index]);
+        
+        //rotation
+        transform_rotation[index] = 
+            itfliesby_math_mat3_rotation_radians(
+                table_rotation_radians[index]);
+    }
+
+    //put the transforms together
+    itfliesby_math_mat3_transform_trs(
+        ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX,
+        transform_translation,
+        transform_scale,
+        transform_rotation,
+        transform);
+}
+
+internal void
+itfliesby_engine_physics_transforms_transpose(
+    ItfliesbyEnginePhysicsTablesTransforms*  in_tables_properties,
+    ItfliesbyEnginePhysicsTransformPayload*  out_transform_payload) {
+
+    ItfliesbyEnginePhysicsTablePosition* table_transforms_position = &in_tables_properties->position;
+    ItfliesbyEnginePhysicsTableScale*    table_transforms_scale    = &in_tables_properties->scale;
+    ItfliesbyEnginePhysicsTableRotation* table_transforms_rotation = &in_tables_properties->rotation;
+    
+    f32* table_position_x       = table_transforms_position->x;
+    f32* table_position_y       = table_transforms_position->y;
+    f32* table_scale_x          = table_transforms_scale->x;
+    f32* table_scale_y          = table_transforms_scale->y;
+    f32* table_rotation_radians = table_transforms_rotation->radians;
+
+    ItfliesbyEnginePhysicsTransform* transform = out_transform_payload->transforms;
+    ItfliesbyEnginePhysicsTransform  transform_translation[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX] = {0};
+    ItfliesbyEnginePhysicsTransform  transform_scale[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX]       = {0};
+    ItfliesbyEnginePhysicsTransform  transform_rotation[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX]    = {0};
+
+    for (
+        u32 index = 0;
+        index < ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX;
+        ++index) {
+
+        //translation
+        transform_translation[index] = 
+            itfliesby_math_mat3_translation(
+                table_position_x[index],
+                table_position_y[index]);
         
         //scale
         transform_scale[index] = 
@@ -120,6 +172,37 @@ itfliesby_engine_physics_id_get_next(
             break;
         }
     }
+
+    return(next_physics_id);
+}
+
+internal ItfliesbyEnginePhysicsId
+itfliesby_engine_physics_transforms_create(
+    ItfliesbyEnginePhysics*               physics,
+    ItfliesbyEnginePhysicsPosition        position,
+    ItfliesbyEnginePhysicsScale           scale,
+    ItfliesbyEnginePhysicsRotationDegrees rotation_degrees) {
+
+    ItfliesbyEnginePhysicsId next_physics_id = ITFLIESBY_ENGINE_PHYSICS_OBJECT_INVALID;
+    b8* objects_used = physics->object_used;
+
+    for (
+        u32 index = 0;
+        index < ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX;
+        ++index) {
+
+        if (!objects_used[index]) {
+            next_physics_id = index;
+            objects_used[index] = true;
+            break;
+        }
+    }
+
+    physics->tables.transforms.position.x[next_physics_id]       = position.x;
+    physics->tables.transforms.position.y[next_physics_id]       = position.y;
+    physics->tables.transforms.scale.x[next_physics_id]          = scale.x;
+    physics->tables.transforms.scale.y[next_physics_id]          = scale.y;
+    physics->tables.transforms.rotation.radians[next_physics_id] = itfliesby_math_trig_degrees_to_radians(rotation_degrees);
 
     return(next_physics_id);
 }
@@ -218,4 +301,20 @@ itfliesby_engine_physics_update_id(
     scale_x[physics_id]    = scale.x;    
     scale_y[physics_id]    = scale.y;
     radians[physics_id]    = rotation_radians; 
+}
+
+internal void
+itfliesby_engine_physics_update_velocity(
+    ItfliesbyEnginePhysics*        physics,
+    ItfliesbyEnginePhysicsId       physics_id,
+    ItfliesbyEnginePhysicsVelocity velocity) {
+
+    ItfliesbyEnginePhysicsTablesDynamics* physics_dynamics = &physics->tables.dynamics;
+    ItfliesbyEnginePhysicsTableVelocity*  physics_dynamics_table_velocity = &physics_dynamics->velocity;
+    
+    f32* physics_dynamics_table_velocity_x = physics_dynamics_table_velocity->x;  
+    f32* physics_dynamics_table_velocity_y = physics_dynamics_table_velocity->y;  
+
+    physics_dynamics_table_velocity_x[physics_id] = velocity.x;
+    physics_dynamics_table_velocity_y[physics_id] = velocity.y;
 }

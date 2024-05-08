@@ -2,6 +2,7 @@
 #define ITFLIESBY_GAME_HPP
 
 #include <itfliesby.hpp>
+#include "itfliesby-game-scene.hpp"
 
 #define ITFLIESBY_GAME_MEMORY_SIZE ITFLIESBY_MATH_GIGABYTES(1)
 
@@ -21,9 +22,12 @@ struct ItfliesbyGameMemoryArena {
 };
 
 struct ItfliesbyGame {
+    u64                      previous_time_ticks;
+    u64                      delta_time_ticks;
     ItfliesbyPlatformApi     platform;
-    itfliesby_engine         engine;
+    ItfliesbyEngineHandle    engine;
     ItfliesbyGameMemoryArena memory_arena;
+    ItfliesbyGameScenes      scenes;
 };
 
 api ItfliesbyGame*
@@ -41,7 +45,8 @@ itfliesby_game_destroy(
 api void
 itfliesby_game_update_and_render(
           ItfliesbyGame*      game,
-    const ItfliesbyUserInput* user_input
+          ItfliesbyUserInput* user_input,
+    const u64                 time_ticks
 );
 
 #endif //ITFLIESBY_GAME_HPP

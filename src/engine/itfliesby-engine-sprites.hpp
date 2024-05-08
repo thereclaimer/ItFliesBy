@@ -4,9 +4,10 @@
 #include "itfliesby-engine.hpp"
 #include "itfliesby-engine-globals.hpp"
 
+typedef s8 ItfliesbyEngineSpriteId;
+
 #define ITFLIESBY_ENGINE_SPRITE_ID_INVALID -1
 
-typedef s8 ItfliesbyEngineSpriteId;
 
 struct ItfliesbyEngineSprite {
     ItfliesbyEnginePhysicsId physics_id;
@@ -35,5 +36,19 @@ struct ItfliesbyEngineSprites {
 
     ItfliesbyRendererColorHex solid_sprite_colors[ITFLIESBY_ENGINE_SPRITE_TABLE_COUNT_MAX];
 };
+
+#define ITFLIESBY_ENGINE_SPRITE_COLOR_CONOR {111,149,98,255}
+
+ItfliesbyEngineSpriteId
+itfliesby_engine_sprites_connor_test(
+    ItfliesbyEngineSprites*        sprites,
+    ItfliesbyEnginePhysics*        physics,
+    ItfliesbyEnginePhysicsPosition position);
+
+ItfliesbyEnginePhysicsId
+itfliesby_engine_sprites_physics_id_get(
+    ItfliesbyEngineSprites*        sprites,
+    ItfliesbyEngineSpriteId        sprite_id);
+
 
 #endif //ITFLIESBY_ENGINE_SPRITES_HPP

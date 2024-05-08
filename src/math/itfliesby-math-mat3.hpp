@@ -43,26 +43,21 @@ itfliesby_math_mat3_identity() {
 
 inline void
 itfliesby_math_mat3_transpose(
-    ItfliesbyMathMat3* m3) {
+    ItfliesbyMathMat3* in_m3,
+    ItfliesbyMathMat3* out_m3) {
 
-    f32* m    = m3->m;
-    f32  temp = 0.0f;
+    f32* in_m3_m  = in_m3->m;
+    f32* out_m3_m = out_m3->m;
 
-    for (
-        u8 i = 0; 
-        i < 3; 
-        i++) {
-
-        for (
-            u8 j = i + 1; 
-            j < 3; 
-            j++) {
-
-            temp         = m[i * 3 + j];
-            m[i * 3 + j] = m[j * 3 + i];
-            m[j * 3 + i] = temp;
-        }
-    }
+    out_m3_m[0] = in_m3_m[0]; 
+    out_m3_m[1] = in_m3_m[3]; 
+    out_m3_m[2] = in_m3_m[6];
+    out_m3_m[3] = in_m3_m[1]; 
+    out_m3_m[4] = in_m3_m[4]; 
+    out_m3_m[5] = in_m3_m[7];
+    out_m3_m[6] = in_m3_m[2]; 
+    out_m3_m[7] = in_m3_m[5]; 
+    out_m3_m[8] = in_m3_m[8];
 }
 
 inline ItfliesbyMathMat3
@@ -190,11 +185,12 @@ itfliesby_math_mat3_transform_and_transpose_srt(
     const ItfliesbyMathMat3* in_transform_rotate,
           ItfliesbyMathMat3* out_transform) {
 
-    ItfliesbyMathMat3 a = {0};
-    ItfliesbyMathMat3 b = {0};
-    ItfliesbyMathMat3 c = {0};
     ItfliesbyMathMat3 transform = {0};
+    ItfliesbyMathMat3 transpose = {0};
     ItfliesbyMathMat3 temp      = {0};
+    ItfliesbyMathMat3 a         = {0};
+    ItfliesbyMathMat3 b         = {0};
+    ItfliesbyMathMat3 c         = {0};
 
     for (
         size_t transform_index = 0;
@@ -229,9 +225,11 @@ itfliesby_math_mat3_transform_and_transpose_srt(
         transform.rows.row_2[1] = (temp.rows.row_2[0] * c.rows.row_0[1]) + (temp.rows.row_2[1] * c.rows.row_1[1]) + (temp.rows.row_2[2] * c.rows.row_2[1]);
         transform.rows.row_2[2] = (temp.rows.row_2[0] * c.rows.row_0[2]) + (temp.rows.row_2[1] * c.rows.row_1[2]) + (temp.rows.row_2[2] * c.rows.row_2[2]);
 
-        itfliesby_math_mat3_transpose(&transform);
+        itfliesby_math_mat3_transpose(
+            &transform,
+            &transpose);
 
-        out_transform[transform_index] =  transform;
+        out_transform[transform_index] = transform;
     }
 }
 
@@ -296,10 +294,11 @@ itfliesby_math_mat3_transform_and_transpose_trs(
     const ItfliesbyMathMat3* in_transform_rotate,
           ItfliesbyMathMat3* out_transform) {
 
-    ItfliesbyMathMat3 a = {0};
-    ItfliesbyMathMat3 b = {0};
-    ItfliesbyMathMat3 c = {0};
+    ItfliesbyMathMat3 a         = {0};
+    ItfliesbyMathMat3 b         = {0};
+    ItfliesbyMathMat3 c         = {0};
     ItfliesbyMathMat3 transform = {0};
+    ItfliesbyMathMat3 transpose = {0};
     ItfliesbyMathMat3 temp      = {0};
 
     for (
@@ -335,9 +334,11 @@ itfliesby_math_mat3_transform_and_transpose_trs(
         transform.rows.row_2[1] = (temp.rows.row_2[0] * c.rows.row_0[1]) + (temp.rows.row_2[1] * c.rows.row_1[1]) + (temp.rows.row_2[2] * c.rows.row_2[1]);
         transform.rows.row_2[2] = (temp.rows.row_2[0] * c.rows.row_0[2]) + (temp.rows.row_2[1] * c.rows.row_1[2]) + (temp.rows.row_2[2] * c.rows.row_2[2]);
 
-        itfliesby_math_mat3_transpose(&transform);
+        itfliesby_math_mat3_transpose(
+            &transform,
+            &transpose);
 
-        out_transform[transform_index] = transform;
+        out_transform[transform_index] = transpose;
     }
 }
 

@@ -3,23 +3,63 @@
 
 #include "itfliesby-types.hpp"
 
-typedef handle itfliesby_engine;
+typedef void             ItfliesbyEngine;
+typedef ItfliesbyEngine* ItfliesbyEngineHandle;
 
-api itfliesby_engine
+//----------------------------------------------------------------
+// ENGINE
+//----------------------------------------------------------------
+
+api ItfliesbyEngineHandle
 itfliesby_engine_create(
     ItfliesbyPlatformApi platform,
     memory               mem,
-    u64                  mem_size
-);
+    u64                  mem_size);
 
 api void
 itfliesby_engine_destroy(
-    itfliesby_engine engine
-);
+    ItfliesbyEngineHandle engine);
 
 api void
-itfliesby_engine_update_and_render(
-    itfliesby_engine engine
-);
+itfliesby_engine_render_scene(
+          ItfliesbyEngineHandle engine,
+          ItfliesbyUserInput*   user_input,
+    const u64                   delta_time_ticks);
+
+//----------------------------------------------------------------
+// SPRITES
+//----------------------------------------------------------------
+
+typedef s8 ItfliesbyEngineSpriteId;
+
+#define ITFLIESBY_ENGINE_SPRITE_ID_INVALID -1
+
+//----------------------------------------------------------------
+// SCENES
+//----------------------------------------------------------------
+
+typedef s8 ItfliesbyEngineSceneId; 
+
+#define ITFLIESBY_ENGINE_SCENE_INVALID -1
+#define ITFLIESBY_ENGINE_SCENE_COUNT_MAX 8
+
+api ItfliesbyEngineSceneId
+itfliesby_engine_scene_create(
+    ItfliesbyEngineHandle engine);
+
+api void
+itfliesby_engine_scene_destroy(
+    ItfliesbyEngineHandle  engine,
+    ItfliesbyEngineSceneId scene_id);
+
+api void
+itfliesby_engine_scene_set_active(
+    ItfliesbyEngineHandle  engine,
+    ItfliesbyEngineSceneId scene_id);
+
+api ItfliesbyEngineSpriteId
+itfliesby_engine_scene_connor_test(
+    ItfliesbyEngineHandle  engine,
+    ItfliesbyEngineSceneId scene_id);
 
 #endif //ITFLIESBY_ENGINE_HPP

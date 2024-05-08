@@ -21,8 +21,9 @@ itfliesby_game_destroy(
 
 api void
 itfliesby_game_update_and_render(
-          itfliesby_game     game,
-    const ItfliesbyUserInput* user_input
+          itfliesby_game      game,
+          ItfliesbyUserInput* user_input,
+    const u64                 time_ticks
 );
 
 #endif //ITFLIESBY_GAME_HPP
