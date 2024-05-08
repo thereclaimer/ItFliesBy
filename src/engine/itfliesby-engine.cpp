@@ -64,7 +64,7 @@ itfliesby_engine_fetch_graphics_information(
             ItfliesbyEnginePhysicsTransform current_transform = physics_payload->transforms[index]; 
             ItfliesbyRendererColorHex       current_color     = sprites->solid_sprite_colors[index];
             
-            itfliesby_math_mat3_transpose(&current_transform);
+            // itfliesby_math_mat3_transpose(&current_transform);
 
             simple_quad.color     = itfliesby_renderer_color_normalize(current_color);
             simple_quad.transform = current_transform; 
@@ -75,7 +75,6 @@ itfliesby_engine_fetch_graphics_information(
             );
         }
     }
-
 }
 
 external void
@@ -89,15 +88,15 @@ itfliesby_engine_render_scene(
     ItfliesbyEngineAssets*  assets   = &engine->assets;
     ItfliesbyRendererHandle renderer = engine->renderer;
 
-    ItfliesbyEnginePhysicsTransformPayload physics_payload = {0};
-
+    //process the active scene
     itfliesby_engine_scene_process_active(engine);
 
+    //udpate the physics system
+    ItfliesbyEnginePhysicsTransformPayload physics_payload = {0};
     itfliesby_engine_physics_update(
         &engine->physics,
         &physics_payload
     );
-
 
     //now we need to zip up the payload we are sending to the GPU
     itfliesby_engine_fetch_graphics_information(
@@ -107,5 +106,6 @@ itfliesby_engine_render_scene(
 
     itfliesby_engine_assets_update(assets);
     
+    //render the scene
     itfliesby_renderer_render(renderer);
 }

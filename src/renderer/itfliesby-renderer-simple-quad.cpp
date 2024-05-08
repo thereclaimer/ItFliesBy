@@ -164,4 +164,6 @@ itfliesby_renderer_simple_quad_render(
     //unbind vao
     glBindVertexArray(0);
 
+    //reset
+    batch->count = 0;
 }

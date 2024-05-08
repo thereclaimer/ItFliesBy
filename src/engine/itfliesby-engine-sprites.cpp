@@ -97,7 +97,7 @@ itfliesby_engine_sprites_connor_test(
         itfliesby_engine_physics_transforms_create(
             physics,       // physics
             position,      // position
-            {0.25f,0.25f}, // scale
+            {1.0f,1.0f},   // scale
             0.0f);         // rotation degrees
 
     if (physics_id == ITFLIESBY_ENGINE_PHYSICS_OBJECT_INVALID) {
