@@ -99,16 +99,16 @@ itfliesby_engine_scene_process_active(
     //update the velocity based on the user input
     ItfliesbyUserInput engine_user_input = *engine->user_input;
     if (ITFLIESBY_KEYCODE_STATE_W(engine_user_input)) {
-        connor_velocity.y = 0.1f; 
+        connor_velocity.y = 0.01f; 
     }
     if (ITFLIESBY_KEYCODE_STATE_S(engine_user_input)) {
-        connor_velocity.y = 0.1f; 
+        connor_velocity.y = -0.01f; 
     }
     if (ITFLIESBY_KEYCODE_STATE_A(engine_user_input)) {
-        connor_velocity.x = 0.1f; 
+        connor_velocity.x = -0.01f; 
     }
     if (ITFLIESBY_KEYCODE_STATE_D(engine_user_input)) {
-        connor_velocity.x = 0.1f; 
+        connor_velocity.x = 0.01f; 
     }
 
     itfliesby_engine_physics_update_velocity(

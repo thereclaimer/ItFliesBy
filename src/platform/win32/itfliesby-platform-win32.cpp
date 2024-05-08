@@ -75,11 +75,6 @@ itfliesby_platform_win32_process_pending_messages(
     game_window.user_input.mouse_y_delta = 0;
     game_window.user_input.mouse_wheel   = 0;
 
-    // local ImGuiIO& imgui_io = ImGui::GetIO();
-
-    // b32 dev_tools_capture_keyboard = (imgui_io.WantCaptureKeyboard || imgui_io.WantTextInput);
-    // b32 dev_tools_capture_mouse = (imgui_io.WantCaptureMouse || imgui_io.WantSetMousePos);
-
     //if we have a set of pending messages, loop through them until we have processed
     //them all
     MSG window_message = {0};
@@ -91,9 +86,7 @@ itfliesby_platform_win32_process_pending_messages(
             //keyboard input
             case WM_KEYDOWN:
             case WM_SYSKEYDOWN: {
-                // if (dev_tools_capture_keyboard) {
-                //     break;
-                // }
+
                 u32 itfliesby_keycode = itfliesby_platform_win32_translate_user_keycode((u32)window_message.wParam);
                 USER_INPUT_SET_KEY(game_window.user_input, itfliesby_keycode);
 
@@ -107,46 +100,33 @@ itfliesby_platform_win32_process_pending_messages(
 
             case WM_KEYUP:
             case WM_SYSKEYUP: {
-                // if (dev_tools_capture_keyboard) {
-                //     break;
-                // }
+
                 u32 itfliesby_keycode = itfliesby_platform_win32_translate_user_keycode((u32)window_message.wParam);
                 USER_INPUT_CLEAR_KEY(game_window.user_input, itfliesby_keycode);
             } break;
 
             //mouse inputs
             case WM_LBUTTONDOWN: {
-                // if (dev_tools_capture_mouse) {
-                //     break;
-                // }
+
                 game_window.user_input.mouse_button_left = true;
             } break;
 
             case WM_RBUTTONDOWN: {
-                // if (dev_tools_capture_mouse) {
-                //     break;
-                // }
+ 
                 game_window.user_input.mouse_button_right = true;
             } break;
 
             case WM_LBUTTONUP: {
-                // if (dev_tools_capture_mouse) {
-                //     break;
-                // }
+
                 game_window.user_input.mouse_button_left = false;
             } break;
 
             case WM_RBUTTONUP: {
-                // if (dev_tools_capture_mouse) {
-                //     break;
-                // }
+
                 game_window.user_input.mouse_button_right = false;
             } break;
 
             case WM_MOUSEMOVE: {
-                // if (dev_tools_capture_mouse) {
-                //     break;
-                // }
 
                 //this will persist between mouse move events
                 local POINT previous_cursor_position;
@@ -166,10 +146,6 @@ itfliesby_platform_win32_process_pending_messages(
             } break;
 
             case WM_MOUSEWHEEL: {
-                // if (dev_tools_capture_mouse) {
-                //     break;
-                // }
-
                 game_window.user_input.mouse_wheel = GET_WHEEL_DELTA_WPARAM(window_message.wParam);
 
             } break;
@@ -177,17 +153,15 @@ itfliesby_platform_win32_process_pending_messages(
             //anything not related to keyboard or mouse input, we can let windows handle
             //at which point, our window callback function will be called
             default: {
+                ITFLIESBY_ASSERT(
+                    window_message.message != WM_KEYDOWN    &&
+                    window_message.message != WM_SYSKEYDOWN &&
+                    window_message.message != WM_KEYUP      &&
+                    window_message.message != WM_SYSKEYUP);
                 TranslateMessage(&window_message);
                 DispatchMessage(&window_message);
             } break;
         }
-
-        // ImGui_ImplWin32_WndProcHandler(
-        //     window_message.hwnd,
-        //     window_message.message,
-        //     window_message.wParam,
-        //     window_message.lParam
-        // );
     }
 }
 
@@ -254,7 +228,7 @@ itfliesby_platform_win32_main(
     game_window.window_handle = CreateWindowEx(
         0,
         window_class.lpszClassName,
-        "The Itfliesby",
+        "It Flies By",
         WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_MAXIMIZE,
         CW_USEDEFAULT,
         CW_USEDEFAULT,
@@ -272,8 +246,7 @@ itfliesby_platform_win32_main(
     //put the platform api together
     ItfliesbyPlatformApi win32_platform_api = {0};
 
-    win32_platform_api.window = (handle)&game_window;
-
+    win32_platform_api.window            = (handle)&game_window;
     win32_platform_api.file_size         = itfliesby_platform_win32_api_file_get_file_size_bytes;
     win32_platform_api.file_read         = itfliesby_platform_win32_api_read_file;
     win32_platform_api.file_write        = itfliesby_platform_win32_api_write_file;
@@ -331,8 +304,6 @@ itfliesby_platform_win32_main(
         // itfliesby_dev_tools_update(game_window.itfliesby_state);
         SwapBuffers(game_window.device_context);
 
-        //clear user input
-        game_window.user_input = {0};
 
         //lastly, get the fps
         QueryPerformanceCounter(&win32_large_int);
