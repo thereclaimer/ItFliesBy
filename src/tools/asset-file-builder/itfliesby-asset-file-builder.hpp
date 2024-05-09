@@ -36,6 +36,7 @@ enum ItfliesbyAssetFileBuilderAssetFileType : s32 {
 };
 
 struct ItfliesbyAssetFileBuilderArguments {
+    s32  asset_file_type;
     char path_to_csv[128];
     char path_to_asset_file[128];
 };
