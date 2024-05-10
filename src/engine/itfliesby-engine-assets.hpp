@@ -14,21 +14,29 @@
 
 enum ItfliesbyEngineAssetsFileId : s32 {
     ITFLIESBY_ASSETS_FILE_ID_INVALID = -1,
-    ITFLIESBY_ASSETS_FILE_ID_SHADERS = 0,
-    ITFLIESBY_ASSETS_FILE_ID_COUNT   = 1
+    ITFLIESBY_ASSETS_FILE_ID_SHADERS =  0,
+    ITFLIESBY_ASSETS_FILE_ID_IMAGES  =  1,
+    ITFLIESBY_ASSETS_FILE_ID_COUNT   =  2
 };
 
 //these have to match the order of the indexes in assets-shader-table.csv
 enum ItfliesbyEngineAssetsShader : s32 {
     ITFLIESBY_ENGINE_ASSETS_SHADER_INVALID                       = -1,
-    ITFLIESBY_ENGINE_ASSETS_SHADER_TEXTURED_QUAD_VERTEX_SHADER   = 0,
-    ITFLIESBY_ENGINE_ASSETS_SHADER_TEXTURED_QUAD_FRAGMENT_SHADER = 1,
-    ITFLIESBY_ENGINE_ASSETS_SHADER_SOLID_QUAD_VERTEX_SHADER      = 2,
-    ITFLIESBY_ENGINE_ASSETS_SHADER_SOLID_QUAD_FRAGMENT_SHADER    = 3,
-    ITFLIESBY_ENGINE_ASSETS_SHADER_TEST_VERTEX_SHADER            = 4,
-    ITFLIESBY_ENGINE_ASSETS_SHADER_TEST_FRAGMENT_SHADER          = 5,
-    ITFLIESBY_ENGINE_ASSETS_SHADER_COUNT                         = 6
-};  
+    ITFLIESBY_ENGINE_ASSETS_SHADER_TEXTURED_QUAD_VERTEX_SHADER   =  0,
+    ITFLIESBY_ENGINE_ASSETS_SHADER_TEXTURED_QUAD_FRAGMENT_SHADER =  1,
+    ITFLIESBY_ENGINE_ASSETS_SHADER_SOLID_QUAD_VERTEX_SHADER      =  2,
+    ITFLIESBY_ENGINE_ASSETS_SHADER_SOLID_QUAD_FRAGMENT_SHADER    =  3,
+    ITFLIESBY_ENGINE_ASSETS_SHADER_TEST_VERTEX_SHADER            =  4,
+    ITFLIESBY_ENGINE_ASSETS_SHADER_TEST_FRAGMENT_SHADER          =  5,
+    ITFLIESBY_ENGINE_ASSETS_SHADER_COUNT                         =  6
+};
+
+enum ItfliesbyEngineAssetsImage : s32 {
+    ITFLIESBY_ENGINE_ASSETS_IMAGE_INVALID            = -1, 
+    ITFLIESBY_ENGINE_ASSETS_IMAGE_CALIBRATION_CONNOR =  0,
+    ITFLIESBY_ENGINE_ASSETS_IMAGE_CALIBRATION_JIG    =  1,
+    ITFLIESBY_ENGINE_ASSETS_IMAGE_COUNT              =  2
+};
 
 typedef itfliesby_memory_allocator_block  itfliesby_engine_assets_allocator_index;
 typedef itfliesby_memory_allocator_block  itfliesby_engine_assets_allocator_data;
@@ -57,16 +65,19 @@ PACK(
 
 struct ItfliesbyEngineAssetsFileIndexStore {
     ItfliesbyEngineAssetsFileindex shader_indexes[ITFLIESBY_ENGINE_ASSETS_SHADER_COUNT];
+    ItfliesbyEngineAssetsFileindex image_indexes[ITFLIESBY_ENGINE_ASSETS_IMAGE_COUNT];
 };
 
 const char* ITFLIESBY_ENGINE_ASSETS_FILE_PATHS[] = {
-    "ItFliesBy.Assets.Shaders.ifb"
+    "ItFliesBy.Assets.Shaders.ifb",
+    "ItFliesBy.Assets.Images.ifb"
 };
 
 struct ItfliesbyEngineAssetsFileHandles {
     union {
         struct {
             handle shader_asset_file;
+            handle image_asset_file;
         };
         handle array[ITFLIESBY_ASSETS_FILE_ID_COUNT];
     }; 

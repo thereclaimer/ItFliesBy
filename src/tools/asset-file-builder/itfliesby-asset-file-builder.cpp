@@ -540,6 +540,8 @@ itfliesby_asset_file_builder_process_input_file(
     return(ITFLIESBY_ASSET_FILE_BUILDER_RETURN_CODE_SUCCESS);
 }
 
+
+
 internal s32
  itfliesby_asset_file_builder_asset_file_create(
     ItfliesbyAssetFileBuilder* asset_file_builder) {
@@ -611,7 +613,6 @@ internal s32
         asset_index->file_size = itfliesby_asset_file_builder_file_size(tmp_file_handle,DO_NOT_TERMINATE_FILE);
         strcpy(asset_index->tag,csv_entry.asset_tag);
     
-        itfliesby_asset_file_builder_file_close(tmp_file_handle);
 
         LPCWSTR file_type_string = itfliesby_asset_file_builder_file_type_string(csv_entry.asset_type);
 
@@ -624,10 +625,55 @@ internal s32
             file_type_string
         );
 
-        //TODO: we need to account for other types of file allocations
-        asset_index->allocation_size = asset_index->file_size + 1;
-        asset_index->offset = asset_index_offset;
+        switch (csv_entry.asset_type) {
 
+            case ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_IMAGE: {
+
+                auto image_memory_block = 
+                    itfliesby_asset_file_builder_memory_block_push(
+                        asset_file_builder,
+                        asset_index->file_size);
+
+                itfliesby_asset_file_builder_read_file(
+                    tmp_file_handle,
+                    asset_index->file_size,
+                    image_memory_block->data,
+                    DO_NOT_TERMINATE_FILE
+                );
+
+                s32 width_pixels   = 0;
+                s32 height_pixels  = 0;
+                s32 channels_count = 0;
+
+                stbi_info_from_memory(
+                    image_memory_block->data,
+                    image_memory_block->data_size,
+                    &width_pixels,
+                    &height_pixels,
+                    &channels_count);
+
+                asset_index->allocation_size =
+                    itfliesby_asset_file_builder_image_size_bytes(
+                        width_pixels,
+                        height_pixels);
+
+                itfliesby_asset_file_builder_memory_block_pop(
+                    asset_file_builder);
+
+            } break;
+
+            case ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_TEXT: 
+            default: {
+
+                asset_index->allocation_size = asset_index->file_size + 1;
+
+            } break;
+        }
+
+        itfliesby_asset_file_builder_file_close(tmp_file_handle);
+
+        //TODO: we need to account for other types of file allocations
+        asset_index->offset = asset_index_offset;
         asset_index_offset += asset_index->allocation_size;
     }
 

@@ -93,8 +93,6 @@ itfliesby_engine_asset_indexes_load(
             ITFLIESBY_ASSET_FILE_INDEX_SIZE - 32
         );
 
-        //for some reason,som bytes are getting lost in translation 
-        // current_index->allocation_size += 4;
     }
 
     //destroy the index buffer and reset the allocator
@@ -115,6 +113,13 @@ itfliesby_engine_asset_indexes_load_all(
         asset_file_handles->shader_asset_file,
         ITFLIESBY_ENGINE_ASSETS_SHADER_COUNT
     );
+
+    //load images
+    itfliesby_engine_asset_indexes_load(
+        asset_index_store->image_indexes,
+        asset_file_handles->image_asset_file,
+        ITFLIESBY_ENGINE_ASSETS_IMAGE_COUNT
+    );
 }
 
 internal void 
@@ -132,6 +137,8 @@ itfliesby_engine_assets_init(
         file_handles,
         &assets->file_index_store
     );
+
+    ITFLIESBY_NOP();
 }
 
 internal void

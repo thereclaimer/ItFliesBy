@@ -90,6 +90,7 @@ itfliesby_memory_allocator_block_create(
     first_node->next  = NULL;
     first_node->block = new_block;
 
+    //TODO: we may have some corruption issue here, this changes the value of the header
     block_allocator->free_blocks[0] = 
         (s64)(
             ((memory)new_block + sizeof(ItfliesbyMemoryBlock)) -
@@ -141,11 +142,13 @@ itfliesby_memory_allocator_block_create(
         current_node       = current_node->next;
     }
 
-    // block_allocator->blocks = first_node;
+    block_allocator->blocks = first_node;
 
     //check our calculcations
     memory allocator_end_from_last_node = (memory)current_node + block_node_size;
     
+    new_allocator_header->next      = NULL;
+    new_allocator_header->partition = partition;
 
     //return the address to the new block allocator
     return(block_allocator);
