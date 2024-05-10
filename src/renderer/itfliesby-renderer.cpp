@@ -5,6 +5,7 @@
 #include "itfliesby-renderer-memory.cpp"
 #include "itfliesby-renderer-quad.cpp"
 #include "itfliesby-renderer-simple-quad.cpp"
+#include "itfliesby-renderer-texture.cpp"
 
 external ItfliesbyRenderer*
 itfliesby_renderer_create_and_init(
@@ -40,6 +41,7 @@ itfliesby_renderer_create_and_init(
     //initialize our quad buffers
     renderer->quad_manager        = itfliesby_renderer_quad_manager_init();
     renderer->buffers.simple_quad = itfliesby_renderer_shader_simple_quad_buffers_create();
+    renderer->textures            = itfliesby_renderer_texture_store_init();
 
     return(renderer);
 }

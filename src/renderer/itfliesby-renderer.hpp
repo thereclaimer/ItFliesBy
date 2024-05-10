@@ -10,6 +10,7 @@
 #include "itfliesby-renderer-shader.hpp"
 #include "itfliesby-renderer-quad.hpp"
 #include "itfliesby-renderer-memory.hpp"
+#include "itfliesby-renderer-texture.hpp"
 
 global ItfliesbyPlatformApi platform;
 
@@ -22,11 +23,12 @@ struct ItfliesbyRendererBuffers {
 };
 
 struct ItfliesbyRenderer {
-    handle                       gl_context;
-    ItfliesbyRendererShaderStore shader_store;
-    ItfliesbyRendererQuadManager quad_manager;
-    ItfliesbyRendererBatches     batches;
-    ItfliesbyRendererBuffers     buffers;
+    handle                        gl_context;
+    ItfliesbyRendererShaderStore  shader_store;
+    ItfliesbyRendererQuadManager  quad_manager;
+    ItfliesbyRendererBatches      batches;
+    ItfliesbyRendererBuffers      buffers;
+    ItfliesbyRendererTextureStore textures;
 };
 
 #endif //ITFLIESBY_RENDERER_HPP
