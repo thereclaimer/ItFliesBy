@@ -6,6 +6,9 @@
 #include <itfliesby.hpp>
 #include <math/itfliesby-math.hpp>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb/stb_image.h>
+
 #define ITFLIESBY_ASSET_FILE_BUILDER_MEMORY_SIZE ITFLIESBY_MATH_GIGABYTES(2)
 
 #define itfliesby_asset_file_builder_main WINAPI wWinMain
@@ -27,12 +30,21 @@ enum ItfliesbyAssetFileBuilderReturnCode {
     ITFLIESBY_ASSET_FILE_BUILDER_RETURN_CODE_OUT_OF_MEMORY             = 0x80000003,
     ITFLIESBY_ASSET_FILE_BUILDER_RETURN_CODE_CSV_READ_FAILURE          = 0x80000004,
     ITFLIESBY_ASSET_FILE_BUILDER_RETURN_CODE_ASSET_FILE_CREATE_FAILURE = 0x80000005,
+    ITFLIESBY_ASSET_FILE_BUILDER_RETURN_CODE_INVALID_TYPE              = 0x80000006,
 };
 
 enum ItfliesbyAssetFileBuilderAssetFileType : s32 {
-    ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_TEXT  = 0,
-    ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_IMAGE = 1,
-    ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_MODEL = 2,
+    ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_INVALID = -1,
+    ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_TEXT    =  0,
+    ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_IMAGE   =  1,
+    ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_MODEL   =  2,
+    ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_COUNT   =  3,
+};
+
+const s32 ITFLIESBY_ASSET_FILE_BUILDER_TYPES[] = {
+    ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_TEXT,
+    ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_IMAGE,
+    ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_MODEL    
 };
 
 struct ItfliesbyAssetFileBuilderArguments {
@@ -96,6 +108,27 @@ struct ItfliesbyAssetsGameAssetFile {
     ItfliesbyAssetFileHeader file_header;
 };
 
+struct ItfliesbyAssetFileBuilderRGBAPixel {
+    u8 r;
+    u8 g;
+    u8 b;
+    u8 a;
+};
+
+inline u32
+itfliesby_asset_file_builder_image_size_bytes(
+    s32 width_pixels,
+    s32 height_pixels) {
+
+    u32 image_size_bytes = 
+        sizeof(ItfliesbyAssetFileBuilderRGBAPixel) *
+        width_pixels *
+        height_pixels; 
+
+    return(image_size_bytes);
+}
+
+#define ITFLIESBY_ASSET_FILE_BUILDER_IMAGE_CHANNEL_COUNT 4
 
 struct ItfliesbyAssetFileBuilder {
     HANDLE                                console_handle;
