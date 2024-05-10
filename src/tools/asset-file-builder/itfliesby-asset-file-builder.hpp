@@ -128,7 +128,23 @@ itfliesby_asset_file_builder_image_size_bytes(
     return(image_size_bytes);
 }
 
+inline u32
+itfliesby_asset_file_builder_image_asset_allocation_size_bytes(
+    s32 width_pixels,
+    s32 height_pixels) {
+
+    u32 image_asset_size_bytes = 
+        sizeof(ItfliesbyAssetFileBuilderRGBAPixel) *
+        width_pixels *
+        height_pixels; 
+
+    image_asset_size_bytes += (sizeof(s32) * 2);
+
+    return(image_asset_size_bytes);
+}
+
 #define ITFLIESBY_ASSET_FILE_BUILDER_IMAGE_CHANNEL_COUNT 4
+#define ITFLIESBY_ASSET_FILE_BUILDER_IMAGE_DATA_OFFSET   (sizeof(s32) * 2)
 
 struct ItfliesbyAssetFileBuilder {
     HANDLE                                console_handle;

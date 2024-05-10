@@ -154,7 +154,7 @@ itfliesby_renderer_quad_solid_quads_batch_update(
     ItfliesbyRendererSolidQuadUpdateBatch* solid_quad_update_batch); 
 
 //----------------------------------------------------------------
-// TEST
+// SIMPLE QUAD
 //----------------------------------------------------------------
 
 #define ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX 32
@@ -175,5 +175,24 @@ itfliesby_renderer_simple_quad_push_batch(
     const size_t                       simple_quad_count,
     const ItfliesbyRendererSimpleQuad* simple_quad,
           u32*                         simple_quad_indices);
+
+//----------------------------------------------------------------
+// TEXTURES
+//----------------------------------------------------------------
+
+enum ItfliesbyRendererTextureSpriteCharacterType : s32 {
+    ITFLIESBY_RENDERER_TEXTURE_SPRITE_CHARACTER_TYPE_INVALID            = -1,
+    ITFLIESBY_RENDERER_TEXTURE_SPRITE_CHARACTER_TYPE_CALIBRATION_CONNOR =  0,
+    ITFLIESBY_RENDERER_TEXTURE_SPRITE_CHARACTER_TYPE_CALIBRATION_JIG    =  1,
+    ITFLIESBY_RENDERER_TEXTURE_SPRITE_CHARACTER_TYPE_COUNT              =  2
+};
+
+api void
+itfliesby_renderer_texture_sprite_character_load(
+    ItfliesbyRendererHandle                     renderer,
+    ItfliesbyRendererTextureSpriteCharacterType sprite_character_type,
+    u32                                         sprite_character_data_width_bytes,
+    u32                                         sprite_character_data_height_bytes,
+    memory                                      sprite_character_data);
 
 #endif //ITFLIESBY_RENDERER_HPP

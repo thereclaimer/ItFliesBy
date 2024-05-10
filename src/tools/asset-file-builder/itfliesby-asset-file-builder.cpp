@@ -836,14 +836,37 @@ internal s32
                         width_pixels,
                         height_pixels);
 
+                //this is the size of the image plus width and height information
+                u32 image_asset_allocation_size_bytes = 
+                    itfliesby_asset_file_builder_image_asset_allocation_size_bytes(
+                        width_pixels,
+                        height_pixels);
+
                 //allocate a block for the image data
                 asset_memory_block =
                     itfliesby_asset_file_builder_memory_block_push(
                         asset_file_builder,
-                        image_size_bytes);
+                        image_asset_allocation_size_bytes);
 
                 //load the image
-                asset_memory_block->data =
+                
+                memmove(
+                    &asset_memory_block->data[0],
+                    &width_pixels,
+                    sizeof(u32)
+                );
+                memmove(
+                    &asset_memory_block->data[4],
+                    &height_pixels,
+                    sizeof(u32)
+                );
+
+                auto image_block = itfliesby_asset_file_builder_memory_block_push(
+                    asset_file_builder,
+                    image_size_bytes
+                );
+
+                image_block->data =
                     stbi_load_from_memory(
                         file_contents_block->data,
                         file_contents_block->data_size,
@@ -851,6 +874,14 @@ internal s32
                         &height_pixels,
                         &channels_count,
                         ITFLIESBY_ASSET_FILE_BUILDER_IMAGE_CHANNEL_COUNT);
+
+                memmove(
+                    &asset_memory_block->data[ITFLIESBY_ASSET_FILE_BUILDER_IMAGE_DATA_OFFSET],
+                    image_block->data,
+                    image_size_bytes
+                );
+
+                itfliesby_asset_file_builder_memory_block_pop(asset_file_builder);
 
                 ITFLIESBY_NOP();
 
