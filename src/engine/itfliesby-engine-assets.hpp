@@ -123,4 +123,20 @@ itfliesby_engine_assets_load_shaders(
     u64*                         shader_offsets,
     u32                          shader_count);
 
+//TODO: way to load multiple images at once
+
+u64
+itfliesby_engine_assets_image_allocation_size(
+    ItfliesbyEngineAssets*     assets,
+    ItfliesbyEngineAssetsImage image
+);
+
+void
+itfliesby_engine_assets_load_image(
+    ItfliesbyEngineAssets*     assets,
+    ItfliesbyEngineAssetsImage image,
+    memory                     image_memory
+);
+
+
 #endif //ITFLIESBY_ENGINE_ASSETS_HPP

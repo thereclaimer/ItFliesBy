@@ -311,3 +311,39 @@ itfliesby_engine_assets_load_shaders(
         current_shader_offset       += current_shader_file_index.allocation_size;
     }
 }
+
+internal u64
+itfliesby_engine_assets_image_allocation_size(
+    ItfliesbyEngineAssets*     assets,
+    ItfliesbyEngineAssetsImage image) {
+
+    ItfliesbyEngineAssetsFileindex* shader_file_indexes = 
+        assets->file_index_store.image_indexes;
+
+    ItfliesbyEngineAssetsFileindex file_index = 
+        shader_file_indexes[image];
+
+    u64 allocation_size = file_index.allocation_size;
+
+    return(allocation_size);
+}
+
+internal void
+itfliesby_engine_assets_load_image(
+    ItfliesbyEngineAssets*     assets,
+    ItfliesbyEngineAssetsImage image,
+    memory                     image_memory) {
+
+    ItfliesbyEngineAssetsFileindex* shader_file_indexes = 
+        assets->file_index_store.image_indexes;
+
+    handle file_handle = assets->file_handles.image_asset_file;
+
+    ItfliesbyEngineAssetsFileindex file_index = 
+        shader_file_indexes[image];
+
+    itfliesby_engine_assets_load_asset_from_index(
+        file_index,
+        file_handle,
+        image_memory);
+}
