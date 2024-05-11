@@ -11,6 +11,7 @@
 #define ITFLIESBY_ENGINE_ASSETS_MEMORY_BLOCK_SIZE_INDEX       ITFLIESBY_MATH_KILOBYTES(1)
 #define ITFLIESBY_ENGINE_ASSETS_MEMORY_BLOCK_SIZE_ASSET_DATA  ITFLIESBY_MATH_MEGABYTES(8)
 #define ITFLIESBY_ENGINE_ASSETS_MEMORY_ALLOCATOR_HEADER_SIZE  ITFLIESBY_MATH_KILOBYTES(1)
+#define ITFLIESBY_ENGINE_ASSETS_MEMORY_ALLOCATOR_IMAGE_SIZE   ITFLIESBY_MATH_MEGABYTES(8)
 
 enum ItfliesbyEngineAssetsFileId : s32 {
     ITFLIESBY_ASSETS_FILE_ID_INVALID = -1,
@@ -47,6 +48,7 @@ struct ItfliesbyEngineAssetsMemory {
     itfliesby_engine_assets_allocator_index  index_allocator;
     itfliesby_engine_assets_allocator_data   asset_data_allocator;
     itfliesby_engine_assets_allocator_header asset_header_allocator;
+    itfliesby_memory_allocator_linear        asset_allocator_image;    
 };
 
 PACK(

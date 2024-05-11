@@ -47,13 +47,15 @@ itfliesby_engine_memory_assets_create() {
     ITFLIESBY_ASSERT(asset_memory.partition);    
 
     //allocators
-    asset_memory.index_allocator        = itfliesby_memory_allocator_block_create(asset_memory.partition,"ASSET INDEX ALCTR",ITFLIESBY_ENGINE_ASSETS_MEMORY_BLOCK_SIZE_INDEX,     ITFLIESBY_ASSETS_FILE_ID_COUNT);
-    asset_memory.asset_data_allocator   = itfliesby_memory_allocator_block_create(asset_memory.partition,"ASSET DATA ALCTR", ITFLIESBY_ENGINE_ASSETS_MEMORY_BLOCK_SIZE_ASSET_DATA,ITFLIESBY_ASSETS_FILE_ID_COUNT);
-    asset_memory.asset_header_allocator = itfliesby_memory_allocator_linear_create(asset_memory.partition,"ASSET HEADER ALCTR",ITFLIESBY_ENGINE_ASSETS_MEMORY_ALLOCATOR_HEADER_SIZE);
+    asset_memory.index_allocator        = itfliesby_memory_allocator_block_create( asset_memory.partition, "ASSET INDEX ALCTR",  ITFLIESBY_ENGINE_ASSETS_MEMORY_BLOCK_SIZE_INDEX,     ITFLIESBY_ASSETS_FILE_ID_COUNT);
+    asset_memory.asset_data_allocator   = itfliesby_memory_allocator_block_create( asset_memory.partition, "ASSET DATA ALCTR",   ITFLIESBY_ENGINE_ASSETS_MEMORY_BLOCK_SIZE_ASSET_DATA,ITFLIESBY_ASSETS_FILE_ID_COUNT);
+    asset_memory.asset_header_allocator = itfliesby_memory_allocator_linear_create(asset_memory.partition, "ASSET HEADER ALCTR", ITFLIESBY_ENGINE_ASSETS_MEMORY_ALLOCATOR_HEADER_SIZE);
+    asset_memory.asset_allocator_image  = itfliesby_memory_allocator_linear_create(asset_memory.partition, "ASSET IMAGE ALCTR",  ITFLIESBY_ENGINE_ASSETS_MEMORY_ALLOCATOR_IMAGE_SIZE);
     
     ITFLIESBY_ASSERT(asset_memory.index_allocator);    
     ITFLIESBY_ASSERT(asset_memory.asset_data_allocator);    
     ITFLIESBY_ASSERT(asset_memory.asset_header_allocator);    
+    ITFLIESBY_ASSERT(asset_memory.asset_allocator_image);    
 }
 
 internal void
@@ -141,7 +143,7 @@ itfliesby_engine_memory_assets_image_allocate(
     //we also need to allocate a pointer for the pixel data
     ItfliesbyEngineAssetsImageData* image_data = 
         (ItfliesbyEngineAssetsImageData*)itfliesby_memory_allocator_linear_allocate(
-            asset_memory.asset_data_allocator,
+            asset_memory.asset_allocator_image,
             image_asset_data_size + sizeof(memory));
     ITFLIESBY_ASSERT(image_data);
 
@@ -151,4 +153,12 @@ itfliesby_engine_memory_assets_image_allocate(
         (sizeof(u32) * 2);
 
     return(image_data);
+}
+
+internal void
+itfliesby_engine_memory_assets_image_reset() {
+
+    itfliesby_memory_allocator_linear_reset(
+        asset_memory.asset_allocator_image        
+    );
 }

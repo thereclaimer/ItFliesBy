@@ -333,7 +333,7 @@ itfliesby_engine_assets_image_allocation_size(
 }
 
 internal ItfliesbyEngineAssetsImageData*
-itfliesby_engine_assets_load_image(
+itfliesby_engine_assets_image_load(
     ItfliesbyEngineAssets*          assets,
     ItfliesbyEngineAssetsImage      image) {
 
@@ -362,14 +362,32 @@ itfliesby_engine_assets_load_image(
         0,
         image_dimensions_size_bytes);
 
+    //TODO: I was originally passing the image_data->pixels directly into the function,
+    //but it was still not initialized. So why the FUCK did this work!?
+    memory image_pixels = image_data->pixels;
+
     //image pixels
     itfliesby_engine_assets_load_asset_from_index(
         file_index,
         file_handle,
-        image_data->pixels,
+        image_pixels,
         image_dimensions_size_bytes,
         image_pixels_size_bytes);
 
+    image_data->pixels = image_pixels;
+
     //return our image data
     return(image_data);
+}
+
+internal void
+itfliesby_engine_assets_image_unload(
+    ItfliesbyEngineAssets*           assets,
+    ItfliesbyEngineAssetsImageData** image_data) {
+
+    //TODO: ideally, we should be able to allocate a batch of images
+    //currently, the linear allocator is used to allocate one at a time
+
+    *image_data = NULL;
+    itfliesby_engine_memory_assets_image_reset();
 }

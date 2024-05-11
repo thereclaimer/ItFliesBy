@@ -653,7 +653,7 @@ internal s32
                     &channels_count);
 
                 asset_index->allocation_size =
-                    itfliesby_asset_file_builder_image_size_bytes(
+                    itfliesby_asset_file_builder_image_asset_allocation_size_bytes(
                         width_pixels,
                         height_pixels);
 
@@ -849,7 +849,6 @@ internal s32
                         image_asset_allocation_size_bytes);
 
                 //load the image
-                
                 memmove(
                     &asset_memory_block->data[0],
                     &width_pixels,
