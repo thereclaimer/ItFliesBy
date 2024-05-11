@@ -256,12 +256,14 @@ internal void
 itfliesby_engine_assets_load_asset_from_index(
     ItfliesbyEngineAssetsFileindex asset_file_index,
     handle                         asset_file_handle,
-    memory                         asset_file_memory) {
+    memory                         asset_file_memory,
+    u32                            asset_file_memory_offset,
+    u32                            asset_file_memory_size) {
 
     platform_api.file_read(
         asset_file_handle,
-        asset_file_index.offset,
-        asset_file_index.allocation_size,
+        asset_file_index.offset + asset_file_memory_offset,
+        asset_file_memory_size,
         asset_file_memory,
         false
     );
@@ -303,7 +305,9 @@ itfliesby_engine_assets_load_shaders(
         itfliesby_engine_assets_load_asset_from_index(
             current_shader_file_index,
             shader_file_handle,
-            current_shader_memory
+            current_shader_memory,
+            0,
+            current_shader_file_index.allocation_size
         );
     
         //update the offsets
@@ -328,22 +332,44 @@ itfliesby_engine_assets_image_allocation_size(
     return(allocation_size);
 }
 
-internal void
+internal ItfliesbyEngineAssetsImageData*
 itfliesby_engine_assets_load_image(
-    ItfliesbyEngineAssets*     assets,
-    ItfliesbyEngineAssetsImage image,
-    memory                     image_memory) {
+    ItfliesbyEngineAssets*          assets,
+    ItfliesbyEngineAssetsImage      image) {
 
-    ItfliesbyEngineAssetsFileindex* shader_file_indexes = 
+    //get our image index
+    ItfliesbyEngineAssetsFileindex* image_file_indexes = 
         assets->file_index_store.image_indexes;
 
-    handle file_handle = assets->file_handles.image_asset_file;
-
     ItfliesbyEngineAssetsFileindex file_index = 
-        shader_file_indexes[image];
+        image_file_indexes[image];
+    
+    //allocate space for our image
+    ItfliesbyEngineAssetsImageData* image_data = 
+        itfliesby_engine_memory_assets_image_allocate(
+            &file_index);
+    
+    //load the image data
+    handle file_handle = assets->file_handles.image_asset_file;
+    const u32 image_dimensions_size_bytes = sizeof(u32) * 2;
+    const u32 image_pixels_size_bytes     = file_index.allocation_size - image_dimensions_size_bytes; 
 
+    //image dimensions
     itfliesby_engine_assets_load_asset_from_index(
         file_index,
         file_handle,
-        image_memory);
+        (memory)image_data,
+        0,
+        image_dimensions_size_bytes);
+
+    //image pixels
+    itfliesby_engine_assets_load_asset_from_index(
+        file_index,
+        file_handle,
+        image_data->pixels,
+        image_dimensions_size_bytes,
+        image_pixels_size_bytes);
+
+    //return our image data
+    return(image_data);
 }

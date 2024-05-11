@@ -110,8 +110,7 @@ itfliesby_engine_memory_assets_file_header_allocate(
     memory index_memory = 
         itfliesby_memory_allocator_linear_allocate(
             asset_memory.asset_header_allocator,
-            file_header_size_bytes
-    );
+            file_header_size_bytes);
 
     ITFLIESBY_ASSERT(index_memory);
 
@@ -130,4 +129,26 @@ internal void
 itfliesby_engine_memory_renderer_shader_reset() {
 
     itfliesby_memory_allocator_linear_reset(renderer_memory.shader_asset_data_allocator);
+}
+
+internal ItfliesbyEngineAssetsImageData*
+itfliesby_engine_memory_assets_image_allocate(
+    ItfliesbyEngineAssetsFileindex* image_index) {
+
+    u32 image_asset_data_size = image_index->allocation_size;
+
+    //an image index stores 2 ints for width/height, plus the pixels
+    //we also need to allocate a pointer for the pixel data
+    ItfliesbyEngineAssetsImageData* image_data = 
+        (ItfliesbyEngineAssetsImageData*)itfliesby_memory_allocator_linear_allocate(
+            asset_memory.asset_data_allocator,
+            image_asset_data_size + sizeof(memory));
+    ITFLIESBY_ASSERT(image_data);
+
+    //make sure we set our pixels address after the dimensions
+    image_data->pixels = 
+        (memory)image_data + 
+        (sizeof(u32) * 2);
+
+    return(image_data);
 }

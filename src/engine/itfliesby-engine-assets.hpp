@@ -125,6 +125,12 @@ itfliesby_engine_assets_load_shaders(
 
 //TODO: way to load multiple images at once
 
+struct ItfliesbyEngineAssetsImageData {
+    u32    width_pixels;
+    u32    height_pixels;
+    memory pixels;
+};
+
 u64
 itfliesby_engine_assets_image_allocation_size(
     ItfliesbyEngineAssets*     assets,
@@ -132,10 +138,10 @@ itfliesby_engine_assets_image_allocation_size(
 );
 
 void
-itfliesby_engine_assets_load_image(
-    ItfliesbyEngineAssets*     assets,
-    ItfliesbyEngineAssetsImage image,
-    memory                     image_memory
+itfliesby_engine_assets_image_load(
+    ItfliesbyEngineAssets*          assets,
+    ItfliesbyEngineAssetsImage      image,
+    ItfliesbyEngineAssetsImageData* image_data
 );
 
 
