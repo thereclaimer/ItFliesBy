@@ -71,10 +71,10 @@ itfliesby_engine_fetch_graphics_information(
         index < ITFLIESBY_ENGINE_SPRITE_TABLE_COUNT_MAX;
         ++index) {
 
-        if (sprites->used_tables.solid_used[index]) {
+        if (sprites->sprite_used[index]) {
 
             ItfliesbyEnginePhysicsTransform current_transform = physics_payload->transforms[index]; 
-            ItfliesbyRendererColorHex       current_color     = sprites->solid_sprite_colors[index];
+            ItfliesbyRendererColorHex       current_color     = sprites->sprite_colors[index];
             
             // itfliesby_math_mat3_transpose(&current_transform);
 
