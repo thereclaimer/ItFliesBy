@@ -15,6 +15,8 @@ typedef s8                ItfliesbyRendererShaderIndex;
 typedef s8                ItfliesbyRendererSolidQuadId;
 typedef s32               ItfliesbyQuadId;
 typedef ItfliesbyMathMat3 ItfliesbyRendererModelTransform;
+typedef u32               ItfliesbyRendererTextureId;
+
 
 enum ItfliesbyRendererShaderError {
     ITFLIESBY_RENDERER_SHADER_ERROR_OKAY                             = 0x01,
@@ -162,6 +164,7 @@ itfliesby_renderer_quad_solid_quads_batch_update(
 struct ItfliesbyRendererSimpleQuad {
     ItfliesbyMathMat3                 transform;
     ItfliesbyRendererColorNormalized  color;
+    ItfliesbyRendererTextureId        texture;    
 };
 
 api u32
@@ -179,8 +182,6 @@ itfliesby_renderer_simple_quad_push_batch(
 //----------------------------------------------------------------
 // TEXTURES
 //----------------------------------------------------------------
-
-typedef u32 ItfliesbyRendererTextureId;
 
 enum ItfliesbyRendererTextureSpriteCharacterType : s32 {
     ITFLIESBY_RENDERER_TEXTURE_SPRITE_CHARACTER_TYPE_INVALID            = -1,

@@ -7,6 +7,7 @@
 #include <math/itfliesby-math.hpp>
 #include "itfliesby-renderer-opengl.hpp"
 #include "itfliesby-renderer-types.hpp"
+#include "itfliesby-renderer-texture.hpp"
 
 struct ItfliesbyRendererShader {
     GLuint gl_program_id;
@@ -68,8 +69,9 @@ struct ItfliesbyRendererShaderUniformsSolidQuad {
     GLbyte* gl_uniform_buffer_memory;
 };
 
-#define ITFLIESBY_RENDERER_SHADER_UNIFORM_SIMPLE_QUAD_TRANSFORM "transform"
-#define ITFLIESBY_RENDERER_SHADER_UNIFORM_SIMPLE_QUAD_COLOR     "color"
+#define ITFLIESBY_RENDERER_SHADER_UNIFORM_SIMPLE_QUAD_TRANSFORM        "transform"
+#define ITFLIESBY_RENDERER_SHADER_UNIFORM_SIMPLE_QUAD_COLOR            "color"
+#define ITFLIESBY_RENDERER_SHADER_UNIFORM_SIMPLE_QUAD_TEXTURE_SAMPLER  "texture_sampler"
 
 
 struct ItfliesbyRendererShaderUniformsSimpleQuad{
@@ -78,14 +80,16 @@ struct ItfliesbyRendererShaderUniformsSimpleQuad{
         struct {
             GLuint index_transform;
             GLuint index_color;
+            GLuint index_texture_sampler;
         };
-        GLuint indices[2];
+        GLuint indices[3];
     };
 };
 
 struct ItfliesbyRendererShaderBuffersSimpleQuad {
     GLuint gl_vao;
     GLuint gl_vbo_quad_indices;
+    GLuint gl_vbo_quad_uv;
 };
 
 
@@ -94,11 +98,13 @@ struct ItfliesbyRendererShaderBuffersSimpleQuad {
 struct ItfliesbyRendererSimpleQuad {
     ItfliesbyMathMat3                 transform;
     ItfliesbyRendererColorNormalized  color;
+    ItfliesbyRendererTextureId        texture;
 };
 
 struct ItfliesbyRendererBatchSimpleQuad {
     ItfliesbyMathMat3                transform[ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX];
     ItfliesbyRendererColorNormalized color[ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX];
+    ItfliesbyRendererTextureId       texture[ITFLIESBY_RENDERER_TEST_BATCH_COUNT_MAX];
     size_t                           count;
 };
 

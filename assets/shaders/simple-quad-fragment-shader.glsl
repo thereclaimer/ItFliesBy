@@ -13,5 +13,7 @@ void main() {
 
     out_frag_color = fragment_color.a > 0.0
         ? fragment_color
-        : texture_color; 
+        : texture_color;
+
+    // out_frag_color = texture_color; 
 }

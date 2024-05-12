@@ -31,6 +31,13 @@ const f32 ITFLIESBY_RENDERER_VERTICES_SQUARE_QUAD[] = {
      0.5f,  0.5f
 };
 
+const f32 ITFLIESBY_RENDERER_UV_SQUARE_QUAD[] = {
+    0.0f, 1.0f,
+    1.0f, 0.0f,
+    0.0f, 0.0f,
+    1.0f, 1.0f
+};
+
 const u32 ITFLIESBY_RENDERER_INDICES_QUAD[] = {
     0, 1, 2, 
     0, 3, 1  

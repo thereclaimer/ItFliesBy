@@ -64,16 +64,15 @@ itfliesby_engine_fetch_graphics_information(
 
             ItfliesbyEnginePhysicsTransform current_transform = physics_payload->transforms[index]; 
             ItfliesbyRendererColorHex       current_color     = sprites->sprite_colors[index];
-            
-            // itfliesby_math_mat3_transpose(&current_transform);
+            ItfliesbyRendererTextureId      current_texture   = sprites->renderer_textures[index];
 
             simple_quad.color     = itfliesby_renderer_color_normalize(current_color);
             simple_quad.transform = current_transform; 
+            simple_quad.texture   = current_texture;
 
             itfliesby_renderer_simple_quad_push(
                 renderer,
-                simple_quad
-            );
+                simple_quad);
         }
     }
 }
