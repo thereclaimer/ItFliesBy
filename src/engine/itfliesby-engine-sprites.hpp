@@ -9,6 +9,7 @@ typedef s8 ItfliesbyEngineSpriteId;
 #define ITFLIESBY_ENGINE_SPRITE_ID_INVALID -1
 
 
+
 struct ItfliesbyEngineSprite {
     ItfliesbyEngineSpriteId    sprite_id;
     ItfliesbyEnginePhysicsId   physics_id;

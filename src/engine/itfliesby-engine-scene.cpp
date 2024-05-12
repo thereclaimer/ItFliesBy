@@ -60,6 +60,9 @@ itfliesby_engine_scene_set_active(
     ItfliesbyEngineSceneId scene_id) {
 
     engine->scenes.active_scene = scene_id;
+
+    //here we can load our textures
+    
 }
 
 external ItfliesbyEngineSpriteId
