@@ -180,6 +180,8 @@ itfliesby_renderer_simple_quad_push_batch(
 // TEXTURES
 //----------------------------------------------------------------
 
+typedef u32 ItfliesbyRendererTextureId;
+
 enum ItfliesbyRendererTextureSpriteCharacterType : s32 {
     ITFLIESBY_RENDERER_TEXTURE_SPRITE_CHARACTER_TYPE_INVALID            = -1,
     ITFLIESBY_RENDERER_TEXTURE_SPRITE_CHARACTER_TYPE_CALIBRATION_CONNOR =  0,
@@ -187,7 +189,7 @@ enum ItfliesbyRendererTextureSpriteCharacterType : s32 {
     ITFLIESBY_RENDERER_TEXTURE_SPRITE_CHARACTER_TYPE_COUNT              =  2
 };
 
-api void
+api ItfliesbyRendererTextureId
 itfliesby_renderer_texture_sprite_character_load(
     ItfliesbyRendererHandle                     renderer,
     ItfliesbyRendererTextureSpriteCharacterType sprite_character_type,

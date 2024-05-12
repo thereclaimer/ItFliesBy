@@ -1,6 +1,7 @@
 #pragma once
 
 #include "itfliesby-engine-sprites.hpp"
+#include "itfliesby-engine-rendering.cpp"
 
 internal ItfliesbyEngineSpriteId
 itfliesby_engine_sprites_create(
@@ -15,7 +16,7 @@ itfliesby_engine_sprites_create(
     //find the next sprite
     for (
         u32 index = 0;
-        index < ITFLIESBY_ENGINE_SPRITE_TABLE_COUNT_MAX;
+        index < ITFLIESBY_ENGINE_SPRITE_COUNT_MAX;
         ++index) {
 
         if (!sprites->sprite_used[index]) {
@@ -66,7 +67,9 @@ internal ItfliesbyEngineSpriteId
 itfliesby_engine_sprites_connor_test(
     ItfliesbyEngineSprites*        sprites,
     ItfliesbyEnginePhysics*        physics,
-    ItfliesbyEnginePhysicsPosition position) {
+    ItfliesbyEnginePhysicsPosition position,
+    ItfliesbyEngineAssets*         assets,
+    ItfliesbyRendererHandle        renderer) {
 
     ItfliesbyEngineSpriteId connor_sprite_id = ITFLIESBY_ENGINE_SPRITE_ID_INVALID;
     ItfliesbyEngineSprite*  connor_sprite    = NULL;
@@ -74,7 +77,7 @@ itfliesby_engine_sprites_connor_test(
     //find the next sprite
     for (
         u32 index = 0;
-        index < ITFLIESBY_ENGINE_SPRITE_TABLE_COUNT_MAX;
+        index < ITFLIESBY_ENGINE_SPRITE_COUNT_MAX;
         ++index) {
 
         if (!sprites->sprite_used[index]) {
@@ -99,12 +102,20 @@ itfliesby_engine_sprites_connor_test(
         return(ITFLIESBY_ENGINE_SPRITE_ID_INVALID);
     }
 
+    //send the sprite to the renderer
+    ItfliesbyRendererTextureId texture_id = 
+        itfliesby_engine_rendering_push_texture_sprite_character(
+            renderer,
+            ITFLIESBY_ENGINE_ASSETS_IMAGE_CALIBRATION_CONNOR,
+            assets);
+
     //activate the new sprite        
-    sprites->sprite_used[connor_sprite_id]     = true;
-    sprites->sprite_colors[connor_sprite_id]   = ITFLIESBY_ENGINE_SPRITE_COLOR_CONOR;
-    sprites->sprite_physics[connor_sprite_id]  = physics_id;
-    sprites->sprite_textures[connor_sprite_id] = ITFLIESBY_ENGINE_ASSETS_IMAGE_CALIBRATION_CONNOR;
-    
+    sprites->sprite_used[connor_sprite_id]       = true;
+    sprites->sprite_colors[connor_sprite_id]     = ITFLIESBY_ENGINE_SPRITE_COLOR_CONOR;
+    sprites->sprite_physics[connor_sprite_id]    = physics_id;
+    sprites->sprite_textures[connor_sprite_id]   = ITFLIESBY_ENGINE_ASSETS_IMAGE_CALIBRATION_CONNOR;
+    sprites->renderer_textures[connor_sprite_id] = texture_id; 
+
     //sanity check
     ITFLIESBY_ASSERT(
         connor_sprite_id >= 0 &&
@@ -122,4 +133,20 @@ itfliesby_engine_sprites_physics_id_get(
     ItfliesbyEnginePhysicsId physics_id = sprites->sprite_physics[sprite_id];
 
     return(physics_id);
+}
+
+ItfliesbyEngineSprite
+itfliesby_engine_sprites_get(
+    ItfliesbyEngineSprites*        sprites,
+    ItfliesbyEngineSpriteId        sprite_id) {
+
+    ItfliesbyEngineSprite sprite = {0};
+
+    sprite.sprite_id        = sprite_id;
+    sprite.color            = sprites->sprite_colors[sprite_id];
+    sprite.physics_id       = sprites->sprite_physics[sprite_id];
+    sprite.texture          = sprites->sprite_textures[sprite_id];
+    sprite.renderer_texture = sprites->renderer_textures[sprite_id]; 
+
+    return(sprite);
 }

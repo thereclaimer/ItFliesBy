@@ -9,6 +9,8 @@
 #include "itfliesby-renderer-opengl.hpp"
 #include "itfliesby-renderer-types.hpp"
 
+typedef GLuint ItfliesbyRendererTextureId;
+
 enum ItfliesbyRendererTextureSpriteCharacterType : s32 {
     ITFLIESBY_RENDERER_TEXTURE_SPRITE_CHARACTER_TYPE_INVALID            = -1,
     ITFLIESBY_RENDERER_TEXTURE_SPRITE_CHARACTER_TYPE_CALIBRATION_CONNOR =  0,

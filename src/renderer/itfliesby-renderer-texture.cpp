@@ -13,7 +13,7 @@ itfliesby_renderer_texture_store_init() {
     return(textures);
 }
 
-external void
+external ItfliesbyRendererTextureId
 itfliesby_renderer_texture_sprite_character_load(
     ItfliesbyRenderer*                          renderer,
     ItfliesbyRendererTextureSpriteCharacterType sprite_character_type,
@@ -49,4 +49,6 @@ itfliesby_renderer_texture_sprite_character_load(
 
     //write the texture id back
     character_sprites_gl_texture_id_array[sprite_character_type] = character_sprite_gl_texture_id;
+
+    return(character_sprite_gl_texture_id);
 }

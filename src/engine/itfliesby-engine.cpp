@@ -36,17 +36,6 @@ itfliesby_engine_create(
     engine->physics = itfliesby_engine_physics_create_and_init();
     engine->sprites = itfliesby_engine_sprites_create_and_init();
 
-    //test load an image
-    ItfliesbyEngineAssetsImageData* test_image = 
-        itfliesby_engine_assets_image_load(
-            &engine->assets,
-            ITFLIESBY_ENGINE_ASSETS_IMAGE_CALIBRATION_CONNOR
-        );
-
-    itfliesby_engine_assets_image_unload(
-        &engine->assets,
-        &test_image
-    );
 
     return(engine);
 }
@@ -68,7 +57,7 @@ itfliesby_engine_fetch_graphics_information(
 
     for (
         u32 index = 0;
-        index < ITFLIESBY_ENGINE_SPRITE_TABLE_COUNT_MAX;
+        index < ITFLIESBY_ENGINE_SPRITE_COUNT_MAX;
         ++index) {
 
         if (sprites->sprite_used[index]) {
