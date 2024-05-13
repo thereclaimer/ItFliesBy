@@ -84,58 +84,6 @@ itfliesby_engine_physics_transforms(
 }
 
 internal void
-itfliesby_engine_physics_transforms_transpose(
-    ItfliesbyEnginePhysicsTablesTransforms*  in_tables_properties,
-    ItfliesbyEnginePhysicsTransformPayload*  out_transform_payload) {
-
-    ItfliesbyEnginePhysicsTablePosition* table_transforms_position = &in_tables_properties->position;
-    ItfliesbyEnginePhysicsTableScale*    table_transforms_scale    = &in_tables_properties->scale;
-    ItfliesbyEnginePhysicsTableRotation* table_transforms_rotation = &in_tables_properties->rotation;
-    
-    f32* table_position_x       = table_transforms_position->x;
-    f32* table_position_y       = table_transforms_position->y;
-    f32* table_scale_x          = table_transforms_scale->x;
-    f32* table_scale_y          = table_transforms_scale->y;
-    f32* table_rotation_radians = table_transforms_rotation->radians;
-
-    ItfliesbyEnginePhysicsTransform* transform = out_transform_payload->transforms;
-    ItfliesbyEnginePhysicsTransform  transform_translation[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX] = {0};
-    ItfliesbyEnginePhysicsTransform  transform_scale[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX]       = {0};
-    ItfliesbyEnginePhysicsTransform  transform_rotation[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX]    = {0};
-
-    for (
-        u32 index = 0;
-        index < ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX;
-        ++index) {
-
-        //translation
-        transform_translation[index] = 
-            itfliesby_math_mat3_translation(
-                table_position_x[index],
-                table_position_y[index]);
-        
-        //scale
-        transform_scale[index] = 
-            itfliesby_math_mat3_scaling(
-                table_scale_x[index], 
-                table_scale_y[index]);
-        
-        //rotation
-        transform_rotation[index] = 
-            itfliesby_math_mat3_rotation_radians(
-                table_rotation_radians[index]);
-    }
-
-    //put the transforms together
-    itfliesby_math_mat3_transform_and_transpose_trs(
-        ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX,
-        transform_translation,
-        transform_scale,
-        transform_rotation,
-        transform);
-}
-
-internal void
 itfliesby_engine_physics_update(
     ItfliesbyEnginePhysics*                 physics,
     ItfliesbyEnginePhysicsTransformPayload* payload) {
