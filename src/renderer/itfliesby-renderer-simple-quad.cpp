@@ -27,8 +27,8 @@ itfliesby_renderer_shader_simple_quad_buffers_create() {
     ItfliesbyRendererShaderBuffersSimpleQuad simple_quad_buffers = {0};
 
     //create and bind the VAO
-    glGenVertexArrays(1,&simple_quad_buffers.gl_vao);
-    glBindVertexArray(simple_quad_buffers.gl_vao);
+    itfliesby_renderer_opengl_vertex_array_create(
+        &simple_quad_buffers.gl_vao);
 
     //create the buffers
     GLuint buffers[2];
@@ -42,13 +42,13 @@ itfliesby_renderer_shader_simple_quad_buffers_create() {
     itfliesby_renderer_opengl_array_buffer(
         simple_quad_buffers.gl_vbo_quad_indices,
         buffer_size_bytes,
-        (void*)SIMPLE_QUAD_VERTEX_BUFFER);
+        (f32*)SIMPLE_QUAD_VERTEX_BUFFER);
 
     //uv buffer
     itfliesby_renderer_opengl_array_buffer(
         simple_quad_buffers.gl_vbo_quad_uv,
         buffer_size_bytes,
-        (void*)SIMPLE_QUAD_UV_BUFFER);
+        (f32*)SIMPLE_QUAD_UV_BUFFER);
 
     //unbind the vao
     glBindVertexArray(0);
@@ -134,23 +134,25 @@ itfliesby_renderer_simple_quad_render(
     ItfliesbyRendererColorNormalized current_color     = {0};
     ItfliesbyRendererTextureId       current_texture   = 0;
 
-    //use program
-    glUseProgram(gl_program);
-
-    //bind vao and set the active texture
-    glBindVertexArray(buffers->gl_vao);
+    //use program and vao
+    itfliesby_renderer_opengl_use_program_and_bind_vertex_array(
+        gl_program,
+        buffers->gl_vao);
 
     //vertex attribute
-    glBindBuffer(GL_ARRAY_BUFFER,buffers->gl_vbo_quad_indices);
-    itfliesby_renderer_opengl_enable_vertex_attribute_vec2(0);
+    itfliesby_renderer_opengl_bind_and_enable_array_buffer_vec2(
+        ITFLIESBY_RENDERER_SHADER_SIMPLE_QUAD_VAO_INDEX_VERTICES,
+        buffers->gl_vbo_quad_indices);
 
     //uv attribute
-    glBindBuffer(GL_ARRAY_BUFFER,buffers->gl_vbo_quad_uv);
-    itfliesby_renderer_opengl_enable_vertex_attribute_vec2(1);
+    itfliesby_renderer_opengl_bind_and_enable_array_buffer_vec2(
+        ITFLIESBY_RENDERER_SHADER_SIMPLE_QUAD_VAO_INDEX_UV,
+        buffers->gl_vbo_quad_uv);
 
     //set the texture sampler
-    glActiveTexture(GL_TEXTURE0);
-    glUniform1i(uniforms->index_texture_sampler,GL_TEXTURE0);
+    itfliesby_renderer_opengl_set_texture_slot_and_sampler(
+        GL_TEXTURE0,
+        uniforms->index_texture_sampler);
 
     for (
         u32 index = 0;
@@ -161,31 +163,28 @@ itfliesby_renderer_simple_quad_render(
         current_transform = batch_transforms[index];
         current_texture   = batch_textures[index];
 
-        glBindTexture(GL_TEXTURE_2D,current_texture);
+        //bind the texture
+        itfliesby_renderer_opengl_bind_texture_2d(
+            current_texture
+        );
 
         //update the color
-        glUniform4fv(
+        itfliesby_renderer_opengl_uniform_data_vec4(
             uniforms->index_color,
-            1,
-            (f32*)&current_color);
-    
+            current_color.data);
+
         //update the transform
-        glUniformMatrix3fv(
+        itfliesby_renderer_opengl_uniform_data_mat3(
             uniforms->index_transform,
-            1,
-            true,
-            (f32*)current_transform.m);
+            current_transform.m);
 
         //draw the arrays
-        glDrawArrays(
-            GL_TRIANGLES,
-            0,
-            12);
+        itfliesby_renderer_opengl_draw_quad_vertices();
     }
 
-    //unbind vao
-    glBindVertexArray(0);
-
+    //unbind vao and program
+    itfliesby_renderer_opengl_unbind_program_and_vertex_array();
+    
     //reset
     batch->count = 0;
 }

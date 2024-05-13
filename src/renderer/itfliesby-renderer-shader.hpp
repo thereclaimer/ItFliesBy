@@ -69,9 +69,11 @@ struct ItfliesbyRendererShaderUniformsSolidQuad {
     GLbyte* gl_uniform_buffer_memory;
 };
 
-#define ITFLIESBY_RENDERER_SHADER_UNIFORM_SIMPLE_QUAD_TRANSFORM        "transform"
-#define ITFLIESBY_RENDERER_SHADER_UNIFORM_SIMPLE_QUAD_COLOR            "color"
-#define ITFLIESBY_RENDERER_SHADER_UNIFORM_SIMPLE_QUAD_TEXTURE_SAMPLER  "texture_sampler"
+#define ITFLIESBY_RENDERER_SHADER_SIMPLE_QUAD_VAO_INDEX_VERTICES       0
+#define ITFLIESBY_RENDERER_SHADER_SIMPLE_QUAD_VAO_INDEX_UV             1
+#define ITFLIESBY_RENDERER_SHADER_SIMPLE_QUAD_UNIFORM_TRANSFORM        "transform"
+#define ITFLIESBY_RENDERER_SHADER_SIMPLE_QUAD_UNIFORM_COLOR            "color"
+#define ITFLIESBY_RENDERER_SHADER_SIMPLE_QUAD_UNIFORM_TEXTURE_SAMPLER  "texture_sampler"
 
 
 struct ItfliesbyRendererShaderUniformsSimpleQuad{
