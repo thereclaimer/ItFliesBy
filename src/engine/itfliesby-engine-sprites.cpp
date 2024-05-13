@@ -147,12 +147,31 @@ itfliesby_engine_sprites_get(
     sprite.physics_id       = sprites->sprite_physics[sprite_id];
     sprite.texture          = sprites->sprite_textures[sprite_id];
     sprite.renderer_texture = sprites->renderer_textures[sprite_id]; 
-    sprite.transform        = sprites->transforms[sprite_id];
 
     return(sprite);
 }
 
 internal void
-itfliesby_engine_sprites_active(ItfliesbyEngineSprite*) {
+itfliesby_engine_sprites_active(
+    ItfliesbyEngineSprites*          sprites,
+    ItfliesbyEngineSpriteCollection* sprite_collection) {
 
+    *sprite_collection = {0};
+    
+    b8* sprites_active = sprites->sprite_used;
+    ItfliesbyEngineSpriteId* sprite_collection_ids = sprite_collection->sprite_ids;
+    size_t sprite_collection_count = 0;
+
+    for (
+        size_t sprite_index = 0;
+        sprite_index < ITFLIESBY_ENGINE_SPRITE_COUNT_MAX;
+        ++sprite_index) {
+
+        if (sprites_active[sprite_index]) {
+            sprite_collection[sprite_collection_count] = sprite_index;
+            ++sprite_collection_count
+        }
+    }
+    
+    sprite_collection->sprite_count = sprite_collection_count;
 }

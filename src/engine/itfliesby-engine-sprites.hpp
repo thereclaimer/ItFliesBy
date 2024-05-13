@@ -8,18 +8,20 @@ typedef s8 ItfliesbyEngineSpriteId;
 
 #define ITFLIESBY_ENGINE_SPRITE_ID_INVALID -1
 
-
-
 struct ItfliesbyEngineSprite {
     ItfliesbyEngineSpriteId    sprite_id;
     ItfliesbyEnginePhysicsId   physics_id;
     ItfliesbyRendererColorHex  color;
     ItfliesbyEngineAssetsImage texture;
     ItfliesbyRendererTextureId renderer_texture;
-    ItfliesbyMathMat3          transform;
 };
 
 #define ITFLIESBY_ENGINE_SPRITE_COUNT_MAX       128
+
+struct ItfliesbyEngineSpriteCollection {
+    ItfliesbyEngineSpriteId sprite_ids[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
+    size_t                  sprite_count;
+}
 
 struct ItfliesbyEngineSprites {
     b8                         sprite_used[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
