@@ -129,6 +129,7 @@ itfliesby_renderer_simple_quad_render(
     ItfliesbyMathMat3*                batch_transforms = batch->transform;
     ItfliesbyRendererColorNormalized* batch_colors     = batch->color; 
     ItfliesbyRendererTextureId*       batch_textures   = batch->texture; 
+    u32                               batch_count      = batch->count;
 
     ItfliesbyMathMat3                current_transform = {0};
     ItfliesbyRendererColorNormalized current_color     = {0};
@@ -156,7 +157,7 @@ itfliesby_renderer_simple_quad_render(
 
     for (
         u32 index = 0;
-        index < batch->count;
+        index < batch_count;
         ++index) {
 
         current_color     = batch_colors[index];
