@@ -2,7 +2,7 @@
 
 #include "itfliesby-engine-scene.hpp"
 
-void
+internal void
 itfliesby_engine_scene_manager_create(
     ItfliesbyEngineSceneManager* scene_manager) {
 
@@ -59,7 +59,14 @@ itfliesby_engine_scene_set_active(
     ItfliesbyEngine*       engine,
     ItfliesbyEngineSceneId scene_id) {
 
-    engine->scenes.active_scene = scene_id;
+    ItfliesbyEngineSceneManager* engine_scene_manager = &engine->scenes;
+    ItfliesbyEngineAssets*       engine_assets        = &engine->assets;
+    ItfliesbyEngineSprites*      engine_sprites       = &engine->sprites;
+
+    engine_scene_manager->active_scene = scene_id;
+
+
+
 }
 
 external ItfliesbyEngineSpriteId
@@ -71,7 +78,9 @@ itfliesby_engine_scene_connor_test(
         itfliesby_engine_sprites_connor_test(
             &engine->sprites,
             &engine->physics,
-            ITFLIESBY_ENGINE_PHYSICS_POSITION_CENTER);
+            ITFLIESBY_ENGINE_PHYSICS_POSITION_CENTER,
+            &engine->assets,
+            engine->renderer);
         
     return(connor_sprite_id);
 }

@@ -20,10 +20,18 @@ struct ItfliesbyRendererColorHex {
 #define ITFLIESBY_RENDERER_QUAD_COLOR_NORMALIZING_FACTOR 0.00392157
 
 struct ItfliesbyRendererColorNormalized {
-    f32 r;
-    f32 g;
-    f32 b;
-    f32 a;
+
+    union {
+
+        struct {
+            f32 r;
+            f32 g;
+            f32 b;
+            f32 a;
+        };
+
+        f32 data[4];
+    };
 };
 
 inline ItfliesbyRendererColorNormalized

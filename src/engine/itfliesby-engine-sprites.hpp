@@ -9,46 +9,46 @@ typedef s8 ItfliesbyEngineSpriteId;
 #define ITFLIESBY_ENGINE_SPRITE_ID_INVALID -1
 
 
+
 struct ItfliesbyEngineSprite {
-    ItfliesbyEnginePhysicsId physics_id;
+    ItfliesbyEngineSpriteId    sprite_id;
+    ItfliesbyEnginePhysicsId   physics_id;
+    ItfliesbyRendererColorHex  color;
+    ItfliesbyEngineAssetsImage texture;
+    ItfliesbyRendererTextureId renderer_texture;
 };
 
-#define ITFLIESBY_ENGINE_SPRITE_TABLE_COUNT_MAX 64
 #define ITFLIESBY_ENGINE_SPRITE_COUNT_MAX       128
 
 struct ItfliesbyEngineSprites {
-
-    union {
-        struct {
-            b8 solid_used[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
-            b8 textured_used[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
-        } used_tables;
-        b8 all_used[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
-    };
-
-    union {
-        struct {
-            ItfliesbyEngineSprite sprites_solid[ITFLIESBY_ENGINE_SPRITE_TABLE_COUNT_MAX];
-            ItfliesbyEngineSprite sprites_textured[ITFLIESBY_ENGINE_SPRITE_TABLE_COUNT_MAX];
-        } sprite_tables;
-        ItfliesbyEngineSprite all_sprites[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
-    };
-
-    ItfliesbyRendererColorHex solid_sprite_colors[ITFLIESBY_ENGINE_SPRITE_TABLE_COUNT_MAX];
+    b8                         sprite_used[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
+    ItfliesbyRendererColorHex  sprite_colors[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
+    ItfliesbyEngineAssetsImage sprite_textures[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
+    ItfliesbyEnginePhysicsId   sprite_physics[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
+    ItfliesbyRendererTextureId renderer_textures[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
+    ItfliesbyMathMat3          transforms[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
 };
 
-#define ITFLIESBY_ENGINE_SPRITE_COLOR_CONOR {111,149,98,255}
+#define ITFLIESBY_ENGINE_SPRITE_COLOR_CONOR {111,149,98 ,0  }
+#define ITFLIESBY_ENGINE_SPRITE_COLOR_NONE  {0  ,0  ,0  ,0  }
 
 ItfliesbyEngineSpriteId
 itfliesby_engine_sprites_connor_test(
     ItfliesbyEngineSprites*        sprites,
     ItfliesbyEnginePhysics*        physics,
-    ItfliesbyEnginePhysicsPosition position);
+    ItfliesbyEnginePhysicsPosition position,
+    ItfliesbyEngineAssets*         assets,
+    ItfliesbyRendererHandle        renderer);
 
 ItfliesbyEnginePhysicsId
 itfliesby_engine_sprites_physics_id_get(
     ItfliesbyEngineSprites*        sprites,
     ItfliesbyEngineSpriteId        sprite_id);
 
+ItfliesbyEngineSprite
+itfliesby_engine_sprites_get(
+    ItfliesbyEngineSprites*        sprites,
+    ItfliesbyEngineSpriteId        sprite_id
+);
 
 #endif //ITFLIESBY_ENGINE_SPRITES_HPP

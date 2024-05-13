@@ -10,6 +10,7 @@
 #include "itfliesby-renderer-shader.hpp"
 #include "itfliesby-renderer-quad.hpp"
 #include "itfliesby-renderer-memory.hpp"
+#include "itfliesby-renderer-texture.hpp"
 
 global ItfliesbyPlatformApi platform;
 
@@ -21,12 +22,34 @@ struct ItfliesbyRendererBuffers {
     ItfliesbyRendererShaderBuffersSimpleQuad simple_quad;
 };
 
-struct ItfliesbyRenderer {
-    handle                       gl_context;
-    ItfliesbyRendererShaderStore shader_store;
-    ItfliesbyRendererQuadManager quad_manager;
-    ItfliesbyRendererBatches     batches;
-    ItfliesbyRendererBuffers     buffers;
+struct ItfliesbyRendererPerspective {
+    ItfliesbyMathMat3 transform;
+    f32               width_pixels;
+    f32               height_pixels;
 };
+
+struct ItfliesbyRenderer {
+    handle                        gl_context;
+    ItfliesbyRendererShaderStore  shader_store;
+    ItfliesbyRendererQuadManager  quad_manager;
+    ItfliesbyRendererBatches      batches;
+    ItfliesbyRendererBuffers      buffers;
+    ItfliesbyRendererTextureStore textures;
+    ItfliesbyRendererPerspective  perspective;
+};
+
+inline void
+itfliesby_renderer_apply_perspective_to_transforms(
+    const ItfliesbyMathMat3* perspective,
+    const ItfliesbyMathMat3* in_transforms,
+    const size_t             transforms_count,
+          ItfliesbyMathMat3* out_transforms) {
+
+    itfliesby_math_mat3_multiply(
+        perspective,
+        in_transforms,
+        transforms_count,
+        out_transforms);
+}
 
 #endif //ITFLIESBY_RENDERER_HPP

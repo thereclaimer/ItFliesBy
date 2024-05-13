@@ -93,8 +93,6 @@ itfliesby_engine_asset_indexes_load(
             ITFLIESBY_ASSET_FILE_INDEX_SIZE - 32
         );
 
-        //for some reason,som bytes are getting lost in translation 
-        // current_index->allocation_size += 4;
     }
 
     //destroy the index buffer and reset the allocator
@@ -115,6 +113,13 @@ itfliesby_engine_asset_indexes_load_all(
         asset_file_handles->shader_asset_file,
         ITFLIESBY_ENGINE_ASSETS_SHADER_COUNT
     );
+
+    //load images
+    itfliesby_engine_asset_indexes_load(
+        asset_index_store->image_indexes,
+        asset_file_handles->image_asset_file,
+        ITFLIESBY_ENGINE_ASSETS_IMAGE_COUNT
+    );
 }
 
 internal void 
@@ -132,6 +137,8 @@ itfliesby_engine_assets_init(
         file_handles,
         &assets->file_index_store
     );
+
+    ITFLIESBY_NOP();
 }
 
 internal void
@@ -249,12 +256,14 @@ internal void
 itfliesby_engine_assets_load_asset_from_index(
     ItfliesbyEngineAssetsFileindex asset_file_index,
     handle                         asset_file_handle,
-    memory                         asset_file_memory) {
+    memory                         asset_file_memory,
+    u32                            asset_file_memory_offset,
+    u32                            asset_file_memory_size) {
 
     platform_api.file_read(
         asset_file_handle,
-        asset_file_index.offset,
-        asset_file_index.allocation_size,
+        asset_file_index.offset + asset_file_memory_offset,
+        asset_file_memory_size,
         asset_file_memory,
         false
     );
@@ -296,11 +305,89 @@ itfliesby_engine_assets_load_shaders(
         itfliesby_engine_assets_load_asset_from_index(
             current_shader_file_index,
             shader_file_handle,
-            current_shader_memory
+            current_shader_memory,
+            0,
+            current_shader_file_index.allocation_size
         );
     
         //update the offsets
         shader_offsets[shader_index] = current_shader_offset;
         current_shader_offset       += current_shader_file_index.allocation_size;
     }
+}
+
+internal u64
+itfliesby_engine_assets_image_allocation_size(
+    ItfliesbyEngineAssets*     assets,
+    ItfliesbyEngineAssetsImage image) {
+
+    ItfliesbyEngineAssetsFileindex* shader_file_indexes = 
+        assets->file_index_store.image_indexes;
+
+    ItfliesbyEngineAssetsFileindex file_index = 
+        shader_file_indexes[image];
+
+    u64 allocation_size = file_index.allocation_size;
+
+    return(allocation_size);
+}
+
+internal ItfliesbyEngineAssetsImageData*
+itfliesby_engine_assets_image_load(
+    ItfliesbyEngineAssets*          assets,
+    ItfliesbyEngineAssetsImage      image) {
+
+    //get our image index
+    ItfliesbyEngineAssetsFileindex* image_file_indexes = 
+        assets->file_index_store.image_indexes;
+
+    ItfliesbyEngineAssetsFileindex file_index = 
+        image_file_indexes[image];
+    
+    //allocate space for our image
+    ItfliesbyEngineAssetsImageData* image_data = 
+        itfliesby_engine_memory_assets_image_allocate(
+            &file_index);
+    
+    //load the image data
+    handle file_handle = assets->file_handles.image_asset_file;
+    const u32 image_dimensions_size_bytes = sizeof(u32) * 2;
+    const u32 image_pixels_size_bytes     = file_index.allocation_size - image_dimensions_size_bytes; 
+
+    //image dimensions
+    itfliesby_engine_assets_load_asset_from_index(
+        file_index,
+        file_handle,
+        (memory)image_data,
+        0,
+        image_dimensions_size_bytes);
+
+    //TODO: I was originally passing the image_data->pixels directly into the function,
+    //but it was still not initialized. So why the FUCK did this work!?
+    memory image_pixels = image_data->pixels;
+
+    //image pixels
+    itfliesby_engine_assets_load_asset_from_index(
+        file_index,
+        file_handle,
+        image_pixels,
+        image_dimensions_size_bytes,
+        image_pixels_size_bytes);
+
+    image_data->pixels = image_pixels;
+
+    //return our image data
+    return(image_data);
+}
+
+internal void
+itfliesby_engine_assets_image_unload(
+    ItfliesbyEngineAssets*           assets,
+    ItfliesbyEngineAssetsImageData** image_data) {
+
+    //TODO: ideally, we should be able to allocate a batch of images
+    //currently, the linear allocator is used to allocate one at a time
+
+    *image_data = NULL;
+    itfliesby_engine_memory_assets_image_reset();
 }

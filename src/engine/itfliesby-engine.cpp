@@ -36,6 +36,7 @@ itfliesby_engine_create(
     engine->physics = itfliesby_engine_physics_create_and_init();
     engine->sprites = itfliesby_engine_sprites_create_and_init();
 
+
     return(engine);
 }
 
@@ -56,23 +57,22 @@ itfliesby_engine_fetch_graphics_information(
 
     for (
         u32 index = 0;
-        index < ITFLIESBY_ENGINE_SPRITE_TABLE_COUNT_MAX;
+        index < ITFLIESBY_ENGINE_SPRITE_COUNT_MAX;
         ++index) {
 
-        if (sprites->used_tables.solid_used[index]) {
+        if (sprites->sprite_used[index]) {
 
             ItfliesbyEnginePhysicsTransform current_transform = physics_payload->transforms[index]; 
-            ItfliesbyRendererColorHex       current_color     = sprites->solid_sprite_colors[index];
-            
-            // itfliesby_math_mat3_transpose(&current_transform);
+            ItfliesbyRendererColorHex       current_color     = sprites->sprite_colors[index];
+            ItfliesbyRendererTextureId      current_texture   = sprites->renderer_textures[index];
 
             simple_quad.color     = itfliesby_renderer_color_normalize(current_color);
             simple_quad.transform = current_transform; 
+            simple_quad.texture   = current_texture;
 
             itfliesby_renderer_simple_quad_push(
                 renderer,
-                simple_quad
-            );
+                simple_quad);
         }
     }
 }

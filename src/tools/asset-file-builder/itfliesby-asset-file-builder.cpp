@@ -401,13 +401,23 @@ itfliesby_asset_file_builder_process_arguments(
     
     //check arguments
     argv = CommandLineToArgvW(cmd_line,&argc);
-    if (argc != 2) {
+    if (argc != 3) {
         return(ITFLIESBY_ASSET_FILE_BUILDER_RETURN_CODE_INVALID_ARGUMENTS);
     }
 
     ItfliesbyAssetFileBuilderArguments* arguments = &asset_file_builder->arguments;
     wcstombs(arguments->path_to_csv,        argv[0], 128);
     wcstombs(arguments->path_to_asset_file, argv[1], 128);
+
+    //get the file type
+    wchar_t* end_ptr;
+    arguments->asset_file_type = wcstol(argv[2],&end_ptr,10);
+
+    if (arguments->asset_file_type <=ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_INVALID ||
+        arguments->asset_file_type >=ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_COUNT) {
+        
+        return(ITFLIESBY_ASSET_FILE_BUILDER_RETURN_CODE_INVALID_TYPE);
+    }
 
     return(ITFLIESBY_ASSET_FILE_BUILDER_RETURN_CODE_SUCCESS);
 }
@@ -427,10 +437,7 @@ itfliesby_asset_file_builder_get_file_type(
         return(ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_TEXT);
     }
 
-    if (strcmp(extension,"png") == 0 ||
-        strcmp(extension,"jpg") == 0 ||
-        strcmp(extension,"bmp") == 0) {
-
+    if (strcmp(extension,"png") == 0) {
         return(ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_IMAGE);
     }
 
@@ -533,10 +540,15 @@ itfliesby_asset_file_builder_process_input_file(
     return(ITFLIESBY_ASSET_FILE_BUILDER_RETURN_CODE_SUCCESS);
 }
 
+
+
 internal s32
  itfliesby_asset_file_builder_asset_file_create(
     ItfliesbyAssetFileBuilder* asset_file_builder) {
-        
+    
+    //init stbi
+    stbi_set_flip_vertically_on_load(true);
+
     //open the file
     HANDLE file_handle = 
         CreateFile(
@@ -601,7 +613,6 @@ internal s32
         asset_index->file_size = itfliesby_asset_file_builder_file_size(tmp_file_handle,DO_NOT_TERMINATE_FILE);
         strcpy(asset_index->tag,csv_entry.asset_tag);
     
-        itfliesby_asset_file_builder_file_close(tmp_file_handle);
 
         LPCWSTR file_type_string = itfliesby_asset_file_builder_file_type_string(csv_entry.asset_type);
 
@@ -614,10 +625,55 @@ internal s32
             file_type_string
         );
 
-        //TODO: we need to account for other types of file allocations
-        asset_index->allocation_size = asset_index->file_size + 1;
-        asset_index->offset = asset_index_offset;
+        switch (csv_entry.asset_type) {
 
+            case ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_IMAGE: {
+
+                auto image_memory_block = 
+                    itfliesby_asset_file_builder_memory_block_push(
+                        asset_file_builder,
+                        asset_index->file_size);
+
+                itfliesby_asset_file_builder_read_file(
+                    tmp_file_handle,
+                    asset_index->file_size,
+                    image_memory_block->data,
+                    DO_NOT_TERMINATE_FILE
+                );
+
+                s32 width_pixels   = 0;
+                s32 height_pixels  = 0;
+                s32 channels_count = 0;
+
+                stbi_info_from_memory(
+                    image_memory_block->data,
+                    image_memory_block->data_size,
+                    &width_pixels,
+                    &height_pixels,
+                    &channels_count);
+
+                asset_index->allocation_size =
+                    itfliesby_asset_file_builder_image_asset_allocation_size_bytes(
+                        width_pixels,
+                        height_pixels);
+
+                itfliesby_asset_file_builder_memory_block_pop(
+                    asset_file_builder);
+
+            } break;
+
+            case ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_TEXT: 
+            default: {
+
+                asset_index->allocation_size = asset_index->file_size + 1;
+
+            } break;
+        }
+
+        itfliesby_asset_file_builder_file_close(tmp_file_handle);
+
+        //TODO: we need to account for other types of file allocations
+        asset_index->offset = asset_index_offset;
         asset_index_offset += asset_index->allocation_size;
     }
 
@@ -692,6 +748,8 @@ internal s32
     ItfliesbyAssetFileBuilderMemoryBlock* asset_memory_block  = NULL;
     asset_handle asset_file_handle;
 
+
+
     for (
         u32 index = 0;
         index < asset_file->file_header.num_indexs;
@@ -758,11 +816,81 @@ internal s32
         //process the asset data
         switch (csv_entry->asset_type) {
             
+            case ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_IMAGE: {
+
+                s32 width_pixels   = 0; 
+                s32 height_pixels  = 0;
+                s32 channels_count = 0;
+
+                //get the information on our image
+                stbi_info_from_memory(
+                    file_contents_block->data,
+                    file_contents_block->data_size,
+                    &width_pixels,
+                    &height_pixels,
+                    &channels_count);
+
+                //calculate the actual in-memory size of the image
+                u32 image_size_bytes = 
+                    itfliesby_asset_file_builder_image_size_bytes(
+                        width_pixels,
+                        height_pixels);
+
+                //this is the size of the image plus width and height information
+                u32 image_asset_allocation_size_bytes = 
+                    itfliesby_asset_file_builder_image_asset_allocation_size_bytes(
+                        width_pixels,
+                        height_pixels);
+
+                //allocate a block for the image data
+                asset_memory_block =
+                    itfliesby_asset_file_builder_memory_block_push(
+                        asset_file_builder,
+                        image_asset_allocation_size_bytes);
+
+                //load the image
+                memmove(
+                    &asset_memory_block->data[0],
+                    &width_pixels,
+                    sizeof(u32)
+                );
+                memmove(
+                    &asset_memory_block->data[4],
+                    &height_pixels,
+                    sizeof(u32)
+                );
+
+                auto image_block = itfliesby_asset_file_builder_memory_block_push(
+                    asset_file_builder,
+                    image_size_bytes
+                );
+
+                image_block->data =
+                    stbi_load_from_memory(
+                        file_contents_block->data,
+                        file_contents_block->data_size,
+                        &width_pixels,
+                        &height_pixels,
+                        &channels_count,
+                        ITFLIESBY_ASSET_FILE_BUILDER_IMAGE_CHANNEL_COUNT);
+
+                memmove(
+                    &asset_memory_block->data[ITFLIESBY_ASSET_FILE_BUILDER_IMAGE_DATA_OFFSET],
+                    image_block->data,
+                    image_size_bytes
+                );
+
+                itfliesby_asset_file_builder_memory_block_pop(asset_file_builder);
+
+                ITFLIESBY_NOP();
+
+            } break;
+
             case ITFLIESBY_ASSET_FILE_BUILDER_ASSET_FILE_TYPE_TEXT:
             default: {
                 //by default we treat this as a text file
                 //to do that, just make the asset memory the same as the file memory
-                asset_memory_block = file_contents_block;
+                asset_memory_block            = file_contents_block;
                 header_index->allocation_size = asset_memory_block->data_size;
             } break;
         }

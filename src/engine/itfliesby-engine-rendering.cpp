@@ -4,6 +4,37 @@
 #include "itfliesby-engine-globals.hpp"
 #include "itfliesby-engine-memory.cpp"
 
+internal ItfliesbyRendererTextureId
+itfliesby_engine_rendering_push_texture_sprite_character(
+    ItfliesbyRendererHandle     renderer,
+    ItfliesbyEngineAssetsImage  image,
+    ItfliesbyEngineAssets*      assets) {
+
+    //load the image
+    ItfliesbyEngineAssetsImageData* image_data = 
+        itfliesby_engine_assets_image_load(
+            assets,
+            image);
+        
+
+    //push the image data to the renderer
+    ItfliesbyRendererTextureId texture_id = 
+        itfliesby_renderer_texture_sprite_character_load(
+            renderer,
+            (ItfliesbyRendererTextureSpriteCharacterType)image,
+            image_data->width_pixels,
+            image_data->height_pixels,
+            image_data->pixels);
+
+    //unload the image
+    itfliesby_engine_assets_image_unload(
+        assets,
+        &image_data
+    ); 
+
+    return(texture_id);
+}
+
 internal void
 itfliesby_engine_rendering_shader_programs_init(
     ItfliesbyRendererHandle     renderer,

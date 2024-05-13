@@ -5,6 +5,39 @@
 #include "itfliesby-renderer-memory.cpp"
 #include "itfliesby-renderer-quad.cpp"
 #include "itfliesby-renderer-simple-quad.cpp"
+#include "itfliesby-renderer-texture.cpp"
+
+external ItfliesbyRendererPerspective
+itfliesby_renderer_perspective(
+    f32 width_pixels,
+    f32 height_pixels) {
+
+    ItfliesbyMathMat3 transform = {0};
+
+    f32 half_width_pixels  = width_pixels  * 0.5f;
+    f32 half_height_pixels = height_pixels * 0.5f;
+
+    f32 right  = half_width_pixels;
+    f32 top    = half_height_pixels;
+    f32 left   = half_width_pixels  * -1.0f;
+    f32 bottom = half_height_pixels * -1.0f;
+
+
+    transform.rows.row_0[0] = 2.0f / (right - left);
+    transform.rows.row_0[2] = -((right + left) / (right - left));
+
+    transform.rows.row_1[1] = 2.0f / (top - bottom);
+    transform.rows.row_1[2] = -((top + bottom) / (top - bottom));
+
+    transform.rows.row_2[2] = 1.0f;
+
+    ItfliesbyRendererPerspective perspective = {0};
+    perspective.height_pixels = height_pixels;
+    perspective.width_pixels  = width_pixels;
+    perspective.transform     = transform;
+
+    return(perspective);
+}
 
 external ItfliesbyRenderer*
 itfliesby_renderer_create_and_init(
@@ -40,6 +73,8 @@ itfliesby_renderer_create_and_init(
     //initialize our quad buffers
     renderer->quad_manager        = itfliesby_renderer_quad_manager_init();
     renderer->buffers.simple_quad = itfliesby_renderer_shader_simple_quad_buffers_create();
+    renderer->textures            = itfliesby_renderer_texture_store_init();
+    renderer->perspective         = itfliesby_renderer_perspective(1920.0f, 1080.0f);
 
     return(renderer);
 }
