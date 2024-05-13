@@ -29,7 +29,7 @@ struct ItfliesbyEngineSprites {
     ItfliesbyMathMat3          transforms[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
 };
 
-#define ITFLIESBY_ENGINE_SPRITE_COLOR_CONOR {111,149,98 ,255}
+#define ITFLIESBY_ENGINE_SPRITE_COLOR_CONOR {111,149,98 ,0  }
 #define ITFLIESBY_ENGINE_SPRITE_COLOR_NONE  {0  ,0  ,0  ,0  }
 
 ItfliesbyEngineSpriteId
