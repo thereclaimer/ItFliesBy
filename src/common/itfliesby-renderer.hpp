@@ -118,6 +118,17 @@ api void
 itfliesby_renderer_render(
     ItfliesbyRendererHandle renderer); 
 
+struct ItfliesbyRendererPerspective {
+    ItfliesbyMathMat3 transform;
+    f32               width_pixels;
+    f32               height_pixels;
+};
+
+api ItfliesbyRendererPerspective
+itfliesby_renderer_perspective(
+    f32 width_pixels,
+    f32 height_pixels);
+
 //----------------------------------------------------------------
 // SHADERS
 //----------------------------------------------------------------

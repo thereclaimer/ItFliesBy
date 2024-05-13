@@ -36,47 +36,19 @@ itfliesby_renderer_shader_simple_quad_buffers_create() {
     simple_quad_buffers.gl_vbo_quad_indices = buffers[0];
     simple_quad_buffers.gl_vbo_quad_uv      = buffers[1];
 
-    //vertex buffer
-    glBindBuffer(
-        GL_ARRAY_BUFFER,
-        simple_quad_buffers.gl_vbo_quad_indices);
+    u32 buffer_size_bytes = sizeof(f32) * 12;
 
-    glBufferData(
-        GL_ARRAY_BUFFER,
-        sizeof(f32) * 12,
-        SIMPLE_QUAD_VERTEX_BUFFER,
-        GL_STATIC_DRAW);
+    //vertex buffer
+    itfliesby_renderer_opengl_array_buffer(
+        simple_quad_buffers.gl_vbo_quad_indices,
+        buffer_size_bytes,
+        (void*)SIMPLE_QUAD_VERTEX_BUFFER);
 
     //uv buffer
-    glBindBuffer(
-        GL_ARRAY_BUFFER,
-        simple_quad_buffers.gl_vbo_quad_uv);
-
-    glBufferData(
-        GL_ARRAY_BUFFER,
-        sizeof(f32) * 12,
-        SIMPLE_QUAD_UV_BUFFER,
-        GL_STATIC_DRAW);
-
-    // //vertex attribute
-    // glVertexAttribPointer(
-    //     0,
-    //     2,
-    //     GL_FLOAT,
-    //     GL_FALSE,
-    //     2 * sizeof(f32),
-    //     NULL);
-    // glEnableVertexAttribArray(0);
-    
-    // //uv attribute
-    // glVertexAttribPointer(
-    //     1,
-    //     2,
-    //     GL_FLOAT,
-    //     GL_FALSE,
-    //     2 * sizeof(f32),
-    //     NULL);
-    // glEnableVertexAttribArray(1);
+    itfliesby_renderer_opengl_array_buffer(
+        simple_quad_buffers.gl_vbo_quad_uv,
+        buffer_size_bytes,
+        (void*)SIMPLE_QUAD_UV_BUFFER);
 
     //unbind the vao
     glBindVertexArray(0);
@@ -170,25 +142,11 @@ itfliesby_renderer_simple_quad_render(
 
     //vertex attribute
     glBindBuffer(GL_ARRAY_BUFFER,buffers->gl_vbo_quad_indices);
-    glVertexAttribPointer(
-        0,
-        2,
-        GL_FLOAT,
-        GL_FALSE,
-        2 * sizeof(f32),
-        NULL);
-    glEnableVertexAttribArray(0);
-    
+    itfliesby_renderer_opengl_enable_vertex_attribute_vec2(0);
+
     //uv attribute
     glBindBuffer(GL_ARRAY_BUFFER,buffers->gl_vbo_quad_uv);
-    glVertexAttribPointer(
-        1,
-        2,
-        GL_FLOAT,
-        GL_FALSE,
-        2 * sizeof(f32),
-        NULL);
-    glEnableVertexAttribArray(1);
+    itfliesby_renderer_opengl_enable_vertex_attribute_vec2(1);
 
     //set the texture sampler
     glActiveTexture(GL_TEXTURE0);

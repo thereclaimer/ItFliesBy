@@ -26,6 +26,7 @@ struct ItfliesbyEngineSprites {
     ItfliesbyEngineAssetsImage sprite_textures[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
     ItfliesbyEnginePhysicsId   sprite_physics[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
     ItfliesbyRendererTextureId renderer_textures[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
+    ItfliesbyMathMat3          transforms[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
 };
 
 #define ITFLIESBY_ENGINE_SPRITE_COLOR_CONOR {111,149,98 ,255}

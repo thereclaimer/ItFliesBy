@@ -60,6 +60,41 @@ itfliesby_math_mat3_transpose(
     out_m3_m[8] = in_m3_m[8];
 }
 
+inline void
+itfliesby_math_mat3_multiply(
+    const ItfliesbyMathMat3* in_m3_a,
+    const ItfliesbyMathMat3* in_m3_b,
+    const size_t             m3_count,
+          ItfliesbyMathMat3* out_m3_c) {
+
+    ItfliesbyMathMat3 a = {0};
+    ItfliesbyMathMat3 b = {0};
+    ItfliesbyMathMat3 c = {0};
+    
+    for (
+        size_t index = 0;
+        index < m3_count;
+        ++index) {
+
+        a = in_m3_a[index];
+        b = in_m3_b[index];
+
+        c.rows.row_0[0] = (a.rows.row_0[0] * b.rows.row_0[0]) + (a.rows.row_0[1] * b.rows.row_1[0]) + (a.rows.row_0[2] * b.rows.row_2[0]); 
+        c.rows.row_0[1] = (a.rows.row_0[0] * b.rows.row_0[1]) + (a.rows.row_0[1] * b.rows.row_1[1]) + (a.rows.row_0[2] * b.rows.row_2[1]);
+        c.rows.row_0[2] = (a.rows.row_0[0] * b.rows.row_0[2]) + (a.rows.row_0[1] * b.rows.row_1[2]) + (a.rows.row_0[2] * b.rows.row_2[2]);
+
+        c.rows.row_1[0] = (a.rows.row_1[0] * b.rows.row_0[0]) + (a.rows.row_1[1] * b.rows.row_1[0]) + (a.rows.row_1[2] * b.rows.row_2[0]);
+        c.rows.row_1[1] = (a.rows.row_1[0] * b.rows.row_0[1]) + (a.rows.row_1[1] * b.rows.row_1[1]) + (a.rows.row_1[2] * b.rows.row_2[1]);
+        c.rows.row_1[2] = (a.rows.row_1[0] * b.rows.row_0[2]) + (a.rows.row_1[1] * b.rows.row_1[2]) + (a.rows.row_1[2] * b.rows.row_2[2]);
+
+        c.rows.row_2[0] = (a.rows.row_2[0] * b.rows.row_0[0]) + (a.rows.row_2[1] * b.rows.row_1[0]) + (a.rows.row_2[2] * b.rows.row_2[0]);
+        c.rows.row_2[1] = (a.rows.row_2[0] * b.rows.row_0[1]) + (a.rows.row_2[1] * b.rows.row_1[1]) + (a.rows.row_2[2] * b.rows.row_2[1]);
+        c.rows.row_2[2] = (a.rows.row_2[0] * b.rows.row_0[2]) + (a.rows.row_2[1] * b.rows.row_1[2]) + (a.rows.row_2[2] * b.rows.row_2[2]);
+
+        out_m3_c[index] = c;
+    }
+}
+
 inline ItfliesbyMathMat3
 itfliesby_math_mat3_translation(
     f32 x,
@@ -341,5 +376,6 @@ itfliesby_math_mat3_transform_and_transpose_trs(
         out_transform[transform_index] = transpose;
     }
 }
+
 
 #endif //ITFLIESBY_MATH_MAT3_HPP

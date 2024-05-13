@@ -7,7 +7,7 @@
 #include "itfliesby-renderer-simple-quad.cpp"
 #include "itfliesby-renderer-texture.cpp"
 
-internal ItfliesbyRendererPerspective
+external ItfliesbyRendererPerspective
 itfliesby_renderer_perspective(
     f32 width_pixels,
     f32 height_pixels) {
@@ -74,6 +74,7 @@ itfliesby_renderer_create_and_init(
     renderer->quad_manager        = itfliesby_renderer_quad_manager_init();
     renderer->buffers.simple_quad = itfliesby_renderer_shader_simple_quad_buffers_create();
     renderer->textures            = itfliesby_renderer_texture_store_init();
+    renderer->perspective         = itfliesby_renderer_perspective(1920.0f, 1080.0f);
 
     return(renderer);
 }

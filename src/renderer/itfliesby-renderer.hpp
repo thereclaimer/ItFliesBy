@@ -38,4 +38,18 @@ struct ItfliesbyRenderer {
     ItfliesbyRendererPerspective  perspective;
 };
 
+inline void
+itfliesby_renderer_apply_perspective_to_transforms(
+    const ItfliesbyMathMat3* perspective,
+    const ItfliesbyMathMat3* in_transforms,
+    const size_t             transforms_count,
+          ItfliesbyMathMat3* out_transforms) {
+
+    itfliesby_math_mat3_multiply(
+        perspective,
+        in_transforms,
+        transforms_count,
+        out_transforms);
+}
+
 #endif //ITFLIESBY_RENDERER_HPP

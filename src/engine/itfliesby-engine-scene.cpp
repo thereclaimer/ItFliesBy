@@ -2,7 +2,7 @@
 
 #include "itfliesby-engine-scene.hpp"
 
-void
+internal void
 itfliesby_engine_scene_manager_create(
     ItfliesbyEngineSceneManager* scene_manager) {
 
