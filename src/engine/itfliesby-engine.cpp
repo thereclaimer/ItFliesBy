@@ -49,22 +49,28 @@ itfliesby_engine_destroy(
 internal void
 itfliesby_engine_fetch_graphics_information(
     ItfliesbyEngine*                        engine,
-    ItfliesbyEnginePhysicsTransformPayload* physics_payload) {
+    ItfliesbyEnginePhysicsTransformCollection* physics_payload) {
 
     ItfliesbyEngineSprites*     sprites     = &engine->sprites;
+    ItfliesbyEnginePhysics*     physics     = &engine->physics;
     ItfliesbyRendererHandle     renderer    = engine->renderer;
     ItfliesbyRendererSimpleQuad simple_quad = {0};
 
+    ItfliesbyEngineSpriteRenderingContext sprite_transforms = {0};
+    itfliesby_engine_sprites_transforms(
+        sprites,
+        physics,
+        &sprite_transforms);
+
     for (
         u32 index = 0;
-        index < ITFLIESBY_ENGINE_SPRITE_COUNT_MAX;
+        index < sprite_transforms.count;
         ++index) {
 
-        if (sprites->sprite_used[index]) {
 
-            ItfliesbyEnginePhysicsTransform current_transform = physics_payload->transforms[index]; 
-            ItfliesbyRendererColorHex       current_color     = sprites->sprite_colors[index];
-            ItfliesbyRendererTextureId      current_texture   = sprites->renderer_textures[index];
+            ItfliesbyMathMat3               current_transform = sprite_transforms.transforms[index]; 
+            ItfliesbyRendererColorHex       current_color     = sprite_transforms.colors[index];
+            ItfliesbyRendererTextureId      current_texture   = sprite_transforms.renderer_texture[index];
 
             simple_quad.color     = itfliesby_renderer_color_normalize(current_color);
             simple_quad.transform = current_transform; 
@@ -74,8 +80,8 @@ itfliesby_engine_fetch_graphics_information(
                 renderer,
                 simple_quad);
         }
-    }
 }
+
 
 external void
 itfliesby_engine_render_scene(
@@ -92,7 +98,7 @@ itfliesby_engine_render_scene(
     itfliesby_engine_scene_process_active(engine);
 
     //udpate the physics system
-    ItfliesbyEnginePhysicsTransformPayload physics_payload = {0};
+    ItfliesbyEnginePhysicsTransformCollection physics_payload = {0};
     itfliesby_engine_physics_update(
         &engine->physics,
         &physics_payload

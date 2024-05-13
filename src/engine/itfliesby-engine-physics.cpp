@@ -32,8 +32,71 @@ itfliesby_engine_physics_dynamics(
 
 internal void
 itfliesby_engine_physics_transforms(
-    ItfliesbyEnginePhysicsTablesTransforms*  in_tables_properties,
-    ItfliesbyEnginePhysicsTransformPayload*  out_transform_payload) {
+    const ItfliesbyEnginePhysics*                    physics,
+    const ItfliesbyEnginePhysicsCollection*          physics_collection,
+          ItfliesbyEnginePhysicsTransformCollection* physics_transform_collection) {
+
+    ItfliesbyMathMat3* physics_transforms = physics_transform_collection->transforms;
+    
+    const ItfliesbyEnginePhysicsTablePosition* physics_table_transforms_position = &physics->tables.transforms.position;
+    const ItfliesbyEnginePhysicsTableScale*    physics_table_transforms_scale    = &physics->tables.transforms.scale;
+    const ItfliesbyEnginePhysicsTableRotation* physics_table_transforms_rotation = &physics->tables.transforms.rotation;
+    
+    const f32* physics_transform_position_x       = physics_table_transforms_position->x;
+    const f32* physics_transform_position_y       = physics_table_transforms_position->y;
+    const f32* physics_transform_scale_x          = physics_table_transforms_scale->x;
+    const f32* physics_transform_scale_y          = physics_table_transforms_scale->y;
+    const f32* physics_transform_rotation_radians = physics_table_transforms_rotation->radians;
+
+    const ItfliesbyEnginePhysicsId* physics_collection_ids       = physics_collection->physics_ids;
+    const u32                       physics_collection_ids_count = physics_collection->physics_ids_count;
+    physics_transform_collection->transforms_count = physics_collection_ids_count;
+
+    ItfliesbyEnginePhysicsTransform physics_transform_translation[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX] = {0};
+    ItfliesbyEnginePhysicsTransform physics_transform_scale[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX]       = {0};
+    ItfliesbyEnginePhysicsTransform physics_transform_rotation[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX]    = {0};
+
+    ItfliesbyEnginePhysicsId current_physics_id = 0;
+
+    for (
+        u32 physics_transform_index = 0;
+        physics_transform_index < physics_collection_ids_count;
+        ++physics_transform_index) {
+
+        current_physics_id = physics_collection_ids[physics_transform_index];
+
+        //translation
+        physics_transform_translation[current_physics_id] = 
+            itfliesby_math_mat3_translation(
+                physics_transform_position_x[current_physics_id],
+                physics_transform_position_y[current_physics_id]);
+                        
+        //scale
+        physics_transform_scale[current_physics_id] = 
+            itfliesby_math_mat3_scaling(
+                physics_transform_scale_x[current_physics_id], 
+                physics_transform_scale_y[current_physics_id]);
+        
+        //rotation
+        physics_transform_rotation[current_physics_id] = 
+            itfliesby_math_mat3_rotation_radians(
+                physics_transform_rotation_radians[current_physics_id]);
+    }
+
+    //put the transforms together
+    itfliesby_math_mat3_transform_trs(
+        physics_collection_ids_count,
+        physics_transform_translation,
+        physics_transform_scale,
+        physics_transform_rotation,
+        physics_transforms);
+
+}
+
+internal void
+itfliesby_engine_physics_transforms(
+    ItfliesbyEnginePhysicsTablesTransforms*     in_tables_properties,
+    ItfliesbyEnginePhysicsTransformCollection*  out_transform_payload) {
 
     ItfliesbyEnginePhysicsTablePosition* table_transforms_position = &in_tables_properties->position;
     ItfliesbyEnginePhysicsTableScale*    table_transforms_scale    = &in_tables_properties->scale;
@@ -81,12 +144,14 @@ itfliesby_engine_physics_transforms(
         transform_scale,
         transform_rotation,
         transform);
+
+    out_transform_payload->transforms_count = ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX;
 }
 
 internal void
 itfliesby_engine_physics_update(
     ItfliesbyEnginePhysics*                 physics,
-    ItfliesbyEnginePhysicsTransformPayload* payload) {
+    ItfliesbyEnginePhysicsTransformCollection* payload) {
 
     ItfliesbyEnginePhysicsTablesTransforms* physics_table_transforms = &physics->tables.transforms;
     ItfliesbyEnginePhysicsTablesDynamics*   physics_table_dynamics   = &physics->tables.dynamics;

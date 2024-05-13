@@ -22,6 +22,24 @@ struct ItfliesbyEngineSpriteCollection {
     ItfliesbyEngineSpriteId sprite_ids[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
     size_t                  sprite_count;
 };
+struct ItfliesbyEngineSpriteColorCollection {
+    ItfliesbyRendererColorHex colors[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
+    size_t                    colors_count;
+};
+
+struct ItfliesbyEngineSpriteTextureCollection {
+    ItfliesbyEngineAssetsImage textures[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
+    ItfliesbyRendererTextureId renderer_textures[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
+    size_t                     texture_count;
+};
+
+struct ItfliesbyEngineSpriteRenderingContext {
+    ItfliesbyEngineSpriteId    sprite_ids[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
+    ItfliesbyMathMat3          transforms[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
+    ItfliesbyRendererTextureId renderer_texture[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
+    ItfliesbyRendererColorHex  colors[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
+    size_t                     count;
+};
 
 struct ItfliesbyEngineSprites {
     b8                         sprite_used[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
@@ -53,5 +71,11 @@ itfliesby_engine_sprites_get(
     ItfliesbyEngineSprites*        sprites,
     ItfliesbyEngineSpriteId        sprite_id
 );
+
+void
+itfliesby_engine_sprites_transforms(
+    const ItfliesbyEngineSprites*                   sprites,
+    const ItfliesbyEnginePhysics*                   physics,
+          ItfliesbyEngineSpriteRenderingContext*    sprite_rendering_context);
 
 #endif //ITFLIESBY_ENGINE_SPRITES_HPP
