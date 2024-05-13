@@ -16,17 +16,14 @@ itfliesby_engine_rendering_push_texture_sprite_character(
             assets,
             image);
         
-    //image dimensions in bytes
-    u32 image_width_bytes  = image_data->width_pixels  * 4;
-    u32 image_height_bytes = image_data->height_pixels * 4;
 
     //push the image data to the renderer
     ItfliesbyRendererTextureId texture_id = 
         itfliesby_renderer_texture_sprite_character_load(
             renderer,
             (ItfliesbyRendererTextureSpriteCharacterType)image,
-            image_width_bytes,
-            image_height_bytes,
+            image_data->width_pixels,
+            image_data->height_pixels,
             image_data->pixels);
 
     //unload the image

@@ -17,8 +17,8 @@ external ItfliesbyRendererTextureId
 itfliesby_renderer_texture_sprite_character_load(
     ItfliesbyRenderer*                          renderer,
     ItfliesbyRendererTextureSpriteCharacterType sprite_character_type,
-    u32                                         sprite_character_data_width_bytes,
-    u32                                         sprite_character_data_height_bytes,
+    u32                                         sprite_character_data_width_pixels,
+    u32                                         sprite_character_data_height_pixels,
     memory                                      sprite_character_data) {
 
     ItfliesbyRendererTextureStore*               texture_store                         = &renderer->textures;
@@ -37,19 +37,17 @@ itfliesby_renderer_texture_sprite_character_load(
     glGenTextures(1, &character_sprite_gl_texture_id);
     glBindTexture(GL_TEXTURE_2D,character_sprite_gl_texture_id);
     
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);	
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    glGenerateMipmap(GL_TEXTURE_2D);
 
     glTexImage2D(
         GL_TEXTURE_2D, 
         0,
         GL_RGBA,
-        sprite_character_data_width_bytes,
-        sprite_character_data_height_bytes,
+        sprite_character_data_width_pixels,
+        sprite_character_data_height_pixels,
         0,
         GL_RGBA,
         GL_UNSIGNED_BYTE,

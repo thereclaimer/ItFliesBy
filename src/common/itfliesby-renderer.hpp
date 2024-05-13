@@ -205,8 +205,8 @@ api ItfliesbyRendererTextureId
 itfliesby_renderer_texture_sprite_character_load(
     ItfliesbyRendererHandle                     renderer,
     ItfliesbyRendererTextureSpriteCharacterType sprite_character_type,
-    u32                                         sprite_character_data_width_bytes,
-    u32                                         sprite_character_data_height_bytes,
+    u32                                         sprite_character_data_width_pixels,
+    u32                                         sprite_character_data_height_pixels,
     memory                                      sprite_character_data);
 
 #endif //ITFLIESBY_RENDERER_HPP
