@@ -98,8 +98,9 @@ itfliesby_engine_physics_update_velocity(
 
 void
 itfliesby_engine_physics_transforms(
-    const ItfliesbyEnginePhysics*                    physics,
-    const ItfliesbyEnginePhysicsCollection*          physics_collection,
-          ItfliesbyEnginePhysicsTransformCollection* physics_transform_collection);
+    const ItfliesbyEnginePhysics*           physics,
+    const ItfliesbyEnginePhysicsId*         physics_ids,
+    const size_t                            physics_count,
+          ItfliesbyEnginePhysicsTransform*  physics_transforms);
 
 #endif //ITFLIESBY_ENGINE_PHYSICS_HPP

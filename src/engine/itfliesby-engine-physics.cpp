@@ -33,11 +33,10 @@ itfliesby_engine_physics_dynamics(
 internal void
 itfliesby_engine_physics_transforms(
     const ItfliesbyEnginePhysics*                    physics,
-    const ItfliesbyEnginePhysicsCollection*          physics_collection,
-          ItfliesbyEnginePhysicsTransformCollection* physics_transform_collection) {
+    const ItfliesbyEnginePhysicsId*                  physics_ids,
+    const size_t                                     physics_count,
+          ItfliesbyEnginePhysicsTransform*           physics_transforms) {
 
-    ItfliesbyMathMat3* physics_transforms = physics_transform_collection->transforms;
-    
     const ItfliesbyEnginePhysicsTablePosition* physics_table_transforms_position = &physics->tables.transforms.position;
     const ItfliesbyEnginePhysicsTableScale*    physics_table_transforms_scale    = &physics->tables.transforms.scale;
     const ItfliesbyEnginePhysicsTableRotation* physics_table_transforms_rotation = &physics->tables.transforms.rotation;
@@ -48,10 +47,6 @@ itfliesby_engine_physics_transforms(
     const f32* physics_transform_scale_y          = physics_table_transforms_scale->y;
     const f32* physics_transform_rotation_radians = physics_table_transforms_rotation->radians;
 
-    const ItfliesbyEnginePhysicsId* physics_collection_ids       = physics_collection->physics_ids;
-    const u32                       physics_collection_ids_count = physics_collection->physics_ids_count;
-    physics_transform_collection->transforms_count = physics_collection_ids_count;
-
     ItfliesbyEnginePhysicsTransform physics_transform_translation[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX] = {0};
     ItfliesbyEnginePhysicsTransform physics_transform_scale[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX]       = {0};
     ItfliesbyEnginePhysicsTransform physics_transform_rotation[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX]    = {0};
@@ -60,10 +55,10 @@ itfliesby_engine_physics_transforms(
 
     for (
         u32 physics_transform_index = 0;
-        physics_transform_index < physics_collection_ids_count;
+        physics_transform_index < physics_count;
         ++physics_transform_index) {
 
-        current_physics_id = physics_collection_ids[physics_transform_index];
+        current_physics_id = physics_ids[physics_transform_index];
 
         //translation
         physics_transform_translation[current_physics_id] = 
@@ -85,7 +80,7 @@ itfliesby_engine_physics_transforms(
 
     //put the transforms together
     itfliesby_math_mat3_transform_trs(
-        physics_collection_ids_count,
+        physics_count,
         physics_transform_translation,
         physics_transform_scale,
         physics_transform_rotation,

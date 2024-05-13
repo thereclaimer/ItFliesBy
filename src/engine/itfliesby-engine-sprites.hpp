@@ -18,27 +18,12 @@ struct ItfliesbyEngineSprite {
 
 #define ITFLIESBY_ENGINE_SPRITE_COUNT_MAX       128
 
-struct ItfliesbyEngineSpriteCollection {
-    ItfliesbyEngineSpriteId sprite_ids[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
-    size_t                  sprite_count;
-};
-struct ItfliesbyEngineSpriteColorCollection {
-    ItfliesbyRendererColorHex colors[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
-    size_t                    colors_count;
-};
-
-struct ItfliesbyEngineSpriteTextureCollection {
-    ItfliesbyEngineAssetsImage textures[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
-    ItfliesbyRendererTextureId renderer_textures[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
-    size_t                     texture_count;
-};
-
 struct ItfliesbyEngineSpriteRenderingContext {
     ItfliesbyEngineSpriteId    sprite_ids[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
-    ItfliesbyMathMat3          transforms[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
-    ItfliesbyRendererTextureId renderer_texture[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
+    ItfliesbyRendererTextureId renderer_textures[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
     ItfliesbyRendererColorHex  colors[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
-    size_t                     count;
+    ItfliesbyMathMat3          transforms[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
+    size_t                     sprite_count;
 };
 
 struct ItfliesbyEngineSprites {
@@ -47,7 +32,6 @@ struct ItfliesbyEngineSprites {
     ItfliesbyEngineAssetsImage sprite_textures[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
     ItfliesbyEnginePhysicsId   sprite_physics[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
     ItfliesbyRendererTextureId renderer_textures[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
-    ItfliesbyMathMat3          transforms[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
 };
 
 #define ITFLIESBY_ENGINE_SPRITE_COLOR_CONOR {111,149,98 ,0  }
@@ -73,7 +57,7 @@ itfliesby_engine_sprites_get(
 );
 
 void
-itfliesby_engine_sprites_transforms(
+itfliesby_engine_sprites_rendering_context(
     const ItfliesbyEngineSprites*                   sprites,
     const ItfliesbyEnginePhysics*                   physics,
           ItfliesbyEngineSpriteRenderingContext*    sprite_rendering_context);

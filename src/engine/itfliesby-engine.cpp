@@ -56,21 +56,21 @@ itfliesby_engine_fetch_graphics_information(
     ItfliesbyRendererHandle     renderer    = engine->renderer;
     ItfliesbyRendererSimpleQuad simple_quad = {0};
 
-    ItfliesbyEngineSpriteRenderingContext sprite_transforms = {0};
-    itfliesby_engine_sprites_transforms(
+    ItfliesbyEngineSpriteRenderingContext sprite_rendering = {0};
+    itfliesby_engine_sprites_rendering_context(
         sprites,
         physics,
-        &sprite_transforms);
+        &sprite_rendering);
 
     for (
         u32 index = 0;
-        index < sprite_transforms.count;
+        index < sprite_rendering.sprite_count;
         ++index) {
 
 
-            ItfliesbyMathMat3               current_transform = sprite_transforms.transforms[index]; 
-            ItfliesbyRendererColorHex       current_color     = sprite_transforms.colors[index];
-            ItfliesbyRendererTextureId      current_texture   = sprite_transforms.renderer_texture[index];
+            ItfliesbyMathMat3               current_transform = sprite_rendering.transforms[index]; 
+            ItfliesbyRendererColorHex       current_color     = sprite_rendering.colors[index];
+            ItfliesbyRendererTextureId      current_texture   = sprite_rendering.renderer_textures[index];
 
             simple_quad.color     = itfliesby_renderer_color_normalize(current_color);
             simple_quad.transform = current_transform; 

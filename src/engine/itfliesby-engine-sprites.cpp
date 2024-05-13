@@ -151,16 +151,13 @@ itfliesby_engine_sprites_get(
     return(sprite);
 }
 
-internal void
+internal u32
 itfliesby_engine_sprites_active(
-    const ItfliesbyEngineSprites*          sprites,
-          ItfliesbyEngineSpriteCollection* sprite_collection) {
+    const ItfliesbyEngineSprites*  sprites,
+          ItfliesbyEngineSpriteId* active_sprite_ids) {
 
-    *sprite_collection = {0};
-    
-    const b8* sprites_active = sprites->sprite_used;
-    ItfliesbyEngineSpriteId* sprite_collection_ids = sprite_collection->sprite_ids;
-    size_t sprite_collection_count = 0;
+    const b8* sprites_active       = sprites->sprite_used;
+    u32       sprites_active_count = 0;
 
     for (
         u32 sprite_index = 0;
@@ -168,149 +165,53 @@ itfliesby_engine_sprites_active(
         ++sprite_index) {
 
         if (sprites_active[sprite_index]) {
-            sprite_collection_ids[sprite_collection_count] = sprite_index;
-            ++sprite_collection_count;
+            active_sprite_ids[sprites_active_count] = sprite_index;
+            ++sprites_active_count;
         }
     }
     
-    sprite_collection->sprite_count = sprite_collection_count;
+    return(sprites_active_count);
 }
 
 internal void
-itfliesby_engine_sprites_physics(
-    const ItfliesbyEngineSprites*           sprites,
-    const ItfliesbyEngineSpriteCollection*  sprite_collection,
-    ItfliesbyEnginePhysicsCollection*       physics_collection) {
-
-    const ItfliesbyEnginePhysicsId* sprite_physics_ids          = sprites->sprite_physics;
-    const ItfliesbyEnginePhysicsId* sprite_collection_ids       = sprite_collection->sprite_ids;
-    const u32                       sprite_collection_ids_count = sprite_collection->sprite_count; 
-    
-    ItfliesbyEnginePhysicsId* physics_collection_ids      = physics_collection->physics_ids;
-    ItfliesbyEngineSpriteId   current_sprite_id = 0;
-
-    for (
-        size_t sprite_collection_index = 0;
-        sprite_collection_index < sprite_collection_ids_count;
-        ++sprite_collection_index) {
-
-        current_sprite_id = sprite_collection_ids[sprite_collection_index];
-
-        physics_collection_ids[sprite_collection_index] = sprite_physics_ids[current_sprite_id];
-    }
-
-    physics_collection->physics_ids_count = sprite_collection_ids_count;
-}
-
-internal void
-itfliesby_engine_sprite_textures(
-    const ItfliesbyEngineSprites*                sprites,
-    const ItfliesbyEngineSpriteCollection*       sprite_collection,
-         ItfliesbyEngineSpriteTextureCollection* texture_collection) {
-
-    const ItfliesbyEngineAssetsImage* sprites_asset_image = sprites->sprite_textures;
-    const ItfliesbyRendererTextureId* sprites_texture_id  = sprites->renderer_textures;
-
-    const ItfliesbyEnginePhysicsId* sprite_collection_ids       = sprite_collection->sprite_ids;
-    const u32                       sprite_collection_ids_count = sprite_collection->sprite_count; 
-
-    ItfliesbyEngineAssetsImage* texture_collection_assets   = texture_collection->textures;
-    ItfliesbyRendererTextureId* texture_collection_textures = texture_collection->renderer_textures;
-
-    ItfliesbyEngineSpriteId  current_sprite_id = 0;
-
-
-    for (
-        size_t sprite_collection_index = 0;
-        sprite_collection_index < sprite_collection_ids_count;
-        ++sprite_collection_index) {
-
-        current_sprite_id = sprite_collection_ids[sprite_collection_index];
-        texture_collection_assets[sprite_collection_index]   = sprites_asset_image[current_sprite_id];
-        texture_collection_textures[sprite_collection_index] = sprites_texture_id[current_sprite_id];
-    }
-}
-
-internal void
-itfliesby_engine_sprite_colors(
-    const ItfliesbyEngineSprites*                sprites,
-    const ItfliesbyEngineSpriteCollection*       sprite_collection,
-          ItfliesbyEngineSpriteColorCollection*  color_collection) {
-
-    const ItfliesbyRendererColorHex* sprite_colors = sprites->sprite_colors;
-    
-    const ItfliesbyEnginePhysicsId* sprite_collection_ids       = sprite_collection->sprite_ids;
-    const u32                       sprite_collection_ids_count = sprite_collection->sprite_count; 
-
-    ItfliesbyEngineSpriteId  current_sprite_id = 0;
-
-    ItfliesbyRendererColorHex* color_collection_colors = color_collection->colors;
-
-    for (
-        size_t sprite_collection_index = 0;
-        sprite_collection_index < sprite_collection_ids_count;
-        ++sprite_collection_index) {
-
-        current_sprite_id = sprite_collection_ids[sprite_collection_index];
-        color_collection_colors[sprite_collection_index] = sprite_colors[current_sprite_id];
-    }
-}
-
-internal void
-itfliesby_engine_sprites_transforms(
+itfliesby_engine_sprites_rendering_context(
     const ItfliesbyEngineSprites*                   sprites,
     const ItfliesbyEnginePhysics*                   physics,
           ItfliesbyEngineSpriteRenderingContext*    sprite_rendering_context) {
 
-    //get our active sprites
-    ItfliesbyEngineSpriteCollection active_sprites = {0};
-    itfliesby_engine_sprites_active(sprites,&active_sprites);
+    const ItfliesbyRendererTextureId* sprite_textures = sprites->renderer_textures;
+    const ItfliesbyRendererColorHex*  sprites_colors            = sprites->sprite_colors;
+    const ItfliesbyEnginePhysicsId*   sprites_physics           = sprites->sprite_physics;
 
-    //get our physics ids
-    ItfliesbyEnginePhysicsCollection physics_collection = {0};
-    itfliesby_engine_sprites_physics(
-        sprites,
-        &active_sprites,
-        &physics_collection);
+    ItfliesbyEngineSpriteId*    sprite_rendering_ids        = sprite_rendering_context->sprite_ids;
+    ItfliesbyRendererColorHex*  sprite_rendering_colors     = sprite_rendering_context->colors;
+    ItfliesbyRendererTextureId* sprite_rendering_textures   = sprite_rendering_context->renderer_textures;
+    ItfliesbyMathMat3*          sprite_rendering_transforms = sprite_rendering_context->transforms;
+    ItfliesbyEnginePhysicsId    sprite_rendering_physics_ids[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
 
-    //get the physics transforms
-    ItfliesbyEnginePhysicsTransformCollection physics_transforms = {0};
+    //get the active sprite ids    
+    u32 active_sprite_ids_count = itfliesby_engine_sprites_active(sprites,sprite_rendering_ids);
+    ItfliesbyEngineSpriteId current_sprite = 0;
+
+    //get the physics ids, colors, and textures    
+    for (
+        u32 sprite_rendering_index = 0;
+        sprite_rendering_index < active_sprite_ids_count;
+        ++sprite_rendering_index) {
+
+        current_sprite = sprite_rendering_ids[active_sprite_ids_count]; 
+
+        sprite_rendering_colors[sprite_rendering_index]      = sprites_colors[current_sprite];
+        sprite_rendering_textures[sprite_rendering_index]    = sprite_textures[current_sprite];
+        sprite_rendering_physics_ids[sprite_rendering_index] = sprites_physics[current_sprite];
+    }
+
+    //now we need our physics transforms
     itfliesby_engine_physics_transforms(
         physics,
-        &physics_collection,
-        &physics_transforms);
-
-    //get textures
-    ItfliesbyEngineSpriteTextureCollection texture_collection = {0};
-    itfliesby_engine_sprite_textures(
-        sprites,
-        &active_sprites,
-        &texture_collection);
-
-    //get colors
-    ItfliesbyEngineSpriteColorCollection color_collection = {0};
-    itfliesby_engine_sprite_colors(
-        sprites,
-        &active_sprites,
-        &color_collection
-    );
-
-    //write our output
-    sprite_rendering_context->count = active_sprites.sprite_count;
-    memmove(
-        sprite_rendering_context->sprite_ids,
-        active_sprites.sprite_ids,
-        sizeof(ItfliesbyEngineSpriteId) * active_sprites.sprite_count);
-    memmove(
-        sprite_rendering_context->transforms,
-        physics_transforms.transforms,
-        sizeof(ItfliesbyMathMat3) * active_sprites.sprite_count);
-    memmove(
-        sprite_rendering_context->renderer_texture,
-        texture_collection.renderer_textures,
-        sizeof(ItfliesbyRendererTextureId) & active_sprites.sprite_count);
-    memmove(
-        sprite_rendering_context->colors,
-        color_collection.colors,
-        sizeof(ItfliesbyRendererColorHex) & active_sprites.sprite_count);
+        sprite_rendering_physics_ids,
+        active_sprite_ids_count,
+        sprite_rendering_transforms);
+    
+    sprite_rendering_context->sprite_count = active_sprite_ids_count;
 }
