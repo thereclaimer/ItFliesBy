@@ -175,3 +175,45 @@ itfliesby_engine_sprites_active(
     
     sprite_collection->sprite_count = sprite_collection_count;
 }
+
+internal void
+itfliesby_engine_sprites_physics(
+    ItfliesbyEngine*                  sprites,
+    ItfliesbyEngineSpriteCollection*  sprite_collection,
+    ItfliesbyEnginePhysicsCollection* physics_collection) {
+
+    ItfliesbyEnginePhysicsId* engine_sprite_physics_ids   = sprites->physics;
+    ItfliesbyEnginePhysicsId* physics_collection_ids      = physics_collection->physics_ids;
+    ItfliesbyEnginePhysicsId* sprite_collection_ids       = sprite_collection->sprite_ids;
+    u32                       sprite_collection_ids_count = sprite_collection->sprite_count; 
+
+    ItfliesbyEngineSpriteId current_sprite_id = 0;
+
+    for (
+        size_t sprite_collection_index = 0;
+        sprite_collection_index < sprite_collection_ids_count;
+        ++sprite_collection_index) {
+
+        current_sprite_id = sprite_collection_ids[sprite_collection_index];
+
+        physics_collection_ids[sprite_collection_index] = engine_sprite_physics_ids[current_sprite_id];
+    }
+
+    physics_collection->physics_ids_count = sprite_collection_ids_count;
+}
+
+internal void
+itfliesby_engine_sprites_update(
+    ItfliesbyEngine* sprites) {
+
+    //get our active sprites
+    ItfliesbyEngineSpriteCollection active_sprites = {0};
+    itfliesby_engine_sprites_active(sprites,&active_sprites);
+
+    //get our physics ids
+    ItfliesbyEnginePhysicsCollection physics_collection = {0};
+    itfliesby_engine_sprites_physics(
+        sprites,
+        &active_sprites,
+        &physics_collection);
+}

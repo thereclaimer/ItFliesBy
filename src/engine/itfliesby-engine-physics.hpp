@@ -19,6 +19,11 @@ struct ItfliesbyEnginePhysicsMemory {
 
 typedef s8 ItfliesbyEnginePhysicsId; 
 
+struct ItfliesbyEnginePhysicsCollection {
+    ItfliesbyEnginePhysicsId physics_ids[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
+    size_t                   physics_ids_count;
+};
+
 struct ItfliesbyEnginePhysicsTransformPayload {
     ItfliesbyEnginePhysicsTransform transforms[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
 };

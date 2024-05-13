@@ -21,7 +21,7 @@ struct ItfliesbyEngineSprite {
 struct ItfliesbyEngineSpriteCollection {
     ItfliesbyEngineSpriteId sprite_ids[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
     size_t                  sprite_count;
-}
+};
 
 struct ItfliesbyEngineSprites {
     b8                         sprite_used[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
