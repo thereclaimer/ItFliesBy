@@ -16,6 +16,7 @@ struct ItfliesbyEngineSprite {
     ItfliesbyRendererColorHex  color;
     ItfliesbyEngineAssetsImage texture;
     ItfliesbyRendererTextureId renderer_texture;
+    ItfliesbyMathMat3          transform;
 };
 
 #define ITFLIESBY_ENGINE_SPRITE_COUNT_MAX       128
