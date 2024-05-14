@@ -207,11 +207,28 @@ itfliesby_engine_sprites_rendering_context(
     }
 
     //now we need our physics transforms
+    ItfliesbyMathMat3 physics_transforms[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
     itfliesby_engine_physics_transforms(
         physics,
         sprite_rendering_physics_ids,
         active_sprite_ids_count,
-        sprite_rendering_transforms);
-    
+        physics_transforms);
+
+    //apply projection    
+    const ItfliesbyMathMat3 projection = itfliesby_math_mat3_projection(1920.0f, 1080.0f);
+
+    for (
+        u32 transform_index = 0;
+        transform_index < active_sprite_ids_count;
+        ++transform_index) {
+
+        sprite_rendering_transforms[transform_index] = physics_transforms[transform_index];
+
+        // sprite_rendering_transforms[transform_index] = 
+        //     itfliesby_math_mat3_multiply(
+        //         &physics_transforms[transform_index],
+        //         &projection);
+    }
+
     sprite_rendering_context->sprite_count = active_sprite_ids_count;
 }

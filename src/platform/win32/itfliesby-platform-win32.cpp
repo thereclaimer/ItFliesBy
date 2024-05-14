@@ -298,7 +298,9 @@ itfliesby_platform_win32_main(
         itfliesby_game_update_and_render(
             game_window.game,
             &game_window.user_input,
-            pre_frame_ticks);
+            pre_frame_ticks,
+            game_window.viewport_dimensions.width,
+            game_window.viewport_dimensions.height);
 
 
         // itfliesby_dev_tools_update(game_window.itfliesby_state);

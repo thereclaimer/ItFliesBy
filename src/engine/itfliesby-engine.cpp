@@ -87,7 +87,9 @@ external void
 itfliesby_engine_render_scene(
           ItfliesbyEngine*    engine,
           ItfliesbyUserInput* user_input,
-    const u64                 delta_time_ticks) {
+    const u64                 delta_time_ticks,
+    const f32                 screen_width,
+    const f32                 screen_height) {
 
     engine->user_input = user_input;
 
@@ -113,5 +115,8 @@ itfliesby_engine_render_scene(
     itfliesby_engine_assets_update(assets);
     
     //render the scene
-    itfliesby_renderer_render(renderer);
+    itfliesby_renderer_render(
+        renderer,
+        screen_width,
+        screen_height);
 }

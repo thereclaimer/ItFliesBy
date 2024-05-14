@@ -96,6 +96,36 @@ itfliesby_math_mat3_multiply(
 }
 
 inline ItfliesbyMathMat3
+itfliesby_math_mat3_multiply(
+    const ItfliesbyMathMat3* in_m3_a,
+    const ItfliesbyMathMat3* in_m3_b) {
+
+    ItfliesbyMathMat3 c = {0};
+
+    const f32* a_row_0 = in_m3_a->rows.row_0;
+    const f32* a_row_1 = in_m3_a->rows.row_1;
+    const f32* a_row_2 = in_m3_a->rows.row_2;
+
+    const f32* b_row_0 = in_m3_b->rows.row_0;
+    const f32* b_row_1 = in_m3_b->rows.row_1;
+    const f32* b_row_2 = in_m3_b->rows.row_2;
+
+    c.rows.row_0[0] = (a_row_0[0] * b_row_0[0]) + (a_row_0[1] * b_row_1[0]) + (a_row_0[2] * b_row_2[0]); 
+    c.rows.row_0[1] = (a_row_0[0] * b_row_0[1]) + (a_row_0[1] * b_row_1[1]) + (a_row_0[2] * b_row_2[1]);
+    c.rows.row_0[2] = (a_row_0[0] * b_row_0[2]) + (a_row_0[1] * b_row_1[2]) + (a_row_0[2] * b_row_2[2]);
+
+    c.rows.row_1[0] = (a_row_1[0] * b_row_0[0]) + (a_row_1[1] * b_row_1[0]) + (a_row_1[2] * b_row_2[0]);
+    c.rows.row_1[1] = (a_row_1[0] * b_row_0[1]) + (a_row_1[1] * b_row_1[1]) + (a_row_1[2] * b_row_2[1]);
+    c.rows.row_1[2] = (a_row_1[0] * b_row_0[2]) + (a_row_1[1] * b_row_1[2]) + (a_row_1[2] * b_row_2[2]);
+
+    c.rows.row_2[0] = (a_row_2[0] * b_row_0[0]) + (a_row_2[1] * b_row_1[0]) + (a_row_2[2] * b_row_2[0]);
+    c.rows.row_2[1] = (a_row_2[0] * b_row_0[1]) + (a_row_2[1] * b_row_1[1]) + (a_row_2[2] * b_row_2[1]);
+    c.rows.row_2[2] = (a_row_2[0] * b_row_0[2]) + (a_row_2[1] * b_row_1[2]) + (a_row_2[2] * b_row_2[2]);
+
+    return(c);
+}
+
+inline ItfliesbyMathMat3
 itfliesby_math_mat3_translation(
     f32 x,
     f32 y) {
@@ -261,6 +291,33 @@ itfliesby_math_mat3_transform_trs(
 
         out_transform[transform_index] = transform;
     }
+}
+
+inline ItfliesbyMathMat3
+itfliesby_math_mat3_projection(
+    f32 width,
+    f32 height) {
+
+    ItfliesbyMathMat3 m3 = {0};
+
+    f32 half_width  = width  * 0.5f;
+    f32 half_height = height * 0.5f;
+
+    f32 right  = half_width;
+    f32 top    = half_height;
+    f32 left   = half_width  * -1.0f;
+    f32 bottom = half_height * -1.0f;
+
+
+    m3.rows.row_0[0] = 2.0f / (right - left);
+    m3.rows.row_0[2] = -((right + left) / (right - left));
+
+    m3.rows.row_1[1] = 2.0f / (top - bottom);
+    m3.rows.row_1[2] = -((top + bottom) / (top - bottom));
+
+    m3.rows.row_2[2] = 1.0f;
+
+    return(m3);
 }
 
 #endif //ITFLIESBY_MATH_MAT3_HPP

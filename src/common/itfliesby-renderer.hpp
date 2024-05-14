@@ -116,7 +116,9 @@ itfliesby_renderer_create_and_init(
 
 api void
 itfliesby_renderer_render(
-    ItfliesbyRendererHandle renderer); 
+    ItfliesbyRendererHandle renderer,
+    f32 screen_width,
+    f32 screen_height); 
 
 struct ItfliesbyRendererPerspective {
     ItfliesbyMathMat3 transform;

@@ -23,7 +23,9 @@ api void
 itfliesby_game_update_and_render(
           itfliesby_game      game,
           ItfliesbyUserInput* user_input,
-    const u64                 time_ticks
+    const u64                 time_ticks,
+    const f32                 screen_width,
+    const f32                 screen_height
 );
 
 #endif //ITFLIESBY_GAME_HPP
