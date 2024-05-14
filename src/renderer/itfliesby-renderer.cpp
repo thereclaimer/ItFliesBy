@@ -98,6 +98,9 @@ itfliesby_renderer_render(
     ItfliesbyRendererSolidQuadUpdateBatch*    solid_quad_batch    = &renderer->quad_manager.solid_quad_batch;  
     ItfliesbyRendererBatchSimpleQuad*         simple_quad_batch   = &renderer->batches.simple_quad;
 
+    renderer->screen_width  = screen_width;
+    renderer->screen_height = screen_height;
+
     //clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     itfliesby_renderer_opengl_set_viewport(
@@ -115,4 +118,13 @@ itfliesby_renderer_render(
         &renderer->buffers.simple_quad,
         simple_quad_batch,
         renderer->shader_store.types.simple_quad.gl_program_id);
+}
+
+external f32
+itfliesby_renderer_aspect_ratio(
+    ItfliesbyRenderer* renderer) {
+
+    f32 aspect_ratio = renderer->screen_width / renderer->screen_height;
+
+    return(aspect_ratio);
 }

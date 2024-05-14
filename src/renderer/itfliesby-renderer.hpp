@@ -36,6 +36,8 @@ struct ItfliesbyRenderer {
     ItfliesbyRendererBuffers      buffers;
     ItfliesbyRendererTextureStore textures;
     ItfliesbyRendererPerspective  perspective;
+    f32 screen_width;
+    f32 screen_height;
 };
 
 inline void

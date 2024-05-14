@@ -155,29 +155,8 @@ inline void
 itfliesby_renderer_opengl_set_viewport(
     f32 screen_width,
     f32 screen_height) {
-
-    // // This is your target virtual resolution for the game, the size you built your game to
-    // u32 virtual_width  = screen_width;
-    // u32 virtual_height = screen_height;
     
-    // f32 target_aspect_ratio = virtual_width / virtual_height;
-        
-    // // figure out the largest area that fits in this resolution at the desired aspect ratio
-    // int width = screen_width ;
-    // int height = (int)(width / target_aspect_ratio + 0.5f);
-
-    // if (height > screen_height )
-    // {
-    //     //It doesn't fit our height, we must switch to pillarbox then
-    //     height = screen_height ;
-    //     width = (int)(height * target_aspect_ratio + 0.5f);
-    // }
-
-    // // set up the new viewport centered in the backbuffer
-    // int vp_x = (screen_width  / 2) - (width / 2);
-    // int vp_y = (screen_height / 2) - (height/ 2);
-    
-    glViewport(0,0,screen_width,screen_height);
+    // glViewport(0,0,screen_width,screen_height);
 }
 
 #endif //ITFLIESBY_RENDERER_OPENGL_HPP

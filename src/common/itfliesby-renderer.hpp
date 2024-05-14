@@ -117,8 +117,8 @@ itfliesby_renderer_create_and_init(
 api void
 itfliesby_renderer_render(
     ItfliesbyRendererHandle renderer,
-    f32 screen_width,
-    f32 screen_height); 
+    f32                     screen_width,
+    f32                     screen_height); 
 
 struct ItfliesbyRendererPerspective {
     ItfliesbyMathMat3 transform;
@@ -130,6 +130,10 @@ api ItfliesbyRendererPerspective
 itfliesby_renderer_perspective(
     f32 width_pixels,
     f32 height_pixels);
+
+api f32
+itfliesby_renderer_aspect_ratio(
+    ItfliesbyRendererHandle renderer);
 
 //----------------------------------------------------------------
 // SHADERS

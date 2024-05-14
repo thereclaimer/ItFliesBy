@@ -229,15 +229,18 @@ itfliesby_platform_win32_main(
         0,
         window_class.lpszClassName,
         "It Flies By",
-        WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_MAXIMIZE,
-        CW_USEDEFAULT,
-        CW_USEDEFAULT,
-        CW_USEDEFAULT,
-        CW_USEDEFAULT,
+        WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+        (GetSystemMetrics(SM_CXSCREEN) - 1024) / 2, // X position (centered)
+        (GetSystemMetrics(SM_CYSCREEN) - 768) / 2, // Y position (centered)
+        1024,
+        768,
         0,
         0,
         instance,
         0);
+
+    game_window.viewport_dimensions.width  = 1024;
+    game_window.viewport_dimensions.height = 768;
 
     ITFLIESBY_ASSERT(game_window.window_handle);
 
@@ -256,9 +259,6 @@ itfliesby_platform_win32_main(
     win32_platform_api.memory_free       = itfliesby_platform_win32_api_free_memory;
     win32_platform_api.graphics_api_init = itfliesby_platform_win32_api_opengl_initialize;
 
-    //toggle full screen
-    game_window.full_screen = false;
-    itfliesby_platform_win32_toggle_full_screen();
     
     //allocate the memory
     memory game_memory = itfliesby_platform_win32_api_allocate_memory(ITFLIESBY_GAME_MEMORY_SIZE); 
