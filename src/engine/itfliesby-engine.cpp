@@ -60,6 +60,7 @@ itfliesby_engine_fetch_graphics_information(
     itfliesby_engine_sprites_rendering_context(
         sprites,
         physics,
+        renderer,
         &sprite_rendering);
 
     for (

@@ -32,10 +32,11 @@ itfliesby_engine_physics_dynamics(
 
 internal void
 itfliesby_engine_physics_transforms(
-    const ItfliesbyEnginePhysics*                    physics,
-    const ItfliesbyEnginePhysicsId*                  physics_ids,
-    const size_t                                     physics_count,
-          ItfliesbyEnginePhysicsTransform*           physics_transforms) {
+    const ItfliesbyEnginePhysics*          physics,
+    const ItfliesbyEnginePhysicsId*        physics_ids,
+    const size_t                           physics_count,
+    const ItfliesbyRendererScaleFactor     scale_factor,
+          ItfliesbyEnginePhysicsTransform* physics_transforms) {
 
     const ItfliesbyEnginePhysicsTablePosition* physics_table_transforms_position = &physics->tables.transforms.position;
     const ItfliesbyEnginePhysicsTableScale*    physics_table_transforms_scale    = &physics->tables.transforms.scale;
@@ -46,6 +47,7 @@ itfliesby_engine_physics_transforms(
     const f32* physics_transform_scale_x          = physics_table_transforms_scale->x;
     const f32* physics_transform_scale_y          = physics_table_transforms_scale->y;
     const f32* physics_transform_rotation_radians = physics_table_transforms_rotation->radians;
+
 
     ItfliesbyEnginePhysicsTransform physics_transform_translation[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX] = {0};
     ItfliesbyEnginePhysicsTransform physics_transform_scale[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX]       = {0};

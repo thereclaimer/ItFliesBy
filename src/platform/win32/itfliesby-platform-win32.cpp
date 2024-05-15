@@ -245,17 +245,17 @@ itfliesby_platform_win32_main(
         window_class.lpszClassName,
         "It Flies By",
         WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-        (GetSystemMetrics(SM_CXSCREEN) - 1920) / 2, // X position (centered)
-        (GetSystemMetrics(SM_CYSCREEN) - 1080) / 2, // Y position (centered)
-        1920,
-        1080,
+        (GetSystemMetrics(SM_CXSCREEN) - 1024) / 2, // X position (centered)
+        (GetSystemMetrics(SM_CYSCREEN) - 768) / 2, // Y position (centered)
+        1024,
+        768,
         0,
         0,
         instance,
         0);
 
-    game_window.window_dimensions.width  = 1920;
-    game_window.window_dimensions.height = 1080;
+    game_window.window_dimensions.width  = 1024;
+    game_window.window_dimensions.height = 768;
 
     ITFLIESBY_ASSERT(game_window.window_handle);
 

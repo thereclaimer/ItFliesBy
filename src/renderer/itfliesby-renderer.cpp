@@ -103,9 +103,14 @@ itfliesby_renderer_render(
     renderer->screen_width  = screen_width;
     renderer->screen_height = screen_height;
 
+    renderer->scale_factor.x = window_width  / screen_width; 
+    renderer->scale_factor.y = window_height / screen_height; 
+
     //clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     itfliesby_renderer_opengl_set_viewport(
+        window_width,
+        window_height,
         screen_width,
         screen_height);
 
@@ -129,4 +134,11 @@ itfliesby_renderer_aspect_ratio(
     f32 aspect_ratio = renderer->screen_width / renderer->screen_height;
 
     return(aspect_ratio);
+}
+
+external ItfliesbyRendererScaleFactor
+itfliesby_renderer_scale_factor(
+    ItfliesbyRenderer* renderer) {
+
+    return(renderer->scale_factor);
 }

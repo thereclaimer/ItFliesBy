@@ -60,6 +60,7 @@ void
 itfliesby_engine_sprites_rendering_context(
     const ItfliesbyEngineSprites*                   sprites,
     const ItfliesbyEnginePhysics*                   physics,
+    const ItfliesbyRendererHandle                   renderer,
           ItfliesbyEngineSpriteRenderingContext*    sprite_rendering_context);
 
 #endif //ITFLIESBY_ENGINE_SPRITES_HPP

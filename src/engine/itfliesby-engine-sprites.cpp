@@ -90,9 +90,10 @@ itfliesby_engine_sprites_connor_test(
         return(ITFLIESBY_ENGINE_SPRITE_ID_INVALID);
     }
 
+
     ItfliesbyEnginePhysicsScale scale = {0};
-    scale.x = 1.0f;
-    scale.y = 1.0f;
+    scale.x = 0.5f;
+    scale.y = 0.5f;
 
     //create the physics transforms
     ItfliesbyEnginePhysicsId physics_id = 
@@ -181,6 +182,7 @@ internal void
 itfliesby_engine_sprites_rendering_context(
     const ItfliesbyEngineSprites*                   sprites,
     const ItfliesbyEnginePhysics*                   physics,
+    const ItfliesbyRendererHandle                   renderer,
           ItfliesbyEngineSpriteRenderingContext*    sprite_rendering_context) {
 
     const ItfliesbyRendererTextureId* sprite_textures = sprites->renderer_textures;
@@ -210,16 +212,18 @@ itfliesby_engine_sprites_rendering_context(
         sprite_rendering_physics_ids[sprite_rendering_index] = sprites_physics[current_sprite];
     }
 
+    ItfliesbyRendererScaleFactor scale_factor = itfliesby_renderer_scale_factor(renderer);
+
     //now we need our physics transforms
     ItfliesbyMathMat3 physics_transforms[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
     itfliesby_engine_physics_transforms(
         physics,
         sprite_rendering_physics_ids,
         active_sprite_ids_count,
+        scale_factor,
         physics_transforms);
 
     //apply projection    
-    const ItfliesbyMathMat3 projection = itfliesby_math_mat3_projection(1920.0f, 1080.0f);
 
     for (
         u32 transform_index = 0;
@@ -228,10 +232,6 @@ itfliesby_engine_sprites_rendering_context(
 
         sprite_rendering_transforms[transform_index] = physics_transforms[transform_index];
 
-        // sprite_rendering_transforms[transform_index] = 
-        //     itfliesby_math_mat3_multiply(
-        //         &physics_transforms[transform_index],
-        //         &projection);
     }
 
     sprite_rendering_context->sprite_count = active_sprite_ids_count;

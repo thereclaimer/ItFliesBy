@@ -101,6 +101,7 @@ itfliesby_engine_physics_transforms(
     const ItfliesbyEnginePhysics*           physics,
     const ItfliesbyEnginePhysicsId*         physics_ids,
     const size_t                            physics_count,
+    const ItfliesbyRendererScaleFactor*     scale_factor,
           ItfliesbyEnginePhysicsTransform*  physics_transforms);
 
 #endif //ITFLIESBY_ENGINE_PHYSICS_HPP

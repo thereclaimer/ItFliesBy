@@ -108,6 +108,8 @@ struct ItfliesbyRendererSolidQuadUpdateBatch {
 // RENDERER
 //----------------------------------------------------------------
 
+typedef ItfliesbyMathVec2 ItfliesbyRendererScaleFactor;
+
 api ItfliesbyRendererHandle
 itfliesby_renderer_create_and_init(
     ItfliesbyPlatformApi platform,
@@ -135,6 +137,10 @@ itfliesby_renderer_perspective(
 
 api f32
 itfliesby_renderer_aspect_ratio(
+    ItfliesbyRendererHandle renderer);
+
+api ItfliesbyRendererScaleFactor
+itfliesby_renderer_scale_factor(
     ItfliesbyRendererHandle renderer);
 
 //----------------------------------------------------------------
