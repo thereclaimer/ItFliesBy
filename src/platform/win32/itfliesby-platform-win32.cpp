@@ -6,6 +6,19 @@
 
 ItfliesbyPlatformWin32Window game_window;
 
+internal void
+itfliesby_platform_win32_monitor_dimensions() {
+
+    HMONITOR monitor_handle = MonitorFromWindow(game_window.window_handle,MONITOR_DEFAULTTONEAREST);
+    MONITORINFO monitor_info = {0};
+    monitor_info.cbSize = sizeof(monitor_info);
+    GetMonitorInfo(monitor_handle,&monitor_info);
+
+    RECT window_rect = monitor_info.rcMonitor;
+
+    game_window.monitor_dimensions.width  = window_rect.right  - window_rect.left; 
+    game_window.monitor_dimensions.height = window_rect.bottom - window_rect.top; 
+}
 
 internal void
 itfliesby_platform_win32_toggle_full_screen() {
@@ -53,8 +66,8 @@ itfliesby_platform_win32_toggle_full_screen() {
                     SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
 
 
-        game_window.viewport_dimensions.width  = (window_rect.right - window_rect.left);
-        game_window.viewport_dimensions.height = (window_rect.bottom - window_rect.top);
+        game_window.window_dimensions.width  = (window_rect.right - window_rect.left);
+        game_window.window_dimensions.height = (window_rect.bottom - window_rect.top);
     }
     else {
         
@@ -185,11 +198,13 @@ itfliesby_platform_win32_window_callback(HWND window_handle,
         case WM_SIZE: {
             GetClientRect(game_window.window_handle, &window_rect);
             if (game_window.game) {
-                game_window.viewport_dimensions.width  = (window_rect.right - window_rect.left);
-                game_window.viewport_dimensions.height = (window_rect.bottom - window_rect.top);
+                game_window.window_dimensions.width  = (window_rect.right - window_rect.left);
+                game_window.window_dimensions.height = (window_rect.bottom - window_rect.top);
             }
 
             game_window.maximized = w_param == SIZE_MAXIMIZED;
+
+            itfliesby_platform_win32_monitor_dimensions();
 
         } break;
 
@@ -230,21 +245,23 @@ itfliesby_platform_win32_main(
         window_class.lpszClassName,
         "It Flies By",
         WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-        (GetSystemMetrics(SM_CXSCREEN) - 1024) / 2, // X position (centered)
-        (GetSystemMetrics(SM_CYSCREEN) - 768) / 2, // Y position (centered)
-        1024,
-        768,
+        (GetSystemMetrics(SM_CXSCREEN) - 1920) / 2, // X position (centered)
+        (GetSystemMetrics(SM_CYSCREEN) - 1080) / 2, // Y position (centered)
+        1920,
+        1080,
         0,
         0,
         instance,
         0);
 
-    game_window.viewport_dimensions.width  = 1024;
-    game_window.viewport_dimensions.height = 768;
+    game_window.window_dimensions.width  = 1920;
+    game_window.window_dimensions.height = 1080;
 
     ITFLIESBY_ASSERT(game_window.window_handle);
 
     game_window.device_context = GetDC(game_window.window_handle);
+
+    itfliesby_platform_win32_monitor_dimensions();
 
     //put the platform api together
     ItfliesbyPlatformApi win32_platform_api = {0};
@@ -299,8 +316,10 @@ itfliesby_platform_win32_main(
             game_window.game,
             &game_window.user_input,
             pre_frame_ticks,
-            game_window.viewport_dimensions.width,
-            game_window.viewport_dimensions.height);
+            game_window.window_dimensions.width,
+            game_window.window_dimensions.height,
+            game_window.monitor_dimensions.width,
+            game_window.monitor_dimensions.height);
 
 
         // itfliesby_dev_tools_update(game_window.itfliesby_state);

@@ -117,6 +117,8 @@ itfliesby_renderer_create_and_init(
 api void
 itfliesby_renderer_render(
     ItfliesbyRendererHandle renderer,
+    f32                     window_width,
+    f32                     window_height,
     f32                     screen_width,
     f32                     screen_height); 
 

@@ -90,21 +90,9 @@ itfliesby_engine_sprites_connor_test(
         return(ITFLIESBY_ENGINE_SPRITE_ID_INVALID);
     }
 
-    f32 renderer_aspect_ratio = itfliesby_renderer_aspect_ratio(renderer);
-
-    f32 scale_y = 1.0f;
-    f32 scale_x = 1.0f;
-
-    //we know connor is always a square, so his aspect ratio is 1
-    f32 sprite_aspect_ratio = 1.0f;
-
-    // scale_x *= renderer_aspect_ratio;
-
-
-
     ItfliesbyEnginePhysicsScale scale = {0};
-    scale.x = scale_x;
-    scale.y = scale_y;
+    scale.x = 1.0f;
+    scale.y = 1.0f;
 
     //create the physics transforms
     ItfliesbyEnginePhysicsId physics_id = 

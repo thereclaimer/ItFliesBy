@@ -58,6 +58,8 @@ itfliesby_engine_render_scene(
           ItfliesbyEngine*    engine,
           ItfliesbyUserInput* user_input,
     const u64                 delta_time_ticks,
+    const f32                 window_width,
+    const f32                 window_height,
     const f32                 screen_width,
     const f32                 screen_height);
 
