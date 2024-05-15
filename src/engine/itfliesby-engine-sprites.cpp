@@ -3,6 +3,30 @@
 #include "itfliesby-engine-sprites.hpp"
 #include "itfliesby-engine-rendering.cpp"
 
+
+internal ItfliesbyEngineSpriteId
+itfliesby_engine_sprites_activate_next(
+    ItfliesbyEngineSprites* sprites) {
+
+    ItfliesbyEngineSpriteId new_sprite = ITFLIESBY_ENGINE_SPRITE_ID_INVALID;
+
+    //find the next sprite
+    for (
+        u32 index = 0;
+        index < ITFLIESBY_ENGINE_SPRITE_COUNT_MAX;
+        ++index) {
+
+        if (!sprites->sprite_used[index]) {
+            new_sprite = index;
+            break;
+        }
+    }
+
+    if (new_sprite == NULL) {
+        return(ITFLIESBY_ENGINE_SPRITE_ID_INVALID);
+    }
+}
+
 internal ItfliesbyEngineSpriteId
 itfliesby_engine_sprites_create(
     ItfliesbyEngineSprites*        sprites,
@@ -72,7 +96,6 @@ itfliesby_engine_sprites_connor_test(
     ItfliesbyRendererHandle        renderer) {
 
     ItfliesbyEngineSpriteId connor_sprite_id = ITFLIESBY_ENGINE_SPRITE_ID_INVALID;
-    ItfliesbyEngineSprite*  connor_sprite    = NULL;
 
     //find the next sprite
     for (
@@ -129,6 +152,59 @@ itfliesby_engine_sprites_connor_test(
     return(connor_sprite_id);
 }
 
+ItfliesbyEngineSpriteId
+itfliesby_engine_sprites_jig(
+    ItfliesbyEngineSprites*        sprites,
+    ItfliesbyEngineSpriteId        connor_sprite_id,
+    ItfliesbyEnginePhysics*        physics,
+    ItfliesbyEngineAssets*         assets,
+    ItfliesbyRendererHandle        renderer) {
+
+    //get the next available sprite id
+    ItfliesbyEngineSpriteId jig_sprite_id = itfliesby_engine_sprites_activate_next(sprites);
+
+    ItfliesbyEnginePhysicsScale jig_scale = itfliesby_engine_physics_scale(0.25f,0.25f);    
+
+    //jig's position is based off connor's position
+    ItfliesbyEnginePhysicsPosition connor_position =
+        itfliesby_engine_physics_position(
+            physics,
+            connor_sprite_id);
+
+    //TODO: for now, it'll just be at the top left
+    ItfliesbyEnginePhysicsPosition jig_position = {0};
+    jig_position.x = -1.0f;
+    jig_position.y =  1.0f;
+
+    //create the physics transforms
+    ItfliesbyEnginePhysicsId jig_physics_id = 
+        itfliesby_engine_physics_transforms_create(
+            physics,  // physics
+            jig_position, // position
+            jig_scale,    // scale
+            0.0f);    // rotation degrees
+
+    if (jig_physics_id == ITFLIESBY_ENGINE_PHYSICS_OBJECT_INVALID) {
+        return(ITFLIESBY_ENGINE_SPRITE_ID_INVALID);
+    }
+
+    //create jig's texture
+    ItfliesbyRendererTextureId jig_texture_id = 
+        itfliesby_engine_rendering_push_texture_sprite_character(
+            renderer,
+            ITFLIESBY_ENGINE_ASSETS_IMAGE_CALIBRATION_JIG,
+            assets);
+
+    //add jig's shit to the store
+    sprites->sprite_used[jig_sprite_id]       = true;
+    //TODO: not proper, also not a big deal
+    sprites->sprite_colors[jig_sprite_id]     = ITFLIESBY_ENGINE_SPRITE_COLOR_CONOR;
+    sprites->sprite_physics[jig_sprite_id]    = jig_physics_id;
+    sprites->sprite_textures[jig_sprite_id]   = ITFLIESBY_ENGINE_ASSETS_IMAGE_CALIBRATION_JIG;
+    sprites->renderer_textures[jig_sprite_id] = jig_texture_id; 
+
+    return(jig_sprite_id);
+}
 
 internal ItfliesbyEnginePhysicsId
 itfliesby_engine_sprites_physics_id_get(

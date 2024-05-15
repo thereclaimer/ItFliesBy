@@ -104,4 +104,21 @@ itfliesby_engine_physics_transforms(
     const ItfliesbyRendererScaleFactor*     scale_factor,
           ItfliesbyEnginePhysicsTransform*  physics_transforms);
 
+inline ItfliesbyEnginePhysicsScale
+itfliesby_engine_physics_scale(
+    f32 x, 
+    f32 y) {
+
+    ItfliesbyEnginePhysicsScale scale = {0};
+    scale.x = x;
+    scale.y = y;
+
+    return(scale);
+}
+
+ItfliesbyEnginePhysicsPosition
+itfliesby_engine_physics_position(
+    ItfliesbyEnginePhysics*  physics,
+    ItfliesbyEnginePhysicsId physics_id);
+
 #endif //ITFLIESBY_ENGINE_PHYSICS_HPP

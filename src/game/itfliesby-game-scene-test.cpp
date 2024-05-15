@@ -30,5 +30,14 @@ itfliesby_game_scene_test(
                 game_scene_test->scene_id);
     }
 
+    //create jig
+    if (game_scene_test->jig_sprite_id == ITFLIESBY_ENGINE_SPRITE_ID_INVALID) {
+        game_scene_test->jig_sprite_id =
+            itfliesby_engine_scene_jig(
+                game_engine,
+                game_scene_test->scene_id);
+    }
+
+
     ITFLIESBY_NOP();
 }

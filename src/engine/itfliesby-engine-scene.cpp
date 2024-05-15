@@ -71,6 +71,7 @@ itfliesby_engine_scene_connor_test(
     ItfliesbyEngine*       engine,
     ItfliesbyEngineSceneId scene_id) {
 
+    //create the sprite
     ItfliesbyEngineSpriteId connor_sprite_id = 
         itfliesby_engine_sprites_connor_test(
             &engine->sprites,
@@ -78,8 +79,40 @@ itfliesby_engine_scene_connor_test(
             ITFLIESBY_ENGINE_PHYSICS_POSITION_CENTER,
             &engine->assets,
             engine->renderer);
-        
+
+    //add it to the scene    
+    ItfliesbyEngineSceneManager* scene_manager = &engine->scenes;
+    scene_manager->scenes[scene_id].sprite_id_connor = connor_sprite_id;
+
     return(connor_sprite_id);
+}
+
+//TODO: this will fail if we havent created connor yet
+//we should just spawn jig in the center if connor doesn't exist
+external ItfliesbyEngineSpriteId
+itfliesby_engine_scene_jig(
+    ItfliesbyEngine*       engine,
+    ItfliesbyEngineSceneId scene_id) {
+
+
+    ItfliesbyEngineSceneManager* scene_manager = &engine->scenes;
+    ItfliesbyEngineScene scene = scene_manager->scenes[scene_id];
+    
+    ItfliesbyEngineSpriteId connor_sprite_id = scene.sprite_id_connor;
+
+    //create the sprite
+    ItfliesbyEngineSpriteId jig_sprite_id = 
+        itfliesby_engine_sprites_jig(
+            &engine->sprites,
+            connor_sprite_id,
+            &engine->physics,
+            &engine->assets,
+            engine->renderer);
+
+    //add it to the scene
+    scene_manager->scenes[scene_id].sprite_id_jig = jig_sprite_id;
+
+    return(jig_sprite_id);
 }
 
 internal void

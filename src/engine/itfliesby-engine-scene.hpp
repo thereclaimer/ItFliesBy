@@ -13,6 +13,7 @@ typedef s8 ItfliesbyEngineSceneId;
 
 struct ItfliesbyEngineScene {
     ItfliesbyEngineSpriteId sprite_id_connor;
+    ItfliesbyEngineSpriteId sprite_id_jig;
 };
 
 inline ItfliesbyEngineScene

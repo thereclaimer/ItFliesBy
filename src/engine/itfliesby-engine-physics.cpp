@@ -328,3 +328,20 @@ itfliesby_engine_physics_update_velocity(
     physics_dynamics_table_velocity_x[physics_id] = velocity.x;
     physics_dynamics_table_velocity_y[physics_id] = velocity.y;
 }
+
+
+internal ItfliesbyEnginePhysicsPosition
+itfliesby_engine_physics_position(
+    ItfliesbyEnginePhysics*  physics,
+    ItfliesbyEnginePhysicsId physics_id) {
+
+    ItfliesbyEnginePhysicsTablePosition* position_table = &physics->tables.transforms.position;
+    f32* position_table_x = position_table->x;
+    f32* position_table_y = position_table->y;
+
+    ItfliesbyEnginePhysicsPosition position = {0};
+    position.x = position_table_x[physics_id];
+    position.y = position_table_y[physics_id];
+
+    return(position);
+}
