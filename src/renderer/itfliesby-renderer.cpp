@@ -70,6 +70,13 @@ itfliesby_renderer_create_and_init(
         1.0f
     );
 
+	glHint(GL_SAMPLES, 4);
+	glEnable(GL_MULTISAMPLE);
+
+	glEnable(GL_BLEND);
+	glEnable(GL_LINE_SMOOTH);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     //initialize our quad buffers
     renderer->quad_manager        = itfliesby_renderer_quad_manager_init();
     renderer->buffers.simple_quad = itfliesby_renderer_shader_simple_quad_buffers_create();
@@ -81,7 +88,11 @@ itfliesby_renderer_create_and_init(
 
 external void
 itfliesby_renderer_render(
-    ItfliesbyRenderer* renderer) {
+    ItfliesbyRenderer* renderer,
+    f32                window_width,
+    f32                window_height,
+    f32                screen_width,
+    f32                screen_height) {
 
     ItfliesbyRendererShader*                  solid_quad_shader   = &renderer->shader_store.types.solid_quad; 
     ItfliesbyRendererQuadManager*             quad_manager        = &renderer->quad_manager; 
@@ -89,20 +100,45 @@ itfliesby_renderer_render(
     ItfliesbyRendererSolidQuadUpdateBatch*    solid_quad_batch    = &renderer->quad_manager.solid_quad_batch;  
     ItfliesbyRendererBatchSimpleQuad*         simple_quad_batch   = &renderer->batches.simple_quad;
 
+    renderer->screen_width  = screen_width;
+    renderer->screen_height = screen_height;
+
+    renderer->scale_factor.x = window_width  / screen_width; 
+    renderer->scale_factor.y = window_height / screen_height; 
+
     //clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    itfliesby_renderer_opengl_set_viewport(
+        window_width,
+        window_height,
+        screen_width,
+        screen_height);
 
     itfliesby_renderer_quad_solid_quads_render(
         solid_quad_shader,
         quad_manager,
         solid_quad_uniforms,
-        solid_quad_batch
-    );
+        solid_quad_batch);
 
     itfliesby_renderer_simple_quad_render(
         &renderer->shader_store.uniforms.simple_quad,
         &renderer->buffers.simple_quad,
         simple_quad_batch,
-        renderer->shader_store.types.simple_quad.gl_program_id
-    );
+        renderer->shader_store.types.simple_quad.gl_program_id);
+}
+
+external f32
+itfliesby_renderer_aspect_ratio(
+    ItfliesbyRenderer* renderer) {
+
+    f32 aspect_ratio = renderer->screen_width / renderer->screen_height;
+
+    return(aspect_ratio);
+}
+
+external ItfliesbyRendererScaleFactor
+itfliesby_renderer_scale_factor(
+    ItfliesbyRenderer* renderer) {
+
+    return(renderer->scale_factor);
 }

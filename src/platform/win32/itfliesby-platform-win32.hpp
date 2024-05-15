@@ -25,7 +25,8 @@ struct ItfliesbyPlatformWin32Window {
     u64                         window_ex_style;
     bool                        running;
     HGLRC                       opengl_context;
-    ItfliesbyViewportDimensions viewport_dimensions;
+    ItfliesbyViewportDimensions window_dimensions;
+    ItfliesbyViewportDimensions monitor_dimensions;
     ItfliesbyUserInput          user_input;
     itfliesby_game              game;
 };

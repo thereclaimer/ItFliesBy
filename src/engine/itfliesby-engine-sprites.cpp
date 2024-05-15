@@ -90,13 +90,18 @@ itfliesby_engine_sprites_connor_test(
         return(ITFLIESBY_ENGINE_SPRITE_ID_INVALID);
     }
 
+
+    ItfliesbyEnginePhysicsScale scale = {0};
+    scale.x = 0.5f;
+    scale.y = 0.5f;
+
     //create the physics transforms
     ItfliesbyEnginePhysicsId physics_id = 
         itfliesby_engine_physics_transforms_create(
-            physics,       // physics
-            position,      // position
-            {0.25f,0.25f}, // scale
-            0.0f);         // rotation degrees
+            physics,  // physics
+            position, // position
+            scale,    // scale
+            0.0f);    // rotation degrees
 
     if (physics_id == ITFLIESBY_ENGINE_PHYSICS_OBJECT_INVALID) {
         return(ITFLIESBY_ENGINE_SPRITE_ID_INVALID);
@@ -149,4 +154,85 @@ itfliesby_engine_sprites_get(
     sprite.renderer_texture = sprites->renderer_textures[sprite_id]; 
 
     return(sprite);
+}
+
+internal u32
+itfliesby_engine_sprites_active(
+    const ItfliesbyEngineSprites*  sprites,
+          ItfliesbyEngineSpriteId* active_sprite_ids) {
+
+    const b8* sprites_active       = sprites->sprite_used;
+    u32       sprites_active_count = 0;
+
+    for (
+        u32 sprite_index = 0;
+        sprite_index < ITFLIESBY_ENGINE_SPRITE_COUNT_MAX;
+        ++sprite_index) {
+
+        if (sprites_active[sprite_index]) {
+            active_sprite_ids[sprites_active_count] = sprite_index;
+            ++sprites_active_count;
+        }
+    }
+    
+    return(sprites_active_count);
+}
+
+internal void
+itfliesby_engine_sprites_rendering_context(
+    const ItfliesbyEngineSprites*                   sprites,
+    const ItfliesbyEnginePhysics*                   physics,
+    const ItfliesbyRendererHandle                   renderer,
+          ItfliesbyEngineSpriteRenderingContext*    sprite_rendering_context) {
+
+    const ItfliesbyRendererTextureId* sprite_textures = sprites->renderer_textures;
+    const ItfliesbyRendererColorHex*  sprites_colors            = sprites->sprite_colors;
+    const ItfliesbyEnginePhysicsId*   sprites_physics           = sprites->sprite_physics;
+
+    ItfliesbyEngineSpriteId*    sprite_rendering_ids        = sprite_rendering_context->sprite_ids;
+    ItfliesbyRendererColorHex*  sprite_rendering_colors     = sprite_rendering_context->colors;
+    ItfliesbyRendererTextureId* sprite_rendering_textures   = sprite_rendering_context->renderer_textures;
+    ItfliesbyMathMat3*          sprite_rendering_transforms = sprite_rendering_context->transforms;
+    ItfliesbyEnginePhysicsId    sprite_rendering_physics_ids[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
+
+    //get the active sprite ids    
+    u32 active_sprite_ids_count = itfliesby_engine_sprites_active(sprites,sprite_rendering_ids);
+    ItfliesbyEngineSpriteId current_sprite = 0;
+
+    //get the physics ids, colors, and textures    
+    for (
+        u32 sprite_rendering_index = 0;
+        sprite_rendering_index < active_sprite_ids_count;
+        ++sprite_rendering_index) {
+
+        current_sprite = sprite_rendering_ids[active_sprite_ids_count]; 
+
+        sprite_rendering_colors[sprite_rendering_index]      = sprites_colors[current_sprite];
+        sprite_rendering_textures[sprite_rendering_index]    = sprite_textures[current_sprite];
+        sprite_rendering_physics_ids[sprite_rendering_index] = sprites_physics[current_sprite];
+    }
+
+    ItfliesbyRendererScaleFactor scale_factor = itfliesby_renderer_scale_factor(renderer);
+
+    //now we need our physics transforms
+    ItfliesbyMathMat3 physics_transforms[ITFLIESBY_ENGINE_SPRITE_COUNT_MAX];
+    itfliesby_engine_physics_transforms(
+        physics,
+        sprite_rendering_physics_ids,
+        active_sprite_ids_count,
+        scale_factor,
+        physics_transforms);
+
+    //apply projection    
+
+    for (
+        u32 transform_index = 0;
+        transform_index < active_sprite_ids_count;
+        ++transform_index) {
+
+        sprite_rendering_transforms[transform_index] = physics_transforms[transform_index];
+
+    }
+
+    sprite_rendering_context->sprite_count = active_sprite_ids_count;
 }

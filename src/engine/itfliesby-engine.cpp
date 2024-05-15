@@ -49,22 +49,29 @@ itfliesby_engine_destroy(
 internal void
 itfliesby_engine_fetch_graphics_information(
     ItfliesbyEngine*                        engine,
-    ItfliesbyEnginePhysicsTransformPayload* physics_payload) {
+    ItfliesbyEnginePhysicsTransformCollection* physics_payload) {
 
     ItfliesbyEngineSprites*     sprites     = &engine->sprites;
+    ItfliesbyEnginePhysics*     physics     = &engine->physics;
     ItfliesbyRendererHandle     renderer    = engine->renderer;
     ItfliesbyRendererSimpleQuad simple_quad = {0};
 
+    ItfliesbyEngineSpriteRenderingContext sprite_rendering = {0};
+    itfliesby_engine_sprites_rendering_context(
+        sprites,
+        physics,
+        renderer,
+        &sprite_rendering);
+
     for (
         u32 index = 0;
-        index < ITFLIESBY_ENGINE_SPRITE_COUNT_MAX;
+        index < sprite_rendering.sprite_count;
         ++index) {
 
-        if (sprites->sprite_used[index]) {
 
-            ItfliesbyEnginePhysicsTransform current_transform = physics_payload->transforms[index]; 
-            ItfliesbyRendererColorHex       current_color     = sprites->sprite_colors[index];
-            ItfliesbyRendererTextureId      current_texture   = sprites->renderer_textures[index];
+            ItfliesbyMathMat3               current_transform = sprite_rendering.transforms[index]; 
+            ItfliesbyRendererColorHex       current_color     = sprite_rendering.colors[index];
+            ItfliesbyRendererTextureId      current_texture   = sprite_rendering.renderer_textures[index];
 
             simple_quad.color     = itfliesby_renderer_color_normalize(current_color);
             simple_quad.transform = current_transform; 
@@ -74,14 +81,18 @@ itfliesby_engine_fetch_graphics_information(
                 renderer,
                 simple_quad);
         }
-    }
 }
+
 
 external void
 itfliesby_engine_render_scene(
           ItfliesbyEngine*    engine,
           ItfliesbyUserInput* user_input,
-    const u64                 delta_time_ticks) {
+    const u64                 delta_time_ticks,
+    const f32                 window_width,
+    const f32                 window_height,
+    const f32                 screen_width,
+    const f32                 screen_height) {
 
     engine->user_input = user_input;
 
@@ -92,7 +103,7 @@ itfliesby_engine_render_scene(
     itfliesby_engine_scene_process_active(engine);
 
     //udpate the physics system
-    ItfliesbyEnginePhysicsTransformPayload physics_payload = {0};
+    ItfliesbyEnginePhysicsTransformCollection physics_payload = {0};
     itfliesby_engine_physics_update(
         &engine->physics,
         &physics_payload
@@ -107,5 +118,10 @@ itfliesby_engine_render_scene(
     itfliesby_engine_assets_update(assets);
     
     //render the scene
-    itfliesby_renderer_render(renderer);
+    itfliesby_renderer_render(
+        renderer,
+        window_width,
+        window_height,
+        screen_width,
+        screen_height);
 }

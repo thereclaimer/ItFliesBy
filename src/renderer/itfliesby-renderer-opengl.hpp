@@ -151,4 +151,38 @@ itfliesby_renderer_opengl_draw_quad_vertices() {
         12);
 }
 
+inline void
+itfliesby_renderer_opengl_set_viewport(
+    f32 window_width,
+    f32 window_height,
+    f32 screen_width,
+    f32 screen_height) {
+
+    //https://www.david-amador.com/2013/04/opengl-2d-independent-resolution-rendering/
+
+    //our target will the the monitor aspect ratio
+    f32 target_aspect_ratio = screen_width / screen_height;
+	
+    // figure out the largest area that fits in this resolution at the desired aspect ratio
+    f32 viewport_width  = window_width;
+    f32 viewport_height = viewport_width / target_aspect_ratio;
+
+    if (viewport_height > window_height)
+    {
+       //It doesn't fit our height, we must switch to pillarbox then
+        viewport_height = window_height ;
+        viewport_width  = (viewport_height * target_aspect_ratio);
+    }
+
+    // set up the new viewport centered in the backbuffer
+    f32 viewport_x = (window_width  / 2.0f) - (viewport_width  / 2.0f);
+    f32 viewport_y = (window_height / 2.0f) - (viewport_height / 2.0f);
+   
+    glViewport(
+        viewport_x,
+        viewport_y,
+        viewport_width,
+        viewport_height);
+}
+
 #endif //ITFLIESBY_RENDERER_OPENGL_HPP

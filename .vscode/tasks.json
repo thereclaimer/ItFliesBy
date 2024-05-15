@@ -4,8 +4,6 @@
 		{
 			"label": "Build All",
 			"dependsOn":[
-                "Build Tools ",
-                "Build Assets",
 				"Build Memory",
 				"Build Win32",
                 "Build Renderer",

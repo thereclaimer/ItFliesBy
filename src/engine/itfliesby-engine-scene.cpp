@@ -64,9 +64,6 @@ itfliesby_engine_scene_set_active(
     ItfliesbyEngineSprites*      engine_sprites       = &engine->sprites;
 
     engine_scene_manager->active_scene = scene_id;
-
-
-
 }
 
 external ItfliesbyEngineSpriteId

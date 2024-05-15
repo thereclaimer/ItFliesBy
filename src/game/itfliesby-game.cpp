@@ -59,7 +59,11 @@ external void
 itfliesby_game_update_and_render(
           ItfliesbyGame*      game,
           ItfliesbyUserInput* user_input,
-    const u64                 time_ticks) {
+    const u64                 time_ticks,
+    const f32                 window_width,
+    const f32                 window_height,
+    const f32                 screen_width,
+    const f32                 screen_height) {
 
     game->delta_time_ticks = game->previous_time_ticks - time_ticks;
 
@@ -70,7 +74,11 @@ itfliesby_game_update_and_render(
     itfliesby_engine_render_scene(
         engine,
         user_input,
-        game->delta_time_ticks);
+        game->delta_time_ticks,
+        window_width,
+        window_height,
+        screen_width,
+        screen_height);
 
     game->previous_time_ticks = time_ticks;
 }

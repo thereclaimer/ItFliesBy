@@ -28,6 +28,8 @@ struct ItfliesbyRendererPerspective {
     f32               height_pixels;
 };
 
+typedef ItfliesbyMathVec2 ItfliesbyRendererScaleFactor;
+
 struct ItfliesbyRenderer {
     handle                        gl_context;
     ItfliesbyRendererShaderStore  shader_store;
@@ -36,6 +38,9 @@ struct ItfliesbyRenderer {
     ItfliesbyRendererBuffers      buffers;
     ItfliesbyRendererTextureStore textures;
     ItfliesbyRendererPerspective  perspective;
+    f32 screen_width;
+    f32 screen_height;
+    ItfliesbyRendererScaleFactor scale_factor;
 };
 
 inline void

@@ -19,8 +19,14 @@ struct ItfliesbyEnginePhysicsMemory {
 
 typedef s8 ItfliesbyEnginePhysicsId; 
 
-struct ItfliesbyEnginePhysicsTransformPayload {
+struct ItfliesbyEnginePhysicsCollection {
+    ItfliesbyEnginePhysicsId physics_ids[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
+    size_t                   physics_ids_count;
+};
+
+struct ItfliesbyEnginePhysicsTransformCollection {
     ItfliesbyEnginePhysicsTransform transforms[ITFLIESBY_ENGINE_PHYSICS_OBJECTS_MAX];
+    size_t                          transforms_count;
 };
 
 #define ITFLIESBY_ENGINE_PHYSICS_POSITION_CENTER {0.0f,0.0f}
@@ -90,5 +96,12 @@ itfliesby_engine_physics_update_velocity(
     ItfliesbyEnginePhysicsId       physics_id,
     ItfliesbyEnginePhysicsVelocity velocity); 
 
+void
+itfliesby_engine_physics_transforms(
+    const ItfliesbyEnginePhysics*           physics,
+    const ItfliesbyEnginePhysicsId*         physics_ids,
+    const size_t                            physics_count,
+    const ItfliesbyRendererScaleFactor*     scale_factor,
+          ItfliesbyEnginePhysicsTransform*  physics_transforms);
 
 #endif //ITFLIESBY_ENGINE_PHYSICS_HPP

@@ -96,6 +96,36 @@ itfliesby_math_mat3_multiply(
 }
 
 inline ItfliesbyMathMat3
+itfliesby_math_mat3_multiply(
+    const ItfliesbyMathMat3* in_m3_a,
+    const ItfliesbyMathMat3* in_m3_b) {
+
+    ItfliesbyMathMat3 c = {0};
+
+    const f32* a_row_0 = in_m3_a->rows.row_0;
+    const f32* a_row_1 = in_m3_a->rows.row_1;
+    const f32* a_row_2 = in_m3_a->rows.row_2;
+
+    const f32* b_row_0 = in_m3_b->rows.row_0;
+    const f32* b_row_1 = in_m3_b->rows.row_1;
+    const f32* b_row_2 = in_m3_b->rows.row_2;
+
+    c.rows.row_0[0] = (a_row_0[0] * b_row_0[0]) + (a_row_0[1] * b_row_1[0]) + (a_row_0[2] * b_row_2[0]); 
+    c.rows.row_0[1] = (a_row_0[0] * b_row_0[1]) + (a_row_0[1] * b_row_1[1]) + (a_row_0[2] * b_row_2[1]);
+    c.rows.row_0[2] = (a_row_0[0] * b_row_0[2]) + (a_row_0[1] * b_row_1[2]) + (a_row_0[2] * b_row_2[2]);
+
+    c.rows.row_1[0] = (a_row_1[0] * b_row_0[0]) + (a_row_1[1] * b_row_1[0]) + (a_row_1[2] * b_row_2[0]);
+    c.rows.row_1[1] = (a_row_1[0] * b_row_0[1]) + (a_row_1[1] * b_row_1[1]) + (a_row_1[2] * b_row_2[1]);
+    c.rows.row_1[2] = (a_row_1[0] * b_row_0[2]) + (a_row_1[1] * b_row_1[2]) + (a_row_1[2] * b_row_2[2]);
+
+    c.rows.row_2[0] = (a_row_2[0] * b_row_0[0]) + (a_row_2[1] * b_row_1[0]) + (a_row_2[2] * b_row_2[0]);
+    c.rows.row_2[1] = (a_row_2[0] * b_row_0[1]) + (a_row_2[1] * b_row_1[1]) + (a_row_2[2] * b_row_2[1]);
+    c.rows.row_2[2] = (a_row_2[0] * b_row_0[2]) + (a_row_2[1] * b_row_1[2]) + (a_row_2[2] * b_row_2[2]);
+
+    return(c);
+}
+
+inline ItfliesbyMathMat3
 itfliesby_math_mat3_translation(
     f32 x,
     f32 y) {
@@ -211,63 +241,6 @@ itfliesby_math_mat3_transform_srt(
     }
 }
 
-//scale,rotate,translate,transpose
-inline void
-itfliesby_math_mat3_transform_and_transpose_srt(
-    const size_t             transform_count,
-    const ItfliesbyMathMat3* in_transform_translate, 
-    const ItfliesbyMathMat3* in_transform_scale,
-    const ItfliesbyMathMat3* in_transform_rotate,
-          ItfliesbyMathMat3* out_transform) {
-
-    ItfliesbyMathMat3 transform = {0};
-    ItfliesbyMathMat3 transpose = {0};
-    ItfliesbyMathMat3 temp      = {0};
-    ItfliesbyMathMat3 a         = {0};
-    ItfliesbyMathMat3 b         = {0};
-    ItfliesbyMathMat3 c         = {0};
-
-    for (
-        size_t transform_index = 0;
-        transform_index < transform_count;
-        ++transform_index) {
-
-        a = in_transform_scale[transform_index];
-        b = in_transform_rotate[transform_index];
-        c = in_transform_translate[transform_index];
-
-        temp.rows.row_0[0] = (a.rows.row_0[0] * b.rows.row_0[0]) + (a.rows.row_0[1] * b.rows.row_1[0]) + (a.rows.row_0[2] * b.rows.row_2[0]); 
-        temp.rows.row_0[1] = (a.rows.row_0[0] * b.rows.row_0[1]) + (a.rows.row_0[1] * b.rows.row_1[1]) + (a.rows.row_0[2] * b.rows.row_2[1]);
-        temp.rows.row_0[2] = (a.rows.row_0[0] * b.rows.row_0[2]) + (a.rows.row_0[1] * b.rows.row_1[2]) + (a.rows.row_0[2] * b.rows.row_2[2]);
-
-        temp.rows.row_1[0] = (a.rows.row_1[0] * b.rows.row_0[0]) + (a.rows.row_1[1] * b.rows.row_1[0]) + (a.rows.row_1[2] * b.rows.row_2[0]);
-        temp.rows.row_1[1] = (a.rows.row_1[0] * b.rows.row_0[1]) + (a.rows.row_1[1] * b.rows.row_1[1]) + (a.rows.row_1[2] * b.rows.row_2[1]);
-        temp.rows.row_1[2] = (a.rows.row_1[0] * b.rows.row_0[2]) + (a.rows.row_1[1] * b.rows.row_1[2]) + (a.rows.row_1[2] * b.rows.row_2[2]);
-
-        temp.rows.row_2[0] = (a.rows.row_2[0] * b.rows.row_0[0]) + (a.rows.row_2[1] * b.rows.row_1[0]) + (a.rows.row_2[2] * b.rows.row_2[0]);
-        temp.rows.row_2[1] = (a.rows.row_2[0] * b.rows.row_0[1]) + (a.rows.row_2[1] * b.rows.row_1[1]) + (a.rows.row_2[2] * b.rows.row_2[1]);
-        temp.rows.row_2[2] = (a.rows.row_2[0] * b.rows.row_0[2]) + (a.rows.row_2[1] * b.rows.row_1[2]) + (a.rows.row_2[2] * b.rows.row_2[2]);
-
-        transform.rows.row_0[0] = (temp.rows.row_0[0] * c.rows.row_0[0]) + (temp.rows.row_0[1] * c.rows.row_1[0]) + (temp.rows.row_0[2] * c.rows.row_2[0]); 
-        transform.rows.row_0[1] = (temp.rows.row_0[0] * c.rows.row_0[1]) + (temp.rows.row_0[1] * c.rows.row_1[1]) + (temp.rows.row_0[2] * c.rows.row_2[1]);
-        transform.rows.row_0[2] = (temp.rows.row_0[0] * c.rows.row_0[2]) + (temp.rows.row_0[1] * c.rows.row_1[2]) + (temp.rows.row_0[2] * c.rows.row_2[2]);
-        
-        transform.rows.row_1[0] = (temp.rows.row_1[0] * c.rows.row_0[0]) + (temp.rows.row_1[1] * c.rows.row_1[0]) + (temp.rows.row_1[2] * c.rows.row_2[0]);
-        transform.rows.row_1[1] = (temp.rows.row_1[0] * c.rows.row_0[1]) + (temp.rows.row_1[1] * c.rows.row_1[1]) + (temp.rows.row_1[2] * c.rows.row_2[1]);
-        transform.rows.row_1[2] = (temp.rows.row_1[0] * c.rows.row_0[2]) + (temp.rows.row_1[1] * c.rows.row_1[2]) + (temp.rows.row_1[2] * c.rows.row_2[2]);
-        
-        transform.rows.row_2[0] = (temp.rows.row_2[0] * c.rows.row_0[0]) + (temp.rows.row_2[1] * c.rows.row_1[0]) + (temp.rows.row_2[2] * c.rows.row_2[0]);
-        transform.rows.row_2[1] = (temp.rows.row_2[0] * c.rows.row_0[1]) + (temp.rows.row_2[1] * c.rows.row_1[1]) + (temp.rows.row_2[2] * c.rows.row_2[1]);
-        transform.rows.row_2[2] = (temp.rows.row_2[0] * c.rows.row_0[2]) + (temp.rows.row_2[1] * c.rows.row_1[2]) + (temp.rows.row_2[2] * c.rows.row_2[2]);
-
-        itfliesby_math_mat3_transpose(
-            &transform,
-            &transpose);
-
-        out_transform[transform_index] = transform;
-    }
-}
-
 //translate,rotate,scale
 inline void
 itfliesby_math_mat3_transform_trs(
@@ -320,62 +293,31 @@ itfliesby_math_mat3_transform_trs(
     }
 }
 
-//translate,rotate,scale,transpose
-inline void
-itfliesby_math_mat3_transform_and_transpose_trs(
-    const size_t             transform_count,
-    const ItfliesbyMathMat3* in_transform_translate, 
-    const ItfliesbyMathMat3* in_transform_scale,
-    const ItfliesbyMathMat3* in_transform_rotate,
-          ItfliesbyMathMat3* out_transform) {
+inline ItfliesbyMathMat3
+itfliesby_math_mat3_projection(
+    f32 width,
+    f32 height) {
 
-    ItfliesbyMathMat3 a         = {0};
-    ItfliesbyMathMat3 b         = {0};
-    ItfliesbyMathMat3 c         = {0};
-    ItfliesbyMathMat3 transform = {0};
-    ItfliesbyMathMat3 transpose = {0};
-    ItfliesbyMathMat3 temp      = {0};
+    ItfliesbyMathMat3 m3 = {0};
 
-    for (
-        size_t transform_index = 0;
-        transform_index < transform_count;
-        ++transform_index) {
+    f32 half_width  = width  * 0.5f;
+    f32 half_height = height * 0.5f;
 
-        a = in_transform_translate[transform_index];
-        b = in_transform_rotate[transform_index];
-        c = in_transform_scale[transform_index];
+    f32 right  = half_width;
+    f32 top    = half_height;
+    f32 left   = half_width  * -1.0f;
+    f32 bottom = half_height * -1.0f;
 
-        temp.rows.row_0[0] = (a.rows.row_0[0] * b.rows.row_0[0]) + (a.rows.row_0[1] * b.rows.row_1[0]) + (a.rows.row_0[2] * b.rows.row_2[0]); 
-        temp.rows.row_0[1] = (a.rows.row_0[0] * b.rows.row_0[1]) + (a.rows.row_0[1] * b.rows.row_1[1]) + (a.rows.row_0[2] * b.rows.row_2[1]);
-        temp.rows.row_0[2] = (a.rows.row_0[0] * b.rows.row_0[2]) + (a.rows.row_0[1] * b.rows.row_1[2]) + (a.rows.row_0[2] * b.rows.row_2[2]);
 
-        temp.rows.row_1[0] = (a.rows.row_1[0] * b.rows.row_0[0]) + (a.rows.row_1[1] * b.rows.row_1[0]) + (a.rows.row_1[2] * b.rows.row_2[0]);
-        temp.rows.row_1[1] = (a.rows.row_1[0] * b.rows.row_0[1]) + (a.rows.row_1[1] * b.rows.row_1[1]) + (a.rows.row_1[2] * b.rows.row_2[1]);
-        temp.rows.row_1[2] = (a.rows.row_1[0] * b.rows.row_0[2]) + (a.rows.row_1[1] * b.rows.row_1[2]) + (a.rows.row_1[2] * b.rows.row_2[2]);
+    m3.rows.row_0[0] = 2.0f / (right - left);
+    m3.rows.row_0[2] = -((right + left) / (right - left));
 
-        temp.rows.row_2[0] = (a.rows.row_2[0] * b.rows.row_0[0]) + (a.rows.row_2[1] * b.rows.row_1[0]) + (a.rows.row_2[2] * b.rows.row_2[0]);
-        temp.rows.row_2[1] = (a.rows.row_2[0] * b.rows.row_0[1]) + (a.rows.row_2[1] * b.rows.row_1[1]) + (a.rows.row_2[2] * b.rows.row_2[1]);
-        temp.rows.row_2[2] = (a.rows.row_2[0] * b.rows.row_0[2]) + (a.rows.row_2[1] * b.rows.row_1[2]) + (a.rows.row_2[2] * b.rows.row_2[2]);
+    m3.rows.row_1[1] = 2.0f / (top - bottom);
+    m3.rows.row_1[2] = -((top + bottom) / (top - bottom));
 
-        transform.rows.row_0[0] = (temp.rows.row_0[0] * c.rows.row_0[0]) + (temp.rows.row_0[1] * c.rows.row_1[0]) + (temp.rows.row_0[2] * c.rows.row_2[0]); 
-        transform.rows.row_0[1] = (temp.rows.row_0[0] * c.rows.row_0[1]) + (temp.rows.row_0[1] * c.rows.row_1[1]) + (temp.rows.row_0[2] * c.rows.row_2[1]);
-        transform.rows.row_0[2] = (temp.rows.row_0[0] * c.rows.row_0[2]) + (temp.rows.row_0[1] * c.rows.row_1[2]) + (temp.rows.row_0[2] * c.rows.row_2[2]);
-        
-        transform.rows.row_1[0] = (temp.rows.row_1[0] * c.rows.row_0[0]) + (temp.rows.row_1[1] * c.rows.row_1[0]) + (temp.rows.row_1[2] * c.rows.row_2[0]);
-        transform.rows.row_1[1] = (temp.rows.row_1[0] * c.rows.row_0[1]) + (temp.rows.row_1[1] * c.rows.row_1[1]) + (temp.rows.row_1[2] * c.rows.row_2[1]);
-        transform.rows.row_1[2] = (temp.rows.row_1[0] * c.rows.row_0[2]) + (temp.rows.row_1[1] * c.rows.row_1[2]) + (temp.rows.row_1[2] * c.rows.row_2[2]);
-        
-        transform.rows.row_2[0] = (temp.rows.row_2[0] * c.rows.row_0[0]) + (temp.rows.row_2[1] * c.rows.row_1[0]) + (temp.rows.row_2[2] * c.rows.row_2[0]);
-        transform.rows.row_2[1] = (temp.rows.row_2[0] * c.rows.row_0[1]) + (temp.rows.row_2[1] * c.rows.row_1[1]) + (temp.rows.row_2[2] * c.rows.row_2[1]);
-        transform.rows.row_2[2] = (temp.rows.row_2[0] * c.rows.row_0[2]) + (temp.rows.row_2[1] * c.rows.row_1[2]) + (temp.rows.row_2[2] * c.rows.row_2[2]);
+    m3.rows.row_2[2] = 1.0f;
 
-        itfliesby_math_mat3_transpose(
-            &transform,
-            &transpose);
-
-        out_transform[transform_index] = transpose;
-    }
+    return(m3);
 }
-
 
 #endif //ITFLIESBY_MATH_MAT3_HPP
