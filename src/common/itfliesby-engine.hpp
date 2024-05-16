@@ -69,6 +69,6 @@ itfliesby_engine_scene_connor_test(
 api ItfliesbyEngineSpriteId
 itfliesby_engine_scene_jig(
     ItfliesbyEngine*       engine,
-    ItfliesbyEngineSceneId scene_id)
+    ItfliesbyEngineSceneId scene_id);
 
 #endif //ITFLIESBY_ENGINE_HPP
