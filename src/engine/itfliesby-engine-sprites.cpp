@@ -22,9 +22,7 @@ itfliesby_engine_sprites_activate_next(
         }
     }
 
-    if (new_sprite == NULL) {
-        return(ITFLIESBY_ENGINE_SPRITE_ID_INVALID);
-    }
+    return(new_sprite);
 }
 
 internal ItfliesbyEngineSpriteId
@@ -35,23 +33,7 @@ itfliesby_engine_sprites_create(
     ItfliesbyRendererHandle        renderer,
     ItfliesbyRendererColorHex      color) {
 
-    ItfliesbyEngineSpriteId new_sprite = ITFLIESBY_ENGINE_SPRITE_ID_INVALID;
-
-    //find the next sprite
-    for (
-        u32 index = 0;
-        index < ITFLIESBY_ENGINE_SPRITE_COUNT_MAX;
-        ++index) {
-
-        if (!sprites->sprite_used[index]) {
-            new_sprite = index;
-            break;
-        }
-    }
-
-    if (new_sprite == NULL) {
-        return(ITFLIESBY_ENGINE_SPRITE_ID_INVALID);
-    }
+    ItfliesbyEngineSpriteId new_sprite = itfliesby_engine_sprites_activate_next(sprites);
 
     //create the physics transforms
     ItfliesbyEnginePhysicsId physics_id = 
@@ -95,28 +77,9 @@ itfliesby_engine_sprites_connor_test(
     ItfliesbyEngineAssets*         assets,
     ItfliesbyRendererHandle        renderer) {
 
-    ItfliesbyEngineSpriteId connor_sprite_id = ITFLIESBY_ENGINE_SPRITE_ID_INVALID;
+    ItfliesbyEngineSpriteId connor_sprite_id = itfliesby_engine_sprites_activate_next(sprites);
 
-    //find the next sprite
-    for (
-        u32 index = 0;
-        index < ITFLIESBY_ENGINE_SPRITE_COUNT_MAX;
-        ++index) {
-
-        if (!sprites->sprite_used[index]) {
-            connor_sprite_id = index;
-            break;
-        }
-    }
-
-    if (connor_sprite_id == ITFLIESBY_ENGINE_SPRITE_ID_INVALID) {
-        return(ITFLIESBY_ENGINE_SPRITE_ID_INVALID);
-    }
-
-
-    ItfliesbyEnginePhysicsScale scale = {0};
-    scale.x = 0.5f;
-    scale.y = 0.5f;
+    ItfliesbyEnginePhysicsScale scale = itfliesby_engine_physics_scale(0.5f, 0.5f);
 
     //create the physics transforms
     ItfliesbyEnginePhysicsId physics_id = 
@@ -173,16 +136,16 @@ itfliesby_engine_sprites_jig(
 
     //TODO: for now, it'll just be at the top left
     ItfliesbyEnginePhysicsPosition jig_position = {0};
-    jig_position.x = -1.0f;
-    jig_position.y =  1.0f;
+    jig_position.x = -0.5f;
+    jig_position.y =  0.5f;
 
     //create the physics transforms
     ItfliesbyEnginePhysicsId jig_physics_id = 
         itfliesby_engine_physics_transforms_create(
-            physics,  // physics
+            physics,      // physics
             jig_position, // position
             jig_scale,    // scale
-            0.0f);    // rotation degrees
+            0.0f);        // rotation degrees
 
     if (jig_physics_id == ITFLIESBY_ENGINE_PHYSICS_OBJECT_INVALID) {
         return(ITFLIESBY_ENGINE_SPRITE_ID_INVALID);
@@ -281,7 +244,7 @@ itfliesby_engine_sprites_rendering_context(
         sprite_rendering_index < active_sprite_ids_count;
         ++sprite_rendering_index) {
 
-        current_sprite = sprite_rendering_ids[active_sprite_ids_count]; 
+        current_sprite = sprite_rendering_ids[sprite_rendering_index]; 
 
         sprite_rendering_colors[sprite_rendering_index]      = sprites_colors[current_sprite];
         sprite_rendering_textures[sprite_rendering_index]    = sprite_textures[current_sprite];
