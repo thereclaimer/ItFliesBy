@@ -15,7 +15,6 @@ itfliesby_engine_rendering_push_texture_sprite_character(
         itfliesby_engine_assets_image_load(
             assets,
             image);
-        
 
     //push the image data to the renderer
     ItfliesbyRendererTextureId texture_id = 
@@ -38,12 +37,9 @@ itfliesby_engine_rendering_push_texture_sprite_character(
 internal void
 itfliesby_engine_rendering_shader_programs_init(
     ItfliesbyRendererHandle     renderer,
-    ItfliesbyEngineAssets*      assets,
-    ItfliesbyEngineShaderStore* shader_store) {
+    ItfliesbyEngineAssets*      assets) {
 
-    ITFLIESBY_ASSERT(
-        renderer &&
-        shader_store);
+    ITFLIESBY_ASSERT(renderer);
     
     const u32 shaders_count = ITFLIESBY_RENDERER_SHADER_TYPE_COUNT;
 
@@ -82,8 +78,6 @@ itfliesby_engine_rendering_shader_programs_init(
     u64 current_offset_vertex   = 0;
     u64 current_offset_fragment = 0;
 
-    auto shader_array = shader_store->array;
-
     const ItfliesbyRendererShaderType shader_types[shaders_count] = {
         ITFLIESBY_RENDERER_SHADER_TYPE_TEXTURED_QUAD,
         ITFLIESBY_RENDERER_SHADER_TYPE_SOLID_QUAD,
@@ -112,8 +106,6 @@ itfliesby_engine_rendering_shader_programs_init(
                 shader_type,
                 &renderer_shader_stage_buffer_vertex,
                 &renderer_shader_stage_buffer_fragment);
-
-        shader_array[shader_index] = new_shader;
     }
 
     itfliesby_engine_memory_renderer_shader_reset();
@@ -125,8 +117,7 @@ itfliesby_engine_rendering_shader_programs_init(
 
 internal ItfliesbyRendererHandle
 itfliesby_engine_rendering_init(
-    ItfliesbyEngineAssets*      assets,
-    ItfliesbyEngineShaderStore* shader_store) {
+    ItfliesbyEngineAssets* assets) {
 
     //init rendering memory
     itfliesby_engine_memory_renderer_create();
@@ -139,8 +130,7 @@ itfliesby_engine_rendering_init(
     //load shaders
     itfliesby_engine_rendering_shader_programs_init(
         renderer,
-        assets,
-        shader_store
+        assets
     );
 
     return(renderer);

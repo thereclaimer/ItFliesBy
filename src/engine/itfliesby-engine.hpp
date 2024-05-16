@@ -1,20 +1,28 @@
 #ifndef ITFLIESBY_ENGINE_HPP
 #define ITFLIESBY_ENGINE_HPP
 
-#include <itfliesby.hpp>
-#include "itfliesby-engine-globals.hpp"
-#include "itfliesby-engine-assets.hpp"
-#include "itfliesby-engine-memory.hpp"
-#include "itfliesby-engine-physics.hpp"
-#include "itfliesby-engine-sprites.hpp"
-#include "itfliesby-engine-scene.hpp"
-
 #define GLEW_STATIC
 
 #include <glew/glew.h>
 #include <glew/wglew.h>
 #include <glew/glew.c>
 #include <imgui/imgui_core.h>
+#include <itfliesby.hpp>
+
+#include "itfliesby-engine-globals.hpp"
+#include "itfliesby-engine-assets.hpp"
+#include "itfliesby-engine-memory.hpp"
+#include "itfliesby-engine-physics.hpp"
+#include "itfliesby-engine-sprites.hpp"
+#include "itfliesby-engine-scene.hpp"
+#include "itfliesby-engine-devtools.hpp"
+
+//----------------------------------------------------------------
+// FORWARD DECLARATIONS
+//----------------------------------------------------------------
+
+typedef struct ItfliesbyEngine;
+typedef struct ItfliesbyEngineDevtools;
 
 struct ItfliesbyEngineShaderStore {
     union {
@@ -38,6 +46,46 @@ struct ItfliesbyEngineRendererMemory {
 #define ITFLIESBY_ENGINE_RENDERER_MEMORY_PARTITION_CONTEXT_SIZE     ITFLIESBY_MATH_MEGABYTES(64)
 #define ITFLIESBY_ENGINE_RENDERER_MEMORY_ALLOCATOR_SIZE_SHADER_DATA ITFLIESBY_MATH_MEGABYTES(4)
 
+
+//----------------------------------------------------------------
+// DEV TOOLS
+//----------------------------------------------------------------
+
+struct ItfliesbyEngineDevtools {
+    ImGuiContext* imgui_context;
+};
+
+ItfliesbyEngineDevtools
+itfliesby_engine_devtools_create_and_init();
+
+void
+itfliesby_engine_devtools_update(
+    ItfliesbyEngine* engine);
+
+inline void
+itfliesby_engine_devtools_frame_start(ImGuiContext* context) {
+    
+    ImGui::SetCurrentContext(context);
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+}
+
+inline void
+itfliesby_engine_devtools_frame_end() {
+
+    ImGui::Render();
+
+    ImDrawData* draw_data = ImGui::GetDrawData();
+
+    ImGui_ImplOpenGL3_RenderDrawData(draw_data);    
+}
+
+//----------------------------------------------------------------
+// ENGINE CORE
+//----------------------------------------------------------------
+
 struct ItfliesbyEngine {
     ItfliesbyEngineAssets       assets;
     ItfliesbyEngineShaderStore  shaders;
@@ -46,7 +94,7 @@ struct ItfliesbyEngine {
     ItfliesbyEngineSprites      sprites;
     ItfliesbyEngineSceneManager scenes;
     ItfliesbyUserInput*         user_input;
-    ImGuiContext*               imgui_context;
+    ItfliesbyEngineDevtools     dev_tools;
 };
 
 api ItfliesbyEngine*

@@ -7,7 +7,7 @@
 #include "itfliesby-engine-physics.cpp"
 #include "itfliesby-engine-sprites.cpp"
 #include "itfliesby-engine-scene.cpp"
-
+#include "itfliesby-engine-devtools.cpp"
 
 external ItfliesbyEngine*
 itfliesby_engine_create(
@@ -30,16 +30,11 @@ itfliesby_engine_create(
     //initialize assets
     itfliesby_engine_assets_init(&engine->assets);
     engine->renderer = itfliesby_engine_rendering_init(
-        &engine->assets,
-        &engine->shaders
-    );
+        &engine->assets);
 
-    engine->physics = itfliesby_engine_physics_create_and_init();
-    engine->sprites = itfliesby_engine_sprites_create_and_init();
-
-    glewInit();
-
-    engine->imgui_context = (ImGuiContext*)platform_api.imgui_init(platform_api.window);
+    engine->physics   = itfliesby_engine_physics_create_and_init();
+    engine->sprites   = itfliesby_engine_sprites_create_and_init();
+    engine->dev_tools = itfliesby_engine_devtools_create_and_init();
 
     return(engine);
 }
@@ -130,18 +125,6 @@ itfliesby_engine_render_scene(
         screen_width,
         screen_height);
 
-    ImGui::SetCurrentContext(engine->imgui_context);
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplWin32_NewFrame();
-    ImGui::NewFrame();
-    
-    ImGui::ShowDemoWindow();
-
-    ImGui::Render();
-
-
-
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-
+    //update the devtools
+    itfliesby_engine_devtools_update(engine);
 }
