@@ -8,6 +8,7 @@
 #include "itfliesby-engine-sprites.cpp"
 #include "itfliesby-engine-scene.cpp"
 
+
 external ItfliesbyEngine*
 itfliesby_engine_create(
     ItfliesbyPlatformApi platform,
@@ -36,6 +37,9 @@ itfliesby_engine_create(
     engine->physics = itfliesby_engine_physics_create_and_init();
     engine->sprites = itfliesby_engine_sprites_create_and_init();
 
+    glewInit();
+
+    engine->imgui_context = (ImGuiContext*)platform_api.imgui_init(platform_api.window);
 
     return(engine);
 }
@@ -93,6 +97,7 @@ itfliesby_engine_render_scene(
     const f32                 window_height,
     const f32                 screen_width,
     const f32                 screen_height) {
+    
 
     engine->user_input = user_input;
 
@@ -116,7 +121,7 @@ itfliesby_engine_render_scene(
     );
 
     itfliesby_engine_assets_update(assets);
-    
+
     //render the scene
     itfliesby_renderer_render(
         renderer,
@@ -124,4 +129,19 @@ itfliesby_engine_render_scene(
         window_height,
         screen_width,
         screen_height);
+
+    ImGui::SetCurrentContext(engine->imgui_context);
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+    
+    ImGui::ShowDemoWindow();
+
+    ImGui::Render();
+
+
+
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+
 }

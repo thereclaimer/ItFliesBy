@@ -9,6 +9,13 @@
 #include "itfliesby-engine-sprites.hpp"
 #include "itfliesby-engine-scene.hpp"
 
+#define GLEW_STATIC
+
+#include <glew/glew.h>
+#include <glew/wglew.h>
+#include <glew/glew.c>
+#include <imgui/imgui_core.h>
+
 struct ItfliesbyEngineShaderStore {
     union {
         struct {
@@ -39,6 +46,7 @@ struct ItfliesbyEngine {
     ItfliesbyEngineSprites      sprites;
     ItfliesbyEngineSceneManager scenes;
     ItfliesbyUserInput*         user_input;
+    ImGuiContext*               imgui_context;
 };
 
 api ItfliesbyEngine*

@@ -13,6 +13,32 @@ itfliesby_platform_win32_api_file_io_completion_routine(
     bytes_read = bytes_transferred;
 }
 
+internal handle
+itfliesby_platform_win32_api_imgui_initialize(
+    handle window_reference) {
+
+    ItfliesbyPlatformWin32Window* window = (ItfliesbyPlatformWin32Window*)window_reference;
+
+    //make the opengl context current
+    wglMakeCurrent(
+        window->device_context,
+        window->opengl_context);
+
+    //initialize imgui
+    IMGUI_CHECKVERSION();
+    ImGuiContext* imgui_context = ImGui::CreateContext();
+    ITFLIESBY_ASSERT(glewInit() == GLEW_OK);
+    ImGui_ImplWin32_Init(window_reference);
+
+    const char* glsl_version = "#version 330";
+
+    ImGui_ImplOpenGL3_Init(glsl_version);
+    ImGui::StyleColorsDark();
+
+    window->imgui_context;
+
+    return(imgui_context);
+}
 
 internal handle
 itfliesby_platform_win32_api_opengl_initialize(

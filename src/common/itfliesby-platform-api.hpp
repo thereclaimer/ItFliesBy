@@ -61,6 +61,12 @@ typedef handle
     handle window
 );
 
+typedef handle
+(*func_itfliesby_platform_initialize_imgui)
+(
+    handle window
+);
+
 struct ItfliesbyPlatformApi  {
 
     //Use this as a pointer to whatever window data the platform is
@@ -77,6 +83,7 @@ struct ItfliesbyPlatformApi  {
     func_itfliesby_platform_memory_allocate         memory_allocate;
     func_itfliesby_platform_memory_free             memory_free;
     func_itfliesby_platform_initialize_graphics_api graphics_api_init;
+    func_itfliesby_platform_initialize_imgui        imgui_init;
 };
 
 #endif //ITFLIESBY_PLATFORM_API_HPP

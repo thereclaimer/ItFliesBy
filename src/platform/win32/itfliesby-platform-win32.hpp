@@ -9,10 +9,10 @@
 
 #define GLEW_STATIC
 
-#include "glew/glew.h"
-#include "glew/wglew.h"
-#include "glew/glew.c"
-
+#include <glew/glew.h>
+#include <glew/wglew.h>
+#include <glew/glew.c>
+#include <imgui/imgui_core.h>
 
 #define itfliesby_platform_win32_main wWinMain
 
@@ -29,6 +29,7 @@ struct ItfliesbyPlatformWin32Window {
     ItfliesbyViewportDimensions monitor_dimensions;
     ItfliesbyUserInput          user_input;
     itfliesby_game              game;
+    ImGuiContext*               imgui_context;
 };
 
 typedef HGLRC

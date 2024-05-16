@@ -166,15 +166,17 @@ itfliesby_platform_win32_process_pending_messages(
             //anything not related to keyboard or mouse input, we can let windows handle
             //at which point, our window callback function will be called
             default: {
-                ITFLIESBY_ASSERT(
-                    window_message.message != WM_KEYDOWN    &&
-                    window_message.message != WM_SYSKEYDOWN &&
-                    window_message.message != WM_KEYUP      &&
-                    window_message.message != WM_SYSKEYUP);
                 TranslateMessage(&window_message);
                 DispatchMessage(&window_message);
             } break;
         }
+
+        ImGui_ImplWin32_WndProcHandler(
+            window_message.hwnd,
+            window_message.message,
+            window_message.wParam,
+            window_message.lParam
+        );
     }
 }
 
@@ -275,7 +277,7 @@ itfliesby_platform_win32_main(
     win32_platform_api.memory_allocate   = itfliesby_platform_win32_api_allocate_memory;
     win32_platform_api.memory_free       = itfliesby_platform_win32_api_free_memory;
     win32_platform_api.graphics_api_init = itfliesby_platform_win32_api_opengl_initialize;
-
+    win32_platform_api.imgui_init        = itfliesby_platform_win32_api_imgui_initialize;
     
     //allocate the memory
     memory game_memory = itfliesby_platform_win32_api_allocate_memory(ITFLIESBY_GAME_MEMORY_SIZE); 
@@ -324,7 +326,6 @@ itfliesby_platform_win32_main(
 
         // itfliesby_dev_tools_update(game_window.itfliesby_state);
         SwapBuffers(game_window.device_context);
-
 
         //lastly, get the fps
         QueryPerformanceCounter(&win32_large_int);
