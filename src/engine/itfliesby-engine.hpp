@@ -86,6 +86,15 @@ itfliesby_engine_devtools_frame_end() {
 // ENGINE CORE
 //----------------------------------------------------------------
 
+struct ItfliesbyEngineFrame {
+    u64 target_fps;
+    u64 previous_frame_ms;
+    u32 frame_index;
+
+    //this is how many frames we wait to calculate averages
+    u32 frame_profile_max;
+};
+
 struct ItfliesbyEngine {
     ItfliesbyEngineAssets       assets;
     ItfliesbyEngineShaderStore  shaders;
@@ -95,6 +104,7 @@ struct ItfliesbyEngine {
     ItfliesbyEngineSceneManager scenes;
     ItfliesbyUserInput*         user_input;
     ItfliesbyEngineDevtools     dev_tools;
+    ItfliesbyEngineFrame        frame;
 };
 
 api ItfliesbyEngine*

@@ -138,23 +138,25 @@ itfliesby_engine_scene_process_active(
     ItfliesbyEnginePhysicsVelocity connor_velocity   = {0};
     ItfliesbyEnginePhysicsVelocity jig_velocity      = {0};
 
+    const f32 speed = 0.02f;
+
     //update the velocity based on the user input
     ItfliesbyUserInput engine_user_input = *engine->user_input;
     if (ITFLIESBY_KEYCODE_STATE_W(engine_user_input)) {
-        connor_velocity.y = 0.01f; 
-        jig_velocity.y    = 0.01f; 
+        connor_velocity.y = speed; 
+        jig_velocity.y    = speed; 
     }
     if (ITFLIESBY_KEYCODE_STATE_S(engine_user_input)) {
-        connor_velocity.y = -0.01f; 
-        jig_velocity.y    = -0.01f; 
+        connor_velocity.y = -speed; 
+        jig_velocity.y    = -speed; 
     }
     if (ITFLIESBY_KEYCODE_STATE_A(engine_user_input)) {
-        connor_velocity.x = -0.01f; 
-        jig_velocity.x    = -0.01f; 
+        connor_velocity.x = -speed; 
+        jig_velocity.x    = -speed; 
     }
     if (ITFLIESBY_KEYCODE_STATE_D(engine_user_input)) {
-        connor_velocity.x = 0.01f; 
-        jig_velocity.x    = 0.01f; 
+        connor_velocity.x = speed; 
+        jig_velocity.x    = speed; 
     }
 
     itfliesby_engine_physics_update_velocity(

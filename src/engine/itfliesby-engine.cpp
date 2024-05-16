@@ -27,6 +27,12 @@ itfliesby_engine_create(
     //allocate our core engine structure
     ItfliesbyEngine* engine = itfliesby_engine_memory_allocate_core();
 
+    //frame information
+    ItfliesbyEngineFrame frame_info = {0};
+    frame_info.frame_profile_max = 30;
+    frame_info.target_fps        = 30;
+    engine->frame = frame_info;
+
     //initialize assets
     itfliesby_engine_assets_init(&engine->assets);
     engine->renderer = itfliesby_engine_rendering_init(
@@ -92,7 +98,6 @@ itfliesby_engine_render_scene(
     const f32                 window_height,
     const f32                 screen_width,
     const f32                 screen_height) {
-    
 
     engine->user_input = user_input;
 
@@ -127,4 +132,7 @@ itfliesby_engine_render_scene(
 
     //update the devtools
     itfliesby_engine_devtools_update(engine);
+
+    //frame end
+
 }
