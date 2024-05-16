@@ -101,6 +101,8 @@ itfliesby_engine_render_scene(
 
     engine->user_input = user_input;
 
+    engine->frame.previous_frame_ms = delta_time_ticks;
+
     ItfliesbyEngineAssets*  assets   = &engine->assets;
     ItfliesbyRendererHandle renderer = engine->renderer;
 
