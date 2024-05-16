@@ -127,31 +127,43 @@ itfliesby_engine_scene_process_active(
     ItfliesbyEngineScene   active_scene    = engine_scene_manager_scenes[active_scene_id];
 
     //get the player sprite id
-    ItfliesbyEngineSprites*  engine_sprites   = &engine->sprites;
+    ItfliesbyEngineSprites* engine_sprites   = &engine->sprites;
     ItfliesbyEngineSpriteId connor_sprite_id = active_scene.sprite_id_connor;
+    ItfliesbyEngineSpriteId jig_sprite_id    = active_scene.sprite_id_jig;
 
     //get the physics information
     ItfliesbyEnginePhysics*        engine_physics    =  &engine->physics;
     ItfliesbyEnginePhysicsId       connor_physics_id = itfliesby_engine_sprites_physics_id_get(engine_sprites,connor_sprite_id);
+    ItfliesbyEnginePhysicsId       jig_physics_id    = itfliesby_engine_sprites_physics_id_get(engine_sprites,jig_sprite_id);
     ItfliesbyEnginePhysicsVelocity connor_velocity   = {0};
+    ItfliesbyEnginePhysicsVelocity jig_velocity      = {0};
 
     //update the velocity based on the user input
     ItfliesbyUserInput engine_user_input = *engine->user_input;
     if (ITFLIESBY_KEYCODE_STATE_W(engine_user_input)) {
         connor_velocity.y = 0.01f; 
+        jig_velocity.y    = 0.01f; 
     }
     if (ITFLIESBY_KEYCODE_STATE_S(engine_user_input)) {
         connor_velocity.y = -0.01f; 
+        jig_velocity.y    = -0.01f; 
     }
     if (ITFLIESBY_KEYCODE_STATE_A(engine_user_input)) {
         connor_velocity.x = -0.01f; 
+        jig_velocity.x    = -0.01f; 
     }
     if (ITFLIESBY_KEYCODE_STATE_D(engine_user_input)) {
         connor_velocity.x = 0.01f; 
+        jig_velocity.x    = 0.01f; 
     }
 
     itfliesby_engine_physics_update_velocity(
         engine_physics,
         connor_physics_id,
         connor_velocity);
+
+    itfliesby_engine_physics_update_velocity(
+        engine_physics,
+        jig_physics_id,
+        jig_velocity);
 }

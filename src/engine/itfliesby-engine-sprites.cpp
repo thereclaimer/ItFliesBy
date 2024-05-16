@@ -136,8 +136,8 @@ itfliesby_engine_sprites_jig(
 
     //TODO: for now, it'll just be at the top left
     ItfliesbyEnginePhysicsPosition jig_position = {0};
-    jig_position.x = -0.5f;
-    jig_position.y =  0.5f;
+    jig_position.x = -0.3f;
+    jig_position.y =  0.3f;
 
     //create the physics transforms
     ItfliesbyEnginePhysicsId jig_physics_id = 
