@@ -6,6 +6,7 @@
 struct ItfliesbyGameSceneTest {
     ItfliesbyEngineSceneId  scene_id;
     ItfliesbyEngineSpriteId connor_sprite_id;    
+    ItfliesbyEngineSpriteId jig_sprite_id;    
 };  
 
 struct ItfliesbyGameScenes {
@@ -21,6 +22,7 @@ itfliesby_game_scenes_init() {
     ItfliesbyGameSceneTest test_scene = {0};
     test_scene.scene_id         = ITFLIESBY_ENGINE_SCENE_INVALID;
     test_scene.connor_sprite_id = ITFLIESBY_ENGINE_SPRITE_ID_INVALID;
+    test_scene.jig_sprite_id    = ITFLIESBY_ENGINE_SPRITE_ID_INVALID;
     scenes.test = test_scene;
 
     return(scenes);

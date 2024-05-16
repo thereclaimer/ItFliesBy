@@ -45,6 +45,14 @@ itfliesby_engine_sprites_connor_test(
     ItfliesbyEngineAssets*         assets,
     ItfliesbyRendererHandle        renderer);
 
+ItfliesbyEngineSpriteId
+itfliesby_engine_sprites_jig(
+    ItfliesbyEngineSprites*        sprites,
+    ItfliesbyEngineSpriteId        connor_sprite_id,
+    ItfliesbyEnginePhysics*        physics,
+    ItfliesbyEngineAssets*         assets,
+    ItfliesbyRendererHandle        renderer);
+
 ItfliesbyEnginePhysicsId
 itfliesby_engine_sprites_physics_id_get(
     ItfliesbyEngineSprites*        sprites,
