@@ -315,7 +315,7 @@ itfliesby_platform_win32_api_ticks() {
     return(ticks);
 }
 
-internal u64
+internal f64
 itfliesby_platform_win32_api_delta_time_ms(
     u64 ticks_before,
     u64 ticks_after) {
@@ -326,10 +326,12 @@ itfliesby_platform_win32_api_delta_time_ms(
     //get system frequency (Hz)
     LARGE_INTEGER win32_large_int = {0};
     QueryPerformanceFrequency(&win32_large_int);
-    f64 frequency = win32_large_int.QuadPart;
+    f64 frequency          = win32_large_int.QuadPart;
 
-    //delta time in ms is the ticks divided by frequency divided by 1000
-    u64 delta_time_ms = ((f64)ticks_elapsed / frequency) * 0.001f;
+    //delta time in ms is the ticks divided by frequency times 1000
+    f64 delta_time_seconds = (f64)ticks_elapsed / frequency;
+    f64 delta_time_ms      = delta_time_seconds * 1000.0f;
+
     return(delta_time_ms);
 }
 

@@ -73,7 +73,7 @@ typedef u64
     void
 );
 
-typedef u64
+typedef f64
 (*func_itfliesby_platform_delta_time_ms)
 (
     u64 ticks_before,

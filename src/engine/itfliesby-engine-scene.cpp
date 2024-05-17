@@ -138,7 +138,9 @@ itfliesby_engine_scene_process_active(
     ItfliesbyEnginePhysicsVelocity connor_velocity   = {0};
     ItfliesbyEnginePhysicsVelocity jig_velocity      = {0};
 
-    const f32 speed = 0.015f;
+    const f32 speed_per_second = 200.0f;
+    const f32 speed_per_ms     = speed_per_second / 1000.0f;
+    const f32 speed            = speed_per_ms * engine->frame.delta_time_ms; 
 
 
     //update the velocity based on the user input

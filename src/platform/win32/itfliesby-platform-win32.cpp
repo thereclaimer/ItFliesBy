@@ -297,17 +297,7 @@ itfliesby_platform_win32_main(
 
     game_window.running = true;
 
-    u64 pre_frame_ticks  = 0;    
-    u64 post_frame_ticks = 0;
-    u64 elapsed_ticks    = 0;
-    u64 delta_time_ms    = 0;
     while (game_window.running) {
-
-
-        // get system ticks to calculate delta time
-        LARGE_INTEGER win32_large_int = {0};
-        QueryPerformanceCounter(&win32_large_int);
-        pre_frame_ticks = win32_large_int.QuadPart;
 
         //process incoming messages
         itfliesby_platform_win32_process_pending_messages(game_window.window_handle);
@@ -325,7 +315,6 @@ itfliesby_platform_win32_main(
         itfliesby_game_update_and_render(
             game_window.game,
             &game_window.user_input,
-            delta_time_ms,
             game_window.window_dimensions.width,
             game_window.window_dimensions.height,
             game_window.monitor_dimensions.width,
@@ -334,21 +323,6 @@ itfliesby_platform_win32_main(
 
         // itfliesby_dev_tools_update(game_window.itfliesby_state);
         SwapBuffers(game_window.device_context);
-
-        //lastly, get the fps
-        QueryPerformanceCounter(&win32_large_int);
-        post_frame_ticks = win32_large_int.QuadPart;
-        QueryPerformanceFrequency(&win32_large_int);
-        f32 frequency = win32_large_int.QuadPart;
-        elapsed_ticks = post_frame_ticks - pre_frame_ticks;
-        f64 elapsed_seconds = elapsed_ticks / frequency;
-        delta_time_ms = elapsed_seconds * 1000;
-        f32 frames_per_second = 1 / elapsed_seconds;
-
-        if (delta_time_ms < 16) {
-            auto sleep_time = 16 - delta_time_ms;
-            Sleep(sleep_time);
-        }
     }
     //destroy the game
     itfliesby_game_destroy(game_window.game);

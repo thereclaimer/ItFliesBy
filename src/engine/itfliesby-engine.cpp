@@ -29,8 +29,8 @@ itfliesby_engine_create(
 
     //frame information
     ItfliesbyEngineFrame frame_info = {0};
-    frame_info.frame_profile_max = 30;
-    frame_info.target_fps        = 30;
+    frame_info.frame_profile_max = 240;
+    frame_info.target_fps        = 240;
     engine->frame = frame_info;
 
     //initialize assets
@@ -93,15 +93,14 @@ external void
 itfliesby_engine_render_scene(
           ItfliesbyEngine*    engine,
           ItfliesbyUserInput* user_input,
-    const u64                 delta_time_ticks,
     const f32                 window_width,
     const f32                 window_height,
     const f32                 screen_width,
     const f32                 screen_height) {
 
-    engine->user_input = user_input;
+    u64 ticks_before_frame = platform_api.ticks();
 
-    engine->frame.previous_frame_ms = delta_time_ticks;
+    engine->user_input = user_input;
 
     ItfliesbyEngineAssets*  assets   = &engine->assets;
     ItfliesbyRendererHandle renderer = engine->renderer;
@@ -136,5 +135,20 @@ itfliesby_engine_render_scene(
     itfliesby_engine_devtools_update(engine);
 
     //frame end
+    u64 ticks_after_frame = platform_api.ticks();
+    f64 delta_time_ms = 
+        platform_api.delta_time_ms(
+            ticks_before_frame,
+            ticks_after_frame);
 
+    engine->frame.delta_time_ms = delta_time_ms;
+
+    //sleep time
+    f64 target_ms_per_frame = (1 / engine->frame.target_fps) * 1000.0f;
+    if (delta_time_ms < target_ms_per_frame) {
+        u64 sleep_time_ms = (u64)(target_ms_per_frame - delta_time_ms); 
+        platform_api.sleep(sleep_time_ms);
+    }
+
+    ITFLIESBY_NOP();
 }

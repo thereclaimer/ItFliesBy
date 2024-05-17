@@ -87,8 +87,8 @@ itfliesby_engine_devtools_frame_end() {
 //----------------------------------------------------------------
 
 struct ItfliesbyEngineFrame {
-    u64 target_fps;
-    u64 previous_frame_ms;
+    f64 target_fps;
+    f64 delta_time_ms;
     u32 frame_index;
 
     //this is how many frames we wait to calculate averages
@@ -123,7 +123,6 @@ api void
 itfliesby_engine_render_scene(
           ItfliesbyEngine*    engine,
           ItfliesbyUserInput* user_input,
-    const u64                 delta_time_ticks,
     const f32                 window_width,
     const f32                 window_height,
     const f32                 screen_width,
