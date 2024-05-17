@@ -67,6 +67,25 @@ typedef handle
     handle window
 );
 
+typedef u64
+(*func_itfliesby_platform_ticks)
+(
+    void
+);
+
+typedef u64
+(*func_itfliesby_platform_delta_time_ms)
+(
+    u64 ticks_before,
+    u64 ticks_after
+);
+
+typedef void
+(*func_itfliesby_platform_sleep) 
+(
+    u64 time_ms
+);
+
 struct ItfliesbyPlatformApi  {
 
     //Use this as a pointer to whatever window data the platform is
@@ -84,6 +103,9 @@ struct ItfliesbyPlatformApi  {
     func_itfliesby_platform_memory_free             memory_free;
     func_itfliesby_platform_initialize_graphics_api graphics_api_init;
     func_itfliesby_platform_initialize_imgui        imgui_init;
+    func_itfliesby_platform_ticks                   ticks;
+    func_itfliesby_platform_delta_time_ms           delta_time_ms;    
+    func_itfliesby_platform_sleep                   sleep;
 };
 
 #endif //ITFLIESBY_PLATFORM_API_HPP

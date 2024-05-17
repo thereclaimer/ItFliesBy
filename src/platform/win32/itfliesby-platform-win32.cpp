@@ -278,7 +278,10 @@ itfliesby_platform_win32_main(
     win32_platform_api.memory_free       = itfliesby_platform_win32_api_free_memory;
     win32_platform_api.graphics_api_init = itfliesby_platform_win32_api_opengl_initialize;
     win32_platform_api.imgui_init        = itfliesby_platform_win32_api_imgui_initialize;
-    
+    win32_platform_api.ticks             = itfliesby_platform_win32_api_ticks; 
+    win32_platform_api.delta_time_ms     = itfliesby_platform_win32_api_delta_time_ms; 
+    win32_platform_api.sleep             = itfliesby_platform_win32_api_sleep; 
+
     //allocate the memory
     memory game_memory = itfliesby_platform_win32_api_allocate_memory(ITFLIESBY_GAME_MEMORY_SIZE); 
     ITFLIESBY_ASSERT(game_memory);
@@ -347,7 +350,6 @@ itfliesby_platform_win32_main(
             Sleep(sleep_time);
         }
     }
-
     //destroy the game
     itfliesby_game_destroy(game_window.game);
 
