@@ -224,6 +224,19 @@ itfliesby_platform_win32_window_callback(HWND window_handle,
     return 0;
 }
 
+internal void
+itfliesby_platform_win32_imgui_update() {
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+    
+    ImGui::ShowDemoWindow();
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
 internal int
 itfliesby_platform_win32_main(
     HINSTANCE instance,
@@ -297,6 +310,20 @@ itfliesby_platform_win32_main(
 
     game_window.running = true;
 
+    //imgui init
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+
+    ITFLIESBY_ASSERT(wglMakeCurrent(game_window.device_context, game_window.opengl_context));
+    ITFLIESBY_ASSERT(glewInit() == GLEW_OK);
+    
+    ImGui_ImplWin32_Init(game_window.window_handle);
+
+    const char* glsl_version = "#version 330";
+
+    ImGui_ImplOpenGL3_Init(glsl_version);
+    ImGui::StyleColorsDark();
+
     while (game_window.running) {
 
         //process incoming messages
@@ -321,7 +348,7 @@ itfliesby_platform_win32_main(
             game_window.monitor_dimensions.height);
 
 
-        // itfliesby_dev_tools_update(game_window.itfliesby_state);
+        itfliesby_platform_win32_imgui_update();
         SwapBuffers(game_window.device_context);
     }
     //destroy the game

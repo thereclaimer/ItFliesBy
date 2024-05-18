@@ -72,7 +72,6 @@ itfliesby_renderer_create_and_init(
 
 	glHint(GL_SAMPLES, 4);
 	glEnable(GL_MULTISAMPLE);
-
 	glEnable(GL_BLEND);
 	glEnable(GL_LINE_SMOOTH);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
