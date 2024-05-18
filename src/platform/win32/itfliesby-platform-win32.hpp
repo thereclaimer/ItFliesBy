@@ -51,9 +51,17 @@ typedef BOOL
     UINT*        num_formats
 );
 
+typedef BOOL 
+(*func_itfliesby_platform_win32_wgl_swap_interval)
+(
+    int value
+);
+
+
 struct ItfliesbyPlatformWin32WglApi {
     func_itfliesby_platform_win32_wgl_create_context_attribs_arb_type create_context;
     func_itfliesby_platform_win32_wgl_choose_pixel_format_arb_type    choose_pixel_format;
+    func_itfliesby_platform_win32_wgl_swap_interval                   swap_interval;
 };
 
 #endif //ITFLIESBY_PLATFORM_WIN32_HPP

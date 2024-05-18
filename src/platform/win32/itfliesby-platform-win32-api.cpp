@@ -108,6 +108,7 @@ itfliesby_platform_win32_api_opengl_initialize(
     ItfliesbyPlatformWin32WglApi wgl_api = {0};
     wgl_api.create_context      = (func_itfliesby_platform_win32_wgl_create_context_attribs_arb_type)wglGetProcAddress("wglCreateContextAttribsARB");
     wgl_api.choose_pixel_format = (func_itfliesby_platform_win32_wgl_choose_pixel_format_arb_type)wglGetProcAddress("wglChoosePixelFormatARB");
+    wgl_api.swap_interval       = (func_itfliesby_platform_win32_wgl_swap_interval)wglGetProcAddress("wglSwapIntervalEXT");
 
     wglDeleteContext(dummy_opengl_rendering_context);
     ReleaseDC(dummy_window, dummy_context);
@@ -164,6 +165,8 @@ itfliesby_platform_win32_api_opengl_initialize(
 
     //attach the opengl and device contexts
     ITFLIESBY_ASSERT(wglMakeCurrent(window->device_context, opengl_rendering_context));
+
+    wgl_api.swap_interval(1);
 
     window->opengl_context = opengl_rendering_context;
 
