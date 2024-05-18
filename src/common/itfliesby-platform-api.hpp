@@ -2,6 +2,7 @@
 #define ITFLIESBY_PLATFORM_API_HPP
 
 #include "itfliesby-types.hpp"
+#include <imgui/imgui.h>
 
 typedef memory 
 (*func_itfliesby_platform_memory_allocate)
@@ -67,6 +68,18 @@ typedef handle
     handle window
 );
 
+typedef handle
+(*func_itfliesby_platform_imgui_frame_start)
+(
+    handle window
+);
+
+typedef void
+(*func_itfliesby_platform_imgui_frame_end)
+(
+    handle window
+);
+
 typedef u64
 (*func_itfliesby_platform_ticks)
 (
@@ -103,6 +116,8 @@ struct ItfliesbyPlatformApi  {
     func_itfliesby_platform_memory_free             memory_free;
     func_itfliesby_platform_initialize_graphics_api graphics_api_init;
     func_itfliesby_platform_initialize_imgui        imgui_init;
+    func_itfliesby_platform_imgui_frame_start       imgui_frame_start;
+    func_itfliesby_platform_imgui_frame_end         imgui_frame_end;
     func_itfliesby_platform_ticks                   ticks;
     func_itfliesby_platform_delta_time_ms           delta_time_ms;    
     func_itfliesby_platform_sleep                   sleep;

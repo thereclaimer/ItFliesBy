@@ -18,15 +18,15 @@ internal void
 itfliesby_engine_devtools_update(
     ItfliesbyEngine* engine) {
 
-    //TODO: tools aren't displaying, but they aren't necessary right now
+    handle platform_window_handle = platform_api.window;
 
-    ItfliesbyEngineDevtools* dev_tools = &engine->dev_tools;
+    ImGui::SetCurrentContext(engine->dev_tools.imgui_context);
 
-    itfliesby_engine_devtools_frame_start(
-        dev_tools->imgui_context
-    );
-    
+    //start frame
+    platform_api.imgui_frame_start(platform_window_handle);
+
     ImGui::ShowDemoWindow();
 
-    itfliesby_engine_devtools_frame_end();
+    //end frame
+    platform_api.imgui_frame_end(platform_window_handle); 
 }

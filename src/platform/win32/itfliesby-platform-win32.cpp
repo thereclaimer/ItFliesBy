@@ -227,14 +227,9 @@ itfliesby_platform_win32_window_callback(HWND window_handle,
 internal void
 itfliesby_platform_win32_imgui_update() {
 
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplWin32_NewFrame();
-    ImGui::NewFrame();
-    
-    ImGui::ShowDemoWindow();
 
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    
+
 }
 
 internal int
@@ -291,6 +286,8 @@ itfliesby_platform_win32_main(
     win32_platform_api.memory_free       = itfliesby_platform_win32_api_free_memory;
     win32_platform_api.graphics_api_init = itfliesby_platform_win32_api_opengl_initialize;
     win32_platform_api.imgui_init        = itfliesby_platform_win32_api_imgui_initialize;
+    win32_platform_api.imgui_frame_start = itfliesby_platform_win32_api_imgui_frame_start;
+    win32_platform_api.imgui_frame_end   = itfliesby_platform_win32_api_imgui_frame_end;
     win32_platform_api.ticks             = itfliesby_platform_win32_api_ticks; 
     win32_platform_api.delta_time_ms     = itfliesby_platform_win32_api_delta_time_ms; 
     win32_platform_api.sleep             = itfliesby_platform_win32_api_sleep; 
@@ -311,18 +308,18 @@ itfliesby_platform_win32_main(
     game_window.running = true;
 
     //imgui init
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
+    // IMGUI_CHECKVERSION();
+    // ImGui::CreateContext();
 
-    ITFLIESBY_ASSERT(wglMakeCurrent(game_window.device_context, game_window.opengl_context));
-    ITFLIESBY_ASSERT(glewInit() == GLEW_OK);
+    // ITFLIESBY_ASSERT(wglMakeCurrent(game_window.device_context, game_window.opengl_context));
+    // ITFLIESBY_ASSERT(glewInit() == GLEW_OK);
     
-    ImGui_ImplWin32_Init(game_window.window_handle);
+    // ImGui_ImplWin32_Init(game_window.window_handle);
 
-    const char* glsl_version = "#version 330";
+    // const char* glsl_version = "#version 330";
 
-    ImGui_ImplOpenGL3_Init(glsl_version);
-    ImGui::StyleColorsDark();
+    // ImGui_ImplOpenGL3_Init(glsl_version);
+    // ImGui::StyleColorsDark();
 
     while (game_window.running) {
 
@@ -338,6 +335,11 @@ itfliesby_platform_win32_main(
                 ? &gamepad
                 : NULL;
 
+        // ImGui_ImplOpenGL3_NewFrame();
+        // ImGui_ImplWin32_NewFrame();
+        // ImGui::NewFrame();
+
+
         //update the game
         itfliesby_game_update_and_render(
             game_window.game,
@@ -348,7 +350,9 @@ itfliesby_platform_win32_main(
             game_window.monitor_dimensions.height);
 
 
-        itfliesby_platform_win32_imgui_update();
+        // ImGui::Render();
+        // ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         SwapBuffers(game_window.device_context);
     }
     //destroy the game

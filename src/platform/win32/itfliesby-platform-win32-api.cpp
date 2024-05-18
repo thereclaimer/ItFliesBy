@@ -17,7 +17,12 @@ internal handle
 itfliesby_platform_win32_api_imgui_initialize(
     handle window_reference) {
 
+    ITFLIESBY_ASSERT(window_reference);
+
     ItfliesbyPlatformWin32Window* window = (ItfliesbyPlatformWin32Window*)window_reference;
+
+    ITFLIESBY_ASSERT(window->device_context);
+    ITFLIESBY_ASSERT(window->opengl_context);
 
     //make the opengl context current
     wglMakeCurrent(
@@ -28,16 +33,63 @@ itfliesby_platform_win32_api_imgui_initialize(
     IMGUI_CHECKVERSION();
     ImGuiContext* imgui_context = ImGui::CreateContext();
     ITFLIESBY_ASSERT(glewInit() == GLEW_OK);
-    ImGui_ImplWin32_Init(window_reference);
+    ImGui_ImplWin32_Init(window->window_handle);
 
     const char* glsl_version = "#version 330";
 
     ImGui_ImplOpenGL3_Init(glsl_version);
     ImGui::StyleColorsDark();
 
-    window->imgui_context;
+    window->imgui_context = imgui_context;
 
     return(imgui_context);
+}
+
+internal handle
+itfliesby_platform_win32_api_imgui_frame_start(
+    handle window_reference) {
+
+    ITFLIESBY_ASSERT(window_reference);
+    ItfliesbyPlatformWin32Window* window = (ItfliesbyPlatformWin32Window*)window_reference;
+
+    ITFLIESBY_ASSERT(window->device_context);
+    ITFLIESBY_ASSERT(window->opengl_context);
+    ITFLIESBY_ASSERT(window->imgui_context);
+
+    // wglMakeCurrent(
+    //     window->device_context,
+    //     window->opengl_context);
+    
+    // ImGui::SetCurrentContext(window->imgui_context);
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+    ImGui::ShowDemoWindow();
+
+
+    return(NULL);
+}
+
+internal void
+itfliesby_platform_win32_api_imgui_frame_end(
+    handle window_reference) {
+    
+    ITFLIESBY_ASSERT(window_reference);
+    ItfliesbyPlatformWin32Window* window = (ItfliesbyPlatformWin32Window*)window_reference;
+
+    // ITFLIESBY_ASSERT(window->device_context);
+    // ITFLIESBY_ASSERT(window->opengl_context);
+    // ITFLIESBY_ASSERT(window->imgui_context);
+
+    // wglMakeCurrent(
+    //     window->device_context,
+    //     window->opengl_context);
+    
+    // ImGui::SetCurrentContext(window->imgui_context);
+   
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 internal handle
@@ -165,7 +217,7 @@ itfliesby_platform_win32_api_opengl_initialize(
 
     //attach the opengl and device contexts
     ITFLIESBY_ASSERT(wglMakeCurrent(window->device_context, opengl_rendering_context));
-
+    // ITFLIESBY_ASSERT(wglShareLists(window->shared_opengl_context, opengl_rendering_context));
     wgl_api.swap_interval(1);
 
     window->opengl_context = opengl_rendering_context;

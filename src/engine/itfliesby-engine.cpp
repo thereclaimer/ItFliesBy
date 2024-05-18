@@ -40,7 +40,7 @@ itfliesby_engine_create(
 
     engine->physics   = itfliesby_engine_physics_create_and_init();
     engine->sprites   = itfliesby_engine_sprites_create_and_init();
-    // engine->dev_tools = itfliesby_engine_devtools_create_and_init();
+    engine->dev_tools = itfliesby_engine_devtools_create_and_init();
 
     return(engine);
 }
@@ -131,8 +131,7 @@ itfliesby_engine_render_scene(
         screen_width,
         screen_height);
 
-    //update the devtools
-    // itfliesby_engine_devtools_update(engine);
+    itfliesby_engine_devtools_update(engine);
 
     //frame end
     u64 ticks_after_frame = platform_api.ticks();

@@ -6,7 +6,6 @@
 #include <glew/glew.h>
 #include <glew/wglew.h>
 #include <glew/glew.c>
-#include <imgui/imgui_core.h>
 #include <itfliesby.hpp>
 
 #include "itfliesby-engine-globals.hpp"
@@ -51,36 +50,12 @@ struct ItfliesbyEngineRendererMemory {
 // DEV TOOLS
 //----------------------------------------------------------------
 
-struct ItfliesbyEngineDevtools {
-    ImGuiContext* imgui_context;
-};
-
 ItfliesbyEngineDevtools
 itfliesby_engine_devtools_create_and_init();
 
 void
 itfliesby_engine_devtools_update(
     ItfliesbyEngine* engine);
-
-inline void
-itfliesby_engine_devtools_frame_start(ImGuiContext* context) {
-    
-    ImGui::SetCurrentContext(context);
-
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplWin32_NewFrame();
-    ImGui::NewFrame();
-}
-
-inline void
-itfliesby_engine_devtools_frame_end() {
-
-    ImGui::Render();
-
-    ImDrawData* draw_data = ImGui::GetDrawData();
-
-    ImGui_ImplOpenGL3_RenderDrawData(draw_data);    
-}
 
 //----------------------------------------------------------------
 // ENGINE CORE
