@@ -13,6 +13,67 @@ itfliesby_platform_win32_api_file_io_completion_routine(
     bytes_read = bytes_transferred;
 }
 
+internal handle
+itfliesby_platform_win32_api_imgui_initialize(
+    handle window_reference) {
+
+    ITFLIESBY_ASSERT(window_reference);
+
+    ItfliesbyPlatformWin32Window* window = (ItfliesbyPlatformWin32Window*)window_reference;
+
+    ITFLIESBY_ASSERT(window->device_context);
+    ITFLIESBY_ASSERT(window->opengl_context);
+
+    //make the opengl context current
+    wglMakeCurrent(
+        window->device_context,
+        window->opengl_context);
+
+    //initialize imgui
+    IMGUI_CHECKVERSION();
+    ImGuiContext* imgui_context = ImGui::CreateContext();
+    ITFLIESBY_ASSERT(glewInit() == GLEW_OK);
+    ImGui_ImplWin32_Init(window->window_handle);
+
+    const char* glsl_version = "#version 330";
+
+    ImGui_ImplOpenGL3_Init(glsl_version);
+    ImGui::StyleColorsDark();
+
+    window->imgui_context = imgui_context;
+
+    return(imgui_context);
+}
+
+internal handle
+itfliesby_platform_win32_api_imgui_frame_start(
+    handle window_reference) {
+
+    ITFLIESBY_ASSERT(window_reference);
+    ItfliesbyPlatformWin32Window* window = (ItfliesbyPlatformWin32Window*)window_reference;
+
+    ITFLIESBY_ASSERT(window->device_context);
+    ITFLIESBY_ASSERT(window->opengl_context);
+    ITFLIESBY_ASSERT(window->imgui_context);
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+
+
+    return(NULL);
+}
+
+internal void
+itfliesby_platform_win32_api_imgui_frame_end(
+    handle window_reference) {
+    
+    ITFLIESBY_ASSERT(window_reference);
+    ItfliesbyPlatformWin32Window* window = (ItfliesbyPlatformWin32Window*)window_reference;
+   
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
 
 internal handle
 itfliesby_platform_win32_api_opengl_initialize(
@@ -82,6 +143,7 @@ itfliesby_platform_win32_api_opengl_initialize(
     ItfliesbyPlatformWin32WglApi wgl_api = {0};
     wgl_api.create_context      = (func_itfliesby_platform_win32_wgl_create_context_attribs_arb_type)wglGetProcAddress("wglCreateContextAttribsARB");
     wgl_api.choose_pixel_format = (func_itfliesby_platform_win32_wgl_choose_pixel_format_arb_type)wglGetProcAddress("wglChoosePixelFormatARB");
+    wgl_api.swap_interval       = (func_itfliesby_platform_win32_wgl_swap_interval)wglGetProcAddress("wglSwapIntervalEXT");
 
     wglDeleteContext(dummy_opengl_rendering_context);
     ReleaseDC(dummy_window, dummy_context);
@@ -138,6 +200,8 @@ itfliesby_platform_win32_api_opengl_initialize(
 
     //attach the opengl and device contexts
     ITFLIESBY_ASSERT(wglMakeCurrent(window->device_context, opengl_rendering_context));
+    // ITFLIESBY_ASSERT(wglShareLists(window->shared_opengl_context, opengl_rendering_context));
+    wgl_api.swap_interval(1);
 
     window->opengl_context = opengl_rendering_context;
 
@@ -277,4 +341,41 @@ internal void
 itfliesby_platform_win32_api_free_memory(handle memory, u64 size) {
 
     VirtualFree(memory,size,MEM_RELEASE);
+}
+
+internal u64
+itfliesby_platform_win32_api_ticks() {
+
+    LARGE_INTEGER win32_large_int = {0};
+    QueryPerformanceCounter(&win32_large_int);
+    u64 ticks = win32_large_int.QuadPart;
+
+    return(ticks);
+}
+
+internal f64
+itfliesby_platform_win32_api_delta_time_ms(
+    u64 ticks_before,
+    u64 ticks_after) {
+
+    //elapsed system ticks
+    u64 ticks_elapsed = ticks_after - ticks_before;
+
+    //get system frequency (Hz)
+    LARGE_INTEGER win32_large_int = {0};
+    QueryPerformanceFrequency(&win32_large_int);
+    f64 frequency          = win32_large_int.QuadPart;
+
+    //delta time in ms is the ticks divided by frequency times 1000
+    f64 delta_time_seconds = (f64)ticks_elapsed / frequency;
+    f64 delta_time_ms      = delta_time_seconds * 1000.0f;
+
+    return(delta_time_ms);
+}
+
+internal void
+itfliesby_platform_win32_api_sleep(
+    u64 time_ms) {
+
+    Sleep(time_ms);
 }

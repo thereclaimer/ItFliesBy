@@ -166,15 +166,17 @@ itfliesby_platform_win32_process_pending_messages(
             //anything not related to keyboard or mouse input, we can let windows handle
             //at which point, our window callback function will be called
             default: {
-                ITFLIESBY_ASSERT(
-                    window_message.message != WM_KEYDOWN    &&
-                    window_message.message != WM_SYSKEYDOWN &&
-                    window_message.message != WM_KEYUP      &&
-                    window_message.message != WM_SYSKEYUP);
                 TranslateMessage(&window_message);
                 DispatchMessage(&window_message);
             } break;
         }
+
+        ImGui_ImplWin32_WndProcHandler(
+            window_message.hwnd,
+            window_message.message,
+            window_message.wParam,
+            window_message.lParam
+        );
     }
 }
 
@@ -257,6 +259,8 @@ itfliesby_platform_win32_main(
     game_window.window_dimensions.width  = 1024;
     game_window.window_dimensions.height = 768;
 
+    itfliesby_platform_win32_toggle_full_screen();
+
     ITFLIESBY_ASSERT(game_window.window_handle);
 
     game_window.device_context = GetDC(game_window.window_handle);
@@ -275,8 +279,13 @@ itfliesby_platform_win32_main(
     win32_platform_api.memory_allocate   = itfliesby_platform_win32_api_allocate_memory;
     win32_platform_api.memory_free       = itfliesby_platform_win32_api_free_memory;
     win32_platform_api.graphics_api_init = itfliesby_platform_win32_api_opengl_initialize;
+    win32_platform_api.imgui_init        = itfliesby_platform_win32_api_imgui_initialize;
+    win32_platform_api.imgui_frame_start = itfliesby_platform_win32_api_imgui_frame_start;
+    win32_platform_api.imgui_frame_end   = itfliesby_platform_win32_api_imgui_frame_end;
+    win32_platform_api.ticks             = itfliesby_platform_win32_api_ticks; 
+    win32_platform_api.delta_time_ms     = itfliesby_platform_win32_api_delta_time_ms; 
+    win32_platform_api.sleep             = itfliesby_platform_win32_api_sleep; 
 
-    
     //allocate the memory
     memory game_memory = itfliesby_platform_win32_api_allocate_memory(ITFLIESBY_GAME_MEMORY_SIZE); 
     ITFLIESBY_ASSERT(game_memory);
@@ -294,11 +303,6 @@ itfliesby_platform_win32_main(
 
     while (game_window.running) {
 
-        // get system ticks to calculate delta time
-        LARGE_INTEGER win32_large_int = {0};
-        QueryPerformanceCounter(&win32_large_int);
-        u64 pre_frame_ticks = win32_large_int.QuadPart;
-
         //process incoming messages
         itfliesby_platform_win32_process_pending_messages(game_window.window_handle);
         if (!game_window.running) {
@@ -315,27 +319,13 @@ itfliesby_platform_win32_main(
         itfliesby_game_update_and_render(
             game_window.game,
             &game_window.user_input,
-            pre_frame_ticks,
             game_window.window_dimensions.width,
             game_window.window_dimensions.height,
             game_window.monitor_dimensions.width,
             game_window.monitor_dimensions.height);
 
-
-        // itfliesby_dev_tools_update(game_window.itfliesby_state);
         SwapBuffers(game_window.device_context);
-
-
-        //lastly, get the fps
-        QueryPerformanceCounter(&win32_large_int);
-        u64 post_frame_ticks = win32_large_int.QuadPart;
-        QueryPerformanceFrequency(&win32_large_int);
-        f32 frequency = win32_large_int.QuadPart;
-        f64 elapsed_ticks = post_frame_ticks - pre_frame_ticks;
-        f64 elapsed_seconds = elapsed_ticks / frequency;
-        f32 frames_per_second = 1 / elapsed_seconds;
     }
-
     //destroy the game
     itfliesby_game_destroy(game_window.game);
 
