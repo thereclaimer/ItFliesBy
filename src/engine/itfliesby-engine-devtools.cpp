@@ -19,6 +19,44 @@ itfliesby_engine_devtools_create_and_init() {
 }
 
 internal void
+itfliesby_engine_devtools_tools_stats(
+    ItfliesbyEngine* engine,
+    bool             show) {
+
+
+    if (!ImGui::Begin("Game Status",&show)) {
+        ImGui::End();
+    }
+
+    ImGui::LabelText("Target FPS","%f",engine->frame.target_fps);
+
+    ImGui::End();
+}
+
+internal void
+itfliesby_engine_devtools_show(
+    ItfliesbyEngine* engine) {
+
+    bool show_tools_stats = false;
+
+    //show the main menu bar
+    if (ImGui::BeginMainMenuBar()) {
+
+        if (ImGui::BeginMenu("Tools")) {
+
+            if (ImGui::MenuItem("Game Status")) {
+                show_tools_stats = true;
+            }
+            ImGui::EndMenu();
+        }
+    }
+    ImGui::EndMainMenuBar();
+
+    itfliesby_engine_devtools_tools_stats(engine,show_tools_stats);
+
+}
+
+internal void
 itfliesby_engine_devtools_update(
     ItfliesbyEngine* engine) {
 
@@ -50,10 +88,13 @@ itfliesby_engine_devtools_update(
     //start frame
     platform_api.imgui_frame_start(platform_window_handle);
 
+    if (dev_tools->active) {
+        itfliesby_engine_devtools_show(engine);
+    }
+
     if (dev_tools->demo) {
         ImGui::ShowDemoWindow();
     }
-
 
     //end frame
     platform_api.imgui_frame_end(platform_window_handle); 
