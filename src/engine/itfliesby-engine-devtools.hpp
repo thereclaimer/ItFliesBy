@@ -6,6 +6,8 @@
 #include <imgui/imgui_core.h>
 
 struct ItfliesbyEngineDevtools {
+    b8            active;
+    b8            demo;
     ImGuiContext* imgui_context;
     ImGuiIO*      imgui_io;
 };

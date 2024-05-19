@@ -56,16 +56,9 @@ itfliesby_platform_win32_api_imgui_frame_start(
     ITFLIESBY_ASSERT(window->opengl_context);
     ITFLIESBY_ASSERT(window->imgui_context);
 
-    // wglMakeCurrent(
-    //     window->device_context,
-    //     window->opengl_context);
-    
-    // ImGui::SetCurrentContext(window->imgui_context);
-
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
-    ImGui::ShowDemoWindow();
 
 
     return(NULL);
@@ -77,16 +70,6 @@ itfliesby_platform_win32_api_imgui_frame_end(
     
     ITFLIESBY_ASSERT(window_reference);
     ItfliesbyPlatformWin32Window* window = (ItfliesbyPlatformWin32Window*)window_reference;
-
-    // ITFLIESBY_ASSERT(window->device_context);
-    // ITFLIESBY_ASSERT(window->opengl_context);
-    // ITFLIESBY_ASSERT(window->imgui_context);
-
-    // wglMakeCurrent(
-    //     window->device_context,
-    //     window->opengl_context);
-    
-    // ImGui::SetCurrentContext(window->imgui_context);
    
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
