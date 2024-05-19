@@ -63,6 +63,7 @@ itfliesby_engine_devtools_update(
 
 struct ItfliesbyEngineFrame {
     f64 target_fps;
+    f64 target_ms_per_frame;
     f64 delta_time_ms;
 
     //this is how many frames we wait to calculate averages

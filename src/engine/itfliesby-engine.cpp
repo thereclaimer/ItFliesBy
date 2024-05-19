@@ -31,6 +31,10 @@ itfliesby_engine_create(
     ItfliesbyEngineFrame frame_info = {0};
     frame_info.frame_profile_max         = 120;
     frame_info.target_fps                = 120;
+    frame_info.target_ms_per_frame       = (1000 / 120);
+
+    f64 target_ms_per_frame = (1 / engine->frame.target_fps) * 1000.0f;
+
 
     engine->frame = frame_info;
     //initialize assets
@@ -142,11 +146,9 @@ itfliesby_engine_render_scene(
 
     engine->frame.delta_time_ms = delta_time_ms;
 
-
     //sleep time
-    f64 target_ms_per_frame = (1 / engine->frame.target_fps) * 1000.0f;
-    if (delta_time_ms < target_ms_per_frame) {
-        u64 sleep_time_ms = (u64)(target_ms_per_frame - delta_time_ms); 
+    if (delta_time_ms < engine->frame.target_ms_per_frame) {
+        u64 sleep_time_ms = (u64)(engine->frame.target_ms_per_frame - delta_time_ms); 
         platform_api.sleep(sleep_time_ms);
     }
 
