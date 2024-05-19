@@ -10,6 +10,7 @@ itfliesby_engine_devtools_create_and_init() {
     glewInit();
 
     dev_tools.imgui_context = (ImGuiContext*)platform_api.imgui_init(platform_api.window);
+    ImGui::SetCurrentContext(dev_tools.imgui_context);
 
     return(dev_tools);
 }
@@ -19,8 +20,6 @@ itfliesby_engine_devtools_update(
     ItfliesbyEngine* engine) {
 
     handle platform_window_handle = platform_api.window;
-
-    ImGui::SetCurrentContext(engine->dev_tools.imgui_context);
 
     //start frame
     platform_api.imgui_frame_start(platform_window_handle);

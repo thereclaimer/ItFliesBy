@@ -224,14 +224,6 @@ itfliesby_platform_win32_window_callback(HWND window_handle,
     return 0;
 }
 
-internal void
-itfliesby_platform_win32_imgui_update() {
-
-
-    
-
-}
-
 internal int
 itfliesby_platform_win32_main(
     HINSTANCE instance,
@@ -266,6 +258,8 @@ itfliesby_platform_win32_main(
 
     game_window.window_dimensions.width  = 1024;
     game_window.window_dimensions.height = 768;
+
+    itfliesby_platform_win32_toggle_full_screen();
 
     ITFLIESBY_ASSERT(game_window.window_handle);
 
@@ -307,20 +301,6 @@ itfliesby_platform_win32_main(
 
     game_window.running = true;
 
-    //imgui init
-    // IMGUI_CHECKVERSION();
-    // ImGui::CreateContext();
-
-    // ITFLIESBY_ASSERT(wglMakeCurrent(game_window.device_context, game_window.opengl_context));
-    // ITFLIESBY_ASSERT(glewInit() == GLEW_OK);
-    
-    // ImGui_ImplWin32_Init(game_window.window_handle);
-
-    // const char* glsl_version = "#version 330";
-
-    // ImGui_ImplOpenGL3_Init(glsl_version);
-    // ImGui::StyleColorsDark();
-
     while (game_window.running) {
 
         //process incoming messages
@@ -335,11 +315,6 @@ itfliesby_platform_win32_main(
                 ? &gamepad
                 : NULL;
 
-        // ImGui_ImplOpenGL3_NewFrame();
-        // ImGui_ImplWin32_NewFrame();
-        // ImGui::NewFrame();
-
-
         //update the game
         itfliesby_game_update_and_render(
             game_window.game,
@@ -348,10 +323,6 @@ itfliesby_platform_win32_main(
             game_window.window_dimensions.height,
             game_window.monitor_dimensions.width,
             game_window.monitor_dimensions.height);
-
-
-        // ImGui::Render();
-        // ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         SwapBuffers(game_window.device_context);
     }
