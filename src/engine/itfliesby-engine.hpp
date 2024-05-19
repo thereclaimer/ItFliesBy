@@ -64,7 +64,6 @@ itfliesby_engine_devtools_update(
 struct ItfliesbyEngineFrame {
     f64 target_fps;
     f64 delta_time_ms;
-    u32 frame_index;
 
     //this is how many frames we wait to calculate averages
     u32 frame_profile_max;

@@ -21,14 +21,15 @@ itfliesby_engine_devtools_create_and_init() {
 internal void
 itfliesby_engine_devtools_tools_stats(
     ItfliesbyEngine* engine,
-    bool             show) {
+    bool*            show) {
 
 
-    if (!ImGui::Begin("Game Status",&show)) {
+    if (!ImGui::Begin("Game Status",show)) {
         ImGui::End();
     }
 
     ImGui::LabelText("Target FPS","%f",engine->frame.target_fps);
+    ImGui::LabelText("Delta Time (ms)","%f",engine->frame.delta_time_ms);
 
     ImGui::End();
 }
@@ -37,7 +38,7 @@ internal void
 itfliesby_engine_devtools_show(
     ItfliesbyEngine* engine) {
 
-    bool show_tools_stats = false;
+    local bool show_tools_stats = false;
 
     //show the main menu bar
     if (ImGui::BeginMainMenuBar()) {
@@ -52,7 +53,9 @@ itfliesby_engine_devtools_show(
     }
     ImGui::EndMainMenuBar();
 
-    itfliesby_engine_devtools_tools_stats(engine,show_tools_stats);
+    if (show_tools_stats) {
+        itfliesby_engine_devtools_tools_stats(engine,&show_tools_stats);
+    }
 
 }
 

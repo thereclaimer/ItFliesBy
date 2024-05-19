@@ -29,10 +29,10 @@ itfliesby_engine_create(
 
     //frame information
     ItfliesbyEngineFrame frame_info = {0};
-    frame_info.frame_profile_max = 120;
-    frame_info.target_fps        = 120;
-    engine->frame = frame_info;
+    frame_info.frame_profile_max         = 120;
+    frame_info.target_fps                = 120;
 
+    engine->frame = frame_info;
     //initialize assets
     itfliesby_engine_assets_init(&engine->assets);
     engine->renderer = itfliesby_engine_rendering_init(
@@ -141,6 +141,7 @@ itfliesby_engine_render_scene(
             ticks_after_frame);
 
     engine->frame.delta_time_ms = delta_time_ms;
+
 
     //sleep time
     f64 target_ms_per_frame = (1 / engine->frame.target_fps) * 1000.0f;
