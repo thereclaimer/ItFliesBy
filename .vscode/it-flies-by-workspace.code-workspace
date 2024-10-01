@@ -3,6 +3,10 @@
 		{
 			"path": "../",
 			"name": "ItFliesBy"
+		},
+		{
+			"path": "../modules/r-libs",
+			"name": "RLibs"
 		}
 	],
 	"settings": {}
