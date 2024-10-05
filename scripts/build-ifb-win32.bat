@@ -10,20 +10,21 @@ pushd ..
 :: VARIABLES
 ::----------------------------------------------------------------
 
-@set path_build= win32\build\debug
+@set path_build=              win32\build\debug
 
-@set path_rlibs_lib=     modules\r-libs\build\debug\lib
-@set path_rlibs_bin=     modules\r-libs\build\debug\bin
-@set path_rlibs_include= modules\r-libs\build\debug\include
+@set path_rlibs_lib=          modules\r-libs\build\debug\lib
+@set path_rlibs_bin=          modules\r-libs\build\debug\bin
+@set path_rlibs_include=      modules\r-libs\build\debug\include
+
+@set path_script_build_rlibs= modules\r-libs\scripts\build-r-libs-debug.bat
 
 ::----------------------------------------------------------------
 :: DEPENDENCIES
 ::----------------------------------------------------------------
 
-if not exist %path_build% (
-    mkdir %path_build%\bin
-    mkdir %path_build%\obj
-)
+if exist %path_build% rmdir /s /q %path_build%
+mkdir %path_build%\bin
+mkdir %path_build%\obj
 
 xcopy %path_rlibs_bin%\*.dll %path_build%\bin /E /I /H /Y 
 xcopy %path_rlibs_bin%\*.pdb %path_build%\bin /E /I /H /Y 
@@ -33,7 +34,7 @@ xcopy %path_rlibs_bin%\*.pdb %path_build%\bin /E /I /H /Y
 ::----------------------------------------------------------------
 
 @set cl_flags=        /Zi ^
-                      /O1
+                      /MD
 
 @set cl_output=       /Fe:%path_build%\bin\ItFliesBy.exe ^
                       /Fo:%path_build%\obj\ItFliesBy.obj ^
