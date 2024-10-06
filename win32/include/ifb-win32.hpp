@@ -2,6 +2,7 @@
 #define IFB_WIN32_HPP
 
 #include <r-libs.hpp>
+#include <ifb-engine.hpp>
 
 struct IFBWin32 {
     RHNDMemoryReservation memory_reservation;

@@ -16,9 +16,6 @@ pushd ..
 @set path_rlibs_bin=          modules\r-libs\build\debug\bin
 @set path_rlibs_include=      modules\r-libs\build\debug\include
 
-@set path_script_build_rlibs= modules\r-libs\scripts\build-r-libs-debug.bat
-
-@set path_engine_include=     engine\include
 
 ::----------------------------------------------------------------
 :: DEPENDENCIES
@@ -26,6 +23,7 @@ pushd ..
 
 if not exist %path_build%\bin mkdir %path_build%\bin
 if not exist %path_build%\obj mkdir %path_build%\obj
+if not exist %path_build%\lib mkdir %path_build%\lib
 
 xcopy %path_rlibs_bin%\*.dll %path_build%\bin /E /I /H /Y 
 xcopy %path_rlibs_bin%\*.pdb %path_build%\bin /E /I /H /Y 
@@ -35,24 +33,25 @@ xcopy %path_rlibs_bin%\*.pdb %path_build%\bin /E /I /H /Y
 ::----------------------------------------------------------------
 
 @set cl_flags=        /Zi ^
+                      /LD ^
                       /MD
 
-@set cl_output=       /Fe:%path_build%\bin\ItFliesBy.exe ^
-                      /Fo:%path_build%\obj\ItFliesBy.obj ^
-                      /Fd:%path_build%\bin\ItFliesBy.pdb
+@set cl_output=       /Fe:%path_build%\bin\ItFliesBy.Engine.dll ^
+                      /Fo:%path_build%\obj\ItFliesBy.Engine.obj ^
+                      /Fd:%path_build%\bin\ItFliesBy.Engine.pdb
 
-@set cl_includes=     /I win32\include        ^
-                      /I %path_rlibs_include% ^
-                      /I %path_engine_include%
+@set cl_includes=     /I engine\include  ^
+                      /I engine\internal ^
+                      /I engine\src      ^
+                      /I %path_rlibs_include%
 
-@set cl_source=       win32\src\ifb-win32.cpp
+@set cl_source=       engine\src\ifb-engine.cpp
 
 @set cl_link=         /link                                   ^
                       /LIBPATH:modules\r-libs\build\debug\lib ^
-                      /LIBPATH:build\debug\lib
+                      /IMPLIB:build\debug\lib\ItFliesBy.Engine.lib
 
-@set cl_libs=         RLibs.lib ^
-                      ItFliesBy.Engine.lib
+@set cl_libs=         RLibs.lib
 
 ::----------------------------------------------------------------
 :: BUILD

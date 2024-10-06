@@ -12,7 +12,23 @@
 			"problemMatcher": [
 				"$msCompile"
 			],
-			"group": "build"
+			"group": "build",
+			"dependsOn":[
+				"Build IFB Engine"				
+			]
+		},
+		{
+			"label": "Build IFB Engine",
+			"command": "build-ifb-engine.bat",
+			"args":[
+            ],
+			"options": {
+				"cwd": "${workspaceFolder}/scripts"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build",
 		}
 	]
 }

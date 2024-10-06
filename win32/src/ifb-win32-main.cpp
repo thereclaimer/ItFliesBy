@@ -15,11 +15,8 @@ ifb_win32_main(
     const r_size platform_win32_window_size_height = 1080;
 
     //create the context
-    if (!r_win32::context_create(
-        args,
-        16,
-        64 * 1024)) {
-        return(-1);
+    if (!r_win32::context_create(args)) {
+        return(S_FALSE);
     }
 
     //create the memory manager
@@ -27,7 +24,7 @@ ifb_win32_main(
         reservation_size_max,
         memory_manager_stack_size)) {
 
-        return(-1);
+        return(S_FALSE);
     }
 
     //create the reservation
@@ -35,7 +32,7 @@ ifb_win32_main(
         r_mem::reserve("IT FLIES BY",reservation_size_max);
     
     if (!ifb_memory_reservation_handle) {
-        return(-1);
+        return(S_FALSE);
     }
 
     //create a region for our win32 systems
@@ -48,7 +45,6 @@ ifb_win32_main(
 
     //set the win32 region
     r_win32::context_set_memory_region(win32_region_handle);
-
 
     //create the window
     const RHNDWin32Window window_handle = 
@@ -73,6 +69,9 @@ ifb_win32_main(
     color_32.format = RColorFormat_RGBA;
     color_32.hex    = 0x282828FF;
     r_win32::rendering_set_clear_color(rendering_context_handle,color_32);
+
+    //create the engine
+    const IFBEngineHandle engine_handle = ifb_engine::engine_startup(ifb_memory_reservation_handle);
 
     //show the window
     r_win32::window_show(window_handle);
