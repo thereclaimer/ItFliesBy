@@ -5,6 +5,7 @@
 
 #include "ifb-engine-types.hpp"
 #include "ifb-engine-scopes.hpp"
+#include "ifb-engine-asset.hpp"
 
 typedef ifb_handle IFBEngineHandle;
 

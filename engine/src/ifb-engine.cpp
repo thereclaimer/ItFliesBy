@@ -3,6 +3,7 @@
 #include "ifb-engine-internal.hpp"
 
 #include "ifb-engine-core.cpp"
+#include "ifb-engine-asset.cpp"
 
 ifb_external const IFBEngineHandle 
 ifb_engine::engine_startup(
