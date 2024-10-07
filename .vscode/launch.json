@@ -8,10 +8,10 @@
             "name": "Windows Launch",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/win32/build/debug/bin/ItFliesBy.exe",
+            "program": "${workspaceFolder}/build/debug/bin/ItFliesBy.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/win32/build/debug/bin",
+            "cwd": "${workspaceFolder}/build/debug/bin",
             "environment": [],
         }
     ]
