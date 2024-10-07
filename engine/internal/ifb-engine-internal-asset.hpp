@@ -5,7 +5,26 @@
 
 #include "ifb-engine.hpp"
 
+/**********************************************************************************/
+/* ASSET                                                                          */
+/**********************************************************************************/
+
+typedef ifb_index IFBEngineAssetId;
 typedef ifb_index IFBEngineAssetDataIndex;
+typedef ifb_index IFBEngineAssetIndex;
+typedef ifb_index IFBEngineAssetFileIndex;
+
+struct IFBEngineAsset {
+    IFBEngineAssetId        id;
+    IFBEngineAssetFileIndex file;
+    IFBEngineAssetIndex     index;
+    IFBEngineAssetDataIndex data;
+};
+
+
+/**********************************************************************************/
+/* DATA TABLE                                                                     */
+/**********************************************************************************/
 
 struct IFBEngineAssetDataBlock {
     ifb_index asset_id;
@@ -17,12 +36,21 @@ struct IFBEngineAssetDataTable {
     RHNDMemoryRegion region_handle;
     ifb_size         row_count;
     struct {
-        RHNDMemoryArena*         arena;
-        IFBEngineAssetDataBlock* data_block;
+        RHNDMemoryArena* arena;
     } columns;
 };
 
-typedef ifb_index IFBEngineAssetId;
+namespace ifb_engine {
+
+    ifb_internal const ifb_b8
+    asset_data_table_create(
+        const ifb_size data_table_arena_size); 
+
+};
+
+/**********************************************************************************/
+/* INDEX TABLE                                                                    */
+/**********************************************************************************/
 
 struct IFBEngineAssetIndex {
     IFBEngineAssetId        id;
@@ -41,15 +69,30 @@ struct IFBEngineAssetIndexTable {
     } columns;
 };
 
+namespace ifb_engine {
+
+    ifb_internal const ifb_b8
+    asset_index_table_create();
+
+};
+
+/**********************************************************************************/
+/* FILE TABLE                                                                    */
+/**********************************************************************************/
+
 struct IFBEngineAssetFileTable {
     RHNDMemoryRegion region_handle;
     ifb_size         row_count;
     struct {
         RHNDMemoryArena*          arena_handle;
         ifb_handle*               file_handle;
-        IFBEngineAssetIndexTable* index_table;
     } columns;
 };
+
+/**********************************************************************************/
+/* ASSET MANAGER                                                                  */
+/**********************************************************************************/
+
 
 struct IFBEngineAssetManager {
     IFBEngineAssetDataTable asset_data_table;
