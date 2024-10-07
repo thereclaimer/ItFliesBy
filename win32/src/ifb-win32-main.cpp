@@ -64,6 +64,9 @@ ifb_win32_main(
         return(S_FALSE);
     }
 
+    //test file
+    const RWin32FileHandle file_handle = r_win32::file_create_new("test.txt");
+
     //set the clear color
     RColor32Bit color_32 = {0};
     color_32.format = RColorFormat_RGBA;
