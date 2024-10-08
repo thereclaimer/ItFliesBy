@@ -1,9 +1,10 @@
 #pragma once
 
-#include "ifb-engine-internal.hpp"
 
 #include "ifb-engine-core.cpp"
 #include "ifb-engine-asset.cpp"
+
+#include "ifb-engine-internal.hpp"
 
 ifb_external const IFBEngineHandle 
 ifb_engine::engine_startup(
@@ -18,8 +19,9 @@ ifb_engine::engine_startup(
     }
 
     //configurations
-    const r_size core_arena_size  = r_mem::size_megabytes(64);
-    const r_size core_arena_count = 2; 
+    const r_size core_arena_size       = r_mem::size_megabytes(64);
+    const r_size core_arena_count      = 2; 
+    const r_size asset_data_arena_size = r_mem::size_kilobytes(64);
 
     //get a region for the engine core
     const RHNDMemoryRegion r_region_engine_core = 
@@ -38,12 +40,12 @@ ifb_engine::engine_startup(
     //push the engine struct onto the arena
     const r_size engine_size      = sizeof(IFBEngine);
     const r_size engine_alignment = alignof(IFBEngine);
-    IFBEngine* engine_ptr = 
+    _ifb_engine_ptr = 
         (IFBEngine*)r_mem::arena_push_aligned(
             r_arena_handle_system,
             engine_size,
             engine_alignment);
-    result &= engine_ptr != NULL;
+    result &= _ifb_engine_ptr != NULL;
 
     //initialize the engine core
     result &= ifb_engine::core_initialize(
@@ -51,10 +53,16 @@ ifb_engine::engine_startup(
         r_region_engine_core,
         r_arena_handle_system,
         r_arena_handle_frame,
-        engine_ptr->core);
+        _ifb_engine_ptr->core);
+
+    //initialize the asset manager
+    result &= ifb_engine::asset_manager_create(
+        asset_data_arena_size,
+        _ifb_engine_ptr->asset_manager);
+        
 
     //we're done
-    return(result ? engine_ptr : NULL);
+    return(result ? _ifb_engine_ptr : NULL);
 }
 
 ifb_external const ifb_b8

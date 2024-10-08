@@ -97,7 +97,6 @@ namespace ifb_engine {
 /* ASSET MANAGER                                                                  */
 /**********************************************************************************/
 
-
 struct IFBEngineAssetManager {
     struct {
         IFBEngineAssetFileTable  file;
@@ -106,11 +105,13 @@ struct IFBEngineAssetManager {
     } tables;
 };
 
-namespace ifb_egine {
+namespace ifb_engine {
 
     ifb_internal const r_b8
     asset_manager_create(
-        const ifb_size asset_data_arena_size);
+        const ifb_size                in_asset_data_arena_size,
+              IFBEngineAssetManager& out_asset_manager_ref);
+
 
 };
 

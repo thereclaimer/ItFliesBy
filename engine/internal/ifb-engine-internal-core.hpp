@@ -7,6 +7,8 @@
 
 #include "ifb-engine-internal-asset.hpp"
 
+#define IFB_ENGINE_CORE_MEMORY_CSTRING_MAX_SIZE 256
+
 struct IFBEngineCoreMemory {
     RHNDMemoryReservation rhnd_reservation_ifb;
     RHNDMemoryRegion      rhnd_region_engine_core;
@@ -34,8 +36,13 @@ namespace ifb_engine {
 
     ifb_internal const RHNDMemoryRegion
     core_memory_create_arena_pool(
+        const ifb_cstr region_tag,
         const ifb_size arena_size,
         const ifb_size arena_count);
+
+    ifb_internal const ifb_cstr 
+    core_system_memory_push_cstring(
+        const ifb_cstr string);
 };
 
 #define ifb_engine_core_memory_push_struct(struct)        \
