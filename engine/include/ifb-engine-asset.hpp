@@ -14,10 +14,9 @@ enum IFBEngineAssetFileId_ {
     IFBEngineAssetFileId_Count   = 2
 };
 
-typedef ifb_index  IFBEngineAssetFileId;
-typedef ifb_index  IFBEngineAssetId;
-typedef ifb_handle IFBEngineAssetHandle;
-
+typedef ifb_index IFBEngineAssetId;
+typedef ifb_index IFBEngineAssetFileId;
+typedef ifb_index IFBEngineAssetDataId;
 
 enum IFBEngineAssetId_ {
     
@@ -55,14 +54,18 @@ struct IFBEngineAssetSystemInfo {
     } tables;
 };
 
-namespace ifb_engine {
-
-    r_external const IFBEngineAssetHandle asset_load   (const IFBEngineAssetId     asset_id);
-    r_external const ifb_b8               asset_unload (const IFBEngineAssetHandle asset_handle);
-
-    r_external const ifb_void asset_system_info (IFBEngineAssetSystemInfo& asset_system_info_ref);
+struct IFBEngineAssetDataBlock {
+    IFBEngineAssetId     asset_id;
+    ifb_memory           asset_data_start;
+    ifb_size             asset_data_size;
 };
 
 
+namespace ifb_engine {
+
+    r_external const ifb_void asset_system_info (IFBEngineAssetSystemInfo& asset_system_info_ref);
+
+    r_external const IFBEngineAssetDataBlock& asset_data(const IFBEngineAssetId asset_id);
+};
 
 #endif //IFB_ENGINE_ASSET_HPP

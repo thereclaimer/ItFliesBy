@@ -12,6 +12,10 @@ ifb_engine::asset_table_create(IFBEngineAssetTable& asset_table_ref) {
     //there is one for each asset
     asset_table_ref.row_count = IFBEngineAssetId_Count;
 
+    //allocate the tag buffer
+    const ifb_size tag_buffer_size = sizeof(ifb_char) * IFB_ENGINE_ASSET_TAG_LENGTH;
+    asset_table_ref.tag_buffer = ifb_engine_core_memory_push_array(tag_buffer_size, ifb_char);
+
     //allocate space for the columns
     asset_table_ref.columns.file_id = ifb_engine_core_memory_push_array(asset_table_ref.row_count, IFBEngineAssetFileId);
     asset_table_ref.columns.start   = ifb_engine_core_memory_push_array(asset_table_ref.row_count, ifb_size);
@@ -20,6 +24,7 @@ ifb_engine::asset_table_create(IFBEngineAssetTable& asset_table_ref) {
 
     //sanity check, make sure we got our memory
     result = (
+        asset_table_ref.tag_buffer      != NULL &&
         asset_table_ref.columns.file_id != NULL &&
         asset_table_ref.columns.start   != NULL &&
         asset_table_ref.columns.size    != NULL &&

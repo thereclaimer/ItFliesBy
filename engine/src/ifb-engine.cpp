@@ -19,9 +19,10 @@ ifb_engine::engine_startup(
     }
 
     //configurations
-    const r_size core_arena_size       = r_mem::size_megabytes(64);
-    const r_size core_arena_count      = 2; 
-    const r_size asset_data_arena_size = r_mem::size_kilobytes(64);
+    const r_size core_arena_size        = r_mem::size_megabytes(64);
+    const r_size core_arena_count       = 2; 
+    const r_size asset_data_arena_size  = r_mem::size_kilobytes(64);
+    const r_size asset_data_arena_count = 1024;
 
     //get a region for the engine core
     const RHNDMemoryRegion r_region_engine_core = 
@@ -58,8 +59,8 @@ ifb_engine::engine_startup(
     //initialize the asset manager
     result &= ifb_engine::asset_manager_create(
         asset_data_arena_size,
+        asset_data_arena_count,
         _ifb_engine_ptr->asset_manager);
-        
 
     //we're done
     return(result ? _ifb_engine_ptr : NULL);
