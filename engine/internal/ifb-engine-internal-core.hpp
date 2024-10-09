@@ -50,7 +50,7 @@ namespace ifb_engine {
         sizeof(struct),                                   \
         alignof(struct))                                  \
 
-#define ifb_engine_core_memory_push_array(type,count) \
+#define ifb_engine_core_memory_push_array(count,type) \
     (type*)ifb_engine::core_system_memory_push(       \
         sizeof(type) * count)                         \
 

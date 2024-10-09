@@ -9,7 +9,13 @@ ifb_engine::asset_manager_create(
 
     ifb_b8 result = true;
 
+    //file table
     result &= ifb_engine::asset_file_table_create(out_asset_manager_ref.tables.file);
+    
+    //index table
+    result &= ifb_engine::asset_table_create(out_asset_manager_ref.tables.asset);
+
+
 
     return(result);
 }

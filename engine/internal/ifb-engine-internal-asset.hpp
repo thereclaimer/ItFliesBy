@@ -14,10 +14,12 @@ typedef ifb_index IFBEngineAssetIndex;
 typedef ifb_index IFBEngineAssetFileIndex;
 
 struct IFBEngineAsset {
-    IFBEngineAssetId        id;
-    IFBEngineAssetFileId    file;
-    IFBEngineAssetIndex     index;
-    IFBEngineAssetDataIndex data;
+    IFBEngineAssetId        asset_id;
+    IFBEngineAssetFileId    file_id;
+    ifb_size                offset;
+    ifb_size                size;
+    IFBEngineAssetDataIndex data_table_index;
+    ifb_cstr                asset_tag;
 };
 
 
@@ -27,9 +29,10 @@ struct IFBEngineAsset {
 
 struct IFBEngineAssetDataBlock {
     ifb_index asset_id;
-    ifb_index file_index;
     ifb_index data_index;
 };
+
+#define IFB_ENGINE_ASSET_DATA_TABLE_ID_INVALID IFBEngineAssetId_Count + 1
 
 struct IFBEngineAssetDataTable {
     RHNDMemoryRegion region_handle;
@@ -43,36 +46,33 @@ namespace ifb_engine {
 
     ifb_internal const ifb_b8
     asset_data_table_create(
-        const ifb_size data_table_arena_size); 
-
+        const ifb_size                  in_data_table_arena_size,
+        const ifb_size                  in_data_table_arena_count,
+              IFBEngineAssetDataTable& out_data_table_ref); 
 };
 
 /**********************************************************************************/
-/* INDEX TABLE                                                                    */
+/* ASSET TABLE                                                                    */
 /**********************************************************************************/
 
-struct IFBEngineAssetIndexInfo {
-    IFBEngineAssetId        id;
-    ifb_size                offset;
-    ifb_size                size;
-    IFBEngineAssetDataIndex data_table_index;
-};
+#define IFB_ENGINE_ASSET_TAG_LENGTH 32
 
-struct IFBEngineAssetIndexTable {
+
+struct IFBEngineAssetTable {
     ifb_size row_count;
+    ifb_cstr tag_buffer;
     struct {
-        IFBEngineAssetId*        id;
-        ifb_size*                offset;
+        IFBEngineAssetFileId*    file_id;
+        ifb_size*                start;
         ifb_size*                size;
-        IFBEngineAssetDataIndex* data_table_index;
+        ifb_cstr*                tag;
     } columns;
 };
 
 namespace ifb_engine {
 
     ifb_internal const ifb_b8
-    asset_index_table_create();
-
+    asset_table_create(IFBEngineAssetTable& asset_table_ref);
 };
 
 /**********************************************************************************/
@@ -84,6 +84,7 @@ struct IFBEngineAssetFileTable {
     struct {
         ifb_handle* file_handle;
         ifb_cstr*   file_name;
+        ifb_size*   asset_count;
     } columns;
 };
 
@@ -99,8 +100,8 @@ namespace ifb_engine {
 
 struct IFBEngineAssetManager {
     struct {
+        IFBEngineAssetTable      asset;
         IFBEngineAssetFileTable  file;
-        IFBEngineAssetIndexTable index;
         IFBEngineAssetDataTable  data;
     } tables;
 };
@@ -111,8 +112,6 @@ namespace ifb_engine {
     asset_manager_create(
         const ifb_size                in_asset_data_arena_size,
               IFBEngineAssetManager& out_asset_manager_ref);
-
-
 };
 
 #endif //IFB_ENGINE_INTERNAL_ASSET_HPP

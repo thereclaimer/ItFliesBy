@@ -7,13 +7,13 @@ ifb_internal const ifb_b8
 ifb_engine::asset_file_table_create(
     IFBEngineAssetFileTable& file_table) {
 
-
     const r_size asset_file_count = IFBEngineAssetFileId_Count;
     
     //allocate and initialize the file table
     file_table.row_count           = asset_file_count; 
-    file_table.columns.file_handle = ifb_engine_core_memory_push_array(ifb_handle,asset_file_count);
-    file_table.columns.file_name   = ifb_engine_core_memory_push_array(ifb_cstr,  asset_file_count);
+    file_table.columns.file_handle = ifb_engine_core_memory_push_array(asset_file_count, ifb_handle);
+    file_table.columns.file_name   = ifb_engine_core_memory_push_array(asset_file_count, ifb_cstr);
+    file_table.columns.asset_count = ifb_engine_core_memory_push_array(asset_file_count, ifb_size);
 
     //sanity check
     if (
