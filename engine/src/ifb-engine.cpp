@@ -8,7 +8,7 @@
 
 ifb_external const IFBEngineHandle 
 ifb_engine::engine_startup(
-    const RHNDMemoryReservation r_memory_reservation_handle) {
+    const RMemoryReservationHandle r_memory_reservation_handle) {
 
     //sanity check
     r_b8 result = (
@@ -25,7 +25,7 @@ ifb_engine::engine_startup(
     const r_size asset_data_arena_count = 1024;
 
     //get a region for the engine core
-    const RHNDMemoryRegion r_region_engine_core = 
+    const RMemoryRegionHandle r_region_engine_core = 
         r_mem::region_create_arena_pool(
             r_memory_reservation_handle,
             "IFB ENGINE CORE",
@@ -35,8 +35,8 @@ ifb_engine::engine_startup(
     result &= r_region_engine_core != NULL;
 
     //commit the arenas for the core memory
-    const RHNDMemoryArena r_arena_handle_system = r_mem::arena_commit(r_region_engine_core);
-    const RHNDMemoryArena r_arena_handle_frame  = r_mem::arena_commit(r_region_engine_core);
+    const RMemoryArenaHandle r_arena_handle_system = r_mem::arena_commit(r_region_engine_core);
+    const RMemoryArenaHandle r_arena_handle_frame  = r_mem::arena_commit(r_region_engine_core);
     
     //push the engine struct onto the arena
     const r_size engine_size      = sizeof(IFBEngine);

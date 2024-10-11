@@ -28,7 +28,7 @@ ifb_win32_main(
     }
 
     //create the reservation
-    const RHNDMemoryReservation ifb_memory_reservation_handle = 
+    const RMemoryReservationHandle ifb_memory_reservation_handle = 
         r_mem::reserve("IT FLIES BY",reservation_size_max);
     
     if (!ifb_memory_reservation_handle) {
@@ -36,7 +36,7 @@ ifb_win32_main(
     }
 
     //create a region for our win32 systems
-    const RHNDMemoryRegion win32_region_handle = 
+    const RMemoryRegionHandle win32_region_handle = 
         r_mem::region_create_arena_pool(
             ifb_memory_reservation_handle,
             "WIN32 PLATFORM",

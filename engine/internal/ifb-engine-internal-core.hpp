@@ -10,10 +10,10 @@
 #define IFB_ENGINE_CORE_MEMORY_CSTRING_MAX_SIZE 256
 
 struct IFBEngineCoreMemory {
-    RHNDMemoryReservation rhnd_reservation_ifb;
-    RHNDMemoryRegion      rhnd_region_engine_core;
-    RHNDMemoryArena       rhnd_arena_system;
-    RHNDMemoryArena       rhnd_arena_frame;
+    RMemoryReservationHandle rhnd_reservation_ifb;
+    RMemoryRegionHandle      rhnd_region_engine_core;
+    RMemoryArenaHandle       rhnd_arena_system;
+    RMemoryArenaHandle       rhnd_arena_frame;
 };
 
 struct IFBEngineCore {
@@ -24,17 +24,17 @@ namespace ifb_engine {
 
     ifb_internal const r_b8 
     core_initialize(
-        const RHNDMemoryReservation in_rhnd_reservation_ifb,
-        const RHNDMemoryRegion      in_rhnd_region_engine_core,
-        const RHNDMemoryArena       in_rhnd_arena_system,
-        const RHNDMemoryArena       in_rhnd_arena_frame,
+        const RMemoryReservationHandle in_rhnd_reservation_ifb,
+        const RMemoryRegionHandle      in_rhnd_region_engine_core,
+        const RMemoryArenaHandle       in_rhnd_arena_system,
+        const RMemoryArenaHandle       in_rhnd_arena_frame,
               IFBEngineCore&       out_engine_core_ref);
 
 
     ifb_internal ifb_memory core_system_memory_push         (const ifb_size size);
     ifb_internal ifb_memory core_system_memory_push_aligned (const ifb_size size, const ifb_size alignment);
 
-    ifb_internal const RHNDMemoryRegion
+    ifb_internal const RMemoryRegionHandle
     core_memory_create_arena_pool(
         const ifb_cstr region_tag,
         const ifb_size arena_size,

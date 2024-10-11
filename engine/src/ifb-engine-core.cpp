@@ -5,10 +5,10 @@
 
 ifb_internal const r_b8 
 ifb_engine::core_initialize(
-    const RHNDMemoryReservation in_rhnd_reservation_ifb,
-    const RHNDMemoryRegion      in_rhnd_region_engine_core,
-    const RHNDMemoryArena       in_rhnd_arena_system,
-    const RHNDMemoryArena       in_rhnd_arena_frame,
+    const RMemoryReservationHandle in_rhnd_reservation_ifb,
+    const RMemoryRegionHandle      in_rhnd_region_engine_core,
+    const RMemoryArenaHandle       in_rhnd_arena_system,
+    const RMemoryArenaHandle       in_rhnd_arena_frame,
             IFBEngineCore&     out_engine_core_ref) {
 
     //sanity check
@@ -78,7 +78,7 @@ ifb_engine::core_system_memory_push_cstring(
     return(string_memory);
 }
 
-ifb_internal const RHNDMemoryRegion
+ifb_internal const RMemoryRegionHandle
 ifb_engine::core_memory_create_arena_pool(
     const ifb_cstr region_tag,
     const ifb_size arena_size,
@@ -86,7 +86,7 @@ ifb_engine::core_memory_create_arena_pool(
 
     IFBEngineCore& core_ref = ifb_engine::core_ref();
 
-    const RHNDMemoryRegion region_handle = r_mem::region_create_arena_pool(
+    const RMemoryRegionHandle region_handle = r_mem::region_create_arena_pool(
         core_ref.memory.rhnd_reservation_ifb,
         region_tag,
         arena_size,

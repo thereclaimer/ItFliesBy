@@ -16,7 +16,7 @@ ifb_engine::asset_data_table_create(
         in_data_table_arena_count);
     
     //allocate the table columns
-    out_data_table_ref.columns.arena                 = ifb_engine_core_memory_push_array(in_data_table_arena_count, RHNDMemoryArena);
+    out_data_table_ref.columns.arena                 = ifb_engine_core_memory_push_array(in_data_table_arena_count, RMemoryArenaHandle);
     out_data_table_ref.columns.asset_id              = ifb_engine_core_memory_push_array(in_data_table_arena_count, IFBEngineAssetId); 
     out_data_table_ref.columns.time_ms_loaded        = ifb_engine_core_memory_push_array(in_data_table_arena_count, ifb_timems); 
     out_data_table_ref.columns.time_ms_last_accessed = ifb_engine_core_memory_push_array(in_data_table_arena_count, ifb_timems); 

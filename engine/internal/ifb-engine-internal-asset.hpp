@@ -10,7 +10,7 @@
 /**********************************************************************************/
 
 struct IFBEngineAssetData {
-    RHNDMemoryArena      arena;
+    RMemoryArenaHandle      arena;
     IFBEngineAssetDataId data_id;
     IFBEngineAssetId     asset_id;
     ifb_timems           time_ms_loaded;
@@ -20,10 +20,10 @@ struct IFBEngineAssetData {
 #define IFB_ENGINE_ASSET_DATA_TABLE_ID_INVALID IFBEngineAssetId_Count + 1
 
 struct IFBEngineAssetDataTable {
-    RHNDMemoryRegion region_handle;
+    RMemoryRegionHandle region_handle;
     ifb_size         row_count;
     struct {
-        RHNDMemoryArena*         arena;
+        RMemoryArenaHandle*         arena;
         IFBEngineAssetId*        asset_id;
         ifb_timems*              time_ms_loaded;
         ifb_timems*              time_ms_last_accessed;
