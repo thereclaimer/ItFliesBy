@@ -6,13 +6,17 @@ r_internal r_s32
 ifb_win32_main(
     RWin32MainArgs& args) {
 
+    //get monitor info
+    RWin32MonitorInfo win32_monitor_info;
+    r_win32::monitor_info(win32_monitor_info);
+
     //configuration
     const r_size reservation_size_max              = r_mem::size_gigabytes(4);
     const r_size memory_manager_stack_size         = r_mem::size_megabytes(64);  
     const r_size platform_win32_arena_size         = r_mem::size_kilobytes(4);
     const r_size platform_win32_arena_count        = 64;
-    const r_size platform_win32_window_size_width  = 1920;
-    const r_size platform_win32_window_size_height = 1080;
+    const r_size platform_win32_window_size_width  = win32_monitor_info.pixels_width;
+    const r_size platform_win32_window_size_height = win32_monitor_info.pixels_height;
 
     //create the context
     if (!r_win32::context_create(args)) {
