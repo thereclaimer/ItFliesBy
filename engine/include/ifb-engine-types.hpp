@@ -38,6 +38,8 @@ typedef size_t   ifb_size;
 typedef size_t   ifb_index;
 typedef intptr_t ifb_address;
 
+#define IFB_INDEX_INVALID SIZE_MAX
+
 //time
 typedef uint64_t ifb_timems;
 
