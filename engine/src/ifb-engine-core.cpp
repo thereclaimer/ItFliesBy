@@ -56,6 +56,33 @@ ifb_engine::core_system_memory_push_aligned(
     return(system_memory);
 }
 
+
+ifb_internal ifb_memory
+ifb_engine::core_system_memory_push(
+          IFBEngineCoreMemory& core_memory_ref, 
+    const ifb_size             size) {
+
+    ifb_memory system_memory = r_mem::arena_push(
+        core_memory_ref.rhnd_arena_system,
+        size);
+
+    return(system_memory);
+}
+
+ifb_internal ifb_memory
+ifb_engine::core_system_memory_push_aligned(
+          IFBEngineCoreMemory& core_memory_ref, 
+    const ifb_size             size, 
+    const ifb_size             alignment) {
+    
+    ifb_memory system_memory = r_mem::arena_push_aligned(
+        core_memory_ref.rhnd_arena_system,
+        size,
+        alignment);
+    
+    return(system_memory);
+}
+
 ifb_internal const ifb_cstr 
 ifb_engine::core_system_memory_push_cstring(
     const ifb_cstr string) {
@@ -88,6 +115,24 @@ ifb_engine::core_memory_create_arena_pool(
 
     const RMemoryRegionHandle region_handle = r_mem::region_create_arena_pool(
         core_ref.memory.rhnd_reservation_ifb,
+        region_tag,
+        arena_size,
+        arena_count);
+
+    return(region_handle);
+}
+
+ifb_internal const RMemoryRegionHandle
+ifb_engine::core_memory_create_arena_pool(
+          IFBEngineCoreMemory& core_memory_ref,
+    const ifb_cstr             region_tag,
+    const ifb_size             arena_size,
+    const ifb_size             arena_count) {
+
+    IFBEngineCore& core_ref = ifb_engine::core_ref();
+
+    const RMemoryRegionHandle region_handle = r_mem::region_create_arena_pool(
+        core_memory_ref.rhnd_reservation_ifb,
         region_tag,
         arena_size,
         arena_count);

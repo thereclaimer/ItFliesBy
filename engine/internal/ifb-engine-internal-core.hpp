@@ -5,8 +5,6 @@
 
 #include "ifb-engine.hpp"
 
-#include "ifb-engine-internal-asset.hpp"
-
 #define IFB_ENGINE_CORE_MEMORY_CSTRING_MAX_SIZE 256
 
 struct IFBEngineCoreMemory {
@@ -34,11 +32,22 @@ namespace ifb_engine {
     ifb_internal ifb_memory core_system_memory_push         (const ifb_size size);
     ifb_internal ifb_memory core_system_memory_push_aligned (const ifb_size size, const ifb_size alignment);
 
+    ifb_internal ifb_memory core_system_memory_push         (IFBEngineCoreMemory& core_memory_ref, const ifb_size size);
+    ifb_internal ifb_memory core_system_memory_push_aligned (IFBEngineCoreMemory& core_memory_ref, const ifb_size size, const ifb_size alignment);
+
     ifb_internal const RMemoryRegionHandle
     core_memory_create_arena_pool(
         const ifb_cstr region_tag,
         const ifb_size arena_size,
         const ifb_size arena_count);
+
+    ifb_internal const RMemoryRegionHandle
+    core_memory_create_arena_pool(
+              IFBEngineCoreMemory& core_memory_ref,
+        const ifb_cstr             region_tag,
+        const ifb_size             arena_size,
+        const ifb_size             arena_count);
+
 
     ifb_internal const ifb_cstr 
     core_system_memory_push_cstring(
@@ -54,5 +63,15 @@ namespace ifb_engine {
     (type*)ifb_engine::core_system_memory_push(       \
         sizeof(type) * count)                         \
 
+#define ifb_engine_core_memory_ref_push_struct(core_memory_ref,struct) \
+    (struct*)ifb_engine::core_system_memory_push_aligned(              \
+        core_memory_ref,                                               \
+        sizeof(struct),                                                \
+        alignof(struct))                                               \
+
+#define ifb_engine_core_memory_ref_push_array(core_memory_ref,count,type) \
+    (type*)ifb_engine::core_system_memory_push(                           \
+        core_memory_ref,                                                  \
+        sizeof(type) * count)                                             \
 
 #endif //IFB_ENGINE_CORE_HPP

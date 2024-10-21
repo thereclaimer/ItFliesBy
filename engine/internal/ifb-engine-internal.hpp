@@ -2,6 +2,7 @@
 #define IFB_ENGINE_INTERNAL_HPP
 
 #include "ifb-engine.hpp"
+#include "ifb-engine-internal-asset.hpp"
 
 struct IFBEngineCore;
 struct IFBEngineAssetManager;

@@ -11,7 +11,7 @@ ifb_engine::engine_startup(
     const RMemoryReservationHandle r_memory_reservation_handle) {
 
     //sanity check
-    r_b8 result = (
+    ifb_b8 result = (
         r_memory_reservation_handle != NULL);
 
     if (!result) {
@@ -19,10 +19,8 @@ ifb_engine::engine_startup(
     }
 
     //configurations
-    const r_size core_arena_size        = r_mem::size_megabytes(64);
-    const r_size core_arena_count       = 2; 
-    const r_size asset_data_arena_size  = r_mem::size_kilobytes(64);
-    const r_size asset_data_arena_count = 1024;
+    const ifb_size core_arena_size  = r_mem::size_megabytes(64);
+    const ifb_size core_arena_count = 2; 
 
     //get a region for the engine core
     const RMemoryRegionHandle r_region_engine_core = 
@@ -39,8 +37,8 @@ ifb_engine::engine_startup(
     const RMemoryArenaHandle r_arena_handle_frame  = r_mem::arena_commit(r_region_engine_core);
     
     //push the engine struct onto the arena
-    const r_size engine_size      = sizeof(IFBEngine);
-    const r_size engine_alignment = alignof(IFBEngine);
+    const ifb_size engine_size      = sizeof(IFBEngine);
+    const ifb_size engine_alignment = alignof(IFBEngine);
     _ifb_engine_ptr = 
         (IFBEngine*)r_mem::arena_push_aligned(
             r_arena_handle_system,
@@ -57,9 +55,8 @@ ifb_engine::engine_startup(
         _ifb_engine_ptr->core);
 
     //initialize the asset manager
-    result &= ifb_engine::asset_manager_create(
-        asset_data_arena_size,
-        asset_data_arena_count,
+    result &= ifb_engine::asset_manager_start_up(
+        _ifb_engine_ptr->core.memory,
         _ifb_engine_ptr->asset_manager);
 
     //we're done
