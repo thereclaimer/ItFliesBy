@@ -11,9 +11,9 @@ ifb_engine::asset_file_create_table(
     const ifb_size file_path_length      = IFB_ENGINE_ASSET_FILE_PATH_LENGTH;
     const ifb_size file_path_buffer_size = file_path_length * IFBEngineAssetFileId_Count;
 
-    const ifb_cstr    ptr_file_path_buffer     = ifb_engine_core_memory_ref_push_array(in_engine_core_memory_ref,file_path_buffer_size,ifb_char);
-    const ifb_handle* ptr_file_platform_handle = ifb_engine_core_memory_ref_push_array(in_engine_core_memory_ref,file_count,           ifb_handle);
-    const ifb_size*   ptr_file_size            = ifb_engine_core_memory_ref_push_array(in_engine_core_memory_ref,file_count,           ifb_size);
+    ifb_cstr    ptr_file_path_buffer     = ifb_engine_core_memory_ref_push_array(in_engine_core_memory_ref,file_path_buffer_size,ifb_char);
+    ifb_handle* ptr_file_platform_handle = ifb_engine_core_memory_ref_push_array(in_engine_core_memory_ref,file_count,           ifb_handle);
+    ifb_size*   ptr_file_size            = ifb_engine_core_memory_ref_push_array(in_engine_core_memory_ref,file_count,           ifb_size);
 
     const ifb_b8 result = (
         ptr_file_path_buffer     &&
