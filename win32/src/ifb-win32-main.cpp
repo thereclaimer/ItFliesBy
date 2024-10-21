@@ -51,7 +51,7 @@ ifb_win32_main(
     r_win32::context_set_memory_region(win32_region_handle);
 
     //create the window
-    const RHNDWin32Window window_handle = 
+    const RWin32WindowHandle window_handle = 
         r_win32::window_create_centered(
             "It Flies By",
             platform_win32_window_size_width,
@@ -63,8 +63,14 @@ ifb_win32_main(
     }
 
     //create the opengl context
-    RHNDWin32RenderingContext rendering_context_handle = r_win32::rendering_create_opengl_context(window_handle); 
+    RWin32RenderingContextHandle rendering_context_handle = r_win32::rendering_create_opengl_context(window_handle); 
     if (!rendering_context_handle) {
+        return(S_FALSE);
+    }
+
+    //create the imgui context
+    ImGuiContext* imgui_context = r_win32::imgui_create_context(window_handle);
+    if (!imgui_context) {
         return(S_FALSE);
     }
 
