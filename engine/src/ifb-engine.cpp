@@ -10,7 +10,8 @@
 ifb_external const IFBEngineHandle 
 ifb_engine::engine_startup(
     const RMemoryReservationHandle r_memory_reservation_handle,
-          ImGuiContext*            imgui_context) {
+          ImGuiContext*            imgui_context,
+          IFBEnginePlatformApi     platform_api) {
 
     //sanity check
     ifb_b8 result = (
@@ -57,6 +58,11 @@ ifb_engine::engine_startup(
             engine_size,
             engine_alignment);
     result &= _ifb_engine_ptr != NULL;
+
+    //set the platform api
+    if (_ifb_engine_ptr) {
+        _ifb_engine_ptr->platform = platform_api;
+    }
 
     //initialize the engine core
     result &= ifb_engine::core_initialize(

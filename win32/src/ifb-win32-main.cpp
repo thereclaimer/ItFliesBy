@@ -6,6 +6,8 @@ r_internal r_s32
 ifb_win32_main(
     RWin32MainArgs& args) {
 
+    _ifb_win32 = {0};
+
     //get monitor info
     RWin32MonitorInfo win32_monitor_info;
     r_win32::monitor_info(win32_monitor_info);
@@ -32,23 +34,21 @@ ifb_win32_main(
     }
 
     //create the reservation
-    const RMemoryReservationHandle ifb_memory_reservation_handle = 
-        r_mem::reserve("IT FLIES BY",reservation_size_max);
-    
-    if (!ifb_memory_reservation_handle) {
+    _ifb_win32.memory_reservation = r_mem::reserve("IT FLIES BY",reservation_size_max);
+    if (!_ifb_win32.memory_reservation) {
         return(S_FALSE);
     }
 
     //create a region for our win32 systems
-    const RMemoryRegionHandle win32_region_handle = 
+    _ifb_win32.win32_region = 
         r_mem::region_create_arena_pool(
-            ifb_memory_reservation_handle,
+            _ifb_win32.memory_reservation,
             "WIN32 PLATFORM",
             platform_win32_arena_size,
             platform_win32_arena_count);
 
     //set the win32 region
-    r_win32::context_set_memory_region(win32_region_handle);
+    r_win32::context_set_memory_region(_ifb_win32.win32_region);
 
     //create the window
 
@@ -96,11 +96,22 @@ ifb_win32_main(
     color_32.hex    = 0x282828FF;
     r_win32::rendering_set_clear_color(rendering_context_handle,color_32);
 
+
+    //initialize the platform api
+    IFBEnginePlatformApi platform_api;
+    platform_api.file.open_read_only  = ifb_win32::file_open_read_only;
+    platform_api.file.open_read_write = ifb_win32::file_open_read_write;
+    platform_api.file.close           = ifb_win32::file_close;
+    platform_api.file.size            = ifb_win32::file_size;
+    platform_api.file.read            = ifb_win32::file_read;
+    platform_api.file.write           = ifb_win32::file_write;
+
     //create the engine
     const IFBEngineHandle engine_handle = 
         ifb_engine::engine_startup(
-            ifb_memory_reservation_handle,
-            imgui_context);
+            _ifb_win32.memory_reservation,
+            imgui_context,
+            platform_api);
 
     //show the window
     r_win32::window_show(window_handle);
