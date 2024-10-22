@@ -48,6 +48,9 @@ xcopy %path_rlibs_bin%\*.pdb %path_build%\bin /E /I /H /Y
 @set cl_includes=     /I engine\include       ^
                       /I engine\internal      ^
                       /I engine\src           ^
+                      /I engine\src\assets    ^
+                      /I engine\src\core      ^
+                      /I engine\src\tools     ^
                       /I %path_rlibs_include% ^
                       /I %path_vcpkg_include%
 
