@@ -23,6 +23,12 @@ ifb_engine::engine_startup(
     //set the imgui context
     ImGui::SetCurrentContext(imgui_context);
 
+    //set the imgui font
+    ImGuiIO& imgui_io_ref   = ImGui::GetIO();
+    ImFont*  imgui_font_ptr = imgui_io_ref.Fonts->AddFontFromMemoryCompressedBase85TTF(IFB_ENGINE_FONT_UI_SEGOEUI,18.0f);
+
+    result &= imgui_font_ptr != NULL;
+
     //configurations
     const ifb_size core_arena_size  = r_mem::size_megabytes(64);
     const ifb_size core_arena_count = 2; 
