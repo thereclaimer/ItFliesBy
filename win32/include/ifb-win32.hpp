@@ -24,9 +24,9 @@ struct IFBWin32FileTable {
 
 namespace ifb_win32 {
 
-    ifb_internal const ifb_b8 file_open_read_only  (const ifb_cstr file_path, IFBEnginePlatformFileIndex& out_file_index_ref);
-    ifb_internal const ifb_b8 file_open_read_write (const ifb_cstr file_path, IFBEnginePlatformFileIndex& out_file_index_ref);
-    ifb_internal const ifb_b8 file_create_new      (const ifb_cstr file_path, IFBEnginePlatformFileIndex& out_file_index_ref);
+    ifb_internal const ifb_b8 file_open_read_only  (const ifb_cstr in_file_path, IFBEnginePlatformFileIndex& out_file_index_ref);
+    ifb_internal const ifb_b8 file_open_read_write (const ifb_cstr in_file_path, IFBEnginePlatformFileIndex& out_file_index_ref);
+    ifb_internal const ifb_b8 file_create_new      (const ifb_cstr in_file_path, IFBEnginePlatformFileIndex& out_file_index_ref);
 
     ifb_internal const ifb_b8   file_close (const IFBEnginePlatformFileIndex);
     ifb_internal const ifb_size file_size  (const IFBEnginePlatformFileIndex);
@@ -43,7 +43,7 @@ namespace ifb_win32 {
         const IFBEnginePlatformFileIndex in_file_index,
         const ifb_size                   in_file_write_start,
         const ifb_size                   in_file_write_size,
-              ifb_memory                 in_file_write_buffer);
+        const ifb_memory                 in_file_write_buffer);
 
     ifb_internal r_void CALLBACK
     file_read_callback(
