@@ -97,7 +97,10 @@ ifb_win32_main(
     r_win32::rendering_set_clear_color(rendering_context_handle,color_32);
 
     //create the engine
-    const IFBEngineHandle engine_handle = ifb_engine::engine_startup(ifb_memory_reservation_handle);
+    const IFBEngineHandle engine_handle = 
+        ifb_engine::engine_startup(
+            ifb_memory_reservation_handle,
+            imgui_context);
 
     //show the window
     r_win32::window_show(window_handle);
@@ -108,10 +111,9 @@ ifb_win32_main(
 
         //start a new frame
         running &= r_win32::window_frame_start(window_handle);
-        
-        //-----------------------------
-        // APPLICATION LOGIC HERE!!
-        //-----------------------------
+
+        //update the engine        
+        running &= ifb_engine::engine_update(engine_handle);
 
         //render the frame
         running &= r_win32::window_frame_render(window_handle);

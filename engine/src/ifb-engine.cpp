@@ -8,15 +8,20 @@
 
 ifb_external const IFBEngineHandle 
 ifb_engine::engine_startup(
-    const RMemoryReservationHandle r_memory_reservation_handle) {
+    const RMemoryReservationHandle r_memory_reservation_handle,
+          ImGuiContext*            imgui_context) {
 
     //sanity check
     ifb_b8 result = (
-        r_memory_reservation_handle != NULL);
+        r_memory_reservation_handle != NULL &&
+        imgui_context               != NULL);
 
     if (!result) {
         return(NULL);
     }
+
+    //set the imgui context
+    ImGui::SetCurrentContext(imgui_context);
 
     //configurations
     const ifb_size core_arena_size  = r_mem::size_megabytes(64);
@@ -62,6 +67,16 @@ ifb_engine::engine_startup(
     //we're done
     return(result ? _ifb_engine_ptr : NULL);
 }
+
+ifb_external const ifb_b8
+ifb_engine::engine_update(
+    const IFBEngineHandle ifb_engine_handle) {
+
+    ImGui::ShowDemoWindow(NULL);
+
+    return(true);
+}
+
 
 ifb_external const ifb_b8
 ifb_engine::engine_shutdown(
