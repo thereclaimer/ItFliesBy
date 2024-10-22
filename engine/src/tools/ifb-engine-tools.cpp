@@ -8,11 +8,6 @@ ifb_internal const r_b8
 ifb_engine::tools_render(
     IFBEngineTools& tools_ref) {
 
-    //tools window start
-    if (!ImGui::Begin("IFBEngine Tools",NULL,ImGuiWindowFlags_MenuBar)) {
-        return(false);
-    }
-
     ifb_b8 result = true;
 
     //render the menu bar
@@ -21,8 +16,9 @@ ifb_engine::tools_render(
     //render the other windows
     result &= ifb_engine::tools_asset_file_builder_render(tools_ref.assets.file_builder);
 
-    //tools window end
-    ImGui::End();
+    if (tools_ref.imgui_demo) {
+        ImGui::ShowDemoWindow((bool*)&tools_ref.imgui_demo);
+    }
 
     return(result);
 }
@@ -32,7 +28,7 @@ ifb_engine::tools_menu_bar(
     IFBEngineTools& tools_ref) {
 
     //menu bar start
-    if (!ImGui::BeginMenuBar()) {
+    if (!ImGui::BeginMainMenuBar()) {
         return(false);
     }
 
@@ -44,8 +40,16 @@ ifb_engine::tools_menu_bar(
         ImGui::EndMenu();
     }
 
+    //imgui
+    if (ImGui::BeginMenu("ImGui")) {
+
+        //asset file builder
+        ImGui::MenuItem("ImGui Demo",NULL,(bool*)&tools_ref.imgui_demo);        
+        ImGui::EndMenu();
+    }
+
     //menu bar end
-    ImGui::EndMenuBar();
+    ImGui::EndMainMenuBar();
 
     return(true);
 }
