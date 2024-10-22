@@ -3,6 +3,7 @@
 
 #include "ifb-engine.hpp"
 #include "ifb-engine-internal-asset.hpp"
+#include "ifb-engine-internal-tools.hpp"
 
 struct IFBEngineCore;
 struct IFBEngineAssetManager;
@@ -10,6 +11,7 @@ struct IFBEngineAssetManager;
 struct IFBEngine {
     IFBEngineCore         core;
     IFBEngineAssetManager asset_manager;
+    IFBEngineTools        tools;
 };
 
 ifb_global IFBEngine* _ifb_engine_ptr;

@@ -3,6 +3,7 @@
 
 #include "ifb-engine-core.cpp"
 #include "ifb-engine-asset.cpp"
+#include "ifb-engine-tools.cpp"
 
 #include "ifb-engine-internal.hpp"
 
@@ -78,7 +79,13 @@ ifb_external const ifb_b8
 ifb_engine::engine_update(
     const IFBEngineHandle ifb_engine_handle) {
 
-    ImGui::ShowDemoWindow(NULL);
+    if (!ifb_engine_handle) {
+        return(false);
+    }
+
+    IFBEngine* engine_ptr = (IFBEngine*)ifb_engine_handle;
+
+    ifb_engine::tools_render(engine_ptr->tools);
 
     return(true);
 }
