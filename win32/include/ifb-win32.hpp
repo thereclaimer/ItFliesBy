@@ -14,11 +14,10 @@ struct IFBWin32FileOverlappedInfo {
 struct IFBWin32FileTable {
     ifb_size row_count;
     struct {
-        HANDLE                     handle            [IFB_WIN32_FILE_MANAGER_MAX_FILES];
-        ifb_size                   size              [IFB_WIN32_FILE_MANAGER_MAX_FILES];
-        ifb_size                   bytes_transferred [IFB_WIN32_FILE_MANAGER_MAX_FILES];
-        IFBWin32FileOverlappedInfo overlapped        [IFB_WIN32_FILE_MANAGER_MAX_FILES];
-
+        HANDLE                     handle           [IFB_WIN32_FILE_MANAGER_MAX_FILES];
+        ifb_size                   size             [IFB_WIN32_FILE_MANAGER_MAX_FILES];
+        ifb_size                   bytes_transferred[IFB_WIN32_FILE_MANAGER_MAX_FILES];
+        IFBWin32FileOverlappedInfo overlapped       [IFB_WIN32_FILE_MANAGER_MAX_FILES];
     } columns;
 };
 
