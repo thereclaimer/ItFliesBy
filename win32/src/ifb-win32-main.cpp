@@ -51,6 +51,8 @@ ifb_win32_main(
     r_win32::context_set_memory_region(win32_region_handle);
 
     //create the window
+
+#if 0
     const RWin32WindowHandle window_handle = 
         r_win32::window_create_centered(
             "It Flies By",
@@ -58,6 +60,17 @@ ifb_win32_main(
             platform_win32_window_size_height,
             RColorFormat_RGBA,
             RWin32WindowUseImGui_No);
+    
+#else
+    const RWin32WindowHandle window_handle = 
+        r_win32::window_create_centered(
+            "It Flies By",
+            1920,
+            1080,
+            RColorFormat_RGBA,
+            RWin32WindowUseImGui_No);
+#endif   
+
     if (!window_handle) {
         return(S_FALSE);
     }
