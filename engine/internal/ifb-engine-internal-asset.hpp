@@ -27,7 +27,7 @@ struct IFBEngineAssetTableDataBlock;
 
 struct IFBEngineAssetFile {
     IFBEngineAssetTableIndexFile asset_file_table_index;
-    ifb_handle                   asset_file_platform_handle;
+    IFBEnginePlatformFileIndex   asset_file_platform_index;
     ifb_size                     asset_file_size;
 };
 
@@ -36,8 +36,8 @@ struct IFBEngineAssetTableFile {
     ifb_size asset_file_path_length;
     ifb_cstr asset_file_path_buffer;
     struct {
-        ifb_handle* ptr_asset_file_platform_handle;
-        ifb_size*   ptr_asset_file_size;
+        IFBEnginePlatformFileIndex* ptr_asset_file_platform_index;
+        ifb_size*                   ptr_asset_file_size;
     } columns; 
 };
 
