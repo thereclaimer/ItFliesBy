@@ -131,10 +131,9 @@ ifb_win32::file_close(
     ifb_b8 result = (ifb_b8)CloseHandle(file_table_ref.columns.handle[file_index]);    
     
     //update the table
-    file_table_ref.columns.handle           [file_index] = NULL;
-    file_table_ref.columns.size             [file_index] = 0;
-    file_table_ref.columns.bytes_transferred[file_index] = 0;
-    file_table_ref.columns.overlapped       [file_index] = {0};
+    file_table_ref.columns.handle       [file_index] = NULL;
+    file_table_ref.columns.size         [file_index] = 0;
+    file_table_ref.columns.overlapped   [file_index] = {0};
 
     //we're done
     return(result);
@@ -185,14 +184,14 @@ ifb_win32::file_read(
     //set the start for the read
     overlapped_ptr->overlapped.Offset = in_file_read_start;
 
-    //dp the read
+    //do the read
     const r_b8 result = 
         ReadFileEx(
             file_handle,
             out_file_read_buffer,
             in_file_read_size,
             (LPOVERLAPPED)overlapped_ptr,
-            ifb_win32::file_io_completion_routine);
+            ifb_win32::file_read_callback);
 
     //return the result
     return(result);
@@ -211,7 +210,7 @@ ifb_win32::file_write(
 }
 
 ifb_internal ifb_void CALLBACK
-ifb_win32::file_io_completion_routine(
+ifb_win32::file_read_callback(
     DWORD        error_code,
     DWORD        bytes_transferred,
     LPOVERLAPPED overlapped_ptr) {
@@ -228,6 +227,28 @@ ifb_win32::file_io_completion_routine(
         return;
     }
     
-    //update the table
-    file_table_ref.columns.bytes_transferred[ifb_overlapped_ptr->file_index] = bytes_transferred;
+    //update the bytes read
+    ifb_overlapped_ptr->bytes_read = bytes_transferred;
+}
+
+ifb_internal r_void CALLBACK
+ifb_win32::file_write_callback(
+    DWORD        error_code,
+    DWORD        bytes_transferred,
+    LPOVERLAPPED overlapped_ptr) {
+
+    //get the file table
+    IFBWin32FileTable& file_table_ref = ifb_win32::file_table_ref();
+
+    //cast the win32 overlapped to our overlapped structure 
+    IFBWin32FileOverlappedInfo* ifb_overlapped_ptr = (IFBWin32FileOverlappedInfo*)overlapped_ptr;
+
+    //sanity check, 
+    if (!ifb_overlapped_ptr &&                                               // valid overlapped structure
+        ifb_overlapped_ptr->file_index < IFB_WIN32_FILE_MANAGER_MAX_FILES) { // valid index 
+        return;
+    }
+
+    //update the bytes written
+    ifb_overlapped_ptr->bytes_written = bytes_transferred;
 }

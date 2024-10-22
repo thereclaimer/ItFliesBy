@@ -8,16 +8,17 @@
 
 struct IFBWin32FileOverlappedInfo {
     OVERLAPPED                 overlapped;
-    IFBEnginePlatformFileIndex file_index;    
+    IFBEnginePlatformFileIndex file_index; 
+    ifb_size                   bytes_read;
+    ifb_size                   bytes_written;   
 };
 
 struct IFBWin32FileTable {
     ifb_size row_count;
     struct {
-        HANDLE                     handle           [IFB_WIN32_FILE_MANAGER_MAX_FILES];
-        ifb_size                   size             [IFB_WIN32_FILE_MANAGER_MAX_FILES];
-        ifb_size                   bytes_transferred[IFB_WIN32_FILE_MANAGER_MAX_FILES];
-        IFBWin32FileOverlappedInfo overlapped       [IFB_WIN32_FILE_MANAGER_MAX_FILES];
+        HANDLE                     handle       [IFB_WIN32_FILE_MANAGER_MAX_FILES];
+        ifb_size                   size         [IFB_WIN32_FILE_MANAGER_MAX_FILES];
+        IFBWin32FileOverlappedInfo overlapped   [IFB_WIN32_FILE_MANAGER_MAX_FILES];
     } columns;
 };
 
@@ -45,7 +46,13 @@ namespace ifb_win32 {
               ifb_memory                 in_file_write_buffer);
 
     ifb_internal r_void CALLBACK
-    file_io_completion_routine(
+    file_read_callback(
+        DWORD        error_code,
+        DWORD        bytes_transferred,
+        LPOVERLAPPED overlapped_ptr);
+
+    ifb_internal r_void CALLBACK
+    file_write_callback(
         DWORD        error_code,
         DWORD        bytes_transferred,
         LPOVERLAPPED overlapped_ptr);
