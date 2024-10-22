@@ -25,6 +25,7 @@ namespace ifb_win32 {
 
     ifb_internal const ifb_b8 file_open_read_only  (const ifb_cstr file_path, IFBEnginePlatformFileIndex& out_file_index_ref);
     ifb_internal const ifb_b8 file_open_read_write (const ifb_cstr file_path, IFBEnginePlatformFileIndex& out_file_index_ref);
+    ifb_internal const ifb_b8 file_create_new      (const ifb_cstr file_path, IFBEnginePlatformFileIndex& out_file_index_ref);
 
     ifb_internal const ifb_b8   file_close (const IFBEnginePlatformFileIndex);
     ifb_internal const ifb_size file_size  (const IFBEnginePlatformFileIndex);
