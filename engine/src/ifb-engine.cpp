@@ -59,10 +59,8 @@ ifb_engine::engine_startup(
             engine_alignment);
     result &= _ifb_engine_ptr != NULL;
 
-    //set the platform api
-    if (_ifb_engine_ptr) {
-        _ifb_engine_ptr->platform = platform_api;
-    }
+    //validate the platform api
+    result &= ifb_engine::platform_api_validate(platform_api);
 
     //initialize the engine core
     result &= ifb_engine::core_initialize(

@@ -38,7 +38,7 @@ ifb_win32::file_open_read_only(
             GENERIC_READ,
             FILE_SHARE_READ,
             NULL,
-            OPEN_EXISTING,
+            OPEN_ALWAYS,
             FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,
             NULL);
 
@@ -94,7 +94,7 @@ ifb_win32::file_open_read_write(
             GENERIC_READ    | GENERIC_WRITE,
             FILE_SHARE_READ | FILE_SHARE_WRITE,
             NULL,
-            OPEN_EXISTING,
+            OPEN_ALWAYS,
             FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,
             NULL);
 
@@ -109,54 +109,6 @@ ifb_win32::file_open_read_write(
     //initialize this row in the table
     file_table_ref.columns.handle    [out_file_index_ref] = file_handle;
     file_table_ref.columns.size      [out_file_index_ref] = file_size;
-    file_table_ref.columns.overlapped[out_file_index_ref] = {0};
-
-    //we're done
-    return(true);
-}
-
-ifb_internal const ifb_b8 
-ifb_win32::file_create_new(
-    const ifb_cstr                     in_file_path, 
-          IFBEnginePlatformFileIndex& out_file_index_ref) {
-
-    //get the file table
-    IFBWin32FileTable& file_table_ref = ifb_win32::file_table_ref();
-
-    //find the first free file
-    ifb_b8 file_available = false;
-    
-    for (
-        out_file_index_ref = 0;
-        out_file_index_ref < IFB_WIN32_FILE_MANAGER_MAX_FILES;
-        ++out_file_index_ref) {
-
-        //if the handle is null, its available
-        if (!file_table_ref.columns.handle[out_file_index_ref]) {
-            file_available = true;
-            break;
-        }
-    }
-
-    //if we didn't find an available file, we're done
-    if (!file_available) {
-        return(false);
-    }
-
-    //open the file
-    const HANDLE file_handle = 
-        CreateFile(
-            in_file_path,
-            GENERIC_READ    | GENERIC_WRITE,
-            FILE_SHARE_READ | FILE_SHARE_WRITE,
-            NULL,
-            CREATE_ALWAYS,
-            FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,
-            NULL);
-
-    //initialize this row in the table
-    file_table_ref.columns.handle    [out_file_index_ref] = file_handle;
-    file_table_ref.columns.size      [out_file_index_ref] = 0;
     file_table_ref.columns.overlapped[out_file_index_ref] = {0};
 
     //we're done

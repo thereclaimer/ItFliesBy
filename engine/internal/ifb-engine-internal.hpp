@@ -3,17 +3,16 @@
 
 #include "ifb-engine.hpp"
 #include "ifb-engine-internal-asset.hpp"
+#include "ifb-engine-internal-platform.hpp"
 #include "ifb-engine-internal-tools.hpp"
 
 struct IFBEngineCore;
 struct IFBEngineAssetManager;
-struct IFBEnginePlatformApi;
 
 struct IFBEngine {
     IFBEngineCore         core;
     IFBEngineAssetManager asset_manager;
     IFBEngineTools        tools;
-    IFBEnginePlatformApi  platform;
 };
 
 ifb_global IFBEngine* _ifb_engine_ptr;

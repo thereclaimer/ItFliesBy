@@ -21,6 +21,11 @@ typedef const ifb_b8
           IFBEnginePlatformFileIndex& out_file_index_ref);
 
 typedef const ifb_b8
+(*funcptr_ifb_engine_platform_file_open_read_write) (
+    const ifb_cstr                     in_file_path,
+          IFBEnginePlatformFileIndex& out_file_index_ref);
+
+typedef const ifb_b8
 (*funcptr_ifb_engine_platform_file_close) (
     const IFBEnginePlatformFileIndex file_index);
 

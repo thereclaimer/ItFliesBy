@@ -10,15 +10,15 @@ struct IFBWin32FileOverlappedInfo {
     OVERLAPPED                 overlapped;
     IFBEnginePlatformFileIndex file_index; 
     ifb_size                   bytes_read;
-    ifb_size                   bytes_written;   
+    ifb_size                   bytes_written;
 };
 
 struct IFBWin32FileTable {
     ifb_size row_count;
     struct {
-        HANDLE                     handle       [IFB_WIN32_FILE_MANAGER_MAX_FILES];
-        ifb_size                   size         [IFB_WIN32_FILE_MANAGER_MAX_FILES];
-        IFBWin32FileOverlappedInfo overlapped   [IFB_WIN32_FILE_MANAGER_MAX_FILES];
+        HANDLE                     handle    [IFB_WIN32_FILE_MANAGER_MAX_FILES];
+        ifb_size                   size      [IFB_WIN32_FILE_MANAGER_MAX_FILES];
+        IFBWin32FileOverlappedInfo overlapped[IFB_WIN32_FILE_MANAGER_MAX_FILES];
     } columns;
 };
 
@@ -26,10 +26,9 @@ namespace ifb_win32 {
 
     ifb_internal const ifb_b8 file_open_read_only  (const ifb_cstr in_file_path, IFBEnginePlatformFileIndex& out_file_index_ref);
     ifb_internal const ifb_b8 file_open_read_write (const ifb_cstr in_file_path, IFBEnginePlatformFileIndex& out_file_index_ref);
-    ifb_internal const ifb_b8 file_create_new      (const ifb_cstr in_file_path, IFBEnginePlatformFileIndex& out_file_index_ref);
 
-    ifb_internal const ifb_b8   file_close (const IFBEnginePlatformFileIndex);
-    ifb_internal const ifb_size file_size  (const IFBEnginePlatformFileIndex);
+    ifb_internal const ifb_b8   file_close (const IFBEnginePlatformFileIndex file_index);
+    ifb_internal const ifb_size file_size  (const IFBEnginePlatformFileIndex file_index);
     
     ifb_internal const ifb_b8 
     file_read(
