@@ -75,6 +75,11 @@ ifb_engine::engine_startup(
         _ifb_engine_ptr->core.memory,
         _ifb_engine_ptr->asset_manager);
 
+    //initialize the debug tools
+    result &= ifb_engine_tools::tools_start_up(
+        _ifb_engine_ptr->core.memory,
+        _ifb_engine_ptr->tools);
+
     //we're done
     return(result ? _ifb_engine_ptr : NULL);
 }
@@ -89,7 +94,7 @@ ifb_engine::engine_update(
 
     IFBEngine* engine_ptr = (IFBEngine*)ifb_engine_handle;
 
-    ifb_engine::tools_render(engine_ptr->tools);
+    ifb_engine_tools::tools_render_all(engine_ptr->tools);
 
     return(true);
 }

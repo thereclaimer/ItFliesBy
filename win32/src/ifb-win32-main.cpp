@@ -9,16 +9,15 @@ ifb_win32_main(
     _ifb_win32 = {0};
 
     //get monitor info
-    RWin32MonitorInfo win32_monitor_info;
-    r_win32::monitor_info(win32_monitor_info);
+    r_win32::monitor_info(_ifb_win32.monitor_info);
 
     //configuration
     const r_size reservation_size_max              = r_mem::size_gigabytes(4);
     const r_size memory_manager_stack_size         = r_mem::size_megabytes(64);  
     const r_size platform_win32_arena_size         = r_mem::size_kilobytes(4);
     const r_size platform_win32_arena_count        = 64;
-    const r_size platform_win32_window_size_width  = win32_monitor_info.pixels_width;
-    const r_size platform_win32_window_size_height = win32_monitor_info.pixels_height;
+    const r_size platform_win32_window_size_width  = _ifb_win32.monitor_info.pixels_width;
+    const r_size platform_win32_window_size_height = _ifb_win32.monitor_info.pixels_height;
 
     //create the context
     if (!r_win32::context_create(args)) {
@@ -53,7 +52,7 @@ ifb_win32_main(
     //create the window
 
 #if 0
-    const RWin32WindowHandle window_handle = 
+    _ifb_win32.window_handle = 
         r_win32::window_create_centered(
             "It Flies By",
             platform_win32_window_size_width,
@@ -62,7 +61,7 @@ ifb_win32_main(
             RWin32WindowUseImGui_No);
     
 #else
-    const RWin32WindowHandle window_handle = 
+    _ifb_win32.window_handle = 
         r_win32::window_create_centered(
             "It Flies By",
             1920,
@@ -71,63 +70,54 @@ ifb_win32_main(
             RWin32WindowUseImGui_No);
 #endif   
 
-    if (!window_handle) {
+    if (!_ifb_win32.window_handle) {
         return(S_FALSE);
     }
 
     //create the opengl context
-    RWin32RenderingContextHandle rendering_context_handle = r_win32::rendering_create_opengl_context(window_handle); 
-    if (!rendering_context_handle) {
+    _ifb_win32.rendering_context_handle = r_win32::rendering_create_opengl_context(_ifb_win32.window_handle); 
+    if (!_ifb_win32.rendering_context_handle) {
         return(S_FALSE);
     }
 
     //create the imgui context
-    ImGuiContext* imgui_context = r_win32::imgui_create_context(window_handle);
-    if (!imgui_context) {
+    _ifb_win32.imgui_context = r_win32::imgui_create_context(_ifb_win32.window_handle);
+    if (!_ifb_win32.imgui_context) {
         return(S_FALSE);
     }
-
-    //test file
-    const RWin32FileHandle file_handle = r_win32::file_create_new("test.txt");
 
     //set the clear color
     RColor32Bit color_32 = {0};
     color_32.format = RColorFormat_RGBA;
     color_32.hex    = 0x282828FF;
-    r_win32::rendering_set_clear_color(rendering_context_handle,color_32);
-
+    r_win32::rendering_set_clear_color(_ifb_win32.rendering_context_handle,color_32);
 
     //initialize the platform api
-    IFBEnginePlatformApi platform_api;
-    platform_api.file.open_read_only  = ifb_win32::file_open_read_only;
-    platform_api.file.open_read_write = ifb_win32::file_open_read_write;
-    platform_api.file.close           = ifb_win32::file_close;
-    platform_api.file.size            = ifb_win32::file_size;
-    platform_api.file.read            = ifb_win32::file_read;
-    platform_api.file.write           = ifb_win32::file_write;
+    ifb_win32::file_api_initialize(_ifb_win32.platform_api.file);
+    ifb_win32::file_dialog_api_initialize(_ifb_win32.platform_api.file_dialog);
 
     //create the engine
-    const IFBEngineHandle engine_handle = 
+    _ifb_win32.engine_handle = 
         ifb_engine::engine_startup(
             _ifb_win32.memory_reservation,
-            imgui_context,
-            platform_api);
+            _ifb_win32.imgui_context,
+            _ifb_win32.platform_api);
 
     //show the window
-    r_win32::window_show(window_handle);
+    r_win32::window_show(_ifb_win32.window_handle);
 
     //main window loop
     r_b8 running = true;
     while(running) {
 
         //start a new frame
-        running &= r_win32::window_frame_start(window_handle);
+        running &= r_win32::window_frame_start(_ifb_win32.window_handle);
 
         //update the engine        
-        running &= ifb_engine::engine_update(engine_handle);
+        running &= ifb_engine::engine_update(_ifb_win32.engine_handle);
 
         //render the frame
-        running &= r_win32::window_frame_render(window_handle);
+        running &= r_win32::window_frame_render(_ifb_win32.window_handle);
     }
 
     //destroy the context

@@ -57,11 +57,29 @@ struct IFBEnginePlatformFile {
 };
 
 /**********************************************************************************/
+/* FILE DIALOG                                                                    */
+/**********************************************************************************/
+
+typedef const ifb_b8
+(*funcptr_ifb_engine_platform_file_dialog_select_file) (
+    const ifb_cstr  in_starting_directory,
+    const ifb_size  in_file_extension_count,
+    const ifb_size  in_file_extension_stride,
+    const ifb_cstr  in_file_extension_buffer,
+    const ifb_size  in_file_selection_buffer_size,
+          ifb_cstr out_file_selection_buffer);
+
+struct IFBEnginePlatformFileDialog {
+    funcptr_ifb_engine_platform_file_dialog_select_file select_file;
+};
+
+/**********************************************************************************/
 /* PLATFORM API                                                                   */
 /**********************************************************************************/
 
 struct IFBEnginePlatformApi {
-    IFBEnginePlatformFile file;
+    IFBEnginePlatformFile       file;
+    IFBEnginePlatformFileDialog file_dialog;
 };
 
 #endif //IFB_ENGINE_PLATFORM_HPP

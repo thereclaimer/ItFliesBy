@@ -51,8 +51,11 @@ xcopy %path_rlibs_bin%\*.pdb %path_build%\bin /E /I /H /Y
                       /LIBPATH:modules\r-libs\build\debug\lib ^
                       /LIBPATH:build\debug\lib
 
-@set cl_libs=         RLibs.lib ^
-                      ItFliesBy.Engine.lib
+@set cl_libs=         RLibs.lib            ^
+                      ItFliesBy.Engine.lib ^
+                      Comdlg32.lib         ^
+                      shell32.lib          ^
+                      Ole32.lib
 
 ::----------------------------------------------------------------
 :: BUILD

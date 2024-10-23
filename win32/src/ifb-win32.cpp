@@ -4,3 +4,4 @@
 
 #include "ifb-win32-main.cpp"
 #include "ifb-win32-file.cpp"
+#include "ifb-win32-file-dialog.cpp"

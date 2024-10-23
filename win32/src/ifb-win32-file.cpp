@@ -2,6 +2,18 @@
 
 #pragma once
 
+ifb_internal ifb_void 
+ifb_win32::file_api_initialize(
+    IFBEnginePlatformFile& platform_file_api_ref) {
+
+    platform_file_api_ref.open_read_only     = ifb_win32::file_open_read_only;
+    platform_file_api_ref.open_read_write    = ifb_win32::file_open_read_write;
+    platform_file_api_ref.close              = ifb_win32::file_close;
+    platform_file_api_ref.size               = ifb_win32::file_size;
+    platform_file_api_ref.read               = ifb_win32::file_read;
+    platform_file_api_ref.write              = ifb_win32::file_write;
+}
+
 ifb_internal const r_b8 
 ifb_win32::file_open_read_only(
     const ifb_cstr                     in_file_path,

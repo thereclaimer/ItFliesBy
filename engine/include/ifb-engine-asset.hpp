@@ -59,6 +59,14 @@ enum IFBEngineAssetId_ {
     IFBEngineAssetId_Count                            = 6
 };
 
+enum IFBEngineAssetShaderId_ {
+    IFBEngineAssetShaderId_SolidQuadStageVertex      = 0,
+    IFBEngineAssetShaderId_SolidQuadStageFragment    = 1,
+    IFBEngineAssetShaderId_TexturedQuadStageVertex   = 2,
+    IFBEngineAssetShaderId_TexturedQuadStageFragment = 3,
+    IFBEngineAssetShaderId_Count                     = 4,
+};
+
 /**********************************************************************************/
 /* ASSET                                                                          */
 /**********************************************************************************/

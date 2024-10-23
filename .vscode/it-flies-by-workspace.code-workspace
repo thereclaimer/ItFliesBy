@@ -9,5 +9,9 @@
 			"name": "RLibs"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.associations": {
+			"xlocale": "cpp"
+		}
+	}
 }

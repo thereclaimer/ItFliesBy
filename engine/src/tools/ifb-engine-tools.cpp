@@ -5,16 +5,41 @@
 #include "ifb-engine-tools-asset-file-builder.cpp"
 
 ifb_internal const r_b8 
-ifb_engine::tools_render(
+ifb_engine_tools::tools_start_up(
+    IFBEngineCoreMemory& in_core_memory,
+    IFBEngineTools&     out_tools_ref) {
+
+    //create the tools memory region
+    const RMemoryRegionHandle tools_region_handle = 
+        ifb_engine::core_memory_create_arena_pool(
+            in_core_memory,
+            IFB_ENGINE_TOOLS_MEMORY_REGION_NAME,
+            IFB_ENGINE_TOOLS_MEMORY_ARENA_SIZE,
+            IFB_ENGINE_TOOLS_MEMORY_ARENA_COUNT);
+
+    //sanity check
+    if (!tools_region_handle) {
+        return(false);
+    }
+
+    //initialize the tools struct
+    out_tools_ref.region_handle = tools_region_handle;
+
+    //we're done
+    return(true);
+}
+
+ifb_internal const r_b8 
+ifb_engine_tools::tools_render_all(
     IFBEngineTools& tools_ref) {
 
     ifb_b8 result = true;
 
     //render the menu bar
-    result &= ifb_engine::tools_menu_bar(tools_ref);
+    result &= ifb_engine_tools::tools_menu_bar(tools_ref);
 
     //render the other windows
-    result &= ifb_engine::tools_asset_file_builder_render(tools_ref.assets.file_builder);
+    result &= ifb_engine_tools::asset_file_builder_render(tools_ref.assets.file_builder);
 
     if (tools_ref.imgui_demo) {
         ImGui::ShowDemoWindow((bool*)&tools_ref.imgui_demo);
@@ -24,7 +49,7 @@ ifb_engine::tools_render(
 }
 
 ifb_internal const r_b8 
-ifb_engine::tools_menu_bar(
+ifb_engine_tools::tools_menu_bar(
     IFBEngineTools& tools_ref) {
 
     //menu bar start

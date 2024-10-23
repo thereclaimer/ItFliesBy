@@ -4,6 +4,11 @@
 #include <r-libs.hpp>
 #include <ifb-engine.hpp>
 
+
+/**********************************************************************************/
+/* FILES                                                                          */
+/**********************************************************************************/
+
 #define IFB_WIN32_FILE_MANAGER_MAX_FILES 32
 
 struct IFBWin32FileOverlappedInfo {
@@ -23,6 +28,8 @@ struct IFBWin32FileTable {
 };
 
 namespace ifb_win32 {
+
+    ifb_internal ifb_void file_api_initialize(IFBEnginePlatformFile& platform_file_api_ref);
 
     ifb_internal const ifb_b8 file_open_read_only  (const ifb_cstr in_file_path, IFBEnginePlatformFileIndex& out_file_index_ref);
     ifb_internal const ifb_b8 file_open_read_write (const ifb_cstr in_file_path, IFBEnginePlatformFileIndex& out_file_index_ref);
@@ -57,17 +64,47 @@ namespace ifb_win32 {
         LPOVERLAPPED overlapped_ptr);
 };
 
+/**********************************************************************************/
+/* FILE DIALOG                                                                    */
+/**********************************************************************************/
+
+namespace ifb_win32 {
+
+    ifb_internal ifb_void 
+    file_dialog_api_initialize(
+        IFBEnginePlatformFileDialog platform_api_file_dialog_ref);
+
+    ifb_internal const ifb_b8
+    file_dialog_select_file(
+        const ifb_cstr  in_starting_directory,
+        const ifb_size  in_file_extension_count,
+        const ifb_size  in_file_extension_stride,
+        const ifb_cstr  in_file_extension_buffer,
+        const ifb_size  in_file_selection_buffer_size,
+              ifb_cstr out_file_selection_buffer);
+};
+
+/**********************************************************************************/
+/* WIN32 APPLICATION                                                              */
+/**********************************************************************************/
+
 struct IFBWin32 {
-    RMemoryReservationHandle memory_reservation;
-    RMemoryRegionHandle      win32_region;
-    IFBWin32FileTable        file_table;
+    RWin32MonitorInfo            monitor_info;
+    RMemoryReservationHandle     memory_reservation;
+    RMemoryRegionHandle          win32_region;
+    RWin32WindowHandle           window_handle;
+    RWin32RenderingContextHandle rendering_context_handle;
+    ImGuiContext*                imgui_context;
+    IFBWin32FileTable            file_table;
+    IFBEnginePlatformApi         platform_api;
+    IFBEngineHandle              engine_handle;
 };
 
 ifb_global IFBWin32 _ifb_win32;
 
 namespace ifb_win32 {
 
-    inline IFBWin32FileTable& file_table_ref() { return(_ifb_win32.file_table); }
+    inline IFBWin32FileTable&        file_table_ref          (ifb_void) { return(_ifb_win32.file_table);          }
 };
 
 #define ifb_win32_main r_win32_main
