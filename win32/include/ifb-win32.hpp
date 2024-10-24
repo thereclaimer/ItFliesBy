@@ -94,6 +94,7 @@ struct IFBWin32 {
     RMemoryRegionHandle          win32_region;
     RWin32WindowHandle           window_handle;
     RWin32RenderingContextHandle rendering_context_handle;
+    RWin32FileDialogHandle       file_dialog_handle;
     ImGuiContext*                imgui_context;
     IFBWin32FileTable            file_table;
     IFBEnginePlatformApi         platform_api;

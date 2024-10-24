@@ -92,6 +92,9 @@ ifb_win32_main(
     color_32.hex    = 0x282828FF;
     r_win32::rendering_set_clear_color(_ifb_win32.rendering_context_handle,color_32);
 
+    //initialize the dialog
+    _ifb_win32.file_dialog_handle = r_win32::file_dialog_create(_ifb_win32.window_handle);
+
     //initialize the platform api
     ifb_win32::file_api_initialize(_ifb_win32.platform_api.file);
     ifb_win32::file_dialog_api_initialize(_ifb_win32.platform_api.file_dialog);
