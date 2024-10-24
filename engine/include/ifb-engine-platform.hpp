@@ -62,11 +62,10 @@ struct IFBEnginePlatformFile {
 
 typedef const ifb_b8
 (*funcptr_ifb_engine_platform_file_dialog_select_file) (
-    const ifb_cstr  in_starting_directory,
-    const ifb_size  in_file_extension_count,
-    const ifb_size  in_file_extension_stride,
-    const ifb_cstr  in_file_extension_buffer,
-    const ifb_size  in_file_selection_buffer_size,
+    const ifb_cstr  in_file_dialog_starting_directory,
+    const ifb_size  in_file_type_count,
+    const ifb_cstr* in_file_type_name_cstr_ptr,
+    const ifb_cstr* in_file_type_spec_cstr_ptr,
           ifb_cstr out_file_selection_buffer);
 
 struct IFBEnginePlatformFileDialog {

@@ -99,14 +99,32 @@ ifb_engine_tools::asset_file_builder_file_selection(
 
     //csv file
     if (ImGui::Button("Browse##AssetBuilderFile")) {
+        
+        const ifb_cstr file_type_name[1] = {"Comma Separated Values (*.csv)"};
+        const ifb_cstr file_type_spec[1] = {"(*.csv)"}; 
 
+        ifb_engine::platform_file_dialog_select_file(
+            ".",
+            1,
+            file_type_name,
+            file_type_spec,
+            asset_file_builder_ref.file_path_csv);
     }
     ImGui::SameLine();
     ImGui::InputText("Asset Builder (.csv)",asset_file_builder_ref.file_path_csv,IFB_ENGINE_TOOLS_ASSET_FILE_BUILDER_PATH_LENGTH_MAX);
 
     //asset file
     if (ImGui::Button("Browse##AssetFile")) {
-        
+
+        const ifb_cstr file_type_name[1] = {"IFB Asset File (*.ifb)"};
+        const ifb_cstr file_type_spec[1] = {"*.csv"};
+
+        ifb_engine::platform_file_dialog_select_file(
+            ".",
+            1,
+            file_type_name,
+            file_type_spec,
+            asset_file_builder_ref.file_path_asset);        
     }
 
     ImGui::SameLine();

@@ -26,8 +26,10 @@ typedef int32_t ifb_b32;
 typedef int64_t ifb_b64;
 
 //strings
-typedef char  ifb_char;
-typedef char* ifb_cstr;
+typedef char     ifb_char;
+typedef wchar_t  ifb_wchar;
+typedef char*    ifb_cstr;
+typedef wchar_t* ifb_wstr;
 
 //memory
 typedef void     ifb_void;

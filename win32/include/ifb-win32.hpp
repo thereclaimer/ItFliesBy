@@ -67,19 +67,22 @@ namespace ifb_win32 {
 /* FILE DIALOG                                                                    */
 /**********************************************************************************/
 
+#define IFB_WIN32_DIALOG_CSTR_LENGTH_MAX 256
+#define IFB_WIN32_DIALOG_WSTR_LENGTH_MAX 128
+
+
 namespace ifb_win32 {
 
     ifb_internal ifb_void 
     file_dialog_api_initialize(
-        IFBEnginePlatformFileDialog platform_api_file_dialog_ref);
+        IFBEnginePlatformFileDialog& platform_api_file_dialog_ref);
 
     ifb_internal const ifb_b8
     file_dialog_select_file(
-        const ifb_cstr  in_starting_directory,
-        const ifb_size  in_file_extension_count,
-        const ifb_size  in_file_extension_stride,
-        const ifb_cstr  in_file_extension_buffer,
-        const ifb_size  in_file_selection_buffer_size,
+        const ifb_cstr  in_file_dialog_starting_directory,
+        const ifb_size  in_file_type_count,
+        const ifb_cstr* in_file_type_name_cstr_ptr,
+        const ifb_cstr* in_file_type_spec_cstr_ptr,
               ifb_cstr out_file_selection_buffer);
 };
 
