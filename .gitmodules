@@ -1,0 +1,3 @@
+[submodule "modules/r-libs"]
+	path = modules/r-libs
+	url = https://github.com/thereclaimer/ReclaimerLibs

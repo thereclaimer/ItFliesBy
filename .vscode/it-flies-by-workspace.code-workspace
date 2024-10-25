@@ -3,7 +3,15 @@
 		{
 			"path": "../",
 			"name": "ItFliesBy"
+		},
+		{
+			"path": "../modules/r-libs",
+			"name": "RLibs"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.associations": {
+			"xlocale": "cpp"
+		}
+	}
 }

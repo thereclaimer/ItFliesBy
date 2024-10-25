@@ -2,114 +2,33 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "Build All",
+			"label": "Build IFB Win32",
+			"command": "build-ifb-win32.bat",
+			"args":[
+            ],
+			"options": {
+				"cwd": "${workspaceFolder}/scripts"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build",
 			"dependsOn":[
-				"Build Memory",
-				"Build Win32",
-                "Build Renderer",
-				"Build Engine",
-				"Build Game",
-			],
-			"args":[
-            ],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"problemMatcher": [
-				"$msCompile"
-			],
-			"group": "build"
+				"Build IFB Engine"				
+			]
 		},
 		{
-			"label": "Build Win32",
-			"command": "scripts\\ifb-build-win32.bat",
+			"label": "Build IFB Engine",
+			"command": "build-ifb-engine.bat",
 			"args":[
             ],
 			"options": {
-				"cwd": "${workspaceFolder}"
+				"cwd": "${workspaceFolder}/scripts"
 			},
 			"problemMatcher": [
 				"$msCompile"
 			],
-			"group": "build"
-		},
-		{
-			"label": "Build Memory",
-			"command": "scripts\\ifb-build-memory.bat",
-			"args":[
-            ],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"problemMatcher": [
-				"$msCompile"
-			],
-			"group": "build"
-		},
-		{
-			"label": "Build Game",
-			"command": "scripts\\ifb-build-game.bat",
-			"args":[
-            ],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"problemMatcher": [
-				"$msCompile"
-			],
-			"group": "build"
-		},
-		{
-			"label": "Build Engine",
-			"command": "scripts\\ifb-build-engine.bat",
-			"args":[
-            ],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"problemMatcher": [
-				"$msCompile"
-			],
-			"group": "build"
-		},
-		{
-			"label": "Build Renderer",
-			"command": "scripts\\ifb-build-renderer.bat",
-			"args":[
-            ],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"problemMatcher": [
-				"$msCompile"
-			],
-			"group": "build"
-		},
-		{
-			"label": "Build Tools",
-			"command": "scripts\\ifb-build-tools.bat",
-			"args":[
-            ],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"problemMatcher": [
-				"$msCompile"
-			],
-			"group": "build"
-		},
-		{
-			"label": "Build Assets",
-			"command": "scripts\\ifb-build-assets.bat",
-			"args":[
-            ],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"problemMatcher": [
-				"$msCompile"
-			],
-			"group": "build"
-		},
+			"group": "build",
+		}
 	]
 }
