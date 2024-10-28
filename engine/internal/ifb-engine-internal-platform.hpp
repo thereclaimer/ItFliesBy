@@ -7,6 +7,12 @@
 
 namespace ifb_engine {
 
+    //memory
+    ifb_global funcptr_ifb_engine_platform_memory_pages_reserve  platform_memory_pages_reserve;
+    ifb_global funcptr_ifb_engine_platform_memory_pages_release  platform_memory_pages_release;
+    ifb_global funcptr_ifb_engine_platform_memory_pages_commit   platform_memory_pages_commit;
+    ifb_global funcptr_ifb_engine_platform_memory_pages_decommit platform_memory_pages_decommit;
+
     //file
     ifb_global funcptr_ifb_engine_platform_file_open_read_only  platform_file_open_read_only;
     ifb_global funcptr_ifb_engine_platform_file_open_read_write platform_file_open_read_write;
@@ -25,7 +31,25 @@ namespace ifb_engine {
 
         ifb_b8 result = true;
 
-        //file
+        //-----------------
+        // memory
+        //-----------------
+
+        ifb_engine::platform_memory_pages_reserve  = platform_api_ref.memory.pages_reserve; 
+        ifb_engine::platform_memory_pages_release  = platform_api_ref.memory.pages_release; 
+        ifb_engine::platform_memory_pages_commit   = platform_api_ref.memory.pages_commit; 
+        ifb_engine::platform_memory_pages_decommit = platform_api_ref.memory.pages_decommit;         
+
+        result &= (
+            ifb_engine::platform_memory_pages_reserve  != NULL && 
+            ifb_engine::platform_memory_pages_release  != NULL && 
+            ifb_engine::platform_memory_pages_commit   != NULL && 
+            ifb_engine::platform_memory_pages_decommit != NULL);
+
+        //-----------------
+        // file
+        //-----------------
+
         ifb_engine::platform_file_open_read_only  = platform_api_ref.file.open_read_only;
         ifb_engine::platform_file_open_read_write = platform_api_ref.file.open_read_write;
         ifb_engine::platform_file_close           = platform_api_ref.file.close;
@@ -41,12 +65,16 @@ namespace ifb_engine {
             ifb_engine::platform_file_read            != NULL &&
             ifb_engine::platform_file_write           != NULL);
 
-        //file dialog
+        //-----------------
+        // file dialog
+        //-----------------
+
         ifb_engine::platform_file_dialog_select_file = platform_api_ref.file_dialog.select_file;        
 
         result &= (
             ifb_engine::platform_file_dialog_select_file != NULL);
 
+        //we're done
         return(result);
     }
 };
