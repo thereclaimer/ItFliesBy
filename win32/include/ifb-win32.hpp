@@ -8,10 +8,32 @@
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
+typedef ifb_index IFBWin32MemoryPageTableIndex;
+typedef ifb_index IFBWin32MemoryPageBlockIndex;
+
+struct IFBWin32MemoryPageTable {
+    RWin32MemoryPageReservation reservation;
+    ifb_size                    row_count;
+    struct {
+        r_address* r_page_start;
+        r_size*    r_block_page_count;
+        r_size*    r_block_count;
+    } columns;
+};
+
+struct IFBWin32MemoryPageBlockTable {
+    ifb_size               block_count;
+    RWin32MemoryPageBlock* r_page_blocks;
+    
+};
+
+struct IFBWin32Memory {
+    IFBWin32MemoryPageTable      page_table;
+    IFBWin32MemoryPageBlockTable page_block_table;
+};
+
 namespace ifb_win32 {
 
-    ifb_internal const ifb_memory
-    
 
 };
 
