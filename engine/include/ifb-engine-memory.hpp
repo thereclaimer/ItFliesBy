@@ -3,6 +3,7 @@
 
 #include "ifb-engine-types.hpp"
 #include "ifb-engine-scopes.hpp"
+#include "ifb-engine-macros.hpp"
 
 typedef ifb_index IFBEngineMemoryArenaTableIndex;
 typedef ifb_index IFBEngineMemoryArenaIndex;
@@ -11,7 +12,17 @@ typedef ifb_index IFBEngineMemoryArenaIndex;
 #define IFB_ENGINE_MEMORY_INDEX_INVALID      SIZE_MAX
 #define IFB_ENGINE_MEMORY_ARENA_SIZE_MINIMUM 4096
 
+#define ifb_engine_memory_size_kilobytes(size) size * 1024
+#define ifb_engine_memory_size_megabytes(size) size * ifb_engine_memory_size_kilobytes(1024)
+#define ifb_engine_memory_size_gigabytes(size) size * ifb_engine_memory_size_megabytes(1024)
+
+#define ifb_engine_memory_align_to_arena(size) ifb_engine_macro_align_a_to_b(size,IFB_ENGINE_MEMORY_ARENA_SIZE_MINIMUM)
+
 namespace ifb_engine {
+
+    inline const ifb_size memory_size_kilobytes(const ifb_size size) { return(size * 1024);               }
+    inline const ifb_size memory_size_megabytes(const ifb_size size) { return(size * 1024 * 1024);        }
+    inline const ifb_size memory_size_gigabytes(const ifb_size size) { return(size * 1024 * 1024 * 1024); }
 
     ifb_external const IFBEngineMemoryArenaTableIndex
     memory_arena_table_create(
