@@ -7,6 +7,10 @@
 
 namespace ifb_engine {
 
+    //system
+    ifb_global funcptr_ifb_engine_platform_system_page_size              platform_system_page_size;
+    ifb_global funcptr_ifb_engine_platform_system_allocation_granularity platform_system_allocation_granularity;
+
     //memory
     ifb_global funcptr_ifb_engine_platform_memory_pages_reserve  platform_memory_pages_reserve;
     ifb_global funcptr_ifb_engine_platform_memory_pages_release  platform_memory_pages_release;
@@ -30,6 +34,13 @@ namespace ifb_engine {
         IFBEnginePlatformApi& platform_api_ref) {
 
         ifb_b8 result = true;
+
+        //-----------------
+        // system
+        //-----------------
+
+        ifb_engine::platform_system_page_size              = platform_api_ref.system.page_size; 
+        ifb_engine::platform_system_allocation_granularity = platform_api_ref.system.allocation_granularity; 
 
         //-----------------
         // memory

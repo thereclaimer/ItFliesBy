@@ -96,6 +96,8 @@ ifb_win32_main(
     _ifb_win32.file_dialog_handle = r_win32::file_dialog_create(_ifb_win32.window_handle);
 
     //initialize the platform api
+    ifb_win32::system_api_initialize(_ifb_win32.platform_api.system);
+    ifb_win32::memory_api_initialize(_ifb_win32.platform_api.memory);
     ifb_win32::file_api_initialize(_ifb_win32.platform_api.file);
     ifb_win32::file_dialog_api_initialize(_ifb_win32.platform_api.file_dialog);
 

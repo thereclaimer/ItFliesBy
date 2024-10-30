@@ -5,38 +5,30 @@
 #include <ifb-engine.hpp>
 
 /**********************************************************************************/
-/* MEMORY                                                                         */
+/* SYSTEM                                                                         */
 /**********************************************************************************/
-
-typedef ifb_index IFBWin32MemoryPageTableIndex;
-typedef ifb_index IFBWin32MemoryPageBlockIndex;
-
-struct IFBWin32MemoryPageTable {
-    RWin32MemoryPageReservation reservation;
-    ifb_size                    row_count;
-    struct {
-        r_address* r_page_start;
-        r_size*    r_block_page_count;
-        r_size*    r_block_count;
-    } columns;
-};
-
-struct IFBWin32MemoryPageBlockTable {
-    ifb_size               block_count;
-    RWin32MemoryPageBlock* r_page_blocks;
-    
-};
-
-struct IFBWin32Memory {
-    IFBWin32MemoryPageTable      page_table;
-    IFBWin32MemoryPageBlockTable page_block_table;
-};
 
 namespace ifb_win32 {
 
+    ifb_internal ifb_void system_api_initialize(IFBEnginePlatformSystem& platform_system_api_ref);
 
+    ifb_internal const ifb_size system_page_size              (ifb_void);
+    ifb_internal const ifb_size system_allocation_granularity (ifb_void);
 };
 
+/**********************************************************************************/
+/* MEMORY                                                                         */
+/**********************************************************************************/
+
+namespace ifb_win32 {
+
+    ifb_internal ifb_void memory_api_initialize(IFBEnginePlatformMemory& platform_memory_api_ref);
+
+    ifb_internal const ifb_memory memory_reserve  (const ifb_size reservation_size);
+    ifb_internal const ifb_b8     memory_release  (const ifb_memory reservation_start, const ifb_size reservation_size);
+    ifb_internal const ifb_memory memory_commit   (const ifb_memory commit_start,      const ifb_size commit_size);
+    ifb_internal const ifb_b8     memory_decommit (const ifb_memory commit_start,      const ifb_size commit_size);
+};
 
 /**********************************************************************************/
 /* FILES                                                                          */
