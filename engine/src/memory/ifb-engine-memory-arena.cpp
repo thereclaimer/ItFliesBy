@@ -2,35 +2,37 @@
 
 #include "ifb-engine-internal-memory.hpp"
 
-r_internal const IFBEngineMemoryArenaIndex
-ifb_engine::memory_arena_create_batch(
-          IFBEngineMemoryArenaTable&    arena_table_ref,
-    const IFBEngineMemoryArenaPoolIndex arena_pool_index,
-    const ifb_u32                       arena_count) {
+ifb_external const ifb_b8
+ifb_engine::memory_arena_create_pool(
+    const ifb_cstr                     in_arena_tag,
+    const ifb_size                     in_arena_size,
+    const ifb_size                     in_arena_count,
+          IFBEngineMemoryArena&       out_arena_start_ref) {
 
-    //get the starting arena index
-    const IFBEngineMemoryArenaIndex starting_arena_index = arena_table_ref.arena_count_current;
+    ifb_b8 result = true;
+    
+    //get the memory manager
+    IFBEngineMemoryManager& memory_manager_ref = ifb_engine::memory_manager_ref();
 
-    //if we can't fit this number of arenas, we're done
-    const ifb_size arena_count_new = starting_arena_index + arena_count;
-    if (arena_count_new > arena_table_ref.arena_count_max) {
-        return(IFB_ENGINE_MEMORY_ARENA_INDEX_INVALID);
-    }
+    //create the header
+    const IFBEngineMemoryArenaHeaderIndex arena_header_index = ifb_engine::memory_arena_header_create(
+        in_arena_tag,
+        in_arena_size,
+        in_arena_count,
+        memory_manager_ref.reservation,
+        memory_manager_ref.arena_tables.header);
 
-    //initialize these arenas
-    for (
-        IFBEngineMemoryArenaIndex arena_index = starting_arena_index;
-        arena_index < arena_count_new;
-        ++arena_index) {
-        
-        arena_table_ref.columns.array_committed [arena_index] = false;
-        arena_table_ref.columns.array_pool_index[arena_index] = arena_pool_index;
-        arena_table_ref.columns.array_size_used [arena_index] = 0;
-    }
+    //create the batch of arenas
+    const IFBEngineMemoryArenaDetailIndex starting_arena_detail_index = 
+    ifb_engine::memory_arena_detail_table_insert(
+        in_arena_count,
+        arena_header_index,
+        memory_manager_ref.arena_tables.detail);
 
-    //update the table
-    arena_table_ref.arena_count_current = arena_count_new;
+    //initialize the struct
+    out_arena_start_ref.header_index = arena_header_index;
+    out_arena_start_ref.detail_index = starting_arena_detail_index;
 
-    //we're done
-    return(starting_arena_index);
+    return(true);
+
 }

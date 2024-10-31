@@ -4,5 +4,5 @@
 
 #include "ifb-engine-memory-manager.cpp"
 #include "ifb-engine-memory-reservation.cpp"
-#include "ifb-engine-memory-arena-pool.cpp"
+#include "ifb-engine-memory-arena-header.cpp"
 #include "ifb-engine-memory-arena.cpp"

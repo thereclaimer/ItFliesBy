@@ -18,13 +18,19 @@ ifb_engine::memory_manager_start_up(
     result &= ifb_engine::memory_reserve(memory_manager_ref.reservation);
 
     //initialize the tables
-    memory_manager_ref.tables.arena_pool = {0};
-    memory_manager_ref.tables.arena      = {0};
+    memory_manager_ref.arena_tables.header = {0};
+    memory_manager_ref.arena_tables.detail = {0};
 
+    //we're done
+    return(result);
 }
 
 ifb_internal const ifb_b8
 ifb_engine::memory_manager_shut_down(
     IFBEngineMemoryManager& memory_manager_ref) {
 
+    //release the memory
+    const ifb_b8 result = ifb_engine::memory_release(memory_manager_ref.reservation);
+
+    return(result);
 }
