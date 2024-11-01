@@ -32,3 +32,27 @@ ifb_engine::memory_release(
     //we're done
     return(result);
 }
+
+
+/**********************************************************************************/
+/* INLINE METHODS                                                                 */
+/**********************************************************************************/
+
+inline const ifb_size
+ifb_engine::memory_reservation_offset(
+    IFBEngineMemoryReservation& reservation_ref) {
+
+    const ifb_size reservation_offset = (ifb_address)reservation_ref.start - reservation_ref.size_used;
+
+    return(reservation_offset);
+}
+
+inline const ifb_memory
+ifb_engine::memory_reservation_get_pointer(
+          IFBEngineMemoryReservation& reservation_ref,
+    const ifb_size                    offset) {
+
+    const ifb_memory memory = reservation_ref.start + offset; 
+
+    return(memory);
+}

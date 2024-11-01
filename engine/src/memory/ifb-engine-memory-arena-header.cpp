@@ -89,7 +89,7 @@ ifb_engine::memory_arena_detail_table_insert(
     //if we can't fit this number of arenas, we're done
     const ifb_size arena_count_new = starting_arena_index + arena_count;
     if (arena_count_new > arena_detail_table_ref.arena_count_max) {
-        return(IFB_ENGINE_MEMORY_ARENA_INDEX_INVALID);
+        return(IFB_ENGINE_MEMORY_ARENA_DETAIL_INDEX_INVALID);
     }
 
     //initialize these arenas
@@ -109,4 +109,39 @@ ifb_engine::memory_arena_detail_table_insert(
 
     //we're done
     return(starting_arena_index);
+}
+
+
+/**********************************************************************************/
+/* INLINE METHODS                                                                 */
+/**********************************************************************************/
+
+inline const ifb_size 
+ifb_engine::memory_arena_header_arena_size(
+          IFBEngineMemoryArenaHeaderTable& arena_table_header_ref,
+    const IFBEngineMemoryArenaHeaderIndex  arena_header_index) {
+
+    const ifb_size arena_size = arena_table_header_ref.columns.array_arena_size[arena_header_index];
+
+    return(arena_size);
+}
+
+inline const 
+ifb_size ifb_engine::memory_arena_header_arena_count(
+          IFBEngineMemoryArenaHeaderTable& arena_table_header_ref,
+    const IFBEngineMemoryArenaHeaderIndex  arena_header_index) {
+
+    const ifb_size arena_count = arena_table_header_ref.columns.array_arena_count[arena_header_index];
+
+    return(arena_count);
+}
+
+inline const ifb_size 
+ifb_engine::memory_arena_header_offset(
+          IFBEngineMemoryArenaHeaderTable& arena_table_header_ref,
+    const IFBEngineMemoryArenaHeaderIndex  arena_header_index) {
+
+    const ifb_size offset = arena_table_header_ref.columns.array_offset[arena_header_index];
+
+    return(offset);
 }

@@ -20,7 +20,7 @@ struct IFBEngineMemoryArena {
 
 #define IFB_ENGINE_MEMORY_ARENA_COUNT_MAX     4096
 #define IFB_ENGINE_MEMORY_ARENA_SIZE_MINIMUM  4096
-#define IFB_ENGINE_MEMORY_ARENA_INDEX_INVALID 4096
+#define IFB_ENGINE_MEMORY_ARENA_DETAIL_INDEX_INVALID 4096
 
 #define ifb_engine_memory_size_kilobytes(size) size * 1024
 #define ifb_engine_memory_size_megabytes(size) size * ifb_engine_memory_size_kilobytes(1024)
@@ -33,6 +33,9 @@ namespace ifb_engine {
     inline const ifb_size memory_size_kilobytes(const ifb_size size) { return(size * 1024);               }
     inline const ifb_size memory_size_megabytes(const ifb_size size) { return(size * 1024 * 1024);        }
     inline const ifb_size memory_size_gigabytes(const ifb_size size) { return(size * 1024 * 1024 * 1024); }
+
+    inline const ifb_b8 memory_arena_header_valid(IFBEngineMemoryArena& arena_ref) { return(arena_ref.header_index < IFB_ENGINE_MEMORY_ARENA_HEADER_INDEX_INVALID); }
+    inline const ifb_b8 memory_arena_detail_valid(IFBEngineMemoryArena& arena_ref) { return(arena_ref.detail_index < IFB_ENGINE_MEMORY_ARENA_DETAIL_INDEX_INVALID); }
 
     inline const ifb_size 
     memory_arena_align(const ifb_size size) { 
@@ -51,7 +54,12 @@ namespace ifb_engine {
         const ifb_size                     in_arena_count,
               IFBEngineMemoryArena&       out_arena_start_ref);
 
-    ifb_external const ifb_memory memory_arena_commit(IFBEngineMemoryArena& arena_ref);
+    ifb_external const ifb_memory 
+    memory_arena_commit(
+        IFBEngineMemoryArena&  in_arena_start,
+        IFBEngineMemoryArena& out_arena_committed);
+
+    ifb_external const ifb_b8 memory_arena_decommit(IFBEngineMemoryArena& arena_ref);
     
     ifb_external const ifb_memory memory_arena_push(IFBEngineMemoryArena& arena_ref, const ifb_size size);
     ifb_external const ifb_memory memory_arena_pull(IFBEngineMemoryArena& arena_ref, const ifb_size size);
