@@ -104,7 +104,6 @@ ifb_win32_main(
     //create the engine
     _ifb_win32.engine_handle = 
         ifb_engine::engine_startup(
-            _ifb_win32.memory_reservation,
             _ifb_win32.imgui_context,
             _ifb_win32.platform_api);
 

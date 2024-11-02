@@ -5,14 +5,81 @@
 
 #include "ifb-engine.hpp"
 
+/**********************************************************************************/
+/* CORE_MEMORY                                                                    */
+/**********************************************************************************/
+
 #define IFB_ENGINE_CORE_MEMORY_CSTRING_MAX_SIZE 256
+#define IFB_ENGINE_CORE_MEMORY_WSTRING_MAX_SIZE 128
+
+#define IFB_ENGINE_CORE_MEMORY_ARENA_TAG            "ENGINE CORE"
+#define IFB_ENGINE_CORE_MEMORY_ARENA_SIZE_KILOBYTES 64
+#define IFB_ENGINE_CORE_MEMORY_ARENA_COUNT          2
 
 struct IFBEngineCoreMemory {
-    RMemoryReservationHandle rhnd_reservation_ifb;
-    RMemoryRegionHandle      rhnd_region_engine_core;
-    RMemoryArenaHandle       rhnd_arena_system;
-    RMemoryArenaHandle       rhnd_arena_frame;
+    ifb_size w_str_size_max;
+    ifb_size c_str_size_max;
+    ifb_size arena_size;
+    ifb_size arena_count;
+    struct {
+        IFBEngineMemoryArena system;
+        IFBEngineMemoryArena frame;
+    } arenas;
 };
+
+namespace ifb_engine {
+
+    //--------------------
+    // core memory
+    //--------------------
+
+    const ifb_b8 core_memory_reserve(IFBEngineCoreMemory& core_memory_ref);
+
+    //--------------------
+    // system arena
+    //--------------------
+
+    const ifb_memory core_memory_system_arena_push         (IFBEngineCoreMemory& core_memory_ref, const ifb_size size);
+    const ifb_memory core_memory_system_arena_push         (const ifb_size size);
+    const ifb_memory core_memory_system_arena_push_aligned (IFBEngineCoreMemory& core_memory_ref, const ifb_size size, const ifb_size alignment);
+    const ifb_memory core_memory_system_arena_push_aligned (const ifb_size size, const ifb_size alignment);
+    const ifb_cstr   core_memory_system_arena_push_cstring (const ifb_cstr string);
+
+    //--------------------
+    // frame arena
+    //--------------------
+
+    const ifb_memory core_memory_frame_arena_push         (IFBEngineCoreMemory& core_memory_ref, const ifb_size size);
+    const ifb_memory core_memory_frame_arena_push         (const ifb_size size);
+    const ifb_memory core_memory_frame_arena_push_aligned (IFBEngineCoreMemory& core_memory_ref, const ifb_size size, const ifb_size alignment);
+    const ifb_memory core_memory_frame_arena_push_aligned (const ifb_size size, const ifb_size alignment);
+    const ifb_cstr   core_memory_frame_arena_push_cstring (const ifb_cstr string);
+};
+
+
+#define ifb_engine_core_arena_push_struct(struct)        \
+    (struct*)ifb_engine::core_system_arena_push_aligned( \
+        sizeof(struct),                                  \
+        alignof(struct))                                 \
+
+#define ifb_engine_core_arena_push_array(count,type) \
+    (type*)ifb_engine::core_system_arena_push(       \
+        sizeof(type) * count)                        \
+
+#define ifb_engine_core_arena_ref_push_struct(core_memory_ref,struct) \
+    (struct*)ifb_engine::core_system_arena_push_aligned(              \
+        core_memory_ref,                                              \
+        sizeof(struct),                                               \
+        alignof(struct))                                              \
+
+#define ifb_engine_core_arena_ref_push_array(core_memory_ref,count,type) \
+    (type*)ifb_engine::core_system_arena_push(                           \
+        core_memory_ref,                                                 \
+        sizeof(type) * count)                                            \
+
+/**********************************************************************************/
+/* ENGINE CORE                                                                    */
+/**********************************************************************************/
 
 struct IFBEngineCore {
     IFBEngineCoreMemory memory;
@@ -20,58 +87,7 @@ struct IFBEngineCore {
 
 namespace ifb_engine {
 
-    ifb_internal const r_b8 
-    core_initialize(
-        const RMemoryReservationHandle in_rhnd_reservation_ifb,
-        const RMemoryRegionHandle      in_rhnd_region_engine_core,
-        const RMemoryArenaHandle       in_rhnd_arena_system,
-        const RMemoryArenaHandle       in_rhnd_arena_frame,
-              IFBEngineCore&       out_engine_core_ref);
-
-
-    ifb_internal ifb_memory core_system_memory_push         (const ifb_size size);
-    ifb_internal ifb_memory core_system_memory_push_aligned (const ifb_size size, const ifb_size alignment);
-
-    ifb_internal ifb_memory core_system_memory_push         (IFBEngineCoreMemory& core_memory_ref, const ifb_size size);
-    ifb_internal ifb_memory core_system_memory_push_aligned (IFBEngineCoreMemory& core_memory_ref, const ifb_size size, const ifb_size alignment);
-
-    ifb_internal const RMemoryRegionHandle
-    core_memory_create_arena_pool(
-        const ifb_cstr region_tag,
-        const ifb_size arena_size,
-        const ifb_size arena_count);
-
-    ifb_internal const RMemoryRegionHandle
-    core_memory_create_arena_pool(
-              IFBEngineCoreMemory& core_memory_ref,
-        const ifb_cstr             region_tag,
-        const ifb_size             arena_size,
-        const ifb_size             arena_count);
-
-
-    ifb_internal const ifb_cstr 
-    core_system_memory_push_cstring(
-        const ifb_cstr string);
+    const ifb_b8 core_initialize (IFBEngineCore& core_ref);
 };
-
-#define ifb_engine_core_memory_push_struct(struct)        \
-    (struct*)ifb_engine::core_system_memory_push_aligned( \
-        sizeof(struct),                                   \
-        alignof(struct))                                  \
-
-#define ifb_engine_core_memory_push_array(count,type) \
-    (type*)ifb_engine::core_system_memory_push(       \
-        sizeof(type) * count)                         \
-
-#define ifb_engine_core_memory_ref_push_struct(core_memory_ref,struct) \
-    (struct*)ifb_engine::core_system_memory_push_aligned(              \
-        core_memory_ref,                                               \
-        sizeof(struct),                                                \
-        alignof(struct))                                               \
-
-#define ifb_engine_core_memory_ref_push_array(core_memory_ref,count,type) \
-    (type*)ifb_engine::core_system_memory_push(                           \
-        core_memory_ref,                                                  \
-        sizeof(type) * count)                                             \
 
 #endif //IFB_ENGINE_CORE_HPP

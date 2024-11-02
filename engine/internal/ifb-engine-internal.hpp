@@ -18,13 +18,13 @@ struct IFBEngine {
     IFBEngineTools         tools;
 };
 
-ifb_global IFBEngine* _ifb_engine_ptr;
+ifb_global IFBEngine _ifb_engine;
 
 namespace ifb_engine {
 
-    inline IFBEngineCore&          core_ref           (ifb_void) { return(_ifb_engine_ptr->core);           }
-    inline IFBEngineMemoryManager& memory_manager_ref (ifb_void) { return(_ifb_engine_ptr->memory_manager); }
-    inline IFBEngineAssetManager&  asset_manager_ref  (ifb_void) { return(_ifb_engine_ptr->asset_manager);  }
+    inline IFBEngineCore&          core_ref           (ifb_void) { return(_ifb_engine.core);           }
+    inline IFBEngineMemoryManager& memory_manager_ref (ifb_void) { return(_ifb_engine.memory_manager); }
+    inline IFBEngineAssetManager&  asset_manager_ref  (ifb_void) { return(_ifb_engine.asset_manager);  }
 };
 
 #endif //IFB_ENGINE_INTERNAL_HPP

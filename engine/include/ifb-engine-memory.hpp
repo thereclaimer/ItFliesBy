@@ -5,12 +5,29 @@
 #include "ifb-engine-scopes.hpp"
 #include "ifb-engine-macros.hpp"
 
-typedef ifb_u8  IFBEngineMemoryArenaHeaderIndex;
-typedef ifb_u32 IFBEngineMemoryArenaDetailIndex;
+typedef ifb_u8  IFBEngineMemoryTableIndexArenaHeader;
+typedef ifb_u16 IFBEngineMemoryTableIndexArenaDetail;
+typedef ifb_u16 IFBEngineMemoryTableIndexArenaPool;
 
-struct IFBEngineMemoryArena {
-    IFBEngineMemoryArenaHeaderIndex header_index;
-    IFBEngineMemoryArenaDetailIndex detail_index;
+struct IFBEngineMemoryArenaPoolHandle {
+    struct {
+        IFBEngineMemoryTableIndexArenaHeader header;
+        IFBEngineMemoryTableIndexArenaDetail detail_start;
+    } memory_table_indexes;
+};
+
+struct IFBEngineMemoryArenaHandle {
+    struct {
+        IFBEngineMemoryTableIndexArenaHeader header;
+        IFBEngineMemoryTableIndexArenaDetail detail;
+        IFBEngineMemoryTableIndexArenaPool   pool;
+    } memory_table_indexes;
+};
+
+struct IFBEngineMemoryHandle {
+    IFBEngineMemoryTableIndexArenaDetail memory_table_index_detail;
+    ifb_size                             offset;
+    ifb_size                             size;
 };
 
 #define IFB_ENGINE_MEMORY_ARENA_HEADER_COUNT_MAX             128
@@ -18,15 +35,9 @@ struct IFBEngineMemoryArena {
 #define IFB_ENGINE_MEMORY_ARENA_HEADER_TABLE_TAG_BUFFER_SIZE IFB_ENGINE_MEMORY_ARENA_HEADER_COUNT_MAX * IFB_ENGINE_MEMORY_ARENA_HEADER_TAG_LENGTH
 #define IFB_ENGINE_MEMORY_ARENA_HEADER_INDEX_INVALID         256
 
-#define IFB_ENGINE_MEMORY_ARENA_COUNT_MAX     4096
-#define IFB_ENGINE_MEMORY_ARENA_SIZE_MINIMUM  4096
+#define IFB_ENGINE_MEMORY_ARENA_COUNT_MAX            4096
+#define IFB_ENGINE_MEMORY_ARENA_SIZE_MINIMUM         4096
 #define IFB_ENGINE_MEMORY_ARENA_DETAIL_INDEX_INVALID 4096
-
-#define ifb_engine_memory_size_kilobytes(size) size * 1024
-#define ifb_engine_memory_size_megabytes(size) size * ifb_engine_memory_size_kilobytes(1024)
-#define ifb_engine_memory_size_gigabytes(size) size * ifb_engine_memory_size_megabytes(1024)
-
-#define ifb_engine_memory_align_to_arena(size) ifb_engine_macro_align_a_to_b(size,IFB_ENGINE_MEMORY_ARENA_SIZE_MINIMUM)
 
 namespace ifb_engine {
 
@@ -34,8 +45,8 @@ namespace ifb_engine {
     inline const ifb_size memory_size_megabytes(const ifb_size size) { return(size * 1024 * 1024);        }
     inline const ifb_size memory_size_gigabytes(const ifb_size size) { return(size * 1024 * 1024 * 1024); }
 
-    inline const ifb_b8 memory_arena_header_valid(IFBEngineMemoryArena& arena_ref) { return(arena_ref.header_index < IFB_ENGINE_MEMORY_ARENA_HEADER_INDEX_INVALID); }
-    inline const ifb_b8 memory_arena_detail_valid(IFBEngineMemoryArena& arena_ref) { return(arena_ref.detail_index < IFB_ENGINE_MEMORY_ARENA_DETAIL_INDEX_INVALID); }
+    inline const ifb_b8 memory_arena_header_valid(IFBEngineMemoryArenaHandle& arena_handle_ref) { return(arena_handle_ref.memory_table_indexes.header < IFB_ENGINE_MEMORY_ARENA_HEADER_INDEX_INVALID); }
+    inline const ifb_b8 memory_arena_detail_valid(IFBEngineMemoryArenaHandle& arena_handle_ref) { return(arena_handle_ref.memory_table_indexes.detail < IFB_ENGINE_MEMORY_ARENA_DETAIL_INDEX_INVALID); }
 
     inline const ifb_size 
     memory_arena_align(const ifb_size size) { 
@@ -49,23 +60,46 @@ namespace ifb_engine {
 
     ifb_external const ifb_b8
     memory_arena_create_pool(
-        const ifb_cstr                     in_arena_tag,
-        const ifb_size                     in_arena_size,
-        const ifb_size                     in_arena_count,
-              IFBEngineMemoryArena&       out_arena_start_ref);
+        const ifb_cstr                           in_arena_tag,
+        const ifb_size                           in_arena_size,
+        const ifb_size                           in_arena_count,
+              IFBEngineMemoryArenaPoolHandle&   out_arena_pool_handle_ref);
 
-    ifb_external const ifb_memory 
+    ifb_external const ifb_b8 
     memory_arena_commit(
-        IFBEngineMemoryArena&  in_arena_start,
-        IFBEngineMemoryArena& out_arena_committed);
+        IFBEngineMemoryArenaPoolHandle& in_arena_pool_handle_ref,
+        IFBEngineMemoryArenaHandle&    out_arena_handle_ref);
 
-    ifb_external const ifb_b8 memory_arena_decommit(IFBEngineMemoryArena& arena_ref);
+    ifb_external const ifb_b8 memory_arena_decommit (IFBEngineMemoryArenaHandle& arena_handle_ref);
+    ifb_external const ifb_b8 memory_arena_reset    (IFBEngineMemoryArenaHandle& arena_handle_ref);
     
-    ifb_external const ifb_memory memory_arena_push(IFBEngineMemoryArena& arena_ref, const ifb_size size);
-    ifb_external const ifb_memory memory_arena_pull(IFBEngineMemoryArena& arena_ref, const ifb_size size);
+    ifb_external const ifb_b8
+    memory_arena_push(
+        const ifb_size                    in_memory_size,
+              IFBEngineMemoryArenaHandle& in_memory_arena_handle_ref, 
+              IFBEngineMemoryHandle&     out_memory_handle_ref);
     
-    ifb_external const ifb_memory memory_arena_push_aligned(IFBEngineMemoryArena& arena_ref, const ifb_size size, const ifb_size alignment);
-    ifb_external const ifb_memory memory_arena_pull_aligned(IFBEngineMemoryArena& arena_ref, const ifb_size size, const ifb_size alignment);
+    ifb_external const ifb_b8 
+    memory_arena_pull(
+        const ifb_size                    in_memory_size,
+              IFBEngineMemoryArenaHandle& in_memory_arena_handle_ref, 
+              IFBEngineMemoryHandle&     out_memory_handle_ref);
+    
+    ifb_external const ifb_b8 
+    memory_arena_push_aligned(
+        const ifb_size                     in_memory_size, 
+        const ifb_size                     in_memory_alignment,
+              IFBEngineMemoryArenaHandle&  in_memory_arena_handle_ref, 
+              IFBEngineMemoryHandle&      out_memory_handle_ref);
+
+    ifb_external const ifb_b8 
+    memory_arena_pull_aligned(
+        const ifb_size                     in_memory_size, 
+        const ifb_size                     in_memory_alignment,
+              IFBEngineMemoryArenaHandle&  in_memory_arena_handle_ref, 
+              IFBEngineMemoryHandle&      out_memory_handle_ref);
+
+    ifb_external const ifb_memory memory_pointer(IFBEngineMemoryHandle& memory_handle_ref);
 };
 
 #endif //IFB_ENGINE_MEMORY_HPP

@@ -97,17 +97,17 @@ struct IFBEngineAssetDataBlock {
     IFBEngineAssetTableIndexDataBlock asset_table_index_data_block;
     ifb_timems                        time_ms_loaded;
     ifb_timems                        time_ms_last_accessed;
-    RMemoryArenaHandle                asset_data_arena_handle;
+    IFBEngineMemoryArenaHandle        asset_data_arena_handle;
 };
 
 struct IFBEngineAssetTableDataBlock {
-    RMemoryRegionHandle region_handle;
-    ifb_size            data_block_count;
+    IFBEngineMemoryArenaPoolHandle pool_handle;
+    ifb_size                       data_block_count;
     struct {
-        IFBEngineAssetTableIndexHeader* ptr_asset_table_index_header;
-        ifb_timems*                     ptr_time_ms_loaded;
-        ifb_timems*                     ptr_time_ms_last_accessed;
-        RMemoryArenaHandle*             ptr_asset_data_arena_handle;
+        IFBEngineMemoryHandle asset_table_index_header; // IFBEngineAssetTableIndexDataBlock
+        IFBEngineMemoryHandle time_ms_loaded;           // ifb_timems
+        IFBEngineMemoryHandle time_ms_last_accessed;    // ifb_timems
+        IFBEngineMemoryHandle asset_data_arena_handle;  // IFBEngineMemoryArenaHandle
     } columns;
 };
 

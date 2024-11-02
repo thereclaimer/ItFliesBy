@@ -16,7 +16,7 @@ ifb_engine::memory_arena_create_pool(
     IFBEngineMemoryManager& memory_manager_ref = ifb_engine::memory_manager_ref();
 
     //create the header
-    const IFBEngineMemoryArenaHeaderIndex arena_header_index = ifb_engine::memory_arena_header_create(
+    const IFBEngineMemoryTableIndexArenaHeader arena_header_index = ifb_engine::memory_arena_header_create(
         in_arena_tag,
         in_arena_size,
         in_arena_count,
@@ -24,7 +24,7 @@ ifb_engine::memory_arena_create_pool(
         memory_manager_ref.arena_tables.header);
 
     //create the batch of arenas
-    const IFBEngineMemoryArenaDetailIndex starting_arena_detail_index = 
+    const IFBEngineMemoryTableIndexArenaDetail starting_arena_detail_index = 
     ifb_engine::memory_arena_detail_table_insert(
         in_arena_count,
         arena_header_index,
@@ -270,7 +270,7 @@ ifb_engine::memory_arena_pull_aligned(
 
 inline const ifb_b8
 ifb_engine::memory_arena_validate(
-    IFBEngineMemoryArenaHeaderTable& arena_table_header_ref,
+    IFBEngineMemoryTableArenaHeader& arena_table_header_ref,
     IFBEngineMemoryArenaDetailTable& arena_table_detail_ref,
     IFBEngineMemoryArena&            arena_ref) {
 
@@ -285,7 +285,7 @@ ifb_engine::memory_arena_validate(
     arena_valid &= arena_ref.detail_index <= arena_table_detail_ref.arena_count_current;
     
     //the arena header and detail match what's in the detail table
-    const IFBEngineMemoryArenaHeaderIndex arena_detail_header_index =
+    const IFBEngineMemoryTableIndexArenaHeader arena_detail_header_index =
         ifb_engine::memory_arena_detail_header_index(
             arena_table_detail_ref,
             arena_ref.detail_index);
@@ -298,7 +298,7 @@ ifb_engine::memory_arena_validate(
 
 inline const ifb_b8
 ifb_engine::memory_arena_validate_commit(
-    IFBEngineMemoryArenaHeaderTable&    in_arena_table_header_ref,
+    IFBEngineMemoryTableArenaHeader&    in_arena_table_header_ref,
     IFBEngineMemoryArenaDetailTable&    in_arena_table_detail_ref,
     IFBEngineMemoryArena&               in_arena_ref,
     IFBEngineMemoryArenaSizeAndOffset& out_arena_size_and_offset_ref) {
@@ -327,7 +327,7 @@ ifb_engine::memory_arena_validate_commit(
 
 inline const ifb_void
 ifb_engine::memory_arena_size_and_offset(
-    IFBEngineMemoryArenaHeaderTable&    in_arena_table_header_ref,
+    IFBEngineMemoryTableArenaHeader&    in_arena_table_header_ref,
     IFBEngineMemoryArenaDetailTable&    in_arena_table_detail_ref,        
     IFBEngineMemoryArena&               in_arena_ref,
     IFBEngineMemoryArenaSizeAndOffset& out_arena_size_offset_ref) {
