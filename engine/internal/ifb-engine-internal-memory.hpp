@@ -44,6 +44,7 @@ namespace ifb_engine {
               IFBEngineMemoryReservation& in_reservation_ref,
         const ifb_u32                     in_page_count,
               ifb_u32&                   out_page_start_ref);
+
 };
 
 /**********************************************************************************/
@@ -60,7 +61,7 @@ struct IFBEngineMemoryArenaHeader {
 struct IFBEngineMemoryTableRecordArenaHeader {
     IFBEngineMemoryTableIndexArenaHeader table_index_arena_header;
     IFBEngineMemoryArenaHeader           arena_header;
-}
+};
 
 struct IFBEngineMemoryTableArenaHeader {
     ifb_u8   header_count_current;
@@ -87,7 +88,6 @@ namespace ifb_engine {
               IFBEngineMemoryReservation&      reservation_ref,
               IFBEngineMemoryTableArenaHeader& table_arena_header_ref);
 
-    //inline methods
     const ifb_size memory_arena_header_page_start       (IFBEngineMemoryTableArenaHeader& arena_table_header_ref, const IFBEngineMemoryTableIndexArenaHeader arena_header_index);
     const ifb_size memory_arena_header_arena_page_count (IFBEngineMemoryTableArenaHeader& arena_table_header_ref, const IFBEngineMemoryTableIndexArenaHeader arena_header_index);
     const ifb_size memory_arena_header_arena_count      (IFBEngineMemoryTableArenaHeader& arena_table_header_ref, const IFBEngineMemoryTableIndexArenaHeader arena_header_index);
@@ -119,23 +119,18 @@ struct IFBEngineMemoryArenaDetailTable {
 
 namespace ifb_engine {
 
+
     const IFBEngineMemoryTableIndexArenaDetail
-    ifb_engine::memory_arena_detail_table_insert(
+    memory_arena_detail_table_insert(
         const IFBEngineMemoryTableIndexArenaHeader arena_header_index,
         const ifb_u32                              arena_count,
-              IFBEngineMemoryArenaDetailTable&     arena_detail_table_ref) {
+              IFBEngineMemoryArenaDetailTable&     arena_detail_table_ref);
 
     const IFBEngineMemoryTableIndexArenaDetail 
     memory_arena_detail_next_available_index(
               IFBEngineMemoryArenaDetailTable&     arena_detail_table_ref,
         const IFBEngineMemoryTableIndexArenaDetail arena_detail_index_start,
         const IFBEngineMemoryTableIndexArenaHeader arena_header_index);
-
-    const ifb_size
-    memory_arena_detail_calculate_offset(
-              IFBEngineMemoryArenaDetailTable&      arena_detail_table_ref,
-        const IFBEngineMemoryTableIndexArenaDetail  arena_detail_index,
-        const ifb_size                              arena_header_size);
 
     const ifb_b8                               memory_arena_detail_committed    (IFBEngineMemoryArenaDetailTable& arena_table_detail_ref, const IFBEngineMemoryTableIndexArenaDetail arena_detail_index);
     const IFBEngineMemoryTableIndexArenaHeader memory_arena_detail_header_index (IFBEngineMemoryArenaDetailTable& arena_table_detail_ref, const IFBEngineMemoryTableIndexArenaDetail arena_detail_index);
@@ -150,7 +145,7 @@ namespace ifb_engine {
               IFBEngineMemoryArenaDetailTable&      arena_table_detail_ref, 
         const IFBEngineMemoryTableIndexArenaDetail  arena_detail_index,
         const ifb_size                              arena_used_size);
-}
+};
 
 /**********************************************************************************/
 /* ARENA                                                                          */
@@ -163,28 +158,24 @@ struct IFBEngineMemoryArenaSizeAndOffset {
 
 namespace ifb_engine {
 
-    //-----------------
-    // inline methods
-    //-----------------
-    
     const ifb_b8
     memory_arena_validate(
         IFBEngineMemoryTableArenaHeader& arena_table_header_ref,
         IFBEngineMemoryArenaDetailTable& arena_table_detail_ref,
-        IFBEngineMemoryArena&            arena_ref);
+        IFBEngineMemoryArenaHandle&      arena_handle_ref);
 
     const ifb_b8
     memory_arena_validate_commit(
         IFBEngineMemoryTableArenaHeader&    in_arena_table_header_ref,
         IFBEngineMemoryArenaDetailTable&    in_arena_table_detail_ref,
-        IFBEngineMemoryArena&               in_arena_ref,
+        IFBEngineMemoryArenaHandle&         in_arena_handle_ref,
         IFBEngineMemoryArenaSizeAndOffset& out_arena_size_and_offset_ref);
 
     const ifb_void
     memory_arena_size_and_offset(
         IFBEngineMemoryTableArenaHeader&    in_arena_table_header_ref,
         IFBEngineMemoryArenaDetailTable&    in_arena_table_detail_ref,        
-        IFBEngineMemoryArena&               in_arena_ref,
+        IFBEngineMemoryArenaHandle&         in_arena_handle_ref,
         IFBEngineMemoryArenaSizeAndOffset& out_arena_size_offset_ref);
 };
 
@@ -194,12 +185,11 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineMemoryManager {
+    IFBEngineMemoryReservation  reservation;
     struct {
         IFBEngineMemoryTableArenaHeader header;
         IFBEngineMemoryArenaDetailTable detail;
     } arena_tables;
-    IFBEngineMemoryReservation  reservation;
-    IFBEngineMemoryPlatformInfo platform_info;
 };
 
 namespace ifb_engine {

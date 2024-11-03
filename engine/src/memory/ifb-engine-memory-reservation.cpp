@@ -7,13 +7,14 @@
 /* INLINE METHODS                                                                 */
 /**********************************************************************************/
 
+
 inline const ifb_b8 
 ifb_engine::memory_reserve(
     IFBEngineMemoryReservation& reservation_ref) {
 
     //get the platform memory info
-    const ifb_size platform_allocation_granularity = ifb_engine::platform_system_allocation_granularity;
-    const ifb_size platform_page_size              = ifb_engine::platform_system_page_size;
+    const ifb_size platform_allocation_granularity = ifb_engine::platform_system_allocation_granularity();
+    const ifb_size platform_page_size              = ifb_engine::platform_system_page_size();
 
     //get the platform reservation
     const ifb_size   reservation_size  = ifb_engine::memory_size_gigabytes(IFB_ENGINE_MEMORY_RESERVATION_SIZE_GIGABYTES);

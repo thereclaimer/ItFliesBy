@@ -5,10 +5,10 @@
 
 ifb_external const ifb_b8
 ifb_engine::memory_arena_create_pool(
-    const ifb_cstr                     in_arena_tag,
-    const ifb_size                     in_arena_size,
-    const ifb_size                     in_arena_count,
-          IFBEngineMemoryArena&       out_arena_start_ref) {
+    const ifb_cstr                         in_arena_tag,
+    const ifb_size                         in_arena_size,
+    const ifb_size                         in_arena_count,
+          IFBEngineMemoryArenaPoolHandle& out_arena_pool_handle_ref) {
 
     ifb_b8 result = true;
     
@@ -31,38 +31,23 @@ ifb_engine::memory_arena_create_pool(
         memory_manager_ref.arena_tables.detail);
 
     //initialize the struct
-    out_arena_start_ref.header_index = arena_header_index;
-    out_arena_start_ref.detail_index = starting_arena_detail_index;
+    out_arena_pool_handle_ref.memory_table_indexes.header       = arena_header_index;
+    out_arena_pool_handle_ref.memory_table_indexes.detail_start = starting_arena_detail_index;
 
     //we're done
     return(true);
 }
 
-ifb_external const ifb_memory
+ifb_external const ifb_b8
 ifb_engine::memory_arena_commit(
-    IFBEngineMemoryArena&  in_arena_start,
-    IFBEngineMemoryArena& out_arena_committed) {
+    IFBEngineMemoryArenaPoolHandle& in_arena_pool_handle_ref,
+    IFBEngineMemoryArenaHandle&    out_arena_handle_ref) {
 
     //get the memory manager
     IFBEngineMemoryManager& memory_manager_ref = ifb_engine::memory_manager_ref();
 
-    //start the committed arena as invalid
-    out_arena_committed.detail_index = IFB_ENGINE_MEMORY_ARENA_DETAIL_INDEX_INVALID;
-    out_arena_committed.header_index = IFB_ENGINE_MEMORY_ARENA_HEADER_INDEX_INVALID;
-
-    //validate the arena
-    const ifb_b8 arena_valid = ifb_engine::memory_arena_validate(
-        memory_manager_ref.arena_tables.header,
-        memory_manager_ref.arena_tables.detail,
-        in_arena_start);
-
-    //if its invalid, we're done
-    if (!arena_valid) {
-        return(NULL);
-    }
-
-    //the arena is valid, so we're going to set the committed arena header
-    out_arena_committed.header_index = in_arena_start.header_index;
+    //set the committed arena header
+    out_arena_handle_ref.memory_table_indexes.header = in_arena_pool_handle_ref.memory_table_indexes.header;
 
     //get the next available arena index
     out_arena_committed.detail_index = ifb_engine::memory_arena_detail_next_available_index(
@@ -100,7 +85,7 @@ ifb_engine::memory_arena_commit(
 
 ifb_external const ifb_b8 
 ifb_engine::memory_arena_decommit(
-    IFBEngineMemoryArena& arena_ref) {
+    IFBEngineMemoryArenaHandle& arena_ref) {
 
     //get the memory manager
     IFBEngineMemoryManager& memory_manager_ref = ifb_engine::memory_manager_ref();
@@ -128,7 +113,7 @@ ifb_engine::memory_arena_decommit(
 
         ifb_engine::memory_arena_detail_committed_set_false(
             memory_manager_ref.arena_tables.detail,
-            arena_ref.detail_index);
+            arena_ref.memory_table_indexes.detail);
     }
 
     //we're done
@@ -137,7 +122,7 @@ ifb_engine::memory_arena_decommit(
 
 ifb_external const ifb_memory 
 ifb_engine::memory_arena_push(
-          IFBEngineMemoryArena& arena_ref, 
+          IFBEngineMemoryArenaHandle& arena_ref, 
     const ifb_size              size) {
 
     //get the memory manager
@@ -183,7 +168,7 @@ ifb_engine::memory_arena_push(
 
 ifb_external const ifb_memory 
 ifb_engine::memory_arena_pull(
-          IFBEngineMemoryArena& arena_ref, 
+          IFBEngineMemoryArenaHandle& arena_ref, 
     const ifb_size              size) {
     return(NULL);
 
@@ -234,7 +219,7 @@ ifb_engine::memory_arena_pull(
 
 ifb_external const ifb_memory 
 ifb_engine::memory_arena_push_aligned(
-          IFBEngineMemoryArena& arena_ref, 
+          IFBEngineMemoryArenaHandle& arena_ref, 
     const ifb_size              size, 
     const ifb_size              alignment) {
     
@@ -272,7 +257,7 @@ inline const ifb_b8
 ifb_engine::memory_arena_validate(
     IFBEngineMemoryTableArenaHeader& arena_table_header_ref,
     IFBEngineMemoryArenaDetailTable& arena_table_detail_ref,
-    IFBEngineMemoryArena&            arena_ref) {
+    IFBEngineMemoryArenaHandle&            arena_ref) {
 
     ifb_b8 arena_valid = true;
 
@@ -300,7 +285,7 @@ inline const ifb_b8
 ifb_engine::memory_arena_validate_commit(
     IFBEngineMemoryTableArenaHeader&    in_arena_table_header_ref,
     IFBEngineMemoryArenaDetailTable&    in_arena_table_detail_ref,
-    IFBEngineMemoryArena&               in_arena_ref,
+    IFBEngineMemoryArenaHandle&               in_arena_ref,
     IFBEngineMemoryArenaSizeAndOffset& out_arena_size_and_offset_ref) {
 
     //base validation
@@ -329,7 +314,7 @@ inline const ifb_void
 ifb_engine::memory_arena_size_and_offset(
     IFBEngineMemoryTableArenaHeader&    in_arena_table_header_ref,
     IFBEngineMemoryArenaDetailTable&    in_arena_table_detail_ref,        
-    IFBEngineMemoryArena&               in_arena_ref,
+    IFBEngineMemoryArenaHandle&         in_arena_ref,
     IFBEngineMemoryArenaSizeAndOffset& out_arena_size_offset_ref) {
 
     const ifb_size  arena_header_offset = ifb_engine::memory_arena_header_offset(in_arena_table_header_ref,in_arena_ref.header_index);

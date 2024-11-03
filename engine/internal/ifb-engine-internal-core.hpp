@@ -22,8 +22,8 @@ struct IFBEngineCoreMemory {
     ifb_size arena_size;
     ifb_size arena_count;
     struct {
-        IFBEngineMemoryArena system;
-        IFBEngineMemoryArena frame;
+        IFBEngineMemoryArenaHandle system;
+        IFBEngineMemoryArenaHandle frame;
     } arenas;
 };
 

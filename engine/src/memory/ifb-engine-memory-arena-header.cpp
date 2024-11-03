@@ -32,7 +32,7 @@ ifb_engine::memory_arena_header_create(
     //add the pages
     ifb_u32 arena_header_page_start;
     ifb_b8 result = ifb_engine::memory_reservation_add_pages(
-        reservatin_ref,
+        reservation_ref,
         arena_header_page_count_total,
         arena_header_page_start);
 
@@ -42,8 +42,8 @@ ifb_engine::memory_arena_header_create(
     }
 
     //get the new index and update the header count
-    const IFBEngineMemoryTableIndexArenaHeader new_header_index = in_arena_table_header_ref.header_count_current;    
-    ++in_arena_table_header_ref.header_count_current;
+    const IFBEngineMemoryTableIndexArenaHeader new_header_index = table_arena_header_ref.header_count_current;    
+    ++table_arena_header_ref.header_count_current;
 
     //get the tag length
     const ifb_size tag_length = strnlen_s(arena_header_tag,IFB_ENGINE_MEMORY_ARENA_HEADER_TAG_LENGTH);
@@ -54,16 +54,16 @@ ifb_engine::memory_arena_header_create(
         new_header_index;
 
     //copy the tag
-    const ifb_cstr tag = &in_arena_table_header_ref.tag_buffer[tag_offset]; 
+    const ifb_cstr tag = &table_arena_header_ref.tag_buffer[tag_offset]; 
     memmove(
         tag,
         arena_header_tag,
         tag_length);
 
     //update the table at the new index
-    in_arena_table_header_ref.columns.page_start       [new_header_index] = arena_header_page_start;
-    in_arena_table_header_ref.columns.arena_page_count [new_header_index] = arena_page_count;
-    in_arena_table_header_ref.columns.arena_count      [new_header_index] = arena_count
+    table_arena_header_ref.columns.page_start       [new_header_index] = arena_header_page_start;
+    table_arena_header_ref.columns.arena_page_count [new_header_index] = arena_page_count;
+    table_arena_header_ref.columns.arena_count      [new_header_index] = arena_count;
 
     //we're done
     return(new_header_index);
