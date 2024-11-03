@@ -3,7 +3,45 @@
 #include "ifb-engine-internal-memory.hpp"
 #include "ifb-engine-internal.hpp"
 
-ifb_internal const IFBEngineMemoryTableIndexArenaDetail 
+/**********************************************************************************/
+/* INLINE METHODS                                                                 */
+/**********************************************************************************/
+
+inline const IFBEngineMemoryTableIndexArenaDetail
+ifb_engine::memory_arena_detail_table_insert(
+    const IFBEngineMemoryTableIndexArenaHeader arena_header_index,
+    const ifb_u32                              arena_count,
+          IFBEngineMemoryArenaDetailTable&     arena_detail_table_ref) {
+
+    //get the starting arena index
+    const IFBEngineMemoryTableIndexArenaDetail starting_arena_index = arena_detail_table_ref.arena_count_current;
+
+    //if we can't fit this number of arenas, we're done
+    const ifb_size arena_count_new = starting_arena_index + arena_count;
+    if (arena_count_new > arena_detail_table_ref.arena_count_max) {
+        return(IFB_ENGINE_MEMORY_ARENA_DETAIL_INDEX_INVALID);
+    }
+
+    //initialize these arenas
+    for (
+        IFBEngineMemoryTableIndexArenaDetail arena_index = starting_arena_index;
+        arena_index < arena_count_new;
+        ++arena_index) {
+        
+        arena_detail_table_ref.columns.array_committed   [arena_index] = false;
+        arena_detail_table_ref.columns.array_header_index[arena_index] = arena_header_index;
+        arena_detail_table_ref.columns.array_size_used   [arena_index] = 0;
+        arena_detail_table_ref.columns.array_pool_index  [arena_index] = arena_index - starting_arena_index;
+    }
+
+    //update the table
+    arena_detail_table_ref.arena_count_current = arena_count_new;
+
+    //we're done
+    return(starting_arena_index);
+}
+
+inline const IFBEngineMemoryTableIndexArenaDetail 
 ifb_engine::memory_arena_detail_next_available_index(
           IFBEngineMemoryArenaDetailTable& arena_detail_table_ref,
     const IFBEngineMemoryTableIndexArenaDetail  arena_detail_index_start,
@@ -38,10 +76,6 @@ ifb_engine::memory_arena_detail_next_available_index(
     //we're done
     return(arena_detail_index_available != IFB_ENGINE_MEMORY_ARENA_DETAIL_INDEX_INVALID);
 }
-
-/**********************************************************************************/
-/* INLINE METHODS                                                                 */
-/**********************************************************************************/
 
 inline const ifb_b8
 ifb_engine::memory_arena_detail_committed(
