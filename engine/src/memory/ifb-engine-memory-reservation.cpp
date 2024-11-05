@@ -67,7 +67,7 @@ ifb_engine::memory_reservation_get_pointer(
 }
 
 inline const ifb_size
-ifb_engine::rservation_page_count_aligned(
+ifb_engine::memory_reservation_page_count_aligned(
             IFBEngineMemoryReservation& reservation_ref,
     const ifb_size                      size) {
 
@@ -106,4 +106,37 @@ ifb_engine::memory_reservation_add_pages(
 
     //we're done
     return(true);
+}
+
+inline const ifb_u32
+ifb_engine::memory_reservation_page_offset(
+    IFBEngineMemoryReservation& reservation_ref,
+    ifb_u32                     page_number) {
+
+    const ifb_u32 page_offset = reservation_ref.platform_page_size * page_number;
+
+    return(page_offset);
+}
+
+inline const ifb_memory
+ifb_engine::memory_reservation_page_start_pointer(
+    IFBEngineMemoryReservation& reservation_ref,
+    ifb_u32                     page_number) {
+
+    const ifb_memory page_start = ifb_engine::memory_reservation_get_pointer(
+        reservation_ref,
+        page_number,
+        0);
+
+    return(page_start);
+}
+
+inline const ifb_size
+memory_reservation_pages_size(
+    IFBEngineMemoryReservation& reservation_ref,
+    ifb_u32                     page_count) {
+
+    const ifb_size pages_size = reservation_ref.platform_page_size * page_count;
+
+    return(pages_size);
 }

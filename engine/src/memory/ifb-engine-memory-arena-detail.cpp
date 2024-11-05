@@ -41,40 +41,42 @@ ifb_engine::memory_arena_detail_table_insert(
     return(starting_arena_index);
 }
 
-inline const IFBEngineMemoryTableIndexArenaDetail 
+inline const ifb_b8 
 ifb_engine::memory_arena_detail_next_available_index(
-          IFBEngineMemoryArenaDetailTable&      arena_detail_table_ref,
-    const IFBEngineMemoryTableIndexArenaDetail  arena_detail_index_start,
-    const IFBEngineMemoryTableIndexArenaHeader  arena_header_index) {
-
-    if (arena_detail_index_start >= arena_detail_table_ref.arena_count_current) {
-        return(IFB_ENGINE_MEMORY_ARENA_DETAIL_INDEX_INVALID);
-    }
+          IFBEngineMemoryArenaDetailTable&       in_arena_detail_table_ref,
+    const IFBEngineMemoryTableIndexArenaDetail   in_arena_detail_index_start,
+    const IFBEngineMemoryTableIndexArenaHeader   in_arena_header_index,
+          IFBEngineMemoryTableIndexArenaDetail& out_arena_detail_ref) {
 
     //set the out index
-    IFBEngineMemoryTableIndexArenaDetail arena_detail_index_available = IFB_ENGINE_MEMORY_ARENA_DETAIL_INDEX_INVALID;
+    out_arena_detail_ref = IFB_ENGINE_MEMORY_ARENA_DETAIL_INDEX_INVALID; 
+
+    //sanity check
+    if (in_arena_detail_index_start >= in_arena_detail_table_ref.arena_count_current) {
+        return(false);
+    }
 
     for (
-        IFBEngineMemoryTableIndexArenaDetail arena_detail_index = arena_detail_index_start;
-        arena_detail_index < arena_detail_table_ref.arena_count_current;
+        IFBEngineMemoryTableIndexArenaDetail arena_detail_index = in_arena_detail_index_start;
+        arena_detail_index < in_arena_detail_table_ref.arena_count_current;
         ++arena_detail_index) {
 
-        const ifb_b8                               detail_committed    = ifb_engine::memory_arena_detail_committed(arena_detail_table_ref, arena_detail_index);
-        const IFBEngineMemoryTableIndexArenaHeader detail_header_index = ifb_engine::memory_arena_detail_header_index(arena_detail_table_ref, arena_detail_index);
+        const ifb_b8                               detail_committed    = ifb_engine::memory_arena_detail_committed(in_arena_detail_table_ref, arena_detail_index);
+        const IFBEngineMemoryTableIndexArenaHeader detail_header_index = ifb_engine::memory_arena_detail_header_index(in_arena_detail_table_ref, arena_detail_index);
 
         //if the header indexes don't match, we're in a different arena group
-        if (detail_header_index != arena_header_index) {
+        if (detail_header_index != in_arena_header_index) {
             break;
         }
 
         //if this arena isn't committed and has a matching header, its available
         if (!detail_committed) {
-            arena_detail_index_available = arena_detail_index;            
+            out_arena_detail_ref = arena_detail_index;            
         }
     }
 
     //we're done
-    return(arena_detail_index_available != IFB_ENGINE_MEMORY_ARENA_DETAIL_INDEX_INVALID);
+    return(out_arena_detail_ref != IFB_ENGINE_MEMORY_ARENA_DETAIL_INDEX_INVALID);
 }
 
 inline const ifb_b8

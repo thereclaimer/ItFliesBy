@@ -46,41 +46,41 @@ ifb_engine::memory_arena_commit(
     //get the memory manager
     IFBEngineMemoryManager& memory_manager_ref = ifb_engine::memory_manager_ref();
 
-    //set the committed arena header
-    out_arena_handle_ref.memory_table_indexes.header = in_arena_pool_handle_ref.memory_table_indexes.header;
-
     //get the next available arena index
-    out_arena_committed.detail_index = ifb_engine::memory_arena_detail_next_available_index(
+    ifb_b8 result = ifb_engine::memory_arena_detail_next_available_index(
         memory_manager_ref.arena_tables.detail,
-        in_arena_start.detail_index,
-        in_arena_start.header_index);
+        in_arena_pool_handle_ref.memory_table_indexes.detail_start,
+        in_arena_pool_handle_ref.memory_table_indexes.header,
+        out_arena_handle_ref.memory_table_index_detail);
 
     //if no arena is available, we're done
-    if (!ifb_engine::memory_arena_detail_valid(out_arena_committed)) {
-        return(NULL);
+    if (!result) {
+        return(false);
     }
 
-    //get the arena size offset
-    IFBEngineMemoryArenaSizeAndOffset arena_size_offset;
-    ifb_engine::memory_arena_size_and_offset(
+    //get the arena pages
+    IFBEngineMemoryArenaPages arena_pages;
+    ifb_engine::memory_arena_pages(
         memory_manager_ref.arena_tables.header,
         memory_manager_ref.arena_tables.detail,
-        out_arena_committed,
-        arena_size_offset);
+        out_arena_handle_ref,
+        arena_pages);
 
     //commit the arena_memory
-    const ifb_memory arena_memory = ifb_engine::memory_manager_page_commit(
+    const ifb_b8 commit_result = ifb_engine::memory_manager_page_commit(
         memory_manager_ref,
-        arena_size_offset.size,
-        arena_size_offset.offset);
+        arena_pages.page_number,
+        arena_pages.page_count);
 
     //if that worked, set this arena as committed
-    ifb_engine::memory_arena_detail_committed_set_true(
-        memory_manager_ref.arena_tables.detail,
-        out_arena_committed.detail_index);
+    if (commit_result) {
+        ifb_engine::memory_arena_detail_committed_set_true(
+            memory_manager_ref.arena_tables.detail,
+            out_arena_handle_ref.memory_table_index_detail);
+    }
 
     //we're done
-    return(arena_memory);
+    return(true);
 }
 
 ifb_external const ifb_b8 
@@ -91,12 +91,12 @@ ifb_engine::memory_arena_decommit(
     IFBEngineMemoryManager& memory_manager_ref = ifb_engine::memory_manager_ref();
 
     //validate the pre-committed arena
-    IFBEngineMemoryArenaSizeAndOffset arena_size_and_offset;
+    IFBEngineMemoryArenaPages arena_pages;
     const ifb_b8 arena_valid = ifb_engine::memory_arena_validate_commit(
         memory_manager_ref.arena_tables.header,
         memory_manager_ref.arena_tables.detail,
         arena_ref,
-        arena_size_and_offset);
+        arena_pages);
 
     if (!arena_valid) {
         return(false);
@@ -105,83 +105,88 @@ ifb_engine::memory_arena_decommit(
     //decommit the memory
     const ifb_b8 result = ifb_engine::memory_manager_page_decommit(
         memory_manager_ref,
-        arena_size_and_offset.size,
-        arena_size_and_offset.offset);
+        arena_pages.page_number,
+        arena_pages.page_count);
 
     //if that worked, update the arena detail
     if (result) {
 
         ifb_engine::memory_arena_detail_committed_set_false(
             memory_manager_ref.arena_tables.detail,
-            arena_ref.memory_table_indexes.detail);
+            arena_ref.memory_table_index_detail);
     }
 
     //we're done
     return(result);
 }
 
-ifb_external const ifb_memory 
+ifb_external const ifb_b8 
 ifb_engine::memory_arena_push(
-          IFBEngineMemoryArenaHandle& arena_ref, 
-    const ifb_size              size) {
+          IFBEngineMemoryArenaHandle& in_memory_arena_handle_ref, 
+    const ifb_size                    in_memory_size,
+          IFBEngineMemoryHandle&     out_memory_handle_ref) {
 
     //get the memory manager
     IFBEngineMemoryManager& memory_manager_ref = ifb_engine::memory_manager_ref();
 
     //validate the pre-committed arena
-    IFBEngineMemoryArenaSizeAndOffset arena_size_and_offset;
+    IFBEngineMemoryArenaPages arena_pages;
     const ifb_b8 arena_valid = ifb_engine::memory_arena_validate_commit(
         memory_manager_ref.arena_tables.header,
         memory_manager_ref.arena_tables.detail,
-        arena_ref,
-        arena_size_and_offset);
+        in_memory_arena_handle_ref,
+        arena_pages);
 
     //get the current used size
     const ifb_size arena_used_size_current = ifb_engine::memory_arena_detail_size_used(
         memory_manager_ref.arena_tables.detail,
-        arena_ref.detail_index);
+        in_memory_arena_handle_ref.memory_table_index_detail);
+
+    //get the arena size
+    const ifb_size arena_size_max = ifb_engine::memory_reservation_pages_size(
+        memory_manager_ref.reservation,
+        arena_pages.page_count);
 
     //make sure that the arena can fit this push
-    const ifb_size arena_used_size_new = arena_used_size_current + size;
-    if (arena_used_size_new > arena_size_and_offset.size) {
+    const ifb_size arena_used_size_new = arena_used_size_current + in_memory_size;
+    if (arena_used_size_new > arena_size_max) {
         
         //if we can't, we're done    
-        return(NULL);
+        return(false);
     }
-
-    // add the current used size and arena offset to the reservation 
-    // to get the pointer at the start of this push
-    const ifb_size   arena_push_offset = arena_size_and_offset.offset + arena_used_size_new;   
-    const ifb_memory arena_push_memory = ifb_engine::memory_reservation_get_pointer(
-        memory_manager_ref.reservation,
-        arena_push_offset);
 
     //add the push size to the detail table
     ifb_engine::memory_arena_detail_used_size_update(
         memory_manager_ref.arena_tables.detail,
-        arena_ref.detail_index,
+        in_memory_arena_handle_ref.memory_table_index_detail,
         arena_used_size_new);
 
+    //initialize the struct
+    out_memory_handle_ref.memory_table_index_detail = in_memory_arena_handle_ref.memory_table_index_detail;
+    out_memory_handle_ref.page_number               = arena_pages.page_number;
+    out_memory_handle_ref.page_offset               = arena_used_size_current;
+    out_memory_handle_ref.size                      = in_memory_size;
+
     //we're done
-    return(arena_push_memory);
+    return(true);
 }
 
-ifb_external const ifb_memory 
+ifb_external const ifb_b8 
 ifb_engine::memory_arena_pull(
-          IFBEngineMemoryArenaHandle& arena_ref, 
-    const ifb_size              size) {
-    return(NULL);
+          IFBEngineMemoryArenaHandle& in_memory_arena_handle_ref, 
+    const ifb_size                    in_memory_size,
+          IFBEngineMemoryHandle&     out_memory_handle_ref) {
 
     //get the memory manager
     IFBEngineMemoryManager& memory_manager_ref = ifb_engine::memory_manager_ref();
 
     //validate the pre-committed arena
-    IFBEngineMemoryArenaSizeAndOffset arena_size_and_offset;
+    IFBEngineMemoryArenaPages arena_pages;
     const ifb_b8 arena_valid = ifb_engine::memory_arena_validate_commit(
         memory_manager_ref.arena_tables.header,
         memory_manager_ref.arena_tables.detail,
-        arena_ref,
-        arena_size_and_offset);
+        in_memory_arena_handle_ref,
+        arena_pages);
 
     //if the arena is not valid or committed, we're done
     if (!arena_valid) {
@@ -191,91 +196,89 @@ ifb_engine::memory_arena_pull(
     //get the current used size
     const ifb_size arena_used_size_current = ifb_engine::memory_arena_detail_size_used(
         memory_manager_ref.arena_tables.detail,
-        arena_ref.detail_index);
+        in_memory_arena_handle_ref.memory_table_index_detail);
 
     //make sure we can do this pull
-    if (arena_used_size_current < size) {
-        return(NULL);
+    if (arena_used_size_current < in_memory_size) {
+        return(false);
     }
 
     //calculate the new used size
-    const ifb_size arena_used_size_new = arena_used_size_current - size;
-
-    //subtract the pull size from the page start to get the pointer to the memory after the pull
-    const ifb_size   arena_pull_offset = arena_size_and_offset.offset + arena_used_size_new;   
-    const ifb_memory arena_pull_memory = ifb_engine::memory_reservation_get_pointer(
-        memory_manager_ref.reservation,
-        arena_pull_offset);
+    const ifb_size arena_used_size_new = arena_used_size_current - in_memory_size;
 
     //update the arena detail table
     ifb_engine::memory_arena_detail_used_size_update(
         memory_manager_ref.arena_tables.detail,
-        arena_ref.detail_index,
+        in_memory_arena_handle_ref.memory_table_index_detail,
         arena_used_size_new);
 
+    //initialize the struct
+    out_memory_handle_ref.memory_table_index_detail = in_memory_arena_handle_ref.memory_table_index_detail;
+    out_memory_handle_ref.page_number               = arena_pages.page_number;
+    out_memory_handle_ref.page_offset               = arena_used_size_new;
+    out_memory_handle_ref.size                      = in_memory_size;
+
     //we're done
-    return(arena_pull_memory);
+    return(true);
 }
 
-ifb_external const ifb_memory 
+ifb_external const ifb_b8 
 ifb_engine::memory_arena_push_aligned(
-          IFBEngineMemoryArenaHandle& arena_ref, 
-    const ifb_size              size, 
-    const ifb_size              alignment) {
+          IFBEngineMemoryArenaHandle&  in_memory_arena_handle_ref, 
+    const ifb_size                     in_memory_size, 
+    const ifb_size                     in_memory_alignment,
+          IFBEngineMemoryHandle&      out_memory_handle_ref) {
     
     //calculate the aligned push size
-    const ifb_size push_size_aligned = ifb_engine_macro_align_a_to_b(size,alignment);
+    const ifb_size push_size_aligned = ifb_engine_macro_align_a_to_b(
+        in_memory_size,
+        in_memory_alignment);
 
     //do the push 
-    const ifb_memory arena_memory_push = ifb_engine::memory_arena_push(arena_ref,push_size_aligned);
+    const ifb_b8 push_result = ifb_engine::memory_arena_push(
+        in_memory_arena_handle_ref,
+        push_size_aligned,
+        out_memory_handle_ref);
 
     //we're done
-    return(arena_memory_push);
+    return(push_result);
 }
 
-ifb_external const ifb_memory 
+ifb_external const ifb_b8 
 ifb_engine::memory_arena_pull_aligned(
-          IFBEngineMemoryArena& arena_ref, 
-    const ifb_size              size, 
-    const ifb_size              alignment) {
+          IFBEngineMemoryArenaHandle&  in_memory_arena_handle_ref, 
+    const ifb_size                     in_memory_size, 
+    const ifb_size                     in_memory_alignment,
+          IFBEngineMemoryHandle&      out_memory_handle_ref) {
     
     //calculate the aligned pull size
-    const ifb_size pull_size_aligned = ifb_engine_macro_align_a_to_b(size,alignment);
+    const ifb_size pull_size_aligned = ifb_engine_macro_align_a_to_b(
+        in_memory_size,
+        in_memory_alignment);
 
     //do the pull
-    const ifb_memory arena_memory_pull = ifb_engine::memory_arena_pull(arena_ref,pull_size_aligned);
+    const ifb_b8 pull_result = ifb_engine::memory_arena_pull(
+        in_memory_arena_handle_ref,
+        pull_size_aligned,
+        out_memory_handle_ref);
 
     //we're done
-    return(arena_memory_pull);
+    return(pull_result);
 }
-
-/**********************************************************************************/
-/* INLINE METHODS                                                                 */
-/**********************************************************************************/
 
 inline const ifb_b8
 ifb_engine::memory_arena_validate(
     IFBEngineMemoryTableArenaHeader& arena_table_header_ref,
     IFBEngineMemoryArenaDetailTable& arena_table_detail_ref,
-    IFBEngineMemoryArenaHandle&            arena_ref) {
+    IFBEngineMemoryArenaHandle&      arena_ref) {
 
     ifb_b8 arena_valid = true;
 
     //valid indexes
-    arena_valid &= ifb_engine::memory_arena_header_valid(arena_ref);
     arena_valid &= ifb_engine::memory_arena_detail_valid(arena_ref);
     
     //indexes fit in table
-    arena_valid &= arena_ref.header_index <= arena_table_header_ref.header_count_current;
-    arena_valid &= arena_ref.detail_index <= arena_table_detail_ref.arena_count_current;
-    
-    //the arena header and detail match what's in the detail table
-    const IFBEngineMemoryTableIndexArenaHeader arena_detail_header_index =
-        ifb_engine::memory_arena_detail_header_index(
-            arena_table_detail_ref,
-            arena_ref.detail_index);
-
-    arena_valid &=  arena_detail_header_index == arena_ref.header_index;
+    arena_valid &= arena_ref.memory_table_index_detail <= arena_table_detail_ref.arena_count_current;
 
     //we're done
     return(arena_valid);
@@ -285,8 +288,8 @@ inline const ifb_b8
 ifb_engine::memory_arena_validate_commit(
     IFBEngineMemoryTableArenaHeader&    in_arena_table_header_ref,
     IFBEngineMemoryArenaDetailTable&    in_arena_table_detail_ref,
-    IFBEngineMemoryArenaHandle&               in_arena_ref,
-    IFBEngineMemoryArenaSizeAndOffset& out_arena_size_and_offset_ref) {
+    IFBEngineMemoryArenaHandle&         in_arena_ref,
+    IFBEngineMemoryArenaPages&         out_arena_pages) {
 
     //base validation
     ifb_b8 result = ifb_engine::memory_arena_validate(
@@ -297,29 +300,51 @@ ifb_engine::memory_arena_validate_commit(
     //make sure the arena is committed
     result &= ifb_engine::memory_arena_detail_committed(
         in_arena_table_detail_ref,
-        in_arena_ref.detail_index);
+        in_arena_ref.memory_table_index_detail);
     
     //get the size and offset
-    ifb_engine::memory_arena_size_and_offset(
+    ifb_engine::memory_arena_pages(
         in_arena_table_header_ref,
         in_arena_table_detail_ref,
         in_arena_ref,
-        out_arena_size_and_offset_ref);
+        out_arena_pages);
 
     //we're done
     return(result);
 }
 
-inline const ifb_void
-ifb_engine::memory_arena_size_and_offset(
-    IFBEngineMemoryTableArenaHeader&    in_arena_table_header_ref,
-    IFBEngineMemoryArenaDetailTable&    in_arena_table_detail_ref,        
-    IFBEngineMemoryArenaHandle&         in_arena_ref,
-    IFBEngineMemoryArenaSizeAndOffset& out_arena_size_offset_ref) {
+inline ifb_void
+ifb_engine::memory_arena_pages(
+    IFBEngineMemoryTableArenaHeader& in_arena_table_header_ref,
+    IFBEngineMemoryArenaDetailTable& in_arena_table_detail_ref,        
+    IFBEngineMemoryArenaHandle&      in_arena_handle_ref,
+    IFBEngineMemoryArenaPages&      out_arena_pages_ref) {
 
-    const ifb_size  arena_header_offset = ifb_engine::memory_arena_header_offset(in_arena_table_header_ref,in_arena_ref.header_index);
-    const ifb_index arena_pool_index    = ifb_engine::memory_arena_detail_pool_index(in_arena_table_detail_ref,in_arena_ref.detail_index); 
+    //get the header index
+    const IFBEngineMemoryTableIndexArenaHeader arena_table_index_header = ifb_engine::memory_arena_detail_header_index(
+        in_arena_table_detail_ref,
+        in_arena_handle_ref.memory_table_index_detail);
 
-    out_arena_size_offset_ref.size   = ifb_engine::memory_arena_header_arena_size(in_arena_table_header_ref,in_arena_ref.header_index);
-    out_arena_size_offset_ref.offset = arena_header_offset + (out_arena_size_offset_ref.size * arena_pool_index);
+    //get the starting page number
+    const ifb_u32 arena_header_page_start = ifb_engine::memory_arena_header_page_start(
+        in_arena_table_header_ref,
+        arena_table_index_header);
+
+    //get the number of pages per arena
+    const ifb_u32 arena_header_page_count = ifb_engine::memory_arena_header_arena_page_count(
+        in_arena_table_header_ref,
+        arena_table_index_header);
+
+    //get the index of this arena in the pool
+    const ifb_u32 arena_detail_pool_index = ifb_engine::memory_arena_detail_pool_index(
+        in_arena_table_detail_ref,
+        in_arena_handle_ref.memory_table_index_detail);
+
+    //the page number is the pages per arena times the pool index plus the starting index
+    const ifb_u32 arena_page_offset = arena_header_page_count * arena_detail_pool_index; 
+    const ifb_u32 arena_page_number = arena_header_page_start + arena_page_offset; 
+
+    //initialize the strucf
+    out_arena_pages_ref.page_number = arena_page_number;
+    out_arena_pages_ref.page_count  = arena_header_page_count;
 }

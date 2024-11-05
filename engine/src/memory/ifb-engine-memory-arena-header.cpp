@@ -26,7 +26,7 @@ ifb_engine::memory_arena_header_create(
           IFBEngineMemoryTableArenaHeader& table_arena_header_ref) {
 
     //calculate sizes
-    const ifb_u32 arena_page_count              = ifb_engine::memory_reservation_align_page_count(reservation_ref,arena_size);
+    const ifb_u32 arena_page_count              = ifb_engine::memory_reservation_page_count_aligned(reservation_ref,arena_size);
     const ifb_u32 arena_header_page_count_total = arena_page_count * arena_count; 
 
     //add the pages
@@ -69,7 +69,7 @@ ifb_engine::memory_arena_header_create(
     return(new_header_index);
 }
 
-inline const ifb_size 
+inline const ifb_u32 
 ifb_engine::memory_arena_header_page_start(
           IFBEngineMemoryTableArenaHeader&     arena_table_header_ref,
     const IFBEngineMemoryTableIndexArenaHeader arena_header_index) {

@@ -41,6 +41,8 @@ struct IFBEngineAssetTableFile {
     } columns; 
 };
 
+
+
 namespace ifb_engine {
 
     ifb_internal const ifb_b8
@@ -70,10 +72,10 @@ struct IFBEngineAssetTableHeader {
     ifb_size asset_name_length;
     ifb_cstr asset_name_buffer;
     struct {
-        IFBEngineAssetTableIndexFile* ptr_asset_file_table_index;
-        ifb_size*                     ptr_asset_file_data_size;
-        ifb_size*                     ptr_asset_file_data_start;
-    } columns;
+        IFBEngineAssetTableIndexFile* asset_file_table_index;
+        ifb_size*                     asset_file_data_size;
+        ifb_size*                     asset_file_data_start;
+    } column_ptr;
 };
 
 namespace ifb_engine {
@@ -101,43 +103,78 @@ struct IFBEngineAssetDataBlock {
 };
 
 struct IFBEngineAssetTableDataBlock {
-    IFBEngineMemoryArenaPoolHandle pool_handle;
-    ifb_size                       data_block_count;
+
+    ifb_size data_block_count;
     struct {
-        IFBEngineMemoryHandle asset_table_index_header; // IFBEngineAssetTableIndexDataBlock
-        IFBEngineMemoryHandle time_ms_loaded;           // ifb_timems
-        IFBEngineMemoryHandle time_ms_last_accessed;    // ifb_timems
-        IFBEngineMemoryHandle asset_data_arena_handle;  // IFBEngineMemoryArenaHandle
-    } columns;
+        IFBEngineAssetTableIndexDataBlock* asset_table_index_header; 
+        ifb_timems*                        time_ms_loaded;           
+        ifb_timems*                        time_ms_last_accessed;    
+        IFBEngineMemoryArenaHandle*        asset_data_arena_handle;  
+    } column_ptr;
 };
+
 
 namespace ifb_engine {
 
     ifb_internal const ifb_b8 
     asset_data_block_create_table(
-        IFBEngineCoreMemory &          in_engine_core_memory_ref,
+        IFBEngineCoreMemory&           in_engine_core_memory_ref,
         IFBEngineAssetTableDataBlock& out_asset_table_data_block_ref);
+};
+
+/**********************************************************************************/
+/* CORE MEMORY                                                                    */
+/**********************************************************************************/
+
+struct IFBEngineAssetManagerCoreMemory {
+    struct {
+        IFBEngineMemoryHandle platform_index;
+        IFBEngineMemoryHandle size;
+    } table_file;
+    struct {
+        IFBEngineMemoryHandle name_buffer;
+        IFBEngineMemoryHandle file_table_index;
+        IFBEngineMemoryHandle file_data_size;
+        IFBEngineMemoryHandle file_data_start;
+    } table_header;
+
+    struct {
+        IFBEngineMemoryHandle asset_data_block_asset_table_index_header;
+        IFBEngineMemoryHandle asset_data_block_time_ms_loaded;
+        IFBEngineMemoryHandle asset_data_block_time_ms_last_accessed;
+        IFBEngineMemoryHandle asset_data_block_asset_data_arena_handle;
+    } table_data_block;
+};
+
+namespace ifb_engine {
+
+    const ifb_b8 asset_core_memory_reserve(
+        IFBEngineCoreMemory&              in_engine_core_memory_ref
+        IFBEngineAssetManagerCoreMemory& out_asset_core_memory_ref);
 };
 
 /**********************************************************************************/
 /* ASSET MANAGER                                                                  */
 /**********************************************************************************/
 
+
 struct IFBEngineAssetManager {
-    ifb_timems time_ms_initialized;
     struct {
         IFBEngineAssetTableFile      file;
         IFBEngineAssetTableHeader    header;
         IFBEngineAssetTableDataBlock data_block;
     } asset_tables;
+
+    IFBEngineAssetManagerCoreMemoryHandles core_memory_handles;
+    ifb_timems                             time_ms_initialized;
 };
 
 namespace ifb_engine {
 
     ifb_internal const ifb_b8
     asset_manager_start_up(
-        IFBEngineCoreMemory     in_engine_core_memory_ref,
-        IFBEngineAssetManager& out_asset_manager_ref);
+        IFBEngineMemoryArenaHandle& in_engine_core_memory_arena_handle_ref,
+        IFBEngineAssetManager&     out_asset_manager_ref);
 
     const ifb_internal ifb_b8 asset_manager_shut_down (IFBEngineAssetManager& asset_manager_ref);
     const ifb_internal ifb_b8 asset_manager_update    (IFBEngineAssetManager& asset_manager_ref);

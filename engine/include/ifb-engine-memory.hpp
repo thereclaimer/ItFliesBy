@@ -17,16 +17,13 @@ struct IFBEngineMemoryArenaPoolHandle {
 };
 
 struct IFBEngineMemoryArenaHandle {
-    struct {
-        IFBEngineMemoryTableIndexArenaHeader header;
-        IFBEngineMemoryTableIndexArenaDetail detail;
-        IFBEngineMemoryTableIndexArenaPool   pool;
-    } memory_table_indexes;
+    IFBEngineMemoryTableIndexArenaDetail memory_table_index_detail;
 };
 
 struct IFBEngineMemoryHandle {
     IFBEngineMemoryTableIndexArenaDetail memory_table_index_detail;
-    ifb_size                             offset;
+    ifb_u32                              page_number;
+    ifb_size                             page_offset;
     ifb_size                             size;
 };
 
@@ -45,8 +42,7 @@ namespace ifb_engine {
     inline const ifb_size memory_size_megabytes(const ifb_size size) { return(size * 1024 * 1024);        }
     inline const ifb_size memory_size_gigabytes(const ifb_size size) { return(size * 1024 * 1024 * 1024); }
 
-    inline const ifb_b8 memory_arena_header_valid(IFBEngineMemoryArenaHandle& arena_handle_ref) { return(arena_handle_ref.memory_table_indexes.header < IFB_ENGINE_MEMORY_ARENA_HEADER_INDEX_INVALID); }
-    inline const ifb_b8 memory_arena_detail_valid(IFBEngineMemoryArenaHandle& arena_handle_ref) { return(arena_handle_ref.memory_table_indexes.detail < IFB_ENGINE_MEMORY_ARENA_DETAIL_INDEX_INVALID); }
+    inline const ifb_b8 memory_arena_detail_valid(IFBEngineMemoryArenaHandle& arena_handle_ref) { return(arena_handle_ref.memory_table_index_detail < IFB_ENGINE_MEMORY_ARENA_DETAIL_INDEX_INVALID); }
 
     inline const ifb_size 
     memory_arena_align(const ifb_size size) { 
@@ -75,28 +71,28 @@ namespace ifb_engine {
     
     ifb_external const ifb_b8
     memory_arena_push(
-        const ifb_size                    in_memory_size,
               IFBEngineMemoryArenaHandle& in_memory_arena_handle_ref, 
+        const ifb_size                    in_memory_size,
               IFBEngineMemoryHandle&     out_memory_handle_ref);
     
     ifb_external const ifb_b8 
     memory_arena_pull(
-        const ifb_size                    in_memory_size,
               IFBEngineMemoryArenaHandle& in_memory_arena_handle_ref, 
+        const ifb_size                    in_memory_size,
               IFBEngineMemoryHandle&     out_memory_handle_ref);
     
     ifb_external const ifb_b8 
     memory_arena_push_aligned(
+              IFBEngineMemoryArenaHandle&  in_memory_arena_handle_ref, 
         const ifb_size                     in_memory_size, 
         const ifb_size                     in_memory_alignment,
-              IFBEngineMemoryArenaHandle&  in_memory_arena_handle_ref, 
               IFBEngineMemoryHandle&      out_memory_handle_ref);
 
     ifb_external const ifb_b8 
     memory_arena_pull_aligned(
+              IFBEngineMemoryArenaHandle&  in_memory_arena_handle_ref, 
         const ifb_size                     in_memory_size, 
         const ifb_size                     in_memory_alignment,
-              IFBEngineMemoryArenaHandle&  in_memory_arena_handle_ref, 
               IFBEngineMemoryHandle&      out_memory_handle_ref);
 
     ifb_external const ifb_memory memory_pointer(IFBEngineMemoryHandle& memory_handle_ref);
