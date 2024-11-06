@@ -8,10 +8,7 @@ ifb_engine::asset_header_create_table(
     IFBEngineAssetTableHeader& out_asset_table_header_ref) {
 
     //calculate sizes
-    const ifb_size asset_count              = IFBEngineAssetId_Count;
-    const ifb_size asset_name_length        = IFB_ENGINE_ASSET_HEADER_NAME_LENGTH;
-    const ifb_size asset_name_buffer_length = asset_name_length * asset_count;
-
+    
     //allocate memory
     ifb_cstr                      ptr_name_buffer = ifb_engine_core_memory_ref_push_array(in_engine_core_memory_ref,asset_name_buffer_length,ifb_char);
     IFBEngineAssetTableIndexFile* ptr_file_index  = ifb_engine_core_memory_ref_push_array(in_engine_core_memory_ref,asset_count,             IFBEngineAssetTableIndexFile);

@@ -6,7 +6,7 @@
 #include "ifb-engine.hpp"
 
 /**********************************************************************************/
-/* CORE_MEMORY                                                                    */
+/* CORE MEMORY                                                                    */
 /**********************************************************************************/
 
 #define IFB_ENGINE_CORE_MEMORY_CSTRING_MAX_SIZE 256
@@ -15,6 +15,10 @@
 #define IFB_ENGINE_CORE_MEMORY_ARENA_TAG            "ENGINE CORE"
 #define IFB_ENGINE_CORE_MEMORY_ARENA_SIZE_KILOBYTES 64
 #define IFB_ENGINE_CORE_MEMORY_ARENA_COUNT          2
+
+/**********************************************************************************/
+/* CORE MEMORY                                                                    */
+/**********************************************************************************/
 
 struct IFBEngineCoreMemory {
     ifb_size w_str_size_max;

@@ -98,4 +98,15 @@ namespace ifb_engine {
     ifb_external const ifb_memory memory_pointer(IFBEngineMemoryHandle& memory_handle_ref);
 };
 
+#define ifb_engine_memory_arena_push_array( \
+     in_arena_handle_ref,                   \
+     in_count,                              \
+     in_type,                               \
+    out_memory_handle_ref)                  \
+                                            \
+    ifb_engine::memory_arena_push(          \
+        in_arena_handle_ref,                \
+        sizeof(in_type) * in_count,         \
+        out_memory_handle_ref)              \
+
 #endif //IFB_ENGINE_MEMORY_HPP
