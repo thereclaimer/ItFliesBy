@@ -47,14 +47,20 @@ ifb_engine::asset_memory_reserve(
     result &= ifb_engine_memory_arena_push_array(system_arena_handle_ref, data_block_count,         ifb_timems,                     memory_table_data_block_ref.time_ms_last_accessed);
     result &= ifb_engine_memory_arena_push_array(system_arena_handle_ref, data_block_count,         IFBEngineMemoryArenaHandle,     memory_table_data_block_ref.asset_data_arena_handle);
     
+    result &= ifb_engine::memory_arena_create_pool(
+        "ASSET DATA BLOCK",
+        data_block_size,
+        data_block_count,
+        memory_table_data_block_ref.asset_data_arena_pool);
+
     //we're done
     return(result);
 }
 
 inline const ifb_b8
 ifb_engine::asset_memory_pointers_file_table(
-    IFBEngineAssetMemory&             in_asset_memory_ref,
-    IFBEngineAssetTableFilePointers& out_asset_file_table_pointers_ref) {
+    IFBEngineAssetMemory&                   in_asset_memory_ref,
+    IFBEngineAssetMemoryTableFilePointers& out_asset_memory_file_table_pointers_ref) {
 
     //get the pointers
     const ifb_memory file_path_ptr           = ifb_engine::memory_pointer(in_asset_memory_ref.system_arena_handles.table_file.path);
@@ -68,9 +74,65 @@ ifb_engine::asset_memory_pointers_file_table(
         file_size_ptr           != NULL);
 
     //initialize the struct
-    out_asset_file_table_pointers_ref.path_buffer    = (ifb_char*)file_path_ptr;
-    out_asset_file_table_pointers_ref.platform_index = (IFBEnginePlatformFileIndex*)file_platform_index_ptr;
-    out_asset_file_table_pointers_ref.size           = (ifb_size*)file_size_ptr;
+    out_asset_memory_file_table_pointers_ref.path_buffer    = (ifb_char*)file_path_ptr;
+    out_asset_memory_file_table_pointers_ref.platform_index = (IFBEnginePlatformFileIndex*)file_platform_index_ptr;
+    out_asset_memory_file_table_pointers_ref.size           = (ifb_size*)file_size_ptr;
+
+    //we're done
+    return(result);
+}
+
+inline const ifb_b8
+ifb_engine::asset_memory_pointers_header_table(
+    IFBEngineAssetMemory&                     in_asset_memory_ref,
+    IFBEngineAssetMemoryTableHeaderPointers& out_asset_memory_header_table_pointers_ref) {
+
+    //get the pointers
+    const ifb_memory name_buffer_ptr      = ifb_engine::memory_pointer(in_asset_memory_ref.system_arena_handles.table_header.name_buffer);
+    const ifb_memory file_table_index_ptr = ifb_engine::memory_pointer(in_asset_memory_ref.system_arena_handles.table_header.file_table_index);
+    const ifb_memory data_size_ptr        = ifb_engine::memory_pointer(in_asset_memory_ref.system_arena_handles.table_header.file_data_size);
+    const ifb_memory data_start_ptr       = ifb_engine::memory_pointer(in_asset_memory_ref.system_arena_handles.table_header.file_data_start);
+
+    //sanity check
+    const ifb_b8 result = (
+        name_buffer_ptr      != NULL &&
+        file_table_index_ptr != NULL &&
+        data_size_ptr        != NULL &&
+        data_start_ptr       != NULL);
+
+    //initialize the struct
+    out_asset_memory_header_table_pointers_ref.name_buffer      = (ifb_char*)name_buffer_ptr;
+    out_asset_memory_header_table_pointers_ref.file_table_index =  (ifb_u32*)file_table_index_ptr;
+    out_asset_memory_header_table_pointers_ref.data_size        = (ifb_size*)data_size_ptr;
+    out_asset_memory_header_table_pointers_ref.data_start       = (ifb_size*)data_start_ptr;
+
+    //we're done
+    return(result);
+}
+
+inline const ifb_b8
+ifb_engine::asset_memory_pointers_data_block_table(
+    IFBEngineAssetMemory&                        in_asset_memory_ref,
+    IFBEngineAssetMemoryTableDataBlockPointers& out_asset_memory_data_block_table_pointers_ref) {
+
+    //get the pointers
+    const ifb_memory asset_table_index_header_ptr = ifb_engine::memory_pointer(in_asset_memory_ref.system_arena_handles.table_data_block.asset_table_index_header);
+    const ifb_memory time_ms_loaded_ptr           = ifb_engine::memory_pointer(in_asset_memory_ref.system_arena_handles.table_data_block.time_ms_loaded);
+    const ifb_memory time_ms_last_accessed_ptr    = ifb_engine::memory_pointer(in_asset_memory_ref.system_arena_handles.table_data_block.time_ms_last_accessed);
+    const ifb_memory asset_data_arena_handle_ptr  = ifb_engine::memory_pointer(in_asset_memory_ref.system_arena_handles.table_data_block.asset_data_arena_handle);
+    
+    //sanity check
+    const ifb_b8 result = (
+        asset_table_index_header_ptr != NULL && 
+        time_ms_loaded_ptr           != NULL && 
+        time_ms_last_accessed_ptr    != NULL && 
+        asset_data_arena_handle_ptr  != NULL);
+
+    //initialize the struct
+    out_asset_memory_data_block_table_pointers_ref.asset_table_index_header = (IFBEngineAssetTableIndexHeader*)asset_table_index_header_ptr;
+    out_asset_memory_data_block_table_pointers_ref.time_ms_loaded           = (ifb_timems*)time_ms_loaded_ptr;
+    out_asset_memory_data_block_table_pointers_ref.time_ms_last_accessed    = (ifb_timems*)time_ms_last_accessed_ptr;
+    out_asset_memory_data_block_table_pointers_ref.asset_data_arena_handle  = (IFBEngineMemoryArenaHandle*)asset_data_arena_handle_ptr;
 
     //we're done
     return(result);
