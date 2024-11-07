@@ -5,6 +5,40 @@
 #include <ifb-engine.hpp>
 
 /**********************************************************************************/
+/* SYSTEM                                                                         */
+/**********************************************************************************/
+
+namespace ifb_win32 {
+
+    ifb_internal ifb_void system_api_initialize(IFBEnginePlatformSystem& platform_system_api_ref);
+
+    ifb_internal const ifb_size system_page_size              (ifb_void);
+    ifb_internal const ifb_size system_allocation_granularity (ifb_void);
+};
+
+/**********************************************************************************/
+/* MEMORY                                                                         */
+/**********************************************************************************/
+
+#define IFB_WIN32_MEMORY_ARENA_TAG            "WIN32 PLATFORM"
+#define IFB_WIN32_MEMORY_ARENA_SIZE_KILOBYTES 4
+#define IFB_WIN32_MEMORY_ARENA_COUNT          64
+
+struct IFBWin32Memory {
+    IFBEngineMemoryArenaPoolHandle arena_pool;
+};
+
+namespace ifb_win32 {
+
+    ifb_internal ifb_void memory_api_initialize(IFBEnginePlatformMemory& platform_memory_api_ref);
+
+    ifb_internal const ifb_memory memory_reserve  (const ifb_size reservation_size);
+    ifb_internal const ifb_b8     memory_release  (const ifb_memory reservation_start, const ifb_size reservation_size);
+    ifb_internal const ifb_memory memory_commit   (const ifb_memory commit_start,      const ifb_size commit_size);
+    ifb_internal const ifb_b8     memory_decommit (const ifb_memory commit_start,      const ifb_size commit_size);
+};
+
+/**********************************************************************************/
 /* FILES                                                                          */
 /**********************************************************************************/
 
@@ -92,8 +126,6 @@ namespace ifb_win32 {
 
 struct IFBWin32 {
     RWin32MonitorInfo            monitor_info;
-    RMemoryReservationHandle     memory_reservation;
-    RMemoryRegionHandle          win32_region;
     RWin32WindowHandle           window_handle;
     RWin32RenderingContextHandle rendering_context_handle;
     RWin32FileDialogHandle       file_dialog_handle;
@@ -101,6 +133,7 @@ struct IFBWin32 {
     IFBWin32FileTable            file_table;
     IFBEnginePlatformApi         platform_api;
     IFBEngineHandle              engine_handle;
+    IFBWin32Memory               memory;
 };
 
 ifb_global IFBWin32 _ifb_win32;

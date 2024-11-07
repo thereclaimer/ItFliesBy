@@ -12,42 +12,57 @@ ifb_win32_main(
     r_win32::monitor_info(_ifb_win32.monitor_info);
 
     //configuration
-    const r_size reservation_size_max              = r_mem::size_gigabytes(4);
-    const r_size memory_manager_stack_size         = r_mem::size_megabytes(64);  
+    const r_size win32_reservation_size_max        = r_mem::size_kilobytes(64);
+    const r_size win32_memory_manager_stack_size   = r_mem::size_megabytes(64);  
     const r_size platform_win32_arena_size         = r_mem::size_kilobytes(4);
     const r_size platform_win32_arena_count        = 64;
     const r_size platform_win32_window_size_width  = _ifb_win32.monitor_info.pixels_width;
     const r_size platform_win32_window_size_height = _ifb_win32.monitor_info.pixels_height;
+
+    ifb_b8 startup_result = true;
 
     //create the context
     if (!r_win32::context_create(args)) {
         return(S_FALSE);
     }
 
-    //create the memory manager
-    if (!r_mem::memory_manager_create_win32(
-        reservation_size_max,
-        memory_manager_stack_size)) {
+    //initialize the dialog
+    _ifb_win32.file_dialog_handle = r_win32::file_dialog_create(_ifb_win32.window_handle);
 
-        return(S_FALSE);
-    }
+    //initialize the platform api
+    ifb_win32::system_api_initialize(_ifb_win32.platform_api.system);
+    ifb_win32::memory_api_initialize(_ifb_win32.platform_api.memory);
+    ifb_win32::file_api_initialize(_ifb_win32.platform_api.file);
+    ifb_win32::file_dialog_api_initialize(_ifb_win32.platform_api.file_dialog);
 
-    //create the reservation
-    _ifb_win32.memory_reservation = r_mem::reserve("IT FLIES BY",reservation_size_max);
-    if (!_ifb_win32.memory_reservation) {
-        return(S_FALSE);
-    }
+    //create the engine
+    startup_result &= ifb_engine::engine_startup(
+        _ifb_win32.imgui_context,
+        _ifb_win32.platform_api);
 
     //create a region for our win32 systems
-    _ifb_win32.win32_region = 
-        r_mem::region_create_arena_pool(
-            _ifb_win32.memory_reservation,
-            "WIN32 PLATFORM",
-            platform_win32_arena_size,
-            platform_win32_arena_count);
+    startup_result &= ifb_engine::memory_arena_create_pool(
+        IFB_WIN32_MEMORY_ARENA_TAG,
+        IFB_WIN32_MEMORY_ARENA_SIZE_KILOBYTES,
+        IFB_WIN32_MEMORY_ARENA_COUNT,
+        _ifb_win32.memory.arena_pool);
 
-    //set the win32 region
-    r_win32::context_set_memory_region(_ifb_win32.win32_region);
+
+    //create a memory manager for the rlibs
+    startup_result &= r_mem::memory_manager_create_win32(
+        win32_reservation_size_max,
+        win32_memory_manager_stack_size);
+
+    const RMemoryReservationHandle r_libs_reservation = r_mem::reserve("RLIBS",win32_reservation_size_max);
+    
+    const RMemoryRegionHandle r_libs_region = r_mem::region_create_arena_pool(
+        r_libs_reservation,
+        "RLIBS-WIN32",
+        platform_win32_arena_size,
+        platform_win32_arena_count);
+
+    r_win32::context_set_memory_region(r_libs_region);
+
 
     //create the window
 
@@ -92,19 +107,6 @@ ifb_win32_main(
     color_32.hex    = 0x282828FF;
     r_win32::rendering_set_clear_color(_ifb_win32.rendering_context_handle,color_32);
 
-    //initialize the dialog
-    _ifb_win32.file_dialog_handle = r_win32::file_dialog_create(_ifb_win32.window_handle);
-
-    //initialize the platform api
-    ifb_win32::file_api_initialize(_ifb_win32.platform_api.file);
-    ifb_win32::file_dialog_api_initialize(_ifb_win32.platform_api.file_dialog);
-
-    //create the engine
-    _ifb_win32.engine_handle = 
-        ifb_engine::engine_startup(
-            _ifb_win32.memory_reservation,
-            _ifb_win32.imgui_context,
-            _ifb_win32.platform_api);
 
     //show the window
     r_win32::window_show(_ifb_win32.window_handle);

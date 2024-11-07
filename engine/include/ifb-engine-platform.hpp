@@ -4,6 +4,53 @@
 #include <r-libs.hpp>
 #include "ifb-engine-types.hpp"
 
+
+/**********************************************************************************/
+/* SYSTEM                                                                         */
+/**********************************************************************************/
+
+typedef const ifb_size
+(*funcptr_ifb_engine_platform_system_page_size)(
+    ifb_void);
+typedef const ifb_size
+(*funcptr_ifb_engine_platform_system_allocation_granularity)(
+    ifb_void);
+
+struct IFBEnginePlatformSystem {
+    funcptr_ifb_engine_platform_system_page_size              page_size;
+    funcptr_ifb_engine_platform_system_allocation_granularity allocation_granularity;
+};
+
+/**********************************************************************************/
+/* MEMORY                                                                         */
+/**********************************************************************************/
+
+typedef const ifb_memory
+(*funcptr_ifb_engine_platform_memory_pages_reserve)(
+    const ifb_size size);
+
+typedef const ifb_b8
+(*funcptr_ifb_engine_platform_memory_pages_release)(
+    const ifb_memory reservation_start,
+    const ifb_size   reservation_size);
+
+typedef const ifb_memory
+(*funcptr_ifb_engine_platform_memory_pages_commit)(
+    const ifb_memory commit_start,
+    const ifb_size   commit_size);
+
+typedef const ifb_b8
+(*funcptr_ifb_engine_platform_memory_pages_decommit)(
+    const ifb_memory commit_start,
+    const ifb_size   commit_size);
+
+struct IFBEnginePlatformMemory {
+    funcptr_ifb_engine_platform_memory_pages_reserve  pages_reserve;
+    funcptr_ifb_engine_platform_memory_pages_release  pages_release;
+    funcptr_ifb_engine_platform_memory_pages_commit   pages_commit;
+    funcptr_ifb_engine_platform_memory_pages_decommit pages_decommit;
+};
+
 /**********************************************************************************/
 /* FILES                                                                          */
 /**********************************************************************************/
@@ -77,6 +124,8 @@ struct IFBEnginePlatformFileDialog {
 /**********************************************************************************/
 
 struct IFBEnginePlatformApi {
+    IFBEnginePlatformSystem     system;
+    IFBEnginePlatformMemory     memory;
     IFBEnginePlatformFile       file;
     IFBEnginePlatformFileDialog file_dialog;
 };
