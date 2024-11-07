@@ -5,6 +5,7 @@
 
 #include "ifb-engine-types.hpp"
 #include "ifb-engine-macros.hpp"
+#include "ifb-engine-user-input.hpp"
 #include "ifb-engine-memory.hpp"
 #include "ifb-engine-scopes.hpp"
 #include "ifb-engine-asset.hpp"
@@ -17,8 +18,9 @@ namespace ifb_engine {
 
     ifb_external const ifb_b8 
     engine_startup(
-        ImGuiContext*            imgui_context,
-        IFBEnginePlatformApi     platform_api);
+        const ifb_memory            platform_memory_reservation_start,
+        const ifb_size              platform_memory_reservation_size,
+              IFBEnginePlatformApi& platform_api);
 	
     ifb_external const ifb_b8 engine_update   (const IFBEngineHandle ifb_engine_handle);
     ifb_external const ifb_b8 engine_shutdown (const IFBEngineHandle ifb_engine_handle);

@@ -6,7 +6,6 @@
 #define ITFLIESBY_KEYCODE_GROUPS                14
 #define ITFLIESBY_KEYCODE_GROUP_SIZE             8
 
-//keycode group 0
 #define ITFLIESBY_KEYCODE_BACK                   0 
 #define ITFLIESBY_KEYCODE_TAB                    1 
 #define ITFLIESBY_KEYCODE_CLEAR                  2 
@@ -16,7 +15,6 @@
 #define ITFLIESBY_KEYCODE_MENU                   6 
 #define ITFLIESBY_KEYCODE_PAUSE                  7 
 
-//keycode group 1
 #define ITFLIESBY_KEYCODE_CAPITAL                8 
 #define ITFLIESBY_KEYCODE_ESCAPE                 9 
 #define ITFLIESBY_KEYCODE_SPACE                  10 
@@ -26,7 +24,6 @@
 #define ITFLIESBY_KEYCODE_HOME                   14 
 #define ITFLIESBY_KEYCODE_LEFT                   15 
 
-//keycode group 2
 #define ITFLIESBY_KEYCODE_UP                     16 
 #define ITFLIESBY_KEYCODE_RIGHT                  17 
 #define ITFLIESBY_KEYCODE_DOWN                   18 
@@ -36,7 +33,6 @@
 #define ITFLIESBY_KEYCODE_INSERT                 22 
 #define ITFLIESBY_KEYCODE_DELETE                 23 
 
-//keycode group 3
 #define ITFLIESBY_KEYCODE_HELP                   24 
 #define ITFLIESBY_KEYCODE_0                      25 
 #define ITFLIESBY_KEYCODE_1                      26 
@@ -46,7 +42,6 @@
 #define ITFLIESBY_KEYCODE_5                      30 
 #define ITFLIESBY_KEYCODE_6                      31 
 
-//keycode group 4
 #define ITFLIESBY_KEYCODE_7                      32 
 #define ITFLIESBY_KEYCODE_8                      33 
 #define ITFLIESBY_KEYCODE_9                      34 
@@ -137,7 +132,7 @@
 #define ITFLIESBY_KEYCODE_COMMA                  103 
 
 //keycode group 13
-#define ITFLIESBY_KEYCODE_MINUS                  104 
+#define ITFLIESBY_KEYCODE_MINUS                  104 b 
 #define ITFLIESBY_KEYCODE_PERIOD                 105 
 #define ITFLIESBY_KEYCODE_FORWARD_SLASH_QUESTION 106 
 #define ITFLIESBY_KEYCODE_TILDE                  107 

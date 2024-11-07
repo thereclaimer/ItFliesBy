@@ -52,6 +52,69 @@ struct IFBEnginePlatformMemory {
 };
 
 /**********************************************************************************/
+/* WINDOW                                                                         */
+/**********************************************************************************/
+
+typedef const ifb_handle
+(*funcptr_ifb_engine_platform_window_create) (
+    const ifb_cstr window_title,
+    const ifb_u32  window_width,
+    const ifb_u32  window_height,
+    const ifb_u32  window_position_x,
+    const ifb_u32  window_position_y);
+
+typedef const ifb_handle
+(*funcptr_ifb_engine_platform_window_opengl_context_create) (
+    ifb_void);
+
+typedef const ifb_handle
+(*funcptr_ifb_engine_platform_window_imgui_context_create) (
+    ifb_void);
+
+typedef const ifb_b8
+(*funcptr_ifb_engine_platform_window_show)(
+    ifb_void);
+
+typedef const ifb_b8
+(*funcptr_ifb_engine_platform_window_destroy)(
+    ifb_void);
+
+typedef const ifb_b8
+(*funcptr_ifb_engine_platform_window_update)(
+    ifb_void);
+
+struct IFBEnginePlatformWindow {
+    funcptr_ifb_engine_platform_window_create                create;
+    funcptr_ifb_engine_platform_window_close                 destroy;
+    funcptr_ifb_engine_platform_window_update                update;
+    funcptr_ifb_engine_platform_window_show                  show;
+    funcptr_ifb_engine_platform_window_opengl_context_create opengl_context_create;
+    funcptr_ifb_engine_platform_window_imgui_context_create  imgui_context_create;
+};
+
+/**********************************************************************************/
+/* MONITOR                                                                        */
+/**********************************************************************************/
+
+struct IFBEnginePlatformMonitorSize {
+    ifb_u32 width;
+    ifb_u32 height;
+}; 
+
+typedef ifb_b8
+(*funcptr_ifb_engine_platform_monitor_size) (
+    IFBEnginePlatformMonitorSize& monitor_size_ref);
+
+typedef ifb_u32
+(*funcptr_ifb_engine_platform_monitor_refresh_hz)(
+    ifb_void);
+
+struct IFBEnginePlatformMonitor {
+    funcptr_ifb_engine_platform_monitor_size       size;
+    funcptr_ifb_engine_platform_monitor_refresh_hz refresh_hz;
+};
+
+/**********************************************************************************/
 /* FILES                                                                          */
 /**********************************************************************************/
 
@@ -126,6 +189,8 @@ struct IFBEnginePlatformFileDialog {
 struct IFBEnginePlatformApi {
     IFBEnginePlatformSystem     system;
     IFBEnginePlatformMemory     memory;
+    IFBEnginePlatformWindow     window;
+    IFBEnginePlatformMonitor    monitor;
     IFBEnginePlatformFile       file;
     IFBEnginePlatformFileDialog file_dialog;
 };
