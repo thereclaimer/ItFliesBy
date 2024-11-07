@@ -10,10 +10,8 @@ typedef ifb_u16 IFBEngineMemoryTableIndexArenaDetail;
 typedef ifb_u16 IFBEngineMemoryTableIndexArenaPool;
 
 struct IFBEngineMemoryArenaPoolHandle {
-    struct {
-        IFBEngineMemoryTableIndexArenaHeader header;
-        IFBEngineMemoryTableIndexArenaDetail detail_start;
-    } memory_table_indexes;
+    ifb_u32 header_index;    
+    ifb_u32 detail_start_index;
 };
 
 struct IFBEngineMemoryArenaHandle {
@@ -21,10 +19,10 @@ struct IFBEngineMemoryArenaHandle {
 };
 
 struct IFBEngineMemoryHandle {
-    IFBEngineMemoryTableIndexArenaDetail memory_table_index_detail;
-    ifb_u32                              page_number;
-    ifb_size                             page_offset;
-    ifb_size                             size;
+    ifb_u32 detail_index;
+    ifb_u32 page_number;
+    ifb_u32 page_offset;
+    ifb_u32 size;
 };
 
 #define IFB_ENGINE_MEMORY_ARENA_HEADER_COUNT_MAX             128
@@ -38,9 +36,9 @@ struct IFBEngineMemoryHandle {
 
 namespace ifb_engine {
 
-    inline const ifb_size memory_size_kilobytes(const ifb_size size) { return(size * 1024);               }
-    inline const ifb_size memory_size_megabytes(const ifb_size size) { return(size * 1024 * 1024);        }
-    inline const ifb_size memory_size_gigabytes(const ifb_size size) { return(size * 1024 * 1024 * 1024); }
+    inline const ifb_u64 memory_size_kilobytes(const ifb_u64 size) { return(size * 1024);               }
+    inline const ifb_u64 memory_size_megabytes(const ifb_u64 size) { return(size * 1024 * 1024);        }
+    inline const ifb_u64 memory_size_gigabytes(const ifb_u64 size) { return(size * 1024 * 1024 * 1024); }
 
     inline const ifb_b8 memory_arena_detail_valid(IFBEngineMemoryArenaHandle& arena_handle_ref) { return(arena_handle_ref.memory_table_index_detail < IFB_ENGINE_MEMORY_ARENA_DETAIL_INDEX_INVALID); }
 

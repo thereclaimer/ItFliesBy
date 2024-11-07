@@ -9,9 +9,9 @@
 
 inline const IFBEngineMemoryTableIndexArenaDetail
 ifb_engine::memory_arena_detail_table_insert(
+          IFBEngineMemoryArenaDetailTable&     arena_detail_table_ref,
     const IFBEngineMemoryTableIndexArenaHeader arena_header_index,
-    const ifb_u32                              arena_count,
-          IFBEngineMemoryArenaDetailTable&     arena_detail_table_ref) {
+    const ifb_u32                              arena_count) {
 
     //get the starting arena index
     const IFBEngineMemoryTableIndexArenaDetail starting_arena_index = arena_detail_table_ref.arena_count_current;
@@ -71,7 +71,8 @@ ifb_engine::memory_arena_detail_next_available_index(
 
         //if this arena isn't committed and has a matching header, its available
         if (!detail_committed) {
-            out_arena_detail_ref = arena_detail_index;            
+            out_arena_detail_ref = arena_detail_index;
+            break;
         }
     }
 
@@ -104,7 +105,7 @@ ifb_engine::memory_arena_detail_size_used(
           IFBEngineMemoryArenaDetailTable& arena_table_detail_ref,
     const IFBEngineMemoryTableIndexArenaDetail  arena_detail_index) {
 
-    const ifb_b8 size_used = arena_table_detail_ref.columns.size_used[arena_detail_index];
+    const ifb_u32 size_used = arena_table_detail_ref.columns.size_used[arena_detail_index];
 
     return(size_used);
 }

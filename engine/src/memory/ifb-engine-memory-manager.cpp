@@ -12,10 +12,11 @@ ifb_engine::memory_manager_start_up(
     //get the reservation
     result &= ifb_engine::memory_reserve(memory_manager_ref.reservation);
 
-
     //initialize the tables
     memory_manager_ref.arena_tables.header = {0};
     memory_manager_ref.arena_tables.detail = {0};
+    memory_manager_ref.arena_tables.header.header_count_max = IFB_ENGINE_MEMORY_ARENA_HEADER_COUNT_MAX;
+    memory_manager_ref.arena_tables.detail.arena_count_max  = IFB_ENGINE_MEMORY_ARENA_COUNT_MAX;
 
     //we're done
     return(result);

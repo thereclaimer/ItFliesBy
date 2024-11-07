@@ -27,6 +27,9 @@ ifb_engine::engine_startup(
 
     ifb_b8 result = true;
 
+    //platform api
+    result &= ifb_engine::platform_api_validate(platform_api);
+
     //memory manager
     result &= ifb_engine::memory_manager_start_up(_ifb_engine.memory_manager);
     
@@ -36,8 +39,6 @@ ifb_engine::engine_startup(
     //imgui
     result &= ifb_engine::engine_imgui_validate(imgui_context);
     
-    //platform api
-    result &= ifb_engine::platform_api_validate(platform_api);
 
     //asset manager
     result &= ifb_engine::asset_manager_start_up(

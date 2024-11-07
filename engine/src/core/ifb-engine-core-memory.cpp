@@ -13,11 +13,16 @@ ifb_engine::core_memory_reserve(
 
     ifb_b8 result = true;
 
+    //arena parameters
+    const ifb_cstr arena_tag   = IFB_ENGINE_CORE_MEMORY_ARENA_TAG;
+    const ifb_size arena_size  = ifb_engine::memory_size_kilobytes(IFB_ENGINE_CORE_MEMORY_ARENA_SIZE_KILOBYTES);
+    const ifb_size arena_count = IFB_ENGINE_CORE_MEMORY_ARENA_COUNT; 
+
     //create the arena pool
     result &= ifb_engine::memory_arena_create_pool(
-        IFB_ENGINE_CORE_MEMORY_ARENA_TAG,
-        IFB_ENGINE_CORE_MEMORY_ARENA_SIZE_KILOBYTES,
-        IFB_ENGINE_CORE_MEMORY_ARENA_COUNT,
+        arena_tag,
+        arena_size,
+        arena_count,
         core_memory_ref.arena_pool);
 
     //create the arenas

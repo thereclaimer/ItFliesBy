@@ -30,13 +30,13 @@ ifb_engine::memory_arena_create_pool(
     //create the batch of arenas
     const IFBEngineMemoryTableIndexArenaDetail starting_arena_detail_index = 
     ifb_engine::memory_arena_detail_table_insert(
-        in_arena_count,
+        memory_manager_ref.arena_tables.detail,
         arena_header_index,
-        memory_manager_ref.arena_tables.detail);
+        in_arena_count);
 
     //initialize the struct
-    out_arena_pool_handle_ref.memory_table_indexes.header       = arena_header_index;
-    out_arena_pool_handle_ref.memory_table_indexes.detail_start = starting_arena_detail_index;
+    out_arena_pool_handle_ref.header_index       = arena_header_index;
+    out_arena_pool_handle_ref.detail_start_index = starting_arena_detail_index;
 
     //we're done
     return(true);
@@ -53,8 +53,8 @@ ifb_engine::memory_arena_commit(
     //get the next available arena index
     ifb_b8 result = ifb_engine::memory_arena_detail_next_available_index(
         memory_manager_ref.arena_tables.detail,
-        in_arena_pool_handle_ref.memory_table_indexes.detail_start,
-        in_arena_pool_handle_ref.memory_table_indexes.header,
+        in_arena_pool_handle_ref.detail_start_index,
+        in_arena_pool_handle_ref.header_index,
         out_arena_handle_ref.memory_table_index_detail);
 
     //if no arena is available, we're done
@@ -84,7 +84,7 @@ ifb_engine::memory_arena_commit(
     }
 
     //we're done
-    return(true);
+    return(commit_result);
 }
 
 ifb_external const ifb_b8 
@@ -166,7 +166,7 @@ ifb_engine::memory_arena_push(
         arena_used_size_new);
 
     //initialize the struct
-    out_memory_handle_ref.memory_table_index_detail = in_memory_arena_handle_ref.memory_table_index_detail;
+    out_memory_handle_ref.detail_index = in_memory_arena_handle_ref.memory_table_index_detail;
     out_memory_handle_ref.page_number               = arena_pages.page_number;
     out_memory_handle_ref.page_offset               = arena_used_size_current;
     out_memory_handle_ref.size                      = in_memory_size;
@@ -309,10 +309,10 @@ ifb_engine::memory_arena_pull(
         arena_used_size_new);
 
     //initialize the struct
-    out_memory_handle_ref.memory_table_index_detail = in_memory_arena_handle_ref.memory_table_index_detail;
-    out_memory_handle_ref.page_number               = arena_pages.page_number;
-    out_memory_handle_ref.page_offset               = arena_used_size_new;
-    out_memory_handle_ref.size                      = in_memory_size;
+    out_memory_handle_ref.detail_index = in_memory_arena_handle_ref.memory_table_index_detail;
+    out_memory_handle_ref.page_number  = arena_pages.page_number;
+    out_memory_handle_ref.page_offset  = arena_used_size_new;
+    out_memory_handle_ref.size         = in_memory_size;
 
     //we're done
     return(true);

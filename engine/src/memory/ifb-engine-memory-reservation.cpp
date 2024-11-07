@@ -7,7 +7,6 @@
 /* INLINE METHODS                                                                 */
 /**********************************************************************************/
 
-
 inline const ifb_b8 
 ifb_engine::memory_reserve(
     IFBEngineMemoryReservation& reservation_ref) {
@@ -55,8 +54,8 @@ ifb_engine::memory_reservation_next_page(
 inline const ifb_memory
 ifb_engine::memory_reservation_get_pointer(
           IFBEngineMemoryReservation& reservation_ref, 
-    const ifb_u32                     page_number,
-    const ifb_u32                     page_offset) {
+    const ifb_size                    page_number,
+    const ifb_size                    page_offset) {
 
     const ifb_size page_start         = reservation_ref.platform_page_size * page_number;
     const ifb_size reservation_offset = page_start + page_offset;   
@@ -68,8 +67,8 @@ ifb_engine::memory_reservation_get_pointer(
 
 inline const ifb_size
 ifb_engine::memory_reservation_page_count_aligned(
-            IFBEngineMemoryReservation& reservation_ref,
-    const ifb_size                      size) {
+          IFBEngineMemoryReservation& reservation_ref,
+    const ifb_size                    size) {
 
     const ifb_size size_aligned =
         ifb_engine_macro_align_a_to_b(
@@ -84,11 +83,11 @@ ifb_engine::memory_reservation_page_count_aligned(
 inline const ifb_b8
 ifb_engine::memory_reservation_add_pages(
           IFBEngineMemoryReservation& in_reservation_ref,
-    const ifb_u32                     in_page_count,
-          ifb_u32&                   out_page_start_ref) {
+    const ifb_size                    in_page_count,
+          ifb_size&                  out_page_start_ref) {
 
     //calculate the new page count
-    const ifb_u32 page_count_new = in_reservation_ref.pages_used + in_page_count;
+    const ifb_size page_count_new = in_reservation_ref.pages_used + in_page_count;
 
     //sanity check
     if (
@@ -108,12 +107,12 @@ ifb_engine::memory_reservation_add_pages(
     return(true);
 }
 
-inline const ifb_u32
+inline const ifb_size
 ifb_engine::memory_reservation_page_offset(
     IFBEngineMemoryReservation& reservation_ref,
-    ifb_u32                     page_number) {
+    ifb_size                    page_number) {
 
-    const ifb_u32 page_offset = reservation_ref.platform_page_size * page_number;
+    const ifb_size page_offset = reservation_ref.platform_page_size * page_number;
 
     return(page_offset);
 }
@@ -121,7 +120,7 @@ ifb_engine::memory_reservation_page_offset(
 inline const ifb_memory
 ifb_engine::memory_reservation_page_start_pointer(
     IFBEngineMemoryReservation& reservation_ref,
-    ifb_u32                     page_number) {
+    ifb_size                    page_number) {
 
     const ifb_memory page_start = ifb_engine::memory_reservation_get_pointer(
         reservation_ref,
@@ -134,7 +133,7 @@ ifb_engine::memory_reservation_page_start_pointer(
 inline const ifb_size
 ifb_engine::memory_reservation_pages_size(
     IFBEngineMemoryReservation& reservation_ref,
-    ifb_u32                     page_count) {
+    ifb_size                    page_count) {
 
     const ifb_size pages_size = reservation_ref.platform_page_size * page_count;
 

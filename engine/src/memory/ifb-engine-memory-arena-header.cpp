@@ -26,11 +26,11 @@ ifb_engine::memory_arena_header_create(
           IFBEngineMemoryTableArenaHeader& table_arena_header_ref) {
 
     //calculate sizes
-    const ifb_u32 arena_page_count              = ifb_engine::memory_reservation_page_count_aligned(reservation_ref,arena_size);
-    const ifb_u32 arena_header_page_count_total = arena_page_count * arena_count; 
+    const ifb_size arena_page_count              = ifb_engine::memory_reservation_page_count_aligned(reservation_ref,arena_size);
+    const ifb_size arena_header_page_count_total = arena_page_count * arena_count; 
 
     //add the pages
-    ifb_u32 arena_header_page_start;
+    ifb_size arena_header_page_start;
     ifb_b8 result = ifb_engine::memory_reservation_add_pages(
         reservation_ref,
         arena_header_page_count_total,

@@ -24,15 +24,15 @@ struct IFBEngineMemoryReservation {
 
 namespace ifb_engine {
 
-    const ifb_b8  memory_reserve               (IFBEngineMemoryReservation& reservation_ref);
-    const ifb_b8  memory_release               (IFBEngineMemoryReservation& reservation_ref);
-    const ifb_u32 memory_reservation_next_page (IFBEngineMemoryReservation& reservation_ref);
+    const ifb_b8   memory_reserve               (IFBEngineMemoryReservation& reservation_ref);
+    const ifb_b8   memory_release               (IFBEngineMemoryReservation& reservation_ref);
+    const ifb_size memory_reservation_next_page (IFBEngineMemoryReservation& reservation_ref);
     
     const ifb_memory 
     memory_reservation_get_pointer (
               IFBEngineMemoryReservation& reservation_ref, 
-        const ifb_u32                     page_number,
-        const ifb_u32                     page_offset);
+        const ifb_size                    page_number,
+        const ifb_size                    page_offset);
 
     const ifb_size
     memory_reservation_page_count_aligned(
@@ -42,23 +42,23 @@ namespace ifb_engine {
     const ifb_b8
     memory_reservation_add_pages(
               IFBEngineMemoryReservation& in_reservation_ref,
-        const ifb_u32                     in_page_count,
-              ifb_u32&                   out_page_start_ref);
+        const ifb_size                    in_page_count,
+              ifb_size&                  out_page_start_ref);
 
-    const ifb_u32
+    const ifb_size
     memory_reservation_page_offset(
         IFBEngineMemoryReservation& reservation_ref,
-        ifb_u32                     page_number);
+        ifb_size                    page_number);
 
     const ifb_memory
     memory_reservation_page_start_pointer(
         IFBEngineMemoryReservation& reservation_ref,
-        ifb_u32                     page_number);
+        ifb_size                    page_number);
     
     const ifb_size
     memory_reservation_pages_size(
         IFBEngineMemoryReservation& reservation_ref,
-        ifb_u32                     page_count);
+        ifb_size                    page_count);
 };
 
 /**********************************************************************************/
@@ -136,9 +136,9 @@ namespace ifb_engine {
 
     const IFBEngineMemoryTableIndexArenaDetail
     memory_arena_detail_table_insert(
+              IFBEngineMemoryArenaDetailTable&     arena_detail_table_ref,
         const IFBEngineMemoryTableIndexArenaHeader arena_header_index,
-        const ifb_u32                              arena_count,
-              IFBEngineMemoryArenaDetailTable&     arena_detail_table_ref);
+        const ifb_u32                              arena_count);
 
     const ifb_b8
     memory_arena_detail_next_available_index(
