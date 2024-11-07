@@ -12,8 +12,8 @@ ifb_win32_main(
     r_win32::monitor_info(_ifb_win32.monitor_info);
 
     //configuration
-    const r_size reservation_size_max              = r_mem::size_gigabytes(4);
-    const r_size memory_manager_stack_size         = r_mem::size_megabytes(64);  
+    const r_size win32_reservation_size_max        = r_mem::size_kilobytes(64);
+    const r_size win32_memory_manager_stack_size   = r_mem::size_megabytes(64);  
     const r_size platform_win32_arena_size         = r_mem::size_kilobytes(4);
     const r_size platform_win32_arena_count        = 64;
     const r_size platform_win32_window_size_width  = _ifb_win32.monitor_info.pixels_width;
@@ -46,6 +46,23 @@ ifb_win32_main(
         IFB_WIN32_MEMORY_ARENA_SIZE_KILOBYTES,
         IFB_WIN32_MEMORY_ARENA_COUNT,
         _ifb_win32.memory.arena_pool);
+
+
+    //create a memory manager for the rlibs
+    startup_result &= r_mem::memory_manager_create_win32(
+        win32_reservation_size_max,
+        win32_memory_manager_stack_size);
+
+    const RMemoryReservationHandle r_libs_reservation = r_mem::reserve("RLIBS",win32_reservation_size_max);
+    
+    const RMemoryRegionHandle r_libs_region = r_mem::region_create_arena_pool(
+        r_libs_reservation,
+        "RLIBS-WIN32",
+        platform_win32_arena_size,
+        platform_win32_arena_count);
+
+    r_win32::context_set_memory_region(r_libs_region);
+
 
     //create the window
 
