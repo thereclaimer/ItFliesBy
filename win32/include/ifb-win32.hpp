@@ -20,6 +20,14 @@ namespace ifb_win32 {
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
+#define IFB_WIN32_MEMORY_ARENA_TAG            "WIN32 PLATFORM"
+#define IFB_WIN32_MEMORY_ARENA_SIZE_KILOBYTES 4
+#define IFB_WIN32_MEMORY_ARENA_COUNT          64
+
+struct IFBWin32Memory {
+    IFBEngineMemoryArenaPoolHandle arena_pool;
+};
+
 namespace ifb_win32 {
 
     ifb_internal ifb_void memory_api_initialize(IFBEnginePlatformMemory& platform_memory_api_ref);
@@ -118,8 +126,6 @@ namespace ifb_win32 {
 
 struct IFBWin32 {
     RWin32MonitorInfo            monitor_info;
-    RMemoryReservationHandle     memory_reservation;
-    RMemoryRegionHandle          win32_region;
     RWin32WindowHandle           window_handle;
     RWin32RenderingContextHandle rendering_context_handle;
     RWin32FileDialogHandle       file_dialog_handle;
@@ -127,6 +133,7 @@ struct IFBWin32 {
     IFBWin32FileTable            file_table;
     IFBEnginePlatformApi         platform_api;
     IFBEngineHandle              engine_handle;
+    IFBWin32Memory               memory;
 };
 
 ifb_global IFBWin32 _ifb_win32;

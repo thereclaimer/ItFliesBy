@@ -29,14 +29,17 @@ ifb_win32::file_dialog_select_file(
     }
 
     //get a temporary arena
-    const RMemoryArenaHandle tmp_arena_handle = r_mem::arena_commit(_ifb_win32.win32_region); 
-    if (!tmp_arena_handle) {
+    IFBEngineMemoryArenaHandle tmp_arena_handle;
+    if (!ifb_engine::memory_arena_commit(
+        _ifb_win32.memory.arena_pool,
+        tmp_arena_handle)) {
+
         return(false);
     }
 
     //allocate the wide string arrays 
-    ifb_wstr* file_type_name_wstr_ptr = r_mem_arena_push_array(tmp_arena_handle,in_file_type_count,ifb_wstr);
-    ifb_wstr* file_type_spec_wstr_ptr = r_mem_arena_push_array(tmp_arena_handle,in_file_type_count,ifb_wstr);
+    ifb_wstr* file_type_name_wstr_ptr = ifb_engine_memory_arena_push_array_immediate(tmp_arena_handle,in_file_type_count,ifb_wstr);
+    ifb_wstr* file_type_spec_wstr_ptr = ifb_engine_memory_arena_push_array_immediate(tmp_arena_handle,in_file_type_count,ifb_wstr);
 
     //cache the size of a wchar
     const ifb_size w_char_size = sizeof(ifb_wchar);
@@ -61,8 +64,8 @@ ifb_win32::file_dialog_select_file(
         const ifb_size file_type_spec_wstr_length_bytes = w_char_size * file_type_spec_cstr_length; 
     
         //get the memory for the w-strings
-        const ifb_wstr file_type_name_wstr = r_mem_arena_push_array(tmp_arena_handle, file_type_name_wstr_length_bytes, ifb_wchar);
-        const ifb_wstr file_type_spec_wstr = r_mem_arena_push_array(tmp_arena_handle, file_type_spec_wstr_length_bytes, ifb_wchar);
+        const ifb_wstr file_type_name_wstr = ifb_engine_memory_arena_push_array_immediate(tmp_arena_handle, file_type_name_wstr_length_bytes, ifb_wchar);
+        const ifb_wstr file_type_spec_wstr = ifb_engine_memory_arena_push_array_immediate(tmp_arena_handle, file_type_spec_wstr_length_bytes, ifb_wchar);
     
         //clear the memory
         memset(file_type_name_wstr,0,file_type_name_wstr_length_bytes);        
@@ -79,7 +82,7 @@ ifb_win32::file_dialog_select_file(
     }
 
     //now, we can open the dialog
-    const ifb_b8 result = r_win32::file_dialog_select_file(
+    ifb_b8 result = r_win32::file_dialog_select_file(
         _ifb_win32.file_dialog_handle,
         in_file_dialog_starting_directory,
         in_file_type_count,
@@ -87,7 +90,7 @@ ifb_win32::file_dialog_select_file(
         file_type_spec_wstr_ptr);
 
     //return the arena
-    r_mem::arena_decommit(tmp_arena_handle);
+    result &= ifb_engine::memory_arena_decommit(tmp_arena_handle);
 
     //we're done
     return(result);

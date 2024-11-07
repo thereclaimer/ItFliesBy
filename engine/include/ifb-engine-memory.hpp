@@ -54,6 +54,7 @@ namespace ifb_engine {
         return(size_aligned);
     }
 
+    //arena pool
     ifb_external const ifb_b8
     memory_arena_create_pool(
         const ifb_cstr                           in_arena_tag,
@@ -61,40 +62,24 @@ namespace ifb_engine {
         const ifb_size                           in_arena_count,
               IFBEngineMemoryArenaPoolHandle&   out_arena_pool_handle_ref);
 
-    ifb_external const ifb_b8 
-    memory_arena_commit(
-        IFBEngineMemoryArenaPoolHandle& in_arena_pool_handle_ref,
-        IFBEngineMemoryArenaHandle&    out_arena_handle_ref);
-
-    ifb_external const ifb_b8 memory_arena_decommit (IFBEngineMemoryArenaHandle& arena_handle_ref);
-    ifb_external const ifb_b8 memory_arena_reset    (IFBEngineMemoryArenaHandle& arena_handle_ref);
+    //arena control
+    ifb_external const ifb_b8     memory_arena_commit                 (IFBEngineMemoryArenaPoolHandle& in_arena_pool_handle_ref, IFBEngineMemoryArenaHandle&    out_arena_handle_ref);
+    ifb_external const ifb_b8     memory_arena_decommit               (IFBEngineMemoryArenaHandle& arena_handle_ref);
+    ifb_external const ifb_b8     memory_arena_reset                  (IFBEngineMemoryArenaHandle& arena_handle_ref);
     
-    ifb_external const ifb_b8
-    memory_arena_push(
-              IFBEngineMemoryArenaHandle& in_memory_arena_handle_ref, 
-        const ifb_size                    in_memory_size,
-              IFBEngineMemoryHandle&     out_memory_handle_ref);
-    
-    ifb_external const ifb_b8 
-    memory_arena_pull(
-              IFBEngineMemoryArenaHandle& in_memory_arena_handle_ref, 
-        const ifb_size                    in_memory_size,
-              IFBEngineMemoryHandle&     out_memory_handle_ref);
-    
-    ifb_external const ifb_b8 
-    memory_arena_push_aligned(
-              IFBEngineMemoryArenaHandle&  in_memory_arena_handle_ref, 
-        const ifb_size                     in_memory_size, 
-        const ifb_size                     in_memory_alignment,
-              IFBEngineMemoryHandle&      out_memory_handle_ref);
+    //arena push
+    ifb_external const ifb_b8     memory_arena_push                   (IFBEngineMemoryArenaHandle& in_memory_arena_handle_ref, const ifb_size in_memory_size, IFBEngineMemoryHandle& out_memory_handle_ref);
+    ifb_external const ifb_memory memory_arena_push_immediate         (IFBEngineMemoryArenaHandle& memory_arena_handle_ref,    const ifb_size memory_size);
+    ifb_external const ifb_b8     memory_arena_push_aligned           (IFBEngineMemoryArenaHandle& in_memory_arena_handle_ref, const ifb_size in_memory_size, const ifb_size in_memory_alignment,IFBEngineMemoryHandle& out_memory_handle_ref);
+    ifb_external const ifb_memory memory_arena_push_aligned_immediate (IFBEngineMemoryArenaHandle& memory_arena_handle_ref,    const ifb_size memory_size,    const ifb_size memory_alignment);
 
-    ifb_external const ifb_b8 
-    memory_arena_pull_aligned(
-              IFBEngineMemoryArenaHandle&  in_memory_arena_handle_ref, 
-        const ifb_size                     in_memory_size, 
-        const ifb_size                     in_memory_alignment,
-              IFBEngineMemoryHandle&      out_memory_handle_ref);
+    //arena pull    
+    ifb_external const ifb_b8     memory_arena_pull                   (IFBEngineMemoryArenaHandle& in_memory_arena_handle_ref, const ifb_size in_memory_size, IFBEngineMemoryHandle& out_memory_handle_ref);
+    ifb_external const ifb_memory memory_arena_pull_immediate         (IFBEngineMemoryArenaHandle& memory_arena_handle_ref,    const ifb_size memory_size);
+    ifb_external const ifb_b8     memory_arena_pull_aligned           (IFBEngineMemoryArenaHandle& in_memory_arena_handle_ref, const ifb_size in_memory_size, const ifb_size in_memory_alignment,IFBEngineMemoryHandle& out_memory_handle_ref);
+    ifb_external const ifb_memory memory_arena_pull_aligned_immediate (IFBEngineMemoryArenaHandle& memory_arena_handle_ref,    const ifb_size memory_size,    const ifb_size memory_alignment);
 
+    //pointers    
     ifb_external const ifb_memory memory_pointer(IFBEngineMemoryHandle& memory_handle_ref);
 };
 
@@ -108,5 +93,14 @@ namespace ifb_engine {
         in_arena_handle_ref,                \
         sizeof(in_type) * in_count,         \
         out_memory_handle_ref)              \
+
+#define ifb_engine_memory_arena_push_array_immediate( \
+    arena_handle_ref,                                 \
+    count,                                            \
+    type)                                             \
+                                                      \
+    (type*)ifb_engine::memory_arena_push_immediate(   \
+        arena_handle_ref,                             \
+        sizeof(type) * count)                         \
 
 #endif //IFB_ENGINE_MEMORY_HPP
