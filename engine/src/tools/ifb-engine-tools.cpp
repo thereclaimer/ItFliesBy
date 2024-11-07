@@ -3,30 +3,22 @@
 #include "ifb-engine-internal-tools.hpp"
 
 #include "ifb-engine-tools-asset-file-builder.cpp"
+#include "ifb-engine-tools-memory.cpp"
 
 ifb_internal const r_b8 
 ifb_engine_tools::tools_start_up(
     IFBEngineCoreMemory& in_core_memory,
     IFBEngineTools&     out_tools_ref) {
 
-    //create the tools memory region
-    const RMemoryRegionHandle tools_region_handle = 
-        ifb_engine::core_memory_create_arena_pool(
-            in_core_memory,
-            IFB_ENGINE_TOOLS_MEMORY_REGION_NAME,
-            IFB_ENGINE_TOOLS_MEMORY_ARENA_SIZE,
-            IFB_ENGINE_TOOLS_MEMORY_ARENA_COUNT);
+    ifb_b8 result = true;
 
-    //sanity check
-    if (!tools_region_handle) {
-        return(false);
-    }
-
-    //initialize the tools struct
-    out_tools_ref.region_handle = tools_region_handle;
+    //reserve the memory
+    result &= ifb_engine_tools::memory_reserve(
+        in_core_memory,
+        out_tools_ref.memory);
 
     //we're done
-    return(true);
+    return(result);
 }
 
 ifb_internal const r_b8 

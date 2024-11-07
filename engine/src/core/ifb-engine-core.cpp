@@ -3,6 +3,8 @@
 
 #include <string.h>
 
+#include "ifb-engine-core-memory.cpp"
+
 inline const ifb_b8 
 ifb_engine::core_initialize(
     IFBEngineCore& core_ref) {

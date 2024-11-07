@@ -9,8 +9,29 @@
 /**********************************************************************************/
 
 struct IFBEngineTools;
+struct IFBEngineToolsMemory;
 struct IFBEngineToolsAssets;
 struct IFBEngineToolsAssetFileBuilder;
+
+/**********************************************************************************/
+/* TOOLS MEMORY                                                                   */
+/**********************************************************************************/
+
+struct IFBEngineToolsMemoryAssets {
+    IFBEngineMemoryArenaPoolHandle asset_builder_arena_pool_handle;
+};
+
+struct IFBEngineToolsMemory {
+    IFBEngineMemoryArenaPoolHandle tools_arena_pool_handle;
+};
+
+namespace ifb_engine_tools {
+
+    const ifb_b8 
+    memory_reserve(
+        IFBEngineCoreMemory&         in_memory_core_ref,
+        IFBEngineToolsMemory&       out_memory_tools_ref);
+};
 
 /**********************************************************************************/
 /* ASSET TOOLS                                                                    */
@@ -46,14 +67,13 @@ namespace ifb_engine_tools {
 };
 
 struct IFBEngineToolsAssetFileBuilder {
-    RMemoryRegionHandle   region_handle;
-    r_b8                  open;
-    r_b8                  selected_file;
-    IFBEngineAssetFileId  selected_file_id;
-    RMemoryArenaHandle    file_arena_csv;
-    RMemoryArenaHandle    file_arena_asset;
-    ifb_char              file_path_csv   [IFB_ENGINE_TOOLS_ASSET_FILE_BUILDER_PATH_LENGTH_MAX];
-    ifb_char              file_path_asset [IFB_ENGINE_TOOLS_ASSET_FILE_BUILDER_PATH_LENGTH_MAX];    
+    r_b8                       open;
+    r_b8                       selected_file;
+    IFBEngineAssetFileId       selected_file_id;
+    IFBEngineMemoryArenaHandle file_arena_csv;
+    IFBEngineMemoryArenaHandle file_arena_asset;
+    ifb_char                   file_path_csv   [IFB_ENGINE_TOOLS_ASSET_FILE_BUILDER_PATH_LENGTH_MAX];
+    ifb_char                   file_path_asset [IFB_ENGINE_TOOLS_ASSET_FILE_BUILDER_PATH_LENGTH_MAX];    
 };
 
 namespace ifb_engine_tools {
@@ -73,15 +93,14 @@ struct IFBEngineToolsAssets {
 /* TOOLS WINDOW                                                                   */
 /**********************************************************************************/
 
-#define IFB_ENGINE_TOOLS_MEMORY_REGION_NAME "ENGINE TOOLS"
+#define IFB_ENGINE_TOOLS_MEMORY_ARENA_POOL_NAME "ENGINE TOOLS"
 #define IFB_ENGINE_TOOLS_MEMORY_ARENA_SIZE  r_memory_size_kilobytes(64)
 #define IFB_ENGINE_TOOLS_MEMORY_ARENA_COUNT 1024  
 
-
 struct IFBEngineTools {
-    RMemoryRegionHandle  region_handle;
-    ifb_b8               imgui_demo;
+    IFBEngineToolsMemory memory;
     IFBEngineToolsAssets assets;
+    ifb_b8               imgui_demo;
 };
 
 namespace ifb_engine_tools {

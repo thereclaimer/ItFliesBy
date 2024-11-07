@@ -132,7 +132,7 @@ ifb_engine::memory_reservation_page_start_pointer(
 }
 
 inline const ifb_size
-memory_reservation_pages_size(
+ifb_engine::memory_reservation_pages_size(
     IFBEngineMemoryReservation& reservation_ref,
     ifb_u32                     page_count) {
 

@@ -29,6 +29,7 @@ struct IFBEngineCoreMemory {
         IFBEngineMemoryArenaHandle system;
         IFBEngineMemoryArenaHandle frame;
     } arenas;
+    IFBEngineMemoryArenaPoolHandle arena_pool;
 };
 
 namespace ifb_engine {
