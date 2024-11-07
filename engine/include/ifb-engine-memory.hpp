@@ -5,9 +5,9 @@
 #include "ifb-engine-scopes.hpp"
 #include "ifb-engine-macros.hpp"
 
-typedef ifb_u8  IFBEngineMemoryTableIndexArenaHeader;
-typedef ifb_u16 IFBEngineMemoryTableIndexArenaDetail;
-typedef ifb_u16 IFBEngineMemoryTableIndexArenaPool;
+typedef ifb_u32 IFBEngineMemoryTableIndexArenaHeader;
+typedef ifb_u32 IFBEngineMemoryTableIndexArenaDetail;
+typedef ifb_u32 IFBEngineMemoryTableIndexArenaPool;
 
 struct IFBEngineMemoryArenaPoolHandle {
     ifb_u32 header_index;    
@@ -15,7 +15,7 @@ struct IFBEngineMemoryArenaPoolHandle {
 };
 
 struct IFBEngineMemoryArenaHandle {
-    IFBEngineMemoryTableIndexArenaDetail memory_table_index_detail;
+    ifb_u32 detail_index;
 };
 
 struct IFBEngineMemoryHandle {
@@ -36,11 +36,11 @@ struct IFBEngineMemoryHandle {
 
 namespace ifb_engine {
 
-    inline const ifb_u64 memory_size_kilobytes(const ifb_u64 size) { return(size * 1024);               }
-    inline const ifb_u64 memory_size_megabytes(const ifb_u64 size) { return(size * 1024 * 1024);        }
-    inline const ifb_u64 memory_size_gigabytes(const ifb_u64 size) { return(size * 1024 * 1024 * 1024); }
+    inline const ifb_size memory_size_kilobytes(const ifb_size size) { return(size * 1024);               }
+    inline const ifb_size memory_size_megabytes(const ifb_size size) { return(size * 1024 * 1024);        }
+    inline const ifb_size memory_size_gigabytes(const ifb_size size) { return(size * 1024 * 1024 * 1024); }
 
-    inline const ifb_b8 memory_arena_detail_valid(IFBEngineMemoryArenaHandle& arena_handle_ref) { return(arena_handle_ref.memory_table_index_detail < IFB_ENGINE_MEMORY_ARENA_DETAIL_INDEX_INVALID); }
+    inline const ifb_b8 memory_arena_detail_valid(IFBEngineMemoryArenaHandle& arena_handle_ref) { return(arena_handle_ref.detail_index < IFB_ENGINE_MEMORY_ARENA_DETAIL_INDEX_INVALID); }
 
     inline const ifb_size 
     memory_arena_align(const ifb_size size) { 

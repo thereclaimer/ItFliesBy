@@ -14,9 +14,6 @@ ifb_engine::memory_pointer(
 
     IFBEngineMemoryManager& memory_manager_ref = ifb_engine::memory_manager_ref();
 
-    IFBEngineMemoryArenaHandle arena_handle;
-    arena_handle.memory_table_index_detail = memory_handle_ref.detail_index;
-
     const ifb_memory memory_pointer = ifb_engine::memory_reservation_get_pointer(
         memory_manager_ref.reservation,
         memory_handle_ref.page_number,

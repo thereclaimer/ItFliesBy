@@ -17,13 +17,13 @@ ifb_engine::memory_arena_header_table_create(
     return(true);
 }
 
-inline const IFBEngineMemoryTableIndexArenaHeader 
+inline const ifb_u32 
 ifb_engine::memory_arena_header_create(
-    const ifb_cstr                         arena_header_tag,
-    const ifb_size                         arena_size,
-    const ifb_size                         arena_count,
+          IFBEngineMemoryTableArenaHeader& table_arena_header_ref,
           IFBEngineMemoryReservation&      reservation_ref,
-          IFBEngineMemoryTableArenaHeader& table_arena_header_ref) {
+    const ifb_cstr                         arena_header_tag,
+    const ifb_u32                          arena_size,
+    const ifb_u32                          arena_count) {
 
     //calculate sizes
     const ifb_size arena_page_count              = ifb_engine::memory_reservation_page_count_aligned(reservation_ref,arena_size);
@@ -71,28 +71,28 @@ ifb_engine::memory_arena_header_create(
 
 inline const ifb_u32 
 ifb_engine::memory_arena_header_page_start(
-          IFBEngineMemoryTableArenaHeader&     arena_table_header_ref,
-    const IFBEngineMemoryTableIndexArenaHeader arena_header_index) {
+          IFBEngineMemoryTableArenaHeader& arena_table_header_ref,
+    const ifb_u32                          arena_header_index) {
 
     const ifb_u32 page_start = arena_table_header_ref.columns.page_start[arena_header_index];
 
     return(page_start);
 }
 
-inline const 
-ifb_size ifb_engine::memory_arena_header_arena_page_count(
-          IFBEngineMemoryTableArenaHeader&     arena_table_header_ref,
-    const IFBEngineMemoryTableIndexArenaHeader arena_header_index) {
+inline const ifb_u32
+ifb_engine::memory_arena_header_arena_page_count(
+          IFBEngineMemoryTableArenaHeader& arena_table_header_ref,
+    const ifb_u32                          arena_header_index) {
 
     const ifb_u32 arena_page_count = arena_table_header_ref.columns.arena_page_count[arena_header_index];
 
     return(arena_page_count);
 }
 
-inline const ifb_size 
+inline const ifb_u32 
 ifb_engine::memory_arena_header_arena_count(
-          IFBEngineMemoryTableArenaHeader&     arena_table_header_ref,
-    const IFBEngineMemoryTableIndexArenaHeader arena_header_index) {
+          IFBEngineMemoryTableArenaHeader& arena_table_header_ref,
+    const ifb_u32                          arena_header_index) {
 
     const ifb_u32 arena_count = arena_table_header_ref.columns.arena_count[arena_header_index];
 

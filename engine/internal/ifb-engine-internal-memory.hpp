@@ -72,11 +72,6 @@ struct IFBEngineMemoryArenaHeader {
     ifb_cstr tag;
 };
 
-struct IFBEngineMemoryTableRecordArenaHeader {
-    IFBEngineMemoryTableIndexArenaHeader table_index_arena_header;
-    IFBEngineMemoryArenaHeader           arena_header;
-};
-
 struct IFBEngineMemoryTableArenaHeader {
     ifb_u8   header_count_current;
     ifb_u8   header_count_max;
@@ -94,17 +89,17 @@ namespace ifb_engine {
     memory_arena_header_table_create(
         IFBEngineMemoryTableArenaHeader& arena_header_table_ref); 
 
-    const IFBEngineMemoryTableIndexArenaHeader 
+    const ifb_u32 
     memory_arena_header_create(
-        const ifb_cstr                         arena_header_tag,
-        const ifb_size                         arena_size,
-        const ifb_size                         arena_count,
+              IFBEngineMemoryTableArenaHeader& table_arena_header_ref,
               IFBEngineMemoryReservation&      reservation_ref,
-              IFBEngineMemoryTableArenaHeader& table_arena_header_ref);
+        const ifb_cstr                         arena_header_tag,
+        const ifb_u32                          arena_size,
+        const ifb_u32                          arena_count);
 
-    const ifb_u32  memory_arena_header_page_start       (IFBEngineMemoryTableArenaHeader& arena_table_header_ref, const IFBEngineMemoryTableIndexArenaHeader arena_header_index);
-    const ifb_size memory_arena_header_arena_page_count (IFBEngineMemoryTableArenaHeader& arena_table_header_ref, const IFBEngineMemoryTableIndexArenaHeader arena_header_index);
-    const ifb_size memory_arena_header_arena_count      (IFBEngineMemoryTableArenaHeader& arena_table_header_ref, const IFBEngineMemoryTableIndexArenaHeader arena_header_index);
+    const ifb_u32 memory_arena_header_page_start       (IFBEngineMemoryTableArenaHeader& arena_table_header_ref, const ifb_u32 arena_header_index);
+    const ifb_u32 memory_arena_header_arena_page_count (IFBEngineMemoryTableArenaHeader& arena_table_header_ref, const ifb_u32 arena_header_index);
+    const ifb_u32 memory_arena_header_arena_count      (IFBEngineMemoryTableArenaHeader& arena_table_header_ref, const ifb_u32 arena_header_index);
 };
 
 /**********************************************************************************/
@@ -125,7 +120,7 @@ struct IFBEngineMemoryArenaDetailTable {
         // TODO(SAM): I want to turn this array of booleans
         // to an array of bits
         ifb_b8  committed    [IFB_ENGINE_MEMORY_ARENA_COUNT_MAX];
-        ifb_u8  header_index [IFB_ENGINE_MEMORY_ARENA_COUNT_MAX];
+        ifb_u32 header_index [IFB_ENGINE_MEMORY_ARENA_COUNT_MAX];
         ifb_u32 size_used    [IFB_ENGINE_MEMORY_ARENA_COUNT_MAX];
         ifb_u32 pool_index   [IFB_ENGINE_MEMORY_ARENA_COUNT_MAX];
     } columns;
@@ -215,14 +210,14 @@ namespace ifb_engine {
     const ifb_b8 
     memory_manager_page_commit(
               IFBEngineMemoryManager& memory_manager_ref,
-        const ifb_size                page_start,
-        const ifb_size                page_count);
+        const ifb_u32                 page_start,
+        const ifb_u32                 page_count);
 
     const ifb_b8 
     memory_manager_page_decommit(
               IFBEngineMemoryManager& memory_manager_ref,
-        const ifb_size                page_start,
-        const ifb_size                page_count);
+        const ifb_u32                 page_start,
+        const ifb_u32                 page_count);
 };
 
 #endif //IFB_ENGINE_INTERNAL_MEMORY_HPP

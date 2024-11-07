@@ -35,8 +35,8 @@ ifb_engine::memory_manager_shut_down(
 inline const ifb_b8 
 ifb_engine::memory_manager_page_commit(
           IFBEngineMemoryManager& memory_manager_ref,
-    const ifb_size                page_start,
-    const ifb_size                page_count) {
+    const ifb_u32                 page_start,
+    const ifb_u32                 page_count) {
 
     //get the page start
     const ifb_memory page_start_pointer = ifb_engine::memory_reservation_page_start_pointer(
@@ -44,7 +44,7 @@ ifb_engine::memory_manager_page_commit(
         page_start);
 
     //get the total size of the pages
-    const ifb_size pages_size = ifb_engine::memory_reservation_page_count_aligned(
+    const ifb_size pages_size = ifb_engine::memory_reservation_pages_size(
         memory_manager_ref.reservation,
         page_count);
 
@@ -61,8 +61,8 @@ ifb_engine::memory_manager_page_commit(
 inline const ifb_b8 
 ifb_engine::memory_manager_page_decommit(
           IFBEngineMemoryManager& memory_manager_ref,
-    const ifb_size                page_start,
-    const ifb_size                page_count) {
+    const ifb_u32                 page_start,
+    const ifb_u32                 page_count) {
 
     //get the page start
     const ifb_memory page_start_pointer = ifb_engine::memory_reservation_page_start_pointer(
