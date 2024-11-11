@@ -14,11 +14,9 @@
 #define IFB_ENGINE_MEMORY_RESERVATION_SIZE_GIGABYTES 4
 
 struct IFBEngineMemoryReservation {
-    ifb_size   platform_allocation_granularity;
     ifb_size   platform_page_size;
     ifb_size   pages_total;
     ifb_size   pages_used;
-    ifb_size   size;
     ifb_memory start;
 };
 

@@ -24,8 +24,6 @@ namespace ifb_engine {
     ifb_global funcptr_ifb_engine_platform_monitor_refresh_hz            platform_monitor_refresh_hz;
 
     //memory
-    ifb_global funcptr_ifb_engine_platform_memory_pages_reserve          platform_memory_pages_reserve;
-    ifb_global funcptr_ifb_engine_platform_memory_pages_release          platform_memory_pages_release;
     ifb_global funcptr_ifb_engine_platform_memory_pages_commit           platform_memory_pages_commit;
     ifb_global funcptr_ifb_engine_platform_memory_pages_decommit         platform_memory_pages_decommit;
 
@@ -50,8 +48,6 @@ namespace ifb_engine {
         //set the function pointers
         ifb_engine::platform_system_page_size              = platform_api_ref.system.page_size; 
         ifb_engine::platform_system_allocation_granularity = platform_api_ref.system.allocation_granularity; 
-        ifb_engine::platform_memory_pages_reserve          = platform_api_ref.memory.pages_reserve; 
-        ifb_engine::platform_memory_pages_release          = platform_api_ref.memory.pages_release; 
         ifb_engine::platform_memory_pages_commit           = platform_api_ref.memory.pages_commit; 
         ifb_engine::platform_memory_pages_decommit         = platform_api_ref.memory.pages_decommit;         
         ifb_engine::platform_window_create                 = platform_api_ref.window.create;
@@ -74,8 +70,6 @@ namespace ifb_engine {
         result &= (
             ifb_engine::platform_system_page_size              &&
             ifb_engine::platform_system_allocation_granularity &&
-            ifb_engine::platform_memory_pages_reserve          && 
-            ifb_engine::platform_memory_pages_release          && 
             ifb_engine::platform_memory_pages_commit           && 
             ifb_engine::platform_memory_pages_decommit         && 
             ifb_engine::platform_window_create                 &&

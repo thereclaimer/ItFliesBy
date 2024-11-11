@@ -26,15 +26,6 @@ struct IFBEnginePlatformSystem {
 /**********************************************************************************/
 
 typedef const ifb_memory
-(*funcptr_ifb_engine_platform_memory_pages_reserve)(
-    const ifb_size size);
-
-typedef const ifb_b8
-(*funcptr_ifb_engine_platform_memory_pages_release)(
-    const ifb_memory reservation_start,
-    const ifb_size   reservation_size);
-
-typedef const ifb_memory
 (*funcptr_ifb_engine_platform_memory_pages_commit)(
     const ifb_memory commit_start,
     const ifb_size   commit_size);
@@ -45,8 +36,6 @@ typedef const ifb_b8
     const ifb_size   commit_size);
 
 struct IFBEnginePlatformMemory {
-    funcptr_ifb_engine_platform_memory_pages_reserve  pages_reserve;
-    funcptr_ifb_engine_platform_memory_pages_release  pages_release;
     funcptr_ifb_engine_platform_memory_pages_commit   pages_commit;
     funcptr_ifb_engine_platform_memory_pages_decommit pages_decommit;
 };
@@ -85,7 +74,7 @@ typedef const ifb_b8
 
 struct IFBEnginePlatformWindow {
     funcptr_ifb_engine_platform_window_create                create;
-    funcptr_ifb_engine_platform_window_close                 destroy;
+    funcptr_ifb_engine_platform_window_destroy               destroy;
     funcptr_ifb_engine_platform_window_update                update;
     funcptr_ifb_engine_platform_window_show                  show;
     funcptr_ifb_engine_platform_window_opengl_context_create opengl_context_create;

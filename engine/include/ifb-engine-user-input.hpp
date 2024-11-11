@@ -198,7 +198,6 @@ namespace ifb_engine {
 
         return(key_is_down);
     }
-
 };
 
 /**********************************************************************************/
@@ -206,7 +205,7 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineUserInputMousePosition {
-    ifb_s32 x
+    ifb_s32 x;
     ifb_s32 y;
 };
 
@@ -215,9 +214,9 @@ struct IFBEngineUserInputMouse {
         IFBEngineUserInputMousePosition current;
         IFBEngineUserInputMousePosition delta;
     } position;
-    ifb_b8  button_left
-    ifb_b8  button_right;
     ifb_s32 wheel;
+    ifb_b8  button_left;
+    ifb_b8  button_right;
 };
 
 /**********************************************************************************/
