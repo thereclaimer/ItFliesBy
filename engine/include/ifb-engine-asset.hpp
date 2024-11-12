@@ -71,18 +71,13 @@ enum IFBEngineAssetShaderId_ {
 /* ASSET                                                                          */
 /**********************************************************************************/
 
-struct IFBEngineAssetHandle {
-    IFBEngineAssetId asset_id;
-    struct {
-        IFBEngineAssetTableIndexFile      file;
-        IFBEngineAssetTableIndexHeader    header;
-        IFBEngineAssetTableIndexDataBlock data_block;
-    } asset_table_indexes;
+struct IFBEngineAsset {
+    ifb_u32 header_index;
+    ifb_u32 file_index;
+    ifb_u32 data_index;
 };
 
 namespace ifb_engine {
-
-    ifb_external const ifb_b8 asset_get_handle(IFBEngineAssetHandle& asset_handle_ref);
 
     ifb_external const ifb_b8     asset_is_valid                   (const IFBEngineAssetId asset_id);
     ifb_external const ifb_b8     asset_data_is_loaded             (const IFBEngineAssetId asset_id);

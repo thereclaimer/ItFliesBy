@@ -37,8 +37,9 @@ typedef void*    ifb_handle;
 typedef uint8_t  ifb_byte;
 typedef uint8_t* ifb_memory;
 typedef size_t   ifb_size;
-typedef size_t   ifb_index;
+typedef ifb_u32  ifb_index;
 typedef intptr_t ifb_address;
+typedef uint32_t ifb_page;
 
 #define IFB_INDEX_INVALID SIZE_MAX
 

@@ -23,9 +23,22 @@ enum IFBEngineState_ {
 
 typedef ifb_u32 IFBEngineState;
 
+struct IFBEngineMemory { 
+    ifb_u32 page_size;
+    ifb_u32 page_count_total;
+    ifb_u32 page_count_used;
+};
+
+struct IFBEngineCore {
+    ifb_u32 page_index_asset_manager;
+};
+
+
 struct IFBEngineContext {
+    IFBEngineMemory    memory;
     IFBEngineUserInput user_input;
     IFBEngineState     state;
+    IFBEngineCore      core;
     ifb_timems         time_initialized;
 };
 

@@ -1,21 +1,29 @@
 #pragma once
 
 #include "ifb-engine-internal-asset.hpp"
+#include "ifb-engine-internal-memory.hpp"
 
-ifb_internal const r_b8
-ifb_engine::asset_manager_start_up(
-    IFBEngineCoreMemory&    in_core_memory_ref,
-    IFBEngineAssetManager& out_asset_manager_ref) {
+inline const ifb_b8 
+ifb_engine::asset_manager_create(
+    IFBEngineContext* engine_context) {
 
-    ifb_b8 result = true;
+    const ifb_u32 asset_manager_size = ifb_engine_macro_align_size_struct(IFBEngineAssetManager);
+    
+    IFBEngineMemoryPageCommit page_commit;
+    ifb_b8 result = ifb_engine::memory_commit_size(
+        engine_context,
+        asset_manager_size,
+        page_commit);
 
-    //reserve memory
-    result &= ifb_engine::asset_memory_reserve(in_core_memory_ref,out_asset_manager_ref.memory);
+    if (!result) {
+        return(false);
+    }
 
-    //create the tables
-    result &= ifb_engine::asset_file_table_create      (out_asset_manager_ref.memory,out_asset_manager_ref.asset_tables.file);
-    result &= ifb_engine::asset_header_table_create    (out_asset_manager_ref.memory,out_asset_manager_ref.asset_tables.header);
-    result &= ifb_engine::asset_data_block_table_create(out_asset_manager_ref.memory,out_asset_manager_ref.asset_tables.data_block);
+    //cast the pointer
+    IFBEngineAssetManager* asset_manager_ptr = (IFBEngineAssetManager*)page_commit.memory_start;  
+
+    //update the context
+    engine_context->core.page_index_asset_manager = page_commit.page_start;
 
     return(result);
 }
