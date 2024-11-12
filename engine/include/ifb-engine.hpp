@@ -23,23 +23,8 @@ enum IFBEngineState_ {
 
 typedef ifb_u32 IFBEngineState;
 
-struct IFBEngineMemory {
-    ifb_memory start;
-    ifb_u32    page_size;
-    ifb_u32    page_count_total;
-    ifb_u32    page_count_used;
-};
-
-struct IFBEnginePages {
-    ifb_u32 memory_manager;
-    ifb_u32 asset_manager;
-    ifb_u32 tools;
-};
-
 struct IFBEngineContext {
-    IFBEngineMemory    memory;
     IFBEngineUserInput user_input;
-    IFBEnginePages     pages;
     IFBEngineState     state;
     ifb_timems         time_initialized;
 };
@@ -48,12 +33,12 @@ struct IFBEngineContext {
 
 namespace ifb_engine {
 
-    ifb_external const ifb_b8
+    ifb_external IFBEngineContext*
     engine_create_context(
-              IFBEnginePlatformApi& in_platform_api,
-        const ifb_memory            in_platform_memory_reservation_start,
-        const ifb_size              in_platform_memory_reservation_size,
-              IFBEngineContext&     out_engine_context_ref);
+              IFBEnginePlatformApi& platform_api_ref,
+        const ifb_memory            memory_reservation_start,
+        const ifb_size              memory_page_size,
+        const ifb_size              memory_page_count);
 
     ifb_external const IFBEngineState engine_state           (IFBEngineContext* engine_context);
     ifb_external const ifb_b8         engine_startup         (IFBEngineContext* engine_context);
