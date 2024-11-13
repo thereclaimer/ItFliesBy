@@ -2,6 +2,8 @@
 #define IFB_ENGINE_INTERNAL_MEMORY_HPP
 
 #include "ifb-engine.hpp"
+#include "ifb-engine-internal.hpp"
+
 
 /**********************************************************************************/
 /* MEMORY                                                                         */
@@ -9,30 +11,9 @@
 
 namespace ifb_engine {
 
-    const ifb_memory
-    memory_get_current_page_pointer(ifb_void);
-
-
-    const ifb_memory
-    memory_commit_pages(
-        const ifb_u32          in_page_count,                
-              ifb_u32&        out_page_start_ref);
-
-    const ifb_b8
-    memory_commit_size(
-        const ifb_size                in_memory_size,
-              IFBEngineMemoryCommit& out_memory_page_commit);
-
-    const ifb_memory
-    memory_commit_immediate(
-        const ifb_size         memory_size);
+    inline const ifb_u32 context_memory_page_size        (ifb_void) { return(_engine_context->memory.page_size);        }
+    inline const ifb_u32 context_memory_page_count_total (ifb_void) { return(_engine_context->memory.page_count_total); }
+    inline const ifb_u32 context_memory_page_count_used  (ifb_void) { return(_engine_context->memory.page_count_used);  }
 };
-
-#define ifb_engine_memory_commit_struct_immediate(                  \
-    memory,                                                         \
-    type)                                                           \
-                                                                    \
-    (type*)ifb_engine::memory_commit_immediate(memory,sizeof(type)) \
-
 
 #endif //IFB_ENGINE_INTERNAL_MEMORY_HPP

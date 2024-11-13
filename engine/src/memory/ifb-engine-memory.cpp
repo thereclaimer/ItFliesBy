@@ -3,106 +3,85 @@
 #include "ifb-engine-internal-memory.hpp"
 #include "ifb-engine-internal-platform.hpp"
 
-inline const ifb_memory
-ifb_engine::memory_get_pointer(
-          IFBEngineContext* context,
-    const ifb_u32           page_number,
-    const ifb_u32           page_offset) {
+/**********************************************************************************/
+/* API                                                                            */
+/**********************************************************************************/
 
-    if (!context) {
-        return(NULL);
-    }
+ifb_api const ifb_memory
+ifb_engine::memory_pointer_from_handle(
+    IFBEngineMemoryHandle& memory_handle_ref) {
 
-    //calculate the pointer offset from the page
-    const ifb_size   base_offset = (context->memory.page_size * page_number) + page_offset;
-    const ifb_memory base_ptr    = (ifb_memory)context;
-    const ifb_memory ptr         = base_ptr + base_offset;
+    //calculate the pointer offset from the pag
+    const ifb_u32    page_size   = ifb_engine::context_memory_page_size();
+    const ifb_size   base_offset = (page_size * memory_handle_ref.page_start) + memory_handle_ref.page_offset;
+    const ifb_memory ptr         = ifb_engine::context_base_pointer() + base_offset;
 
     return(ptr);
 }
 
-inline const ifb_memory
-ifb_engine::memory_get_page_pointer(
-          IFBEngineContext* context,
-    const ifb_u32           page_number) {
+ifb_api const ifb_memory
+ifb_engine::memory_pointer_from_page(
+    const ifb_u32 page_number) {
 
-    //get the page pointer, with no offset
-    const ifb_memory page_ptr = ifb_engine::memory_get_pointer(
-        context,
-        page_number,
-        0);
+    const ifb_u32    page_size   = ifb_engine::context_memory_page_size();
+    const ifb_u32    offset      = page_size * page_number;
+    const ifb_memory context_ptr = ifb_engine::context_base_pointer();  
+    const ifb_memory page_ptr    = context_ptr + offset;  
 
     return(page_ptr);
 }
 
-inline const ifb_memory
-ifb_engine::memory_get_current_page_pointer(
-    IFBEngineContext* context) {
+ifb_api const ifb_memory
+ifb_engine::memory_pointer_from_current_page(
+    ifb_void) {
 
     //get the address of the next unused page
-    const ifb_memory page_ptr = 
-        context
-        ? ifb_engine::memory_get_page_pointer(context,context->memory.page_count_used)
-        : NULL;
+    const ifb_u32    page_number = ifb_engine::context_memory_page_count_used();
+    const ifb_memory page_ptr    = ifb_engine::memory_pointer_from_page(page_number);
 
     return(page_ptr);
 }
 
-inline const ifb_u32
+ifb_api const ifb_u32
 ifb_engine::memory_size_page_aligned(
-          IFBEngineContext* context,
-    const ifb_u32           memory_size) {
+    const ifb_u32 size) {
 
-    const ifb_u32 memory_size_aligned = context
-        ? ifb_engine_macro_align_a_to_b(memory_size,context->memory.page_size)
-        : 0;
-    
-    return(memory_size_aligned);
+    const ifb_u32 page_size    = ifb_engine::context_memory_page_size();
+    const ifb_u32 size_aligned = ifb_engine_macro_align_a_to_b(size,page_size);
+
+    return(size_aligned);
 }
 
-inline const ifb_u32
-ifb_engine::memory_page_count_aligned(
-          IFBEngineContext* context,
-    const ifb_size          memory_size) {
+ifb_api const ifb_u32
+ifb_engine::memory_page_count(
+    const ifb_u32 size) {
 
-    const ifb_u32 memory_size_aligned = ifb_engine::memory_size_page_aligned(
-        context,
-        memory_size);
-
-    const ifb_u32 page_count = context
-       ? memory_size_aligned / context->memory.page_size
-       : 0;
+    const ifb_u32 size_aligned = ifb_engine::memory_size_page_aligned(size);
+    const ifb_u32 page_size    = ifb_engine::context_memory_page_size();
+    const ifb_u32 page_count   = size_aligned / page_size; 
 
     return(page_count);
 }
 
-inline const ifb_size
+ifb_api const ifb_u32
 ifb_engine::memory_page_size(
-          IFBEngineContext* context,
-    const ifb_u32           page_count) {
+    const ifb_u32 page_count) {
 
     const ifb_size memory_size =
-        context 
-            ? context->memory.page_size * page_count
+        ifb_engine::context_initialized() 
+            ? ifb_engine::context_memory_page_size() * page_count
             : 0;
 
     return(memory_size);
 }
 
-inline const ifb_memory
+ifb_api const ifb_memory
 ifb_engine::memory_commit_pages(
-          IFBEngineContext* in_context,
-    const ifb_u32           in_page_count,                
-          ifb_u32&         out_page_start_ref) {
-
-    if (!in_context) {
-        return(false);
-    }
+    const ifb_u32                 in_commit_page_count, 
+          IFBEngineMemoryCommit& out_commit_ref) {
 
     //calculate the commit start and size
-    const ifb_u32    commit_page         = in_context->memory.page_count_used; 
-    const ifb_u32    new_used_page_count = commit_page + in_page_count;
-    const ifb_memory commit_start        = ifb_engine::memory_get_current_page_pointer(in_context);
+    const ifb_memory commit_start        = ifb_engine::memory_pointer_from_current_page();
     const ifb_size   commit_size         = ifb_engine::memory_page_size(in_context,in_page_count); 
 
     //if we have enough pages available, do the commit
@@ -119,28 +98,16 @@ ifb_engine::memory_commit_pages(
     return(commit_result);
 }
 
-const ifb_b8
+ifb_api const ifb_b8
 ifb_engine::memory_commit_size(
-          IFBEngineContext*           in_context,
-    const ifb_size                    in_memory_size,
-          IFBEngineMemoryPageCommit& out_memory_page_commit) {
-
-    //sanity check
-    if (
-        in_context     == NULL ||
-        in_memory_size == 0) {
-        
-        return(false);
-    }
+    const ifb_u32                 in_commit_size_minimum,
+          IFBEngineMemoryCommit& out_commit_ref) {
 
     //determine the page count
-    out_memory_page_commit.page_count = ifb_engine::memory_page_count_aligned(
-        in_context,
-        in_memory_size);
+    out_commit_ref.page_count = ifb_engine::memory_page_count(in_commit_size_minimum);
 
     //do the commit
     out_memory_page_commit.memory_start = ifb_engine::memory_commit_pages(
-        in_context,
         out_memory_page_commit.page_count,        
         out_memory_page_commit.page_start);
 
@@ -148,33 +115,4 @@ ifb_engine::memory_commit_size(
 
     //we're done
     return(result);
-}
-
-inline const ifb_memory
-ifb_engine::memory_commit_immediate(
-          IFBEngineContext* context,
-    const ifb_size          memory_size) {
-
-    //sanity check
-    if (
-        context     == NULL ||
-        memory_size == 0) {
-        
-        return(false);
-    }
-
-    //determine the page count
-    const ifb_size page_count = ifb_engine::memory_page_count_aligned(
-        context,
-        memory_size);
-
-    //do the commit
-    ifb_u32 page_number;
-    const ifb_memory commit_memory = ifb_engine::memory_commit_pages(
-        context,
-        page_count,        
-        page_number);
-
-    //we're done
-    return(commit_memory);
 }

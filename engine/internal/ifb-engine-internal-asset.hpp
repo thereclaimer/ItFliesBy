@@ -26,7 +26,7 @@ struct IFBEngineAssetManager {
 
 namespace ifb_engine {
 
-    const ifb_b8 asset_manager_create(IFBEngineContext* engine_context);
+    const ifb_b8 asset_manager_create(ifb_void);
 
 };
 

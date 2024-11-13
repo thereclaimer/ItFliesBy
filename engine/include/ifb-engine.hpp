@@ -42,23 +42,24 @@ struct IFBEngineContext {
     ifb_timems         time_initialized;
 };
 
+
 #define IFB_ENGINE_MINIMUM_MEMORY_REQUIREMENT_4GB ifb_engine_macro_size_gigabytes(4)
 
 namespace ifb_engine {
 
-    ifb_external IFBEngineContext*
+    ifb_api const ifb_b8
     engine_create_context(
               IFBEnginePlatformApi& platform_api_ref,
         const ifb_memory            memory_reservation_start,
         const ifb_size              memory_page_size,
         const ifb_size              memory_page_count);
 
-    ifb_external const IFBEngineState engine_state           (IFBEngineContext* engine_context);
-    ifb_external const ifb_b8         engine_startup         (IFBEngineContext* engine_context);
-    ifb_external const ifb_b8         engine_frame_start     (IFBEngineContext* engine_context);
-    ifb_external const ifb_b8         engine_frame_render    (IFBEngineContext* engine_context);
-    ifb_external const ifb_b8         engine_shutdown        (IFBEngineContext* engine_context);
-    ifb_external const ifb_b8         engine_destroy_context (IFBEngineContext* engine_context);
+    ifb_api const IFBEngineState engine_state           (IFBEngineContext* engine_context);
+    ifb_api const ifb_b8         engine_startup         (IFBEngineContext* engine_context);
+    ifb_api const ifb_b8         engine_frame_start     (IFBEngineContext* engine_context);
+    ifb_api const ifb_b8         engine_frame_render    (IFBEngineContext* engine_context);
+    ifb_api const ifb_b8         engine_shutdown        (IFBEngineContext* engine_context);
+    ifb_api const ifb_b8         engine_destroy_context (IFBEngineContext* engine_context);
 };
 
 #endif //IFB_ENGINE_HPP

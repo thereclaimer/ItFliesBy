@@ -4,10 +4,10 @@
 #include "ifb-engine-internal.hpp"
 
 /**********************************************************************************/
-/* EXTERNAL                                                                       */
+/* API                                                                            */
 /**********************************************************************************/
 
-ifb_external const ifb_b8
+ifb_api const ifb_b8
 ifb_engine::memory_arena_create_pool(
     const ifb_cstr                         in_arena_tag,
     const ifb_size                         in_arena_size,
@@ -42,7 +42,7 @@ ifb_engine::memory_arena_create_pool(
     return(true);
 }
 
-ifb_external const ifb_b8
+ifb_api const ifb_b8
 ifb_engine::memory_arena_commit(
     IFBEngineMemoryArenaPoolHandle& in_arena_pool_handle_ref,
     IFBEngineMemoryArenaHandle&    out_arena_handle_ref) {
@@ -87,7 +87,7 @@ ifb_engine::memory_arena_commit(
     return(commit_result);
 }
 
-ifb_external const ifb_b8 
+ifb_api const ifb_b8 
 ifb_engine::memory_arena_decommit(
     IFBEngineMemoryArenaHandle& arena_ref) {
 
@@ -124,7 +124,7 @@ ifb_engine::memory_arena_decommit(
     return(result);
 }
 
-ifb_external const ifb_b8 
+ifb_api const ifb_b8 
 ifb_engine::memory_arena_push(
           IFBEngineMemoryArenaHandle& in_memory_arena_handle_ref, 
     const ifb_size                    in_memory_size,
@@ -175,7 +175,7 @@ ifb_engine::memory_arena_push(
     return(true);
 }
 
-ifb_external const ifb_memory
+ifb_api const ifb_memory
 ifb_engine::memory_arena_push_immediate(
           IFBEngineMemoryArenaHandle& memory_arena_handle_ref,
     const ifb_size                    memory_size) {
@@ -225,7 +225,7 @@ ifb_engine::memory_arena_push_immediate(
     return(arena_pointer);
 }
 
-ifb_external const ifb_b8 
+ifb_api const ifb_b8 
 ifb_engine::memory_arena_push_aligned(
           IFBEngineMemoryArenaHandle&  in_memory_arena_handle_ref, 
     const ifb_size                     in_memory_size, 
@@ -247,7 +247,7 @@ ifb_engine::memory_arena_push_aligned(
     return(push_result);
 }
 
-ifb_external const ifb_memory 
+ifb_api const ifb_memory 
 ifb_engine::memory_arena_push_aligned_immediate(
           IFBEngineMemoryArenaHandle& memory_arena_handle_ref,
     const ifb_size                    memory_size,
@@ -267,7 +267,7 @@ ifb_engine::memory_arena_push_aligned_immediate(
     return(arena_pointer);
 }
 
-ifb_external const ifb_b8 
+ifb_api const ifb_b8 
 ifb_engine::memory_arena_pull(
           IFBEngineMemoryArenaHandle& in_memory_arena_handle_ref, 
     const ifb_size                    in_memory_size,
@@ -318,7 +318,7 @@ ifb_engine::memory_arena_pull(
     return(true);
 }
 
-ifb_external const ifb_memory 
+ifb_api const ifb_memory 
 memory_arena_pull_immediate(
           IFBEngineMemoryArenaHandle& memory_arena_handle_ref, 
     const ifb_size                    memory_size) {
@@ -369,7 +369,7 @@ memory_arena_pull_immediate(
     return(arena_pointer);
 }
 
-ifb_external const ifb_b8 
+ifb_api const ifb_b8 
 ifb_engine::memory_arena_pull_aligned(
           IFBEngineMemoryArenaHandle&  in_memory_arena_handle_ref, 
     const ifb_size                     in_memory_size, 
@@ -391,7 +391,7 @@ ifb_engine::memory_arena_pull_aligned(
     return(pull_result);
 }
 
-ifb_external const ifb_memory 
+ifb_api const ifb_memory 
 ifb_engine::memory_arena_pull_aligned_immediate(
           IFBEngineMemoryArenaHandle& memory_arena_handle_ref,
     const ifb_size                    memory_size,

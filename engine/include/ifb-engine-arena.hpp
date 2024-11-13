@@ -19,7 +19,7 @@ struct IFBEngineArena {
 
 namespace ifb_engine {
 
-    ifb_external const ifb_b8 
+    ifb_api const ifb_b8 
     arena_commit(
         const ifb_u32          in_arena_size_minimum,
               IFBEngineArena& out_arena_ref);
