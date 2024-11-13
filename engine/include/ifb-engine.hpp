@@ -30,9 +30,9 @@ struct IFBEngineMemory {
 };
 
 struct IFBEngineCore {
-    ifb_u32 page_index_asset_manager;
+    ifb_u32 page_id_memory_manager;
+    ifb_u32 page_id_asset_manager;
 };
-
 
 struct IFBEngineContext {
     IFBEngineMemory    memory;
@@ -41,7 +41,6 @@ struct IFBEngineContext {
     IFBEngineCore      core;
     ifb_timems         time_initialized;
 };
-
 
 #define IFB_ENGINE_MINIMUM_MEMORY_REQUIREMENT_4GB ifb_engine_macro_size_gigabytes(4)
 

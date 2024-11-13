@@ -22,13 +22,13 @@ ifb_engine::engine_create_context(
     result &= memory_page_size >= IFB_ENGINE_MINIMUM_MEMORY_REQUIREMENT_4GB;
     result &= ifb_engine::platform_api_validate(platform_api);
     if (!result) {
-        return(NULL);
+        return(false);
     }
 
     //commit the first page for the context
     const ifb_memory context_memory = ifb_engine::platform_memory_pages_commit(memory_reservation_start,memory_page_size);
     if (context_memory != memory_reservation_start) {
-        return(NULL);
+        return(false);
     }
 
     //if that worked, cast the struct
@@ -43,7 +43,7 @@ ifb_engine::engine_create_context(
     result &= ifb_engine::asset_manager_create();
 
     //we're done
-    return(context_ptr);
+    return(true);
 }
 
 ifb_api const ifb_b8

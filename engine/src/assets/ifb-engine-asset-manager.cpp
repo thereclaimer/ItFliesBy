@@ -11,5 +11,5 @@ ifb_engine::asset_manager_create(
     
 
 
-    return(result);
+    return(true);
 }
