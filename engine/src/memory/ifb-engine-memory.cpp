@@ -4,6 +4,7 @@
 #include "ifb-engine-internal-platform.hpp"
 
 #include "ifb-engine-memory-manager.cpp"
+#include "ifb-engine-memory-arena.cpp"
 
 /**********************************************************************************/
 /* API                                                                            */
@@ -52,9 +53,9 @@ ifb_engine::memory_handle(
     const ifb_u32 page_number,
     const ifb_u32 page_offset) {
     
-    const ifb_u32 page_size   = ifb_engine::context_memory_page_size();
-    const ifb_u32 page_start  = page_number * page_size;
-    const ifb_u32 handle      = page_start + page_offset;     
+    const ifb_u32 page_size  = ifb_engine::context_memory_page_size();
+    const ifb_u32 page_start = page_number * page_size;
+    const ifb_u32 handle     = page_start + page_offset;     
 
     return(handle);
 }

@@ -1,7 +1,9 @@
 #pragma once
 
+#include "ifb-engine-algorithms.cpp"
 #include "ifb-engine-memory.cpp"
 #include "ifb-engine-asset.cpp"
+#include "ifb-engine-tag.cpp"
 
 #include "ifb-engine-internal.hpp"
 
@@ -37,13 +39,19 @@ ifb_engine::engine_create_context(
     //set the memory info
     _engine_context->memory.page_size        = memory_page_size;
     _engine_context->memory.page_count_total = memory_page_count;
-    _engine_context->memory.page_count_used  = 1;    
+    _engine_context->memory.page_count_used  = 1;
 
     //create the core systems
-    result &= ifb_engine::asset_manager_create();
+    _engine_context->core.handle_memory_manager = ifb_engine::memory_manager_startup();
+    _engine_context->core.handle_tag_table      = ifb_engine::tag_table_create();
+
+    //sanity check
+    result &= (
+        _engine_context->core.handle_memory_manager &&  
+        _engine_context->core.handle_tag_table);
 
     //we're done
-    return(true);
+    return(result);
 }
 
 ifb_api const ifb_b8

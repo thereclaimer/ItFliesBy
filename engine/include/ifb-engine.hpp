@@ -11,6 +11,8 @@
 #include "ifb-engine-asset.hpp"
 #include "ifb-engine-font-ui.hpp"
 #include "ifb-engine-platform.hpp"
+#include "ifb-engine-algorithms.hpp"
+#include "ifb-engine-tag.hpp"
 
 enum IFBEngineState_ {
     IFBEngineState_NotRunning  = 0,
@@ -31,6 +33,7 @@ struct IFBEngineMemory {
 
 struct IFBEngineCore {
     ifb_u32 handle_memory_manager;
+    ifb_u32 handle_tag_table;
     ifb_u32 handle_asset_manager;
 };
 
