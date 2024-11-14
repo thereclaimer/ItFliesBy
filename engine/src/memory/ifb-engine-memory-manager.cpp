@@ -2,6 +2,10 @@
 
 #include "ifb-engine-internal-memory.hpp"
 
+/**********************************************************************************/
+/* INTERNAL                                                                       */
+/**********************************************************************************/
+
 inline const ifb_u32 
 ifb_engine::memory_manager_startup(
     ifb_void) {
@@ -28,11 +32,33 @@ ifb_engine::memory_manager_startup(
     const ifb_u32 page_offset_arena_table = size_aligned_memory_manager; //the arena table is at the end of the memory manager struct 
 
     //initialize the memory manager
-    IFBEngineMemoryManager* memory_manager_ptr = (IFBEngineMemoryManager*)ifb_engine::memory_pointer(memory_manager_page_start,0);
-    memory_manager_ptr->page_start              = memory_manager_page_start;
-    memory_manager_ptr->page_count              = memory_manager_page_count;
-    memory_manager_ptr->page_offset_arena_table = page_offset_arena_table; 
+    const ifb_u32 memory_manager_handle = ifb_engine::memory_handle(memory_manager_page_start,0);
+    IFBEngineMemoryManager* memory_manager_ptr = (IFBEngineMemoryManager*)ifb_engine::memory_pointer_from_page_offset(memory_manager_page_start,0);
+    memory_manager_ptr->page_start         = memory_manager_page_start;
+    memory_manager_ptr->page_count         = memory_manager_page_count;
+    memory_manager_ptr->handle_arena_table = ifb_engine::memory_handle(memory_manager_page_start,page_offset_arena_table);
+
+    //initialize the arena table
+    IFBEngineArenaTable* arena_table_ptr = ifb_engine::memory_manager_get_arena_table(memory_manager_ptr); 
 
     //we're done, return the page start
-    return(memory_manager_page_start);
+    return(memory_manager_handle);
+}
+
+inline IFBEngineMemoryManager* 
+ifb_engine::memory_manager_get_pointer(
+    const ifb_u32 memory_manager_handle) {
+
+    IFBEngineMemoryManager* memory_manager_ptr = (IFBEngineMemoryManager*)ifb_engine::memory_pointer_from_handle(memory_manager_handle);
+
+    return(memory_manager_ptr); 
+}
+
+inline IFBEngineArenaTable* 
+ifb_engine::memory_manager_get_arena_table(
+    IFBEngineMemoryManager* memory_manager_ptr) {
+
+    IFBEngineArenaTable* arena_table_ptr = (IFBEngineArenaTable*)ifb_engine::memory_pointer_from_handle(memory_manager_ptr->handle_arena_table);
+
+    return(arena_table_ptr);
 }

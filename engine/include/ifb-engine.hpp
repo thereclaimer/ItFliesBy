@@ -30,8 +30,8 @@ struct IFBEngineMemory {
 };
 
 struct IFBEngineCore {
-    ifb_u32 page_id_memory_manager;
-    ifb_u32 page_id_asset_manager;
+    ifb_u32 handle_memory_manager;
+    ifb_u32 handle_asset_manager;
 };
 
 struct IFBEngineContext {

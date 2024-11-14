@@ -10,7 +10,7 @@
 /**********************************************************************************/
 
 ifb_api const ifb_memory 
-ifb_engine::memory_pointer(
+ifb_engine::memory_pointer_from_page_offset(
     const ifb_u32 page_number,
     const ifb_u32 page_offset) {
 
@@ -22,6 +22,41 @@ ifb_engine::memory_pointer(
     const ifb_memory memory_pointer = base_pointer + base_offset;
 
     return(memory_pointer); 
+}
+
+ifb_api const ifb_memory 
+ifb_engine::memory_pointer_from_page(
+    const ifb_u32 page_number) {
+    
+    const ifb_u32 page_size   = ifb_engine::context_memory_page_size();
+    const ifb_u32 page_start  = page_number * page_size;
+
+    const ifb_memory base_pointer   = ifb_engine::context_base_pointer();
+    const ifb_memory memory_pointer = base_pointer + page_start;
+
+    return(memory_pointer);
+}
+
+ifb_api const ifb_memory 
+ifb_engine::memory_pointer_from_handle(
+    const ifb_u32 handle) {
+    
+    const ifb_memory base_pointer   = ifb_engine::context_base_pointer();
+    const ifb_memory memory_pointer = base_pointer + handle; 
+
+    return(memory_pointer);
+}
+
+ifb_api const ifb_u32 
+ifb_engine::memory_handle(
+    const ifb_u32 page_number,
+    const ifb_u32 page_offset) {
+    
+    const ifb_u32 page_size   = ifb_engine::context_memory_page_size();
+    const ifb_u32 page_start  = page_number * page_size;
+    const ifb_u32 handle      = page_start + page_offset;     
+
+    return(handle);
 }
 
 ifb_api const ifb_u32 

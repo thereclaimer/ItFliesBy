@@ -11,22 +11,20 @@
 
 namespace ifb_engine {
 
-    ifb_api const ifb_memory 
-    memory_pointer(
-        const ifb_u32 page_number,
-        const ifb_u32 page_offset);
+    ifb_api const ifb_memory memory_pointer_from_page_offset (const ifb_u32 page_number, const ifb_u32 page_offset);
+    ifb_api const ifb_memory memory_pointer_from_page        (const ifb_u32 page_number);
+    ifb_api const ifb_memory memory_pointer_from_handle      (const ifb_u32 handle);
 
+    ifb_api const ifb_u32 memory_handle            (const ifb_u32 page_number,const ifb_u32 page_offset);
     ifb_api const ifb_u32 memory_size_page_aligned (const ifb_u32 size);
     ifb_api const ifb_u32 memory_page_count        (const ifb_u32 size);
     ifb_api const ifb_u32 memory_page_size         (const ifb_u32 page_count);
     ifb_api const ifb_u32 memory_page_commit       (const ifb_u32 page_count);
-
 };
 
 /**********************************************************************************/
 /* ARENA                                                                          */
 /**********************************************************************************/
-
 
 struct IFBEngineMemoryArena {
     ifb_u32 arena_index;
@@ -40,6 +38,9 @@ namespace ifb_engine {
     memory_arena_commit(
         const ifb_u32   in_arena_size_minimum,
               ifb_u32& out_arena_index_ref); 
+
+    ifb_api const ifb_u32 memory_arena_page_start (const ifb_u32 arena_index);
+    ifb_api const ifb_u32 memory_arena_page_count (const ifb_u32 arena_index);
 };
 
 

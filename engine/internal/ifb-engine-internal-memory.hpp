@@ -4,7 +4,6 @@
 #include "ifb-engine.hpp"
 #include "ifb-engine-internal.hpp"
 
-
 /**********************************************************************************/
 /* MEMORY                                                                         */
 /**********************************************************************************/
@@ -41,6 +40,10 @@ struct IFBEngineArenaTableMemory {
 
 namespace ifb_engine {
 
+    IFBEngineArenaTable* arena_table_pointer_from_handle(const ifb_u32 arena_table_handle);
+
+    const ifb_b8 arena_table_initialize(const ifb_u32 arena_table_handle); 
+
 };
 
 /**********************************************************************************/
@@ -50,13 +53,16 @@ namespace ifb_engine {
 struct IFBEngineMemoryManager {
     ifb_u32 page_start;
     ifb_u32 page_count;
-    ifb_u32 page_offset_arena_table;
+    ifb_u32 handle_arena_table;
 };
 
 
 namespace ifb_engine {
 
     const ifb_u32 memory_manager_startup(ifb_void);
+
+    IFBEngineMemoryManager* memory_manager_get_pointer     (const ifb_u32 memory_manager_handle);
+    IFBEngineArenaTable*    memory_manager_get_arena_table (IFBEngineMemoryManager* memory_manager_ptr);
 };
 
 
