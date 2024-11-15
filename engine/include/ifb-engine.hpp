@@ -19,11 +19,13 @@
 
 enum IFBEngineState_ {
     IFBEngineState_NotRunning  = 0,
-    IFBEngineState_Startup     = 1,
-    IFBEngineState_Shutdown    = 2,
-    IFBEngineState_Idle        = 3,
-    IFBEngineState_FrameStart  = 4,
-    IFBEngineState_FrameRender = 5,
+    IFBEngineState_Fatal       = 1,
+    IFBEngineState_Startup     = 2,
+    IFBEngineState_Shutdown    = 3,
+    IFBEngineState_Idle        = 4,
+    IFBEngineState_FrameStart  = 5,
+    IFBEngineState_FrameReady  = 6,
+    IFBEngineState_FrameRender = 7
 };
 
 typedef ifb_u32 IFBEngineState;
@@ -42,11 +44,11 @@ struct IFBEngineMemory {
 struct IFBEngineCore {
 
     struct {
-        ifb_u32 memory_manager;
-        ifb_u32 tag_table;
-        ifb_u32 allocator_manager;
-        ifb_u32 asset_manager;
-    } system_handles;
+        ifb_u32 handle_memory;
+        ifb_u32 handle_tag;
+        ifb_u32 handle_allocators;
+        ifb_u32 handle_assets;
+    } managers;
 
     struct {
         ifb_u32 frame;

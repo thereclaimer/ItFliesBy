@@ -20,10 +20,13 @@ namespace ifb_engine {
       inline IFBEngineMemory&    context_memory       (ifb_void) { return(_engine_context->memory);     }
       inline IFBEngineUserInput& context_user_input   (ifb_void) { return(_engine_context->user_input); }
       inline IFBEngineCore&      context_core         (ifb_void) { return(_engine_context->core);       }
- 
-      inline const ifb_u32 context_core_handle_memory_manager    (ifb_void) { return(_engine_context->core.system_handles.memory_manager);    }
-      inline const ifb_u32 context_core_handle_tag_table         (ifb_void) { return(_engine_context->core.system_handles.tag_table);         }
-      inline const ifb_u32 context_core_handle_allocator_manager (ifb_void) { return(_engine_context->core.system_handles.allocator_manager); }
+
+      inline const ifb_u32 context_core_handle_memory_manager    (ifb_void) { return(_engine_context->core.managers.handle_memory);     }
+      inline const ifb_u32 context_core_handle_tag_manager       (ifb_void) { return(_engine_context->core.managers.handle_tag);        }
+      inline const ifb_u32 context_core_handle_allocator_manager (ifb_void) { return(_engine_context->core.managers.handle_allocators); }
+
+      const ifb_b8 core_create_managers   (IFBEngineCore& engine_core_ref);
+      const ifb_b8 core_create_allocators (IFBEngineCore& engine_core_ref);
 };
 
 #endif //IFB_ENGINE_INTERNAL_HPP

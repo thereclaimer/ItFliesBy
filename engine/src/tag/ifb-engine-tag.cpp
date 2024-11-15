@@ -23,11 +23,11 @@ ifb_engine::tag_create(
     }
 
     //get the table
-    const ifb_u32      tag_table_handle = ifb_engine::context_core_handle_tag_table();
-    IFBEngineTagTable* tag_table_ptr    = ifb_engine::tag_table_from_handle(tag_table_handle); 
+    const ifb_u32        tag_manager_handle = ifb_engine::context_core_handle_tag_manager();
+    IFBEngineTagManager* tag_manager_ptr    = ifb_engine::tag_manager_from_handle(tag_manager_handle); 
 
     //get the hash memory
-    IFBEngineHashValue* tag_hash_array_ptr = ifb_engine::tag_table_memory_hashes(tag_table_ptr);
+    IFBEngineHashValue* tag_hash_array_ptr = ifb_engine::tag_manager_memory_hashes(tag_manager_ptr);
 
     //collision check
     if(
@@ -53,7 +53,7 @@ ifb_engine::tag_create(
     }
 
     //get the value memory
-    ifb_char* tag_value_array_ptr = ifb_engine::tag_table_memory_values(tag_table_ptr);
+    ifb_char* tag_value_array_ptr = ifb_engine::tag_manager_memory_values(tag_manager_ptr);
 
     //copy the tag value
     const ifb_u32 tag_value_array_index = tag_index * IFB_ENGINE_TAG_LENGTH;
@@ -75,10 +75,10 @@ ifb_engine::tag_index(
           ifb_u32& out_tag_index_ref) {
 
     //get the table
-    IFBEngineTagTable* tag_table_ptr = ifb_engine::tag_table_from_context();
+    IFBEngineTagManager* tag_manager_ptr = ifb_engine::tag_manager_from_context();
 
     //get the hash values
-    const IFBEngineHashValue* tag_hash_value_ptr = ifb_engine::tag_table_memory_hashes(tag_table_ptr);
+    const IFBEngineHashValue* tag_hash_value_ptr = ifb_engine::tag_manager_memory_hashes(tag_manager_ptr);
 
     //hash the input value
     IFBEngineHashValue hash_value;
@@ -113,11 +113,11 @@ ifb_engine::tag_destroy(
     }
 
     //get the table
-    IFBEngineTagTable* tag_table_ptr = ifb_engine::tag_table_from_context();
+    IFBEngineTagManager* tag_manager_ptr = ifb_engine::tag_manager_from_context();
 
     //get the table memory
-    ifb_char*           tag_values_ptr  = ifb_engine::tag_table_memory_values(tag_table_ptr);
-    IFBEngineHashValue* hash_values_ptr = ifb_engine::tag_table_memory_hashes(tag_table_ptr);
+    ifb_char*           tag_values_ptr  = ifb_engine::tag_manager_memory_values(tag_manager_ptr);
+    IFBEngineHashValue* hash_values_ptr = ifb_engine::tag_manager_memory_hashes(tag_manager_ptr);
 
     //clear the hash value
     hash_values_ptr[tag_index].h1 = 0;
@@ -150,10 +150,10 @@ ifb_engine::tag_value(
     }
 
     //get the table
-    IFBEngineTagTable* tag_table_ptr = ifb_engine::tag_table_from_context();
+    IFBEngineTagManager* tag_manager_ptr = ifb_engine::tag_manager_from_context();
 
     //get the values
-    const ifb_char* tag_values_ptr = ifb_engine::tag_table_memory_values(tag_table_ptr);
+    const ifb_char* tag_values_ptr = ifb_engine::tag_manager_memory_values(tag_manager_ptr);
 
     //calculate the starting index for this tag
     const ifb_u32 tag_char_index = tag_index * IFB_ENGINE_TAG_LENGTH;
@@ -165,80 +165,80 @@ ifb_engine::tag_value(
     return(tag_value);
 }
 
-inline IFBEngineTagTable* 
-ifb_engine::tag_table_from_handle(
-    const ifb_u32 tag_table_handle) {
+inline IFBEngineTagManager* 
+ifb_engine::tag_manager_from_handle(
+    const ifb_u32 tag_manager_handle) {
 
-    IFBEngineTagTable* tag_table_ptr = (IFBEngineTagTable*)ifb_engine::memory_pointer_from_handle(tag_table_handle);
+    IFBEngineTagManager* tag_manager_ptr = (IFBEngineTagManager*)ifb_engine::memory_pointer_from_handle(tag_manager_handle);
 
-    return(tag_table_ptr);
+    return(tag_manager_ptr);
 }
 
-inline IFBEngineTagTable* 
-ifb_engine::tag_table_from_context(
+inline IFBEngineTagManager* 
+ifb_engine::tag_manager_from_context(
     ifb_void) {
 
-    const ifb_u32 tag_table_handle = ifb_engine::context_core_handle_tag_table();
+    const ifb_u32 tag_manager_handle = ifb_engine::context_core_handle_tag_manager();
 
-    IFBEngineTagTable* tag_table_ptr = (IFBEngineTagTable*)ifb_engine::memory_pointer_from_handle(tag_table_handle);
+    IFBEngineTagManager* tag_manager_ptr = (IFBEngineTagManager*)ifb_engine::memory_pointer_from_handle(tag_manager_handle);
 
-    return(tag_table_ptr);
+    return(tag_manager_ptr);
 }
 
 inline ifb_char* 
-ifb_engine::tag_table_memory_values(
-    IFBEngineTagTable* tag_table_ptr) {
+ifb_engine::tag_manager_memory_values(
+    IFBEngineTagManager* tag_manager_ptr) {
 
-    ifb_char* tag_values_ptr = (ifb_char*)ifb_engine::memory_pointer_from_handle(tag_table_ptr->handle_tag_buffer);
+    ifb_char* tag_values_ptr = (ifb_char*)ifb_engine::memory_pointer_from_handle(tag_manager_ptr->handle_tag_buffer);
 
     return(tag_values_ptr);
 }
 
 inline IFBEngineHashValue* 
-ifb_engine::tag_table_memory_hashes(
-    IFBEngineTagTable* tag_table_ptr) {
+ifb_engine::tag_manager_memory_hashes(
+    IFBEngineTagManager* tag_manager_ptr) {
 
-    IFBEngineHashValue* hash_values_ptr = (IFBEngineHashValue*)ifb_engine::memory_pointer_from_handle(tag_table_ptr->handle_hash_values);
+    IFBEngineHashValue* hash_values_ptr = (IFBEngineHashValue*)ifb_engine::memory_pointer_from_handle(tag_manager_ptr->handle_hash_values);
 
     return(hash_values_ptr);
 }
 
 inline const ifb_u32 
-ifb_engine::tag_table_create(
+ifb_engine::tag_manager_create(
     ifb_void) {
 
     //calculate sizes
     const ifb_u32 tag_count_max         = IFB_ENGINE_TAG_COUNT_MAX;
     const ifb_u32 tag_value_size        = IFB_ENGINE_TAG_LENGTH;
     const ifb_u32 tag_hash_size         = sizeof(IFBEngineHashValue);
-    const ifb_u32 tag_table_size        = ifb_engine_macro_align_size_struct(IFBEngineTagTable);
+    const ifb_u32 tag_manager_size        = ifb_engine_macro_align_size_struct(IFBEngineTagManager);
     const ifb_u32 tag_value_buffer_size = tag_value_size * tag_count_max;
     const ifb_u32 tag_hash_buffer_size  = tag_hash_size  * tag_count_max;  
 
     //calculate page counts
-    const ifb_u32 page_count_tag_table        = ifb_engine::memory_page_count(tag_table_size);
+    const ifb_u32 page_count_tag_manager        = ifb_engine::memory_page_count(tag_manager_size);
     const ifb_u32 page_count_tag_value_buffer = ifb_engine::memory_page_count(tag_value_buffer_size);
     const ifb_u32 page_count_tag_hash_buffer  = ifb_engine::memory_page_count(tag_hash_buffer_size);
 
     //commit pages
-    const ifb_u32 page_start_tag_table        = ifb_engine::memory_page_commit(page_count_tag_table);
+    const ifb_u32 page_start_tag_manager        = ifb_engine::memory_page_commit(page_count_tag_manager);
     const ifb_u32 page_start_tag_value_buffer = ifb_engine::memory_page_commit(page_count_tag_value_buffer);
     const ifb_u32 page_start_tag_hash_buffer  = ifb_engine::memory_page_commit(page_count_tag_hash_buffer);
 
     //create handles
-    const ifb_u32 handle_tag_table        = ifb_engine::memory_handle(page_start_tag_table,       0); 
+    const ifb_u32 handle_tag_manager        = ifb_engine::memory_handle(page_start_tag_manager,       0); 
     const ifb_u32 handle_tag_value_buffer = ifb_engine::memory_handle(page_start_tag_value_buffer,0); 
     const ifb_u32 handle_tag_hash_buffer  = ifb_engine::memory_handle(page_start_tag_hash_buffer, 0); 
 
     //initialize the table
-    IFBEngineTagTable* tag_table_ptr = ifb_engine::tag_table_from_handle(handle_tag_table);
-    tag_table_ptr->tag_count_max      = tag_count_max;
-    tag_table_ptr->handle_tag_buffer  = handle_tag_value_buffer;
-    tag_table_ptr->handle_hash_values = handle_tag_hash_buffer;
+    IFBEngineTagManager* tag_manager_ptr = ifb_engine::tag_manager_from_handle(handle_tag_manager);
+    tag_manager_ptr->tag_count_max      = tag_count_max;
+    tag_manager_ptr->handle_tag_buffer  = handle_tag_value_buffer;
+    tag_manager_ptr->handle_hash_values = handle_tag_hash_buffer;
 
     //clear all the memory
-    ifb_char*           tag_table_memory_values_ptr = ifb_engine::tag_table_memory_values(tag_table_ptr);
-    IFBEngineHashValue* tag_table_memory_hashes_ptr = ifb_engine::tag_table_memory_hashes(tag_table_ptr);
+    ifb_char*           tag_manager_memory_values_ptr = ifb_engine::tag_manager_memory_values(tag_manager_ptr);
+    IFBEngineHashValue* tag_manager_memory_hashes_ptr = ifb_engine::tag_manager_memory_hashes(tag_manager_ptr);
 
     for (
         ifb_u32 tag_index = 0;
@@ -246,10 +246,10 @@ ifb_engine::tag_table_create(
         ++tag_index) {
 
         //clear the hash value
-        tag_table_memory_hashes_ptr[tag_index].h1 = 0;
-        tag_table_memory_hashes_ptr[tag_index].h2 = 0;
-        tag_table_memory_hashes_ptr[tag_index].h3 = 0;
-        tag_table_memory_hashes_ptr[tag_index].h4 = 0;
+        tag_manager_memory_hashes_ptr[tag_index].h1 = 0;
+        tag_manager_memory_hashes_ptr[tag_index].h2 = 0;
+        tag_manager_memory_hashes_ptr[tag_index].h3 = 0;
+        tag_manager_memory_hashes_ptr[tag_index].h4 = 0;
 
         //clear the tag
         const ifb_u32 value_start = tag_value_size * tag_index; 
@@ -259,10 +259,10 @@ ifb_engine::tag_table_create(
             char_index < value_end; 
             ++char_index) {
 
-            tag_table_memory_values_ptr[char_index] = 0;
+            tag_manager_memory_values_ptr[char_index] = 0;
         }
     }
 
     //we're done
-    return(handle_tag_table);
+    return(handle_tag_manager);
 }

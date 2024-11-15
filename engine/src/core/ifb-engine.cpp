@@ -7,6 +7,7 @@
 #include "ifb-engine-allocator-manager.cpp"
 
 #include "ifb-engine-internal.hpp"
+#include "ifb-engine-core.cpp"
 
 /**********************************************************************************/
 /* API                                                                            */
@@ -24,6 +25,7 @@ ifb_engine::engine_create_context(
     result &= platform_info_ref.page_size         >= sizeof(IFBEngineContext);
     result &= ifb_engine::platform_api_validate(platform_api_ref);
     if (!result) {
+        _engine_context->state = IFBEngineState_Fatal;
         return(false);
     }
 
@@ -41,8 +43,14 @@ ifb_engine::engine_create_context(
     _engine_context->memory.page_count_total = platform_info_ref.reservation_size / platform_info_ref.page_size;
     _engine_context->memory.page_count_used  = 1;
 
-    //set the state
-    _engine_context->state = IFBEngineState_Idle;
+    //initialize the engine core
+    result &= ifb_engine::core_create_managers(_engine_context->core);
+    result &= ifb_engine::core_create_allocators(_engine_context->core);
+
+    //update state
+    _engine_context->state = result
+        ? IFBEngineState_NotRunning
+        : IFBEngineState_Fatal;          
 
     //we're done
     return(result);
@@ -52,28 +60,11 @@ ifb_api const ifb_b8
 ifb_engine::engine_startup(
     ifb_void) {
 
+    _engine_context->state = IFBEngineState_Startup;
+
     ifb_b8 result = true;
 
-    //start the core systems
-    _engine_context->core.system_handles.memory_manager    = ifb_engine::memory_manager_startup();
-    _engine_context->core.system_handles.tag_table         = ifb_engine::tag_table_create();
-    _engine_context->core.system_handles.allocator_manager = ifb_engine::allocator_manager_start_up();
-
-    //sanity check
-    result &= ifb_engine::memory_handle_valid(_engine_context->core.system_handles.memory_manager);
-    result &= ifb_engine::memory_handle_valid(_engine_context->core.system_handles.tag_table);
-    result &= ifb_engine::memory_handle_valid(_engine_context->core.system_handles.allocator_manager);
-
-    //get core stack allocators
-    _engine_context->core.stack_allocators.frame    = ifb_engine::stack_allocator_create(IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_FRAME,   IFB_ENGINE_CORE_STACK_SIZE);
-    _engine_context->core.stack_allocators.platform = ifb_engine::stack_allocator_create(IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_PLATFORM,IFB_ENGINE_CORE_STACK_SIZE);
-    _engine_context->core.stack_allocators.window   = ifb_engine::stack_allocator_create(IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_WINDOW,  IFB_ENGINE_CORE_STACK_SIZE);
-
-    //sanity check
-    result &= ifb_engine::stack_allocator_valid(_engine_context->core.stack_allocators.frame);
-    result &= ifb_engine::stack_allocator_valid(_engine_context->core.stack_allocators.platform);
-    result &= ifb_engine::stack_allocator_valid(_engine_context->core.stack_allocators.window);
-
+    //we're done
     return(result);
 }
 
@@ -81,6 +72,13 @@ ifb_api const ifb_b8
 ifb_engine::engine_frame_start(
     ifb_void) {
 
+    //set state to frame start
+    _engine_context->state = IFBEngineState_FrameStart;
+    
+    //set state to frame ready
+    _engine_context->state = IFBEngineState_FrameReady;
+    
+    //we're done
     return(true);
 }
 
@@ -88,9 +86,16 @@ ifb_api const ifb_b8
 ifb_engine::engine_frame_render(
     ifb_void) {
 
+    //set state to frame render
+    _engine_context->state = IFBEngineState_FrameRender;
+
     //clear the frame stack
     ifb_engine::stack_allocator_reset(_engine_context->core.stack_allocators.frame);
 
+    //set state to idle
+    _engine_context->state = IFBEngineState_Idle;
+
+    //we're done
     return(true);
 }
 

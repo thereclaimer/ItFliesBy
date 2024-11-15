@@ -3,7 +3,7 @@
 
 #include "ifb-engine.hpp"
 
-struct IFBEngineTagTable {
+struct IFBEngineTagManager {
     ifb_u32 tag_count_max;
     ifb_u32 handle_tag_buffer;
     ifb_u32 handle_hash_values;
@@ -11,14 +11,13 @@ struct IFBEngineTagTable {
 
 namespace ifb_engine {
 
-    IFBEngineTagTable* tag_table_from_handle  (const ifb_u32 tag_table_handle);
-    IFBEngineTagTable* tag_table_from_context (ifb_void);
+    IFBEngineTagManager* tag_manager_from_handle  (const ifb_u32 tag_manager_handle);
+    IFBEngineTagManager* tag_manager_from_context (ifb_void);
 
+    const ifb_u32 tag_manager_create(ifb_void);
 
-    const ifb_u32 tag_table_create(ifb_void);
-
-    ifb_char*           tag_table_memory_values (IFBEngineTagTable* tag_table_ptr);
-    IFBEngineHashValue* tag_table_memory_hashes (IFBEngineTagTable* tag_table_ptr);
+    ifb_char*           tag_manager_memory_values (IFBEngineTagManager* tag_manager_ptr);
+    IFBEngineHashValue* tag_manager_memory_hashes (IFBEngineTagManager* tag_manager_ptr);
 }
 
 #endif //IFB_ENGINE_INTERNAL_TAG_HPP
