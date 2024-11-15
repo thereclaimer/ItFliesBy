@@ -49,6 +49,7 @@ xcopy %path_rlibs_bin%\*.pdb %path_build%\bin /E /I /H /Y
                       /I engine\internal       ^
                       /I engine\external       ^
                       /I engine\src            ^
+                      /I engine\src\allocators ^
                       /I engine\src\algorithms ^
                       /I engine\src\assets     ^
                       /I engine\src\core       ^

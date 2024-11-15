@@ -34,6 +34,7 @@ struct IFBEngineMemory {
 struct IFBEngineCore {
     ifb_u32 handle_memory_manager;
     ifb_u32 handle_tag_table;
+    ifb_u32 handle_allocator_manager;
     ifb_u32 handle_asset_manager;
 };
 

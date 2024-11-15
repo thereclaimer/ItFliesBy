@@ -4,6 +4,7 @@
 #include "ifb-engine-memory.cpp"
 #include "ifb-engine-asset.cpp"
 #include "ifb-engine-tag.cpp"
+#include "ifb-engine-allocator-manager.cpp"
 
 #include "ifb-engine-internal.hpp"
 
@@ -42,8 +43,9 @@ ifb_engine::engine_create_context(
     _engine_context->memory.page_count_used  = 1;
 
     //create the core systems
-    _engine_context->core.handle_memory_manager = ifb_engine::memory_manager_startup();
-    _engine_context->core.handle_tag_table      = ifb_engine::tag_table_create();
+    _engine_context->core.handle_memory_manager    = ifb_engine::memory_manager_startup();
+    _engine_context->core.handle_tag_table         = ifb_engine::tag_table_create();
+    _engine_context->core.handle_allocator_manager = ifb_engine::allocator_manager_start_up();
 
     //sanity check
     result &= (
