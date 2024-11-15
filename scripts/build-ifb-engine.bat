@@ -59,7 +59,7 @@ xcopy %path_rlibs_bin%\*.pdb %path_build%\bin /E /I /H /Y
                       /I %path_rlibs_include%  ^
                       /I %path_vcpkg_include%
 
-@set cl_source=       engine\src\core\ifb-engine.cpp
+@set cl_source=       engine\src\ifb-engine.cpp
 
 @set cl_link=         /link                                    ^
                       /LIBPATH:modules\r-libs\build\debug\lib  ^
