@@ -21,9 +21,9 @@ namespace ifb_engine {
       inline IFBEngineUserInput& context_user_input   (ifb_void) { return(_engine_context->user_input); }
       inline IFBEngineCore&      context_core         (ifb_void) { return(_engine_context->core);       }
  
-      inline const ifb_u32 context_core_handle_memory_manager    (ifb_void) { return(_engine_context->core.handle_memory_manager);    }
-      inline const ifb_u32 context_core_handle_tag_table         (ifb_void) { return(_engine_context->core.handle_tag_table);         }
-      inline const ifb_u32 context_core_handle_allocator_manager (ifb_void) { return(_engine_context->core.handle_allocator_manager); }
+      inline const ifb_u32 context_core_handle_memory_manager    (ifb_void) { return(_engine_context->core.system_handles.memory_manager);    }
+      inline const ifb_u32 context_core_handle_tag_table         (ifb_void) { return(_engine_context->core.system_handles.tag_table);         }
+      inline const ifb_u32 context_core_handle_allocator_manager (ifb_void) { return(_engine_context->core.system_handles.allocator_manager); }
 };
 
 #endif //IFB_ENGINE_INTERNAL_HPP

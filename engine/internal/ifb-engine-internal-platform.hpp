@@ -8,8 +8,6 @@
 namespace ifb_engine {
 
     //system
-    ifb_global funcptr_ifb_engine_platform_system_page_size              platform_system_page_size;
-    ifb_global funcptr_ifb_engine_platform_system_allocation_granularity platform_system_allocation_granularity;
 
     //window
     ifb_global funcptr_ifb_engine_platform_window_create                 platform_window_create;
@@ -46,8 +44,6 @@ namespace ifb_engine {
         ifb_b8 result = true;
 
         //set the function pointers
-        ifb_engine::platform_system_page_size              = platform_api_ref.system.page_size; 
-        ifb_engine::platform_system_allocation_granularity = platform_api_ref.system.allocation_granularity; 
         ifb_engine::platform_memory_pages_commit           = platform_api_ref.memory.pages_commit; 
         ifb_engine::platform_memory_pages_decommit         = platform_api_ref.memory.pages_decommit;         
         ifb_engine::platform_window_create                 = platform_api_ref.window.create;
@@ -68,23 +64,22 @@ namespace ifb_engine {
 
         //sanity check
         result &= (
-            ifb_engine::platform_system_page_size              &&
-            ifb_engine::platform_system_allocation_granularity &&
             ifb_engine::platform_memory_pages_commit           && 
-            ifb_engine::platform_memory_pages_decommit         && 
-            ifb_engine::platform_window_create                 &&
-            ifb_engine::platform_window_destroy                &&
-            ifb_engine::platform_window_update                 &&
-            ifb_engine::platform_window_show                   &&
-            ifb_engine::platform_window_opengl_context_create  &&
-            ifb_engine::platform_window_imgui_context_create   &&
-            ifb_engine::platform_file_open_read_only           &&
-            ifb_engine::platform_file_open_read_write          &&
-            ifb_engine::platform_file_close                    &&
-            ifb_engine::platform_file_size                     &&
-            ifb_engine::platform_file_read                     &&
-            ifb_engine::platform_file_write                    &&
-            ifb_engine::platform_file_dialog_select_file);
+            ifb_engine::platform_memory_pages_decommit         //&& 
+            // ifb_engine::platform_window_create                 &&
+            // ifb_engine::platform_window_destroy                &&
+            // ifb_engine::platform_window_update                 &&
+            // ifb_engine::platform_window_show                   &&
+            // ifb_engine::platform_window_opengl_context_create  &&
+            // ifb_engine::platform_window_imgui_context_create   &&
+            // ifb_engine::platform_file_open_read_only           &&
+            // ifb_engine::platform_file_open_read_write          &&
+            // ifb_engine::platform_file_close                    &&
+            // ifb_engine::platform_file_size                     &&
+            // ifb_engine::platform_file_read                     &&
+            // ifb_engine::platform_file_write                    &&
+            // ifb_engine::platform_file_dialog_select_file
+            );
 
         //we're done
         return(result);

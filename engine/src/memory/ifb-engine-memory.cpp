@@ -60,6 +60,14 @@ ifb_engine::memory_handle(
     return(handle);
 }
 
+ifb_api const ifb_b8
+ifb_engine::memory_handle_valid(
+    const ifb_u32 memory_handle) {
+    
+    //TODO(SAM): should also have a upper bound
+    return(memory_handle > IFB_ENGINE_MEMORY_HANDLE_INVALID);
+}
+
 ifb_api const ifb_u32 
 ifb_engine::memory_size_page_aligned(
     const ifb_u32 size) {
@@ -103,7 +111,7 @@ ifb_engine::memory_page_commit(
     //calculate commit    
     const ifb_memory base_pointer = ifb_engine::context_base_pointer();
     const ifb_memory commit_start = base_pointer + page_start;
-    const ifb_size   commit_size  = page_size * page_count;  
+    const ifb_size   commit_size  = page_size * page_count;
 
     //do the commit
     const ifb_memory commit_result = ifb_engine::platform_memory_pages_commit(commit_start,commit_size);
@@ -118,5 +126,5 @@ ifb_engine::memory_page_commit(
     ifb_engine::context_memory_page_count_used_update(page_count_new);
 
     //we're done, return the page start
-    return(page_start);
+    return(page_current);
 }

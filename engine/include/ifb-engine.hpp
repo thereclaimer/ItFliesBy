@@ -5,6 +5,7 @@
 
 #include "ifb-engine-types.hpp"
 #include "ifb-engine-macros.hpp"
+#include "ifb-engine-math.hpp"
 #include "ifb-engine-user-input.hpp"
 #include "ifb-engine-memory.hpp"
 #include "ifb-engine-scopes.hpp"
@@ -33,11 +34,25 @@ struct IFBEngineMemory {
     ifb_u32 page_count_used;
 };
 
+#define IFB_ENGINE_CORE_STACK_SIZE                   ifb_engine_macro_size_kilobytes(64)
+#define IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_FRAME    "CORE FRAME STACK"
+#define IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_PLATFORM "CORE PLATFORM STACK"
+#define IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_WINDOW   "CORE WINDOW STACK"
+
 struct IFBEngineCore {
-    ifb_u32 handle_memory_manager;
-    ifb_u32 handle_tag_table;
-    ifb_u32 handle_allocator_manager;
-    ifb_u32 handle_asset_manager;
+
+    struct {
+        ifb_u32 memory_manager;
+        ifb_u32 tag_table;
+        ifb_u32 allocator_manager;
+        ifb_u32 asset_manager;
+    } system_handles;
+
+    struct {
+        ifb_u32 frame;
+        ifb_u32 platform; 
+        ifb_u32 window; 
+    } stack_allocators;
 };
 
 struct IFBEngineContext {
@@ -54,17 +69,17 @@ namespace ifb_engine {
 
     ifb_api const ifb_b8
     engine_create_context(
-              IFBEnginePlatformApi& platform_api_ref,
-        const ifb_memory            memory_reservation_start,
-        const ifb_size              memory_page_size,
-        const ifb_size              memory_page_count);
+        IFBEnginePlatformInfo& platform_info_ref,
+        IFBEnginePlatformApi&  platform_api_ref);
 
-    ifb_api const IFBEngineState engine_state           (IFBEngineContext* engine_context);
-    ifb_api const ifb_b8         engine_startup         (IFBEngineContext* engine_context);
-    ifb_api const ifb_b8         engine_frame_start     (IFBEngineContext* engine_context);
-    ifb_api const ifb_b8         engine_frame_render    (IFBEngineContext* engine_context);
-    ifb_api const ifb_b8         engine_shutdown        (IFBEngineContext* engine_context);
-    ifb_api const ifb_b8         engine_destroy_context (IFBEngineContext* engine_context);
+    ifb_api const ifb_b8 engine_startup         (ifb_void);
+    ifb_api const ifb_b8 engine_frame_start     (ifb_void);
+    ifb_api const ifb_b8 engine_frame_render    (ifb_void);
+    ifb_api const ifb_b8 engine_shutdown        (ifb_void);
+    ifb_api const ifb_b8 engine_destroy_context (ifb_void);
+
+    ifb_api const ifb_memory engine_platform_alloc (const ifb_u32 size);
+    ifb_api const ifb_memory engine_frame_alloc    (const ifb_u32 size);
 };
 
 #endif //IFB_ENGINE_HPP

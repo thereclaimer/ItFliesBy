@@ -184,4 +184,15 @@ struct IFBEnginePlatformApi {
     IFBEnginePlatformFileDialog file_dialog;
 };
 
+/**********************************************************************************/
+/* PLATFORM INFO                                                                  */
+/**********************************************************************************/
+
+struct IFBEnginePlatformInfo {
+    ifb_u32    page_size;
+    ifb_size   reservation_size;
+    ifb_memory reservation_start;
+};
+
+
 #endif //IFB_ENGINE_PLATFORM_HPP

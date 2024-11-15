@@ -3,7 +3,7 @@
 
 #define ifb_engine_macro_size_kilobytes(kb) (kb * 1024) 
 #define ifb_engine_macro_size_megabytes(mb) (mb * 1024 * 1024) 
-#define ifb_engine_macro_size_gigabytes(gb) (gb * 1024 * 1024 * 1024)
+#define ifb_engine_macro_size_gigabytes(gb) (gb * 1024UL * 1024UL * 1024UL)
 
 #define ifb_engine_macro_size_array(type,count) (sizeof(type) * count)
 
