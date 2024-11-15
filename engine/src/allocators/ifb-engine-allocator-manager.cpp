@@ -3,6 +3,8 @@
 #include "ifb-engine-internal-allocators.hpp"
 #include "ifb-engine-internal.hpp"
 
+#include "ifb-engine-allocator-stack.cpp"
+
 inline const ifb_u32 
 ifb_engine::allocator_manager_start_up(
     ifb_void) {
@@ -36,7 +38,15 @@ ifb_engine::allocator_manager_start_up(
     const ifb_u32 handle_allocator_manager     = ifb_engine::memory_handle(page_start, page_offset_allocator_manager); 
     const ifb_u32 handle_stack_allocator_table = ifb_engine::memory_handle(page_start, page_offset_stack_allocator_table);
     const ifb_u32 handle_block_allocator_table = ifb_engine::memory_handle(page_start, page_offset_block_allocator_table);
+
+    //initialize the struct
+    IFBEngineAllocatorManager* allocator_manager_ptr = ifb_engine::allocator_manager_from_handle(handle_allocator_manager);
+    allocator_manager_ptr->table_handle_stack_allocators = handle_stack_allocator_table; 
+    allocator_manager_ptr->table_handle_block_allocators = handle_block_allocator_table; 
     
+    //initialize allocator tables
+    ifb_engine::stack_allocator_table_initialize(handle_stack_allocator_table);
+
     //we're done
     return(handle_allocator_manager);
 }

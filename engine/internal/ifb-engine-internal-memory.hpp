@@ -23,7 +23,7 @@ namespace ifb_engine {
 
 #define IFB_ENGINE_MEMORY_ARENA_SIZE_MINIMUM ifb_engine_macro_size_kilobytes(4)
 #define IFB_ENGINE_MEMORY_ARENA_COUNT_MAX    4096
-
+#define IFB_ENGINE_MEMORY_ARENA_INVALID      4096
 
 struct IFBEngineArenaTable {
     ifb_u32 arena_count_total;
