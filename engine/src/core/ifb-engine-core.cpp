@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ifb-engine-internal.hpp"
+#include "ifb-engine-core-startup-routine.cpp"
 
 inline const ifb_b8 
 ifb_engine::core_create_managers(

@@ -41,28 +41,14 @@ struct IFBEngineMemory {
 #define IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_PLATFORM "CORE PLATFORM STACK"
 #define IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_WINDOW   "CORE WINDOW STACK"
 
-struct IFBEngineCore {
 
-    struct {
-        ifb_u32 handle_memory;
-        ifb_u32 handle_tag;
-        ifb_u32 handle_allocators;
-        ifb_u32 handle_assets;
-    } managers;
-
-    struct {
-        ifb_u32 frame;
-        ifb_u32 platform; 
-        ifb_u32 window; 
-    } stack_allocators;
-};
 
 struct IFBEngineContext {
     IFBEngineMemory    memory;
     IFBEngineUserInput user_input;
     IFBEngineState     state;
-    IFBEngineCore      core;
     ifb_timems         time_initialized;
+    ifb_u32            core_handle;
 };
 
 #define IFB_ENGINE_MINIMUM_MEMORY_REQUIREMENT_4GB ifb_engine_macro_size_gigabytes(4)

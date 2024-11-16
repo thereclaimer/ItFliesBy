@@ -2,9 +2,13 @@
 
 #include "ifb-win32.hpp"
 
-r_internal r_s32 
-ifb_win32_main(
-    RWin32MainArgs& args) {
+
+int WINAPI 
+wWinMain(
+    HINSTANCE h_instance,
+    HINSTANCE h_prev_instance,
+    PWSTR     p_cmd_line,
+    int       n_cmd_show) {
 
     SYSTEM_INFO system_info;
     GetSystemInfo(&system_info);
@@ -23,23 +27,28 @@ ifb_win32_main(
 
     //create the engine context
     if (!ifb_engine::engine_create_context(
-        engine_platform_info,
-        engine_platform_api)) {
+            engine_platform_info,
+            engine_platform_api)) {
 
         return(S_FALSE);
     }
 
-    ifb_engine::engine_startup();
+    ifb_b8 running = ifb_engine::engine_startup();
 
     // //main window loop
     // while(running) {
 
     // }
 
+
+
     //release the memory
-    r_win32::memory_release(
-        engine_platform_info.reservation_start,
-        engine_platform_info.reservation_size);
+    if (!r_win32::memory_release(
+            engine_platform_info.reservation_start,
+            engine_platform_info.reservation_size)) {
+
+        return(S_FALSE);
+    }
 
     //done
     return(S_OK);

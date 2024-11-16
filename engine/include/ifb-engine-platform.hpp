@@ -44,7 +44,7 @@ struct IFBEnginePlatformMemory {
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
-typedef const ifb_handle
+typedef const ifb_b8
 (*funcptr_ifb_engine_platform_window_create) (
     const ifb_cstr window_title,
     const ifb_u32  window_width,
@@ -52,12 +52,12 @@ typedef const ifb_handle
     const ifb_u32  window_position_x,
     const ifb_u32  window_position_y);
 
-typedef const ifb_handle
-(*funcptr_ifb_engine_platform_window_opengl_context_create) (
+typedef const ifb_b8
+(*funcptr_ifb_engine_platform_window_opengl_init) (
     ifb_void);
 
-typedef const ifb_handle
-(*funcptr_ifb_engine_platform_window_imgui_context_create) (
+typedef const ifb_b8
+(*funcptr_ifb_engine_platform_window_imgui_init) (
     ifb_void);
 
 typedef const ifb_b8
@@ -73,12 +73,12 @@ typedef const ifb_b8
     ifb_void);
 
 struct IFBEnginePlatformWindow {
-    funcptr_ifb_engine_platform_window_create                create;
-    funcptr_ifb_engine_platform_window_destroy               destroy;
-    funcptr_ifb_engine_platform_window_update                update;
-    funcptr_ifb_engine_platform_window_show                  show;
-    funcptr_ifb_engine_platform_window_opengl_context_create opengl_context_create;
-    funcptr_ifb_engine_platform_window_imgui_context_create  imgui_context_create;
+    funcptr_ifb_engine_platform_window_create      create;
+    funcptr_ifb_engine_platform_window_destroy     destroy;
+    funcptr_ifb_engine_platform_window_update      update;
+    funcptr_ifb_engine_platform_window_show        show;
+    funcptr_ifb_engine_platform_window_opengl_init opengl_init;
+    funcptr_ifb_engine_platform_window_imgui_init  imgui_init;
 };
 
 /**********************************************************************************/

@@ -20,10 +20,6 @@ namespace ifb_win32 {
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
-#define IFB_WIN32_MEMORY_ARENA_TAG            "WIN32 PLATFORM"
-#define IFB_WIN32_MEMORY_ARENA_SIZE_KILOBYTES 4
-#define IFB_WIN32_MEMORY_ARENA_COUNT          64
-
 namespace ifb_win32 {
 
     ifb_internal ifb_void memory_api_initialize(IFBEnginePlatformMemory& platform_memory_api_ref);
@@ -32,6 +28,34 @@ namespace ifb_win32 {
     ifb_internal const ifb_b8     memory_release  (const ifb_memory reservation_start, const ifb_size reservation_size);
     ifb_internal const ifb_memory memory_commit   (const ifb_memory commit_start,      const ifb_size commit_size);
     ifb_internal const ifb_b8     memory_decommit (const ifb_memory commit_start,      const ifb_size commit_size);
+};
+
+/**********************************************************************************/
+/* WINDOW                                                                         */
+/**********************************************************************************/
+
+struct IFBWin32Window {
+    HWND          window_handle;
+    HDC           device_context;
+    HGLRC         opengl_context;
+    ImGuiContext* imgui_context;
+};
+
+namespace ifb_engine {
+    
+    ifb_internal const ifb_b8
+    window_create(
+        const ifb_cstr window_title,
+        const ifb_u32  window_width,
+        const ifb_u32  window_height,
+        const ifb_u32  window_position_x,
+        const ifb_u32  window_position_y);
+
+    ifb_internal const ifb_b8 window_destroy     (ifb_void);
+    ifb_internal const ifb_b8 window_update      (ifb_void);
+    ifb_internal const ifb_b8 window_show        (ifb_void);
+    ifb_internal const ifb_b8 window_opengl_init (ifb_void);
+    ifb_internal const ifb_b8 window_imgui_init  (ifb_void);
 };
 
 /**********************************************************************************/
@@ -121,22 +145,14 @@ namespace ifb_win32 {
 /**********************************************************************************/
 
 struct IFBWin32 {
-    RWin32MonitorInfo            monitor_info;
-    RWin32WindowHandle           window_handle;
-    RWin32RenderingContextHandle rendering_context_handle;
-    RWin32FileDialogHandle       file_dialog_handle;
-    ImGuiContext*                imgui_context;
-    IFBWin32FileTable            file_table;
-    IFBEnginePlatformApi         platform_api;
 };
 
-ifb_global IFBWin32 _ifb_win32;
+
+ifb_global IFBWin32* _ifb_win32_ptr;
 
 namespace ifb_win32 {
 
-    inline IFBWin32FileTable&        file_table_ref          (ifb_void) { return(_ifb_win32.file_table);          }
 };
 
-#define ifb_win32_main r_win32_main
 
 #endif //IFB_WIN32_HPP
