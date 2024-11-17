@@ -23,7 +23,7 @@ ifb_engine::tag_create(
     }
 
     //get the table
-    const ifb_u32        tag_manager_handle = ifb_engine::context_core_handle_tag_manager();
+    const ifb_u32        tag_manager_handle = ifb_engine::core_manager_handle_tag();
     IFBEngineTagManager* tag_manager_ptr    = ifb_engine::tag_manager_from_handle(tag_manager_handle); 
 
     //get the hash memory
@@ -178,7 +178,7 @@ inline IFBEngineTagManager*
 ifb_engine::tag_manager_from_context(
     ifb_void) {
 
-    const ifb_u32 tag_manager_handle = ifb_engine::context_core_handle_tag_manager();
+    const ifb_u32 tag_manager_handle = ifb_engine::core_manager_handle_tag();
 
     IFBEngineTagManager* tag_manager_ptr = (IFBEngineTagManager*)ifb_engine::memory_pointer_from_handle(tag_manager_handle);
 

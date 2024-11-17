@@ -5,19 +5,6 @@
 #include "ifb-engine-internal.hpp"
 
 /**********************************************************************************/
-/* MEMORY                                                                         */
-/**********************************************************************************/
-
-namespace ifb_engine {
-
-    inline const ifb_u32 context_memory_page_size        (ifb_void) { return(_engine_context->memory.page_size);        }
-    inline const ifb_u32 context_memory_page_count_total (ifb_void) { return(_engine_context->memory.page_count_total); }
-    inline const ifb_u32 context_memory_page_count_used  (ifb_void) { return(_engine_context->memory.page_count_used);  }
-
-    inline ifb_void context_memory_page_count_used_update (const ifb_u32 page_count) { _engine_context->memory.page_count_used = page_count; }
-};
-
-/**********************************************************************************/
 /* ARENA                                                                          */
 /**********************************************************************************/
 

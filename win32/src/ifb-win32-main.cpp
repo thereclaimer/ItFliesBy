@@ -2,7 +2,6 @@
 
 #include "ifb-win32.hpp"
 
-
 int WINAPI 
 wWinMain(
     HINSTANCE h_instance,
@@ -32,14 +31,6 @@ wWinMain(
 
         return(S_FALSE);
     }
-
-    ifb_b8 running = ifb_engine::engine_startup();
-
-    // //main window loop
-    // while(running) {
-
-    // }
-
 
 
     //release the memory

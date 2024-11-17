@@ -27,15 +27,15 @@ ifb_engine::core_task_create_managers(
     IFBEngineCoreManagers& engine_core_managers_ref) {
 
     //create the managers
-    engine_core_managers_ref.handle_memory     = ifb_engine::memory_manager_startup();
-    engine_core_managers_ref.handle_tag        = ifb_engine::tag_manager_create();
-    engine_core_managers_ref.handle_allocators = ifb_engine::allocator_manager_start_up();
+    engine_core_managers_ref.memory     = ifb_engine::memory_manager_startup();
+    engine_core_managers_ref.tag        = ifb_engine::tag_manager_create();
+    engine_core_managers_ref.allocators = ifb_engine::allocator_manager_start_up();
 
     //sanity check
     ifb_b8 result = true;
-    result &= ifb_engine::memory_handle_valid(engine_core_managers_ref.handle_memory);
-    result &= ifb_engine::memory_handle_valid(engine_core_managers_ref.handle_tag);
-    result &= ifb_engine::memory_handle_valid(engine_core_managers_ref.handle_allocators);
+    result &= ifb_engine::memory_handle_valid(engine_core_managers_ref.memory);
+    result &= ifb_engine::memory_handle_valid(engine_core_managers_ref.tag);
+    result &= ifb_engine::memory_handle_valid(engine_core_managers_ref.allocators);
 
     //we're done
     return(result);

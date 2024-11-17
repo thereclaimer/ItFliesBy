@@ -2,8 +2,8 @@
 
 #include "ifb-engine-internal.hpp"
 
-#include "ifb-engine-memory.cpp"
 #include "ifb-engine-core.cpp"
+#include "ifb-engine-memory.cpp"
 #include "ifb-engine-algorithms.cpp"
 #include "ifb-engine-asset.cpp"
 #include "ifb-engine-tag.cpp"
@@ -40,14 +40,12 @@ ifb_engine::engine_create_context(
     _engine_context = (IFBEngineContext*)context_memory;     
     
     //set the memory info
-    _engine_context->memory.page_size        = platform_info_ref.page_size;
-    _engine_context->memory.page_count_total = platform_info_ref.reservation_size / platform_info_ref.page_size;
-    _engine_context->memory.page_count_used  = 1;
+    _engine_context->platform.page_size        = platform_info_ref.page_size;
+    _engine_context->platform.page_count_total = platform_info_ref.reservation_size / platform_info_ref.page_size;
+    _engine_context->platform.page_count_used  = 1;
 
     //initialize the engine core
     result &= ifb_engine::core_routine_initialize();
-    result &= ifb_engine::core_create_managers(_engine_context->core);
-    result &= ifb_engine::core_create_allocators(_engine_context->core);
 
     //update state
     _engine_context->state = result
@@ -91,8 +89,6 @@ ifb_engine::engine_frame_render(
     //set state to frame render
     _engine_context->state = IFBEngineState_FrameRender;
 
-    //clear the frame stack
-    ifb_engine::stack_allocator_reset(_engine_context->core.stack_allocators.frame);
 
     //set state to idle
     _engine_context->state = IFBEngineState_Idle;

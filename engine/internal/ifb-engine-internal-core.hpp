@@ -3,6 +3,10 @@
 
 #include "ifb-engine.hpp"
 
+/**********************************************************************************/
+/* ENGINE CORE                                                                            */
+/**********************************************************************************/
+
 struct IFBEngineCoreManagers {
     ifb_handle_memory_t memory;
     ifb_handle_memory_t tag;
@@ -36,11 +40,19 @@ namespace ifb_engine {
     const ifb_handle_memory_t core_manager_handle_assets     (ifb_void);
 };
 
+/**********************************************************************************/
+/* ENGINE CORE ROUTINES                                                                            */
+/**********************************************************************************/
+
 namespace ifb_engine {
 
     const ifb_b8 core_routine_initialize (ifb_void);    
     const ifb_b8 core_routine_startup    (ifb_void);    
 };
+
+/**********************************************************************************/
+/* ENGINE CORE TASKS                                                                            */
+/**********************************************************************************/
 
 namespace ifb_engine {
 

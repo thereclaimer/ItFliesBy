@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ifb-engine-internal.hpp"
 #include "ifb-engine-internal-memory.hpp"
 #include "ifb-engine-internal-platform.hpp"
 
@@ -15,7 +16,7 @@ ifb_engine::memory_pointer_from_page_offset(
     const ifb_u32 page_number,
     const ifb_u32 page_offset) {
 
-    const ifb_u32 page_size   = ifb_engine::context_memory_page_size();
+    const ifb_u32 page_size   = ifb_engine::context_platform_page_size();
     const ifb_u32 page_start  = page_number * page_size;
     const ifb_u32 base_offset = page_start + page_offset;     
 
@@ -29,7 +30,7 @@ ifb_api const ifb_memory
 ifb_engine::memory_pointer_from_page(
     const ifb_u32 page_number) {
     
-    const ifb_u32 page_size   = ifb_engine::context_memory_page_size();
+    const ifb_u32 page_size   = ifb_engine::context_platform_page_size();
     const ifb_u32 page_start  = page_number * page_size;
 
     const ifb_memory base_pointer   = ifb_engine::context_base_pointer();
@@ -53,7 +54,7 @@ ifb_engine::memory_handle(
     const ifb_u32 page_number,
     const ifb_u32 page_offset) {
     
-    const ifb_u32 page_size  = ifb_engine::context_memory_page_size();
+    const ifb_u32 page_size  = ifb_engine::context_platform_page_size();
     const ifb_u32 page_start = page_number * page_size;
     const ifb_u32 handle     = page_start + page_offset;     
 
@@ -72,7 +73,7 @@ ifb_api const ifb_u32
 ifb_engine::memory_size_page_aligned(
     const ifb_u32 size) {
 
-    const ifb_u32 page_size    = ifb_engine::context_memory_page_size();
+    const ifb_u32 page_size    = ifb_engine::context_platform_page_size();
     const ifb_u32 size_aligned = ifb_engine_macro_align_a_to_b(size,page_size);    
 
     return(size_aligned);
@@ -82,7 +83,7 @@ ifb_api const ifb_u32
 ifb_engine::memory_page_count(
     const ifb_u32 size) {
 
-    const ifb_u32 page_size    = ifb_engine::context_memory_page_size();
+    const ifb_u32 page_size    = ifb_engine::context_platform_page_size();
     const ifb_u32 size_aligned = ifb_engine_macro_align_a_to_b(size,page_size);    
     const ifb_u32 page_count   = size_aligned / page_size;  
 
@@ -93,7 +94,7 @@ ifb_api const ifb_u32
 ifb_engine::memory_page_size(
     const ifb_u32 page_count) {
 
-    const ifb_u32 page_size       = ifb_engine::context_memory_page_size();
+    const ifb_u32 page_size       = ifb_engine::context_platform_page_size();
     const ifb_u32 page_size_count = page_count * page_size;  
 
     return(page_size_count);
@@ -104,8 +105,8 @@ ifb_engine::memory_page_commit(
     const ifb_u32 page_count) {
 
     //calculate page sizes
-    const ifb_u32 page_size       = ifb_engine::context_memory_page_size();
-    const ifb_u32 page_current    = ifb_engine::context_memory_page_count_used();
+    const ifb_u32 page_size       = ifb_engine::context_platform_page_size();
+    const ifb_u32 page_current    = ifb_engine::context_platform_page_count_used();
     const ifb_u32 page_start      = page_current * page_size;
 
     //calculate commit    
@@ -123,7 +124,7 @@ ifb_engine::memory_page_commit(
 
     //otherwise, update the context
     const ifb_u32 page_count_new = page_current + page_count;
-    ifb_engine::context_memory_page_count_used_update(page_count_new);
+    ifb_engine::context_platform_page_count_used_update(page_count_new);
 
     //we're done, return the page start
     return(page_current);

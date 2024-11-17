@@ -30,7 +30,7 @@ enum IFBEngineState_ {
 
 typedef ifb_u32 IFBEngineState;
 
-struct IFBEngineMemory { 
+struct IFBEnginePlatform { 
     ifb_u32 page_size;
     ifb_u32 page_count_total;
     ifb_u32 page_count_used;
@@ -42,9 +42,8 @@ struct IFBEngineMemory {
 #define IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_WINDOW   "CORE WINDOW STACK"
 
 
-
 struct IFBEngineContext {
-    IFBEngineMemory    memory;
+    IFBEnginePlatform  platform;
     IFBEngineUserInput user_input;
     IFBEngineState     state;
     ifb_timems         time_initialized;

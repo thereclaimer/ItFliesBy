@@ -67,7 +67,7 @@ ifb_engine::allocator_manager_from_context(
     ifb_void) {
 
     //get the handle
-    const ifb_u32 allocator_manager_handle = ifb_engine::context_core_handle_allocator_manager();
+    const ifb_u32 allocator_manager_handle = ifb_engine::core_manager_handle_allocators();
 
     //get the pointer
     IFBEngineAllocatorManager* allocator_manager_ptr = (IFBEngineAllocatorManager*)ifb_engine::memory_pointer_from_handle(allocator_manager_handle);

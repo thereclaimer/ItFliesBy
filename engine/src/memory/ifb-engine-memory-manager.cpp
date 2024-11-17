@@ -63,7 +63,7 @@ ifb_engine::memory_manager_get_arena_table(
     ifb_void) {
 
     //get the memory manager_handle
-    const ifb_u32 memory_manager_handle = ifb_engine::context_core_handle_memory_manager();
+    const ifb_u32 memory_manager_handle = ifb_engine::core_manager_handle_memory();
 
     //cast it to the pointer
     IFBEngineMemoryManager* memory_manager_ptr = ifb_engine::memory_manager_pointer_from_handle(memory_manager_handle);     

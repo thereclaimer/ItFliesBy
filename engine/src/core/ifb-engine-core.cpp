@@ -6,7 +6,7 @@
 #include "ifb-engine-core-tasks.cpp"
 
 inline IFBEngineCore*
-core_pointer_from_context(
+ifb_engine::core_pointer_from_context(
     ifb_void) {
 
     //get the core handle

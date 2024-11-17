@@ -26,10 +26,10 @@ struct IFBEngineToolsMemory {
 
 namespace ifb_engine_tools {
 
-    const ifb_b8 
-    memory_reserve(
-        IFBEngineMemory*            in_memory_ptr,
-        IFBEngineToolsMemory&       out_memory_tools_ref);
+    // const ifb_b8 
+    // memory_reserve(
+    //     IFBEngineMemory*            in_memory_ptr,
+    //     IFBEngineToolsMemory&       out_memory_tools_ref);
 };
 
 /**********************************************************************************/
@@ -104,10 +104,10 @@ struct IFBEngineTools {
 
 namespace ifb_engine_tools {
 
-    ifb_internal const r_b8 
-    tools_start_up(
-        IFBEngineMemory* in_memory_ptr,
-        IFBEngineTools&     out_tools_ref);
+    // ifb_internal const r_b8 
+    // tools_start_up(
+    //     IFBEngineMemory* in_memory_ptr,
+    //     IFBEngineTools&     out_tools_ref);
     
     ifb_internal const r_b8 tools_render_all (IFBEngineTools& tools_ref);
     ifb_internal const r_b8 tools_menu_bar   (IFBEngineTools& tools_ref);
