@@ -1,13 +1,14 @@
 #pragma once
 
-#include "ifb-engine-algorithms.cpp"
+#include "ifb-engine-internal.hpp"
+
 #include "ifb-engine-memory.cpp"
+#include "ifb-engine-core.cpp"
+#include "ifb-engine-algorithms.cpp"
 #include "ifb-engine-asset.cpp"
 #include "ifb-engine-tag.cpp"
 #include "ifb-engine-allocator-manager.cpp"
 
-#include "ifb-engine-internal.hpp"
-#include "ifb-engine-core.cpp"
 
 /**********************************************************************************/
 /* API                                                                            */
@@ -44,6 +45,7 @@ ifb_engine::engine_create_context(
     _engine_context->memory.page_count_used  = 1;
 
     //initialize the engine core
+    result &= ifb_engine::core_routine_initialize();
     result &= ifb_engine::core_create_managers(_engine_context->core);
     result &= ifb_engine::core_create_allocators(_engine_context->core);
 

@@ -26,12 +26,12 @@ namespace ifb_engine {
 #define IFB_ENGINE_MEMORY_ARENA_INVALID      4096
 
 struct IFBEngineArenaTable {
-    ifb_u32 arena_count_total;
-    ifb_u32 arena_count_used;
-    ifb_u32 arena_size_minimum;
-    ifb_u32 column_handle_page_start;
-    ifb_u32 column_handle_page_count;
-    ifb_u32 column_handle_tag;
+    ifb_u32             arena_count_total;
+    ifb_u32             arena_count_used;
+    ifb_u32             arena_size_minimum;
+    ifb_handle_memory_t column_handle_page_start;
+    ifb_handle_memory_t column_handle_page_count;
+    ifb_handle_memory_t column_handle_tag;
 };
 
 struct IFBEngineArenaTableColumnMemory {

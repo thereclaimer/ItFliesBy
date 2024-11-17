@@ -20,7 +20,7 @@ struct IFBEngineStackAllocator {
 
 namespace ifb_engine {
 
-    ifb_api const ifb_stack_index_t    stack_allocator_create           (const ifb_cstr stack_allocator_tag, const ifb_u32 stack_size_minimum);
+    ifb_api const ifb_index_stack_t    stack_allocator_create           (const ifb_cstr stack_allocator_tag, const ifb_u32 stack_size_minimum);
     
     ifb_api const ifb_index_arena_t    stack_allocator_arena_index      (const ifb_index_stack_t stack_allocator_index);
     ifb_api const ifb_index_tag_t      stack_allocator_arena_tag_index  (const ifb_index_stack_t stack_allocator_index);

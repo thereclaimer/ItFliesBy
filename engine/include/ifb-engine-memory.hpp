@@ -4,6 +4,7 @@
 #include "ifb-engine-types.hpp"
 #include "ifb-engine-scopes.hpp"
 #include "ifb-engine-macros.hpp"
+#include "ifb-engine-tag.hpp"
 
 /**********************************************************************************/
 /* MEMORY                                                                         */
