@@ -61,4 +61,27 @@ ifb_engine::core_manager_handle_assets(
 
     //return the handle
     return(core_ptr->managers.assets);
+
+}
+
+inline const ifb_index_stack_t 
+ifb_engine::core_stack_allocator_platform(
+    ifb_void) {
+
+    //get the core pointer
+    const IFBEngineCore* core_ptr = ifb_engine::core_pointer_from_context();
+
+    //return the index
+    return(core_ptr->stack_allocators.platform);    
+}
+
+inline const ifb_index_stack_t 
+ifb_engine::core_stack_allocator_frame(
+    ifb_void) {
+
+    //get the core pointer
+    const IFBEngineCore* core_ptr = ifb_engine::core_pointer_from_context();
+
+    //return the index
+    return(core_ptr->stack_allocators.frame);    
 }

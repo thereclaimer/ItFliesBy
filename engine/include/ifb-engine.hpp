@@ -16,14 +16,12 @@
 
 
 enum IFBEngineState_ {
-    IFBEngineState_NotRunning  = 0,
-    IFBEngineState_Fatal       = 1,
-    IFBEngineState_Startup     = 2,
-    IFBEngineState_Shutdown    = 3,
-    IFBEngineState_Idle        = 4,
-    IFBEngineState_FrameStart  = 5,
-    IFBEngineState_FrameReady  = 6,
-    IFBEngineState_FrameRender = 7
+    IFBEngineState_NotRunning   = 0,
+    IFBEngineState_Fatal        = 1,
+    IFBEngineState_Startup      = 2,
+    IFBEngineState_Shutdown     = 3,
+    IFBEngineState_Idle         = 4,
+    IFBEngineState_FrameExecute = 5,
 };
 
 typedef ifb_u32 IFBEngineState;
@@ -58,8 +56,7 @@ namespace ifb_engine {
         IFBEnginePlatformApi&  platform_api_ref);
 
     ifb_api const ifb_b8 engine_startup         (ifb_void);
-    ifb_api const ifb_b8 engine_frame_start     (ifb_void);
-    ifb_api const ifb_b8 engine_frame_render    (ifb_void);
+    ifb_api const ifb_b8 engine_frame_execute   (ifb_void);
     ifb_api const ifb_b8 engine_shutdown        (ifb_void);
     ifb_api const ifb_b8 engine_destroy_context (ifb_void);
 

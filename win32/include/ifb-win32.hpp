@@ -8,6 +8,10 @@
 #include <imgui_impl_win32.h>
 #include <imgui_impl_opengl3.h>
 
+#include <GL/glew.h>
+#include <GL/gl.h>
+#include <GL/glext.h>
+
 /**********************************************************************************/
 /* SYSTEM                                                                         */
 /**********************************************************************************/
@@ -43,10 +47,28 @@ struct IFBWin32Window {
     HDC           device_context;
     HGLRC         opengl_context;
     ImGuiContext* imgui_context;
+    ifb_u32 width;
+    ifb_u32 height;
+    ifb_u32 pos_x;
+    ifb_u32 pos_y;
+    ifb_b32 quit_received;
 };
 
-namespace ifb_engine {
-    
+extern IMGUI_IMPL_API LRESULT 
+ImGui_ImplWin32_WndProcHandler(
+    HWND   hWnd,
+    UINT   msg,
+    WPARAM wParam,
+    LPARAM lParam);
+
+typedef const LRESULT
+(*ifb_win32_funcptr_on_wm_message_t)(
+    const WPARAM w_param,
+    const LPARAM l_param);
+
+namespace ifb_win32 {
+
+
     ifb_internal const ifb_b8
     window_create(
         const ifb_cstr window_title,
@@ -55,11 +77,26 @@ namespace ifb_engine {
         const ifb_u32  window_position_x,
         const ifb_u32  window_position_y);
 
-    ifb_internal const ifb_b8 window_destroy     (ifb_void);
-    ifb_internal const ifb_b8 window_update      (ifb_void);
-    ifb_internal const ifb_b8 window_show        (ifb_void);
-    ifb_internal const ifb_b8 window_opengl_init (ifb_void);
-    ifb_internal const ifb_b8 window_imgui_init  (ifb_void);
+    ifb_internal const ifb_b8 window_destroy      (ifb_void);
+    ifb_internal const ifb_b8 window_frame_start  (ifb_void);
+    ifb_internal const ifb_b8 window_frame_render (ifb_void);
+    ifb_internal const ifb_b8 window_show         (ifb_void);
+    ifb_internal const ifb_b8 window_opengl_init  (ifb_void);
+    ifb_internal const ifb_b8 window_imgui_init   (ifb_void);
+
+    ifb_internal LRESULT CALLBACK
+    window_callback(
+        HWND   window_handle,
+        UINT   message,
+        WPARAM w_param,
+        LPARAM l_param);
+
+    ifb_void window_api_initialize(IFBEnginePlatformWindow& window_api_ref);
+
+    const LRESULT window_on_wm_size   (const WPARAM w_param, const LPARAM l_param);
+    const LRESULT window_on_wm_move   (const WPARAM w_param, const LPARAM l_param);
+    const LRESULT window_on_wm_quit   (const WPARAM w_param, const LPARAM l_param);
+    const LRESULT window_on_wm_destroy(const WPARAM w_param, const LPARAM l_param);
 };
 
 /**********************************************************************************/
@@ -148,14 +185,37 @@ namespace ifb_win32 {
 /* WIN32 APPLICATION                                                              */
 /**********************************************************************************/
 
-struct IFBWin32 {
+ifb_s32 CALLBACK
+ifb_win32_main(    
+    HINSTANCE h_instance,
+    HINSTANCE h_prev_instance,
+    PWSTR     p_cmd_line,
+    int       n_cmd_show);
+
+struct IFBWin32Args {
+    HINSTANCE h_instance;
+    HINSTANCE h_prev_instance;
+    PWSTR     p_cmd_line;
+    int       n_cmd_show;
 };
 
+struct IFBWin32Context {
+    IFBWin32Args   args;
+    IFBWin32Window window;
+};
 
-ifb_global IFBWin32* _ifb_win32_ptr;
+ifb_global IFBWin32Context* _ifb_win32_context_ptr;
 
 namespace ifb_win32 {
 
+    inline const HINSTANCE context_args_h_instance      (ifb_void) { return(_ifb_win32_context_ptr->args.h_instance);      }
+    inline const HINSTANCE context_args_h_prev_instance (ifb_void) { return(_ifb_win32_context_ptr->args.h_prev_instance); }
+    inline const PWSTR     context_args_p_cmd_line      (ifb_void) { return(_ifb_win32_context_ptr->args.p_cmd_line);      }
+    inline const int       context_args_n_cmd_show      (ifb_void) { return(_ifb_win32_context_ptr->args.n_cmd_show);      }
+
+
+    inline       IFBWin32Window& context_window_ref()       { return(_ifb_win32_context_ptr->window);                       }
+    inline const ifb_b8          context_window_has_imgui() { return(_ifb_win32_context_ptr->window.imgui_context != NULL); }
 };
 
 

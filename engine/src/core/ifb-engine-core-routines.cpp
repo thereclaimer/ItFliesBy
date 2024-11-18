@@ -20,9 +20,6 @@ ifb_engine::core_routine_initialize(
     result &= ifb_engine::core_task_create_managers         (engine_core_ptr->managers);
     result &= ifb_engine::core_task_create_stack_allocators (engine_core_ptr->stack_allocators);
 
-    //update the context
-    _engine_context->core_handle = core_memory_handle;
-
     //we're done
     return(result);
 }
@@ -31,5 +28,31 @@ inline const ifb_b8
 ifb_engine::core_routine_startup(
     ifb_void) {
 
-    return(false);
+    ifb_b8 result = true;
+
+    result &= ifb_engine::core_task_create_and_show_window();
+
+    return(result);
+}
+
+inline const ifb_b8
+ifb_engine::core_routine_frame_start(
+    ifb_void) {
+
+    ifb_b8 result = true;
+
+    result &= ifb_engine::core_task_window_frame_start();
+
+    return(result);
+}
+
+inline const ifb_b8
+ifb_engine::core_routine_frame_render(
+    ifb_void) {
+
+    ifb_b8 result = true;
+
+    result &= ifb_engine::core_task_window_frame_render();
+
+    return(result);
 }

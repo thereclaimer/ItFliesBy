@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ifb-engine-internal-core.hpp"
+#include "ifb-engine-internal-platform.hpp"
 
 inline const ifb_b8 
 ifb_engine::core_task_create_core_handle(
@@ -16,11 +17,13 @@ ifb_engine::core_task_create_core_handle(
 
     //sanity check
     const ifb_b8 result = ifb_engine::memory_handle_valid(engine_core_handle_ref);
-    
+
+    //update the context
+    _engine_context->core_handle = engine_core_handle_ref;
+
     //we're done
     return(result);
 }
-
 
 inline const ifb_b8 
 ifb_engine::core_task_create_managers(
@@ -57,5 +60,51 @@ ifb_engine::core_task_create_stack_allocators(
     result &= ifb_engine::stack_allocator_valid(engine_core_stack_allocators_ref.window);
 
     //we're done
+    return(result);
+}
+
+inline const ifb_b8 
+ifb_engine::core_task_create_and_show_window(
+    ifb_void) {
+
+    ifb_b8 result = true;
+
+    const ifb_cstr window_title      = "It Flies By";
+    const ifb_u32  window_width      = 1920;
+    const ifb_u32  window_height     = 1080;
+    const ifb_u32  window_position_x = 0;
+    const ifb_u32  window_position_y = 0;
+
+    result &= ifb_engine::platform_window_create(
+        window_title,
+        window_width,
+        window_height,
+        window_position_x,
+        window_position_y);
+    
+    result &= ifb_engine::platform_window_show();
+
+    return(result);
+}
+
+inline const ifb_b8
+ifb_engine::core_task_window_frame_start(
+    ifb_void) {
+
+    ifb_b8 result = true;
+
+    result &= ifb_engine::platform_window_frame_start();
+
+    return(result);
+}
+
+inline const ifb_b8
+ifb_engine::core_task_window_frame_render(
+    ifb_void) {
+
+    ifb_b8 result = true;
+
+    result &= ifb_engine::platform_window_frame_render();
+    
     return(result);
 }

@@ -60,41 +60,31 @@ ifb_api const ifb_b8
 ifb_engine::engine_startup(
     ifb_void) {
 
+    //set startup state
     _engine_context->state = IFBEngineState_Startup;
 
-    ifb_b8 result = true;
+    //execute startup routine
+    ifb_b8 result = ifb_engine::core_routine_startup();
+
+    //update engine state
+    _engine_context->state = (result) 
+        ? IFBEngineState_Idle
+        : IFBEngineState_Fatal;
 
     //we're done
     return(result);
 }
 
 ifb_api const ifb_b8
-ifb_engine::engine_frame_start(
+ifb_engine::engine_frame_execute(
     ifb_void) {
 
-    //set state to frame start
-    _engine_context->state = IFBEngineState_FrameStart;
-    
-    //set state to frame ready
-    _engine_context->state = IFBEngineState_FrameReady;
-    
-    //we're done
-    return(true);
-}
+    ifb_b8 result = true;
 
-ifb_api const ifb_b8
-ifb_engine::engine_frame_render(
-    ifb_void) {
+    result &= ifb_engine::core_routine_frame_start ();
+    result &= ifb_engine::core_routine_frame_render();
 
-    //set state to frame render
-    _engine_context->state = IFBEngineState_FrameRender;
-
-
-    //set state to idle
-    _engine_context->state = IFBEngineState_Idle;
-
-    //we're done
-    return(true);
+    return(result);
 }
 
 ifb_api const ifb_b8
@@ -109,6 +99,34 @@ ifb_engine::engine_destroy_context(
     ifb_void) {
 
     return(true);
+}
+
+ifb_api const ifb_memory
+ifb_engine::engine_platform_alloc(
+    const ifb_u32 size) {
+
+    //get the frame stack
+    const ifb_index_stack_t platform_stack = ifb_engine::core_stack_allocator_platform();
+    
+    //do the push
+    const ifb_memory stack_memory = ifb_engine::stack_allocator_push_memory(platform_stack,size);
+    
+    //we're done
+    return(stack_memory);
+}
+
+ifb_api const ifb_memory
+ifb_engine::engine_frame_alloc(
+    const ifb_u32 size) {
+
+    //get the frame stack
+    const ifb_index_stack_t frame_stack = ifb_engine::core_stack_allocator_frame();
+    
+    //do the push
+    const ifb_memory stack_memory = ifb_engine::stack_allocator_push_memory(frame_stack,size);
+    
+    //we're done
+    return(stack_memory);
 }
 
 /**********************************************************************************/

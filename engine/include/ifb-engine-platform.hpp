@@ -68,16 +68,21 @@ typedef const ifb_b8
     ifb_void);
 
 typedef const ifb_b8
-(*funcptr_ifb_engine_platform_window_update)(
+(*funcptr_ifb_engine_platform_window_frame_start)(
+    ifb_void);
+
+typedef const ifb_b8
+(*funcptr_ifb_engine_platform_window_frame_render)(
     ifb_void);
 
 struct IFBEnginePlatformWindow {
-    funcptr_ifb_engine_platform_window_create      create;
-    funcptr_ifb_engine_platform_window_destroy     destroy;
-    funcptr_ifb_engine_platform_window_update      update;
-    funcptr_ifb_engine_platform_window_show        show;
-    funcptr_ifb_engine_platform_window_opengl_init opengl_init;
-    funcptr_ifb_engine_platform_window_imgui_init  imgui_init;
+    funcptr_ifb_engine_platform_window_create       create;
+    funcptr_ifb_engine_platform_window_destroy      destroy;
+    funcptr_ifb_engine_platform_window_frame_start  frame_start;
+    funcptr_ifb_engine_platform_window_frame_render frame_render;
+    funcptr_ifb_engine_platform_window_show         show;
+    funcptr_ifb_engine_platform_window_opengl_init  opengl_init;
+    funcptr_ifb_engine_platform_window_imgui_init   imgui_init;
 };
 
 /**********************************************************************************/

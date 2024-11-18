@@ -46,9 +46,13 @@ if not exist %path_build%\obj mkdir %path_build%\obj
 
 @set cl_link=         /link                                    ^
                       /LIBPATH:vcpkg_installed\x64-windows\lib ^
-                      /LIBPATH:build\debug\lib
+                      /LIBPATH:build\debug\lib ^
+                      /SUBSYSTEM:WINDOWS
 
-@set cl_libs=         ItFliesBy.Engine.lib
+@set cl_libs=         ItFliesBy.Engine.lib ^
+                      user32.lib           ^
+                      imgui.lib            ^
+                      opengl32.lib
 
 ::----------------------------------------------------------------
 :: BUILD
