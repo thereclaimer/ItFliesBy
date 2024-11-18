@@ -8,6 +8,7 @@
 #include "ifb-engine-asset.cpp"
 #include "ifb-engine-tag.cpp"
 #include "ifb-engine-allocator-manager.cpp"
+#include "ifb-engine-rendering.cpp"
 
 
 /**********************************************************************************/

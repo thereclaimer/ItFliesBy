@@ -82,6 +82,7 @@ ifb_engine::core_task_create_and_show_window(
         window_position_x,
         window_position_y);
     
+    result &= ifb_engine::platform_window_opengl_init();
     result &= ifb_engine::platform_window_show();
 
     return(result);

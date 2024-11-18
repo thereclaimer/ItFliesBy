@@ -121,7 +121,7 @@ ifb_win32::window_show(
 
     IFBWin32Window& window = ifb_win32::context_window_ref();
 
-    const ifb_b8 result = (ifb_b8)ShowWindow(window.window_handle,0);
+    const ifb_b8 result = (ifb_b8)ShowWindow(window.window_handle,1);
 
     return(true);
 }
@@ -130,7 +130,44 @@ ifb_internal const ifb_b8
 ifb_win32::window_opengl_init(
     ifb_void) {
 
-    return(true);
+    IFBWin32Window& window_ref = ifb_win32::context_window_ref();
+
+    //set our preferred format descriptor
+    PIXELFORMATDESCRIPTOR preferred_format_descriptor = {0};
+    preferred_format_descriptor.nSize      = sizeof(preferred_format_descriptor);
+    preferred_format_descriptor.nVersion   = 1;
+    preferred_format_descriptor.dwFlags    = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+    preferred_format_descriptor.iPixelType = PFD_TYPE_RGBA;
+    preferred_format_descriptor.cColorBits = 32;
+
+    //query for the closest format descriptor
+    const ifb_s32 chosen_format_descriptor = 
+        ChoosePixelFormat(
+            window_ref.device_context,
+            &preferred_format_descriptor);
+
+    //set the chosen pixel format
+    const ifb_b8 pixel_format_is_set = 
+        SetPixelFormat(
+            window_ref.device_context,
+            chosen_format_descriptor,
+            &preferred_format_descriptor);
+
+    //create the opengl context
+    const HGLRC opengl_context = wglCreateContext(window_ref.device_context);
+
+    //make the context current
+    const ifb_b8 context_active = wglMakeCurrent(window_ref.device_context, opengl_context);
+
+    //sanity check
+    ifb_b8 result = (
+        chosen_format_descriptor &&
+        pixel_format_is_set      &&
+        opengl_context           &&
+        context_active);
+
+    //we're done
+    return(result);
 }
 
 ifb_internal const ifb_b8 

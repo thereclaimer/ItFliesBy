@@ -13,7 +13,8 @@
 #include "ifb-engine-algorithms.hpp"
 #include "ifb-engine-tag.hpp"
 #include "ifb-engine-allocators.hpp"
-
+#include "ifb-engine-color.hpp"
+#include "ifb-engine-rendering.hpp"
 
 enum IFBEngineState_ {
     IFBEngineState_NotRunning   = 0,

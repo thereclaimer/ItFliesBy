@@ -32,6 +32,10 @@ ifb_engine::core_routine_startup(
 
     result &= ifb_engine::core_task_create_and_show_window();
 
+    const ifb_f32 gray = (ifb_f32)0x28 / (ifb_f32)0xFF;
+
+    glClearColor(gray,gray,gray,1.0f);
+
     return(result);
 }
 
@@ -42,6 +46,8 @@ ifb_engine::core_routine_frame_start(
     ifb_b8 result = true;
 
     result &= ifb_engine::core_task_window_frame_start();
+
+    glClear(GL_COLOR_BUFFER_BIT);
 
     return(result);
 }

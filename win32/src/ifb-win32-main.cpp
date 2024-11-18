@@ -51,6 +51,7 @@ wWinMain(
 
         //execute the next frame
         running &= ifb_engine::engine_frame_execute();
+        running &= !_ifb_win32_context_ptr->window.quit_received;
     };
 
     //release the memory
@@ -60,8 +61,6 @@ wWinMain(
 
         return(S_FALSE);
     }
-
-
 
     //done
     return(S_OK);
