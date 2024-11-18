@@ -1,8 +1,12 @@
 #ifndef IFB_WIN32_HPP
 #define IFB_WIN32_HPP
 
-#include <r-libs.hpp>
+#include <Windows.h>
 #include <ifb-engine.hpp>
+
+#include <imgui.h>
+#include <imgui_impl_win32.h>
+#include <imgui_impl_opengl3.h>
 
 /**********************************************************************************/
 /* SYSTEM                                                                         */
@@ -104,13 +108,13 @@ namespace ifb_win32 {
         const ifb_size                   in_file_write_size,
         const ifb_memory                 in_file_write_buffer);
 
-    ifb_internal r_void CALLBACK
+    ifb_internal ifb_void CALLBACK
     file_read_callback(
         DWORD        error_code,
         DWORD        bytes_transferred,
         LPOVERLAPPED overlapped_ptr);
 
-    ifb_internal r_void CALLBACK
+    ifb_internal ifb_void CALLBACK
     file_write_callback(
         DWORD        error_code,
         DWORD        bytes_transferred,

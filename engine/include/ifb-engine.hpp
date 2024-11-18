@@ -1,8 +1,6 @@
 #ifndef IFB_ENGINE_HPP
 #define IFB_ENGINE_HPP
 
-#include <r-libs.hpp>
-
 #include "ifb-engine-types.hpp"
 #include "ifb-engine-macros.hpp"
 #include "ifb-engine-math.hpp"

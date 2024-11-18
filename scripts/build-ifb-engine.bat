@@ -12,13 +12,8 @@ pushd ..
 
 @set path_build=              build\debug
 
-::rlibs
-@set path_rlibs_lib=          modules\r-libs\build\debug\lib
-@set path_rlibs_bin=          modules\r-libs\build\debug\bin
-@set path_rlibs_include=      modules\r-libs\build\debug\include
-
 ::vcpkg install directories
-@set path_vcpkg=              modules\r-libs\vcpkg_installed
+@set path_vcpkg=              vcpkg_installed
 @set path_vcpkg_include=      %path_vcpkg%\x64-windows\include
 @set path_vcpkg_lib=          %path_vcpkg%\x64-windows\lib
 
@@ -29,9 +24,6 @@ pushd ..
 if not exist %path_build%\bin mkdir %path_build%\bin
 if not exist %path_build%\obj mkdir %path_build%\obj
 if not exist %path_build%\lib mkdir %path_build%\lib
-
-xcopy %path_rlibs_bin%\*.dll %path_build%\bin /E /I /H /Y 
-xcopy %path_rlibs_bin%\*.pdb %path_build%\bin /E /I /H /Y 
 
 ::----------------------------------------------------------------
 :: COMPILER ARGUMENTS
@@ -56,18 +48,15 @@ xcopy %path_rlibs_bin%\*.pdb %path_build%\bin /E /I /H /Y
                       /I engine\src\memory     ^
                       /I engine\src\tag        ^
                       /I engine\src\tools      ^
-                      /I %path_rlibs_include%  ^
                       /I %path_vcpkg_include%
 
 @set cl_source=       engine\src\ifb-engine.cpp
 
 @set cl_link=         /link                                    ^
-                      /LIBPATH:modules\r-libs\build\debug\lib  ^
-                      /LIBPATH:modules\r-libs\vcpkg_installed\x64-windows\lib ^
+                      /LIBPATH:vcpkg_installed\x64-windows\lib ^
                       /IMPLIB:build\debug\lib\ItFliesBy.Engine.lib
 
-@set cl_libs=         RLibs.lib ^
-                      imgui.lib
+@set cl_libs=         imgui.lib
 
 ::----------------------------------------------------------------
 :: BUILD

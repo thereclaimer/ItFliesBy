@@ -66,11 +66,11 @@ namespace ifb_engine_tools {
 };
 
 struct IFBEngineToolsAssetFileBuilder {
-    r_b8                       open;
-    r_b8                       selected_file;
+    ifb_b8                     open;
+    ifb_b8                     selected_file;
     IFBEngineAssetFileId       selected_file_id;
-    ifb_u32 file_arena_csv;
-    ifb_u32 file_arena_asset;
+    ifb_u32                    file_arena_csv;
+    ifb_u32                    file_arena_asset;
     ifb_char                   file_path_csv   [IFB_ENGINE_TOOLS_ASSET_FILE_BUILDER_PATH_LENGTH_MAX];
     ifb_char                   file_path_asset [IFB_ENGINE_TOOLS_ASSET_FILE_BUILDER_PATH_LENGTH_MAX];    
 };
@@ -109,8 +109,8 @@ namespace ifb_engine_tools {
     //     IFBEngineMemory* in_memory_ptr,
     //     IFBEngineTools&     out_tools_ref);
     
-    ifb_internal const r_b8 tools_render_all (IFBEngineTools& tools_ref);
-    ifb_internal const r_b8 tools_menu_bar   (IFBEngineTools& tools_ref);
+    ifb_internal const ifb_b8 tools_render_all (IFBEngineTools& tools_ref);
+    ifb_internal const ifb_b8 tools_menu_bar   (IFBEngineTools& tools_ref);
 };
 
 #endif //IFB_ENGINE_INTERNAL_TOOLS_HPP

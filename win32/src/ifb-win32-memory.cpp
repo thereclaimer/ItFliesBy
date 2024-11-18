@@ -29,7 +29,7 @@ ifb_win32::memory_release(
     const ifb_memory reservation_start,
     const ifb_size   reserve_size) {
 
-    const r_b8 release_result = VirtualFree(
+    const ifb_b8 release_result = VirtualFree(
         reservation_start,
         reserve_size,
         MEM_RELEASE);
@@ -57,7 +57,7 @@ ifb_win32::memory_decommit(
     const ifb_memory commit_start,
     const ifb_size   commit_size) {
 
-    const r_b8 decommit_result = VirtualFree(
+    const ifb_b8 decommit_result = VirtualFree(
         commit_start,
         commit_size,
         MEM_DECOMMIT);

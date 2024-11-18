@@ -1,8 +1,6 @@
 #ifndef IFB_ENGINE_ASSET_HPP
 #define IFB_ENGINE_ASSET_HPP
 
-#include <r-libs.hpp>
-
 #include "ifb-engine.hpp"
 
 /**********************************************************************************/

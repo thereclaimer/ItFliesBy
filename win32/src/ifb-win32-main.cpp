@@ -34,7 +34,7 @@ wWinMain(
 
 
     //release the memory
-    if (!r_win32::memory_release(
+    if (!ifb_win32::memory_release(
             engine_platform_info.reservation_start,
             engine_platform_info.reservation_size)) {
 
