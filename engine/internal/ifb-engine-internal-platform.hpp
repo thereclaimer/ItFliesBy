@@ -1,33 +1,53 @@
 #ifndef IFB_ENGINE_INTERNAL_PLATFORM_HPP
 #define IFB_ENGINE_INTERNAL_PLATFORM_HPP
 
-#include <r-libs.hpp>
-
 #include "ifb-engine.hpp"
+
+/**********************************************************************************/
+/* PLATFORM WINDOW                                                                */
+/**********************************************************************************/
+
+namespace ifb_engine {
+
+    ifb_void platform_window_default_dimensions (IFBDimensions& window_dimensions_ref);
+};
+
+
+/**********************************************************************************/
+/* PLATFORM API                                                                   */
+/**********************************************************************************/
 
 namespace ifb_engine {
 
     //system
-    ifb_global funcptr_ifb_engine_platform_system_page_size              platform_system_page_size;
-    ifb_global funcptr_ifb_engine_platform_system_allocation_granularity platform_system_allocation_granularity;
+
+    //window
+    ifb_global funcptr_ifb_engine_platform_window_create           platform_window_create;
+    ifb_global funcptr_ifb_engine_platform_window_destroy          platform_window_destroy;
+    ifb_global funcptr_ifb_engine_platform_window_frame_start      platform_window_frame_start;
+    ifb_global funcptr_ifb_engine_platform_window_frame_render     platform_window_frame_render;
+    ifb_global funcptr_ifb_engine_platform_window_show             platform_window_show;
+    ifb_global funcptr_ifb_engine_platform_window_opengl_init      platform_window_opengl_init;
+    ifb_global funcptr_ifb_engine_platform_window_imgui_init       platform_window_imgui_init;
+
+    //monitor
+    ifb_global funcptr_ifb_engine_platform_monitor_size            platform_monitor_size;
+    ifb_global funcptr_ifb_engine_platform_monitor_refresh_hz      platform_monitor_refresh_hz;
 
     //memory
-    ifb_global funcptr_ifb_engine_platform_memory_pages_reserve  platform_memory_pages_reserve;
-    ifb_global funcptr_ifb_engine_platform_memory_pages_release  platform_memory_pages_release;
-    ifb_global funcptr_ifb_engine_platform_memory_pages_commit   platform_memory_pages_commit;
-    ifb_global funcptr_ifb_engine_platform_memory_pages_decommit platform_memory_pages_decommit;
+    ifb_global funcptr_ifb_engine_platform_memory_pages_commit     platform_memory_pages_commit;
+    ifb_global funcptr_ifb_engine_platform_memory_pages_decommit   platform_memory_pages_decommit;
 
     //file
-    ifb_global funcptr_ifb_engine_platform_file_open_read_only  platform_file_open_read_only;
-    ifb_global funcptr_ifb_engine_platform_file_open_read_write platform_file_open_read_write;
-    ifb_global funcptr_ifb_engine_platform_file_close           platform_file_close;
-    ifb_global funcptr_ifb_engine_platform_file_size            platform_file_size;
-    ifb_global funcptr_ifb_engine_platform_file_read            platform_file_read;
-    ifb_global funcptr_ifb_engine_platform_file_write           platform_file_write;
+    ifb_global funcptr_ifb_engine_platform_file_open_read_only     platform_file_open_read_only;
+    ifb_global funcptr_ifb_engine_platform_file_open_read_write    platform_file_open_read_write;
+    ifb_global funcptr_ifb_engine_platform_file_close              platform_file_close;
+    ifb_global funcptr_ifb_engine_platform_file_size               platform_file_size;
+    ifb_global funcptr_ifb_engine_platform_file_read               platform_file_read;
+    ifb_global funcptr_ifb_engine_platform_file_write              platform_file_write;
 
     //file dialog
     ifb_global funcptr_ifb_engine_platform_file_dialog_select_file platform_file_dialog_select_file;
-
 
     inline const ifb_b8 
     platform_api_validate(
@@ -35,55 +55,48 @@ namespace ifb_engine {
 
         ifb_b8 result = true;
 
-        //-----------------
-        // system
-        //-----------------
-
-        ifb_engine::platform_system_page_size              = platform_api_ref.system.page_size; 
-        ifb_engine::platform_system_allocation_granularity = platform_api_ref.system.allocation_granularity; 
-
-        //-----------------
-        // memory
-        //-----------------
-
-        ifb_engine::platform_memory_pages_reserve  = platform_api_ref.memory.pages_reserve; 
-        ifb_engine::platform_memory_pages_release  = platform_api_ref.memory.pages_release; 
-        ifb_engine::platform_memory_pages_commit   = platform_api_ref.memory.pages_commit; 
-        ifb_engine::platform_memory_pages_decommit = platform_api_ref.memory.pages_decommit;         
-
-        result &= (
-            ifb_engine::platform_memory_pages_reserve  != NULL && 
-            ifb_engine::platform_memory_pages_release  != NULL && 
-            ifb_engine::platform_memory_pages_commit   != NULL && 
-            ifb_engine::platform_memory_pages_decommit != NULL);
-
-        //-----------------
-        // file
-        //-----------------
-
-        ifb_engine::platform_file_open_read_only  = platform_api_ref.file.open_read_only;
-        ifb_engine::platform_file_open_read_write = platform_api_ref.file.open_read_write;
-        ifb_engine::platform_file_close           = platform_api_ref.file.close;
-        ifb_engine::platform_file_size            = platform_api_ref.file.size;
-        ifb_engine::platform_file_read            = platform_api_ref.file.read;
-        ifb_engine::platform_file_write           = platform_api_ref.file.write;
-
-        result &= (
-            ifb_engine::platform_file_open_read_only  != NULL &&
-            ifb_engine::platform_file_open_read_write != NULL &&
-            ifb_engine::platform_file_close           != NULL &&
-            ifb_engine::platform_file_size            != NULL &&
-            ifb_engine::platform_file_read            != NULL &&
-            ifb_engine::platform_file_write           != NULL);
-
-        //-----------------
-        // file dialog
-        //-----------------
-
+        //set the function pointers
+        ifb_engine::platform_memory_pages_commit     = platform_api_ref.memory.pages_commit; 
+        ifb_engine::platform_memory_pages_decommit   = platform_api_ref.memory.pages_decommit;         
+        ifb_engine::platform_window_create           = platform_api_ref.window.create;
+        ifb_engine::platform_window_destroy          = platform_api_ref.window.destroy;
+        ifb_engine::platform_window_frame_start      = platform_api_ref.window.frame_start; 
+        ifb_engine::platform_window_frame_render     = platform_api_ref.window.frame_render;
+        ifb_engine::platform_window_show             = platform_api_ref.window.show;
+        ifb_engine::platform_window_opengl_init      = platform_api_ref.window.opengl_init;
+        ifb_engine::platform_window_imgui_init       = platform_api_ref.window.imgui_init;
+        ifb_engine::platform_monitor_size            = platform_api_ref.monitor.size;
+        ifb_engine::platform_monitor_refresh_hz      = platform_api_ref.monitor.refresh_hz;
+        ifb_engine::platform_file_open_read_only     = platform_api_ref.file.open_read_only;
+        ifb_engine::platform_file_open_read_write    = platform_api_ref.file.open_read_write;
+        ifb_engine::platform_file_close              = platform_api_ref.file.close;
+        ifb_engine::platform_file_size               = platform_api_ref.file.size;
+        ifb_engine::platform_file_read               = platform_api_ref.file.read;
+        ifb_engine::platform_file_write              = platform_api_ref.file.write;
         ifb_engine::platform_file_dialog_select_file = platform_api_ref.file_dialog.select_file;        
 
+        //sanity check
         result &= (
-            ifb_engine::platform_file_dialog_select_file != NULL);
+            ifb_engine::platform_memory_pages_commit   && 
+            ifb_engine::platform_memory_pages_decommit && 
+            ifb_engine::platform_window_create         &&
+            ifb_engine::platform_window_destroy        &&
+            ifb_engine::platform_window_frame_start    &&
+            ifb_engine::platform_window_frame_render   &&
+            ifb_engine::platform_window_show           &&
+            ifb_engine::platform_window_opengl_init    &&
+            ifb_engine::platform_window_imgui_init     &&
+            ifb_engine::platform_monitor_size          &&
+            ifb_engine::platform_monitor_refresh_hz
+
+            // ifb_engine::platform_file_open_read_only           &&
+            // ifb_engine::platform_file_open_read_write          &&
+            // ifb_engine::platform_file_close                    &&
+            // ifb_engine::platform_file_size                     &&
+            // ifb_engine::platform_file_read                     &&
+            // ifb_engine::platform_file_write                    &&
+            // ifb_engine::platform_file_dialog_select_file
+            );
 
         //we're done
         return(result);

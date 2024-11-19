@@ -1,0 +1,6 @@
+#ifndef IFB_ENGINE_ALGORITHMS_HPP
+#define IFB_ENGINE_ALGORITHMS_HPP
+
+#include <ifb-common.hpp>
+
+#endif //IFB_ENGINE_ALGORITHMS_HPP

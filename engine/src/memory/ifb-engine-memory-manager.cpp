@@ -1,85 +1,76 @@
 #pragma once
 
 #include "ifb-engine-internal-memory.hpp"
-#include "ifb-engine-internal-platform.hpp"
 
-inline const ifb_b8
-ifb_engine::memory_manager_start_up(
-    IFBEngineMemoryManager& memory_manager_ref) {
+/**********************************************************************************/
+/* INTERNAL                                                                       */
+/**********************************************************************************/
 
+inline const ifb_u32 
+ifb_engine::memory_manager_startup(
+    ifb_void) {
+
+    //determine the size of all the systems
+    const ifb_u32 size_aligned_memory_manager = ifb_macro_align_size_struct(IFBEngineMemoryManager); 
+    const ifb_u32 size_aligned_arena_table    = ifb_macro_align_size_struct(IFBEngineArenaTable);
+
+    //add all the sizes to get our total allocation size
+    const ifb_u32 allocation_size =
+        size_aligned_memory_manager +
+        size_aligned_arena_table;
+
+    //commit pages
+    const ifb_u32 memory_manager_page_count = ifb_engine::memory_page_count(allocation_size);
+    const ifb_u32 memory_manager_page_start = ifb_engine::memory_page_commit(memory_manager_page_count);
+
+    //if that didn't work, return 0
+    if (!memory_manager_page_start) {
+        return(0);
+    }
+
+    //calculate offsets
+    const ifb_u32 page_offset_arena_table = size_aligned_memory_manager; //the arena table is at the end of the memory manager struct 
+
+    //create handles
+    const ifb_u32 handle_arena_table    = ifb_engine::memory_handle(memory_manager_page_start,page_offset_arena_table); 
+    const ifb_u32 handle_memory_manager = ifb_engine::memory_handle(memory_manager_page_start,0);
+
+    //initialize asset systems
     ifb_b8 result = true;
+    result &= ifb_engine::arena_table_initialize(handle_arena_table);
 
-    //get the reservation
-    result &= ifb_engine::memory_reserve(memory_manager_ref.reservation);
+    //initialize the memory manager
+    IFBEngineMemoryManager* memory_manager_ptr = ifb_engine::memory_manager_pointer_from_handle(handle_memory_manager);
+    memory_manager_ptr->page_start         = memory_manager_page_start;
+    memory_manager_ptr->page_count         = memory_manager_page_count;
+    memory_manager_ptr->handle_arena_table = handle_arena_table; 
 
-    //initialize the tables
-    memory_manager_ref.arena_tables.header = {0};
-    memory_manager_ref.arena_tables.detail = {0};
-    memory_manager_ref.arena_tables.header.header_count_max = IFB_ENGINE_MEMORY_ARENA_HEADER_COUNT_MAX;
-    memory_manager_ref.arena_tables.detail.arena_count_max  = IFB_ENGINE_MEMORY_ARENA_COUNT_MAX;
-
-    //we're done
-    return(result);
+    //we're done, return the page start
+    return(handle_memory_manager);
 }
 
-inline const ifb_b8
-ifb_engine::memory_manager_shut_down(
-    IFBEngineMemoryManager& memory_manager_ref) {
+inline IFBEngineMemoryManager* 
+ifb_engine::memory_manager_pointer_from_handle(
+    const ifb_u32 memory_manager_handle) {
 
-    //release the memory
-    const ifb_b8 result = ifb_engine::memory_release(memory_manager_ref.reservation);
+    IFBEngineMemoryManager* memory_manager_ptr = (IFBEngineMemoryManager*)ifb_engine::memory_pointer_from_handle(memory_manager_handle);
 
-    return(result);
+    return(memory_manager_ptr); 
 }
 
-inline const ifb_b8 
-ifb_engine::memory_manager_page_commit(
-          IFBEngineMemoryManager& memory_manager_ref,
-    const ifb_u32                 page_start,
-    const ifb_u32                 page_count) {
+inline IFBEngineArenaTable* 
+ifb_engine::memory_manager_get_arena_table(
+    ifb_void) {
 
-    //get the page start
-    const ifb_memory page_start_pointer = ifb_engine::memory_reservation_page_start_pointer(
-        memory_manager_ref.reservation,
-        page_start);
+    //get the memory manager_handle
+    const ifb_u32 memory_manager_handle = ifb_engine::core_manager_handle_memory();
 
-    //get the total size of the pages
-    const ifb_size pages_size = ifb_engine::memory_reservation_pages_size(
-        memory_manager_ref.reservation,
-        page_count);
+    //cast it to the pointer
+    IFBEngineMemoryManager* memory_manager_ptr = ifb_engine::memory_manager_pointer_from_handle(memory_manager_handle);     
 
-    //commit the pages
-    const ifb_memory commit = ifb_engine::platform_memory_pages_commit(
-        page_start_pointer,
-        pages_size);
+    //get the arena table pointer
+    IFBEngineArenaTable* arena_table_ptr = ifb_engine::arena_table_pointer_from_handle(memory_manager_ptr->handle_arena_table);        
 
     //we're done
-    //we succeeded if the commit is the same as the page start
-    return(commit == page_start_pointer);
-}
-
-inline const ifb_b8 
-ifb_engine::memory_manager_page_decommit(
-          IFBEngineMemoryManager& memory_manager_ref,
-    const ifb_u32                 page_start,
-    const ifb_u32                 page_count) {
-
-    //get the page start
-    const ifb_memory page_start_pointer = ifb_engine::memory_reservation_page_start_pointer(
-        memory_manager_ref.reservation,
-        page_start);
-
-    //get the total size of the pages
-    const ifb_size pages_size = ifb_engine::memory_reservation_page_count_aligned(
-        memory_manager_ref.reservation,
-        page_count);
-
-    //decommit the pages
-    const ifb_b8 decommit_result = ifb_engine::platform_memory_pages_decommit(
-        page_start_pointer,
-        pages_size);
-
-    //we're done
-    return(decommit_result);
-
+    return(arena_table_ptr);
 }

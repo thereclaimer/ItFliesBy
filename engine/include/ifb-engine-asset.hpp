@@ -1,8 +1,6 @@
 #ifndef IFB_ENGINE_ASSET_HPP
 #define IFB_ENGINE_ASSET_HPP
 
-#include <r-libs.hpp>
-
 #include "ifb-engine.hpp"
 
 /**********************************************************************************/
@@ -71,26 +69,21 @@ enum IFBEngineAssetShaderId_ {
 /* ASSET                                                                          */
 /**********************************************************************************/
 
-struct IFBEngineAssetHandle {
-    IFBEngineAssetId asset_id;
-    struct {
-        IFBEngineAssetTableIndexFile      file;
-        IFBEngineAssetTableIndexHeader    header;
-        IFBEngineAssetTableIndexDataBlock data_block;
-    } asset_table_indexes;
+struct IFBEngineAsset {
+    ifb_u32 header_index;
+    ifb_u32 file_index;
+    ifb_u32 data_index;
 };
 
 namespace ifb_engine {
 
-    ifb_external const ifb_b8 asset_get_handle(IFBEngineAssetHandle& asset_handle_ref);
-
-    ifb_external const ifb_b8     asset_is_valid                   (const IFBEngineAssetId asset_id);
-    ifb_external const ifb_b8     asset_data_is_loaded             (const IFBEngineAssetId asset_id);
-    ifb_external const ifb_size   asset_data_size                  (const IFBEngineAssetId asset_id);
-    ifb_external const ifb_memory asset_data_load                  (const IFBEngineAssetId asset_id);
-    ifb_external const ifb_memory asset_data_unload                (const IFBEngineAssetId asset_id);
-    ifb_external const ifb_timems asset_data_time_ms_last_accessed (const IFBEngineAssetId asset_id);
-    ifb_external const ifb_timems asset_data_time_ms_loaded        (const IFBEngineAssetId asset_id);
+    ifb_api const ifb_b8     asset_is_valid                   (const IFBEngineAssetId asset_id);
+    ifb_api const ifb_b8     asset_data_is_loaded             (const IFBEngineAssetId asset_id);
+    ifb_api const ifb_size   asset_data_size                  (const IFBEngineAssetId asset_id);
+    ifb_api const ifb_memory asset_data_load                  (const IFBEngineAssetId asset_id);
+    ifb_api const ifb_memory asset_data_unload                (const IFBEngineAssetId asset_id);
+    ifb_api const ifb_timems asset_data_time_ms_last_accessed (const IFBEngineAssetId asset_id);
+    ifb_api const ifb_timems asset_data_time_ms_loaded        (const IFBEngineAssetId asset_id);
 };
 
 #endif //IFB_ENGINE_ASSET_HPP

@@ -2,7 +2,6 @@
 #define IFB_ENGINE_INTERNAL_TOOLS_HPP
 
 #include "ifb-engine.hpp"
-#include "ifb-engine-internal-core.hpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -18,19 +17,19 @@ struct IFBEngineToolsAssetFileBuilder;
 /**********************************************************************************/
 
 struct IFBEngineToolsMemoryAssets {
-    IFBEngineMemoryArenaPoolHandle asset_builder_arena_pool_handle;
+    ifb_u32 asset_builder_arena_pool_handle;
 };
 
 struct IFBEngineToolsMemory {
-    IFBEngineMemoryArenaPoolHandle tools_arena_pool_handle;
+    ifb_u32 tools_arena_pool_handle;
 };
 
 namespace ifb_engine_tools {
 
-    const ifb_b8 
-    memory_reserve(
-        IFBEngineCoreMemory&         in_memory_core_ref,
-        IFBEngineToolsMemory&       out_memory_tools_ref);
+    // const ifb_b8 
+    // memory_reserve(
+    //     IFBEngineMemory*            in_memory_ptr,
+    //     IFBEngineToolsMemory&       out_memory_tools_ref);
 };
 
 /**********************************************************************************/
@@ -67,11 +66,11 @@ namespace ifb_engine_tools {
 };
 
 struct IFBEngineToolsAssetFileBuilder {
-    r_b8                       open;
-    r_b8                       selected_file;
+    ifb_b8                     open;
+    ifb_b8                     selected_file;
     IFBEngineAssetFileId       selected_file_id;
-    IFBEngineMemoryArenaHandle file_arena_csv;
-    IFBEngineMemoryArenaHandle file_arena_asset;
+    ifb_u32                    file_arena_csv;
+    ifb_u32                    file_arena_asset;
     ifb_char                   file_path_csv   [IFB_ENGINE_TOOLS_ASSET_FILE_BUILDER_PATH_LENGTH_MAX];
     ifb_char                   file_path_asset [IFB_ENGINE_TOOLS_ASSET_FILE_BUILDER_PATH_LENGTH_MAX];    
 };
@@ -105,13 +104,13 @@ struct IFBEngineTools {
 
 namespace ifb_engine_tools {
 
-    ifb_internal const r_b8 
-    tools_start_up(
-        IFBEngineCoreMemory& in_core_memory,
-        IFBEngineTools&     out_tools_ref);
+    // ifb_internal const r_b8 
+    // tools_start_up(
+    //     IFBEngineMemory* in_memory_ptr,
+    //     IFBEngineTools&     out_tools_ref);
     
-    ifb_internal const r_b8 tools_render_all (IFBEngineTools& tools_ref);
-    ifb_internal const r_b8 tools_menu_bar   (IFBEngineTools& tools_ref);
+    ifb_internal const ifb_b8 tools_render_all (IFBEngineTools& tools_ref);
+    ifb_internal const ifb_b8 tools_menu_bar   (IFBEngineTools& tools_ref);
 };
 
 #endif //IFB_ENGINE_INTERNAL_TOOLS_HPP

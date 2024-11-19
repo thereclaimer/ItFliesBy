@@ -247,7 +247,7 @@ itfliesby_platform_win32_main(
         window_class.lpszClassName,
         "It Flies By",
         WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-        (GetSystemMetrics(SM_CXSCREEN) - 1024) / 2, // X position (centered)
+        (GetSystemMetrics(SM_CXSCREEN) - 1024) / 2, // X  position (centered)
         (GetSystemMetrics(SM_CYSCREEN) - 768) / 2, // Y position (centered)
         1024,
         768,

@@ -1,102 +1,134 @@
 #pragma once
 
-#include "ifb-engine-memory.cpp"
-#include "ifb-engine-core.cpp"
-#include "ifb-engine-asset.cpp"
-#include "ifb-engine-tools.cpp"
-
-
 #include "ifb-engine-internal.hpp"
 
-/**********************************************************************************/
-/* FORWARD DECLARATIONS                                                           */
-/**********************************************************************************/
-namespace ifb_engine {
+#include "ifb-engine-core.cpp"
+#include "ifb-engine-memory.cpp"
+#include "ifb-engine-algorithms.cpp"
+#include "ifb-engine-asset.cpp"
+#include "ifb-engine-tag.cpp"
+#include "ifb-engine-allocator-manager.cpp"
+#include "ifb-engine-rendering.cpp"
+#include "ifb-engine-platform.cpp"
 
-    const ifb_b8 engine_imgui_validate(ImGuiContext* imgui_context);
-};
-
 /**********************************************************************************/
-/* EXTERNAL                                                                       */
+/* API                                                                            */
 /**********************************************************************************/
 
-ifb_external const ifb_b8 
-ifb_engine::engine_startup(
-    ImGuiContext*            imgui_context,
-    IFBEnginePlatformApi     platform_api) {
+ifb_api const ifb_b8
+ifb_engine::engine_create_context(
+    IFBEnginePlatformInfo& platform_info_ref,
+    IFBEnginePlatformApi&  platform_api_ref) {
 
+    //validate the arguments
     ifb_b8 result = true;
+    result &= platform_info_ref.reservation_start != NULL;
+    result &= platform_info_ref.reservation_size  >= ifb_engine::math_size_gigabytes(4);
+    result &= platform_info_ref.page_size         >= sizeof(IFBEngineContext);
+    result &= ifb_engine::platform_api_validate(platform_api_ref);
+    if (!result) {
+        return(false);
+    }
 
-    //platform api
-    result &= ifb_engine::platform_api_validate(platform_api);
+    //commit the first page for the context
+    const ifb_memory context_memory = ifb_engine::platform_memory_pages_commit(platform_info_ref.reservation_start,platform_info_ref.page_size);
+    if (context_memory != platform_info_ref.reservation_start) {
+        return(false);
+    }
 
-    //memory manager
-    result &= ifb_engine::memory_manager_start_up(_ifb_engine.memory_manager);
+    //if that worked, cast the struct
+    _engine_context = (IFBEngineContext*)context_memory;     
     
-    //engine core
-    result &= ifb_engine::core_initialize(_ifb_engine.core);
-    
-    //imgui
-    result &= ifb_engine::engine_imgui_validate(imgui_context);
-    
+    //set the memory info
+    _engine_context->platform.memory_page_size        = platform_info_ref.page_size;
+    _engine_context->platform.memory_page_count_total = platform_info_ref.reservation_size / platform_info_ref.page_size;
+    _engine_context->platform.memory_page_count_used  = 1;
 
-    //asset manager
-    result &= ifb_engine::asset_manager_start_up(
-        _ifb_engine.core.memory,
-        _ifb_engine.asset_manager);
+    //initialize the engine core
+    result &= ifb_engine::core_routine_initialize();
 
-    //debug tools
-    result &= ifb_engine_tools::tools_start_up(
-        _ifb_engine.core.memory,
-        _ifb_engine.tools);
+    //update state
+    _engine_context->state = result
+        ? IFBEngineState_NotRunning
+        : IFBEngineState_Fatal;          
 
     //we're done
     return(result);
 }
 
-ifb_external const ifb_b8
-ifb_engine::engine_update(
-    const IFBEngineHandle ifb_engine_handle) {
+ifb_api const ifb_b8
+ifb_engine::engine_startup(
+    ifb_void) {
 
-    if (!ifb_engine_handle) {
-        return(false);
-    }
+    //set startup state
+    _engine_context->state = IFBEngineState_Startup;
 
-    IFBEngine* engine_ptr = (IFBEngine*)ifb_engine_handle;
+    //execute startup routine
+    ifb_b8 result = ifb_engine::core_routine_startup();
 
-    ifb_engine_tools::tools_render_all(engine_ptr->tools);
+    //update engine state
+    _engine_context->state = (result) 
+        ? IFBEngineState_Idle
+        : IFBEngineState_Fatal;
 
-    return(true);
+    //we're done
+    return(result);
 }
 
+ifb_api const ifb_b8
+ifb_engine::engine_frame_execute(
+    ifb_void) {
 
-ifb_external const ifb_b8
+    ifb_b8 result = true;
+
+    result &= ifb_engine::core_routine_frame_start ();
+    result &= ifb_engine::core_routine_frame_render();
+
+    return(result);
+}
+
+ifb_api const ifb_b8
 ifb_engine::engine_shutdown(
-    const IFBEngineHandle ifb_engine_handle) {
-
-    //TODO(SAM)
+    ifb_void) {
 
     return(true);
 }
 
-/**********************************************************************************/
-/* INLINE                                                                         */
-/**********************************************************************************/
+ifb_api const ifb_b8
+ifb_engine::engine_destroy_context(
+    ifb_void) {
 
-inline const ifb_b8 
-ifb_engine::engine_imgui_validate(
-    ImGuiContext* imgui_context) {
-
-    if (!imgui_context) {
-        return(false);
-    }
-
-    //set the imgui context
-    ImGui::SetCurrentContext(imgui_context);
-
-    //set the imgui font
-    ImGuiIO& imgui_io_ref   = ImGui::GetIO();
-    ImFont*  imgui_font_ptr = imgui_io_ref.Fonts->AddFontFromMemoryCompressedBase85TTF(IFB_ENGINE_FONT_UI_SEGOEUI,18.0f);
-
-    return (imgui_font_ptr != NULL);
+    return(true);
 }
+
+ifb_api const ifb_memory
+ifb_engine::engine_platform_alloc(
+    const ifb_u32 size) {
+
+    //get the frame stack
+    const ifb_index_stack_t platform_stack = ifb_engine::core_stack_allocator_platform();
+    
+    //do the push
+    const ifb_memory stack_memory = ifb_engine::stack_allocator_push_memory(platform_stack,size);
+    
+    //we're done
+    return(stack_memory);
+}
+
+ifb_api const ifb_memory
+ifb_engine::engine_frame_alloc(
+    const ifb_u32 size) {
+
+    //get the frame stack
+    const ifb_index_stack_t frame_stack = ifb_engine::core_stack_allocator_frame();
+    
+    //do the push
+    const ifb_memory stack_memory = ifb_engine::stack_allocator_push_memory(frame_stack,size);
+    
+    //we're done
+    return(stack_memory);
+}
+
+/**********************************************************************************/
+/* INTERNAL                                                                       */
+/**********************************************************************************/

@@ -1,98 +1,72 @@
-#ifndef IFB_ENGINE_CORE_HPP
-#define IFB_ENGINE_CORE_HPP
-
-#include <r-libs.hpp>
+#ifndef IFB_ENGINE_INTERNAL_CORE_HPP
+#define IFB_ENGINE_INTERNAL_CORE_HPP
 
 #include "ifb-engine.hpp"
 
 /**********************************************************************************/
-/* CORE MEMORY                                                                    */
+/* ENGINE CORE                                                                            */
 /**********************************************************************************/
 
-#define IFB_ENGINE_CORE_MEMORY_CSTRING_MAX_SIZE 256
-#define IFB_ENGINE_CORE_MEMORY_WSTRING_MAX_SIZE 128
-
-#define IFB_ENGINE_CORE_MEMORY_ARENA_TAG            "ENGINE CORE"
-#define IFB_ENGINE_CORE_MEMORY_ARENA_SIZE_KILOBYTES 64
-#define IFB_ENGINE_CORE_MEMORY_ARENA_COUNT          2
-
-/**********************************************************************************/
-/* CORE MEMORY                                                                    */
-/**********************************************************************************/
-
-struct IFBEngineCoreMemory {
-    ifb_size w_str_size_max;
-    ifb_size c_str_size_max;
-    ifb_size arena_size;
-    ifb_size arena_count;
-    struct {
-        IFBEngineMemoryArenaHandle system;
-        IFBEngineMemoryArenaHandle frame;
-    } arenas;
-    IFBEngineMemoryArenaPoolHandle arena_pool;
+struct IFBEngineCoreManagers {
+    ifb_handle_memory_t memory;
+    ifb_handle_memory_t tag;
+    ifb_handle_memory_t allocators;
+    ifb_handle_memory_t assets;
 };
 
-namespace ifb_engine {
-
-    //--------------------
-    // core memory
-    //--------------------
-
-    const ifb_b8 core_memory_reserve(IFBEngineCoreMemory& core_memory_ref);
-
-    //--------------------
-    // system arena
-    //--------------------
-
-    const ifb_memory core_memory_system_arena_push         (IFBEngineCoreMemory& core_memory_ref, const ifb_size size);
-    const ifb_memory core_memory_system_arena_push         (const ifb_size size);
-    const ifb_memory core_memory_system_arena_push_aligned (IFBEngineCoreMemory& core_memory_ref, const ifb_size size, const ifb_size alignment);
-    const ifb_memory core_memory_system_arena_push_aligned (const ifb_size size, const ifb_size alignment);
-    const ifb_cstr   core_memory_system_arena_push_cstring (const ifb_cstr string);
-
-    //--------------------
-    // frame arena
-    //--------------------
-
-    const ifb_memory core_memory_frame_arena_push         (IFBEngineCoreMemory& core_memory_ref, const ifb_size size);
-    const ifb_memory core_memory_frame_arena_push         (const ifb_size size);
-    const ifb_memory core_memory_frame_arena_push_aligned (IFBEngineCoreMemory& core_memory_ref, const ifb_size size, const ifb_size alignment);
-    const ifb_memory core_memory_frame_arena_push_aligned (const ifb_size size, const ifb_size alignment);
-    const ifb_cstr   core_memory_frame_arena_push_cstring (const ifb_cstr string);
+struct IFBEngineCoreSystems {
+    ifb_handle_memory_t physics;
+    ifb_handle_memory_t rendering;
 };
 
-
-#define ifb_engine_core_arena_push_struct(struct)        \
-    (struct*)ifb_engine::core_system_arena_push_aligned( \
-        sizeof(struct),                                  \
-        alignof(struct))                                 \
-
-#define ifb_engine_core_arena_push_array(count,type) \
-    (type*)ifb_engine::core_system_arena_push(       \
-        sizeof(type) * count)                        \
-
-#define ifb_engine_core_arena_ref_push_struct(core_memory_ref,struct) \
-    (struct*)ifb_engine::core_system_arena_push_aligned(              \
-        core_memory_ref,                                              \
-        sizeof(struct),                                               \
-        alignof(struct))                                              \
-
-#define ifb_engine_core_arena_ref_push_array(core_memory_ref,count,type) \
-    (type*)ifb_engine::core_system_arena_push(                           \
-        core_memory_ref,                                                 \
-        sizeof(type) * count)                                            \
-
-/**********************************************************************************/
-/* ENGINE CORE                                                                    */
-/**********************************************************************************/
+struct IFBEngineCoreStackAllocators {
+    ifb_index_stack_t frame;
+    ifb_index_stack_t platform;
+    ifb_index_stack_t window;
+};
 
 struct IFBEngineCore {
-    IFBEngineCoreMemory memory;
+    IFBEngineCoreManagers        managers;
+    IFBEngineCoreStackAllocators stack_allocators;
 };
 
 namespace ifb_engine {
 
-    const ifb_b8 core_initialize (IFBEngineCore& core_ref);
+    IFBEngineCore* core_pointer_from_context (ifb_void);
+    
+    const ifb_handle_memory_t core_manager_handle_memory     (ifb_void);
+    const ifb_handle_memory_t core_manager_handle_tag        (ifb_void);
+    const ifb_handle_memory_t core_manager_handle_allocators (ifb_void);
+    const ifb_handle_memory_t core_manager_handle_assets     (ifb_void);
+
+    const ifb_index_stack_t core_stack_allocator_platform (ifb_void);
+    const ifb_index_stack_t core_stack_allocator_frame    (ifb_void);
 };
 
-#endif //IFB_ENGINE_CORE_HPP
+/**********************************************************************************/
+/* ENGINE CORE ROUTINES                                                           */
+/**********************************************************************************/
+
+namespace ifb_engine {
+
+    const ifb_b8 core_routine_initialize   (ifb_void);    
+    const ifb_b8 core_routine_startup      (ifb_void);
+    const ifb_b8 core_routine_frame_start  (ifb_void);
+    const ifb_b8 core_routine_frame_render (ifb_void);
+};
+
+/**********************************************************************************/
+/* ENGINE CORE TASKS                                                              */
+/**********************************************************************************/
+
+namespace ifb_engine {
+
+    const ifb_b8 core_task_create_core_handle      (ifb_handle_memory_t&          engine_core_handle_ref);
+    const ifb_b8 core_task_create_managers         (IFBEngineCoreManagers&        engine_core_managers_ref);
+    const ifb_b8 core_task_create_stack_allocators (IFBEngineCoreStackAllocators& engine_core_stack_allocators_ref);
+    const ifb_b8 core_task_create_and_show_window  (ifb_void);
+    const ifb_b8 core_task_window_frame_start (ifb_void);
+    const ifb_b8 core_task_window_frame_render (ifb_void);
+};
+
+#endif //IFB_ENGINE_INTERNAL_CORE_HPP
