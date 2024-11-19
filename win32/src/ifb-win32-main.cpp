@@ -22,8 +22,9 @@ wWinMain(
  
     //initialize the platform api
     IFBEnginePlatformApi engine_platform_api;
-    ifb_win32::memory_api_initialize(engine_platform_api.memory);
-    ifb_win32::window_api_initialize(engine_platform_api.window);
+    ifb_win32::memory_api_initialize (engine_platform_api.memory);
+    ifb_win32::window_api_initialize (engine_platform_api.window);
+    ifb_win32::monitor_api_initialize(engine_platform_api.monitor);
 
     //create the engine context
     if (!ifb_engine::engine_create_context(

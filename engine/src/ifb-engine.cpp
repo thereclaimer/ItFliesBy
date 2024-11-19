@@ -9,7 +9,7 @@
 #include "ifb-engine-tag.cpp"
 #include "ifb-engine-allocator-manager.cpp"
 #include "ifb-engine-rendering.cpp"
-
+#include "ifb-engine-platform.cpp"
 
 /**********************************************************************************/
 /* API                                                                            */
@@ -41,9 +41,9 @@ ifb_engine::engine_create_context(
     _engine_context = (IFBEngineContext*)context_memory;     
     
     //set the memory info
-    _engine_context->platform.page_size        = platform_info_ref.page_size;
-    _engine_context->platform.page_count_total = platform_info_ref.reservation_size / platform_info_ref.page_size;
-    _engine_context->platform.page_count_used  = 1;
+    _engine_context->platform.memory_page_size        = platform_info_ref.page_size;
+    _engine_context->platform.memory_page_count_total = platform_info_ref.reservation_size / platform_info_ref.page_size;
+    _engine_context->platform.memory_page_count_used  = 1;
 
     //initialize the engine core
     result &= ifb_engine::core_routine_initialize();

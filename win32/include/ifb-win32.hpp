@@ -100,6 +100,19 @@ namespace ifb_win32 {
 };
 
 /**********************************************************************************/
+/* MONITOR                                                                        */
+/**********************************************************************************/
+
+namespace ifb_win32 {
+
+    ifb_internal const ifb_b8  monitor_size       (IFBEnginePlatformMonitorSize& monitor_size_ref);
+    ifb_internal const ifb_u32 monitor_refresh_hz (ifb_void);
+    
+    ifb_void monitor_api_initialize(IFBEnginePlatformMonitor& monitor_api_ref);
+
+};
+
+/**********************************************************************************/
 /* FILES                                                                          */
 /**********************************************************************************/
 

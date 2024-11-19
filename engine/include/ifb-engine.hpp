@@ -25,26 +25,19 @@ enum IFBEngineState_ {
     IFBEngineState_FrameExecute = 5,
 };
 
-typedef ifb_u32 IFBEngineState;
-
-struct IFBEnginePlatform { 
-    ifb_u32 page_size;
-    ifb_u32 page_count_total;
-    ifb_u32 page_count_used;
-};
+typedef ifb_u32 ifb_engine_state_t;
 
 #define IFB_ENGINE_CORE_STACK_SIZE                   ifb_engine_macro_size_kilobytes(64)
 #define IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_FRAME    "CORE FRAME STACK"
 #define IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_PLATFORM "CORE PLATFORM STACK"
 #define IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_WINDOW   "CORE WINDOW STACK"
 
-
 struct IFBEngineContext {
-    IFBEnginePlatform  platform;
-    IFBEngineUserInput user_input;
-    IFBEngineState     state;
-    ifb_timems         time_initialized;
-    ifb_u32            core_handle;
+    IFBEnginePlatform         platform;
+    IFBEngineUserInput        user_input;
+    ifb_engine_state_t        state;
+    ifb_timems                time_initialized;
+    ifb_u32                   core_handle;
 };
 
 #define IFB_ENGINE_MINIMUM_MEMORY_REQUIREMENT_4GB ifb_engine_macro_size_gigabytes(4)

@@ -46,9 +46,11 @@ if not exist %path_build%\lib mkdir %path_build%\lib
                       /I engine\src\assets     ^
                       /I engine\src\core       ^
                       /I engine\src\memory     ^
+                      /I engine\src\platform   ^
                       /I engine\src\rendering  ^
                       /I engine\src\tag        ^
                       /I engine\src\tools      ^
+                      /I common                ^
                       /I %path_vcpkg_include%
 
 @set cl_source=       engine\src\ifb-engine.cpp

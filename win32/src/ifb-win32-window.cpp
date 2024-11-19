@@ -222,7 +222,6 @@ ifb_win32::window_callback(
                 l_param);
 
     return(wm_message_result);
-
 }
 
 /**********************************************************************************/
@@ -234,25 +233,25 @@ ifb_win32::window_on_wm_size(
     const WPARAM w_param, 
     const LPARAM l_param) {
 
-    IFBWin32Window& window_ref = ifb_win32::context_window_ref();
+    const ifb_u32 window_width  = LOWORD(l_param);
+    const ifb_u32 window_height = HIWORD(l_param);
 
-    window_ref.width  = LOWORD(l_param);
-    window_ref.height = HIWORD(l_param);
+    ifb_engine::platform_window_update_position(window_width, window_height);
 
     return(S_OK);   
 }
 
-inline const LRESULT 
+inline const LRESULT
 ifb_win32::window_on_wm_move(
     const WPARAM w_param, 
     const LPARAM l_param) {
 
-    IFBWin32Window& window_ref = ifb_win32::context_window_ref();
+    const ifb_u32 window_position_x = LOWORD(l_param);
+    const ifb_u32 window_position_y = HIWORD(l_param);
 
-    window_ref.pos_x = LOWORD(l_param);
-    window_ref.pos_y = HIWORD(l_param);
+    ifb_engine::platform_window_update_size(window_position_x, window_position_y);
 
-    return(S_OK);   
+    return(S_OK);
 }
 
 inline const LRESULT 

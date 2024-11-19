@@ -69,6 +69,19 @@ ifb_engine::core_task_create_and_show_window(
 
     ifb_b8 result = true;
 
+    //get monitor size
+    IFBEnginePlatformMonitorSize monitor_size;
+    ifb_engine::platform_monitor_size(monitor_size);
+
+    //get monitor aspect ratio
+    const ifb_engine_aspect_ratio_t aspect_ratio = ifb_engine::aspect_ratio_lookup(
+        monitor_size.width,
+        monitor_size.height);
+
+    //determine window size
+    
+
+
     const ifb_cstr window_title      = "It Flies By";
     const ifb_u32  window_width      = 1920;
     const ifb_u32  window_height     = 1080;

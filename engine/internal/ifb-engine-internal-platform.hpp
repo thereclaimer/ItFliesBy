@@ -3,6 +3,16 @@
 
 #include "ifb-engine.hpp"
 
+/**********************************************************************************/
+/* PLATFORM                                                                       */
+/**********************************************************************************/
+
+
+
+/**********************************************************************************/
+/* PLATFORM API                                                                   */
+/**********************************************************************************/
+
 namespace ifb_engine {
 
     //system
@@ -71,7 +81,10 @@ namespace ifb_engine {
             ifb_engine::platform_window_frame_render   &&
             ifb_engine::platform_window_show           &&
             ifb_engine::platform_window_opengl_init    &&
-            ifb_engine::platform_window_imgui_init     //&&
+            ifb_engine::platform_window_imgui_init     &&
+            ifb_engine::platform_monitor_size          &&
+            ifb_engine::platform_monitor_refresh_hz
+
             // ifb_engine::platform_file_open_read_only           &&
             // ifb_engine::platform_file_open_read_write          &&
             // ifb_engine::platform_file_close                    &&

@@ -85,6 +85,12 @@ struct IFBEnginePlatformWindow {
     funcptr_ifb_engine_platform_window_imgui_init   imgui_init;
 };
 
+namespace ifb_engine {
+
+    ifb_api ifb_void platform_window_update_size     (const ifb_u32 window_width,      const ifb_u32 window_height);
+    ifb_api ifb_void platform_window_update_position (const ifb_u32 window_position_x, const ifb_u32 window_position_y);
+};
+
 /**********************************************************************************/
 /* MONITOR                                                                        */
 /**********************************************************************************/
@@ -198,5 +204,15 @@ struct IFBEnginePlatformInfo {
     ifb_memory reservation_start;
 };
 
+
+struct IFBEnginePlatform {
+    ifb_u32 memory_page_size;
+    ifb_u32 memory_page_count_total;
+    ifb_u32 memory_page_count_used;
+    ifb_u32 window_width;
+    ifb_u32 window_height;
+    ifb_u32 window_position_x;
+    ifb_u32 window_position_y;
+};
 
 #endif //IFB_ENGINE_PLATFORM_HPP
