@@ -1,3 +1,5 @@
+#ifndef IFB_COMMON_TYPES_HPP
+#define IFB_COMMON_TYPES_HPP
 
 #include <cstdint>
 
@@ -6,42 +8,51 @@
 /**********************************************************************************/
 
 //signed integers
-typedef int8_t  ifb_s8_t;
-typedef int16_t ifb_s16_t;
-typedef int32_t ifb_s32_t;
-typedef int64_t ifb_s64_t;
+typedef int8_t  ifb_s8;
+typedef int16_t ifb_s16;
+typedef int32_t ifb_s32;
+typedef int64_t ifb_s64;
 
 //unsigned integers
-typedef uint8_t  ifb_u8_t;
-typedef uint16_t ifb_u16_t;
-typedef uint32_t ifb_u32_t;
-typedef uint64_t ifb_u64_t;
+typedef uint8_t  ifb_u8;
+typedef uint16_t ifb_u16;
+typedef uint32_t ifb_u32;
+typedef uint64_t ifb_u64;
 
 //floats
-typedef float  ifb_f32_t;
-typedef double ifb_f64_t;
+typedef float  ifb_f32;
+typedef double ifb_f64;
 
 //booleans
-typedef int8_t  ifb_b8_t;
-typedef int16_t ifb_b16_t;
-typedef int32_t ifb_b32_t;
-typedef int64_t ifb_b64_t;
+typedef int8_t  ifb_b8;
+typedef int16_t ifb_b16;
+typedef int32_t ifb_b32;
+typedef int64_t ifb_b64;
 
 //strings
-typedef char     ifb_char_t;
-typedef wchar_t  ifb_wchar_t;
-typedef char*    ifb_cstr_p;
-typedef wchar_t* ifb_wstr_p;
+typedef char     ifb_char;
+typedef wchar_t  ifb_wchar;
+typedef char*    ifb_cstr;
+typedef wchar_t* ifb_wstr;
 
 //memory
-typedef void       ifb_void_t;
-typedef void*      ifb_handle_p;
-typedef uint8_t    ifb_byte_u8t;
-typedef uint8_t*   ifb_memory_u8p;
-typedef size_t     ifb_size_u64t;
-typedef ifb_u32_t  ifb_index_u32t;
-typedef intptr_t   ifb_address_u64t;
-typedef uint32_t   ifb_page_u32t;
+typedef void       ifb_void;
+typedef void*      ifb_handle;
+typedef uint8_t    ifb_byte;
+typedef uint8_t*   ifb_memory;
+typedef size_t     ifb_size;
+typedef ifb_u32    ifb_index;
+typedef intptr_t   ifb_address;
+typedef uint32_t   ifb_page;
 
 //time
-typedef uint64_t ifb_timems_u64t;
+typedef uint64_t ifb_timems;
+
+struct IFBDimensions {
+    ifb_u32 width;
+    ifb_u32 height;
+    ifb_u32 position_x;
+    ifb_u32 position_y;
+};
+
+#endif //IFB_COMMON_TYPES_HPP

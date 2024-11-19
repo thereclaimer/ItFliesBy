@@ -1,19 +1,16 @@
 #ifndef IFB_ENGINE_HPP
 #define IFB_ENGINE_HPP
 
-#include "ifb-engine-types.hpp"
-#include "ifb-engine-macros.hpp"
+#include <ifb-common.hpp>
+
 #include "ifb-engine-math.hpp"
-#include "ifb-engine-user-input.hpp"
 #include "ifb-engine-memory.hpp"
-#include "ifb-engine-scopes.hpp"
 #include "ifb-engine-asset.hpp"
 #include "ifb-engine-font-ui.hpp"
 #include "ifb-engine-platform.hpp"
 #include "ifb-engine-algorithms.hpp"
 #include "ifb-engine-tag.hpp"
 #include "ifb-engine-allocators.hpp"
-#include "ifb-engine-color.hpp"
 #include "ifb-engine-rendering.hpp"
 
 enum IFBEngineState_ {
@@ -27,20 +24,20 @@ enum IFBEngineState_ {
 
 typedef ifb_u32 ifb_engine_state_t;
 
-#define IFB_ENGINE_CORE_STACK_SIZE                   ifb_engine_macro_size_kilobytes(64)
+#define IFB_ENGINE_CORE_STACK_SIZE                   ifb_macro_size_kilobytes(64)
 #define IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_FRAME    "CORE FRAME STACK"
 #define IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_PLATFORM "CORE PLATFORM STACK"
 #define IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_WINDOW   "CORE WINDOW STACK"
 
 struct IFBEngineContext {
-    IFBEnginePlatform         platform;
-    IFBEngineUserInput        user_input;
-    ifb_engine_state_t        state;
-    ifb_timems                time_initialized;
-    ifb_u32                   core_handle;
+    IFBEnginePlatform  platform;
+    IFBUserInput       user_input;
+    ifb_engine_state_t state;
+    ifb_timems         time_initialized;
+    ifb_u32            core_handle;
 };
 
-#define IFB_ENGINE_MINIMUM_MEMORY_REQUIREMENT_4GB ifb_engine_macro_size_gigabytes(4)
+#define IFB_ENGINE_MINIMUM_MEMORY_REQUIREMENT_4GB ifb_macro_size_gigabytes(4)
 
 namespace ifb_engine {
 

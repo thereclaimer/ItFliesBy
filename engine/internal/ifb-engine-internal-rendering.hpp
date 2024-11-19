@@ -4,8 +4,8 @@
 #include "ifb-engine.hpp"
 
 struct IFBEngineRenderingSystem {
-    ifb_color_32_format_t color_format;
-    ifb_color_32_t        color_clear;
+    IFBColor32FormatType color_format;
+    ifb_color_32_hex_t   color_clear;
 };
 
 namespace ifb_engine {

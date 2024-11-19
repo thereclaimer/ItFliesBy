@@ -1,7 +1,8 @@
 #ifndef IFB_ENGINE_TAG_HPP
 #define IFB_ENGINE_TAG_HPP
 
-#include "ifb-engine-types.hpp"
+#include <ifb-common.hpp>
+
 #include "ifb-engine-algorithms.hpp"
 
 #define IFB_ENGINE_TAG_LENGTH    32
@@ -12,7 +13,7 @@ typedef ifb_index ifb_index_tag_t;
 struct IFBEngineTag {
     ifb_index_tag_t    tag_index;
     ifb_cstr           tag_value;
-    IFBEngineHashValue tag_hash;
+    IFBHashValue       tag_hash;
 };
 
 namespace ifb_engine {

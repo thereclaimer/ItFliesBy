@@ -1,7 +1,7 @@
 #ifndef IFB_ENGINE_MATH_HPP
 #define IFB_ENGINE_MATH_HPP
 
-#include "ifb-engine-types.hpp"
+#include <ifb-common.hpp>
 
 namespace ifb_engine {
 

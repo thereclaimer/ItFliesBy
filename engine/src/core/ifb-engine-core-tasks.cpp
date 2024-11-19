@@ -8,7 +8,7 @@ ifb_engine::core_task_create_core_handle(
     ifb_handle_memory_t& engine_core_handle_ref) {
 
     //get page
-    const ifb_u32 core_size       = ifb_engine_macro_align_size_struct(IFBEngineCore);
+    const ifb_u32 core_size       = ifb_macro_align_size_struct(IFBEngineCore);
     const ifb_u32 core_page_count = ifb_engine::memory_page_count(core_size);
     const ifb_u32 core_page_start = ifb_engine::memory_page_commit(core_page_count);
     
@@ -69,33 +69,22 @@ ifb_engine::core_task_create_and_show_window(
 
     ifb_b8 result = true;
 
-    //get monitor size
-    IFBEnginePlatformMonitorSize monitor_size;
-    ifb_engine::platform_monitor_size(monitor_size);
+    //get default dimensions
+    IFBDimensions window_dimensions;
+    ifb_engine::platform_window_default_dimensions(window_dimensions);
 
-    //get monitor aspect ratio
-    const ifb_engine_aspect_ratio_t aspect_ratio = ifb_engine::aspect_ratio_lookup(
-        monitor_size.width,
-        monitor_size.height);
-
-    //determine window size
-    
-
-
-    const ifb_cstr window_title      = "It Flies By";
-    const ifb_u32  window_width      = 1920;
-    const ifb_u32  window_height     = 1080;
-    const ifb_u32  window_position_x = 0;
-    const ifb_u32  window_position_y = 0;
-
+    //create the window
     result &= ifb_engine::platform_window_create(
-        window_title,
-        window_width,
-        window_height,
-        window_position_x,
-        window_position_y);
-    
+        "It Flies By",
+        window_dimensions.width,
+        window_dimensions.height,
+        window_dimensions.position_x,
+        window_dimensions.position_y);
+
+    //create other contexts
     result &= ifb_engine::platform_window_opengl_init();
+
+    //show the window    
     result &= ifb_engine::platform_window_show();
 
     return(result);

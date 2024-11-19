@@ -1,8 +1,7 @@
 #ifndef IFB_ENGINE_PLATFORM_HPP
 #define IFB_ENGINE_PLATFORM_HPP
 
-#include "ifb-engine-types.hpp"
-
+#include <ifb-common.hpp>
 
 /**********************************************************************************/
 /* SYSTEM                                                                         */
@@ -100,11 +99,11 @@ struct IFBEnginePlatformMonitorSize {
     ifb_u32 height;
 }; 
 
-typedef ifb_b8
-(*funcptr_ifb_engine_platform_monitor_size) (
+typedef ifb_void
+(*funcptr_ifb_engine_platform_monitor_size)(
     IFBEnginePlatformMonitorSize& monitor_size_ref);
 
-typedef ifb_u32
+typedef const ifb_u32
 (*funcptr_ifb_engine_platform_monitor_refresh_hz)(
     ifb_void);
 

@@ -11,8 +11,8 @@ ifb_engine::memory_manager_startup(
     ifb_void) {
 
     //determine the size of all the systems
-    const ifb_u32 size_aligned_memory_manager = ifb_engine_macro_align_size_struct(IFBEngineMemoryManager); 
-    const ifb_u32 size_aligned_arena_table    = ifb_engine_macro_align_size_struct(IFBEngineArenaTable);
+    const ifb_u32 size_aligned_memory_manager = ifb_macro_align_size_struct(IFBEngineMemoryManager); 
+    const ifb_u32 size_aligned_arena_table    = ifb_macro_align_size_struct(IFBEngineArenaTable);
 
     //add all the sizes to get our total allocation size
     const ifb_u32 allocation_size =

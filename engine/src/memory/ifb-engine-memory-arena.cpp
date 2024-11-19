@@ -25,7 +25,7 @@ ifb_engine::arena_table_initialize(
 
     //calculate sizes
     const ifb_u32 arena_count       = IFB_ENGINE_MEMORY_ARENA_COUNT_MAX;
-    const ifb_u32 column_size       = ifb_engine_macro_size_array(ifb_u32,arena_count);
+    const ifb_u32 column_size       = ifb_macro_size_array(ifb_u32,arena_count);
     const ifb_u32 column_page_count = ifb_engine::memory_page_count(column_size);
 
     //commit column pages

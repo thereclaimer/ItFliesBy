@@ -4,9 +4,13 @@
 #include "ifb-engine.hpp"
 
 /**********************************************************************************/
-/* PLATFORM                                                                       */
+/* PLATFORM WINDOW                                                                */
 /**********************************************************************************/
 
+namespace ifb_engine {
+
+    ifb_void platform_window_default_dimensions (IFBDimensions& window_dimensions_ref);
+};
 
 
 /**********************************************************************************/

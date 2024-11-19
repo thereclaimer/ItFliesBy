@@ -35,7 +35,7 @@ wWinMain(
     }
 
     //allocate win32 struct
-    const ifb_u32 win32_size_aligned = ifb_engine_macro_align_size_struct(IFBWin32Context);
+    const ifb_u32 win32_size_aligned = ifb_macro_align_size_struct(IFBWin32Context);
     _ifb_win32_context_ptr = (IFBWin32Context*)ifb_engine::engine_platform_alloc(win32_size_aligned);
     
     //set the arguments

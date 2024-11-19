@@ -74,7 +74,7 @@ ifb_engine::memory_size_page_aligned(
     const ifb_u32 size) {
 
     const ifb_u32 page_size    = ifb_engine::context_platform_page_size();
-    const ifb_u32 size_aligned = ifb_engine_macro_align_a_to_b(size,page_size);    
+    const ifb_u32 size_aligned = ifb_macro_align_a_to_b(size,page_size);    
 
     return(size_aligned);
 }
@@ -84,7 +84,7 @@ ifb_engine::memory_page_count(
     const ifb_u32 size) {
 
     const ifb_u32 page_size    = ifb_engine::context_platform_page_size();
-    const ifb_u32 size_aligned = ifb_engine_macro_align_a_to_b(size,page_size);    
+    const ifb_u32 size_aligned = ifb_macro_align_a_to_b(size,page_size);    
     const ifb_u32 page_count   = size_aligned / page_size;  
 
     return(page_count);

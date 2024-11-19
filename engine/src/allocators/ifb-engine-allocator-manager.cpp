@@ -10,9 +10,9 @@ ifb_engine::allocator_manager_start_up(
     ifb_void) {
 
     //get the sizes
-    const ifb_u32 size_allocator_manager     = ifb_engine_macro_align_size_struct(IFBEngineAllocatorManager);
-    const ifb_u32 size_stack_allocator_table = ifb_engine_macro_align_size_struct(IFBEngineStackAllocatorTable);
-    const ifb_u32 size_block_allocator_table = ifb_engine_macro_align_size_struct(IFBEngineBlockAllocatorTable);
+    const ifb_u32 size_allocator_manager     = ifb_macro_align_size_struct(IFBEngineAllocatorManager);
+    const ifb_u32 size_stack_allocator_table = ifb_macro_align_size_struct(IFBEngineStackAllocatorTable);
+    const ifb_u32 size_block_allocator_table = ifb_macro_align_size_struct(IFBEngineBlockAllocatorTable);
 
     //get the total size
     const ifb_u32 total_size = 

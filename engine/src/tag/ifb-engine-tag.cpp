@@ -16,8 +16,8 @@ ifb_engine::tag_create(
     ifb_b8 result = true;
 
     //hash the value
-    IFBEngineHashValue tag_hash;
-    const ifb_u32 tag_length = ifb_engine::hash_cstr(in_tag_value,IFB_ENGINE_TAG_LENGTH,tag_hash);
+    IFBHashValue tag_hash;
+    const ifb_u32 tag_length = ifb_common::hash_cstr(in_tag_value,IFB_ENGINE_TAG_LENGTH,tag_hash);
     if (tag_length == 0) {
         return(false);
     }
@@ -27,11 +27,11 @@ ifb_engine::tag_create(
     IFBEngineTagManager* tag_manager_ptr    = ifb_engine::tag_manager_from_handle(tag_manager_handle); 
 
     //get the hash memory
-    IFBEngineHashValue* tag_hash_array_ptr = ifb_engine::tag_manager_memory_hashes(tag_manager_ptr);
+    IFBHashValue* tag_hash_array_ptr = ifb_engine::tag_manager_memory_hashes(tag_manager_ptr);
 
     //collision check
     if(
-        ifb_engine::hash_collision_check(
+        ifb_common::hash_collision_check(
             tag_hash,
             tag_hash_array_ptr,
             IFB_ENGINE_TAG_COUNT_MAX)) {
@@ -43,7 +43,7 @@ ifb_engine::tag_create(
     //find the next available index
     ifb_u32 tag_index;
     if (
-        !ifb_engine::hash_next_clear_value(
+        !ifb_common::hash_next_clear_value(
             tag_hash_array_ptr,
             IFB_ENGINE_TAG_COUNT_MAX,
             tag_index)) {
@@ -78,11 +78,11 @@ ifb_engine::tag_index(
     IFBEngineTagManager* tag_manager_ptr = ifb_engine::tag_manager_from_context();
 
     //get the hash values
-    const IFBEngineHashValue* tag_hash_value_ptr = ifb_engine::tag_manager_memory_hashes(tag_manager_ptr);
+    const IFBHashValue* tag_hash_value_ptr = ifb_engine::tag_manager_memory_hashes(tag_manager_ptr);
 
     //hash the input value
-    IFBEngineHashValue hash_value;
-    const ifb_u32 hash_value_length = ifb_engine::hash_cstr(
+    IFBHashValue hash_value;
+    const ifb_u32 hash_value_length = ifb_common::hash_cstr(
         in_tag_value,
         IFB_ENGINE_TAG_LENGTH,
         hash_value);
@@ -93,7 +93,7 @@ ifb_engine::tag_index(
     }
 
     //search for the index
-    ifb_b8 result = ifb_engine::hash_search(
+    ifb_b8 result = ifb_common::hash_search(
         hash_value,
         tag_hash_value_ptr,
         IFB_ENGINE_TAG_COUNT_MAX,
@@ -116,8 +116,8 @@ ifb_engine::tag_destroy(
     IFBEngineTagManager* tag_manager_ptr = ifb_engine::tag_manager_from_context();
 
     //get the table memory
-    ifb_char*           tag_values_ptr  = ifb_engine::tag_manager_memory_values(tag_manager_ptr);
-    IFBEngineHashValue* hash_values_ptr = ifb_engine::tag_manager_memory_hashes(tag_manager_ptr);
+    ifb_char*     tag_values_ptr  = ifb_engine::tag_manager_memory_values(tag_manager_ptr);
+    IFBHashValue* hash_values_ptr = ifb_engine::tag_manager_memory_hashes(tag_manager_ptr);
 
     //clear the hash value
     hash_values_ptr[tag_index].h1 = 0;
@@ -194,11 +194,11 @@ ifb_engine::tag_manager_memory_values(
     return(tag_values_ptr);
 }
 
-inline IFBEngineHashValue* 
+inline IFBHashValue* 
 ifb_engine::tag_manager_memory_hashes(
     IFBEngineTagManager* tag_manager_ptr) {
 
-    IFBEngineHashValue* hash_values_ptr = (IFBEngineHashValue*)ifb_engine::memory_pointer_from_handle(tag_manager_ptr->handle_hash_values);
+    IFBHashValue* hash_values_ptr = (IFBHashValue*)ifb_engine::memory_pointer_from_handle(tag_manager_ptr->handle_hash_values);
 
     return(hash_values_ptr);
 }
@@ -210,8 +210,8 @@ ifb_engine::tag_manager_create(
     //calculate sizes
     const ifb_u32 tag_count_max         = IFB_ENGINE_TAG_COUNT_MAX;
     const ifb_u32 tag_value_size        = IFB_ENGINE_TAG_LENGTH;
-    const ifb_u32 tag_hash_size         = sizeof(IFBEngineHashValue);
-    const ifb_u32 tag_manager_size        = ifb_engine_macro_align_size_struct(IFBEngineTagManager);
+    const ifb_u32 tag_hash_size         = sizeof(IFBHashValue);
+    const ifb_u32 tag_manager_size      = ifb_macro_align_size_struct(IFBEngineTagManager);
     const ifb_u32 tag_value_buffer_size = tag_value_size * tag_count_max;
     const ifb_u32 tag_hash_buffer_size  = tag_hash_size  * tag_count_max;  
 
@@ -237,8 +237,8 @@ ifb_engine::tag_manager_create(
     tag_manager_ptr->handle_hash_values = handle_tag_hash_buffer;
 
     //clear all the memory
-    ifb_char*           tag_manager_memory_values_ptr = ifb_engine::tag_manager_memory_values(tag_manager_ptr);
-    IFBEngineHashValue* tag_manager_memory_hashes_ptr = ifb_engine::tag_manager_memory_hashes(tag_manager_ptr);
+    ifb_char*     tag_manager_memory_values_ptr = ifb_engine::tag_manager_memory_values(tag_manager_ptr);
+    IFBHashValue* tag_manager_memory_hashes_ptr = ifb_engine::tag_manager_memory_hashes(tag_manager_ptr);
 
     for (
         ifb_u32 tag_index = 0;

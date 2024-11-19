@@ -16,8 +16,8 @@ namespace ifb_engine {
 
     const ifb_u32 tag_manager_create(ifb_void);
 
-    ifb_char*           tag_manager_memory_values (IFBEngineTagManager* tag_manager_ptr);
-    IFBEngineHashValue* tag_manager_memory_hashes (IFBEngineTagManager* tag_manager_ptr);
+    ifb_char*     tag_manager_memory_values (IFBEngineTagManager* tag_manager_ptr);
+    IFBHashValue* tag_manager_memory_hashes (IFBEngineTagManager* tag_manager_ptr);
 }
 
 #endif //IFB_ENGINE_INTERNAL_TAG_HPP

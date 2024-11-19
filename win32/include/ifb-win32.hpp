@@ -4,13 +4,7 @@
 #include <Windows.h>
 #include <ifb-engine.hpp>
 
-#include <imgui.h>
-#include <imgui_impl_win32.h>
-#include <imgui_impl_opengl3.h>
 
-#include <GL/glew.h>
-#include <GL/gl.h>
-#include <GL/glext.h>
 
 /**********************************************************************************/
 /* SYSTEM                                                                         */
@@ -68,7 +62,6 @@ typedef const LRESULT
 
 namespace ifb_win32 {
 
-
     ifb_internal const ifb_b8
     window_create(
         const ifb_cstr window_title,
@@ -105,8 +98,8 @@ namespace ifb_win32 {
 
 namespace ifb_win32 {
 
-    ifb_internal const ifb_b8  monitor_size       (IFBEnginePlatformMonitorSize& monitor_size_ref);
-    ifb_internal const ifb_u32 monitor_refresh_hz (ifb_void);
+    ifb_internal ifb_void monitor_size       (IFBEnginePlatformMonitorSize& monitor_size_ref);
+    ifb_internal const ifb_u32  monitor_refresh_hz (ifb_void);
     
     ifb_void monitor_api_initialize(IFBEnginePlatformMonitor& monitor_api_ref);
 

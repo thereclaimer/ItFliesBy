@@ -35,7 +35,7 @@ enum IFBResolutionType_ {
 #define IFB_RESOLUTION_TYPE_DEFAULT_FOR_ASPECT_RATIO_4_x_3    IFBResolutionType_4_x_3_XGA_1024_x_768
 #define IFB_RESOLUTION_TYPE_DEFAULT                           IFBResolutionType_4_x_3_XGA_1024_x_768
 
-const IFBResolutionType_ IFB_RESOLUTION_TYPE_DEFALUT_FOR_ASPECT_RATIO_LOOKUP[] = {
+const IFBResolutionType_ IFB_RESOLUTION_TYPE_DEFAULT_FOR_ASPECT_RATIO_LOOKUP[] = {
     IFB_RESOLUTION_TYPE_DEFAULT_FOR_ASPECT_RATIO_16_x_9,  // IFBAspectRatioType_16_x_9
     IFB_RESOLUTION_TYPE_DEFAULT_FOR_ASPECT_RATIO_16_x_10, // IFBAspectRatioType_16_x_10
     IFB_RESOLUTION_TYPE_DEFAULT_FOR_ASPECT_RATIO_21_x_9,  // IFBAspectRatioType_21_x_9
@@ -95,41 +95,40 @@ const IFBResolution IFB_RESOLUTION_LOOKUP[] = {
     {1600, 1200}  // IFBResolutionType_4_x_3_UXGA_1600_x_1200
 };
 
-typedef ifb_u32_t     ifb_resolution_type_u32_t;
-typedef IFBResolution ifb_resolution_s;
+typedef ifb_u32 IFBResolutionType;
 
 namespace ifb_common {
 
-    inline const ifb_cstr_p
+    inline const ifb_cstr
     resolution_description(
-        const ifb_resolution_type_u32_t resolution_type) {
+        const IFBResolutionType resolution_type) {
 
-        const ifb_cstr_p resolution_description = (resolution_type >= IFBResolutionType_Count) 
+        const ifb_cstr resolution_description = (resolution_type >= IFBResolutionType_Count) 
             ? IFB_RESOLUTION_DESCRIPTION_LOOKUP[IFB_RESOLUTION_TYPE_DEFAULT] 
             : IFB_RESOLUTION_DESCRIPTION_LOOKUP[resolution_type];
 
         return(resolution_description);
     }
 
-    inline const ifb_resolution_type_u32_t
+    inline const IFBResolutionType
     resolution_default_type_from_aspect_ratio(
-        const ifb_aspect_ratio_type_u32_t aspect_ratio_type) {
+        const IFBAspectRatioType aspect_ratio_type) {
 
-        const ifb_resolution_type_u32_t resolution_type = (aspect_ratio_type >= IFBAspectRatioType_Count)
+        const IFBResolutionType resolution_type = (aspect_ratio_type >= IFBAspectRatioType_Count)
             ? IFB_RESOLUTION_TYPE_DEFAULT
-            : IFB_RESOLUTION_TYPE_DEFALUT_FOR_ASPECT_RATIO_LOOKUP[aspect_ratio_type];      
+            : IFB_RESOLUTION_TYPE_DEFAULT_FOR_ASPECT_RATIO_LOOKUP[aspect_ratio_type];      
 
         return(resolution_type);
     }
   
-    inline const ifb_void_t
+    inline ifb_void
     resolution_dimensions(
-        const ifb_resolution_type_u32_t in_resolution_type,
-              ifb_resolution_s&        out_resolution_ref) {
+        const IFBResolutionType in_resolution_type,
+              IFBResolution&   out_resolution_ref) {
 
         out_resolution_ref = (in_resolution_type >= IFBResolutionType_Count)
-            ? IFB_RESOLUTION_DIMENSIONS_LOOKUP[IFB_RESOLUTION_TYPE_DEFAULT]
-            : IFB_RESOLUTION_DIMENSIONS_LOOKUP[in_resolution_type];
+            ? IFB_RESOLUTION_LOOKUP[IFB_RESOLUTION_TYPE_DEFAULT]
+            : IFB_RESOLUTION_LOOKUP[in_resolution_type];
     }
 };
 

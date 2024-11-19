@@ -27,7 +27,6 @@ ifb_engine::engine_create_context(
     result &= platform_info_ref.page_size         >= sizeof(IFBEngineContext);
     result &= ifb_engine::platform_api_validate(platform_api_ref);
     if (!result) {
-        _engine_context->state = IFBEngineState_Fatal;
         return(false);
     }
 
