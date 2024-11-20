@@ -12,6 +12,7 @@
 #include "ifb-engine-tag.hpp"
 #include "ifb-engine-allocators.hpp"
 #include "ifb-engine-rendering.hpp"
+#include "ifb-engine-tables.hpp"
 
 enum IFBEngineState_ {
     IFBEngineState_NotRunning   = 0,
