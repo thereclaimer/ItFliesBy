@@ -19,6 +19,13 @@ namespace ifb_engine {
     ifb_api const ifb_memory memory_pointer_from_page        (const ifb_u32 page_number);
     ifb_api const ifb_memory memory_pointer_from_handle      (const ifb_u32 handle);
 
+    ifb_api ifb_void
+    memory_pointer_from_handle_count(
+        const ifb_u32        in_handles_count,
+        ifb_handle_memory_t* in_handles_ptr,
+        ifb_memory*         out_memory_ptr);
+
+
     ifb_api const ifb_handle_memory_t memory_handle            (const ifb_u32 page_number,const ifb_u32 page_offset);
     ifb_api const ifb_b8              memory_handle_valid      (const ifb_handle_memory_t memory_handle);
     ifb_api const ifb_u32             memory_size_page_aligned (const ifb_u32 size);

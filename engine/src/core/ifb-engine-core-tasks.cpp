@@ -2,6 +2,7 @@
 
 #include "ifb-engine-internal-core.hpp"
 #include "ifb-engine-internal-platform.hpp"
+#include "ifb-engine-internal-tables.hpp"
 
 inline const ifb_b8 
 ifb_engine::core_task_create_core_handle(
@@ -31,6 +32,7 @@ ifb_engine::core_task_create_managers(
 
     //create the managers
     engine_core_managers_ref.memory     = ifb_engine::memory_manager_startup();
+    engine_core_managers_ref.tables     = ifb_engine::table_manager_create();
     engine_core_managers_ref.tag        = ifb_engine::tag_manager_create();
     engine_core_managers_ref.allocators = ifb_engine::allocator_manager_start_up();
 

@@ -49,6 +49,34 @@ ifb_engine::memory_pointer_from_handle(
     return(memory_pointer);
 }
 
+
+ifb_api ifb_void
+ifb_engine::memory_pointer_from_handle_count(
+    const ifb_u32              in_handles_count,
+          ifb_handle_memory_t* in_handles_ptr,
+          ifb_memory*         out_memory_ptr) {
+
+    //sanity check
+    if (
+        !in_handles_count || 
+        !in_handles_ptr) {
+
+        return;
+    }
+
+    //get the base pointer    
+    const ifb_memory base_pointer = ifb_engine::context_base_pointer();
+
+    for (
+        ifb_u32 handle_index = 0;
+                handle_index < in_handles_count;
+              ++handle_index) {
+
+        //get the pointer for the current handle
+        out_memory_ptr[handle_index] = base_pointer + in_handles_ptr[handle_index];
+    }
+}
+
 ifb_api const ifb_u32 
 ifb_engine::memory_handle(
     const ifb_u32 page_number,

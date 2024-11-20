@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ifb-engine-internal-tag.hpp"
+#include "ifb-engine-internal-tables.hpp"
 #include "ifb-engine-internal.hpp"
 
 ifb_api const ifb_b8
@@ -23,11 +24,13 @@ ifb_engine::tag_create(
     }
 
     //get the table
-    const ifb_u32        tag_manager_handle = ifb_engine::core_manager_handle_tag();
-    IFBEngineTagManager* tag_manager_ptr    = ifb_engine::tag_manager_from_handle(tag_manager_handle); 
+    IFBEngineTableTag tag_table;
+    if (!ifb_engine::table_tag(tag_table)) {
+        return(false);
+    }
 
     //get the hash memory
-    IFBHashValue* tag_hash_array_ptr = ifb_engine::tag_manager_memory_hashes(tag_manager_ptr);
+    IFBHashValue* tag_hash_array_ptr = ifb_engine::table_tag_column_memory_hash_value(tag_table);
 
     //collision check
     if(

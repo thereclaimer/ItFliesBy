@@ -48,6 +48,7 @@ if not exist %path_build%\lib mkdir %path_build%\lib
                       /I engine\src\memory     ^
                       /I engine\src\platform   ^
                       /I engine\src\rendering  ^
+                      /I engine\src\tables     ^
                       /I engine\src\tag        ^
                       /I engine\src\tools      ^
                       /I common                ^

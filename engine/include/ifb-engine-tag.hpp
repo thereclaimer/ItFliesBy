@@ -8,12 +8,10 @@
 #define IFB_ENGINE_TAG_LENGTH    32
 #define IFB_ENGINE_TAG_COUNT_MAX 1024
 
-typedef ifb_index ifb_index_tag_t;
-
 struct IFBEngineTag {
-    ifb_index_tag_t    tag_index;
-    ifb_cstr           tag_value;
-    IFBHashValue       tag_hash;
+    ifb_table_index_tag tag_index;
+    ifb_cstr            tag_value;
+    IFBHashValue        tag_hash;
 };
 
 namespace ifb_engine {

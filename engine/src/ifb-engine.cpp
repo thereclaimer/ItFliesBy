@@ -10,6 +10,7 @@
 #include "ifb-engine-allocator-manager.cpp"
 #include "ifb-engine-rendering.cpp"
 #include "ifb-engine-platform.cpp"
+#include "ifb-engine-tables.cpp"
 
 /**********************************************************************************/
 /* API                                                                            */

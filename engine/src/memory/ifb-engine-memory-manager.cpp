@@ -58,19 +58,27 @@ ifb_engine::memory_manager_pointer_from_handle(
     return(memory_manager_ptr); 
 }
 
-inline IFBEngineArenaTable* 
-ifb_engine::memory_manager_get_arena_table(
+inline IFBEngineMemoryManager* 
+ifb_engine::memory_manager_pointer_from_context(
     ifb_void) {
+    
+    IFBEngineCore*          engine_core_ptr    = ifb_engine::core_pointer_from_context();
+    IFBEngineMemoryManager* memory_manager_ptr = ifb_engine::memory_manager_pointer_from_handle(engine_core_ptr->managers.memory);
 
-    //get the memory manager_handle
-    const ifb_u32 memory_manager_handle = ifb_engine::core_manager_handle_memory();
-
-    //cast it to the pointer
-    IFBEngineMemoryManager* memory_manager_ptr = ifb_engine::memory_manager_pointer_from_handle(memory_manager_handle);     
-
-    //get the arena table pointer
-    IFBEngineArenaTable* arena_table_ptr = ifb_engine::arena_table_pointer_from_handle(memory_manager_ptr->handle_arena_table);        
-
-    //we're done
-    return(arena_table_ptr);
+    return(memory_manager_ptr);
 }
+
+//a function like this
+if (do_thing_1()) {
+    if (do_thing_2() && do_thing_3()) {
+        return(true);
+    }
+}
+return(false)
+
+//becomes a function like this
+bool result = true;
+result &= do_thing_1()
+result &= do_thing_2()
+result &= do_thing_3()
+return(result)
