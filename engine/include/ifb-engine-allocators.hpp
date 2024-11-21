@@ -41,13 +41,11 @@ namespace ifb_engine {
 /* BLOCK ALLOCATOR                                                                */
 /**********************************************************************************/
 
-typedef ifb_index ifb_index_block_allocator_t;
-
 struct IFBEngineBlockAllocator {
     ifb_table_index_arena           arena_index;
-    ifb_index_block_allocator_t block_allocator_index;
-    ifb_u32                     block_count;
-    ifb_u32                     block_size;
+    ifb_table_index_block_allocator block_allocator_index;
+    ifb_u32                         block_count;
+    ifb_u32                         block_size;
 };
 
 namespace ifb_engine {

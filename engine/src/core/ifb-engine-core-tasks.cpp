@@ -33,13 +33,11 @@ ifb_engine::core_task_create_managers(
     //create the managers
     engine_core_managers_ref.memory     = ifb_engine::memory_manager_startup();
     engine_core_managers_ref.tables     = ifb_engine::table_manager_create();
-    engine_core_managers_ref.allocators = ifb_engine::allocator_manager_start_up();
 
     //sanity check
     ifb_b8 result = true;
     result &= ifb_engine::memory_handle_valid(engine_core_managers_ref.memory);
     result &= ifb_engine::memory_handle_valid(engine_core_managers_ref.tables);
-    result &= ifb_engine::memory_handle_valid(engine_core_managers_ref.allocators);
 
     //we're done
     return(result);

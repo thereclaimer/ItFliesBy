@@ -31,17 +31,6 @@ ifb_engine::core_manager_handle_memory(
 }
 
 inline const ifb_handle_memory 
-ifb_engine::core_manager_handle_allocators(
-    ifb_void) {
-
-    //get the core pointer
-    const IFBEngineCore* core_ptr = ifb_engine::core_pointer_from_context();
-
-    //return the handle
-    return(core_ptr->managers.allocators);
-}
-
-inline const ifb_handle_memory 
 ifb_engine::core_manager_handle_assets(
     ifb_void) {
 

@@ -68,6 +68,7 @@ inline const ifb_b8
 ifb_engine::table_manager_create_table(
           IFBEngineTableManager* table_manager_ptr,
     const IFBEngineTableId       table_id,
+    const ifb_u32                table_row_count,
     const ifb_u32                table_column_count,
     const ifb_u32*               table_column_sizes) {
 
@@ -79,6 +80,7 @@ ifb_engine::table_manager_create_table(
     IFBEngineTable& table_ref = tables_ref.array[table_id];
     table_ref.column_handle_start = columns_ref.column_count_used;
     table_ref.column_handle_count = table_column_count;
+    table_ref.row_count           = table_row_count;
 
     ifb_b8 result = true;
 
@@ -112,8 +114,10 @@ ifb_engine::table_manager_create_table_tag(
     IFBEngineTableManager* table_manager_ptr) {
 
     const ifb_u32 tag_table_column_count           = 2;
-    const ifb_u32 table_tag_column_size_buffer     = IFB_ENGINE_TABLE_TAG_VALUE_LENGTH * IFB_ENGINE_TABLE_TAG_ROW_COUNT;
-    const ifb_u32 table_tag_column_size_hash_value = ifb_macro_size_array(IFBHashValue,  IFB_ENGINE_TABLE_TAG_ROW_COUNT);
+    const ifb_u32 tag_table_row_count              = IFB_ENGINE_TABLE_TAG_ROW_COUNT;
+    const ifb_u32 table_tag_column_size_buffer     = IFB_ENGINE_TABLE_TAG_VALUE_LENGTH * tag_table_row_count;
+    const ifb_u32 table_tag_column_size_hash_value = ifb_macro_size_array(IFBHashValue,  tag_table_row_count);
+
 
     const ifb_u32 tag_table_column_sizes[tag_table_column_count] = {
         table_tag_column_size_buffer,
@@ -123,6 +127,7 @@ ifb_engine::table_manager_create_table_tag(
     const ifb_b8 result = ifb_engine::table_manager_create_table(
         table_manager_ptr,
         IFBEngineTableId_Tag,
+        tag_table_row_count,
         tag_table_column_count,
         tag_table_column_sizes);
 
@@ -149,6 +154,7 @@ ifb_engine::table_manager_create_table_stack_allocator(
     const ifb_b8 result = ifb_engine::table_manager_create_table(
         table_manager_ptr,
         IFBEngineTableId_StackAllocator,
+        table_row_count,
         table_column_count,
         table_column_sizes);
 
@@ -185,6 +191,7 @@ ifb_engine::table_manager_create_table_arena(
     const ifb_b8 result = ifb_engine::table_manager_create_table(
         table_manager_ptr,
         IFBEngineTableId_Arena,
+        table_row_count,
         table_column_count,
         table_column_sizes);
 

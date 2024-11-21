@@ -18,6 +18,7 @@ ifb_engine::core_routine_initialize(
 
     //create the managers and allocators
     result &= ifb_engine::core_task_create_managers         (engine_core_ptr->managers);
+    ifb_engine::allocator_tables_initialize();
     result &= ifb_engine::core_task_create_stack_allocators (engine_core_ptr->stack_allocators);
 
     //we're done
