@@ -107,7 +107,7 @@ ifb_engine::engine_platform_alloc(
     const ifb_u32 size) {
 
     //get the frame stack
-    const ifb_index_stack_t platform_stack = ifb_engine::core_stack_allocator_platform();
+    const ifb_table_index_stack_allocator platform_stack = ifb_engine::core_stack_allocator_platform();
     
     //do the push
     const ifb_memory stack_memory = ifb_engine::stack_allocator_push_memory(platform_stack,size);
@@ -121,7 +121,7 @@ ifb_engine::engine_frame_alloc(
     const ifb_u32 size) {
 
     //get the frame stack
-    const ifb_index_stack_t frame_stack = ifb_engine::core_stack_allocator_frame();
+    const ifb_table_index_stack_allocator frame_stack = ifb_engine::core_stack_allocator_frame();
     
     //do the push
     const ifb_memory stack_memory = ifb_engine::stack_allocator_push_memory(frame_stack,size);

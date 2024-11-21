@@ -6,7 +6,7 @@
 
 inline const ifb_b8 
 ifb_engine::core_task_create_core_handle(
-    ifb_handle_memory_t& engine_core_handle_ref) {
+    ifb_handle_memory& engine_core_handle_ref) {
 
     //get page
     const ifb_u32 core_size       = ifb_macro_align_size_struct(IFBEngineCore);
@@ -33,13 +33,12 @@ ifb_engine::core_task_create_managers(
     //create the managers
     engine_core_managers_ref.memory     = ifb_engine::memory_manager_startup();
     engine_core_managers_ref.tables     = ifb_engine::table_manager_create();
-    engine_core_managers_ref.tag        = ifb_engine::tag_manager_create();
     engine_core_managers_ref.allocators = ifb_engine::allocator_manager_start_up();
 
     //sanity check
     ifb_b8 result = true;
     result &= ifb_engine::memory_handle_valid(engine_core_managers_ref.memory);
-    result &= ifb_engine::memory_handle_valid(engine_core_managers_ref.tag);
+    result &= ifb_engine::memory_handle_valid(engine_core_managers_ref.tables);
     result &= ifb_engine::memory_handle_valid(engine_core_managers_ref.allocators);
 
     //we're done

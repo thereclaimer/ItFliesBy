@@ -53,7 +53,7 @@ ifb_engine::memory_pointer_from_handle(
 ifb_api ifb_void
 ifb_engine::memory_pointer_from_handle_count(
     const ifb_u32              in_handles_count,
-          ifb_handle_memory_t* in_handles_ptr,
+          ifb_handle_memory* in_handles_ptr,
           ifb_memory*         out_memory_ptr) {
 
     //sanity check

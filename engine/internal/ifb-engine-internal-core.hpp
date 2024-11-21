@@ -8,22 +8,21 @@
 /**********************************************************************************/
 
 struct IFBEngineCoreManagers {
-    ifb_handle_memory_t memory;
-    ifb_handle_memory_t tag;
-    ifb_handle_memory_t allocators;
-    ifb_handle_memory_t assets;
-    ifb_handle_memory_t tables;
+    ifb_handle_memory memory;
+    ifb_handle_memory allocators;
+    ifb_handle_memory assets;
+    ifb_handle_memory tables;
 };
 
 struct IFBEngineCoreSystems {
-    ifb_handle_memory_t physics;
-    ifb_handle_memory_t rendering;
+    ifb_handle_memory physics;
+    ifb_handle_memory rendering;
 };
 
 struct IFBEngineCoreStackAllocators {
-    ifb_index_stack_t frame;
-    ifb_index_stack_t platform;
-    ifb_index_stack_t window;
+    ifb_table_index_stack_allocator frame;
+    ifb_table_index_stack_allocator platform;
+    ifb_table_index_stack_allocator window;
 };
 
 struct IFBEngineCore {
@@ -35,14 +34,13 @@ namespace ifb_engine {
 
     IFBEngineCore* core_pointer_from_context (ifb_void);
     
-    const ifb_handle_memory_t core_manager_handle_memory     (ifb_void);
-    const ifb_handle_memory_t core_manager_handle_tag        (ifb_void);
-    const ifb_handle_memory_t core_manager_handle_allocators (ifb_void);
-    const ifb_handle_memory_t core_manager_handle_assets     (ifb_void);
-    const ifb_handle_memory_t core_manager_handle_tables     (ifb_void);
+    const ifb_handle_memory core_manager_handle_memory     (ifb_void);
+    const ifb_handle_memory core_manager_handle_allocators (ifb_void);
+    const ifb_handle_memory core_manager_handle_assets     (ifb_void);
+    const ifb_handle_memory core_manager_handle_tables     (ifb_void);
 
-    const ifb_index_stack_t core_stack_allocator_platform (ifb_void);
-    const ifb_index_stack_t core_stack_allocator_frame    (ifb_void);
+    const ifb_table_index_stack_allocator core_stack_allocator_platform (ifb_void);
+    const ifb_table_index_stack_allocator core_stack_allocator_frame    (ifb_void);
 };
 
 /**********************************************************************************/
@@ -63,7 +61,7 @@ namespace ifb_engine {
 
 namespace ifb_engine {
 
-    const ifb_b8 core_task_create_core_handle      (ifb_handle_memory_t&          engine_core_handle_ref);
+    const ifb_b8 core_task_create_core_handle      (ifb_handle_memory&          engine_core_handle_ref);
     const ifb_b8 core_task_create_managers         (IFBEngineCoreManagers&        engine_core_managers_ref);
     const ifb_b8 core_task_create_stack_allocators (IFBEngineCoreStackAllocators& engine_core_stack_allocators_ref);
     const ifb_b8 core_task_create_and_show_window  (ifb_void);

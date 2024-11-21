@@ -12,15 +12,9 @@ ifb_engine::memory_manager_startup(
 
     //determine the size of all the systems
     const ifb_u32 size_aligned_memory_manager = ifb_macro_align_size_struct(IFBEngineMemoryManager); 
-    const ifb_u32 size_aligned_arena_table    = ifb_macro_align_size_struct(IFBEngineArenaTable);
-
-    //add all the sizes to get our total allocation size
-    const ifb_u32 allocation_size =
-        size_aligned_memory_manager +
-        size_aligned_arena_table;
 
     //commit pages
-    const ifb_u32 memory_manager_page_count = ifb_engine::memory_page_count(allocation_size);
+    const ifb_u32 memory_manager_page_count = ifb_engine::memory_page_count(size_aligned_memory_manager);
     const ifb_u32 memory_manager_page_start = ifb_engine::memory_page_commit(memory_manager_page_count);
 
     //if that didn't work, return 0
@@ -35,15 +29,10 @@ ifb_engine::memory_manager_startup(
     const ifb_u32 handle_arena_table    = ifb_engine::memory_handle(memory_manager_page_start,page_offset_arena_table); 
     const ifb_u32 handle_memory_manager = ifb_engine::memory_handle(memory_manager_page_start,0);
 
-    //initialize asset systems
-    ifb_b8 result = true;
-    result &= ifb_engine::arena_table_initialize(handle_arena_table);
-
     //initialize the memory manager
     IFBEngineMemoryManager* memory_manager_ptr = ifb_engine::memory_manager_pointer_from_handle(handle_memory_manager);
     memory_manager_ptr->page_start         = memory_manager_page_start;
     memory_manager_ptr->page_count         = memory_manager_page_count;
-    memory_manager_ptr->handle_arena_table = handle_arena_table; 
 
     //we're done, return the page start
     return(handle_memory_manager);
@@ -67,18 +56,3 @@ ifb_engine::memory_manager_pointer_from_context(
 
     return(memory_manager_ptr);
 }
-
-//a function like this
-if (do_thing_1()) {
-    if (do_thing_2() && do_thing_3()) {
-        return(true);
-    }
-}
-return(false)
-
-//becomes a function like this
-bool result = true;
-result &= do_thing_1()
-result &= do_thing_2()
-result &= do_thing_3()
-return(result)
