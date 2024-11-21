@@ -33,6 +33,9 @@ ifb_engine::memory_manager_startup(
     IFBEngineMemoryManager* memory_manager_ptr = ifb_engine::memory_manager_pointer_from_handle(handle_memory_manager);
     memory_manager_ptr->page_start         = memory_manager_page_start;
     memory_manager_ptr->page_count         = memory_manager_page_count;
+    memory_manager_ptr->arena_size_minimum = IFB_ENGINE_MEMORY_ARENA_SIZE_MINIMUM;
+    memory_manager_ptr->arena_count_used   = 0;
+    memory_manager_ptr->arena_count_total  = IFB_ENGINE_MEMORY_ARENA_COUNT_MAX;
 
     //we're done, return the page start
     return(handle_memory_manager);

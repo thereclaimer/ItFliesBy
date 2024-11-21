@@ -53,6 +53,9 @@ ifb_engine::memory_arena_commit(
     arena_table_column_page_count     [arena_index] = arena_page_count;
     arena_table_column_table_index_tag[arena_index] = arena_tag_index;
 
+    //update the manager
+    ++memory_manager_ptr->arena_count_used;
+
     //we're done
     return(arena_index);
 }
