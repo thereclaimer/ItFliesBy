@@ -19,9 +19,9 @@ struct IFBEngineCoreSystems {
 };
 
 struct IFBEngineCoreStackAllocators {
-    ifb_table_index_stack_allocator frame;
-    ifb_table_index_stack_allocator platform;
-    ifb_table_index_stack_allocator window;
+    IFBEngineStackAllocatorId frame;
+    IFBEngineStackAllocatorId platform;
+    IFBEngineStackAllocatorId window;
 };
 
 struct IFBEngineCore {
@@ -37,8 +37,8 @@ namespace ifb_engine {
     const ifb_handle_memory core_manager_handle_assets     (ifb_void);
     const ifb_handle_memory core_manager_handle_tables     (ifb_void);
 
-    const ifb_table_index_stack_allocator core_stack_allocator_platform (ifb_void);
-    const ifb_table_index_stack_allocator core_stack_allocator_frame    (ifb_void);
+    const IFBEngineStackAllocatorId core_stack_allocator_platform (ifb_void);
+    const IFBEngineStackAllocatorId core_stack_allocator_frame    (ifb_void);
 };
 
 /**********************************************************************************/

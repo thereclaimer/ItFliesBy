@@ -7,55 +7,57 @@
 /* API                                                                            */
 /**********************************************************************************/
 
-ifb_api const ifb_u32
+ifb_api const ifb_b8
 ifb_engine::stack_allocator_create(
-    const ifb_cstr stack_allocator_tag,
-    const ifb_u32  stack_size_minimum) {
+    const ifb_cstr                    in_stack_allocator_tag,
+    const ifb_u32                    in_stack_size_minimum,
+          IFBEngineStackAllocatorId& out_stack_allocator_id_ref) {
 
     //get the table
     IFBEngineTableStackAllocator stack_allocator_table;
     ifb_engine::table_stack_allocator(stack_allocator_table);
 
     //find the next available stack
-    const ifb_u32 stack_index = ifb_engine::stack_allocator_next_available(stack_allocator_table);
-    if (!ifb_engine::stack_allocator_valid(stack_index)) {
-        return(IFB_ENGINE_STACK_ALLOCATOR_INVALID);
+    if (!ifb_engine::stack_allocator_next_available(stack_allocator_table,out_stack_allocator_id_ref)) {
+        out_stack_allocator_id_ref = {IFB_ENGINE_STACK_ALLOCATOR_INVALID};
+        return(false);
     }
 
     //get an arena
-    const ifb_u32 arena_index = ifb_engine::memory_arena_commit(stack_allocator_tag,stack_size_minimum);
-    if (!ifb_engine::memory_arena_valid(arena_index)) {
-        return(IFB_ENGINE_STACK_ALLOCATOR_INVALID);
+    IFBEngineArenaId stack_arena_id;
+    if (!ifb_engine::memory_arena_commit(in_stack_allocator_tag,in_stack_size_minimum,stack_arena_id)) {
+        out_stack_allocator_id_ref = {IFB_ENGINE_STACK_ALLOCATOR_INVALID};
+        return(false);
     }
 
     //update the table
-    ifb_engine::stack_allocator_update_arena_index(stack_allocator_table, stack_index, arena_index);
-    ifb_engine::stack_allocator_update_used       (stack_allocator_table, stack_index, 0);
+    ifb_engine::stack_allocator_update_arena_id(stack_allocator_table, out_stack_allocator_id_ref, stack_arena_id);
+    ifb_engine::stack_allocator_update_used    (stack_allocator_table, out_stack_allocator_id_ref, 0);
 
     //we're done
-    return(stack_index);
+    return(true);
 }
 
 ifb_api const ifb_b8
 ifb_engine::stack_allocator_valid(
-    const ifb_u32 stack_allocator_index) {
+    const IFBEngineStackAllocatorId stack_allocator_id) {
 
-    return(stack_allocator_index < IFB_ENGINE_STACK_ALLOCATOR_COUNT_MAX);
+    return(stack_allocator_id.stack_allocator_table_index < IFB_ENGINE_STACK_ALLOCATOR_COUNT_MAX);
 }
 
 ifb_api const ifb_u32
 ifb_engine::stack_allocator_size_total(
-    const ifb_u32 stack_allocator_index) {
+    const IFBEngineStackAllocatorId stack_allocator_id) {
 
     //get the table
     IFBEngineTableStackAllocator stack_allocator_table;
     ifb_engine::table_stack_allocator(stack_allocator_table);
 
     //get the arena
-    const ifb_u32 arena_index = ifb_engine::stack_allocator_get_arena_index(stack_allocator_table,stack_allocator_index);
+    const IFBEngineArenaId arena_id = ifb_engine::stack_allocator_get_arena_id(stack_allocator_table,stack_allocator_id);
 
     //get the arena page count
-    const ifb_u32 arena_page_count = ifb_engine::memory_arena_page_count(arena_index);
+    const ifb_u32 arena_page_count = ifb_engine::memory_arena_page_count(arena_id);
 
     //get the arena size
     const ifb_u32 arena_size = ifb_engine::memory_page_size(arena_page_count);
@@ -66,47 +68,47 @@ ifb_engine::stack_allocator_size_total(
 
 ifb_api const ifb_u32
 ifb_engine::stack_allocator_size_used(
-    const ifb_u32 stack_allocator_index) {
+    const IFBEngineStackAllocatorId stack_allocator_id) {
 
     //get the table
     IFBEngineTableStackAllocator stack_allocator_table;
     ifb_engine::table_stack_allocator(stack_allocator_table);
 
     //get the used size
-    const ifb_u32 used_size = ifb_engine::stack_allocator_get_used(stack_allocator_table, stack_allocator_index);
-
+    const ifb_u32 used_size = ifb_engine::stack_allocator_get_used(stack_allocator_table,stack_allocator_id);
+    
     //we're done
     return(used_size);
 }
 
-ifb_api const ifb_u32
-ifb_engine::stack_allocator_arena_index(
-    const ifb_u32 stack_allocator_index) {
+ifb_api const IFBEngineArenaId
+ifb_engine::stack_allocator_arena_id(
+    const IFBEngineStackAllocatorId stack_allocator_id) {
 
     //get the table
     IFBEngineTableStackAllocator stack_allocator_table;
     ifb_engine::table_stack_allocator(stack_allocator_table);
 
     //get the arena
-    const ifb_u32 arena_index = ifb_engine::stack_allocator_get_arena_index(stack_allocator_table,stack_allocator_index);
+    const IFBEngineArenaId arena_id = ifb_engine::stack_allocator_get_arena_id(stack_allocator_table,stack_allocator_id);
 
     //we're done
-    return(arena_index);
+    return(arena_id);
 }
 
 ifb_api const ifb_u32
 ifb_engine::stack_allocator_arena_page_start(
-    const ifb_u32  stack_allocator_index) {
+    const IFBEngineStackAllocatorId stack_allocator_id) {
 
     //get the table
     IFBEngineTableStackAllocator stack_allocator_table;
     ifb_engine::table_stack_allocator(stack_allocator_table);
 
     //get the arena
-    const ifb_u32 arena_index = ifb_engine::stack_allocator_get_arena_index(stack_allocator_table,stack_allocator_index);
+    const IFBEngineArenaId arena_id = ifb_engine::stack_allocator_get_arena_id(stack_allocator_table,stack_allocator_id);
 
     //get the page start
-    const ifb_u32 arena_page_start = ifb_engine::memory_arena_page_start(arena_index);
+    const ifb_u32 arena_page_start = ifb_engine::memory_arena_page_start(arena_id);
 
     //we're done
     return(arena_page_start);
@@ -114,53 +116,53 @@ ifb_engine::stack_allocator_arena_page_start(
 
 ifb_api const ifb_u32
 ifb_engine::stack_allocator_arena_page_count(
-    const ifb_u32  stack_allocator_index) {
+    const IFBEngineStackAllocatorId stack_allocator_id) {
 
     //get the table
     IFBEngineTableStackAllocator stack_allocator_table;
     ifb_engine::table_stack_allocator(stack_allocator_table);
 
     //get the arena
-    const ifb_u32 arena_index = ifb_engine::stack_allocator_get_arena_index(stack_allocator_table,stack_allocator_index);
+    const IFBEngineArenaId arena_id = ifb_engine::stack_allocator_get_arena_id(stack_allocator_table,stack_allocator_id);
 
     //get the page count
-    const ifb_u32 arena_page_count = ifb_engine::memory_arena_page_count(arena_index);
+    const ifb_u32 arena_page_count = ifb_engine::memory_arena_page_count(arena_id);
 
     //we're done
     return(arena_page_count);
 }
 
-ifb_api const ifb_u32
-ifb_engine::stack_allocator_arena_tag_index(
-    const ifb_u32  stack_allocator_index) {
+ifb_api const IFBEngineTagId
+ifb_engine::stack_allocator_arena_tag_id(
+    const IFBEngineStackAllocatorId stack_allocator_id) {
 
     //get the table
     IFBEngineTableStackAllocator stack_allocator_table;
     ifb_engine::table_stack_allocator(stack_allocator_table);
 
     //get the arena
-    const ifb_u32 arena_index = ifb_engine::stack_allocator_get_arena_index(stack_allocator_table,stack_allocator_index);
+    const IFBEngineArenaId arena_id = ifb_engine::stack_allocator_get_arena_id(stack_allocator_table,stack_allocator_id);
 
-    //get the tag index
-    const ifb_u32 arena_tag_index = ifb_engine::memory_arena_tag_index(arena_index);
+    //get the tag id
+    const IFBEngineTagId arena_tag_id = ifb_engine::memory_arena_tag_id(arena_id);
 
     //we're done
-    return(arena_tag_index);
+    return(arena_tag_id);
 }
 
 ifb_api const ifb_cstr
 ifb_engine::stack_allocator_arena_tag_value(
-    const ifb_u32  stack_allocator_index) {
+    const IFBEngineStackAllocatorId stack_allocator_id) {
 
     //get the table
     IFBEngineTableStackAllocator stack_allocator_table;
     ifb_engine::table_stack_allocator(stack_allocator_table);
 
     //get the arena
-    const ifb_u32 arena_index = ifb_engine::stack_allocator_get_arena_index(stack_allocator_table,stack_allocator_index);
+    const IFBEngineArenaId arena_id = ifb_engine::stack_allocator_get_arena_id(stack_allocator_table,stack_allocator_id);
 
     //get the tag value
-    const ifb_cstr arena_tag_value = ifb_engine::memory_arena_tag_value(arena_index);
+    const ifb_cstr arena_tag_value = ifb_engine::memory_arena_tag_value(arena_id);
 
     //we're done
     return(arena_tag_value);
@@ -168,14 +170,17 @@ ifb_engine::stack_allocator_arena_tag_value(
 
 ifb_api const ifb_b8
 ifb_engine::stack_allocator_reset(
-    const ifb_u32  stack_allocator_index) {
+    const IFBEngineStackAllocatorId stack_allocator_id) {
 
     //get the table
     IFBEngineTableStackAllocator stack_allocator_table;
     ifb_engine::table_stack_allocator(stack_allocator_table);
 
     //set the used to 0
-    ifb_engine::stack_allocator_update_used(stack_allocator_table,stack_allocator_index,0);
+    ifb_engine::stack_allocator_update_used(
+        stack_allocator_table,
+        stack_allocator_id,
+        0);
 
     //we're done
     return(true);
@@ -183,18 +188,18 @@ ifb_engine::stack_allocator_reset(
 
 ifb_api const ifb_u32
 ifb_engine::stack_allocator_pointer_handle(
-    const ifb_u32 stack_allocator_index) {
+    const IFBEngineStackAllocatorId stack_allocator_id) {
 
     //get the table
     IFBEngineTableStackAllocator stack_allocator_table;
     ifb_engine::table_stack_allocator(stack_allocator_table);
 
     //get the arena index and used size
-    const ifb_u32 arena_index = ifb_engine::stack_allocator_get_arena_index(stack_allocator_table,stack_allocator_index);
-    const ifb_u32 used_size   = ifb_engine::stack_allocator_get_used       (stack_allocator_table,stack_allocator_index);
+    const IFBEngineArenaId arena_id  = ifb_engine::stack_allocator_get_arena_id(stack_allocator_table,stack_allocator_id);
+    const ifb_u32          used_size = ifb_engine::stack_allocator_get_used    (stack_allocator_table,stack_allocator_id);
 
     //get the memory handle
-    const ifb_u32 arena_handle = ifb_engine::memory_arena_handle(arena_index,used_size);
+    const ifb_u32 arena_handle = ifb_engine::memory_arena_handle(arena_id,used_size);
 
     //we're done
     return(arena_handle);
@@ -202,18 +207,18 @@ ifb_engine::stack_allocator_pointer_handle(
 
 ifb_api const ifb_memory
 ifb_engine::stack_allocator_pointer_memory(
-    const ifb_u32 stack_allocator_index) {
+    const IFBEngineStackAllocatorId stack_allocator_id) {
 
     //get the table
     IFBEngineTableStackAllocator stack_allocator_table;
     ifb_engine::table_stack_allocator(stack_allocator_table);
 
     //get the arena index and used size
-    const ifb_u32 arena_index = ifb_engine::stack_allocator_get_arena_index(stack_allocator_table,stack_allocator_index);
-    const ifb_u32 used_size   = ifb_engine::stack_allocator_get_used       (stack_allocator_table,stack_allocator_index);
+    const IFBEngineArenaId arena_id  = ifb_engine::stack_allocator_get_arena_id(stack_allocator_table,stack_allocator_id);
+    const ifb_u32          used_size = ifb_engine::stack_allocator_get_used    (stack_allocator_table,stack_allocator_id);
 
     //get the memory handle
-    const ifb_u32 arena_handle = ifb_engine::memory_arena_handle(arena_index,used_size);
+    const ifb_u32 arena_handle = ifb_engine::memory_arena_handle(arena_id,used_size);
 
     //get the pointer
     const ifb_memory arena_pointer = ifb_engine::memory_pointer_from_handle(arena_handle);
@@ -224,20 +229,20 @@ ifb_engine::stack_allocator_pointer_memory(
 
 ifb_api const ifb_u32
 ifb_engine::stack_allocator_push_handle(
-    const ifb_u32 stack_allocator_index,
-    const ifb_u32 size) {
+    const IFBEngineStackAllocatorId stack_allocator_id,
+    const ifb_u32                   size) {
 
     //get the table
     IFBEngineTableStackAllocator stack_allocator_table;
     ifb_engine::table_stack_allocator(stack_allocator_table);
 
     //get the arena index and current/new used sizes
-    const ifb_u32 arena_index       = ifb_engine::stack_allocator_get_arena_index(stack_allocator_table,stack_allocator_index);
-    const ifb_u32 used_size_current = ifb_engine::stack_allocator_get_used       (stack_allocator_table,stack_allocator_index);
-    const ifb_u32 used_size_new     = used_size_current + size; 
+    const IFBEngineArenaId arena_id          = ifb_engine::stack_allocator_get_arena_id(stack_allocator_table,stack_allocator_id);
+    const ifb_u32          used_size_current = ifb_engine::stack_allocator_get_used    (stack_allocator_table,stack_allocator_id);
+    const ifb_u32          used_size_new     = used_size_current + size; 
 
     //get the memory handle with the new used size
-    const ifb_u32 arena_handle = ifb_engine::memory_arena_handle(arena_index,used_size_new);
+    const ifb_u32 arena_handle = ifb_engine::memory_arena_handle(arena_id,used_size_new);
 
     //if we can't fit the push, we're done
     if (arena_handle == IFB_ENGINE_MEMORY_HANDLE_INVALID) {
@@ -247,7 +252,7 @@ ifb_engine::stack_allocator_push_handle(
     //update the table
     ifb_engine::stack_allocator_update_used(
         stack_allocator_table,
-        stack_allocator_index,
+        stack_allocator_id,
         used_size_new);
 
     //we're done
@@ -256,29 +261,30 @@ ifb_engine::stack_allocator_push_handle(
 
 ifb_api const ifb_memory
 ifb_engine::stack_allocator_push_memory(
-    const ifb_u32 stack_allocator_index,
-    const ifb_u32 size) {
+    const IFBEngineStackAllocatorId stack_allocator_id,
+    const ifb_u32                   size) {
 
     //get the table
     IFBEngineTableStackAllocator stack_allocator_table;
     ifb_engine::table_stack_allocator(stack_allocator_table);
 
     //get the arena index and current/new used sizes
-    const ifb_u32 arena_index       = ifb_engine::stack_allocator_get_arena_index(stack_allocator_table,stack_allocator_index);
-    const ifb_u32 used_size_current = ifb_engine::stack_allocator_get_used       (stack_allocator_table,stack_allocator_index);
-    const ifb_u32 used_size_new     = used_size_current + size; 
+    const IFBEngineArenaId arena_id          = ifb_engine::stack_allocator_get_arena_id(stack_allocator_table,stack_allocator_id);
+    const ifb_u32          used_size_current = ifb_engine::stack_allocator_get_used    (stack_allocator_table,stack_allocator_id);
+    const ifb_u32          used_size_new     = used_size_current + size; 
 
     //get the memory handle with the new used size
-    const ifb_u32 arena_handle = ifb_engine::memory_arena_handle(arena_index,used_size_new);
+    const ifb_u32 arena_handle = ifb_engine::memory_arena_handle(arena_id,used_size_new);
 
     //if we can't fit the push, we're done
     if (arena_handle == IFB_ENGINE_MEMORY_HANDLE_INVALID) {
-        return(NULL);
+        return(IFB_ENGINE_MEMORY_HANDLE_INVALID);
     }
 
     //update the table
     ifb_engine::stack_allocator_update_used(
-        stack_allocator_table,stack_allocator_index,
+        stack_allocator_table,
+        stack_allocator_id,
         used_size_new);
 
     //get the pointer
@@ -290,8 +296,8 @@ ifb_engine::stack_allocator_push_memory(
 
 ifb_api const ifb_b8
 ifb_engine::stack_allocator_pull(
-    const ifb_u32 stack_allocator_index,
-    const ifb_u32 size) {
+    const IFBEngineStackAllocatorId stack_allocator_id,
+    const ifb_u32                   size) {
 
     //get the table
     IFBEngineTableStackAllocator stack_allocator_table;
@@ -300,7 +306,7 @@ ifb_engine::stack_allocator_pull(
     //get the current used size
     const ifb_u32 used_size_current = ifb_engine::stack_allocator_get_used(
         stack_allocator_table,
-        stack_allocator_index);
+        stack_allocator_id);
 
     //make sure we can pull
     if (used_size_current < size) {
@@ -313,7 +319,7 @@ ifb_engine::stack_allocator_pull(
     const ifb_b8 used_size_new = used_size_current - size;
     ifb_engine::stack_allocator_update_used(
         stack_allocator_table,
-        stack_allocator_index,
+        stack_allocator_id,
         used_size_new);
 
     //we're done
@@ -329,8 +335,8 @@ ifb_engine::stack_allocator_table_initialize(
     IFBEngineTableStackAllocator& stack_allocator_table_ref) {
 
     //get the columns
-    ifb_table_index_arena* column_arena_index_ptr = ifb_engine::table_stack_allocator_column_memory_table_index_arena(stack_allocator_table_ref);
-    ifb_u32*               column_used_ptr        = ifb_engine::table_stack_allocator_column_memory_used(stack_allocator_table_ref);
+    IFBEngineArenaId* column_arena_id_ptr = ifb_engine::table_stack_allocator_column_arena_id(stack_allocator_table_ref);
+    ifb_u32*          column_used_ptr     = ifb_engine::table_stack_allocator_column_used    (stack_allocator_table_ref);
 
     //initialize the columns
     for (
@@ -338,78 +344,80 @@ ifb_engine::stack_allocator_table_initialize(
         stack_index < stack_allocator_table_ref.row_count;
         ++stack_index) {
 
-        column_arena_index_ptr [stack_index] = IFB_ENGINE_MEMORY_ARENA_INVALID; 
-        column_used_ptr        [stack_index] = 0; 
+        column_arena_id_ptr[stack_index] = {IFB_ENGINE_MEMORY_ARENA_INVALID}; 
+        column_used_ptr    [stack_index] = 0; 
     }
 
     //we're done
     return(true);
 }
 
-inline const ifb_u32 
+inline const ifb_b8
 ifb_engine::stack_allocator_next_available(
-    IFBEngineTableStackAllocator& stack_allocator_table_ref) {
+    IFBEngineTableStackAllocator& in_stack_allocator_table_ref,
+    IFBEngineStackAllocatorId&   out_stack_allocator_id_ref) {
 
-    const ifb_table_index_arena* column_arena_index_ptr = ifb_engine::table_stack_allocator_column_memory_table_index_arena(stack_allocator_table_ref);
+    IFBEngineArenaId* column_arena_id_ptr = ifb_engine::table_stack_allocator_column_arena_id(in_stack_allocator_table_ref);
 
     for (
         ifb_u32 stack_allocator_index = 0;
-                stack_allocator_index < stack_allocator_table_ref.row_count;
+                stack_allocator_index < in_stack_allocator_table_ref.row_count;
               ++stack_allocator_index) {
 
         //if the arena id is invalid, this stack is available
-        const ifb_u32 arena_id = column_arena_index_ptr[stack_allocator_index];
+        const IFBEngineArenaId arena_id = column_arena_id_ptr[stack_allocator_index];
         if (!ifb_engine::memory_arena_valid(arena_id)) {
-            return(stack_allocator_index);
+            out_stack_allocator_id_ref.stack_allocator_table_index = stack_allocator_index; 
+            return(true);
         } 
     }
 
     //we didn't find an available stack, return invalid
-    return(IFB_ENGINE_STACK_ALLOCATOR_INVALID);
+    return(false);
 }
 
 inline ifb_void 
-ifb_engine::stack_allocator_update_arena_index(
+ifb_engine::stack_allocator_update_arena_id(
           IFBEngineTableStackAllocator& stack_allocator_table_ref,
-    const ifb_u32                       stack_allocator_index,
-    const ifb_u32                       stack_allocator_arena_index) {
+    const IFBEngineStackAllocatorId     stack_allocator_id,
+    const IFBEngineArenaId              stack_allocator_arena_id) {
 
-    ifb_table_index_arena* arena_index_ptr = ifb_engine::table_stack_allocator_column_memory_table_index_arena(stack_allocator_table_ref);
+    IFBEngineArenaId* column_arena_id_ptr = ifb_engine::table_stack_allocator_column_arena_id(stack_allocator_table_ref);
 
-    arena_index_ptr[stack_allocator_index] = stack_allocator_arena_index; 
+    column_arena_id_ptr[stack_allocator_id.stack_allocator_table_index] = stack_allocator_arena_id; 
 }
 
 inline ifb_void 
 ifb_engine::stack_allocator_update_used(
           IFBEngineTableStackAllocator& stack_allocator_table_ref,
-    const ifb_u32                       stack_allocator_index,
-    const ifb_u32                       stack_allocator_used) {
+    const IFBEngineStackAllocatorId     stack_allocator_id,
+    const ifb_u32                      stack_allocator_used) {
 
-    ifb_u32* column_used_ptr = ifb_engine::table_stack_allocator_column_memory_used(stack_allocator_table_ref);
+    ifb_u32* column_used_ptr = ifb_engine::table_stack_allocator_column_used(stack_allocator_table_ref);
 
-    column_used_ptr[stack_allocator_index] = stack_allocator_used; 
+    column_used_ptr[stack_allocator_id.stack_allocator_table_index] = stack_allocator_used; 
 }
 
-inline const ifb_u32 
-ifb_engine::stack_allocator_get_arena_index(
+inline const IFBEngineArenaId 
+ifb_engine::stack_allocator_get_arena_id(
           IFBEngineTableStackAllocator& stack_allocator_table_ref,
-    const ifb_u32                       stack_allocator_index) {
+    const IFBEngineStackAllocatorId     stack_allocator_id) {
 
-    ifb_table_index_arena* arena_index_ptr = ifb_engine::table_stack_allocator_column_memory_table_index_arena(stack_allocator_table_ref);
+    IFBEngineArenaId* column_arena_id_ptr = ifb_engine::table_stack_allocator_column_arena_id(stack_allocator_table_ref);
 
-    const ifb_table_index_arena arena_index = arena_index_ptr[stack_allocator_index];
+    const IFBEngineArenaId arena_id = column_arena_id_ptr[stack_allocator_id.stack_allocator_table_index];
     
-    return(arena_index);
+    return(arena_id);
 }
 
 inline const ifb_u32
 ifb_engine::stack_allocator_get_used(
           IFBEngineTableStackAllocator& stack_allocator_table_ref,
-    const ifb_u32                       stack_allocator_index) {
+    const IFBEngineStackAllocatorId     stack_allocator_id) {
 
-    ifb_u32* column_used_ptr = ifb_engine::table_stack_allocator_column_memory_used(stack_allocator_table_ref);
+    ifb_u32* column_used_ptr = ifb_engine::table_stack_allocator_column_used(stack_allocator_table_ref);
 
-    const ifb_u32 used = column_used_ptr[stack_allocator_index];
+    const ifb_u32 used = column_used_ptr[stack_allocator_id.stack_allocator_table_index];
 
     return(used);
 }

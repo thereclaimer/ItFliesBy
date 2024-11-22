@@ -10,31 +10,32 @@
 /**********************************************************************************/
 
 struct IFBEngineStackAllocator {
-    ifb_table_index_stack_allocator stack_allocator_index;
-    ifb_table_index_arena           arena_index;
-    ifb_u32                         used;
 };
 
 namespace ifb_engine {
 
-    ifb_api const ifb_table_index_stack_allocator    stack_allocator_create           (const ifb_cstr stack_allocator_tag, const ifb_u32 stack_size_minimum);
+    ifb_api const ifb_b8
+    stack_allocator_create(
+        const ifb_cstr                    in_stack_allocator_tag,
+        const ifb_u32                     in_stack_size_minimum,
+              IFBEngineStackAllocatorId& out_stack_allocator_id_ref);
     
-    ifb_api const ifb_table_index_arena    stack_allocator_arena_index      (const ifb_table_index_stack_allocator stack_allocator_index);
-    ifb_api const ifb_table_index_tag      stack_allocator_arena_tag_index  (const ifb_table_index_stack_allocator stack_allocator_index);
-    ifb_api const ifb_handle_memory  stack_allocator_pointer_handle   (const ifb_table_index_stack_allocator stack_allocator_index);
+    ifb_api const IFBEngineArenaId    stack_allocator_arena_id       (const IFBEngineStackAllocatorId stack_allocator_id);
+    ifb_api const IFBEngineTagId      stack_allocator_arena_tag_id   (const IFBEngineStackAllocatorId stack_allocator_id);
+    ifb_api const ifb_handle_memory   stack_allocator_pointer_handle (const IFBEngineStackAllocatorId stack_allocator_id);
     
-    ifb_api const ifb_b8     stack_allocator_valid            (const ifb_table_index_stack_allocator stack_allocator_index);
-    ifb_api const ifb_u32    stack_allocator_size_total       (const ifb_table_index_stack_allocator stack_allocator_index);
-    ifb_api const ifb_u32    stack_allocator_size_used        (const ifb_table_index_stack_allocator stack_allocator_index);
-    ifb_api const ifb_u32    stack_allocator_arena_page_start (const ifb_table_index_stack_allocator stack_allocator_index);
-    ifb_api const ifb_u32    stack_allocator_arena_page_count (const ifb_table_index_stack_allocator stack_allocator_index);
-    ifb_api const ifb_cstr   stack_allocator_arena_tag_value  (const ifb_table_index_stack_allocator stack_allocator_index);
-    ifb_api const ifb_b8     stack_allocator_reset            (const ifb_table_index_stack_allocator stack_allocator_index);
-    ifb_api const ifb_memory stack_allocator_pointer_memory   (const ifb_table_index_stack_allocator stack_allocator_index);
+    ifb_api const ifb_b8     stack_allocator_valid            (const IFBEngineStackAllocatorId stack_allocator_id);
+    ifb_api const ifb_u32    stack_allocator_size_total       (const IFBEngineStackAllocatorId stack_allocator_id);
+    ifb_api const ifb_u32    stack_allocator_size_used        (const IFBEngineStackAllocatorId stack_allocator_id);
+    ifb_api const ifb_u32    stack_allocator_arena_page_start (const IFBEngineStackAllocatorId stack_allocator_id);
+    ifb_api const ifb_u32    stack_allocator_arena_page_count (const IFBEngineStackAllocatorId stack_allocator_id);
+    ifb_api const ifb_cstr   stack_allocator_arena_tag_value  (const IFBEngineStackAllocatorId stack_allocator_id);
+    ifb_api const ifb_b8     stack_allocator_reset            (const IFBEngineStackAllocatorId stack_allocator_id);
+    ifb_api const ifb_memory stack_allocator_pointer_memory   (const IFBEngineStackAllocatorId stack_allocator_id);
 
-    ifb_api const ifb_u32    stack_allocator_push_handle (const ifb_table_index_stack_allocator stack_allocator_index, const ifb_u32 size);
-    ifb_api const ifb_memory stack_allocator_push_memory (const ifb_table_index_stack_allocator stack_allocator_index, const ifb_u32 size);
-    ifb_api const ifb_b8     stack_allocator_pull        (const ifb_table_index_stack_allocator stack_allocator_index, const ifb_u32 size);
+    ifb_api const ifb_u32    stack_allocator_push_handle (const IFBEngineStackAllocatorId stack_allocator_id, const ifb_u32 size);
+    ifb_api const ifb_memory stack_allocator_push_memory (const IFBEngineStackAllocatorId stack_allocator_id, const ifb_u32 size);
+    ifb_api const ifb_b8     stack_allocator_pull        (const IFBEngineStackAllocatorId stack_allocator_id, const ifb_u32 size);
 };
 
 /**********************************************************************************/
@@ -42,10 +43,9 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineBlockAllocator {
-    ifb_table_index_arena           arena_index;
-    ifb_table_index_block_allocator block_allocator_index;
-    ifb_u32                         block_count;
-    ifb_u32                         block_size;
+    ifb_u32 block_allocator_index;
+    ifb_u32 block_count;
+    ifb_u32 block_size;
 };
 
 namespace ifb_engine {

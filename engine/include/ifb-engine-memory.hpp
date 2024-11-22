@@ -21,9 +21,9 @@ namespace ifb_engine {
 
     ifb_api ifb_void
     memory_pointer_from_handle_count(
-        const ifb_u32        in_handles_count,
+        const ifb_u32      in_handles_count,
         ifb_handle_memory* in_handles_ptr,
-        ifb_memory*         out_memory_ptr);
+        ifb_memory*       out_memory_ptr);
 
 
     ifb_api const ifb_handle_memory   memory_handle            (const ifb_u32 page_number,const ifb_u32 page_offset);
@@ -38,28 +38,32 @@ namespace ifb_engine {
 /* ARENA                                                                          */
 /**********************************************************************************/
 
-
 struct IFBEngineMemoryArena {
-    ifb_table_index_arena arena_index;
-    ifb_table_index_tag   tag_index;
-    ifb_u32               page_start;
-    ifb_u32               page_count;
+    IFBEngineArenaId arena_id;
+    IFBEngineTagId   tag_id;
+    ifb_u32          page_start;
+    ifb_u32          page_count;
 };
 
 namespace ifb_engine {
 
-    ifb_api const ifb_table_index_arena
+    ifb_api const ifb_b8
     memory_arena_commit(
-        const ifb_cstr arena_tag,
-        const ifb_u32  arena_size_minimum); 
+        const ifb_cstr           in_arena_tag,
+        const ifb_u32            in_arena_size_minimum,
+              IFBEngineArenaId& out_arena_id_ref); 
 
-    ifb_api const ifb_handle_memory   memory_arena_handle     (const ifb_table_index_arena arena_index, const ifb_u32 offset);
-    ifb_api const ifb_b8               memory_arena_valid      (const ifb_table_index_arena arena_index);
-    ifb_api const ifb_u32              memory_arena_page_start (const ifb_table_index_arena arena_index);
-    ifb_api const ifb_u32              memory_arena_page_count (const ifb_table_index_arena arena_index);
-    ifb_api const ifb_u32              memory_arena_tag_index  (const ifb_table_index_arena arena_index);
-    ifb_api const ifb_cstr             memory_arena_tag_value  (const ifb_table_index_arena arena_index);
+    ifb_api const ifb_handle_memory memory_arena_handle     (const IFBEngineArenaId arena_id, const ifb_u32 offset);
+    ifb_api const ifb_b8            memory_arena_valid      (const IFBEngineArenaId arena_id);
+    ifb_api const ifb_u32           memory_arena_page_start (const IFBEngineArenaId arena_id);
+    ifb_api const ifb_u32           memory_arena_page_count (const IFBEngineArenaId arena_id);
+    ifb_api const IFBEngineTagId    memory_arena_tag_id     (const IFBEngineArenaId arena_id);
+    ifb_api const ifb_cstr          memory_arena_tag_value  (const IFBEngineArenaId arena_id);
 
 };
+
+/**********************************************************************************/
+/* BLOCK                                                                          */
+/**********************************************************************************/
 
 #endif //IFB_ENGINE_MEMORY_HPP

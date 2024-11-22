@@ -1,7 +1,0 @@
-#ifndef IFB_ENGINE_INTERNAL_TAG_HPP
-#define IFB_ENGINE_INTERNAL_TAG_HPP
-
-#include "ifb-engine.hpp"
-
-
-#endif //IFB_ENGINE_INTERNAL_TAG_HPP

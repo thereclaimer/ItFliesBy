@@ -23,6 +23,12 @@ struct IFBEnginePlatformSystem {
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
+struct IFBPlatformMemory {
+    ifb_u32    page_count_total;
+    ifb_u32    page_count_used;
+    ifb_u32    page_size;
+};
+
 typedef const ifb_memory
 (*funcptr_ifb_engine_platform_memory_pages_commit)(
     const ifb_memory commit_start,

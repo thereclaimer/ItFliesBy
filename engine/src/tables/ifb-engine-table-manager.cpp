@@ -139,14 +139,14 @@ ifb_engine::table_manager_create_table_stack_allocator(
     IFBEngineTableManager* table_manager_ptr) {
 
     //calculate sizes
-    const ifb_u32 table_column_count            = 2;
-    const ifb_u32 table_row_count               = IFB_ENGINE_TABLE_STACK_ALLOCATOR_ROW_COUNT;
-    const ifb_u32 table_column_size_arena_index = ifb_macro_size_array(ifb_u32,table_row_count); 
-    const ifb_u32 table_column_size_used        = ifb_macro_size_array(ifb_u32,table_row_count); 
+    const ifb_u32 table_column_count         = 2;
+    const ifb_u32 table_row_count            = IFB_ENGINE_TABLE_STACK_ALLOCATOR_ROW_COUNT;
+    const ifb_u32 table_column_size_arena_id = ifb_macro_size_array(IFBEngineArenaId,table_row_count); 
+    const ifb_u32 table_column_size_used     = ifb_macro_size_array(ifb_u32,table_row_count); 
 
     //size array
     const ifb_u32 table_column_sizes[table_column_count] = {
-        table_column_size_arena_index,
+        table_column_size_arena_id,
         table_column_size_used
     };
 
@@ -176,15 +176,15 @@ ifb_engine::table_manager_create_table_arena(
     //calculate sizes
     const ifb_u32 table_column_count                = 3;
     const ifb_u32 table_row_count                   = IFB_ENGINE_TABLE_ARENA_ROW_COUNT;
-    const ifb_u32 table_column_size_page_start      = ifb_macro_size_array(ifb_u32,            table_row_count); 
-    const ifb_u32 table_column_size_page_count      = ifb_macro_size_array(ifb_u32,            table_row_count); 
-    const ifb_u32 table_column_size_table_index_tag = ifb_macro_size_array(ifb_table_index_tag,table_row_count); 
+    const ifb_u32 table_column_size_page_start      = ifb_macro_size_array(ifb_u32,        table_row_count); 
+    const ifb_u32 table_column_size_page_count      = ifb_macro_size_array(ifb_u32,        table_row_count); 
+    const ifb_u32 table_column_size_tag_id = ifb_macro_size_array(IFBEngineTagId, table_row_count); 
 
     //size array
     const ifb_u32 table_column_sizes[table_column_count] = {
         table_column_size_page_start,
         table_column_size_page_count,
-        table_column_size_table_index_tag
+        table_column_size_tag_id
     };
 
     //create the table

@@ -52,7 +52,7 @@ ifb_engine::core_manager_handle_tables(
     return(core_ptr->managers.tables);
 }
 
-inline const ifb_table_index_stack_allocator 
+inline const IFBEngineStackAllocatorId
 ifb_engine::core_stack_allocator_platform(
     ifb_void) {
 
@@ -63,7 +63,7 @@ ifb_engine::core_stack_allocator_platform(
     return(core_ptr->stack_allocators.platform);    
 }
 
-inline const ifb_table_index_stack_allocator 
+inline const IFBEngineStackAllocatorId 
 ifb_engine::core_stack_allocator_frame(
     ifb_void) {
 

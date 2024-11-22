@@ -44,9 +44,9 @@ namespace ifb_common {
 
     inline const ifb_b8
     hash_collision_check(
-              IFBHashValue& hash_value_ref,
         const IFBHashValue* hash_value_array_ptr,
-        const ifb_u32       hash_value_array_count) {
+        const ifb_u32       hash_value_array_count,
+        const IFBHashValue  hash_value) {
 
         if (
             hash_value_array_ptr   == NULL ||  
@@ -56,7 +56,7 @@ namespace ifb_common {
         }
 
         //load the hash value
-        __m128i xmm_reg_0 = _mm_loadu_epi32(hash_value_ref.h);
+        __m128i xmm_reg_0 = _mm_loadu_epi32(hash_value.h);
 
         for (
             ifb_u32 hash_index = 0;
@@ -81,7 +81,7 @@ namespace ifb_common {
     hash_next_clear_value(
         const IFBHashValue* in_hash_value_array_ptr,
         const ifb_u32       in_hash_value_array_count,
-            ifb_u32&       out_hash_index_ref) {
+              ifb_u32&     out_hash_index_ref) {
 
         __m128i xmm_reg;
 
@@ -102,9 +102,9 @@ namespace ifb_common {
 
     inline const ifb_b8
     hash_search(
-              IFBHashValue& in_hash_value_ref,
         const IFBHashValue* in_hash_value_array_ptr,
         const ifb_u32       in_hash_value_array_count,
+        const IFBHashValue  in_hash_value,
               ifb_u32&     out_hash_index_ref) {
 
         if (
@@ -115,7 +115,7 @@ namespace ifb_common {
         }
 
         //load the hash value
-        __m128i xmm_reg_0 = _mm_loadu_epi32(in_hash_value_ref.h);
+        __m128i xmm_reg_0 = _mm_loadu_epi32(in_hash_value.h);
 
         for (
             ifb_u32 out_hash_index_ref = 0;

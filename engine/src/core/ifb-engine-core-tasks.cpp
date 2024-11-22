@@ -48,15 +48,10 @@ ifb_engine::core_task_create_stack_allocators(
     IFBEngineCoreStackAllocators& engine_core_stack_allocators_ref) {
 
     //create the stack allocators
-    engine_core_stack_allocators_ref.frame    = ifb_engine::stack_allocator_create(IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_FRAME,   IFB_ENGINE_CORE_STACK_SIZE);
-    engine_core_stack_allocators_ref.platform = ifb_engine::stack_allocator_create(IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_PLATFORM,IFB_ENGINE_CORE_STACK_SIZE);
-    engine_core_stack_allocators_ref.window   = ifb_engine::stack_allocator_create(IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_WINDOW,  IFB_ENGINE_CORE_STACK_SIZE);
-
-    //sanity check
     ifb_b8 result = true;
-    result &= ifb_engine::stack_allocator_valid(engine_core_stack_allocators_ref.frame);
-    result &= ifb_engine::stack_allocator_valid(engine_core_stack_allocators_ref.platform);
-    result &= ifb_engine::stack_allocator_valid(engine_core_stack_allocators_ref.window);
+    result &= ifb_engine::stack_allocator_create(IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_FRAME,   IFB_ENGINE_CORE_STACK_SIZE, engine_core_stack_allocators_ref.frame);
+    result &= ifb_engine::stack_allocator_create(IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_PLATFORM,IFB_ENGINE_CORE_STACK_SIZE, engine_core_stack_allocators_ref.platform);
+    result &= ifb_engine::stack_allocator_create(IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_WINDOW,  IFB_ENGINE_CORE_STACK_SIZE, engine_core_stack_allocators_ref.window);
 
     //we're done
     return(result);

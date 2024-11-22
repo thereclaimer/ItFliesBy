@@ -10,7 +10,6 @@ struct IFBEngineTableBlockAllocator;
 struct IFBEngineTableArena;
 struct IFBEngineTableShaderProgram;
 
-
 /**********************************************************************************/
 /* TAG TABLE                                                                      */
 /**********************************************************************************/
@@ -19,15 +18,16 @@ struct IFBEngineTableShaderProgram;
 #define IFB_ENGINE_TABLE_TAG_VALUE_LENGTH 32
 
 struct IFBEngineTableTag {
+    ifb_u32           row_count;
     ifb_handle_memory column_handle_tag_buffer;
     ifb_handle_memory column_handle_hash_value;
 };
 
 namespace ifb_engine {
 
-    ifb_void      table_tag                          (IFBEngineTableTag& tag_table);
-    ifb_char*     table_tag_column_memory_tag_buffer (IFBEngineTableTag& tag_table);
-    IFBHashValue* table_tag_column_memory_hash_value (IFBEngineTableTag& tag_table);
+    ifb_void      table_tag                   (IFBEngineTableTag& tag_table);
+    ifb_char*     table_tag_column_tag_buffer (IFBEngineTableTag& tag_table);
+    IFBHashValue* table_tag_column_hash_value (IFBEngineTableTag& tag_table);
 };
 
 /**********************************************************************************/
@@ -38,15 +38,33 @@ namespace ifb_engine {
 
 struct IFBEngineTableStackAllocator {
     ifb_u32           row_count;
-    ifb_handle_memory column_handle_arena_index;
+    ifb_handle_memory column_handle_arena_id;
     ifb_handle_memory column_handle_used;
 };
 
 namespace ifb_engine {
 
-    ifb_void               table_stack_allocator                                 (IFBEngineTableStackAllocator& stack_allocator_table);
-    ifb_table_index_arena* table_stack_allocator_column_memory_table_index_arena (IFBEngineTableStackAllocator& stack_allocator_table);
-    ifb_u32*               table_stack_allocator_column_memory_used              (IFBEngineTableStackAllocator& stack_allocator_table);
+    ifb_void          table_stack_allocator                 (IFBEngineTableStackAllocator& stack_allocator_table);
+    IFBEngineArenaId* table_stack_allocator_column_arena_id (IFBEngineTableStackAllocator& stack_allocator_table);
+    ifb_u32*          table_stack_allocator_column_used     (IFBEngineTableStackAllocator& stack_allocator_table);
+};
+
+/**********************************************************************************/
+/* BLOCK HEADER TABLE                                                             */
+/**********************************************************************************/
+
+struct IFBEngineTableMemoryBlockHeader {
+    ifb_u32           row_count;
+    ifb_handle_memory column_handle_arena_index;
+    ifb_handle_memory column_handle_block_count;
+};
+
+struct IFBEngineMemoryBlock {
+
+};
+
+namespace ifb_engine {
+
 };
 
 /**********************************************************************************/
@@ -56,17 +74,18 @@ namespace ifb_engine {
 #define IFB_ENGINE_TABLE_ARENA_ROW_COUNT 4096
 
 struct IFBEngineTableArena {
+    ifb_u32           row_count;
     ifb_handle_memory column_handle_page_start;
     ifb_handle_memory column_handle_page_count;
-    ifb_handle_memory column_handle_table_index_tag;
+    ifb_handle_memory column_handle_tag_id;
 };
 
 namespace ifb_engine {
 
-    ifb_void             table_arena                               (IFBEngineTableArena& arena_table);
-    ifb_u32*             table_arena_column_memory_page_start      (IFBEngineTableArena& arena_table);
-    ifb_u32*             table_arena_column_memory_page_count      (IFBEngineTableArena& arena_table);
-    ifb_table_index_tag* table_arena_column_memory_table_index_tag (IFBEngineTableArena& arena_table);
+    ifb_void        table_arena                   (IFBEngineTableArena& arena_table);
+    ifb_u32*        table_arena_column_page_start (IFBEngineTableArena& arena_table);
+    ifb_u32*        table_arena_column_page_count (IFBEngineTableArena& arena_table);
+    IFBEngineTagId* table_arena_column_tag_id     (IFBEngineTableArena& arena_table);
 };
 
 
@@ -96,7 +115,7 @@ union IFBEngineTables {
 struct IFBEngineTableColumns {
     ifb_u32             column_count_max;
     ifb_u32             column_count_used;
-    ifb_handle_memory column_handles[IFB_ENGINE_TABLE_MANAGER_COLUMN_COUNT_MAX];
+    ifb_handle_memory   column_handles[IFB_ENGINE_TABLE_MANAGER_COLUMN_COUNT_MAX];
 };
 
 struct IFBEngineTableManager {

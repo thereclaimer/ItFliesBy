@@ -26,7 +26,6 @@ ifb_engine::memory_manager_startup(
     const ifb_u32 page_offset_arena_table = size_aligned_memory_manager; //the arena table is at the end of the memory manager struct 
 
     //create handles
-    const ifb_u32 handle_arena_table    = ifb_engine::memory_handle(memory_manager_page_start,page_offset_arena_table); 
     const ifb_u32 handle_memory_manager = ifb_engine::memory_handle(memory_manager_page_start,0);
 
     //initialize the memory manager

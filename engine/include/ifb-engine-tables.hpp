@@ -9,15 +9,23 @@ enum IFBEngineTableId_ {
     IFBEngineTableId_BlockAllocator = 2,
     IFBEngineTableId_Arena          = 3,
     IFBEngineTableId_ShaderProgram  = 4, 
-    IFBEngineTableId_Count          = 5
+    IFBEngineTableId_Stack          = 5,
+    IFBEngineTableId_Block          = 6,
+    IFBEngineTableId_Count          = 7
 };
 
 typedef ifb_u32 IFBEngineTableId;
 
-typedef ifb_index ifb_table_index_tag;
-typedef ifb_index ifb_table_index_stack_allocator;
-typedef ifb_index ifb_table_index_block_allocator;
-typedef ifb_index ifb_table_index_arena;
-typedef ifb_index ifb_table_index_shader_program;
+struct IFBEngineTagId {
+    ifb_index tag_table_index;    
+};
+
+struct IFBEngineStackAllocatorId {
+    ifb_index stack_allocator_table_index;
+};
+
+struct IFBEngineArenaId {
+    ifb_index arena_table_index;
+};
 
 #endif //IFB_ENGINE_TABLES_HPP

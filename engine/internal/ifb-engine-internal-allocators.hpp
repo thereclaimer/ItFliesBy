@@ -12,30 +12,30 @@
 
 namespace ifb_engine {
 
-    const ifb_b8  stack_allocator_table_initialize (IFBEngineTableStackAllocator& stack_allocator_table);
-    const ifb_u32 stack_allocator_next_available   (IFBEngineTableStackAllocator& stack_allocator_table_ref);
+    const ifb_b8 stack_allocator_table_initialize (IFBEngineTableStackAllocator& stack_allocator_table);
+    const ifb_b8 stack_allocator_next_available   (IFBEngineTableStackAllocator& in_stack_allocator_table_ref, IFBEngineStackAllocatorId& out_stack_allocator_id_ref);
 
     ifb_void 
-    stack_allocator_update_arena_index(
+    stack_allocator_update_arena_id(
               IFBEngineTableStackAllocator& stack_allocator_table_ref,
-        const ifb_u32                       stack_allocator_index,
-        const ifb_u32                       stack_allocator_arena_index);
+        const IFBEngineStackAllocatorId     stack_allocator_id,
+        const IFBEngineArenaId              stack_allocator_arena_id);
 
     ifb_void 
     stack_allocator_update_used(
               IFBEngineTableStackAllocator& stack_allocator_table_ref,
-        const ifb_u32                       stack_allocator_index,
+        const IFBEngineStackAllocatorId     stack_allocator_id,
         const ifb_u32                       stack_allocator_used);
 
-    const ifb_u32 
-    stack_allocator_get_arena_index(
+    const IFBEngineArenaId 
+    stack_allocator_get_arena_id(
               IFBEngineTableStackAllocator& stack_allocator_table_ref,
-        const ifb_u32                       stack_allocator_index);
+        const IFBEngineStackAllocatorId     stack_allocator_id);
 
     const ifb_u32
     stack_allocator_get_used(
               IFBEngineTableStackAllocator& stack_allocator_table_ref,
-        const ifb_u32                       stack_allocator_index);
+        const IFBEngineStackAllocatorId     stack_allocator_id);
 };
 
 /**********************************************************************************/

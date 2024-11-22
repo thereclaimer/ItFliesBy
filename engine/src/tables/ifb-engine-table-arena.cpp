@@ -11,13 +11,13 @@ ifb_engine::table_arena(
     IFBEngineTable& table_ref = table_manager_ptr->tables.arena;
 
     const ifb_u32 column_handle_start = table_ref.column_handle_start;
-    arena_table.column_handle_page_start      = table_manager_ptr->columns.column_handles[column_handle_start]; 
-    arena_table.column_handle_page_count      = table_manager_ptr->columns.column_handles[column_handle_start + 1]; 
-    arena_table.column_handle_table_index_tag = table_manager_ptr->columns.column_handles[column_handle_start + 2];     
+    arena_table.column_handle_page_start = table_manager_ptr->columns.column_handles[column_handle_start]; 
+    arena_table.column_handle_page_count = table_manager_ptr->columns.column_handles[column_handle_start + 1]; 
+    arena_table.column_handle_tag_id     = table_manager_ptr->columns.column_handles[column_handle_start + 2];     
 }
 
 inline ifb_u32*
-ifb_engine::table_arena_column_memory_page_start(
+ifb_engine::table_arena_column_page_start(
     IFBEngineTableArena& arena_table) {
 
     ifb_u32* column_page_start_ptr = (ifb_u32*)ifb_engine::memory_pointer_from_handle(arena_table.column_handle_page_start); 
@@ -26,7 +26,7 @@ ifb_engine::table_arena_column_memory_page_start(
 }
 
 inline ifb_u32*
-ifb_engine::table_arena_column_memory_page_count(
+ifb_engine::table_arena_column_page_count(
     IFBEngineTableArena& arena_table) {
 
     ifb_u32* column_page_count_ptr = (ifb_u32*)ifb_engine::memory_pointer_from_handle(arena_table.column_handle_page_count); 
@@ -34,11 +34,11 @@ ifb_engine::table_arena_column_memory_page_count(
     return(column_page_count_ptr);
 }
 
-inline ifb_table_index_tag*
-ifb_engine::table_arena_column_memory_table_index_tag(
+inline IFBEngineTagId*
+ifb_engine::table_arena_column_tag_id(
     IFBEngineTableArena& arena_table) {
 
-    ifb_table_index_tag* column_tag_index_ptr = (ifb_table_index_tag*)ifb_engine::memory_pointer_from_handle(arena_table.column_handle_table_index_tag); 
+    IFBEngineTagId* column_tag_id_ptr = (IFBEngineTagId*)ifb_engine::memory_pointer_from_handle(arena_table.column_handle_tag_id); 
 
-    return(column_tag_index_ptr);
+    return(column_tag_id_ptr);
 }

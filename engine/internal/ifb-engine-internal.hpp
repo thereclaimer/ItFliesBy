@@ -7,7 +7,6 @@
 #include "ifb-engine-internal-memory.hpp"
 #include "ifb-engine-internal-platform.hpp"
 #include "ifb-engine-internal-tools.hpp"
-#include "ifb-engine-internal-tag.hpp"
 #include "ifb-engine-internal-allocators.hpp"
 
 ifb_global IFBEngineContext* _engine_context;
