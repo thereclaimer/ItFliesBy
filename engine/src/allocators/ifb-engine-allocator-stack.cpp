@@ -334,18 +334,14 @@ inline const ifb_b8
 ifb_engine::stack_allocator_table_initialize(
     IFBEngineTableStackAllocator& stack_allocator_table_ref) {
 
-    //get the columns
-    IFBEngineArenaId* column_arena_id_ptr = ifb_engine::table_stack_allocator_column_arena_id(stack_allocator_table_ref);
-    ifb_u32*          column_used_ptr     = ifb_engine::table_stack_allocator_column_used    (stack_allocator_table_ref);
-
     //initialize the columns
     for (
         ifb_u32 stack_index = 0;
         stack_index < stack_allocator_table_ref.row_count;
         ++stack_index) {
 
-        column_arena_id_ptr[stack_index] = {IFB_ENGINE_MEMORY_ARENA_INVALID}; 
-        column_used_ptr    [stack_index] = 0; 
+        stack_allocator_table_ref.column_ptrs.arena_id[stack_index] = {IFB_ENGINE_MEMORY_ARENA_INVALID}; 
+        stack_allocator_table_ref.column_ptrs.used    [stack_index] = 0; 
     }
 
     //we're done
@@ -357,15 +353,13 @@ ifb_engine::stack_allocator_next_available(
     IFBEngineTableStackAllocator& in_stack_allocator_table_ref,
     IFBEngineStackAllocatorId&   out_stack_allocator_id_ref) {
 
-    IFBEngineArenaId* column_arena_id_ptr = ifb_engine::table_stack_allocator_column_arena_id(in_stack_allocator_table_ref);
-
     for (
         ifb_u32 stack_allocator_index = 0;
                 stack_allocator_index < in_stack_allocator_table_ref.row_count;
               ++stack_allocator_index) {
 
         //if the arena id is invalid, this stack is available
-        const IFBEngineArenaId arena_id = column_arena_id_ptr[stack_allocator_index];
+        const IFBEngineArenaId arena_id = in_stack_allocator_table_ref.column_ptrs.arena_id[stack_allocator_index];
         if (!ifb_engine::memory_arena_valid(arena_id)) {
             out_stack_allocator_id_ref.stack_allocator_table_index = stack_allocator_index; 
             return(true);
@@ -382,9 +376,7 @@ ifb_engine::stack_allocator_update_arena_id(
     const IFBEngineStackAllocatorId     stack_allocator_id,
     const IFBEngineArenaId              stack_allocator_arena_id) {
 
-    IFBEngineArenaId* column_arena_id_ptr = ifb_engine::table_stack_allocator_column_arena_id(stack_allocator_table_ref);
-
-    column_arena_id_ptr[stack_allocator_id.stack_allocator_table_index] = stack_allocator_arena_id; 
+    stack_allocator_table_ref.column_ptrs.arena_id[stack_allocator_id.stack_allocator_table_index] = stack_allocator_arena_id; 
 }
 
 inline ifb_void 
@@ -393,9 +385,7 @@ ifb_engine::stack_allocator_update_used(
     const IFBEngineStackAllocatorId     stack_allocator_id,
     const ifb_u32                      stack_allocator_used) {
 
-    ifb_u32* column_used_ptr = ifb_engine::table_stack_allocator_column_used(stack_allocator_table_ref);
-
-    column_used_ptr[stack_allocator_id.stack_allocator_table_index] = stack_allocator_used; 
+    stack_allocator_table_ref.column_ptrs.used[stack_allocator_id.stack_allocator_table_index] = stack_allocator_used;
 }
 
 inline const IFBEngineArenaId 
@@ -403,9 +393,7 @@ ifb_engine::stack_allocator_get_arena_id(
           IFBEngineTableStackAllocator& stack_allocator_table_ref,
     const IFBEngineStackAllocatorId     stack_allocator_id) {
 
-    IFBEngineArenaId* column_arena_id_ptr = ifb_engine::table_stack_allocator_column_arena_id(stack_allocator_table_ref);
-
-    const IFBEngineArenaId arena_id = column_arena_id_ptr[stack_allocator_id.stack_allocator_table_index];
+    const IFBEngineArenaId arena_id = stack_allocator_table_ref.column_ptrs.arena_id[stack_allocator_id.stack_allocator_table_index];
     
     return(arena_id);
 }
@@ -415,9 +403,7 @@ ifb_engine::stack_allocator_get_used(
           IFBEngineTableStackAllocator& stack_allocator_table_ref,
     const IFBEngineStackAllocatorId     stack_allocator_id) {
 
-    ifb_u32* column_used_ptr = ifb_engine::table_stack_allocator_column_used(stack_allocator_table_ref);
-
-    const ifb_u32 used = column_used_ptr[stack_allocator_id.stack_allocator_table_index];
+    const ifb_u32 used = stack_allocator_table_ref.column_ptrs.used[stack_allocator_id.stack_allocator_table_index];
 
     return(used);
 }

@@ -2,6 +2,7 @@
 
 #include "ifb-engine-internal-memory.hpp"
 #include "ifb-engine-internal-tables.hpp"
+#include "ifb-engine-internal-controllers.hpp"
 #include "ifb-engine-internal.hpp"
 
 /**********************************************************************************/
@@ -43,16 +44,12 @@ ifb_engine::memory_arena_commit(
     //get the arena table
     IFBEngineTableArena arena_table;
     ifb_engine::table_arena(arena_table);
-
-    //get the table columns
-    ifb_u32*        arena_table_column_page_start = ifb_engine::table_arena_column_page_start(arena_table);
-    ifb_u32*        arena_table_column_page_count = ifb_engine::table_arena_column_page_count(arena_table);
-    IFBEngineTagId* arena_table_column_tag_id     = ifb_engine::table_arena_column_tag_id    (arena_table);
+    
 
     //update the table
-    arena_table_column_page_start [arena_index] = arena_page_start;
-    arena_table_column_page_count [arena_index] = arena_page_count;
-    arena_table_column_tag_id     [arena_index] = arena_tag_id;
+    arena_table.column_ptrs.page_start [arena_index] = arena_page_start;
+    arena_table.column_ptrs.page_count [arena_index] = arena_page_count;
+    arena_table.column_ptrs.tag_id     [arena_index] = arena_tag_id;
 
     //update the manager
     ++memory_manager_ptr->arena_count_used;
@@ -80,13 +77,9 @@ ifb_engine::memory_arena_handle(
     IFBEngineTableArena arena_table;
     ifb_engine::table_arena(arena_table);
 
-    //get the column memory    
-    const ifb_u32* page_start_ptr = ifb_engine::table_arena_column_page_start(arena_table);
-    const ifb_u32* page_count_ptr = ifb_engine::table_arena_column_page_count(arena_table);
-
     //get the page info
-    const ifb_u32 page_start = page_start_ptr[arena_id.arena_table_index]; 
-    const ifb_u32 page_count = page_count_ptr[arena_id.arena_table_index]; 
+    const ifb_u32 page_start = arena_table.column_ptrs.page_start[arena_id.arena_table_index]; 
+    const ifb_u32 page_count = arena_table.column_ptrs.page_count[arena_id.arena_table_index]; 
 
     //get the arena size
     const ifb_u32 arena_size = ifb_engine::memory_page_size(page_count); 
@@ -110,8 +103,7 @@ ifb_engine::memory_arena_page_start(
     IFBEngineTableArena arena_table;
     ifb_engine::table_arena(arena_table);
 
-    const ifb_u32* page_start_ptr = ifb_engine::table_arena_column_page_start(arena_table);
-    const ifb_u32  page_start     = page_start_ptr[arena_id.arena_table_index]; 
+    const ifb_u32 page_start = arena_table.column_ptrs.page_start[arena_id.arena_table_index]; 
 
     return(page_start);
 }
@@ -124,8 +116,7 @@ ifb_engine::memory_arena_page_count(
     IFBEngineTableArena arena_table;
     ifb_engine::table_arena(arena_table);
 
-    const ifb_u32* page_count_ptr = ifb_engine::table_arena_column_page_count(arena_table);
-    const ifb_u32  page_count     = page_count_ptr[arena_id.arena_table_index]; 
+    const ifb_u32 page_count = arena_table.column_ptrs.page_count[arena_id.arena_table_index]; 
 
     return(page_count);
 }
@@ -138,8 +129,7 @@ ifb_engine::memory_arena_tag_id(
     IFBEngineTableArena arena_table;
     ifb_engine::table_arena(arena_table);
 
-    const IFBEngineTagId* tag_index_ptr = ifb_engine::table_arena_column_tag_id(arena_table);
-    const IFBEngineTagId  tag_id        = tag_index_ptr[arena_id.arena_table_index];
+    const IFBEngineTagId tag_id = arena_table.column_ptrs.tag_id[arena_id.arena_table_index]; 
 
     return(tag_id);
 }
@@ -148,17 +138,18 @@ ifb_api const ifb_cstr
 ifb_engine::memory_arena_tag_value(
     const IFBEngineArenaId arena_id) {
 
-    //get the arena table
+    //get the tables
     IFBEngineTableArena arena_table;
+    IFBEngineTableTag   tag_table;
     ifb_engine::table_arena(arena_table);
+    ifb_engine::table_tag  (tag_table);
 
     //get the tag index    
-    const IFBEngineTagId* tag_index_ptr = ifb_engine::table_arena_column_tag_id(arena_table);
-    const IFBEngineTagId  tag_id        = tag_index_ptr[arena_id.arena_table_index];
+    const IFBEngineTagId tag_id = arena_table.column_ptrs.tag_id[arena_id.arena_table_index];
 
     //get the tag value
-    const ifb_cstr tag_value = ifb_engine::tag_value(tag_id);
+    const ifb_cstr tag_cstr = ifb_engine::controller_tag_cstr_value(tag_id); 
 
     //we're done
-    return(tag_value);
+    return(tag_cstr);
 }
