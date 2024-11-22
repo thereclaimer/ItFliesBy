@@ -18,4 +18,21 @@ namespace ifb_engine {
     const ifb_b8       controller_tag_table_search     (const ifb_cstr       in_tag_value, IFBEngineTagId& out_tag_id);
 };
 
+/**********************************************************************************/
+/* MEMORY CONTROLLER                                                              */
+/**********************************************************************************/
+
+namespace ifb_engine {
+       
+    const ifb_u32        controller_memory_arena_page_start (const IFBEngineArenaId arena_id);
+    const ifb_u32        controller_memory_arena_page_count (const IFBEngineArenaId arena_id);
+    const IFBEngineTagId controller_memory_arena_tag_id     (const IFBEngineArenaId arena_id);
+
+    const ifb_b8 
+    controller_memory_arena_table_insert(
+        const ifb_u32        page_start,
+        const ifb_u32        page_count,
+        const IFBEngineTagId tag_id);
+};
+
 #endif //IFB_ENGINE_INTERNAL_CONTROLLERS_HPP

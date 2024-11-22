@@ -11,9 +11,9 @@
 
 ifb_api const ifb_b8
 ifb_engine::memory_arena_commit(
-    const ifb_cstr             in_arena_tag,
-    const ifb_u32              in_arena_size_minimum,
-            IFBEngineArenaId& out_arena_id_ref) {
+    const ifb_cstr           in_arena_tag,
+    const ifb_u32            in_arena_size_minimum,
+          IFBEngineArenaId& out_arena_id_ref) {
 
     //get the memory manager
     IFBEngineMemoryManager* memory_manager_ptr = ifb_engine::memory_manager_pointer_from_context();
@@ -28,7 +28,7 @@ ifb_engine::memory_arena_commit(
     
     //create the tag
     IFBEngineTagId arena_tag_id;
-    if (!ifb_engine::tag_create(in_arena_tag,arena_tag_id)) {
+    if (!ifb_engine::controller_tag_table_insert(in_arena_tag,arena_tag_id)) {
         return(IFB_ENGINE_MEMORY_ARENA_INVALID);
     } 
 
