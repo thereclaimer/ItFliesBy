@@ -57,8 +57,11 @@ ifb_engine::memory_arena_commit(
     //update the manager
     ++memory_manager_ptr->arena_count_used;
 
+    //update the id
+    out_arena_id_ref.arena_table_index = arena_index;
+
     //we're done
-    return(arena_index);
+    return(true);
 }
 
 ifb_api const ifb_b8
