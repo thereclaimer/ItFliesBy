@@ -28,4 +28,11 @@ struct IFBEngineArenaId {
     ifb_index arena_table_index;
 };
 
+struct IFBEngineStackId {
+    struct {
+        ifb_index arena;
+        ifb_index stack;
+    } table_indexes;
+};
+
 #endif //IFB_ENGINE_TABLES_HPP
