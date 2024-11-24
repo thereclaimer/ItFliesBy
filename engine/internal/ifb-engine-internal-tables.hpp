@@ -69,10 +69,10 @@ struct IFBEngineTableHandleArena {
 };
 
 /**********************************************************************************/
-/* TABLE MANAGER                                                                  */
+/* TABLE ALLOCATOR                                                                */
 /**********************************************************************************/
 
-struct IFBEngineTableManager {
+struct IFBEngineTableAllocator {
     struct {
         ifb_u32 page_start;
         ifb_u32 page_count;

@@ -8,6 +8,7 @@
 #include "ifb-common-macros.hpp"
 #include "ifb-common-resolution.hpp"
 #include "ifb-common-scopes.hpp"
+#include "ifb-common-stack.hpp"
 #include "ifb-common-types.hpp"
 #include "ifb-common-user-input.hpp"
 

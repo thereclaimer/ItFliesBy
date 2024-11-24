@@ -58,10 +58,36 @@ struct IFBEngineBlockAllocatorTableColumnMemory {
 };
 
 /**********************************************************************************/
+/* TABLE ALLOCATOR                                                                */
+/**********************************************************************************/
+
+struct IFBEngineTableAllocator {
+    IFBEngineArenaId arena_id;
+    ifb_u32          used_size;
+};
+
+namespace ifb_engine {
+
+    const ifb_b8 table_allocator_create (IFBEngineTableAllocator& table_allocator_ref);
+    
+    const ifb_b8
+    table_allocator_create_table(
+              IFBEngineTableAllocator& in_table_allocator_ref,
+        const ifb_u32                  in_table_header_size,
+        const ifb_u32                  in_table_row_count,
+        const ifb_u32                  in_table_column_count,
+        const ifb_u32*                 in_table_column_sizes,
+              ifb_memory              out_table_header,
+              ifb_memory*             out_table_columns);
+
+};
+
+/**********************************************************************************/
 /* ALLOCATORS                                                                     */
 /**********************************************************************************/
 
 namespace ifb_engine {
+
 
     ifb_void allocator_tables_initialize(ifb_void); 
 };
