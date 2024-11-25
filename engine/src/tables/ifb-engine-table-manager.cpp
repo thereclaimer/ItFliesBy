@@ -5,7 +5,7 @@
 
 inline IFBEngineTableManager*
 ifb_engine::table_manager_from_handle(
-    const ifb_handle_memory handle) {
+    const IFBEngineMemoryHandle handle) {
 
     IFBEngineTableManager* table_manager_ptr = (IFBEngineTableManager*)ifb_engine::memory_pointer_from_handle(handle);
 
@@ -22,7 +22,7 @@ ifb_engine::table_manager_from_context(
     return(table_manager_ptr);
 }
 
-inline const ifb_handle_memory 
+inline const IFBEngineMemoryHandle 
 ifb_engine::table_manager_create(
     ifb_void) {
 
@@ -39,7 +39,7 @@ ifb_engine::table_manager_create(
     }
 
     //create handles
-    const ifb_handle_memory handle_table_manager = ifb_engine::memory_handle(page_start, 0);
+    const IFBEngineMemoryHandle handle_table_manager = ifb_engine::memory_handle(page_start, 0);
 
     //initialize the table manager
     IFBEngineTableManager* table_manager_ptr = ifb_engine::table_manager_from_handle(handle_table_manager);    
@@ -95,7 +95,7 @@ ifb_engine::table_manager_create_table(
         const ifb_u32 column_page_start = ifb_engine::memory_page_commit(column_page_count);    
         
         //get column handle
-        const ifb_handle_memory column_handle = ifb_engine::memory_handle(column_page_start,0); 
+        const IFBEngineMemoryHandle column_handle = ifb_engine::memory_handle(column_page_start,0); 
 
         //sanity check       
         result &= ifb_engine::memory_handle_valid(column_handle);    

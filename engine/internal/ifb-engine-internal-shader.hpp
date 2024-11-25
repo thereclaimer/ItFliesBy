@@ -34,13 +34,13 @@ typedef ifb_u32 IFBEngineShaderStageType;
 
 union IFBEngineShaderProgramTableHandles {
     struct {
-        ifb_handle_memory handle_table;
-        ifb_handle_memory handle_column_gl_program;
-        ifb_handle_memory handle_column_gl_stage_vertex;
-        ifb_handle_memory handle_column_gl_stage_fragment;
-        ifb_handle_memory handle_column_gl_vertex_array;
+        IFBEngineMemoryHandle handle_table;
+        IFBEngineMemoryHandle handle_column_gl_program;
+        IFBEngineMemoryHandle handle_column_gl_stage_vertex;
+        IFBEngineMemoryHandle handle_column_gl_stage_fragment;
+        IFBEngineMemoryHandle handle_column_gl_vertex_array;
     };
-    ifb_handle_memory array[5];
+    IFBEngineMemoryHandle array[5];
 };
 
 

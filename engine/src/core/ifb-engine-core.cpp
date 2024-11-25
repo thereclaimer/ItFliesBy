@@ -10,7 +10,7 @@ ifb_engine::core_pointer_from_context(
     ifb_void) {
 
     //get the core handle
-    const ifb_handle_memory core_handle = ifb_engine::context_core_handle();
+    const IFBEngineMemoryHandle core_handle = ifb_engine::context_core_handle();
 
     //get the pointer
     IFBEngineCore* core_ptr = (IFBEngineCore*)ifb_engine::memory_pointer_from_handle(core_handle);
@@ -19,7 +19,7 @@ ifb_engine::core_pointer_from_context(
     return(core_ptr);
 }
 
-inline const ifb_handle_memory 
+inline const IFBEngineMemoryHandle 
 ifb_engine::core_manager_handle_memory(
     ifb_void) {
 
@@ -30,7 +30,7 @@ ifb_engine::core_manager_handle_memory(
     return(core_ptr->managers.memory);
 }
 
-inline const ifb_handle_memory 
+inline const IFBEngineMemoryHandle 
 ifb_engine::core_manager_handle_assets(
     ifb_void) {
 
@@ -41,7 +41,7 @@ ifb_engine::core_manager_handle_assets(
     return(core_ptr->managers.assets);
 }
 
-inline const ifb_handle_memory
+inline const IFBEngineMemoryHandle
 ifb_engine::core_manager_handle_tables(
     ifb_void) {
 

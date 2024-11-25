@@ -13,9 +13,9 @@ ifb_global IFBEngineContext* _engine_context;
 
 namespace ifb_engine {
 
-      inline const ifb_b8              context_initialized  (ifb_void) { return(_engine_context != NULL);      }
-      inline const ifb_memory          context_base_pointer (ifb_void) { return((ifb_memory)_engine_context);  }
-      inline const ifb_handle_memory context_core_handle  (ifb_void) { return(_engine_context->core_handle); }
+      inline const ifb_b8                context_initialized  (ifb_void) { return(_engine_context != NULL);      }
+      inline const ifb_memory            context_base_pointer (ifb_void) { return((ifb_memory)_engine_context);  }
+      inline const IFBEngineMemoryHandle context_core_handle  (ifb_void) { return(_engine_context->core_handle); }
 
       inline const ifb_u32 context_platform_page_size       (ifb_void) { return(_engine_context->platform.memory_page_size);        }
       inline const ifb_u32 context_platform_page_count_total(ifb_void) { return(_engine_context->platform.memory_page_count_total); }

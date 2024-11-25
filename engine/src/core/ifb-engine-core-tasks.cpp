@@ -6,7 +6,7 @@
 
 inline const ifb_b8 
 ifb_engine::core_task_create_core_handle(
-    ifb_handle_memory& engine_core_handle_ref) {
+    IFBEngineMemoryHandle& engine_core_handle_ref) {
 
     //get page
     const ifb_u32 core_size       = ifb_macro_align_size_struct(IFBEngineCore);

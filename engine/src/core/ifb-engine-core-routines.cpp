@@ -10,7 +10,7 @@ ifb_engine::core_routine_initialize(
     ifb_b8 result = true;
 
     //create the handle
-    ifb_handle_memory core_memory_handle;
+    IFBEngineMemoryHandle core_memory_handle;
     result &= ifb_engine::core_task_create_core_handle(core_memory_handle);
 
     //get pointer

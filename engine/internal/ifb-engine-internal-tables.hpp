@@ -10,11 +10,8 @@ struct IFBEngineTableBlockAllocator;
 struct IFBEngineTableArena;
 struct IFBEngineTableShaderProgram;
 
-struct IFBEngineTableHandleTag;
-struct IFBEngineTableHandleStackAllocator;
-struct IFBEngineTableHandleBlockAllocator;
-struct IFBEngineTableHandleArena;
-struct IFBEngineTableHandleShaderProgram;
+struct IFBEngineTableHandleTag   : IFBEngineMemoryHandle { };
+struct IFBEngineTableHandleArena : IFBEngineMemoryHandle { };
 
 /**********************************************************************************/
 /* TAG TABLE                                                                      */
@@ -31,23 +28,21 @@ struct IFBEngineTableTag {
     } column_ptrs;
 };
 
-struct IFBEngineTableHandleTag {
-    ifb_handle_memory table_handle;
+namespace ifb_engine {
+
+    const ifb_b8 table_tag_read(
+        const IFBEngineTableHandleTag tag_table_handle,
+        const ifb_u32                 tag_table_read_count
+        const IFBEngineTableIndexTag* tag_indexes, 
+              ifb_char*               tag_table_column_ptr_tag_value,
+              IFBHashValue*           tag_table_column_ptr_hash_value);
+    
+    const ifb_b8 table_tag_delete          (const IFBEngineTableHandleTag tag_table_handle, const IFBEngineTableIndexTag tag_index);
+
+    const ifb_b8       table_tag_insert          (const IFBEngineTableHandleTag in_tag_table_handle, const ifb_cstr in_tag_value, IFBEngineTagId& out_tag_id);
+    const ifb_b8       table_tag_search          (const IFBEngineTableHandleTag in_tag_table_handle, const ifb_cstr in_tag_value, IFBEngineTagId& out_tag_id);
 };
 
-/**********************************************************************************/
-/* STACK ALLOCATOR TABLE                                                          */
-/**********************************************************************************/
-
-#define IFB_ENGINE_TABLE_STACK_ALLOCATOR_ROW_COUNT 1024
-
-struct IFBEngineTableStackAllocator {
-    ifb_u32           row_count;
-    struct {
-        IFBEngineArenaId* arena_id;
-        ifb_u32*          used;
-    } column_ptrs;
-};
 
 /**********************************************************************************/
 /* ARENA TABLE                                                                    */
@@ -58,49 +53,17 @@ struct IFBEngineTableStackAllocator {
 struct IFBEngineTableArena {
     ifb_u32           row_count;
     struct {
-        ifb_u32*        page_start;
-        ifb_u32*        page_count;
-        IFBEngineTagId* tag_id;
+        ifb_u32*                page_start;
+        ifb_u32*                page_count;
+        IFBEngineTableIndexTag* tag_index;
     } column_ptrs;
-};
-
-struct IFBEngineTableHandleArena {
-    ifb_handle_memory table_handle;
-};
-
-/**********************************************************************************/
-/* TABLE ALLOCATOR                                                                */
-/**********************************************************************************/
-
-struct IFBEngineTableAllocator {
-    struct {
-        ifb_u32 page_start;
-        ifb_u32 page_count;
-        ifb_u32 used;
-    } header_memory;
-};
-
-struct IFBEngineTable {
-    ifb_handle_memory  header;
-    ifb_handle_memory* column_ptr;
-    ifb_u32            column_count;
 };
 
 namespace ifb_engine {
 
-    const ifb_handle_memory  table_manager_create (ifb_void);
-
-    IFBEngineTableManager* table_manager_from_handle  (const ifb_handle_memory handle);
-    IFBEngineTableManager* table_manager_from_context (ifb_void);
-    
-    const ifb_b8
-    table_manager_create_table(
-              IFBEngineTableManager* in_table_manager_ptr,
-        const ifb_u32                in_table_header_size,
-        const ifb_u32                in_table_row_count,
-        const ifb_u32                in_table_column_count,
-        const ifb_u32*               in_table_column_sizes,
-              IFBEngineTable&       out_table_ref);
+    const ifb_u32                table_arena_read_page_start (const IFBEngineTableHandleArena arena_table_handle, const IFBEngineTableIndexArena arena_index);
+    const ifb_u32                table_arena_read_page_count (const IFBEngineTableHandleArena arena_table_handle, const IFBEngineTableIndexArena arena_index);
+    const IFBEngineTableIndexTag table_arena_read_tag_index  (const IFBEngineTableHandleArena arena_table_handle, const IFBEngineTableIndexArena arena_index);
 
 };
 
@@ -110,16 +73,11 @@ namespace ifb_engine {
 
 namespace ifb_engine {
 
-    const IFBEngineTableHandleTag            table_create_tag             (IFBEngineTableManager* table_manager_ptr);
-    const IFBEngineTableHandleStackAllocator table_create_stack_allocator (IFBEngineTableManager* table_manager_ptr);
-    const IFBEngineTableHandleBlockAllocator table_create_block_allocator (IFBEngineTableManager* table_manager_ptr);
-    const IFBEngineTableHandleArena          table_create_arena           (IFBEngineTableManager* table_manager_ptr);
-    const IFBEngineTableHandleShaderProgram  table_create_shader_program  (IFBEngineTableManager* table_manager_ptr);
+    const ifb_b8 table_create_tag   (const IFBEngineTableAllocatorHandle in_table_allocator_handle, IFBEngineTableHandleTag&   out_table_handle_tag_ref);
+    const ifb_b8 table_create_arena (const IFBEngineTableAllocatorHandle in_table_allocator_handle, IFBEngineTableHandleArena& out_table_handle_arena_ref);
 
-
-    IFBEngineTableTag*            table_tag             (IFBEngineTableTag&            tag_table);
-    IFBEngineTableArena*          table_arena           (IFBEngineTableArena&          arena_table);
-    IFBEngineTableStackAllocator* table_stack_allocator (IFBEngineTableStackAllocator& stack_allocator_table);
+    IFBEngineTableTag*   table_tag   (const IFBEngineTableHandleTag   table_handle_tag);
+    IFBEngineTableArena* table_arena (const IFBEngineTableHandleArena table_handle_arena);
 };
 
 #endif //IFB_ENGINE_INTERNAL_TABLES_HPP
