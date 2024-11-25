@@ -128,22 +128,24 @@ ifb_engine::memory_page_size(
     return(page_size_count);
 }
 
-ifb_api const ifb_u32 
-ifb_engine::memory_page_commit(
-    const ifb_u32 page_count) {
+ifb_api const ifb_b8 
+ifb_engine::memory_commit(
+    const ifb_u32                 in_commit_size_minimum,
+          IFBEngineMemoryCommit& out_commit_ref) {
 
     //calculate page sizes
-    const ifb_u32 page_size       = ifb_engine::context_platform_page_size();
-    const ifb_u32 page_current    = ifb_engine::context_platform_page_count_used();
-    const ifb_u32 page_start      = page_current * page_size;
+    const ifb_u32 page_size           = ifb_engine::context_platform_page_size();
+    const ifb_u32 commit_size_aligned = ifb_macro_align_a_to_b(in_commit_size_minimum,page_size);    
+    const ifb_u32 page_count          = commit_size_aligned / page_size;  
+    const ifb_u32 page_current        = ifb_engine::context_platform_page_count_used();
+    const ifb_u32 page_start          = page_current * page_size;
 
-    //calculate commit    
+    //calculate commit start    
     const ifb_memory base_pointer = ifb_engine::context_base_pointer();
     const ifb_memory commit_start = base_pointer + page_start;
-    const ifb_size   commit_size  = page_size * page_count;
 
     //do the commit
-    const ifb_memory commit_result = ifb_engine::platform_memory_pages_commit(commit_start,commit_size);
+    const ifb_memory commit_result = ifb_engine::platform_memory_pages_commit(commit_start,commit_size_aligned);
 
     //if that failed, we're done
     if (commit_start != commit_result) {
@@ -153,6 +155,10 @@ ifb_engine::memory_page_commit(
     //otherwise, update the context
     const ifb_u32 page_count_new = page_current + page_count;
     ifb_engine::context_platform_page_count_used_update(page_count_new);
+
+    //update the rest of the info
+    out_commit_ref.handle  = ifb_engine::memory_handle(page_start,0);
+    out_commit_ref.pointer = ifb_engine::memory_pointer_from_handle(out_commit_ref.handle);
 
     //we're done, return the page start
     return(page_current);

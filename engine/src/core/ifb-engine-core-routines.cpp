@@ -17,9 +17,8 @@ ifb_engine::core_routine_initialize(
     IFBEngineCore* engine_core_ptr = (IFBEngineCore*)ifb_engine::memory_pointer_from_handle(core_memory_handle);
 
     //create the managers and allocators
-    result &= ifb_engine::core_task_create_managers         (engine_core_ptr->managers);
-    ifb_engine::allocator_tables_initialize();
-    result &= ifb_engine::core_task_create_stack_allocators (engine_core_ptr->stack_allocators);
+    result &= ifb_engine::core_task_create_managers   (engine_core_ptr->managers);
+    result &= ifb_engine::core_task_create_allocators (engine_core_ptr->allocators);
 
     //we're done
     return(result);

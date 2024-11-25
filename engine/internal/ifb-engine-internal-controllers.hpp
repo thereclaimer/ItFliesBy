@@ -19,17 +19,18 @@ namespace ifb_engine {
 };
 
 /**********************************************************************************/
-/* MEMORY CONTROLLER                                                              */
+/* ARENA CONTROLLER                                                              */
 /**********************************************************************************/
 
 namespace ifb_engine {
        
-    const ifb_u32        controller_memory_arena_page_start (const IFBEngineArenaId arena_id);
-    const ifb_u32        controller_memory_arena_page_count (const IFBEngineArenaId arena_id);
-    const IFBEngineTagId controller_memory_arena_tag_id     (const IFBEngineArenaId arena_id);
+    const ifb_u32  controller_arena_page_start (const IFBEngineArenaId arena_id);
+    const ifb_u32  controller_arena_page_count (const IFBEngineArenaId arena_id);
+    const ifb_cstr controller_arena_tag_value  (const IFBEngineArenaId arena_id);
+          ifb_void controller_arena            (IFBEngineArena& arena_ref);
 
     const ifb_b8 
-    controller_memory_arena_create(
+    controller_arena_commit(
         const ifb_cstr           in_arena_tag_value,
         const ifb_u32            in_arena_size_minimum,
               IFBEngineArenaId& out_arena_id);

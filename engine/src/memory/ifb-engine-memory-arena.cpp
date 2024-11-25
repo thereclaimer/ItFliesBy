@@ -15,47 +15,7 @@ ifb_engine::memory_arena_commit(
     const ifb_u32            in_arena_size_minimum,
           IFBEngineArenaId& out_arena_id_ref) {
 
-    //get the memory manager
-    IFBEngineMemoryManager* memory_manager_ptr = ifb_engine::memory_manager_pointer_from_context();
-
-    //make sure we can commit
-    if (memory_manager_ptr->arena_count_used == memory_manager_ptr->arena_count_total) {
-        return(IFB_ENGINE_MEMORY_ARENA_INVALID);
-    }
-
-    //get the memory manager
-    const ifb_u32 arena_index = memory_manager_ptr->arena_count_used;
-    
-    //create the tag
-    IFBEngineTagId arena_tag_id;
-    if (!ifb_engine::controller_tag_table_insert(in_arena_tag,arena_tag_id)) {
-        return(IFB_ENGINE_MEMORY_ARENA_INVALID);
-    } 
-
-    //do the commit
-    const ifb_u32 arena_page_count = ifb_engine::memory_page_count(in_arena_size_minimum);
-    const ifb_u32 arena_page_start = ifb_engine::memory_page_commit(arena_page_count);
-
-    //sanity check
-    if (arena_page_start == 0) {
-        return(IFB_ENGINE_MEMORY_ARENA_INVALID);
-    }
-
-    //get the arena table
-    IFBEngineTableArena arena_table;
-    ifb_engine::table_arena(arena_table);
-    
-
-    //update the table
-    arena_table.column_ptrs.page_start [arena_index] = arena_page_start;
-    arena_table.column_ptrs.page_count [arena_index] = arena_page_count;
-    arena_table.column_ptrs.tag_id     [arena_index] = arena_tag_id;
-
-    //update the manager
-    ++memory_manager_ptr->arena_count_used;
-
-    //update the id
-    out_arena_id_ref.arena_table_index = arena_index;
+    ifb_engine::controller_memory_arena_commit()
 
     //we're done
     return(true);

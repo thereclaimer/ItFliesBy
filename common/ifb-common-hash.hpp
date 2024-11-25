@@ -18,11 +18,10 @@ union IFBHashValue {
 
 namespace ifb_common {
 
-    inline const ifb_u32 
+    inline const IFBHashValue 
     hash_cstr(
-        const ifb_cstr       in_cstr,
-        const ifb_u32        in_cstr_length_max,
-              IFBHashValue& out_cstr_hash_value_ref) {
+        const ifb_cstr c_str,
+        const ifb_u32  c_str_length_max) {
 
         //sanity check
         if (!in_cstr) {
@@ -30,16 +29,17 @@ namespace ifb_common {
         }
 
         //get the safe length of the string
-        const ifb_u32 in_cstr_length = strnlen_s(in_cstr,in_cstr_length_max - 1) + 1;
+        const ifb_u32 c_str_length = strnlen_s(c_str,c_str_length_max - 1) + 1;
 
         //do the hash
-        meow_u128 meow_hash_value = MeowHash(MeowDefaultSeed,in_cstr_length,in_cstr);
+        meow_u128 meow_hash_value = MeowHash(MeowDefaultSeed,c_str_length,c_str);
 
         //load the value
-        _mm_storeu_epi32(out_cstr_hash_value_ref.h,meow_hash_value);
+        IFBHashValue hash_value;
+        _mm_storeu_epi32(hash_value.h,meow_hash_value);
 
         //we're done
-        return(in_cstr_length);
+        return(hash_value);
     }
 
     inline const ifb_b8

@@ -19,11 +19,10 @@ struct IFBEngineLinearAllocator {
 
 namespace ifb_engine {
 
-    ifb_api ifb_b8  
+    ifb_api const IFBEngineLinearAllocatorHandle  
     linear_allocator_create(
-        const ifb_cstr                         in_linear_allocator_tag_cstr,
-        const ifb_u32                          in_linear_allocator_size_minimum,
-              IFBEngineLinearAllocatorHandle& out_linear_allocator_handle);
+        const ifb_cstr linear_allocator_tag_cstr,
+        const ifb_u32  linear_allocator_size_minimum);
     
     ifb_api const IFBEngineMemoryHandle linear_allocator_reserve             (const IFBEngineLinearAllocatorHandle linear_allocator_handle, const ifb_u32 size);
     ifb_api const IFBEngineMemoryHandle linear_allocator_release             (const IFBEngineLinearAllocatorHandle linear_allocator_handle, const ifb_u32 size);
@@ -75,20 +74,18 @@ struct IFBEngineTableAllocator {
 
 namespace ifb_engine {
 
-    ifb_api const ifb_b8
+    ifb_api const IFBEngineTableAllocatorHandle
     table_allocator_create(
-        const ifb_cstr                        in_table_allocator_tag_cstr,
-        const ifb_u32                         in_table_allocator_size_minimum,
-              IFBEngineTableAllocatorHandle& out_table_allocator_ref);
+        const ifb_cstr table_allocator_tag_cstr,
+        const ifb_u32  table_allocator_size_minimum);
 
-    ifb_api const ifb_b8
+    ifb_api const IFBEngineTableMemoryHandle*
     table_allocator_reserve(
-        const IFBEngineTableAllocatorHandle in_table_allocator_handle,
-        const ifb_u32                       in_table_count_rows,
-        const ifb_u32                       in_table_count_columns,
-        const ifb_u32                       in_table_size_header,
-        const ifb_u32*                      in_table_size_columns_ptr,
-              IFBEngineTableMemoryHandle*  out_table_memory_handles_ptr);
+        const IFBEngineTableAllocatorHandle table_allocator_handle,
+        const ifb_u32                       table_count_rows,
+        const ifb_u32                       table_count_columns,
+        const ifb_u32                       table_size_header,
+        const ifb_u32*                      table_size_columns_ptr);
 
     ifb_api const ifb_b8
     table_allocator_reset(const IFBEngineTableAllocatorHandle table_allocator_handle);

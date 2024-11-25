@@ -21,6 +21,7 @@ struct IFBEngineTableHandleArena : IFBEngineMemoryHandle { };
 #define IFB_ENGINE_TABLE_TAG_VALUE_LENGTH 32
 
 struct IFBEngineTableTag {
+    ifb_u32           tag_value_size;
     ifb_u32           row_count;
     struct {
         ifb_char*     tag_buffer;
@@ -30,19 +31,20 @@ struct IFBEngineTableTag {
 
 namespace ifb_engine {
 
-    const ifb_b8 table_tag_read(
-        const IFBEngineTableHandleTag tag_table_handle,
-        const ifb_u32                 tag_table_read_count
-        const IFBEngineTableIndexTag* tag_indexes, 
-              ifb_char*               tag_table_column_ptr_tag_value,
-              IFBHashValue*           tag_table_column_ptr_hash_value);
+    const IFBEngineTableHandleTag 
+    table_tag_create(const IFBEngineTableAllocatorHandle table_allocator_handle);
     
-    const ifb_b8 table_tag_delete          (const IFBEngineTableHandleTag tag_table_handle, const IFBEngineTableIndexTag tag_index);
+    const ifb_char     table_tag_read_value (const IFBEngineTableHandleTag tag_table_handle, const IFBEngineTableIndexTag tag_index);
+    const IFBHashValue table_tag_read_hash  (const IFBEngineTableHandleTag tag_table_handle, const IFBEngineTableIndexTag tag_index);
+    const ifb_b8       table_tag_delete     (const IFBEngineTableHandleTag tag_table_handle, const IFBEngineTableIndexTag tag_index);
 
-    const ifb_b8       table_tag_insert          (const IFBEngineTableHandleTag in_tag_table_handle, const ifb_cstr in_tag_value, IFBEngineTagId& out_tag_id);
-    const ifb_b8       table_tag_search          (const IFBEngineTableHandleTag in_tag_table_handle, const ifb_cstr in_tag_value, IFBEngineTagId& out_tag_id);
+    const ifb_b8       table_tag_insert  (const IFBEngineTableHandleTag in_tag_table_handle, const ifb_cstr in_tag_value, IFBEngineTableIndexTag& out_tag_index);
+    const ifb_b8       table_tag_search  (const IFBEngineTableHandleTag in_tag_table_handle, const ifb_cstr in_tag_value, IFBEngineTableIndexTag& out_tag_index);
+
+
+    IFBEngineTableTag*   table_tag   (const IFBEngineTableHandleTag   table_handle_tag);
+
 };
-
 
 /**********************************************************************************/
 /* ARENA TABLE                                                                    */
@@ -61,23 +63,27 @@ struct IFBEngineTableArena {
 
 namespace ifb_engine {
 
-    const ifb_u32                table_arena_read_page_start (const IFBEngineTableHandleArena arena_table_handle, const IFBEngineTableIndexArena arena_index);
-    const ifb_u32                table_arena_read_page_count (const IFBEngineTableHandleArena arena_table_handle, const IFBEngineTableIndexArena arena_index);
-    const IFBEngineTableIndexTag table_arena_read_tag_index  (const IFBEngineTableHandleArena arena_table_handle, const IFBEngineTableIndexArena arena_index);
+    const IFBEngineTableHandleArena
+    table_arena_create(const IFBEngineTableAllocatorHandle table_allocator_handle);
 
+    const ifb_u32                 table_arena_read_page_start (const IFBEngineTableHandleArena arena_table_handle, const IFBEngineTableIndexArena arena_index);
+    const ifb_u32                 table_arena_read_page_count (const IFBEngineTableHandleArena arena_table_handle, const IFBEngineTableIndexArena arena_index);
+    const IFBEngineTableIndexTag  table_arena_read_tag_index  (const IFBEngineTableHandleArena arena_table_handle, const IFBEngineTableIndexArena arena_index);
+
+    const ifb_b8
+    table_arena_insert(
+        const IFBEngineTableHandleArena  in_arena_table_handle,
+        const ifb_u32                    in_arena_page_start,
+        const ifb_u32                    in_arena_page_count,
+        const IFBEngineTableIndexTag     in_arena_tag_index,
+              IFBEngineTableIndexArena& out_arena_table_index);
+
+    IFBEngineTableArena* table_arena (const IFBEngineTableHandleArena table_handle_arena);
 };
-
-/**********************************************************************************/
-/* TABLES                                                                         */
-/**********************************************************************************/
 
 namespace ifb_engine {
 
-    const ifb_b8 table_create_tag   (const IFBEngineTableAllocatorHandle in_table_allocator_handle, IFBEngineTableHandleTag&   out_table_handle_tag_ref);
-    const ifb_b8 table_create_arena (const IFBEngineTableAllocatorHandle in_table_allocator_handle, IFBEngineTableHandleArena& out_table_handle_arena_ref);
 
-    IFBEngineTableTag*   table_tag   (const IFBEngineTableHandleTag   table_handle_tag);
-    IFBEngineTableArena* table_arena (const IFBEngineTableHandleArena table_handle_arena);
 };
 
 #endif //IFB_ENGINE_INTERNAL_TABLES_HPP

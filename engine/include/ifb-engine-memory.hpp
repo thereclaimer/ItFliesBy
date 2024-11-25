@@ -13,6 +13,13 @@ struct IFBEngineMemoryHandle {
     ifb_u32 context_offset;
 };
 
+struct IFBEngineMemoryCommit {
+    ifb_u32               page_start;
+    ifb_u32               page_count;
+    IFBEngineMemoryHandle handle;
+    ifb_memory            pointer;
+};
+
 #define IFB_ENGINE_MEMORY_HANDLE_INVALID 0
 
 namespace ifb_engine {
@@ -33,7 +40,7 @@ namespace ifb_engine {
     ifb_api const ifb_u32               memory_size_page_aligned (const ifb_u32 size);
     ifb_api const ifb_u32               memory_page_count        (const ifb_u32 size);
     ifb_api const ifb_u32               memory_page_size         (const ifb_u32 page_count);
-    ifb_api const ifb_u32               memory_page_commit       (const ifb_u32 page_count);
+    ifb_api const ifb_b8                memory_commit            (const ifb_u32 in_commit_size_minimum, IFBEngineMemoryCommit& out_commit_ref);
 };
 
 /**********************************************************************************/
@@ -41,14 +48,19 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineArenaId {
-    IFBEngineTableIndexArena arena_index;
+    struct  {
+        IFBEngineTableIndexTag   tag;
+        IFBEngineTableIndexArena arena;
+    } table_indexes;
 };
 
-struct IFBEngineMemoryArena {
-    IFBEngineArenaId arena_id;
-    IFBEngineTagId   tag_id;
-    ifb_u32          page_start;
-    ifb_u32          page_count;
+struct IFBEngineArena {
+    IFBEngineArenaId      arena_id;
+    ifb_cstr              tag_value;
+    ifb_u32               page_start;
+    ifb_u32               page_count;
+    ifb_u32               memory_size;
+    IFBEngineMemoryHandle memory_handle;          
 };
 
 namespace ifb_engine {
