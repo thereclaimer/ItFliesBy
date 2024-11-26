@@ -1,9 +1,10 @@
 #pragma once
 
+#include "ifb-engine.hpp"
 #include "ifb-engine-internal.hpp"
-
 #include "ifb-engine-core-routines.cpp"
 #include "ifb-engine-core-tasks.cpp"
+#include "ifb-engine-core-tables.cpp"
 
 inline IFBEngineCore*
 ifb_engine::core_pointer_from_context(
@@ -20,17 +21,6 @@ ifb_engine::core_pointer_from_context(
 }
 
 inline const IFBEngineMemoryHandle 
-ifb_engine::core_manager_handle_memory(
-    ifb_void) {
-
-    //get the core pointer
-    const IFBEngineCore* core_ptr = ifb_engine::core_pointer_from_context();
-
-    //return the handle
-    return(core_ptr->managers.memory);
-}
-
-inline const IFBEngineMemoryHandle 
 ifb_engine::core_manager_handle_assets(
     ifb_void) {
 
@@ -41,35 +31,24 @@ ifb_engine::core_manager_handle_assets(
     return(core_ptr->managers.assets);
 }
 
-inline const IFBEngineMemoryHandle
-ifb_engine::core_manager_handle_tables(
-    ifb_void) {
-
-    //get the core pointer
-    const IFBEngineCore* core_ptr = ifb_engine::core_pointer_from_context();
-
-    //return the handle
-    return(core_ptr->managers.tables);
-}
-
-inline const IFBEngineStackAllocatorId
-ifb_engine::core_stack_allocator_platform(
+inline const IFBEngineLinearAllocatorHandle
+ifb_engine::core_allocator_linear_platform(
     ifb_void) {
 
     //get the core pointer
     const IFBEngineCore* core_ptr = ifb_engine::core_pointer_from_context();
 
     //return the index
-    return(core_ptr->stack_allocators.platform);    
+    return(core_ptr->allocators.linear_allocators.platform);    
 }
 
-inline const IFBEngineStackAllocatorId 
-ifb_engine::core_stack_allocator_frame(
+inline const IFBEngineLinearAllocatorHandle 
+ifb_engine::core_allocator_linear_frame(
     ifb_void) {
 
     //get the core pointer
     const IFBEngineCore* core_ptr = ifb_engine::core_pointer_from_context();
 
     //return the index
-    return(core_ptr->stack_allocators.frame);    
+    return(core_ptr->allocators.linear_allocators.frame);     
 }

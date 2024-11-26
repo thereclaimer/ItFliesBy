@@ -16,13 +16,12 @@ ifb_engine::table_allocator_create(
     result &= ifb_engine::memory_commit(sizeof(IFBEngineTableAllocator), memory);
 
     //get the handle and pointer
-    const IFBEngineTableAllocatorHandle table_allocator_handle = (IFBEngineLinearAllocatorHandle)memory.handle;
-    IFBEngineTableAllocator* table_allocator_ptr = (IFBEngineTableAllocator*)memory.pointer;
+    out_table_allocator_handle.memory = memory.handle;
 
     //create the arena
     const IFBEngineArenaId arena_id = ifb_engine::controller_arena_commit(
-        table_allocator_tag_cstr,
-        table_allocator_size_minimum);
+        in_table_allocator_tag_cstr,
+        in_table_allocator_size_minimum);
 
     //initialize the allocator
     table_allocator_ptr->arena_id = arena_id;

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ifb-engine-internal-asset.hpp"
-#include "ifb-engine-internal-memory.hpp"
 
 inline const ifb_b8 
 ifb_engine::asset_manager_create(

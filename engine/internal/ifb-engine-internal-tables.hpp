@@ -10,8 +10,8 @@ struct IFBEngineTableBlockAllocator;
 struct IFBEngineTableArena;
 struct IFBEngineTableShaderProgram;
 
-struct IFBEngineTableHandleTag   : IFBEngineMemoryHandle { };
-struct IFBEngineTableHandleArena : IFBEngineMemoryHandle { };
+struct IFBEngineTableHandleTag   { IFBEngineMemoryHandle memory_handle; };
+struct IFBEngineTableHandleArena { IFBEngineMemoryHandle memory_handle; };
 
 /**********************************************************************************/
 /* TAG TABLE                                                                      */
@@ -34,12 +34,12 @@ namespace ifb_engine {
     const IFBEngineTableHandleTag 
     table_tag_create(const IFBEngineTableAllocatorHandle table_allocator_handle);
     
-    const ifb_char     table_tag_read_value (const IFBEngineTableHandleTag tag_table_handle, const IFBEngineTableIndexTag tag_index);
-    const IFBHashValue table_tag_read_hash  (const IFBEngineTableHandleTag tag_table_handle, const IFBEngineTableIndexTag tag_index);
-    const ifb_b8       table_tag_delete     (const IFBEngineTableHandleTag tag_table_handle, const IFBEngineTableIndexTag tag_index);
+    const ifb_cstr     table_tag_read_value (IFBEngineTableTag* tag_table_ptr, const IFBEngineTableIndexTag tag_index);
+    const IFBHashValue table_tag_read_hash  (IFBEngineTableTag* tag_table_ptr, const IFBEngineTableIndexTag tag_index);
+    const ifb_b8       table_tag_delete     (IFBEngineTableTag* tag_table_ptr, const IFBEngineTableIndexTag tag_index);
 
-    const ifb_b8       table_tag_insert  (const IFBEngineTableHandleTag in_tag_table_handle, const ifb_cstr in_tag_value, IFBEngineTableIndexTag& out_tag_index);
-    const ifb_b8       table_tag_search  (const IFBEngineTableHandleTag in_tag_table_handle, const ifb_cstr in_tag_value, IFBEngineTableIndexTag& out_tag_index);
+    const ifb_b8       table_tag_insert  (IFBEngineTableTag* tag_table_ptr, const ifb_cstr in_tag_value, IFBEngineTableIndexTag& out_tag_index);
+    const ifb_b8       table_tag_search  (IFBEngineTableTag* tag_table_ptr, const ifb_cstr in_tag_value, IFBEngineTableIndexTag& out_tag_index);
 
 
     IFBEngineTableTag*   table_tag   (const IFBEngineTableHandleTag   table_handle_tag);

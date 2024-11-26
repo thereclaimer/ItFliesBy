@@ -13,7 +13,7 @@ struct IFBStack {
 namespace ifb_common {
 
     const ifb_u32    stack_push    (IFBStack& stack_ref, const ifb_u32 size);
-    const ifb_u32    stack_pull    (IFBStack& stack_ref, const ifb_u32 size);
+    const ifb_b8     stack_pull    (IFBStack& stack_ref, const ifb_u32 size);
     const ifb_memory stack_pointer (IFBStack& stack_ref, const ifb_memory base_memory);
 };
 
@@ -22,7 +22,8 @@ ifb_common::stack_push(
           IFBStack& stack_ref, 
     const ifb_u32   size) {
 
-    const ifb_u32 new_position = stack_ref.position + size;
+    const ifb_u32 starting_position = stack_ref.position;
+    const ifb_u32 new_position      = starting_position; 
 
     if (new_position > stack_ref.size) {
         return(0);
@@ -30,7 +31,7 @@ ifb_common::stack_push(
 
     stack_ref.position = new_position;
     
-    return(stack_ref.start + stack_ref.position);
+    return(starting_position);
 }
 
 inline const ifb_b8
@@ -44,7 +45,7 @@ ifb_common::stack_pull(
 
     stack_ref.position -= size;
 
-    return(stack_ref.start + stack_ref.position);
+    return(true);
 }
 
 inline const ifb_memory

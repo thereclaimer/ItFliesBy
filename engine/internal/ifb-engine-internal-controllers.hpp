@@ -10,12 +10,12 @@
 
 namespace ifb_engine {
 
-    const IFBHashValue controller_tag_hash_value       (const IFBEngineTagId tag_id);
-    const ifb_cstr     controller_tag_cstr_value       (const IFBEngineTagId tag_id);
-    const ifb_b8       controller_tag_collision_check  (const IFBHashValue   hash_value);
-    const ifb_b8       controller_tag_destroy          (const IFBEngineTagId tag_id);
-    const ifb_b8       controller_tag_create           (const ifb_cstr       in_tag_value, IFBEngineTagId& out_tag_id);
-    const ifb_b8       controller_tag_search           (const ifb_cstr       in_tag_value, IFBEngineTagId& out_tag_id);
+    const IFBHashValue controller_tag_hash_value       (IFBEngineCore* engine_core_ptr, const IFBEngineTagId tag_id);
+    const ifb_cstr     controller_tag_cstr_value       (IFBEngineCore* engine_core_ptr, const IFBEngineTagId tag_id);
+    const ifb_b8       controller_tag_collision_check  (IFBEngineCore* engine_core_ptr, const IFBHashValue   hash_value);
+    const ifb_b8       controller_tag_destroy          (IFBEngineCore* engine_core_ptr, const IFBEngineTagId tag_id);
+    const ifb_b8       controller_tag_create           (IFBEngineCore* engine_core_ptr, const ifb_cstr       in_tag_value, IFBEngineTagId& out_tag_id);
+    const ifb_b8       controller_tag_search           (IFBEngineCore* engine_core_ptr, const ifb_cstr       in_tag_value, IFBEngineTagId& out_tag_id);
 };
 
 /**********************************************************************************/
@@ -24,10 +24,12 @@ namespace ifb_engine {
 
 namespace ifb_engine {
        
-    const ifb_u32  controller_arena_page_start (const IFBEngineArenaId arena_id);
-    const ifb_u32  controller_arena_page_count (const IFBEngineArenaId arena_id);
-    const ifb_cstr controller_arena_tag_value  (const IFBEngineArenaId arena_id);
-          ifb_void controller_arena            (IFBEngineArena& arena_ref);
+    const ifb_u32               controller_arena_page_start (IFBEngineCore* engine_core_ptr, const IFBEngineArenaId arena_id);
+    const ifb_u32               controller_arena_page_count (IFBEngineCore* engine_core_ptr, const IFBEngineArenaId arena_id);
+    const ifb_cstr              controller_arena_tag_value  (IFBEngineCore* engine_core_ptr, const IFBEngineArenaId arena_id);
+    const IFBEngineMemoryHandle controller_arena_handle     (IFBEngineCore* engine_core_ptr, const IFBEngineArenaId arena_id, const ifb_u32 offset);
+    
+    ifb_void controller_arena            (IFBEngineArena& arena_ref);
 
     const ifb_b8 
     controller_arena_commit(

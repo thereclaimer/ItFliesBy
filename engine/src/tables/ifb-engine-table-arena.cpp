@@ -6,7 +6,9 @@ inline const IFBEngineTableHandleArena
 ifb_engine::table_arena_create(
     const IFBEngineTableAllocatorHandle table_allocator_handle) {
 
-    return({0});
+     IFBEngineTableHandleArena arena_table_handle = {0};
+
+    return(arena_table_handle);
 }
 
 inline const ifb_u32

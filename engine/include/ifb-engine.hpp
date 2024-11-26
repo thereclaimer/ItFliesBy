@@ -25,17 +25,16 @@ enum IFBEngineState_ {
 
 typedef ifb_u32 ifb_engine_state_t;
 
-#define IFB_ENGINE_CORE_STACK_SIZE                   ifb_macro_size_kilobytes(64)
-#define IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_FRAME    "CORE FRAME STACK"
-#define IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_PLATFORM "CORE PLATFORM STACK"
-#define IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_WINDOW   "CORE WINDOW STACK"
+#define IFB_ENGINE_CORE_LINEAR_ALLOCATOR_SIZE         ifb_macro_size_kilobytes(64)
+#define IFB_ENGINE_CORE_LINEAR_ALLOCATOR_TAG_FRAME    "CORE FRAME STACK"
+#define IFB_ENGINE_CORE_LINEAR_ALLOCATOR_TAG_PLATFORM "CORE PLATFORM STACK"
 
 struct IFBEngineContext {
-    IFBEnginePlatform  platform;
-    IFBUserInput       user_input;
-    ifb_engine_state_t state;
-    ifb_timems         time_initialized;
-    ifb_u32            core_handle;
+    IFBEnginePlatform     platform;
+    IFBUserInput          user_input;
+    ifb_engine_state_t    state;
+    ifb_timems            time_initialized;
+    IFBEngineMemoryHandle core_handle;
 };
 
 #define IFB_ENGINE_MINIMUM_MEMORY_REQUIREMENT_4GB ifb_macro_size_gigabytes(4)

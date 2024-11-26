@@ -64,6 +64,24 @@ ifb_engine::controller_arena(
     arena_ref.memory_handle = ifb_engine::memory_handle    (arena_ref.page_start,0);
 }
 
+inline const IFBEngineMemoryHandle
+ifb_engine::controller_arena_handle(
+    const IFBEngineArenaId arena_id,
+    const ifb_u32          offset) {
+
+    //get the table
+    const IFBEngineTableHandleArena table_handle_arena = ifb_engine::core_table_handle_arena();
+
+    //get the starting page of the arena    
+    const ifb_u32 page_start = ifb_engine::table_arena_read_page_start(table_handle_arena, arena_index);
+
+    //get the memory at the offset of the page
+    const IFBEngineMemoryHandle arena_memory = ifb_engine::memory_handle(page_start,offset);
+
+    //we're done
+    return(arena_memory);
+}
+
 inline const IFBEngineArenaId 
 ifb_engine::controller_arena_commit(
     const ifb_cstr             arena_tag_value,

@@ -4,10 +4,10 @@
 #include <ifb-common.hpp>
 
 struct IFBEngineTableIndex {
-    ifb_index row;
+    ifb_index value;
 };
 
-struct IFBEngineTableIndexTag   : IFBEngineTableIndex { };
-struct IFBEngineTableIndexArena : IFBEngineTableIndex { };
+struct IFBEngineTableIndexTag   { IFBEngineTableIndex index; };
+struct IFBEngineTableIndexArena { IFBEngineTableIndex index; };
 
 #endif //IFB_ENGINE_TABLES_HPP

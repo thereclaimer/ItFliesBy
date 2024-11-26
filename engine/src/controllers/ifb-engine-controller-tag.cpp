@@ -5,25 +5,25 @@
 
 inline const IFBHashValue
 ifb_engine::controller_tag_hash_value(
-    const IFBEngineTagId     tag_id) {
+          IFBEngineCore* engine_core_ptr,
+    const IFBEngineTagId tag_id) {
 
-    IFBEngineTableTag tag_table;
-    ifb_engine::table_tag(tag_table);
+    IFBEngineTableTag* tag_table = ifb_engine::core_table_tag(engine_core_ptr);
 
-    const IFBHashValue  hash_value = tag_table.column_ptrs.hash_value[tag_id.tag_table_index];
+    const IFBHashValue hash_value = tag_table->column_ptrs.hash_value[tag_id.table_index.value];
 
     return(hash_value);
 }
 
 inline const ifb_cstr
 ifb_engine::controller_tag_cstr_value(
-    const IFBEngineTagId     tag_id) {
+          IFBEngineCore* engine_core_ptr,
+    const IFBEngineTagId tag_id) {
 
-    IFBEngineTableTag tag_table;
-    ifb_engine::table_tag(tag_table);
+    IFBEngineTableTag* tag_table = ifb_engine::core_table_tag(engine_core_ptr);
 
-    const ifb_char* cstr_value_column_ptr  = tag_table.column_ptrs.tag_buffer;
-    const ifb_u32   cstr_value_char_index  = tag_id.tag_table_index * IFB_ENGINE_TAG_LENGTH;
+    const ifb_char* cstr_value_column_ptr  = tag_table->column_ptrs.tag_buffer;
+    const ifb_u32   cstr_value_char_index  = tag_id.table_index.value * IFB_ENGINE_TAG_LENGTH;
     const ifb_cstr  cstr_value             = (const ifb_cstr)&cstr_value_column_ptr[cstr_value_char_index]; 
 
     return(cstr_value);
@@ -31,28 +31,29 @@ ifb_engine::controller_tag_cstr_value(
 
 inline const ifb_b8
 ifb_engine::controller_tag_collision_check(
-    const IFBHashValue hash_value) {
+          IFBEngineCore* engine_core_ptr,
+    const IFBHashValue   hash_value) {
 
-    IFBEngineTableTag tag_table;
-    ifb_engine::table_tag(tag_table);
+    IFBEngineTableTag* tag_table = ifb_engine::core_table_tag(engine_core_ptr);
 
     const ifb_b8 collision = ifb_common::hash_collision_check(
-            tag_table.column_ptrs.hash_value,
-            tag_table.row_count,
+            tag_table->column_ptrs.hash_value,
+            tag_table->row_count,
             hash_value);
 
     return(collision);
 }
 
 inline const ifb_b8
-ifb_engine::controller_tag_table_insert(
-    const ifb_cstr           in_tag_value, 
-          IFBEngineTagId&   out_tag_id) {
+ifb_engine::controller_tag_create(
+          IFBEngineCore*   engine_core_ptr,
+    const ifb_cstr         in_tag_value, 
+          IFBEngineTagId& out_tag_id) {
     
     ifb_b8 result = true;
 
-    IFBEngineTableTag tag_table;
-    ifb_engine::table_tag(tag_table);
+    IFBEngineTableTag* tag_table = ifb_engine::core_table_tag(engine_core_ptr);
+
 
     //hash the value and check for collisions
     IFBHashValue hash_value;
@@ -85,8 +86,7 @@ ifb_engine::controller_tag_table_search(
     const ifb_cstr           in_tag_value, 
           IFBEngineTagId&   out_tag_id) {
 
-    IFBEngineTableTag tag_table;
-    ifb_engine::table_tag(tag_table);
+    IFBEngineTableTag* tag_table = ifb_engine::core_table_tag()
 
     //do the search
     ifb_b8 result;

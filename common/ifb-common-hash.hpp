@@ -22,10 +22,13 @@ namespace ifb_common {
     hash_cstr(
         const ifb_cstr c_str,
         const ifb_u32  c_str_length_max) {
+        
+        IFBHashValue hash_value;
+        hash_value = {0};
 
         //sanity check
-        if (!in_cstr) {
-            return(0);
+        if (!c_str) {
+            return(hash_value);
         }
 
         //get the safe length of the string
@@ -35,7 +38,6 @@ namespace ifb_common {
         meow_u128 meow_hash_value = MeowHash(MeowDefaultSeed,c_str_length,c_str);
 
         //load the value
-        IFBHashValue hash_value;
         _mm_storeu_epi32(hash_value.h,meow_hash_value);
 
         //we're done

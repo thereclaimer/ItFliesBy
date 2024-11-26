@@ -7,51 +7,38 @@
 inline const ifb_b8 
 ifb_engine::core_task_create_core_handle(
     IFBEngineMemoryHandle& engine_core_handle_ref) {
-
-    //get page
-    const ifb_u32 core_size       = ifb_macro_align_size_struct(IFBEngineCore);
-    const ifb_u32 core_page_count = ifb_engine::memory_page_count(core_size);
-    const ifb_u32 core_page_start = ifb_engine::memory_page_commit(core_page_count);
     
+    //calculate size
+    const ifb_u32 core_size = ifb_macro_align_size_struct(IFBEngineCore);
+
+    //commit memory
+    const IFBEngineMemoryCommit memory_commit = ifb_engine::memory_commit(core_size);
+
     //get handle
-    engine_core_handle_ref = ifb_engine::memory_handle(core_page_start,0);
-
-    //sanity check
-    const ifb_b8 result = ifb_engine::memory_handle_valid(engine_core_handle_ref);
-
-    //update the context
-    _engine_context->core_handle = engine_core_handle_ref;
+    engine_core_handle_ref = memory_commit.handle;
 
     //we're done
-    return(result);
+    return(true);
 }
 
 inline const ifb_b8 
 ifb_engine::core_task_create_managers(
     IFBEngineCoreManagers& engine_core_managers_ref) {
 
-    //create the managers
-    engine_core_managers_ref.memory     = ifb_engine::memory_manager_startup();
-    engine_core_managers_ref.tables     = ifb_engine::table_manager_create();
-
-    //sanity check
-    ifb_b8 result = true;
-    result &= ifb_engine::memory_handle_valid(engine_core_managers_ref.memory);
-    result &= ifb_engine::memory_handle_valid(engine_core_managers_ref.tables);
 
     //we're done
-    return(result);
+    return(true);
 }
 
 inline const ifb_b8 
-ifb_engine::core_task_create_stack_allocators(
-    IFBEngineCoreStackAllocators& engine_core_stack_allocators_ref) {
+ifb_engine::core_task_create_allocators(
+    IFBEngineCoreAllocators& core_allocators_ref) {
 
     //create the stack allocators
     ifb_b8 result = true;
-    result &= ifb_engine::stack_allocator_create(IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_FRAME,   IFB_ENGINE_CORE_STACK_SIZE, engine_core_stack_allocators_ref.frame);
-    result &= ifb_engine::stack_allocator_create(IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_PLATFORM,IFB_ENGINE_CORE_STACK_SIZE, engine_core_stack_allocators_ref.platform);
-    result &= ifb_engine::stack_allocator_create(IFB_ENGINE_CORE_STACK_ALLOCATOR_TAG_WINDOW,  IFB_ENGINE_CORE_STACK_SIZE, engine_core_stack_allocators_ref.window);
+
+    result &= ifb_engine::linear_allocator_create(IFB_ENGINE_CORE_LINEAR_ALLOCATOR_TAG_FRAME,   IFB_ENGINE_CORE_LINEAR_ALLOCATOR_SIZE, core_allocators_ref.linear_allocators.frame);
+    result &= ifb_engine::linear_allocator_create(IFB_ENGINE_CORE_LINEAR_ALLOCATOR_TAG_PLATFORM,IFB_ENGINE_CORE_LINEAR_ALLOCATOR_SIZE, core_allocators_ref.linear_allocators.platform);
 
     //we're done
     return(result);

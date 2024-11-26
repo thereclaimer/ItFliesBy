@@ -10,7 +10,7 @@
 /**********************************************************************************/
 
 struct IFBEngineMemoryHandle {
-    ifb_u32 context_offset;
+    ifb_u32 value;
 };
 
 struct IFBEngineMemoryCommit {
@@ -30,8 +30,8 @@ namespace ifb_engine {
 
     ifb_api ifb_void
     memory_pointer_from_handle_count(
-        const IFBEngineMemoryHandle* in_handles_ptr,
         const ifb_u32                in_handles_count,
+        const IFBEngineMemoryHandle* in_handles_ptr,
               ifb_memory*           out_memory_ptr);
 
 
@@ -40,12 +40,16 @@ namespace ifb_engine {
     ifb_api const ifb_u32               memory_size_page_aligned (const ifb_u32 size);
     ifb_api const ifb_u32               memory_page_count        (const ifb_u32 size);
     ifb_api const ifb_u32               memory_page_size         (const ifb_u32 page_count);
-    ifb_api const ifb_b8                memory_commit            (const ifb_u32 in_commit_size_minimum, IFBEngineMemoryCommit& out_commit_ref);
+    ifb_api const IFBEngineMemoryCommit memory_commit            (const ifb_u32 commit_size_minimum);
 };
 
 /**********************************************************************************/
 /* ARENA                                                                          */
 /**********************************************************************************/
+
+#define IFB_ENGINE_MEMORY_ARENA_SIZE_MINIMUM ifb_macro_size_kilobytes(4)
+#define IFB_ENGINE_MEMORY_ARENA_COUNT_MAX    4096
+#define IFB_ENGINE_MEMORY_ARENA_INVALID      4096
 
 struct IFBEngineArenaId {
     struct  {

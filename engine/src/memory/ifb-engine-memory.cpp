@@ -1,10 +1,8 @@
 #pragma once
 
 #include "ifb-engine-internal.hpp"
-#include "ifb-engine-internal-memory.hpp"
 #include "ifb-engine-internal-platform.hpp"
 
-#include "ifb-engine-memory-manager.cpp"
 #include "ifb-engine-memory-arena.cpp"
 
 /**********************************************************************************/
@@ -41,10 +39,10 @@ ifb_engine::memory_pointer_from_page(
 
 ifb_api const ifb_memory 
 ifb_engine::memory_pointer_from_handle(
-    const ifb_u32 handle) {
+    const IFBEngineMemoryHandle handle) {
     
     const ifb_memory base_pointer   = ifb_engine::context_base_pointer();
-    const ifb_memory memory_pointer = base_pointer + handle; 
+    const ifb_memory memory_pointer = base_pointer + handle.value; 
 
     return(memory_pointer);
 }
@@ -52,9 +50,9 @@ ifb_engine::memory_pointer_from_handle(
 
 ifb_api ifb_void
 ifb_engine::memory_pointer_from_handle_count(
-    const ifb_u32              in_handles_count,
-          IFBEngineMemoryHandle* in_handles_ptr,
-          ifb_memory*         out_memory_ptr) {
+    const ifb_u32                in_handles_count,
+    const IFBEngineMemoryHandle* in_handles_ptr,
+        ifb_memory*             out_memory_ptr) {
 
     //sanity check
     if (
@@ -73,28 +71,30 @@ ifb_engine::memory_pointer_from_handle_count(
               ++handle_index) {
 
         //get the pointer for the current handle
-        out_memory_ptr[handle_index] = base_pointer + in_handles_ptr[handle_index];
+        out_memory_ptr[handle_index] = base_pointer + in_handles_ptr[handle_index].value;
     }
 }
 
-ifb_api const ifb_u32 
+ifb_api const IFBEngineMemoryHandle
 ifb_engine::memory_handle(
     const ifb_u32 page_number,
     const ifb_u32 page_offset) {
     
     const ifb_u32 page_size  = ifb_engine::context_platform_page_size();
     const ifb_u32 page_start = page_number * page_size;
-    const ifb_u32 handle     = page_start + page_offset;     
+
+    IFBEngineMemoryHandle handle;
+    handle.value = page_start + page_offset;
 
     return(handle);
 }
 
 ifb_api const ifb_b8
 ifb_engine::memory_handle_valid(
-    const ifb_u32 memory_handle) {
+    const IFBEngineMemoryHandle memory_handle) {
     
     //TODO(SAM): should also have a upper bound
-    return(memory_handle > IFB_ENGINE_MEMORY_HANDLE_INVALID);
+    return(memory_handle.value > IFB_ENGINE_MEMORY_HANDLE_INVALID);
 }
 
 ifb_api const ifb_u32 
@@ -128,14 +128,13 @@ ifb_engine::memory_page_size(
     return(page_size_count);
 }
 
-ifb_api const ifb_b8 
+ifb_api const IFBEngineMemoryCommit
 ifb_engine::memory_commit(
-    const ifb_u32                 in_commit_size_minimum,
-          IFBEngineMemoryCommit& out_commit_ref) {
+    const ifb_u32 commit_size_minimum) {
 
     //calculate page sizes
     const ifb_u32 page_size           = ifb_engine::context_platform_page_size();
-    const ifb_u32 commit_size_aligned = ifb_macro_align_a_to_b(in_commit_size_minimum,page_size);    
+    const ifb_u32 commit_size_aligned = ifb_macro_align_a_to_b(commit_size_minimum,page_size);    
     const ifb_u32 page_count          = commit_size_aligned / page_size;  
     const ifb_u32 page_current        = ifb_engine::context_platform_page_count_used();
     const ifb_u32 page_start          = page_current * page_size;
@@ -146,20 +145,19 @@ ifb_engine::memory_commit(
 
     //do the commit
     const ifb_memory commit_result = ifb_engine::platform_memory_pages_commit(commit_start,commit_size_aligned);
+    ifb_macro_assert(commit_start != commit_result);
 
-    //if that failed, we're done
-    if (commit_start != commit_result) {
-        return(0);
-    } 
-
-    //otherwise, update the context
+    //update the context
     const ifb_u32 page_count_new = page_current + page_count;
     ifb_engine::context_platform_page_count_used_update(page_count_new);
 
-    //update the rest of the info
-    out_commit_ref.handle  = ifb_engine::memory_handle(page_start,0);
-    out_commit_ref.pointer = ifb_engine::memory_pointer_from_handle(out_commit_ref.handle);
+    //update the struct
+    IFBEngineMemoryCommit memory_commit = {0};
+    memory_commit.page_start = page_current; 
+    memory_commit.page_count = page_count; 
+    memory_commit.handle     = ifb_engine::memory_handle(page_start,0);
+    memory_commit.pointer    = ifb_engine::memory_pointer_from_handle(memory_commit.handle);
 
     //we're done, return the page start
-    return(page_current);
+    return(memory_commit);
 }

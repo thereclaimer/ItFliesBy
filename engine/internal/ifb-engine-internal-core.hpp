@@ -2,19 +2,20 @@
 #define IFB_ENGINE_INTERNAL_CORE_HPP
 
 #include "ifb-engine.hpp"
+#include "ifb-engine-internal-tables.hpp"
+
+struct IFBEngineCore;
 
 /**********************************************************************************/
 /* ENGINE CORE MANAGERS                                                           */
 /**********************************************************************************/
 
 struct IFBEngineCoreManagers {
-    IFBEngineMemoryHandle memory;
     IFBEngineMemoryHandle assets;
 };
 
 namespace ifb_engine {
 
-    const IFBEngineMemoryHandle core_manager_handle_memory (ifb_void);
     const IFBEngineMemoryHandle core_manager_handle_assets (ifb_void);
 };
 
@@ -48,8 +49,8 @@ struct IFBEngineCoreTables {
 
 namespace ifb_engine {
 
-    IFBEngineTableHandleTag   core_table_handle_tag   (ifb_void);
-    IFBEngineTableHandleArena core_table_handle_arena (ifb_void);
+    inline IFBEngineTableTag*   core_table_tag   (const IFBEngineCore* engine_core_ptr);
+    inline IFBEngineTableArena* core_table_arena (const IFBEngineCore* engine_core_ptr);
 };
 
 /**********************************************************************************/

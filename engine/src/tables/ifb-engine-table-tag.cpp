@@ -35,23 +35,15 @@ ifb_engine::table_tag_create(
     //we're done
     return(table_handles[0]);
 }
-    
-inline const ifb_cstr
+
+inline const ifb_cstr 
 ifb_engine::table_tag_read_value(
-    const IFBEngineTableHandleTag tag_table_handle,
-    const IFBEngineTableIndexTag  tag_index) {
-
-    //get the table
-    IFBEngineTableTag* table_tag_ptr = (IFBEngineTableTag*)ifb_engine::memory_pointer_from_handle(table_handle_tag);
-
-    //sanity check    
-    ifb_macro_assert(
-        table_tag_ptr &&
-        tag_index < table_tag_ptr->row_count);
+          IFBEngineTableTag*     tag_table_ptr,
+    const IFBEngineTableIndexTag tag_index) {
 
     //get the tag value
-    const ifb_u32  char_index = table_tag_ptr->tag_value_size * tag_index.row;
-    const ifb_cstr tag_value  = table_tag_ptr->column_ptrs.tag_buffer[char_index]; 
+    const ifb_u32  char_index = tag_table_ptr->tag_value_size * tag_index.index.value;
+    const ifb_cstr tag_value  = &tag_table_ptr->column_ptrs.tag_buffer[char_index]; 
 
     return(tag_value);
 }
@@ -182,7 +174,7 @@ inline IFBEngineTableTag*
 ifb_engine::table_tag(
     const IFBEngineTableHandleTag table_handle_tag) {
 
-    IFBEngineTableTag* table_tag_ptr = (IFBEngineTableTag*)ifb_engine::memory_pointer_from_handle(table_handle_tag);
+    IFBEngineTableTag* table_tag_ptr = (IFBEngineTableTag*)ifb_engine::memory_pointer_from_handle(table_handle_tag.memory_handle);
 
     return(table_tag_ptr);
 }
