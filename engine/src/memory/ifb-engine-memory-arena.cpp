@@ -8,19 +8,22 @@
 /* API                                                                            */
 /**********************************************************************************/
 
-ifb_api const ifb_b8
+ifb_api const IFBEngineArenaId
 ifb_engine::memory_arena_commit(
-    const ifb_cstr           in_arena_tag,
-    const ifb_u32            in_arena_size_minimum,
-          IFBEngineArenaId& out_arena_id_ref) {
+    const ifb_cstr arena_tag,
+    const ifb_u32  arena_size_minimum) {
 
-    const ifb_b8 result = ifb_engine::controller_arena_commit(
-        in_arena_tag,
-        in_arena_size_minimum,
-        out_arena_id_ref);
+    //get core reference
+    IFBEngineCore* engine_core = ifb_engine::core_pointer_from_context();
+
+    //commit the arena
+    const IFBEngineArenaId new_arena_id = ifb_engine::controller_arena_commit(
+        engine_core,
+        arena_tag,
+        arena_size_minimum);
 
     //we're done
-    return(true);
+    return(new_arena_id);
 }
 
 ifb_api const ifb_b8
@@ -35,7 +38,12 @@ ifb_engine::memory_arena_handle(
     const IFBEngineArenaId arena_id,
     const ifb_u32          offset) {
 
+    //get core reference
+    IFBEngineCore* engine_core = ifb_engine::core_pointer_from_context();
+
+    //get the arena memory
     const IFBEngineMemoryHandle arena_memory = ifb_engine::controller_arena_handle(
+        engine_core,
         arena_id,
         offset);
 
@@ -47,8 +55,15 @@ ifb_api const ifb_u32
 ifb_engine::memory_arena_page_start(
     const IFBEngineArenaId arena_id) {
 
-    const ifb_u32 page_start = ifb_engine::controller_arena_page_start(arena_id);
+    //get core reference
+    IFBEngineCore* engine_core = ifb_engine::core_pointer_from_context();
 
+    //get the page start
+    const ifb_u32 page_start = ifb_engine::controller_arena_page_start(
+        engine_core,
+        arena_id);
+
+    //we're done
     return(page_start);
 }
 
@@ -56,8 +71,15 @@ ifb_api const ifb_u32
 ifb_engine::memory_arena_page_count(
     const IFBEngineArenaId arena_id) {
 
-    const ifb_u32 page_count = ifb_engine::controller_arena_page_count(arena_id); 
+    //get core reference
+    IFBEngineCore* engine_core = ifb_engine::core_pointer_from_context();
 
+    //get the page count
+    const ifb_u32 page_count = ifb_engine::controller_arena_page_count(
+        engine_core,
+        arena_id); 
+
+    //we're done
     return(page_count);
 }
 
@@ -65,7 +87,13 @@ ifb_api const ifb_cstr
 ifb_engine::memory_arena_tag_value(
     const IFBEngineArenaId arena_id) {
 
-    const ifb_cstr tag_value = ifb_engine::controller_arena_tag_value(arena_id);
+    //get core reference
+    IFBEngineCore* engine_core = ifb_engine::core_pointer_from_context();
+
+    //get the tag value
+    const ifb_cstr tag_value = ifb_engine::controller_arena_tag_value(
+        engine_core,
+        arena_id);
 
     //we're done
     return(tag_value);

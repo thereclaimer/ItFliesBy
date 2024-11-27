@@ -69,11 +69,10 @@ struct IFBEngineArena {
 
 namespace ifb_engine {
 
-    ifb_api const ifb_b8
+    ifb_api const IFBEngineArenaId
     memory_arena_commit(
-        const ifb_cstr           in_arena_tag,
-        const ifb_u32            in_arena_size_minimum,
-              IFBEngineArenaId& out_arena_id_ref); 
+        const ifb_cstr arena_tag,
+        const ifb_u32  arena_size_minimum); 
 
     ifb_api const IFBEngineMemoryHandle memory_arena_handle     (const IFBEngineArenaId arena_id, const ifb_u32 offset);
     ifb_api const ifb_b8                memory_arena_valid      (const IFBEngineArenaId arena_id);
