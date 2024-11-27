@@ -38,11 +38,10 @@ namespace ifb_engine {
     const IFBHashValue table_tag_read_hash  (IFBEngineTableTag* tag_table_ptr, const IFBEngineTableIndexTag tag_index);
     const ifb_b8       table_tag_delete     (IFBEngineTableTag* tag_table_ptr, const IFBEngineTableIndexTag tag_index);
 
-    const ifb_b8       table_tag_insert  (IFBEngineTableTag* tag_table_ptr, const ifb_cstr in_tag_value, IFBEngineTableIndexTag& out_tag_index);
-    const ifb_b8       table_tag_search  (IFBEngineTableTag* tag_table_ptr, const ifb_cstr in_tag_value, IFBEngineTableIndexTag& out_tag_index);
+    const IFBEngineTableIndexTag table_tag_insert (IFBEngineTableTag* tag_table_ptr,    const ifb_cstr tag_value);
+    const ifb_b8                 table_tag_search (IFBEngineTableTag* in_tag_table_ptr, const ifb_cstr in_tag_value, IFBEngineTableIndexTag& out_tag_index);
 
-
-    IFBEngineTableTag*   table_tag   (const IFBEngineTableHandleTag   table_handle_tag);
+    IFBEngineTableTag* table_tag (const IFBEngineTableHandleTag table_handle_tag);
 
 };
 
@@ -53,7 +52,8 @@ namespace ifb_engine {
 #define IFB_ENGINE_TABLE_ARENA_ROW_COUNT 4096
 
 struct IFBEngineTableArena {
-    ifb_u32           row_count;
+    ifb_u32 row_count;
+    ifb_u32 next_index;
     struct {
         ifb_u32*                page_start;
         ifb_u32*                page_count;
@@ -66,24 +66,18 @@ namespace ifb_engine {
     const IFBEngineTableHandleArena
     table_arena_create(const IFBEngineTableAllocatorHandle table_allocator_handle);
 
-    const ifb_u32                 table_arena_read_page_start (const IFBEngineTableHandleArena arena_table_handle, const IFBEngineTableIndexArena arena_index);
-    const ifb_u32                 table_arena_read_page_count (const IFBEngineTableHandleArena arena_table_handle, const IFBEngineTableIndexArena arena_index);
-    const IFBEngineTableIndexTag  table_arena_read_tag_index  (const IFBEngineTableHandleArena arena_table_handle, const IFBEngineTableIndexArena arena_index);
+    const ifb_u32                 table_arena_read_page_start (IFBEngineTableArena* arena_table_ptr, const IFBEngineTableIndexArena arena_index);
+    const ifb_u32                 table_arena_read_page_count (IFBEngineTableArena* arena_table_ptr, const IFBEngineTableIndexArena arena_index);
+    const IFBEngineTableIndexTag  table_arena_read_tag_index  (IFBEngineTableArena* arena_table_ptr, const IFBEngineTableIndexArena arena_index);
 
-    const ifb_b8
+    const IFBEngineTableIndexArena
     table_arena_insert(
-        const IFBEngineTableHandleArena  in_arena_table_handle,
-        const ifb_u32                    in_arena_page_start,
-        const ifb_u32                    in_arena_page_count,
-        const IFBEngineTableIndexTag     in_arena_tag_index,
-              IFBEngineTableIndexArena& out_arena_table_index);
+              IFBEngineTableArena*   arena_table_ptr,
+        const ifb_u32                arena_page_start,
+        const ifb_u32                arena_page_count,
+        const IFBEngineTableIndexTag arena_tag_index);
 
     IFBEngineTableArena* table_arena (const IFBEngineTableHandleArena table_handle_arena);
-};
-
-namespace ifb_engine {
-
-
 };
 
 #endif //IFB_ENGINE_INTERNAL_TABLES_HPP

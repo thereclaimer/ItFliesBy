@@ -44,80 +44,56 @@ ifb_engine::controller_tag_collision_check(
     return(collision);
 }
 
-inline const ifb_b8
+inline const IFBEngineTagId
 ifb_engine::controller_tag_create(
-          IFBEngineCore*   engine_core_ptr,
-    const ifb_cstr         in_tag_value, 
-          IFBEngineTagId& out_tag_id) {
+          IFBEngineCore* engine_core_ptr,
+    const ifb_cstr       tag_value) {
     
-    ifb_b8 result = true;
-
+    //get the table
     IFBEngineTableTag* tag_table = ifb_engine::core_table_tag(engine_core_ptr);
 
-
-    //hash the value and check for collisions
-    IFBHashValue hash_value;
-    result &=  ifb_common::hash_cstr(in_tag_value,IFB_ENGINE_TAG_LENGTH,hash_value) > 0;
-    result &= !ifb_common::hash_collision_check (tag_table.column_ptrs.hash_value, tag_table.row_count, hash_value);
-    result &=  ifb_common::hash_next_clear_value(tag_table.column_ptrs.hash_value, tag_table.row_count, out_tag_id.tag_table_index);
-
-    //if that didn't work, we're done
-    if (!result) {
-        return(false);
-    }
-
-    //copy the tag value
-    const ifb_u32 tag_value_length      = IFB_ENGINE_TAG_LENGTH;
-    const ifb_u32 tag_value_array_index = IFB_ENGINE_TAG_LENGTH * out_tag_id.tag_table_index;
-    for (
-        ifb_u32 char_index = 0;
-                char_index < tag_value_length;
-              ++char_index) {
-
-        tag_table.column_ptrs.tag_buffer[tag_value_array_index + char_index] = in_tag_value[char_index]; 
-    }
+    //do the insert
+    const IFBEngineTableIndexTag new_tag_index = ifb_engine::table_tag_insert(tag_table,tag_value);
 
     //we're done
-    return(true);
+    IFBEngineTagId new_tag;
+    new_tag.table_index.value = new_tag_index.index.value;        
+    return(new_tag);
 }
 
 inline const ifb_b8
-ifb_engine::controller_tag_table_search(
-    const ifb_cstr           in_tag_value, 
-          IFBEngineTagId&   out_tag_id) {
+ifb_engine::controller_tag_search(
+          IFBEngineCore*   in_engine_core_ptr,
+    const ifb_cstr         in_tag_value, 
+          IFBEngineTagId& out_tag_id) {
 
-    IFBEngineTableTag* tag_table = ifb_engine::core_table_tag()
+    //get the table
+    IFBEngineTableTag* tag_table = ifb_engine::core_table_tag(in_engine_core_ptr);
 
     //do the search
-    ifb_b8 result;
-    IFBHashValue hash_value;
-    result &= ifb_common::hash_cstr   (in_tag_value,IFB_ENGINE_TAG_LENGTH,hash_value);        
-    result &= ifb_common::hash_search (tag_table.column_ptrs.hash_value,tag_table.row_count,hash_value,out_tag_id.tag_table_index);
+    IFBEngineTableIndexTag tag_table_index;
+    const ifb_b8 search_result = ifb_engine::table_tag_search(tag_table,in_tag_value,tag_table_index);
+
+    //update the tag id
+    out_tag_id.table_index.value = tag_table_index.index.value;
+
+    //we're done
+    return(search_result);
+}
+
+inline const ifb_b8
+ifb_engine::controller_tag_destroy(
+          IFBEngineCore* engine_core_ptr,
+    const IFBEngineTagId tag_id) {
+
+    //get the table
+    IFBEngineTableTag* tag_table = ifb_engine::core_table_tag(engine_core_ptr);
+
+    //do the delete
+    IFBEngineTableIndexTag tag_index;
+    tag_index.index.value = tag_id.table_index.value;
+    const ifb_b8 result = ifb_engine::table_tag_delete(tag_table,tag_index);
 
     //we're done
     return(result);
-}
-
-inline const ifb_b8
-ifb_engine::controller_tag_table_delete(
-    const IFBEngineTagId     tag_id) {
-
-    IFBEngineTableTag tag_table;
-    ifb_engine::table_tag(tag_table);
-    
-    //clear the hash value
-    tag_table.column_ptrs.hash_value[tag_id.tag_table_index] = {0};
-
-    //clear the tag value
-    const ifb_u32 char_index_start = tag_id.tag_table_index * IFB_ENGINE_TAG_LENGTH;
-    const ifb_u32 char_index_end   = char_index_start       + IFB_ENGINE_TAG_LENGTH;
-    for (
-        ifb_u32 char_index = char_index_start;
-                char_index < char_index_end;
-              ++char_index) {
-
-        tag_table.column_ptrs.tag_buffer[char_index] = 0;
-    }
-
-    return(true);
 }

@@ -12,8 +12,7 @@ ifb_engine::linear_allocator_create(
     ifb_b8 result = true;
 
     //commit memory for the allocator
-    IFBEngineMemoryCommit memory;
-    result &= ifb_engine::memory_commit(sizeof(IFBEngineLinearAllocator), memory);
+    IFBEngineMemoryCommit memory = ifb_engine::memory_commit(sizeof(IFBEngineLinearAllocator));
 
     //get the handle
     IFBEngineLinearAllocatorHandle linear_allocator_handle;
@@ -34,7 +33,6 @@ ifb_engine::linear_allocator_create(
     linear_allocator_ptr->arena_id   = arena_id;
     linear_allocator_ptr->position   = 0;
     linear_allocator_ptr->save_point = 0;
-
 
     //we're done
     return(result);

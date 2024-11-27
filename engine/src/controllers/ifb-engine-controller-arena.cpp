@@ -2,6 +2,7 @@
 
 inline const ifb_u32 
 ifb_engine::controller_arena_page_start(
+          IFBEngineCore*   engine_core_ptr,
     const IFBEngineArenaId arena_id) {
 
     //get the table
@@ -16,6 +17,7 @@ ifb_engine::controller_arena_page_start(
 
 inline const ifb_u32 
 ifb_engine::controller_arena_page_count(
+          IFBEngineCore*   engine_core_ptr,
     const IFBEngineArenaId arena_id) {
 
     //get the table
@@ -30,6 +32,7 @@ ifb_engine::controller_arena_page_count(
 
 inline const ifb_cstr 
 ifb_engine::controller_arena_tag_value(
+          IFBEngineCore*   engine_core_ptr,
     const IFBEngineArenaId arena_id) {
 
     //get the table
@@ -44,6 +47,7 @@ ifb_engine::controller_arena_tag_value(
 
 inline ifb_void 
 ifb_engine::controller_arena(
+    IFBEngineCore*  engine_core_ptr,
     IFBEngineArena& arena_ref) {
 
     //get the tables
@@ -66,6 +70,7 @@ ifb_engine::controller_arena(
 
 inline const IFBEngineMemoryHandle
 ifb_engine::controller_arena_handle(
+          IFBEngineCore*   engine_core_ptr,
     const IFBEngineArenaId arena_id,
     const ifb_u32          offset) {
 
@@ -84,8 +89,9 @@ ifb_engine::controller_arena_handle(
 
 inline const IFBEngineArenaId 
 ifb_engine::controller_arena_commit(
-    const ifb_cstr             arena_tag_value,
-    const ifb_u32              arena_size_minimum) {
+          IFBEngineCore* engine_core_ptr,
+    const ifb_cstr       arena_tag_value,
+    const ifb_u32        arena_size_minimum) {
     
     IFBEngineArenaId arena_id = {0};
     ifb_b8           result   = true;
