@@ -10,15 +10,14 @@ ifb_engine::core_routine_initialize(
     ifb_b8 result = true;
 
     //create the handle
-    IFBEngineMemoryHandle core_memory_handle;
-    result &= ifb_engine::core_task_create_core_handle(core_memory_handle);
+    IFBEngineCoreHandle core_handle = ifb_engine::core_task_create_core_handle();
 
     //get pointer
-    IFBEngineCore* engine_core_ptr = (IFBEngineCore*)ifb_engine::memory_pointer_from_handle(core_memory_handle);
+    IFBEngineCore* engine_core_ptr = ifb_engine::core_pointer_from_handle(core_handle);
 
     //create the managers and allocators
-    result &= ifb_engine::core_task_create_managers   (engine_core_ptr->managers);
-    result &= ifb_engine::core_task_create_allocators (engine_core_ptr->allocators);
+    ifb_engine::core_task_create_managers   (engine_core_ptr->managers);
+    ifb_engine::core_task_create_allocators (engine_core_ptr->allocators);
 
     //we're done
     return(result);

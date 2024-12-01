@@ -4,9 +4,9 @@
 #include "ifb-engine-internal-platform.hpp"
 #include "ifb-engine-internal-tables.hpp"
 
-inline const ifb_b8 
+inline const IFBEngineCoreHandle
 ifb_engine::core_task_create_core_handle(
-    IFBEngineMemoryHandle& engine_core_handle_ref) {
+    ifb_void) {
     
     //calculate size
     const ifb_u32 core_size = ifb_macro_align_size_struct(IFBEngineCore);
@@ -15,33 +15,26 @@ ifb_engine::core_task_create_core_handle(
     const IFBEngineMemoryCommit memory_commit = ifb_engine::memory_commit(core_size);
 
     //get handle
-    engine_core_handle_ref = memory_commit.handle;
+    IFBEngineCoreHandle core_handle;
+    core_handle.memory = memory_commit.handle;
 
     //we're done
-    return(true);
+    return(core_handle);
 }
 
-inline const ifb_b8 
+inline ifb_void 
 ifb_engine::core_task_create_managers(
     IFBEngineCoreManagers& engine_core_managers_ref) {
 
-
-    //we're done
-    return(true);
 }
 
-inline const ifb_b8 
+inline ifb_void
 ifb_engine::core_task_create_allocators(
     IFBEngineCoreAllocators& core_allocators_ref) {
 
-    //create the stack allocators
-    ifb_b8 result = true;
-
-    result &= ifb_engine::linear_allocator_create(IFB_ENGINE_CORE_LINEAR_ALLOCATOR_TAG_FRAME,   IFB_ENGINE_CORE_LINEAR_ALLOCATOR_SIZE, core_allocators_ref.linear_allocators.frame);
-    result &= ifb_engine::linear_allocator_create(IFB_ENGINE_CORE_LINEAR_ALLOCATOR_TAG_PLATFORM,IFB_ENGINE_CORE_LINEAR_ALLOCATOR_SIZE, core_allocators_ref.linear_allocators.platform);
-
-    //we're done
-    return(result);
+    //create the linear allocators
+    core_allocators_ref.linear_allocators.frame    = ifb_engine::linear_allocator_create(IFB_ENGINE_CORE_LINEAR_ALLOCATOR_TAG_FRAME,   IFB_ENGINE_CORE_LINEAR_ALLOCATOR_SIZE);
+    core_allocators_ref.linear_allocators.platform = ifb_engine::linear_allocator_create(IFB_ENGINE_CORE_LINEAR_ALLOCATOR_TAG_PLATFORM,IFB_ENGINE_CORE_LINEAR_ALLOCATOR_SIZE);
 }
 
 inline const ifb_b8 

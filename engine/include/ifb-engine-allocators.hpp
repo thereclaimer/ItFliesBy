@@ -19,11 +19,10 @@ struct IFBEngineLinearAllocator {
 
 namespace ifb_engine {
 
-    ifb_api const ifb_b8  
+    ifb_api const IFBEngineLinearAllocatorHandle  
     linear_allocator_create(
-        const ifb_cstr                         in_linear_allocator_tag_cstr,
-        const ifb_u32                          in_linear_allocator_size_minimum,
-              IFBEngineLinearAllocatorHandle& out_linear_allocator_handle_ref);
+        const ifb_cstr linear_allocator_tag_cstr,
+        const ifb_u32  linear_allocator_size_minimum);
     
     ifb_api const IFBEngineMemoryHandle linear_allocator_reserve             (const IFBEngineLinearAllocatorHandle linear_allocator_handle, const ifb_u32 size);
     ifb_api const IFBEngineMemoryHandle linear_allocator_release             (const IFBEngineLinearAllocatorHandle linear_allocator_handle, const ifb_u32 size);

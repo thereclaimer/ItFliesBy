@@ -14,7 +14,7 @@ ifb_engine::memory_arena_commit(
     const ifb_u32  arena_size_minimum) {
 
     //get core reference
-    IFBEngineCore* engine_core = ifb_engine::core_pointer_from_context();
+    IFBEngineCore* engine_core = ifb_engine::context_core();
 
     //commit the arena
     const IFBEngineArenaId new_arena_id = ifb_engine::controller_arena_commit(
@@ -39,7 +39,7 @@ ifb_engine::memory_arena_handle(
     const ifb_u32          offset) {
 
     //get core reference
-    IFBEngineCore* engine_core = ifb_engine::core_pointer_from_context();
+    IFBEngineCore* engine_core = ifb_engine::context_core();
 
     //get the arena memory
     const IFBEngineMemoryHandle arena_memory = ifb_engine::controller_arena_handle(
@@ -56,7 +56,7 @@ ifb_engine::memory_arena_page_start(
     const IFBEngineArenaId arena_id) {
 
     //get core reference
-    IFBEngineCore* engine_core = ifb_engine::core_pointer_from_context();
+    IFBEngineCore* engine_core = ifb_engine::context_core();
 
     //get the page start
     const ifb_u32 page_start = ifb_engine::controller_arena_page_start(
@@ -72,7 +72,7 @@ ifb_engine::memory_arena_page_count(
     const IFBEngineArenaId arena_id) {
 
     //get core reference
-    IFBEngineCore* engine_core = ifb_engine::core_pointer_from_context();
+    IFBEngineCore* engine_core = ifb_engine::context_core();
 
     //get the page count
     const ifb_u32 page_count = ifb_engine::controller_arena_page_count(
@@ -88,7 +88,7 @@ ifb_engine::memory_arena_tag_value(
     const IFBEngineArenaId arena_id) {
 
     //get core reference
-    IFBEngineCore* engine_core = ifb_engine::core_pointer_from_context();
+    IFBEngineCore* engine_core = ifb_engine::context_core();
 
     //get the tag value
     const ifb_cstr tag_value = ifb_engine::controller_arena_tag_value(

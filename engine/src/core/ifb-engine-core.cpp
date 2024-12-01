@@ -7,7 +7,7 @@
 #include "ifb-engine-core-tables.cpp"
 
 inline IFBEngineCore*
-ifb_engine::core_pointer_from_context(
+ifb_engine::context_core(
     ifb_void) {
 
     //get the core handle
@@ -25,7 +25,7 @@ ifb_engine::core_manager_handle_assets(
     ifb_void) {
 
     //get the core pointer
-    const IFBEngineCore* core_ptr = ifb_engine::core_pointer_from_context();
+    const IFBEngineCore* core_ptr = ifb_engine::context_core();
 
     //return the handle
     return(core_ptr->managers.assets);
@@ -36,7 +36,7 @@ ifb_engine::core_allocator_linear_platform(
     ifb_void) {
 
     //get the core pointer
-    const IFBEngineCore* core_ptr = ifb_engine::core_pointer_from_context();
+    const IFBEngineCore* core_ptr = ifb_engine::context_core();
 
     //return the index
     return(core_ptr->allocators.linear_allocators.platform);    
@@ -47,8 +47,18 @@ ifb_engine::core_allocator_linear_frame(
     ifb_void) {
 
     //get the core pointer
-    const IFBEngineCore* core_ptr = ifb_engine::core_pointer_from_context();
+    const IFBEngineCore* core_ptr = ifb_engine::context_core();
 
     //return the index
     return(core_ptr->allocators.linear_allocators.frame);     
+}
+
+
+inline IFBEngineCore* 
+ifb_engine::core_pointer_from_handle(
+    const IFBEngineCoreHandle core_handle) {
+
+    IFBEngineCore* core_ptr = (IFBEngineCore*)ifb_engine::memory_pointer_from_handle(core_handle.memory);
+
+    return(core_ptr);
 }

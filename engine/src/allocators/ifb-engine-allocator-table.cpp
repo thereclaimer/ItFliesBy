@@ -8,7 +8,9 @@ ifb_engine::table_allocator_create(
     const ifb_cstr table_allocator_tag_cstr,
     const ifb_u32  table_allocator_size_minimum) {
     
-    IFBEngineArenaId arena_id;
+    //get core reference
+    IFBEngineCore* core_ptr = ifb_engine::context_core();
+
     ifb_b8 result = true;
 
     //commit memory for the allocator
@@ -22,6 +24,7 @@ ifb_engine::table_allocator_create(
 
     //create the arena
     const IFBEngineArenaId arena_id = ifb_engine::controller_arena_commit(
+        core_ptr,
         table_allocator_tag_cstr,
         table_allocator_size_minimum);
 
@@ -44,6 +47,9 @@ ifb_engine::table_allocator_reserve(
     const ifb_u32                       table_size_header,
     const ifb_u32*                      table_size_columns_ptr) {
 
+    //get core reference
+    IFBEngineCore* core_ptr = ifb_engine::context_core();
+
     //get the allocator
     IFBEngineTableAllocator* table_allocator_ptr = ifb_engine::table_allocator_from_handle(table_allocator_handle);
     if (!table_allocator_ptr) {
@@ -53,7 +59,7 @@ ifb_engine::table_allocator_reserve(
     //get the arena
     IFBEngineArena arena;
     arena.arena_id = table_allocator_ptr->arena_id;
-    ifb_engine::controller_arena(arena);
+    ifb_engine::controller_arena(core_ptr,arena);
 
     //todo
     ifb_macro_panic();
@@ -73,7 +79,7 @@ inline IFBEngineTableAllocator*
 ifb_engine::table_allocator_from_handle(
     const IFBEngineTableAllocatorHandle table_allocator_handle) {
 
-    IFBEngineTableAllocator* table_allocator_ptr = ifb_engine::memory_pointer_from_handle(table_allocator_handle);
+    IFBEngineTableAllocator* table_allocator_ptr = (IFBEngineTableAllocator*)ifb_engine::memory_pointer_from_handle(table_allocator_handle.memory);
     ifb_macro_panic();
 
     return(table_allocator_ptr);

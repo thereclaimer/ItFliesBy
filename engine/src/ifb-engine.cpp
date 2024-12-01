@@ -107,28 +107,30 @@ ifb_api const ifb_memory
 ifb_engine::engine_platform_alloc(
     const ifb_u32 size) {
 
-    //get the frame stack
-    const IFBEngineStackAllocatorId platform_stack = ifb_engine::core_stack_allocator_platform();
+    //get the platform allocator
+    const IFBEngineLinearAllocatorHandle platform_allocator = ifb_engine::core_allocator_linear_platform();
     
-    //do the push
-    const ifb_memory stack_memory = ifb_engine::stack_allocator_push_memory(platform_stack,size);
-    
+    //get the memory
+    const IFBEngineMemoryHandle memory_handle = ifb_engine::linear_allocator_reserve(platform_allocator,size);
+    const ifb_memory memory = ifb_engine::memory_pointer_from_handle(memory_handle);
+
     //we're done
-    return(stack_memory);
+    return(memory);
 }
 
 ifb_api const ifb_memory
 ifb_engine::engine_frame_alloc(
     const ifb_u32 size) {
 
-    //get the frame stack
-    const IFBEngineStackAllocatorId frame_stack = ifb_engine::core_stack_allocator_frame();
+    //get the frame allocator
+    const IFBEngineLinearAllocatorHandle frame_allocator = ifb_engine::core_allocator_linear_frame();
     
-    //do the push
-    const ifb_memory stack_memory = ifb_engine::stack_allocator_push_memory(frame_stack,size);
-    
+    //get the memory
+    const IFBEngineMemoryHandle memory_handle = ifb_engine::linear_allocator_reserve(frame_allocator,size);
+    const ifb_memory memory = ifb_engine::memory_pointer_from_handle(memory_handle);
+
     //we're done
-    return(stack_memory);
+    return(memory);
 }
 
 /**********************************************************************************/

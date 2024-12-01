@@ -21,10 +21,9 @@ struct IFBEngineTag {
 
 namespace ifb_engine {
 
-    ifb_api const ifb_b8   tag_create  (const ifb_cstr       in_tag_value, IFBEngineTagId& out_tag_id_ref); 
-    ifb_api const ifb_b8   tag_id      (const ifb_cstr       in_tag_value, IFBEngineTagId& out_tag_id_ref);
-    ifb_api const ifb_b8   tag_destroy (const IFBEngineTagId tag_id);
-    ifb_api const ifb_cstr tag_value   (const IFBEngineTagId tag_id);
+    ifb_api const IFBEngineTagId tag_create  (const ifb_cstr       tag_value); 
+    ifb_api const ifb_b8         tag_destroy (const IFBEngineTagId tag_id);
+    ifb_api const ifb_cstr       tag_value   (const IFBEngineTagId tag_id);
 };
 
 #endif //IFB_ENGINE_TAG_HPP

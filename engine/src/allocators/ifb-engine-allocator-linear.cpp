@@ -3,45 +3,44 @@
 #include "ifb-engine-allocators.hpp"
 #include "ifb-engine-internal-controllers.hpp"
 
-ifb_api const ifb_b8 
+ifb_api const IFBEngineLinearAllocatorHandle 
 ifb_engine::linear_allocator_create(
-    const ifb_cstr                         in_linear_allocator_tag_cstr,
-    const ifb_u32                          in_linear_allocator_size_minimum,
-          IFBEngineLinearAllocatorHandle& out_linear_allocator_handle_ref) {
+    const ifb_cstr linear_allocator_tag_cstr,
+    const ifb_u32  linear_allocator_size_minimum) {
 
-    ifb_b8 result = true;
+    //get the core reference
+    IFBEngineCore* engine_core = ifb_engine::context_core();
 
     //commit memory for the allocator
     IFBEngineMemoryCommit memory = ifb_engine::memory_commit(sizeof(IFBEngineLinearAllocator));
 
-    //get the handle
-    IFBEngineLinearAllocatorHandle linear_allocator_handle;
-    linear_allocator_handle.memory = ifb_engine::memory_handle(memory.page_start,0);
-
     //create the arena
-    IFBEngineArenaId arena_id;
-    if(!ifb_engine::controller_arena_commit(
-        in_linear_allocator_tag_cstr,
-        in_linear_allocator_size_minimum,
-        arena_id)) {
-
-        return(false);
-    }
+    IFBEngineArenaId arena_id = ifb_engine::controller_arena_commit(
+        engine_core,
+        linear_allocator_tag_cstr,
+        linear_allocator_size_minimum);
 
     //initialize the allocator
-    IFBEngineLinearAllocator* linear_allocator_ptr = (IFBEngineLinearAllocator*)ifb_engine::memory_pointer_from_handle(linear_allocator_handle.memory);
+    IFBEngineLinearAllocator* linear_allocator_ptr = (IFBEngineLinearAllocator*)memory.pointer;
     linear_allocator_ptr->arena_id   = arena_id;
     linear_allocator_ptr->position   = 0;
     linear_allocator_ptr->save_point = 0;
 
+    //get the handle
+    IFBEngineLinearAllocatorHandle linear_allocator_handle;
+    linear_allocator_handle.memory = memory.handle; 
+
     //we're done
-    return(result);
+    return(linear_allocator_handle);
 }
 
 ifb_api const IFBEngineMemoryHandle
 ifb_engine::linear_allocator_reserve(
     const IFBEngineLinearAllocatorHandle linear_allocator_handle,
     const ifb_u32                        size) {
+
+    //get the core reference
+    IFBEngineCore* engine_core = ifb_engine::context_core();
 
     //get the allocator
     IFBEngineLinearAllocator* linear_allocator_ptr = ifb_engine::linear_allocator_from_handle(linear_allocator_handle);
@@ -52,7 +51,7 @@ ifb_engine::linear_allocator_reserve(
     //get the arena info
     IFBEngineArena arena;
     arena.arena_id = linear_allocator_ptr->arena_id;
-    ifb_engine::controller_arena(arena);
+    ifb_engine::controller_arena(engine_core,arena);
 
     //get the handle of the current position
     const IFBEngineMemoryHandle memory_handle = ifb_engine::memory_handle(arena.page_start,linear_allocator_ptr->position);
@@ -79,14 +78,17 @@ ifb_engine::linear_allocator_release(
     const ifb_u32                        size) {
 
     IFBEngineMemoryHandle memory_handle = {0};
-    
-    IFBEngineLinearAllocator* linear_allocator_ptr = ifb_engine::linear_allocator_from_handle(linear_allocator_handle);
 
+    //get the core reference
+    IFBEngineCore* engine_core = ifb_engine::context_core();
+
+    //get the allocator    
+    IFBEngineLinearAllocator* linear_allocator_ptr = ifb_engine::linear_allocator_from_handle(linear_allocator_handle);
 
     //get the arena info
     IFBEngineArena arena;
     arena.arena_id = linear_allocator_ptr->arena_id;
-    ifb_engine::controller_arena(arena);
+    ifb_engine::controller_arena(engine_core,arena);
 
     //sanity check
     if (size > linear_allocator_ptr->position) {

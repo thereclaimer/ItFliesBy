@@ -6,6 +6,10 @@
 
 struct IFBEngineCore;
 
+struct IFBEngineCoreHandle {
+    IFBEngineMemoryHandle memory;
+};
+
 /**********************************************************************************/
 /* ENGINE CORE MANAGERS                                                           */
 /**********************************************************************************/
@@ -71,9 +75,9 @@ namespace ifb_engine {
 
 namespace ifb_engine {
 
-    const ifb_b8 core_task_create_core_handle      (IFBEngineMemoryHandle&   engine_core_handle_ref);
-    const ifb_b8 core_task_create_managers         (IFBEngineCoreManagers&   engine_core_managers_ref);
-    const ifb_b8 core_task_create_allocators       (IFBEngineCoreAllocators& engine_core_allocators_ref);
+    const IFBEngineCoreHandle core_task_create_core_handle (ifb_void);
+    ifb_void core_task_create_managers    (IFBEngineCoreManagers&   engine_core_managers_ref);
+    ifb_void core_task_create_allocators  (IFBEngineCoreAllocators& engine_core_allocators_ref);
     const ifb_b8 core_task_create_and_show_window  (ifb_void);
     const ifb_b8 core_task_window_frame_start      (ifb_void);
     const ifb_b8 core_task_window_frame_render     (ifb_void);
@@ -83,6 +87,7 @@ namespace ifb_engine {
 /* ENGINE CORE                                                                     */
 /**********************************************************************************/
 
+
 struct IFBEngineCore {
     IFBEngineCoreManagers   managers;
     IFBEngineCoreAllocators allocators;
@@ -91,7 +96,9 @@ struct IFBEngineCore {
 
 namespace ifb_engine {
 
-    IFBEngineCore* core_pointer_from_context (ifb_void);
+    IFBEngineCore* context_core (ifb_void);
+
+    IFBEngineCore* core_pointer_from_handle(const IFBEngineCoreHandle core_handle);
 };
 
 #endif //IFB_ENGINE_INTERNAL_CORE_HPP
