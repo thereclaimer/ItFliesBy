@@ -7,16 +7,21 @@
 /* SYSTEM                                                                         */
 /**********************************************************************************/
 
+struct IFBPlatformSystem {
+    ifb_u32 page_size;
+    ifb_u32 allocation_granularity;
+};
+
 typedef const ifb_size
-(*funcptr_ifb_engine_platform_system_page_size)(
-    ifb_void);
-typedef const ifb_size
-(*funcptr_ifb_engine_platform_system_allocation_granularity)(
+(*funcptr_ifb_platform_system_page_size)(
     ifb_void);
 
-struct IFBEnginePlatformSystem {
-    funcptr_ifb_engine_platform_system_page_size              page_size;
-    funcptr_ifb_engine_platform_system_allocation_granularity allocation_granularity;
+typedef const ifb_size
+(*funcptr_ifb_platform_system_allocation_granularity)(
+    ifb_void);
+
+struct IFBEnginePlatformSystemApi {
+    funcptr_ifb_platform_system_info system_info;
 };
 
 /**********************************************************************************/
@@ -24,29 +29,32 @@ struct IFBEnginePlatformSystem {
 /**********************************************************************************/
 
 struct IFBPlatformMemory {
+    ifb_memory reservation;
     ifb_u32    page_count_total;
     ifb_u32    page_count_used;
     ifb_u32    page_size;
 };
 
 typedef const ifb_memory
-(*funcptr_ifb_engine_platform_memory_pages_commit)(
-    const ifb_memory commit_start,
-    const ifb_size   commit_size);
+(*funcptr_ifb_platform_memory_pages_commit)(
+          IFBPlatformMemory& platform_memory_ref,
+    const ifb_u32            commit_size);
 
-typedef const ifb_b8
-(*funcptr_ifb_engine_platform_memory_pages_decommit)(
-    const ifb_memory commit_start,
-    const ifb_size   commit_size);
-
-struct IFBEnginePlatformMemory {
-    funcptr_ifb_engine_platform_memory_pages_commit   pages_commit;
-    funcptr_ifb_engine_platform_memory_pages_decommit pages_decommit;
+struct IFBPlatformMemoryApi {
+    funcptr_ifb_platform_memory_pages_commit pages_commit;
 };
 
 /**********************************************************************************/
 /* WINDOW                                                                         */
 /**********************************************************************************/
+
+struct IFBPlatformWindow {
+    ifb_cstr title;
+    ifb_u32  width;
+    ifb_u32  height;
+    ifb_u32  position_x;
+    ifb_u32  position_y;
+};
 
 typedef const ifb_b8
 (*funcptr_ifb_engine_platform_window_create) (
@@ -80,7 +88,7 @@ typedef const ifb_b8
 (*funcptr_ifb_engine_platform_window_frame_render)(
     ifb_void);
 
-struct IFBEnginePlatformWindow {
+struct IFBEnginePlatformWindowApi {
     funcptr_ifb_engine_platform_window_create       create;
     funcptr_ifb_engine_platform_window_destroy      destroy;
     funcptr_ifb_engine_platform_window_frame_start  frame_start;
@@ -100,20 +108,21 @@ namespace ifb_engine {
 /* MONITOR                                                                        */
 /**********************************************************************************/
 
-struct IFBEnginePlatformMonitorSize {
+struct IFBPlatformMonitor {
     ifb_u32 width;
     ifb_u32 height;
+    ifb_u32 refresh_hz;
 }; 
 
 typedef ifb_void
 (*funcptr_ifb_engine_platform_monitor_size)(
-    IFBEnginePlatformMonitorSize& monitor_size_ref);
+    IFBPlatformMonitor& monitor_size_ref);
 
 typedef const ifb_u32
 (*funcptr_ifb_engine_platform_monitor_refresh_hz)(
     ifb_void);
 
-struct IFBEnginePlatformMonitor {
+struct IFBEnginePlatformMonitorApi {
     funcptr_ifb_engine_platform_monitor_size       size;
     funcptr_ifb_engine_platform_monitor_refresh_hz refresh_hz;
 };
@@ -161,7 +170,7 @@ typedef const ifb_b8
     const ifb_size                   in_file_write_size,
           ifb_memory                 in_file_write_buffer);
 
-struct IFBEnginePlatformFile {
+struct IFBEnginePlatformFileApi {
     funcptr_ifb_engine_platform_file_open_read_only  open_read_only;
     funcptr_ifb_engine_platform_file_open_read_write open_read_write;
     funcptr_ifb_engine_platform_file_close           close;
@@ -182,7 +191,7 @@ typedef const ifb_b8
     const ifb_cstr* in_file_type_spec_cstr_ptr,
           ifb_cstr out_file_selection_buffer);
 
-struct IFBEnginePlatformFileDialog {
+struct IFBEnginePlatformFileDialogApi {
     funcptr_ifb_engine_platform_file_dialog_select_file select_file;
 };
 
@@ -191,33 +200,23 @@ struct IFBEnginePlatformFileDialog {
 /**********************************************************************************/
 
 struct IFBEnginePlatformApi {
-    IFBEnginePlatformSystem     system;
-    IFBEnginePlatformMemory     memory;
-    IFBEnginePlatformWindow     window;
-    IFBEnginePlatformMonitor    monitor;
-    IFBEnginePlatformFile       file;
-    IFBEnginePlatformFileDialog file_dialog;
+    IFBEnginePlatformSystemApi     system;
+    IFBEnginePlatformMemoryApi     memory;
+    IFBEnginePlatformWindowApi     window;
+    IFBEnginePlatformMonitorApi    monitor;
+    IFBEnginePlatformFileApi       file;
+    IFBEnginePlatformFileDialogApi file_dialog;
 };
 
 /**********************************************************************************/
-/* PLATFORM INFO                                                                  */
+/* PLATFORM                                                                       */
 /**********************************************************************************/
-
-struct IFBEnginePlatformInfo {
-    ifb_u32    page_size;
-    ifb_size   reservation_size;
-    ifb_memory reservation_start;
-};
-
 
 struct IFBEnginePlatform {
-    ifb_u32 memory_page_size;
-    ifb_u32 memory_page_count_total;
-    ifb_u32 memory_page_count_used;
-    ifb_u32 window_width;
-    ifb_u32 window_height;
-    ifb_u32 window_position_x;
-    ifb_u32 window_position_y;
+    IFBPlatformSystem  system;
+    IFBPlatformMemory  memory;
+    IFBPlatformWindow  window;
+    IFBPlatformMonitor monitor;
 };
 
 #endif //IFB_ENGINE_PLATFORM_HPP
