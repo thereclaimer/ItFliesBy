@@ -3,6 +3,7 @@
 
 #include "ifb-engine.hpp"
 #include "ifb-engine-internal-tables.hpp"
+#include "ifb-engine-internal-memory.hpp"
 
 struct IFBEngineCore;
 
@@ -15,12 +16,15 @@ struct IFBEngineCoreHandle {
 /**********************************************************************************/
 
 struct IFBEngineCoreManagers {
-    IFBEngineMemoryHandle assets;
+    struct {
+        ifb_handle memory_manager;
+    } global_handles;
 };
 
 namespace ifb_engine {
 
-    const IFBEngineMemoryHandle core_manager_handle_assets (ifb_void);
+    IFBEngineMemoryManager* core_manager_pointer_memory(IFBEngineCoreManagers* ptr_core_managers);
+
 };
 
 /**********************************************************************************/

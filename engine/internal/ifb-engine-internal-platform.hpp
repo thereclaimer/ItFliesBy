@@ -9,9 +9,9 @@ struct IFBEnginePlatformSystemInfo {
     ifb_u32 allocation_granularity;
 };
 
-struct IFBEnginePlatformMemoryReservation {
-    ifb_address start;
-    ifb_u32     size;
+struct IFBEnginePlatformMemory {
+    ifb_address reservation_start;
+    ifb_u32     reservation_size;
 };
 
 #define IFB_ENGINE_PLATFORM_WINDOW_TITLE "It Flies By"
@@ -25,27 +25,26 @@ struct IFBEnginePlatformWindow {
 };
 
 struct IFBEnginePlatformMonitorInfo {
-    ifb_u32 width;
-    ifb_u32 height;
-    ifb_u32 refresh_hz;
+    IFBDimensions dimensions;
+    ifb_u32       refresh_hz;
 }; 
 
 struct IFBEnginePlatform {
     struct {
-        ifb_handle system_info;
-        ifb_handle memory_reservation;
-        ifb_handle window;
-        ifb_handle monitor;
+        ifb_handle system;  // IFBEnginePlatformSystemInfo
+        ifb_handle memory;  // IFBEnginePlatformMemoryReservation
+        ifb_handle window;  // IFBEnginePlatformWindow
+        ifb_handle monitor; // IFBEnginePlatformMonitorInfo
     } global_handles;
 };
 
 namespace ifb_engine {
 
-    inline IFBEnginePlatform*                  platform_global_pointer                    (const ifb_handle handle) { return(ifb_engine_memory_global_pointer_type(handle,IFBEnginePlatform));}
-    inline IFBEnginePlatformSystemInfo*        platform_global_pointer_system_info        (const ifb_handle handle) { return(ifb_engine_memory_global_pointer_type(handle,IFBEnginePlatformSystemInfo));}
-    inline IFBEnginePlatformMemoryReservation* platform_global_pointer_memory_reservation (const ifb_handle handle) { return(ifb_engine_memory_global_pointer_type(handle,IFBEnginePlatformMemoryReservation));}
-    inline IFBEnginePlatformWindow*            platform_global_pointer_window             (const ifb_handle handle) { return(ifb_engine_memory_global_pointer_type(handle,IFBEnginePlatformWindow));}
-    inline IFBEnginePlatformMonitorInfo*       platform_global_pointer_monitor_info       (const ifb_handle handle) { return(ifb_engine_memory_global_pointer_type(handle,IFBEnginePlatformMonitorInfo));}
+    inline IFBEnginePlatform*                  platform_global_pointer              (const ifb_handle handle) { return(ifb_engine_memory_global_pointer_type(handle,IFBEnginePlatform));            }
+    inline IFBEnginePlatformSystemInfo*        platform_global_pointer_system_info  (const ifb_handle handle) { return(ifb_engine_memory_global_pointer_type(handle,IFBEnginePlatformSystemInfo));  }
+    inline IFBEnginePlatformMemoryReservation* platform_global_pointer_memory       (const ifb_handle handle) { return(ifb_engine_memory_global_pointer_type(handle,IFBEnginePlatformMemory));      }
+    inline IFBEnginePlatformWindow*            platform_global_pointer_window       (const ifb_handle handle) { return(ifb_engine_memory_global_pointer_type(handle,IFBEnginePlatformWindow));      }
+    inline IFBEnginePlatformMonitorInfo*       platform_global_pointer_monitor_info (const ifb_handle handle) { return(ifb_engine_memory_global_pointer_type(handle,IFBEnginePlatformMonitorInfo)); }
 };
 
 //api
@@ -58,30 +57,28 @@ namespace ifb_engine {
     ifb_global funcptr_ifb_platform_system_sleep                  platform_system_sleep;
     
     //window
-    ifb_global funcptr_ifb_platform_window_create           platform_window_create;
-    ifb_global funcptr_ifb_platform_window_destroy          platform_window_destroy;
-    ifb_global funcptr_ifb_platform_window_frame_start      platform_window_frame_start;
-    ifb_global funcptr_ifb_platform_window_frame_render     platform_window_frame_render;
-    ifb_global funcptr_ifb_platform_window_show             platform_window_show;
-    ifb_global funcptr_ifb_platform_window_opengl_init      platform_window_opengl_init;
-    ifb_global funcptr_ifb_platform_window_imgui_init       platform_window_imgui_init;
+    ifb_global funcptr_ifb_platform_window_create                 platform_window_create;
+    ifb_global funcptr_ifb_platform_window_destroy                platform_window_destroy;
+    ifb_global funcptr_ifb_platform_window_frame_start            platform_window_frame_start;
+    ifb_global funcptr_ifb_platform_window_frame_render           platform_window_frame_render;
+    ifb_global funcptr_ifb_platform_window_show                   platform_window_show;
+    ifb_global funcptr_ifb_platform_window_opengl_init            platform_window_opengl_init;
+    ifb_global funcptr_ifb_platform_window_imgui_init             platform_window_imgui_init;
 
     //monitor
-    ifb_global funcptr_ifb_platform_monitor_info            platform_monitor_info;
+    ifb_global funcptr_ifb_platform_monitor_dimensions            platform_monitor_dimensions;
+    ifb_global funcptr_ifb_platform_monitor_refresh_hz            platform_monitor_refresh_hz;
 
     //memory
-    ifb_global funcptr_ifb_platform_memory_reserve          platform_memory_reserve;
-    ifb_global funcptr_ifb_platform_memory_release          platform_memory_release;
-    ifb_global funcptr_ifb_platform_memory_commit           platform_memory_commit;
+    ifb_global funcptr_ifb_platform_memory_reserve                platform_memory_reserve;
+    ifb_global funcptr_ifb_platform_memory_release                platform_memory_release;
+    ifb_global funcptr_ifb_platform_memory_commit                 platform_memory_commit;
 };
 
 
 namespace ifb_engine {
 
     const ifb_handle platform_initialize(IFBPlatformApi& platform_api_ref);
-
-    ifb_void platform_get_system_info  (IFBEnginePlatformSystemInfo* system_info_ptr);
-    ifb_void platform_get_monitor_info (IFBEnginePlatformMonitorInfo* monitor_info_ptr);
 
 };
 

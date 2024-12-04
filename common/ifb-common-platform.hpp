@@ -36,19 +36,19 @@ struct IFBPlatformSystemApi {
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
-typedef const ifb_b8
+typedef const ifb_ptr
 (*funcptr_ifb_platform_memory_reserve)(
     const ifb_u32 reservation_size);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_memory_release)(
-    const ifb_u32 reservation_size,
-    const ifb_ptr reservation_start);
+    const ifb_ptr reservation_start,
+    const ifb_u32 reservation_size);
 
-typedef const ifb_b8
+typedef const ifb_ptr
 (*funcptr_ifb_platform_memory_commit)(
-    const ifb_u32 commit_size,
-    const ifb_ptr commit_start);
+    const ifb_ptr commit_start,
+    const ifb_u32 commit_size);
 
 struct IFBPlatformMemoryApi {
     funcptr_ifb_platform_memory_reserve reserve;
@@ -56,45 +56,9 @@ struct IFBPlatformMemoryApi {
     funcptr_ifb_platform_memory_commit  commit;
 };
 
-namespace ifb_platform {
-
-    inline const ifb_size
-    memory_reservation_size_total(
-        const IFBPlatformMemory& platform_memory_ref) {
-
-        return(platform_memory_ref.reservation.page_size * platform_memory_ref.reservation.page_count_total);
-    }
-
-    inline const ifb_size
-    memory_reservation_size_used(
-        const IFBPlatformMemory& platform_memory_ref) {
-
-        return(platform_memory_ref.reservation.page_size * platform_memory_ref.reservation.page_count_used);
-    }
-
-    inline const ifb_size
-    memory_commit_size(
-        const IFBPlatformMemory& platform_memory_ref) {
-
-        return(platform_memory_ref.reservation.page_size * platform_memory_ref.current_commit.page_count);
-    }
-
-    inline const ifb_memory
-    memory_commit_start(
-        const IFBPlatformMemory& platform_memory_ref) {
-
-        const ifb_size   reservation_size_used = ifb_platform::memory_reservation_size_used(platform_memory_ref);
-        const ifb_memory commit_start          = platform_memory_ref.reservation.start + reservation_size_used;
-
-        return(commit_start);
-    }
-};
-
 /**********************************************************************************/
 /* WINDOW                                                                         */
 /**********************************************************************************/
-
-
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_window_create) (
@@ -142,19 +106,18 @@ struct IFBPlatformWindowApi {
 /* MONITOR                                                                        */
 /**********************************************************************************/
 
-struct IFBPlatformMonitor {
-    ifb_u32 width;
-    ifb_u32 height;
-    ifb_u32 refresh_hz;
-};
+typedef ifb_void
+(*funcptr_ifb_platform_monitor_dimensions)(
+    IFBDimensions& dimensions_ref);
 
 typedef ifb_void
-(*funcptr_ifb_platform_monitor_info)(
-    IFBPlatformMonitor& monitor_ref);
+(*funcptr_ifb_platform_monitor_refresh_hz)(
+    ifb_void);
 
 
 struct IFBPlatformMonitorApi {
-    funcptr_ifb_platform_monitor_info monitor_info;
+    funcptr_ifb_platform_monitor_dimensions dimensions;
+    funcptr_ifb_platform_monitor_refresh_hz refresh_hz;
 };
 
 /**********************************************************************************/
