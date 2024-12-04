@@ -9,52 +9,46 @@
 /* SYSTEM                                                                         */
 /**********************************************************************************/
 
-struct IFBPlatformSystem {
-    ifb_u32 page_size;
-    ifb_u32 allocation_granularity;
-};
+typedef const ifb_size
+(*funcptr_ifb_platform_system_page_size)(
+    ifb_void);
 
 typedef const ifb_size
-(*funcptr_ifb_platform_system_info)(
-    IFBPlatformSystem& system_info_ref);
+(*funcptr_ifb_platform_system_allocation_granularity)(
+    ifb_void);
+
+typedef const ifb_size
+(*funcptr_ifb_platform_system_time_ms)(
+    ifb_void);
+
+typedef const ifb_size
+(*funcptr_ifb_platform_system_sleep)(
+    ifb_u32 ms);
 
 struct IFBPlatformSystemApi {
-    funcptr_ifb_platform_system_info system_info;
+    funcptr_ifb_platform_system_page_size              page_size;
+    funcptr_ifb_platform_system_allocation_granularity allocation_granularity;
+    funcptr_ifb_platform_system_time_ms                time_ms;
+    funcptr_ifb_platform_system_sleep                  sleep;
 };
 
 /**********************************************************************************/
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
-struct IFBPlatformMemoryReservation {
-    ifb_u32    page_count_total;
-    ifb_u32    page_count_used;
-    ifb_u32    page_size;
-    ifb_memory start;
-};
-
-struct IFBPlatformMemoryCommit {
-    ifb_u32    page_start;
-    ifb_u32    page_count;
-    ifb_memory start;
-};
-
-struct IFBPlatformMemory {
-    IFBPlatformMemoryReservation reservation;
-    IFBPlatformMemoryCommit      current_commit;    
-};
-
 typedef const ifb_b8
 (*funcptr_ifb_platform_memory_reserve)(
-    IFBPlatformMemory& memory_ref);
+    const ifb_u32 reservation_size);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_memory_release)(
-    IFBPlatformMemory& memory_ref);
+    const ifb_u32 reservation_size,
+    const ifb_ptr reservation_start);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_memory_commit)(
-    IFBPlatformMemory& memory_ref);
+    const ifb_u32 commit_size,
+    const ifb_ptr commit_start);
 
 struct IFBPlatformMemoryApi {
     funcptr_ifb_platform_memory_reserve reserve;
@@ -100,44 +94,39 @@ namespace ifb_platform {
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
-struct IFBPlatformWindow {
-    ifb_cstr   title;
-    ifb_u32    width;
-    ifb_u32    height;
-    ifb_u32    position_x;
-    ifb_u32    position_y;
-    ifb_b32    quit_received;
-    ifb_u32    memory_size;
-    ifb_memory memory_start;
-};
+
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_window_create) (
-    IFBPlatformWindow* platform_window_ptr);
+    ifb_cstr title,
+    ifb_u32  width,
+    ifb_u32  height,
+    ifb_u32  position_x,
+    ifb_u32  position_y);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_window_opengl_init) (
-    IFBPlatformWindow* platform_window_ptr);
+    ifb_void);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_window_imgui_init) (
-    IFBPlatformWindow* platform_window_ptr);
+    ifb_void);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_window_show)(
-    IFBPlatformWindow* platform_window_ptr);
+    ifb_void);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_window_destroy)(
-    IFBPlatformWindow* platform_window_ptr);
+    ifb_void);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_window_frame_start)(
-    IFBPlatformWindow* platform_window_ptr);
+    ifb_void);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_window_frame_render)(
-    IFBPlatformWindow* platform_window_ptr);
+    ifb_void);
 
 struct IFBPlatformWindowApi {
     funcptr_ifb_platform_window_create       create;

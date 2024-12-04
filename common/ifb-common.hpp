@@ -17,8 +17,11 @@
 struct IFBDimensions {
     ifb_u32 width;
     ifb_u32 height;
-    ifb_u32 position_x;
-    ifb_u32 position_y;
+};
+
+struct IFBPosition {
+    ifb_u32 x;
+    ifb_u32 y;
 };
 
 struct IFBArenaId {

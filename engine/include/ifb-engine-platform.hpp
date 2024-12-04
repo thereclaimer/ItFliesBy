@@ -8,22 +8,18 @@
 /* MONITOR                                                                        */
 /**********************************************************************************/
 
-struct IFBPlatformMonitor {
-    ifb_u32 width;
-    ifb_u32 height;
-    ifb_u32 refresh_hz;
-}; 
+
 
 typedef ifb_void
-(*funcptr_ifb_engine_platform_monitor_size)(
-    IFBPlatformMonitor& monitor_size_ref);
+(*funcptr_ifb_engine_platform_monitor_dimensions)(
+    IFBDimensions& dimensions_ref);
 
 typedef const ifb_u32
 (*funcptr_ifb_engine_platform_monitor_refresh_hz)(
     ifb_void);
 
 struct IFBEnginePlatformMonitorApi {
-    funcptr_ifb_engine_platform_monitor_size       size;
+    funcptr_ifb_engine_platform_monitor_dimensions dimensions;
     funcptr_ifb_engine_platform_monitor_refresh_hz refresh_hz;
 };
 
