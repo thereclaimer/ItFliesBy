@@ -12,8 +12,8 @@ struct IFBStack {
 
 namespace ifb_common {
 
-    const ifb_u32    stack_push    (IFBStack& stack_ref, const ifb_u32 size);
-    const ifb_b8     stack_pull    (IFBStack& stack_ref, const ifb_u32 size);
+    const ifb_u32    stack_push    (IFBStack& stack_ref, const ifb_u32    size);
+    const ifb_b8     stack_pull    (IFBStack& stack_ref, const ifb_u32    size);
     const ifb_memory stack_pointer (IFBStack& stack_ref, const ifb_memory base_memory);
 };
 

@@ -3,6 +3,7 @@
 
 #include "ifb-common-types.hpp"
 #include "ifb-common-scopes.hpp"
+#include "ifb-common-arena.hpp"
 
 /**********************************************************************************/
 /* SYSTEM                                                                         */
@@ -25,31 +26,74 @@ struct IFBPlatformSystemApi {
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
-struct IFBPlatformMemory {
-    ifb_memory reservation;
+struct IFBPlatformMemoryReservation {
     ifb_u32    page_count_total;
     ifb_u32    page_count_used;
     ifb_u32    page_size;
+    ifb_memory start;
+};
+
+struct IFBPlatformMemoryCommit {
+    ifb_u32    page_start;
+    ifb_u32    page_count;
+    ifb_memory start;
+};
+
+struct IFBPlatformMemory {
+    IFBPlatformMemoryReservation reservation;
+    IFBPlatformMemoryCommit      current_commit;    
 };
 
 typedef const ifb_b8
-(*funcptr_ifb_platform_memory_pages_reserve)(
-    IFBPlatformMemory& platform_memory_ref);
+(*funcptr_ifb_platform_memory_reserve)(
+    IFBPlatformMemory& memory_ref);
 
 typedef const ifb_b8
-(*funcptr_ifb_platform_memory_pages_release)(
-    IFBPlatformMemory& platform_memory_ref);
+(*funcptr_ifb_platform_memory_release)(
+    IFBPlatformMemory& memory_ref);
 
-typedef const ifb_memory
-(*funcptr_ifb_platform_memory_pages_commit)(
-          IFBPlatformMemory& platform_memory_ref,
-    const ifb_u32            commit_size);
-
+typedef const ifb_b8
+(*funcptr_ifb_platform_memory_commit)(
+    IFBPlatformMemory& memory_ref);
 
 struct IFBPlatformMemoryApi {
-    funcptr_ifb_platform_memory_pages_reserve pages_reserve;
-    funcptr_ifb_platform_memory_pages_release pages_release;
-    funcptr_ifb_platform_memory_pages_commit  pages_commit;
+    funcptr_ifb_platform_memory_reserve reserve;
+    funcptr_ifb_platform_memory_release release;
+    funcptr_ifb_platform_memory_commit  commit;
+};
+
+namespace ifb_platform {
+
+    inline const ifb_size
+    memory_reservation_size_total(
+        const IFBPlatformMemory& platform_memory_ref) {
+
+        return(platform_memory_ref.reservation.page_size * platform_memory_ref.reservation.page_count_total);
+    }
+
+    inline const ifb_size
+    memory_reservation_size_used(
+        const IFBPlatformMemory& platform_memory_ref) {
+
+        return(platform_memory_ref.reservation.page_size * platform_memory_ref.reservation.page_count_used);
+    }
+
+    inline const ifb_size
+    memory_commit_size(
+        const IFBPlatformMemory& platform_memory_ref) {
+
+        return(platform_memory_ref.reservation.page_size * platform_memory_ref.current_commit.page_count);
+    }
+
+    inline const ifb_memory
+    memory_commit_start(
+        const IFBPlatformMemory& platform_memory_ref) {
+
+        const ifb_size   reservation_size_used = ifb_platform::memory_reservation_size_used(platform_memory_ref);
+        const ifb_memory commit_start          = platform_memory_ref.reservation.start + reservation_size_used;
+
+        return(commit_start);
+    }
 };
 
 /**********************************************************************************/
@@ -57,40 +101,43 @@ struct IFBPlatformMemoryApi {
 /**********************************************************************************/
 
 struct IFBPlatformWindow {
-    ifb_cstr title;
-    ifb_u32  width;
-    ifb_u32  height;
-    ifb_u32  position_x;
-    ifb_u32  position_y;
+    ifb_cstr   title;
+    ifb_u32    width;
+    ifb_u32    height;
+    ifb_u32    position_x;
+    ifb_u32    position_y;
+    ifb_b32    quit_received;
+    ifb_u32    memory_size;
+    ifb_memory memory_start;
 };
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_window_create) (
-    IFBPlatformWindow& platform_window_ref);
+    IFBPlatformWindow* platform_window_ptr);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_window_opengl_init) (
-    ifb_void);
+    IFBPlatformWindow* platform_window_ptr);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_window_imgui_init) (
-    ifb_void);
+    IFBPlatformWindow* platform_window_ptr);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_window_show)(
-    ifb_void);
+    IFBPlatformWindow* platform_window_ptr);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_window_destroy)(
-    ifb_void);
+    IFBPlatformWindow* platform_window_ptr);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_window_frame_start)(
-    IFBPlatformWindow& platform_window_ref);
+    IFBPlatformWindow* platform_window_ptr);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_window_frame_render)(
-    IFBPlatformWindow& platform_window_ref);
+    IFBPlatformWindow* platform_window_ptr);
 
 struct IFBPlatformWindowApi {
     funcptr_ifb_platform_window_create       create;
@@ -102,7 +149,6 @@ struct IFBPlatformWindowApi {
     funcptr_ifb_platform_window_imgui_init   imgui_init;
 };
 
-
 /**********************************************************************************/
 /* MONITOR                                                                        */
 /**********************************************************************************/
@@ -111,7 +157,7 @@ struct IFBPlatformMonitor {
     ifb_u32 width;
     ifb_u32 height;
     ifb_u32 refresh_hz;
-}; 
+};
 
 typedef ifb_void
 (*funcptr_ifb_platform_monitor_info)(
@@ -130,17 +176,17 @@ typedef ifb_index IFBPlatformFileIndex;
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_file_open_read_only) (
-    const ifb_cstr                     in_file_path,
+    const ifb_cstr               in_file_path,
           IFBPlatformFileIndex& out_file_index_ref);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_file_open_read_write) (
-    const ifb_cstr                     in_file_path,
+    const ifb_cstr               in_file_path,
           IFBPlatformFileIndex& out_file_index_ref);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_file_open_read_write) (
-    const ifb_cstr                     in_file_path,
+    const ifb_cstr               in_file_path,
           IFBPlatformFileIndex& out_file_index_ref);
 
 typedef const ifb_b8
@@ -154,16 +200,16 @@ typedef const ifb_size
 typedef const ifb_b8
 (*funcptr_ifb_platform_file_read)(
     const IFBPlatformFileIndex in_file_index,
-    const ifb_size                   in_file_read_start,
-    const ifb_size                   in_file_read_size,
-          ifb_memory                out_file_read_buffer);
+    const ifb_size             in_file_read_start,
+    const ifb_size             in_file_read_size,
+          ifb_memory          out_file_read_buffer);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_file_write)(
-    const IFBPlatformFileIndex in_file_index,
-    const ifb_size                   in_file_write_start,
-    const ifb_size                   in_file_write_size,
-          ifb_memory                 in_file_write_buffer);
+    const IFBPlatformFileIndex file_index,
+    const ifb_size             file_write_start,
+    const ifb_size             file_write_size,
+          ifb_memory           file_write_buffer);
 
 struct IFBPlatformFileApi {
     funcptr_ifb_platform_file_open_read_only  open_read_only;
@@ -207,94 +253,71 @@ struct IFBPlatform {
 /**********************************************************************************/
 
 struct IFBPlatformApi {
-    IFBPlatformSystemApi     system;
-    IFBPlatformMemoryApi     memory;
-    IFBPlatformWindowApi     window;
-    IFBPlatformMonitorApi    monitor;
-    IFBPlatformFileApi       file;
-    IFBPlatformFileDialogApi file_dialog;
+    IFBPlatformSystemApi  system;
+    IFBPlatformMemoryApi  memory;
+    IFBPlatformWindowApi  window;
+    IFBPlatformMonitorApi monitor;
 };
 
 namespace ifb_platform {
 
     //system
 
-    //window
-    ifb_global funcptr_ifb_platform_window_create           window_create;
-    ifb_global funcptr_ifb_platform_window_destroy          window_destroy;
-    ifb_global funcptr_ifb_platform_window_frame_start      window_frame_start;
-    ifb_global funcptr_ifb_platform_window_frame_render     window_frame_render;
-    ifb_global funcptr_ifb_platform_window_show             window_show;
-    ifb_global funcptr_ifb_platform_window_opengl_init      window_opengl_init;
-    ifb_global funcptr_ifb_platform_window_imgui_init       window_imgui_init;
-
-    //monitor
-    ifb_global funcptr_ifb_platform_monitor_info            monitor_info;
-
-    //memory
-    ifb_global funcptr_ifb_platform_memory_pages_reserve     memory_pages_reserve;
-    ifb_global funcptr_ifb_platform_memory_pages_release     memory_pages_release;
-    ifb_global funcptr_ifb_platform_memory_pages_commit      memory_pages_commit;
 
     //file
-    ifb_global funcptr_ifb_platform_file_open_read_only     file_open_read_only;
-    ifb_global funcptr_ifb_platform_file_open_read_write    file_open_read_write;
-    ifb_global funcptr_ifb_platform_file_close              file_close;
-    ifb_global funcptr_ifb_platform_file_size               file_size;
-    ifb_global funcptr_ifb_platform_file_read               file_read;
-    ifb_global funcptr_ifb_platform_file_write              file_write;
+    // ifb_global funcptr_ifb_platform_file_open_read_only     file_open_read_only;
+    // ifb_global funcptr_ifb_platform_file_open_read_write    file_open_read_write;
+    // ifb_global funcptr_ifb_platform_file_close              file_close;
+    // ifb_global funcptr_ifb_platform_file_size               file_size;
+    // ifb_global funcptr_ifb_platform_file_read               file_read;
+    // ifb_global funcptr_ifb_platform_file_write              file_write;
 
-    //file dialog
-    ifb_global funcptr_ifb_platform_file_dialog_select_file file_dialog_select_file;
+    // //file dialog
+    // ifb_global funcptr_ifb_platform_file_dialog_select_file file_dialog_select_file;
 
-    inline const ifb_b8 
+    inline const ifb_b8
     platform_api_validate(
         IFBPlatformApi& platform_api_ref) {
 
-        ifb_b8 result = true;
-
         //set the function pointers
-        ifb_platform::memory_pages_commit     = platform_api_ref.memory.pages_commit; 
-        ifb_platform::memory_pages_decommit   = platform_api_ref.memory.pages_decommit;         
         ifb_platform::window_create           = platform_api_ref.window.create;
         ifb_platform::window_destroy          = platform_api_ref.window.destroy;
-        ifb_platform::window_frame_start      = platform_api_ref.window.frame_start; 
+        ifb_platform::window_frame_start      = platform_api_ref.window.frame_start;
         ifb_platform::window_frame_render     = platform_api_ref.window.frame_render;
         ifb_platform::window_show             = platform_api_ref.window.show;
         ifb_platform::window_opengl_init      = platform_api_ref.window.opengl_init;
         ifb_platform::window_imgui_init       = platform_api_ref.window.imgui_init;
-        ifb_platform::monitor_size            = platform_api_ref.monitor.size;
-        ifb_platform::monitor_refresh_hz      = platform_api_ref.monitor.refresh_hz;
-        ifb_platform::file_open_read_only     = platform_api_ref.file.open_read_only;
-        ifb_platform::file_open_read_write    = platform_api_ref.file.open_read_write;
-        ifb_platform::file_close              = platform_api_ref.file.close;
-        ifb_platform::file_size               = platform_api_ref.file.size;
-        ifb_platform::file_read               = platform_api_ref.file.read;
-        ifb_platform::file_write              = platform_api_ref.file.write;
-        ifb_platform::file_dialog_select_file = platform_api_ref.file_dialog.select_file;        
+        ifb_platform::monitor_info            = platform_api_ref.monitor.monitor_info;
+        ifb_platform::memory_reserve          = platform_api_ref.memory.reserve;
+        ifb_platform::memory_release          = platform_api_ref.memory.release;
+        ifb_platform::memory_commit           = platform_api_ref.memory.commit;
+        // ifb_platform::file_open_read_only     = platform_api_ref.file.open_read_only;
+        // ifb_platform::file_open_read_write    = platform_api_ref.file.open_read_write;
+        // ifb_platform::file_close              = platform_api_ref.file.close;
+        // ifb_platform::file_size               = platform_api_ref.file.size;
+        // ifb_platform::file_read               = platform_api_ref.file.read;
+        // ifb_platform::file_write              = platform_api_ref.file.write;
+        // ifb_platform::file_dialog_select_file = platform_api_ref.file_dialog.select_file;
 
         //sanity check
-        result &= (
-            ifb_engine::platform_memory_pages_commit   && 
-            ifb_engine::platform_memory_pages_decommit && 
-            ifb_engine::platform_window_create         &&
-            ifb_engine::platform_window_destroy        &&
-            ifb_engine::platform_window_frame_start    &&
-            ifb_engine::platform_window_frame_render   &&
-            ifb_engine::platform_window_show           &&
-            ifb_engine::platform_window_opengl_init    &&
-            ifb_engine::platform_window_imgui_init     &&
-            ifb_engine::platform_monitor_size          &&
-            ifb_engine::platform_monitor_refresh_hz
-
-            // ifb_engine::platform_file_open_read_only           &&
-            // ifb_engine::platform_file_open_read_write          &&
-            // ifb_engine::platform_file_close                    &&
-            // ifb_engine::platform_file_size                     &&
-            // ifb_engine::platform_file_read                     &&
-            // ifb_engine::platform_file_write                    &&
-            // ifb_engine::platform_file_dialog_select_file
-            );
+        ifb_b8 result = true;
+        result &= ifb_platform::memory_pages_commit;
+        result &= ifb_platform::memory_pages_decommit;
+        result &= ifb_platform::window_create;
+        result &= ifb_platform::window_destroy;
+        result &= ifb_platform::window_frame_start;
+        result &= ifb_platform::window_frame_render;
+        result &= ifb_platform::window_show;
+        result &= ifb_platform::window_opengl_init;
+        result &= ifb_platform::window_imgui_init;
+        result &= ifb_platform::monitor_info;
+        // result &= ifb_platform::file_open_read_only;
+        // result &= ifb_platform::file_open_read_write;
+        // result &= ifb_platform::file_close;
+        // result &= ifb_platform::file_size;
+        // result &= ifb_platform::file_read;
+        // result &= ifb_platform::file_write;
+        // result &= ifb_platform::file_dialog_select_file;
 
         //we're done
         return(result);

@@ -4,6 +4,7 @@
 #include "ifb-engine-internal-platform.hpp"
 
 #include "ifb-engine-memory-arena.cpp"
+#include "ifb-engine-memory-global.cpp"
 
 /**********************************************************************************/
 /* API                                                                            */

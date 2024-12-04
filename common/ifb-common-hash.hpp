@@ -6,7 +6,7 @@
 #include "ifb-common-types.hpp"
 #include "ifb-common-scopes.hpp"
 
-union IFBHashValue {
+union IFBHash {
     struct {
         ifb_u32 h1;
         ifb_u32 h2;
@@ -18,12 +18,12 @@ union IFBHashValue {
 
 namespace ifb_common {
 
-    inline const IFBHashValue 
+    inline const IFBHash 
     hash_cstr(
         const ifb_cstr c_str,
         const ifb_u32  c_str_length_max) {
         
-        IFBHashValue hash_value;
+        IFBHash hash_value;
         hash_value = {0};
 
         //sanity check
@@ -46,9 +46,9 @@ namespace ifb_common {
 
     inline const ifb_b8
     hash_collision_check(
-        const IFBHashValue* hash_value_array_ptr,
-        const ifb_u32       hash_value_array_count,
-        const IFBHashValue  hash_value) {
+        const IFBHash* hash_value_array_ptr,
+        const ifb_u32  hash_value_array_count,
+        const IFBHash  hash_value) {
 
         if (
             hash_value_array_ptr   == NULL ||  
@@ -81,9 +81,9 @@ namespace ifb_common {
     
     inline const ifb_b8
     hash_next_clear_value(
-        const IFBHashValue* in_hash_value_array_ptr,
-        const ifb_u32       in_hash_value_array_count,
-              ifb_u32&     out_hash_index_ref) {
+        const IFBHash*  in_hash_value_array_ptr,
+        const ifb_u32   in_hash_value_array_count,
+              ifb_u32& out_hash_index_ref) {
 
         __m128i xmm_reg;
 
@@ -104,10 +104,10 @@ namespace ifb_common {
 
     inline const ifb_b8
     hash_search(
-        const IFBHashValue* in_hash_value_array_ptr,
-        const ifb_u32       in_hash_value_array_count,
-        const IFBHashValue  in_hash_value,
-              ifb_u32&     out_hash_index_ref) {
+        const IFBHash*  in_hash_value_array_ptr,
+        const ifb_u32   in_hash_value_array_count,
+        const IFBHash   in_hash_value,
+              ifb_u32& out_hash_index_ref) {
 
         if (
             in_hash_value_array_ptr   == NULL ||  
@@ -140,9 +140,9 @@ namespace ifb_common {
     
     inline const ifb_b8
     hash_search(
-        const IFBHashValue* hash_value_array_ptr,
-        const ifb_u32       hash_value_array_count,
-        const IFBHashValue  hash_value) {
+        const IFBHash* hash_value_array_ptr,
+        const ifb_u32  hash_value_array_count,
+        const IFBHash  hash_value) {
 
         if (
             hash_value_array_ptr   == NULL ||  

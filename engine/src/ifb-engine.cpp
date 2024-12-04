@@ -19,15 +19,19 @@
 
 ifb_api const ifb_b8
 ifb_engine::engine_create_context(
-    IFBEnginePlatformInfo& platform_info_ref,
-    IFBEnginePlatformApi&  platform_api_ref) {
+    IFBPlatformApi& platform_api_ref) {
 
+    //allocate context
+    _engine_context = ifb_engine_memory_global_push_struct_immediate(IFBEngineContext);
+
+    //initialize the api
+    result &= ifb_engine::platform_initialize(platform_api_ref);
+    
     //validate the arguments
     ifb_b8 result = true;
     result &= platform_info_ref.reservation_start != NULL;
     result &= platform_info_ref.reservation_size  >= ifb_engine::math_size_gigabytes(4);
     result &= platform_info_ref.page_size         >= sizeof(IFBEngineContext);
-    result &= ifb_engine::platform_api_validate(platform_api_ref);
     if (!result) {
         return(false);
     }

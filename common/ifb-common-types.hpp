@@ -37,22 +37,16 @@ typedef wchar_t* ifb_wstr;
 
 //memory
 typedef void       ifb_void;
-typedef void*      ifb_handle;
+typedef void*      ifb_ptr;
 typedef uint8_t    ifb_byte;
 typedef uint8_t*   ifb_memory;
 typedef size_t     ifb_size;
 typedef ifb_u32    ifb_index;
+typedef ifb_u32    ifb_handle;
 typedef intptr_t   ifb_address;
 typedef uint32_t   ifb_page;
 
 //time
 typedef uint64_t ifb_timems;
-
-struct IFBDimensions {
-    ifb_u32 width;
-    ifb_u32 height;
-    ifb_u32 position_x;
-    ifb_u32 position_y;
-};
 
 #endif //IFB_COMMON_TYPES_HPP

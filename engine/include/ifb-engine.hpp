@@ -13,6 +13,7 @@
 #include "ifb-engine-allocators.hpp"
 #include "ifb-engine-rendering.hpp"
 #include "ifb-engine-tables.hpp"
+#include "ifb-engine-arena.hpp"
 
 enum IFBEngineState_ {
     IFBEngineState_NotRunning   = 0,
@@ -23,18 +24,20 @@ enum IFBEngineState_ {
     IFBEngineState_FrameExecute = 5,
 };
 
-typedef ifb_u32 ifb_engine_state_t;
+typedef ifb_u32 IFBEngineState;
 
 #define IFB_ENGINE_CORE_LINEAR_ALLOCATOR_SIZE         ifb_macro_size_kilobytes(64)
 #define IFB_ENGINE_CORE_LINEAR_ALLOCATOR_TAG_FRAME    "CORE FRAME STACK"
 #define IFB_ENGINE_CORE_LINEAR_ALLOCATOR_TAG_PLATFORM "CORE PLATFORM STACK"
 
 struct IFBEngineContext {
-    IFBEnginePlatform     platform;
-    IFBUserInput          user_input;
-    ifb_engine_state_t    state;
-    ifb_timems            time_initialized;
-    IFBEngineMemoryHandle core_handle;
+    IFBEngineState state;
+    struct {
+        ifb_handle platform;
+        ifb_handle core;
+        ifb_handle user_input;
+    } global_handles;
+    ifb_timems time_initialized;
 };
 
 #define IFB_ENGINE_MINIMUM_MEMORY_REQUIREMENT_4GB ifb_macro_size_gigabytes(4)
@@ -43,8 +46,7 @@ namespace ifb_engine {
 
     ifb_api const ifb_b8
     engine_create_context(
-        IFBEnginePlatformInfo& platform_info_ref,
-        IFBEnginePlatformApi&  platform_api_ref);
+        IFBPlatformApi& platform_api_ref);
 
     ifb_api const ifb_b8 engine_startup         (ifb_void);
     ifb_api const ifb_b8 engine_frame_execute   (ifb_void);

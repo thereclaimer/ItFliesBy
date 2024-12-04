@@ -21,10 +21,10 @@ const ifb_f32 IFB_ASPECT_RATIO_VALUE_LOOKUP[] = {
 };
 
 const ifb_cstr IFB_ASPECT_RATIO_DESCRIPTION_LOOKUP[] = {
-    "16:9", // IFBAspectRatio_16_x_9
-    "16:10",// IFBAspectRatio_16_x_10
-    "21:9", // IFBAspectRatio_21_x_9
-    "4:3"   // IFBAspectRatio_4_x_3
+    "16:9",  // IFBAspectRatio_16_x_9
+    "16:10", // IFBAspectRatio_16_x_10
+    "21:9",  // IFBAspectRatio_21_x_9
+    "4:3"    // IFBAspectRatio_4_x_3
 };
 
 typedef ifb_u32 IFBAspectRatioType;

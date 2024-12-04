@@ -1,9 +1,31 @@
 #pragma once
 
 #include "ifb-engine-internal-platform.hpp"
+#include "ifb-engine-internal-memory.hpp"
 #include "ifb-engine-internal.hpp"
 
-ifb_api ifb_void 
+inline const ifb_handle 
+ifb_engine::platform_initialize(
+    IFBPlatformApi& platform_api_ref) {
+
+    //allocate the platform
+    const ifb_handle platform_handle         = ifb_engine_memory_global_push_struct(IFBEnginePlatform);
+    const ifb_handle platform_handle_system  = ifb_engine_memory_global_push_struct(IFBPlatformSystem);
+    const ifb_handle platform_handle_memory  = ifb_engine_memory_global_push_struct(IFBPlatformMemory);
+    const ifb_handle platform_handle_window  = ifb_engine_memory_global_push_struct(IFBPlatformWindow);
+    const ifb_handle platform_handle_monitor = ifb_engine_memory_global_push_struct(IFBPlatformMonitor);
+
+    //get the pointers
+    IFBPlatform*        platform_ptr         = ifb_engine::platform_global_pointer_system (platform_handle);
+    IFBPlatformSystem*  platform_system_ptr  = ifb_engine::platform_global_pointer_system (platform_handle_system);
+    IFBPlatformMemory*  platform_memory_ptr  = ifb_engine::platform_global_pointer_memory (platform_handle_memory);
+    IFBPlatformWindow*  platform_window_ptr  = ifb_engine::platform_global_pointer_window (platform_handle_window);
+    IFBPlatformMonitor* platform_monitor_ptr = ifb_engine::platform_global_pointer_monitor(platform_handle_monitor);
+
+    return(platform_handle);
+}
+
+inline ifb_void 
 ifb_engine::platform_window_update_size(
     const ifb_u32 window_width,
     const ifb_u32 window_height) {
@@ -12,7 +34,7 @@ ifb_engine::platform_window_update_size(
     _engine_context->platform.window_height = window_height;
 }
 
-ifb_api ifb_void 
+inline ifb_void 
 ifb_engine::platform_window_update_position(
     const ifb_u32 window_position_x,
     const ifb_u32 window_position_y) {
@@ -23,7 +45,7 @@ ifb_engine::platform_window_update_position(
 
 inline ifb_void 
 ifb_engine::platform_window_default_dimensions(
-    IFBDimensions& window_dimensions_ref) {
+    IFBDimensions& window_dimensions_ref) {y
     
     //get monitor size
     IFBEnginePlatformMonitorSize monitor_size;
