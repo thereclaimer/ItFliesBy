@@ -1,64 +1,45 @@
 #pragma once
 
 #include "ifb-engine.hpp"
-#include "ifb-engine-internal.hpp"
-#include "ifb-engine-core-routines.cpp"
-#include "ifb-engine-core-tasks.cpp"
-#include "ifb-engine-core-tables.cpp"
+#include "ifb-engine-internal-memory.hpp"
+#include "ifb-engine-core-arena.cpp"
+#include "ifb-engine-core-memory.cpp"
+#include "ifb-engine-core-tag.cpp"
 
-inline IFBEngineCore*
-ifb_engine::context_core(
+inline const IFBEngineCoreHandle 
+ifb_engine::core_create(
     ifb_void) {
 
-    //get the core handle
-    const IFBEngineMemoryHandle core_handle = ifb_engine::context_core_handle();
+    //allocate the core
+    IFBEngineCoreHandle core_handle;
+    core_handle.value = ifb_engine_memory_global_push_struct(IFBEngineCore);
 
     //get the pointer
-    IFBEngineCore* core_ptr = (IFBEngineCore*)ifb_engine::memory_pointer_from_handle(core_handle);
+    IFBEngineCore* ptr_core = ifb_engine::core_get_pointer(core_handle);
+
+    //create the managers
+    ptr_core->handles.managers = ifb_engine::managers_create();
 
     //we're done
-    return(core_ptr);
+    return(core_handle);
 }
 
-inline const IFBEngineMemoryHandle 
-ifb_engine::core_manager_handle_assets(
-    ifb_void) {
-
-    //get the core pointer
-    const IFBEngineCore* core_ptr = ifb_engine::context_core();
-
-    //return the handle
-    return(core_ptr->managers.assets);
-}
-
-inline const IFBEngineLinearAllocatorHandle
-ifb_engine::core_allocator_linear_platform(
-    ifb_void) {
-
-    //get the core pointer
-    const IFBEngineCore* core_ptr = ifb_engine::context_core();
-
-    //return the index
-    return(core_ptr->allocators.linear_allocators.platform);    
-}
-
-inline const IFBEngineLinearAllocatorHandle 
-ifb_engine::core_allocator_linear_frame(
-    ifb_void) {
-
-    //get the core pointer
-    const IFBEngineCore* core_ptr = ifb_engine::context_core();
-
-    //return the index
-    return(core_ptr->allocators.linear_allocators.frame);     
-}
-
-
-inline IFBEngineCore* 
-ifb_engine::core_pointer_from_handle(
+inline IFBEngineCore*
+core_get_pointer(
     const IFBEngineCoreHandle core_handle) {
 
-    IFBEngineCore* core_ptr = (IFBEngineCore*)ifb_engine::memory_pointer_from_handle(core_handle.memory);
+    //get the pointer
+    IFBEngineCore* ptr_core = ifb_engine::memory_global_pointer(core_handle.value);
+    ifb_macro_assert(ptr_core);
 
-    return(core_ptr);
+    return(ptr_core);
+}
+
+inline IFBEngineManagers*
+core_get_pointer_managers(
+    const IFBEngineCore* ptr_core) {
+
+    IFBEngineManagers* ptr_managers = ifb_engine::managers_get_pointer(ptr_core->handles.managers);
+
+    return(ptr_managers);
 }
