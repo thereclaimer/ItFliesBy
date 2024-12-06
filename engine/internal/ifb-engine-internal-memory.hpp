@@ -26,10 +26,5 @@ namespace ifb_engine {
     const ifb_memory memory_global_pointer                (const ifb_handle handle);
 };
 
-#define ifb_engine_memory_global_push_struct(type)                       ifb_engine::memory_global_push_aligned(sizeof(type),alignof(type)) 
-#define ifb_engine_memory_global_push_struct_immediate(type)      (type*)ifb_engine::memory_global_push_aligned(sizeof(type),alignof(type)) 
-#define ifb_engine_memory_global_push_array(type,count)                  ifb_engine::memory_global_push(sizeof(type) * count) 
-#define ifb_engine_memory_global_push_array_immediate(type,count) (type*)ifb_engine::memory_global_push(sizeof(type) * count) 
-#define ifb_engine_memory_global_pointer_type(handle,type)        (type*)ifb_engine::memory_global_pointer(handle) 
 
 #endif //IFB_ENGINE_INTERNAL_MEMORY_HPP

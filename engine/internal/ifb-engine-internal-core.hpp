@@ -11,38 +11,37 @@
 #define IFB_ENGINE_CORE_DEFAULT_ARENA_SIZE  4096
 #define IFB_ENGINE_CORE_DEFAULT_ARENA_COUNT  128
 
-struct IFBEngineCoreManagerHandles {
-    IFBEngineMemoryManagerHandle memory;
-    IFBEngineTagManagerHandle    tag;
-    IFBEngineArenaManagerHandle  arena;
+struct IFBEngineCoreManagers {
+    struct {
+        IFBEngineGlobalHandleMemoryManager memory;
+        IFBEngineGlobalHandleTagManager    tag;
+        IFBEngineGlobalHandleArenaManager  arena;
+    } global_handles;
 };
 
 namespace ifb_engine {
 
-    ifb_void                core_managers_create_all                 (IFBEngineCoreManagerHandles& ref_core_managers);
-    IFBEngineMemoryManager* core_managers_get_pointer_memory_manager (const IFBEngineCoreManagerHandles& ref_core_managers);
-    IFBEngineTagManager*    core_managers_get_pointer_tag_manager    (const IFBEngineCoreManagerHandles& ref_core_managers);
-    IFBEngineArenaManager*  core_managers_get_pointer_arena_manager  (const IFBEngineCoreManagerHandles& ref_core_managers);
+    ifb_void                core_managers_create_all                 (IFBEngineCoreManagers& ref_core_managers);
+    IFBEngineMemoryManager* core_managers_get_pointer_memory_manager (const IFBEngineCoreManagers& ref_core_managers);
+    IFBEngineTagManager*    core_managers_get_pointer_tag_manager    (const IFBEngineCoreManagers& ref_core_managers);
+    IFBEngineArenaManager*  core_managers_get_pointer_arena_manager  (const IFBEngineCoreManagers& ref_core_managers);
 };
 
 /**********************************************************************************/
 /* CORE                                                                           */
 /**********************************************************************************/
 
-struct IFBEngineCoreHandle {
-    ifb_handle value;
-};
+struct IFBEngineCoreHandle : IFBEngineHandle;
 
 struct IFBEngineCore {
-    IFBEngineCoreManagerHandles manager_handles;
+    IFBEngineCoreManagers managers;
 };
 
 namespace ifb_engine {
 
     const IFBEngineCoreHandle core_create (ifb_void);
 
-    IFBEngineCore*          core_get_pointer                (const IFBEngineCoreHandle core_handle);
-
+    IFBEngineCore* core_get_pointer (const IFBEngineCoreHandle core_handle);
 };
 
 /**********************************************************************************/

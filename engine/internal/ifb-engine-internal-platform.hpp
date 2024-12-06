@@ -3,16 +3,8 @@
 
 #include "ifb-engine.hpp"
 #include "ifb-engine-internal-memory.hpp"
+#include "ifb-engine-internal-global.hpp"
 
-struct IFBEnginePlatformSystemInfo {
-    ifb_u32 page_size;
-    ifb_u32 allocation_granularity;
-};
-
-struct IFBEnginePlatformMemory {
-    ifb_address reservation_start;
-    ifb_u32     reservation_size;
-};
 
 #define IFB_ENGINE_PLATFORM_WINDOW_TITLE "It Flies By"
 
@@ -31,10 +23,10 @@ struct IFBEnginePlatformMonitorInfo {
 
 struct IFBEnginePlatform {
     struct {
-        ifb_handle system;  // IFBEnginePlatformSystemInfo
-        ifb_handle memory;  // IFBEnginePlatformMemoryReservation
-        ifb_handle window;  // IFBEnginePlatformWindow
-        ifb_handle monitor; // IFBEnginePlatformMonitorInfo
+        IFBEngineGlobalHandle system;  // IFBEnginePlatformSystemInfo
+        IFBEngineGlobalHandle memory;  // IFBEnginePlatformMemoryReservation
+        IFBEngineGlobalHandle window;  // IFBEnginePlatformWindow
+        IFBEngineGlobalHandle monitor; // IFBEnginePlatformMonitorInfo
     } global_handles;
 };
 
@@ -79,7 +71,6 @@ namespace ifb_engine {
 namespace ifb_engine {
 
     const ifb_handle platform_initialize(IFBPlatformApi& platform_api_ref);
-
 };
 
 #endif //IFB_ENGINE_INTERNAL_PLATFORM_HPP

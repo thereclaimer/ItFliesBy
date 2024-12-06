@@ -3,6 +3,7 @@
 
 #include <ifb-common.hpp>
 
+#include "ifb-engine-config.hpp"
 #include "ifb-engine-math.hpp"
 #include "ifb-engine-memory.hpp"
 #include "ifb-engine-asset.hpp"
@@ -14,6 +15,11 @@
 #include "ifb-engine-rendering.hpp"
 #include "ifb-engine-tables.hpp"
 #include "ifb-engine-arena.hpp"
+
+
+struct IFBEngineHandle {
+    ifb_handle value;
+};
 
 enum IFBEngineState_ {
     IFBEngineState_NotRunning   = 0,
@@ -29,16 +35,6 @@ typedef ifb_u32 IFBEngineState;
 #define IFB_ENGINE_CORE_LINEAR_ALLOCATOR_SIZE         ifb_macro_size_kilobytes(64)
 #define IFB_ENGINE_CORE_LINEAR_ALLOCATOR_TAG_FRAME    "CORE FRAME STACK"
 #define IFB_ENGINE_CORE_LINEAR_ALLOCATOR_TAG_PLATFORM "CORE PLATFORM STACK"
-
-struct IFBEngineContext {
-    IFBEngineState state;
-    struct {
-        ifb_handle platform;
-        ifb_handle core;
-        ifb_handle user_input;
-    } global_handles;
-    ifb_timems time_initialized;
-};
 
 #define IFB_ENGINE_MINIMUM_MEMORY_REQUIREMENT_4GB ifb_macro_size_gigabytes(4)
 

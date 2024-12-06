@@ -7,20 +7,21 @@
 #include "ifb-engine-internal-platform.hpp"
 #include "ifb-engine-internal-tools.hpp"
 #include "ifb-engine-internal-allocators.hpp"
+#include "ifb-engine-internal-global.hpp"
 
-ifb_global IFBEngineContext* _engine_context;
+struct IFBEngineContext {
+    struct {
+        IFBEngineGlobalHandle core;       // IFBEngineCore
+        IFBEngineGlobalHandle user_input; // IFBEngineUserInput
+    } global_handles;
+    IFBEngineState state;
+    ifb_timems     time_initialized;
+};
 
 namespace ifb_engine {
 
-      inline const ifb_b8                context_initialized  (ifb_void) { return(_engine_context != NULL);      }
-      inline const ifb_memory            context_base_pointer (ifb_void) { return((ifb_memory)_engine_context);  }
-      inline const IFBEngineMemoryHandle context_core_handle  (ifb_void) { return(_engine_context->core_handle); }
-
-      inline const ifb_u32 context_platform_page_size       (ifb_void) { return(_engine_context->platform.memory_page_size);        }
-      inline const ifb_u32 context_platform_page_count_total(ifb_void) { return(_engine_context->platform.memory_page_count_total); }
-      inline const ifb_u32 context_platform_page_count_used (ifb_void) { return(_engine_context->platform.memory_page_count_used);  }
-
-      inline ifb_void context_platform_page_count_used_update(const ifb_u32 page_count_used) { _engine_context->platform.memory_page_count_used = page_count_used; }
+    IFBEngineCore* context_get_core_pointer       (IFBEngineContext* ptr_engine_context);
+    IFBUserInput*  context_get_user_input_pointer (IFBEngineContext* ptr_engine_context);
 };
 
 #endif //IFB_ENGINE_INTERNAL_HPP
