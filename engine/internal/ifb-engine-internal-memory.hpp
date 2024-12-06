@@ -32,6 +32,9 @@ namespace ifb_engine {
 
     const ifb_size memory_align_size_to_page        (const IFBEngineMemory* ptr_memory, const ifb_size size);
     const ifb_size memory_align_size_to_granularity (const IFBEngineMemory* ptr_memory, const ifb_size size);
+
+    const IFBMemory* memory_get_commit_array_pointer(const IFBEngineMemory* ptr_memory);
+    const ifb_u32    memory_get_size_committed(const IFBEngineMemory* ptr_memory);
 };
 
 #endif //IFB_ENGINE_INTERNAL_MEMORY_HPP
