@@ -34,18 +34,13 @@ struct IFBTag {
     IFBHash  hash;
 };
 
-struct IFBMemory {
+struct IFBCommit {
     ifb_u32 page_start;
     ifb_u32 page_count;
 };
 
-struct IFBMemoryCommitId {
+struct IFBCommitId {
     ifb_index index;
-};
-
-struct IFBMemoryCommit {
-    IFBMemoryCommitId id;
-    IFBMemory         memory;
 };
 
 struct IFBArenaId {
