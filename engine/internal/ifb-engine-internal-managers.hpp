@@ -8,9 +8,11 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-struct IFBEngineGlobalHandleTagManager   : IFBEngineGlobalHandle;
-struct IFBEngineGlobalHandleArenaManager : IFBEngineGlobalHandle;
-
+struct IFBEngineGlobalHandleTagManager       : IFBEngineGlobalHandle;
+struct IFBEngineGlobalHandleArenaManager     : IFBEngineGlobalHandle;
+struct IFBEngineGlobalHandleStackAllocators  : IFBEngineGlobalHandle;
+struct IFBEngineGlobalHandleBlockAllocators  : IFBEngineGlobalHandle;
+struct IFBEngineGlobalHandleAllocatorManager : IFBEngineGlobalHandle;
 struct IFBEngineTagManager;
 struct IFBEngineArenaManager;
 
@@ -55,7 +57,7 @@ struct IFBEngineArenaManager {
     ifb_u32     arena_count_max;
     ifb_u32     arena_count_committed;
     struct {
-        ifb_u32 commit_id_array; // IFBMemoryCommitId
+        ifb_u32 commit_id_array; // IFBCommitId
         ifb_u32 tag_id_array;    // IFBTagId
     } commit_offsets;
 };
@@ -69,17 +71,112 @@ namespace ifb_engine {
         const ifb_u32          arena_count_max);
 
     const IFBArenaId 
-    arena_manager_create_arena(
+    arena_manager_commit_arena(
               IFBEngineArenaManager* ptr_arena_manager, 
         const IFBEngineMemory*       ptr_engine_memory,
-        const IFBCommitId            arena_commit_id,
-        const IFBTagId               arena_tag_id);
+        const IFBTagId               arena_tag_id,
+        const ifb_u32                arena_commit_size_minimum);
 
-    const ifb_u32      arena_manager_align_size_to_arena         (IFBEngineArenaManager* ptr_arena_manager, const IFBEngineMemory* ptr_engine_memory, const ifb_u32    size);
+    const ifb_u32      arena_manager_align_size_to_arena         (IFBEngineArenaManager* ptr_arena_manager, const ifb_u32 size);
     const IFBCommitId  arena_manager_get_arena_commit_id         (IFBEngineArenaManager* ptr_arena_manager, const IFBEngineMemory* ptr_engine_memory, const IFBArenaId arena_id);
     const IFBTagId     arena_manager_get_arena_tag_id            (IFBEngineArenaManager* ptr_arena_manager, const IFBEngineMemory* ptr_engine_memory, const IFBArenaId arena_id);
+    const ifb_u32      arena_manager_get_arena_size              (IFBEngineArenaManager* ptr_arena_manager, const IFBEngineMemory* ptr_engine_memory, const IFBArenaId arena_id);
+    const ifb_u32      arena_manager_get_arena_pointer           (IFBEngineArenaManager* ptr_arena_manager, const IFBEngineMemory* ptr_engine_memory, const IFBArenaId arena_id);
+    const ifb_u32      arena_manager_get_arena_pointer           (IFBEngineArenaManager* ptr_arena_manager, const IFBEngineMemory* ptr_engine_memory, const IFBArenaId arena_id, const ifb_u32 offset);
           IFBCommitId* arena_manager_get_pointer_commit_id_array (IFBEngineArenaManager* ptr_arena_manager, const IFBEngineMemory* ptr_engine_memory);
           IFBTagId*    arena_manager_get_pointer_tag_id_array    (IFBEngineArenaManager* ptr_arena_manager, const IFBEngineMemory* ptr_engine_memory);
 };
+
+/**********************************************************************************/
+/* ALLOCATOR MANAGER                                                              */
+/**********************************************************************************/
+
+//-------------------
+// linear allocator
+//-------------------
+
+struct IFBEngineLinearAllocatorInfo {
+    ifb_u32    position;
+    ifb_u32    save_point;
+};
+
+struct IFBEngineLinearAllocators {
+    ifb_u32     count_max;
+    ifb_u32     count_committed;
+    struct {
+        ifb_u32 arena_id;              // IFBArenaId
+        ifb_u32 linear_allocator_info; // IFBEngineLinearAllocatorInfo 
+    } commit_offsets;
+};
+
+//-------------------
+// block allocator
+//-------------------
+
+struct IFBEngineBlockAllocatorInfo {
+    ifb_u32      block_size;
+    ifb_u32      block_count;
+    ifb_address* block_addresses;
+};
+
+struct IFBEngineBlockAllocators {
+    ifb_u32     count_max;
+    ifb_u32     count_committed;
+    struct {
+        ifb_u32 arena_id;             // IFBArenaId
+        ifb_u32 block_allocator_info; // IFBEngineBlockAllocatorInfo
+        ifb_u32 block_addresses_ptr;  // ifb_address*
+    } commit_offsets;
+};
+
+//-------------------
+// allocator manager
+//-------------------
+
+struct IFBEngineAllocatorManager {
+    IFBCommit commit_id;
+    struct {
+        ifb_u32 linear_allocators;
+        ifb_u32 block_allocators;
+    } commit_offsets;
+};
+
+namespace ifb_engine {
+
+    //-------------------
+    // allocator manager
+    //-------------------
+
+    const IFBEngineGlobalHandleAllocatorManager
+    allocator_manager_create(
+              IFBEngineMemory* ptr_engine_memory,
+        const ifb_u32          stack_allocator_count_max,
+        const ifb_u32          block_allocator_count_max);
+
+    IFBEngineLinearAllocators* allocator_manager_get_pointer_linear_allocators (const IFBEngineAllocatorManager* ptr_allocator_manager, const IFBEngineMemory* ptr_engine_memory);
+    IFBEngineBlockAllocators*  allocator_manager_get_pointer_block_allocators  (const IFBEngineAllocatorManager* ptr_allocator_manager, const IFBEngineMemory* ptr_engine_memory);
+
+    //-------------------
+    // linear allocator
+    //-------------------
+
+    const IFBLinearAllocatorId
+    allocator_manager_commit_linear_allocator(
+        const IFBEngineAllocatorManager* ptr_allocator_manager,
+              IFBEngineMemory*           ptr_engine_memory,
+        const IFBArenaId                 linear_allocator_arena_id);
+
+    //-------------------
+    // block allocator
+    //-------------------
+
+    const IFBBlockAllocatorId
+    allocator_manager_commit_block_allocator(
+        const IFBEngineAllocatorManager* ptr_allocator_manager,
+              IFBEngineMemory*           ptr_engine_memory,
+        const IFBArenaId                 block_allocator_arena_id,
+        const ifb_u32                    block_size_minimum,
+        const ifb_u32                    block_count);
+}
 
 #endif //IFB_ENGINE_INTERNAL_MANAGERS_HPP

@@ -11,8 +11,8 @@
 
 struct IFBEngineContext {
     struct {
-        IFBEngineGlobalHandle core;       // IFBEngineCore
-        IFBEngineGlobalHandle user_input; // IFBEngineUserInput
+        IFBEngineGlobalHandleCore core;       // IFBEngineCore
+        IFBEngineGlobalHandle     user_input; // IFBEngineUserInput
     } global_handles;
     IFBEngineState state;
     ifb_timems     time_initialized;

@@ -9,14 +9,6 @@
 /* LINEAR ALLOCATOR                                                               */
 /**********************************************************************************/
 
-struct IFBEngineLinearAllocatorHandle { IFBEngineMemoryHandle memory; };
-
-struct IFBEngineLinearAllocator {
-    IFBEngineArenaId arena_id;
-    ifb_u32          position;
-    ifb_u32          save_point;
-};
-
 namespace ifb_engine {
 
     ifb_api const IFBEngineLinearAllocatorHandle  

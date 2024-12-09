@@ -179,6 +179,14 @@ ifb_engine::memory_get_commit_pointer(
         ptr_memory,
         commit_id);
 
+    //get the commit size
+    const ifb_u32 commit_size = ifb_engine::memory_get_commit_size(
+        ptr_memory,
+        commit_id);
+
+    //sanity check, make sure the offset is inside the arena
+    ifb_macro_assert(commit_offset < commit_size);
+
     //add the offset to the commit
     const ifb_address commit_offset_address = commit_address + commit_offset;
 

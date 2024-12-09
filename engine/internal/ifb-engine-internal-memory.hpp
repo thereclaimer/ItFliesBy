@@ -23,7 +23,7 @@ struct IFBEngineMemory {
 
 namespace ifb_engine {
 
-          ifb_void    memory_reserve (IFBEngineMemory* ptr_memory, const ifb_size reservation_size_minimum);
+          ifb_void    memory_reserve (IFBEngineMemory* ptr_memory, const ifb_size reservation_size_minimum, const ifb_u32 commit_count_max);
     const IFBCommitId memory_commit  (IFBEngineMemory* ptr_memory, const ifb_u32  commit_size_minimum);
     
     const ifb_u32     memory_get_commit_page_number    (const IFBEngineMemory* ptr_memory, const IFBCommitId commit_id);

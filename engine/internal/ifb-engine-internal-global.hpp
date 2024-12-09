@@ -60,7 +60,9 @@ struct IFBEngineGlobals {
     IFBEngineConfig      config;
 };
 
-n_initialize (ifb_void);
+namespace ifb_engine {
+
+    global_initialize (ifb_void);
     
           IFBEngineGlobalStack& global_stack_ref   (ifb_void);
     const IFBEngineConfig&      global_config_ref  (ifb_void);

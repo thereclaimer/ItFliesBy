@@ -26,13 +26,21 @@ ifb_engine::engine_create_context(
 
     //global initialization
     ifb_engine::globals_initialize();
+    IFBEngineMemory* ptr_memory = ifb_engine::global_memory_ptr();
+    IFBEngineConfig& ref_config = ifb_engine::global_config_ref();
+
+    //reserve memory
+    ifb_engine::memory_reserve(
+        ptr_memory,
+        ref_config.memory_minimum_gb,
+        ref_config.memory_commit_count_max);
 
     //get the context pointer
     IFBEngineContext* ptr_engine_context = ifb_engine::globals_get_context_pointer();
     ifb_macro_assert(ptr_engine_context);
 
     //initialize the engine core
-    result &= ifb_engine::core_routine_initialize();
+    ptr_engine_context->global_handles.core = ifb_engine::core_create(ptr_memory);
 
     //update state
     _engine_context->state = IFBEngineState_NotRunning;

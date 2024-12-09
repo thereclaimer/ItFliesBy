@@ -2,23 +2,26 @@
 
 #include "ifb-engine.hpp"
 #include "ifb-engine-internal-memory.hpp"
+#include "ifb-engine-internal-global.hpp"
 #include "ifb-engine-core-arena.cpp"
 #include "ifb-engine-core-memory.cpp"
 #include "ifb-engine-core-tag.cpp"
 
-inline const IFBEngineCoreHandle 
+inline const IFBEngineGlobalHandleCore 
 ifb_engine::core_create(
-    ifb_void) {
+    IFBEngineMemory* ptr_memory) {
 
     //allocate the core
-    IFBEngineCoreHandle core_handle;
-    core_handle.value = ifb_engine_memory_global_push_struct(IFBEngineCore);
+    IFBEngineGlobalHandleCore core_handle;
+    ifb_engine_global_stack_push_type(core_handle,IFBEngineCore);
 
     //get the pointer
     IFBEngineCore* ptr_core = ifb_engine::core_get_pointer(core_handle);
 
     //create the managers
-    ptr_core->handles.managers = ifb_engine::managers_create();
+    ifb_engine::core_managers_create_all(
+        ptr_core->managers,
+        ptr_memory);
 
     //we're done
     return(core_handle);

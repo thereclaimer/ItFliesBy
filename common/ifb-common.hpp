@@ -14,6 +14,38 @@
 #include "ifb-common-user-input.hpp"
 #include "ifb-common-platform.hpp"
 
+/**********************************************************************************/
+/* IDENTIFIERS                                                                    */
+/**********************************************************************************/
+
+struct IFBId {
+    ifb_index index;
+};
+
+struct IFBTagId    : IFBId;
+struct IFBCommitId : IFBId;
+
+struct IFBArenaId : IFBId {
+    IFBTagId    tag_id;
+    IFBCommitId commit_id;
+};
+
+struct IFBLinearAllocatorId : IFBId {
+    IFBArenaId arena_id;
+};
+
+struct IFBBlockAllocatorId : IFBId {
+    IFBArenaId arena_id;
+};
+
+struct IFBBlockId : IFBId {
+    IFBBlockAllocatorId block_allocator_id;
+};
+
+/**********************************************************************************/
+/* MISC                                                                           */
+/**********************************************************************************/
+
 struct IFBDimensions {
     ifb_u32 width;
     ifb_u32 height;
@@ -24,9 +56,9 @@ struct IFBPosition {
     ifb_u32 y;
 };
 
-struct IFBTagId {
-    ifb_index index;
-};
+/**********************************************************************************/
+/* MEMORY                                                                         */
+/**********************************************************************************/
 
 struct IFBTag {
     IFBTagId id;
@@ -35,18 +67,9 @@ struct IFBTag {
 };
 
 struct IFBCommit {
+    IFBCommitId id;
     ifb_u32 page_start;
     ifb_u32 page_count;
-};
-
-struct IFBCommitId {
-    ifb_index index;
-};
-
-struct IFBArenaId {
-    ifb_index         index;
-    IFBMemoryCommitId commit_id;
-    IFBTagId          tag_id;
 };
 
 struct IFBArena {
@@ -56,5 +79,23 @@ struct IFBArena {
     ifb_handle start;
 };
 
+struct IFBLinearAllocator {
+    IFBLinearAllocatorId id;
+    ifb_u32              size;
+    ifb_u32              position;
+    ifb_u32              save_point;
+};
+
+struct IFBBlockAllocator {
+    IFBBlockAllocatorId id;
+    ifb_u32             block_size;
+    ifb_u32             block_count;
+};
+
+struct IFBBlock {
+    IFBBlockId  id;
+    ifb_u32     size;
+    ifb_address start;
+};
 
 #endif //IFB_COMMON_HPP

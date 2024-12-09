@@ -5,15 +5,17 @@
 
 inline const IFBTagId 
 ifb_engine::core_tag_reserve(
-    const IFBEngineCore* ptr_core,
-    const ifb_cstr       tag_c_str) {
+    const IFBEngineCore*   ptr_core,
+    const IFBEngineMemory* ptr_memory,
+    const ifb_cstr         tag_c_str) {
 
     //get the managers
-    IFBEngineTagManager* ptr_tag_manager = ifb_engine::core_managers_get_pointer_tag_manager(ptr_core->manager_handles); 
+    IFBEngineTagManager* ptr_tag_manager = ifb_engine::core_managers_get_pointer_tag_manager(ptr_core->managers);
 
     //reserve the tag
     const IFBTagId tag_id = ifb_engine::tag_manager_reserve_tag(
         ptr_tag_manager,
+        ptr_memory,
         tag_c_str);
 
     //we're done
@@ -22,15 +24,17 @@ ifb_engine::core_tag_reserve(
 
 inline const IFBTagId 
 ifb_engine::core_tag_release(
-    const IFBEngineCore* ptr_core,
-    const IFBTagId       tag_id) {
+    const IFBEngineCore*   ptr_core,
+    const IFBEngineMemory* ptr_memory,
+    const IFBTagId         tag_id) {
 
-    //get the managers
-    IFBEngineTagManager* ptr_tag_manager = ifb_engine::core_managers_get_pointer_tag_manager(ptr_core->manager_handles); 
+    //get the manager
+    IFBEngineTagManager* ptr_tag_manager = ifb_engine::core_managers_get_pointer_tag_manager(ptr_core->managers); 
 
     //release the tag
     ifb_engine::tag_manager_release_tag(
         ptr_tag_manager,
+        ptr_memory
         tag_id);
 
     //we're done
@@ -39,8 +43,9 @@ ifb_engine::core_tag_release(
 
 inline const ifb_cstr 
 ifb_engine::core_tag_get_value(
-    const IFBEngineCore* ptr_core,
-    const IFBTagId       tag_id) {
+    const IFBEngineCore*   ptr_core,
+    const IFBEngineMemory* ptr_memory,
+    const IFBTagId         tag_id) {
 
     //get the managers
     IFBEngineTagManager* ptr_tag_manager = ifb_engine::core_managers_get_pointer_tag_manager(ptr_core->manager_handles); 
@@ -48,6 +53,7 @@ ifb_engine::core_tag_get_value(
     //get the tag value
     const ifb_cstr tag_c_str = ifb_engine::tag_manager_get_tag_c_str(
         ptr_tag_manager,
+        ptr_memory,
         tag_id);
 
     //we're done
@@ -56,8 +62,9 @@ ifb_engine::core_tag_get_value(
 
 inline const ifb_cstr 
 ifb_engine::core_tag_get_hash(
-    const IFBEngineCore* ptr_core,
-    const IFBTagId       tag_id) {
+    const IFBEngineCore*   ptr_core,
+    const IFBEngineMemory* ptr_memory,
+    const IFBTagId         tag_id) {
 
     //get the managers
     IFBEngineTagManager* ptr_tag_manager = ifb_engine::core_managers_get_pointer_tag_manager(ptr_core->manager_handles); 
@@ -65,6 +72,7 @@ ifb_engine::core_tag_get_hash(
     //get the tag hash
     const IFBHash tag_hash = ifb_engine::tag_manager_get_hash(
         ptr_tag_manager,
+        ptr_memory,
         tag_id);
 
     //we're done
