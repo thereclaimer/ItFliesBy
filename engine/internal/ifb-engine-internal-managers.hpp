@@ -13,6 +13,7 @@ struct IFBEngineGlobalHandleArenaManager     : IFBEngineGlobalHandle;
 struct IFBEngineGlobalHandleStackAllocators  : IFBEngineGlobalHandle;
 struct IFBEngineGlobalHandleBlockAllocators  : IFBEngineGlobalHandle;
 struct IFBEngineGlobalHandleAllocatorManager : IFBEngineGlobalHandle;
+
 struct IFBEngineTagManager;
 struct IFBEngineArenaManager;
 
@@ -166,6 +167,19 @@ namespace ifb_engine {
               IFBEngineMemory*           ptr_engine_memory,
         const IFBArenaId                 linear_allocator_arena_id);
 
+    IFBArenaId* 
+    allocator_manager_get_pointer_linear_allocator_arena_id_array(
+        const IFBEngineAllocatorManager* ptr_allocator_manager,
+        const IFBEngineLinearAllocators* ptr_linear_allocators,
+        const IFBEngineMemory*           ptr_engine_memory);
+
+    IFBEngineLinearAllocatorInfo* 
+    allocator_manager_get_pointer_linear_allocator_info_array(
+        const IFBEngineAllocatorManager* ptr_allocator_manager,
+        const IFBEngineLinearAllocators* ptr_linear_allocators,
+        const IFBEngineMemory*           ptr_engine_memory);
+
+
     //-------------------
     // block allocator
     //-------------------
@@ -177,6 +191,25 @@ namespace ifb_engine {
         const IFBArenaId                 block_allocator_arena_id,
         const ifb_u32                    block_size_minimum,
         const ifb_u32                    block_count);
+
+    IFBArenaId* 
+    allocator_manager_get_pointer_block_allocator_arena_id_array(
+        const IFBEngineAllocatorManager* ptr_allocator_manager,
+        const IFBEngineBlockAllocators*  ptr_blcok_allocators,
+        const IFBEngineMemory*           ptr_engine_memory);
+
+
+    IFBEngineBlockAllocatorInfo* 
+    allocator_manager_get_pointer_block_allocator_info_array(
+        const IFBEngineAllocatorManager* ptr_allocator_manager,
+        const IFBEngineBlockAllocators*  ptr_blcok_allocators,
+        const IFBEngineMemory*           ptr_engine_memory);
+
+    ifb_address** 
+    allocator_manager_get_pointer_block_allocator_address_pointer_array(
+        const IFBEngineAllocatorManager* ptr_allocator_manager,
+        const IFBEngineBlockAllocators*  ptr_blcok_allocators,
+        const IFBEngineMemory*           ptr_engine_memory);
 }
 
 #endif //IFB_ENGINE_INTERNAL_MANAGERS_HPP

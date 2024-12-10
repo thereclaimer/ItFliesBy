@@ -2,6 +2,10 @@
 
 #include "ifb-engine-internal-managers.hpp"
 
+/**********************************************************************************/
+/* ALLOCATOR MANAGER                                                              */
+/**********************************************************************************/
+
 inline const IFBEngineGlobalHandleAllocatorManager
 ifb_engine::allocator_manager_create(
           IFBEngineMemory* ptr_engine_memory,
@@ -106,3 +110,87 @@ ifb_engine::allocator_manager_get_pointer_block_allocators(
 
     return(ptr_block_allocators);
 }
+
+/**********************************************************************************/
+/* LINEAR ALLOCATOR                                                               */
+/**********************************************************************************/
+
+inline const IFBLinearAllocatorId
+ifb_engine::allocator_manager_commit_linear_allocator(
+    const IFBEngineAllocatorManager* ptr_allocator_manager,
+          IFBEngineMemory*           ptr_engine_memory,
+    const IFBArenaId                 linear_allocator_arena_id) {
+
+    //get the linear allocators
+    const IFBEngineLinearAllocators* ptr_linear_allocators = ifb_engine::allocator_manager_get_pointer_linear_allocators(
+        ptr_allocator_manager,
+        ptr_engine_memory);
+    
+    //sanity check
+    ifb_macro_assert(ptr_linear_allocators->count_committed != ptr_linear_allocators->count_max);
+
+    //get the allocator index
+    const ifb_index allocator_index = ptr_linear_allocators->count_committed;
+
+    //get the arrays
+    IFBArenaId*                   arena_id_array_ptr = ifb_engine::allocator_manager_get_pointer_linear_allocator_arena_id_array(ptr_allocator_manager, ptr_linear_allocators, ptr_engine_memory);
+    IFBEngineLinearAllocatorInfo* info_array_ptr     = ifb_engine::allocator_manager_get_pointer_linear_allocator_info_array    (ptr_allocator_manager, ptr_linear_allocators, ptr_engine_memory);
+
+    //update the committed count
+    ++ptr_linear_allocators->count_committed;
+
+    //update the arrays
+    arena_id_array_ptr[allocator_index] = linear_allocator_arena_id;
+    info_array_ptr    [allocator_index] = {0};
+
+    //create the id
+    const IFBLinearAllocatorId allocator_id = { allocator_index };
+
+    //we're done
+    return(allocator_id);
+}
+
+
+inline IFBArenaId* 
+ifb_engine::allocator_manager_get_pointer_linear_allocator_arena_id_array(
+    const IFBEngineAllocatorManager* ptr_allocator_manager,
+    const IFBEngineLinearAllocators* ptr_linear_allocators,
+    const IFBEngineMemory*           ptr_engine_memory) {
+
+    IFBArenaId* arena_id_array = (IFBArenaId*)ifb_engine::memory_get_commit_pointer(
+        ptr_engine_memory,
+        ptr_allocator_manager->commit_id,
+        ptr_linear_allocators->commit_offsets.arena_id);
+
+    return(arena_id_array);
+}
+
+inline IFBEngineLinearAllocatorInfo* 
+ifb_engine::allocator_manager_get_pointer_linear_allocator_info_array(
+    const IFBEngineAllocatorManager* ptr_allocator_manager,
+    const IFBEngineLinearAllocators* ptr_linear_allocators,
+    const IFBEngineMemory*           ptr_engine_memory) {
+
+    IFBEngineLinearAllocatorInfo* info_array = (IFBEngineLinearAllocatorInfo*)ifb_engine::memory_get_commit_pointer(
+        ptr_engine_memory,
+        ptr_allocator_manager->commit_id,
+        ptr_linear_allocators->commit_offsets.linear_allocator_info);
+
+    return(arena_id_array);
+}
+
+
+/**********************************************************************************/
+/* BLOCK ALLOCATOR                                                               */
+/**********************************************************************************/
+
+inline const IFBBlockAllocatorId
+ifb_engine::allocator_manager_commit_block_allocator(
+    const IFBEngineAllocatorManager* ptr_allocator_manager,
+          IFBEngineMemory*           ptr_engine_memory,
+    const IFBArenaId                 block_allocator_arena_id,
+    const ifb_u32                    block_size_minimum,
+    const ifb_u32                    block_count) {
+
+}
+
