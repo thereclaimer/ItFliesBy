@@ -3,7 +3,7 @@
 #include "ifb-engine.hpp"
 #include "ifb-engine-internal-core.hpp"
 
-inline const IFBArenaId
+inline const IFB
 ifb_engine::core_arena_commit(
     const IFBEngineCore*   ptr_core,
     const IFBEngineMemory* ptr_memory,

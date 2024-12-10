@@ -1,38 +1,35 @@
 #pragma once
 
 #include "ifb-engine-internal-managers.hpp"
+#include "ifb-engine-internal-context.hpp"
 
 inline const IFBEngineGlobalHandleArenaManager 
-ifb_engine::arena_manager_create(
-          IFBEngineMemory* ptr_engine_memory,
-    const ifb_u32          arena_minimum_size,
-    const ifb_u32          arena_count_max) {
-
-    //globally allocate the arena manager
-    IFBEngineGlobalHandleArenaManager arena_manager_handle;
-    ifb_engine_global_stack_push_type(arena_manager_handle,IFBEngineGlobalHandleArenaManager);
-
-    //align the arena size
-    const ifb_u32 arena_minimum_size_aligned = ifb_engine::memory_align_size_to_page(arena_minimum_size);
-    const ifb_u32 arena_minimum_pages        = arena_minimum_size_aligned / ptr_engine_memory->system_page_size; 
-
+ifb_engine::arena_manager_initialize(
+          IFBEngineArenaManager* arena_manager_ptr,
+    const ifb_u32                arena_minimum_size,
+    const ifb_u32                arena_count_max) {
 
     //calculate the commit size
-    const ifb_u32 size_commit_id_array = ifb_macro_size_array(IFBCommitId, arena_count_max);
-    const ifb_u32 size_tag_id_array    = ifb_macro_size_array(IFBTagId,    arena_count_max);
+    const ifb_u32 size_commit_id_array = ifb_macro_size_array(IFBIDCommit, arena_count_max);
+    const ifb_u32 size_tag_id_array    = ifb_macro_size_array(IFBIDTag,    arena_count_max);
     const ifb_u32 commit_size          = size_commit_id_array + size_tag_id_array;
 
     //do the commit
-    const IFBCommitId commit_id = ifb_engine::memory_commit(ptr_engine_memory,commit_size);
+    IFBEngineMemory*  engine_memory_ptr          = ifb_engine::context_handles_get_memory();
+    const ifb_u32     arena_minimum_size_aligned = ifb_engine::memory_align_size_to_page(engine_memory_ptr,arena_minimum_size);
+    const ifb_u32     arena_minimum_pages        = arena_minimum_size_aligned / engine_memory_ptr->system_page_size; 
+    const IFBCommitId commit_id                  = ifb_engine::memory_commit(engine_memory_ptr,commit_size);
+    const ifb_address commit_start               = ifb_engine::memory_get_commit_address(engine_memory_ptr,commit_id); 
 
     //calculate the commit sizes for the arrays
-    commit_id                      = commit_id;
-    arena_minimum_size             = arena_minimum_size_aligned;
-    arena_minimum_pages            = arena_minimum_pages;
-    arena_count_max                = arena_count_max;
-    arena_count_committed          = 0;
-    commit_offsets.commit_id_array = 0;
-    commit_offsets.tag_id_array    = size_commit_id_array;
+    arena_manager_ptr->arena_minimum_size            = arena_minimum_size_aligned;
+    arena_manager_ptr->arena_minimum_pages           = arena_minimum_pages;
+    arena_manager_ptr->arena_count_max               = arena_count_max;
+    arena_manager_ptr->arena_count_committed         = 0;
+    arena_manager_ptr->commit.id                     = commit_id;
+    arena_manager_ptr->commit.offset_commit_id_array = 0;
+    arena_manager_ptr->commit.offset_tag_id_array    = size_commit_id_array;
+    arena_manager_ptr->commit.start                  = commit_start;
 
     //we're done
     return(arena_manager_handle);

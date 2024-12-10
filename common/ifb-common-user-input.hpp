@@ -289,6 +289,7 @@ namespace ifb_common {
 /* USER INPUT                                                                     */
 /**********************************************************************************/
 
+
 struct IFBUserInput {
     IFBUserInputKeyboard keyboard;
     IFBUserInputMouse    mouse;

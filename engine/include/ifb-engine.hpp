@@ -16,10 +16,7 @@
 #include "ifb-engine-tables.hpp"
 #include "ifb-engine-arena.hpp"
 
-
-struct IFBEngineHandle {
-    ifb_handle value;
-};
+struct IFBHNDEngineContext : IFBHND { };
 
 enum IFBEngineState_ {
     IFBEngineState_NotRunning   = 0,

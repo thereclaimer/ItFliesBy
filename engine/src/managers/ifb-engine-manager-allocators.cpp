@@ -69,12 +69,14 @@ ifb_engine::allocator_manager_create(
     ptr_allocator_manager->commit_offsets.block_allocators  = stack_allocator_struct_size;
 
     //initialize the linear allocators
+    ptr_linear_allocators->allocator_manager_commit_id          = commit_id; 
     ptr_linear_allocators->count_max                            = linear_allocator_count_max;
     ptr_linear_allocators->count_committed                      = 0;
     ptr_linear_allocators->commit_offsets.arena_id              = commit_offset_linear_allocator_arena_id_array;
     ptr_linear_allocators->commit_offsets.linear_allocator_info = commit_offset_linear_allocator_info_array;
 
     //initialize the block allocators
+    ptr_block_allocators->allocator_manager_commit_id         = commit_id; 
     ptr_block_allocators->count_max                           = block_allocator_count_max;
     ptr_block_allocators->count_committed                     = 0;
     ptr_block_allocators->commit_offsets.arena_id             = commit_offset_block_allocator_arena_id_array;
@@ -133,8 +135,8 @@ ifb_engine::allocator_manager_commit_linear_allocator(
     const ifb_index allocator_index = ptr_linear_allocators->count_committed;
 
     //get the arrays
-    IFBArenaId*                   arena_id_array_ptr = ifb_engine::allocator_manager_get_pointer_linear_allocator_arena_id_array(ptr_allocator_manager, ptr_linear_allocators, ptr_engine_memory);
-    IFBEngineLinearAllocatorInfo* info_array_ptr     = ifb_engine::allocator_manager_get_pointer_linear_allocator_info_array    (ptr_allocator_manager, ptr_linear_allocators, ptr_engine_memory);
+    IFBArenaId*                   arena_id_array_ptr = ifb_engine::allocator_manager_get_pointer_linear_allocator_arena_id_array(ptr_linear_allocators, ptr_engine_memory);
+    IFBEngineLinearAllocatorInfo* info_array_ptr     = ifb_engine::allocator_manager_get_pointer_linear_allocator_info_array    (ptr_linear_allocators, ptr_engine_memory);
 
     //update the committed count
     ++ptr_linear_allocators->count_committed;
@@ -153,13 +155,12 @@ ifb_engine::allocator_manager_commit_linear_allocator(
 
 inline IFBArenaId* 
 ifb_engine::allocator_manager_get_pointer_linear_allocator_arena_id_array(
-    const IFBEngineAllocatorManager* ptr_allocator_manager,
     const IFBEngineLinearAllocators* ptr_linear_allocators,
     const IFBEngineMemory*           ptr_engine_memory) {
 
     IFBArenaId* arena_id_array = (IFBArenaId*)ifb_engine::memory_get_commit_pointer(
         ptr_engine_memory,
-        ptr_allocator_manager->commit_id,
+        ptr_linear_allocators->allocator_manager_commit_id,
         ptr_linear_allocators->commit_offsets.arena_id);
 
     return(arena_id_array);
@@ -167,18 +168,16 @@ ifb_engine::allocator_manager_get_pointer_linear_allocator_arena_id_array(
 
 inline IFBEngineLinearAllocatorInfo* 
 ifb_engine::allocator_manager_get_pointer_linear_allocator_info_array(
-    const IFBEngineAllocatorManager* ptr_allocator_manager,
     const IFBEngineLinearAllocators* ptr_linear_allocators,
     const IFBEngineMemory*           ptr_engine_memory) {
 
     IFBEngineLinearAllocatorInfo* info_array = (IFBEngineLinearAllocatorInfo*)ifb_engine::memory_get_commit_pointer(
         ptr_engine_memory,
-        ptr_allocator_manager->commit_id,
+        ptr_linear_allocators->allocator_manager_commit_id,
         ptr_linear_allocators->commit_offsets.linear_allocator_info);
 
     return(arena_id_array);
 }
-
 
 /**********************************************************************************/
 /* BLOCK ALLOCATOR                                                               */
@@ -192,5 +191,60 @@ ifb_engine::allocator_manager_commit_block_allocator(
     const ifb_u32                    block_size_minimum,
     const ifb_u32                    block_count) {
 
+    //get the block allocators
+    IFBEngineBlockAllocators* ptr_block_allocators = allocator_manager_get_pointer_block_allocators(
+        ptr_allocator_manager,
+        ptr_engine_memory);
+
+    //sanity check, make sure we can commit an allocator
+    ifb_macro_assert(
+        ptr_block_allocators->count_committed !=    
+        ptr_block_allocators->count_max);
+
+    //get the next index and update the count
+    const ifb_index allocator_index = ptr_block_allocators->count_committed;
+    ++ptr_block_allocators->count_committed;
+
+    //get the arrays
+    IFBArenaId* allocator_manager_get_pointer_block_allocator_arena_id_array()
+    IFBEngineBlockAllocatorInfo* allocator_manager_get_pointer_block_allocator_info_array()
+    ifb_address** allocator_manager_get_pointer_block_allocator_address_pointer_array()
+
+inline IFBArenaId*
+ifb_engine::allocator_manager_get_pointer_block_allocator_arena_id_array(
+    const IFBEngineBlockAllocators*  ptr_block_allocators,
+    const IFBEngineMemory*           ptr_engine_memory) {
+
+    IFBArenaId* arena_id_array = (IFBArenaId*)ifb_engine::memory_get_commit_pointer(
+        ptr_engine_memory,
+        ptr_block_allocators->allocator_manager_commit_id,
+        ptr_block_allocators->commit_offsets.arena_id);
+
+    return(arena_id_array);    
 }
 
+inline IFBEngineBlockAllocatorInfo* 
+ifb_engine::allocator_manager_get_pointer_block_allocator_info_array(
+    const IFBEngineBlockAllocators*  ptr_blcok_allocators,
+    const IFBEngineMemory*           ptr_engine_memory) {
+
+    IFBEngineBlockAllocatorInfo* info_array = (IFBEngineBlockAllocatorInfo*)ifb_engine::memory_get_commit_pointer(
+        ptr_engine_memory,
+        ptr_block_allocators->allocator_manager_commit_id,
+        ptr_block_allocators->commit_offsets.arena_id);
+
+    return(info_array);  
+}
+
+inline ifb_address** 
+ifb_engine::allocator_manager_get_pointer_block_allocator_address_pointer_array(
+    const IFBEngineBlockAllocators*  ptr_block_allocators,
+    const IFBEngineMemory*           ptr_engine_memory) {
+
+    ifb_address** address_pointer_array = (ifb_address**)ifb_engine::memory_get_commit_pointer(
+        ptr_engine_memory,
+        ptr_block_allocators->allocator_manager_commit_id,
+        ptr_block_allocators->commit_offsets.block_addresses_ptr);
+
+    return(address_pointer_array);
+}

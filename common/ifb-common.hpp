@@ -18,29 +18,24 @@
 /* IDENTIFIERS                                                                    */
 /**********************************************************************************/
 
-struct IFBId {
+struct IFBID {
     ifb_index index;
 };
 
-struct IFBTagId    : IFBId;
-struct IFBCommitId : IFBId;
+struct IFBIDTag    : IFBID { };
+struct IFBIDCommit : IFBID { };
 
-struct IFBArenaId : IFBId {
-    IFBTagId    tag_id;
-    IFBCommitId commit_id;
+struct IFBIDArena : IFBID {
+    IFBIDTag    tag_id;
+    IFBIDCommit commit_id;
 };
 
-struct IFBLinearAllocatorId : IFBId {
-    IFBArenaId arena_id;
+struct IFBHND {
+    ifb_u32 offset;
 };
 
-struct IFBBlockAllocatorId : IFBId {
-    IFBArenaId arena_id;
-};
-
-struct IFBBlockId : IFBId {
-    IFBBlockAllocatorId block_allocator_id;
-};
+struct IFBHNDLinearAllocator : IFBHND { };
+struct IFBHNDBlockAllocator  : IFBHND { };
 
 /**********************************************************************************/
 /* MISC                                                                           */
@@ -60,42 +55,41 @@ struct IFBPosition {
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
+struct IFBMemory {
+    ifb_u32 reservation_offset;
+};
+
 struct IFBTag {
-    IFBTagId id;
+    IFBID    id;
     ifb_cstr value;
     IFBHash  hash;
 };
 
 struct IFBCommit {
-    IFBCommitId id;
-    ifb_u32 page_start;
-    ifb_u32 page_count;
+    IFBIDCommit id;
+    ifb_u32     page_start;
+    ifb_u32     page_count;
 };
 
 struct IFBArena {
-    IFBArenaId id;
+    IFBIDArena id;
     ifb_u32    size;
     ifb_cstr   tag_c_str;
     ifb_handle start;
 };
 
 struct IFBLinearAllocator {
-    IFBLinearAllocatorId id;
-    ifb_u32              size;
-    ifb_u32              position;
-    ifb_u32              save_point;
+    IFBIDArena arena_id;
+    ifb_u32    start;
+    ifb_u32    size;
+    ifb_u32    position;
+    ifb_u32    save_point;
 };
 
 struct IFBBlockAllocator {
-    IFBBlockAllocatorId id;
+    IFBIDArena          arena_id;
     ifb_u32             block_size;
     ifb_u32             block_count;
-};
-
-struct IFBBlock {
-    IFBBlockId  id;
-    ifb_u32     size;
-    ifb_address start;
 };
 
 #endif //IFB_COMMON_HPP

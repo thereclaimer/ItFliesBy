@@ -25,28 +25,24 @@ ifb_engine::engine_create_context(
     ifb_engine::platform_initialize(platform_api_ref);
 
     //global initialization
-    ifb_engine::globals_initialize();
-    IFBEngineMemory* ptr_memory = ifb_engine::global_memory_ptr();
-    IFBEngineConfig& ref_config = ifb_engine::global_config_ref();
+    ifb_engine::context_reset();
+    ifb_engine::context_handles_create_all();
+
+    //get context pointers
+    IFBEngineConfig* ptr_config = ifb_engine::context_handles_get_config();
+    IFBEngineMemory* ptr_memory = ifb_engine::context_handles_get_memory();
+
+    //get config values
+    ifb_engine::config_get_values(config_ptr);
 
     //reserve memory
     ifb_engine::memory_reserve(
         ptr_memory,
-        ref_config.memory_minimum_gb,
-        ref_config.memory_commit_count_max);
+        config_ptr->memory_minimum_gb,
+        config_ptr->memory_commit_count_max);
 
-    //get the context pointer
-    IFBEngineContext* ptr_engine_context = ifb_engine::globals_get_context_pointer();
-    ifb_macro_assert(ptr_engine_context);
-
-    //initialize the engine core
-    ptr_engine_context->global_handles.core = ifb_engine::core_create(ptr_memory);
-
-    //update state
-    _engine_context->state = IFBEngineState_NotRunning;
-
-    //finally, set the initialization time
-    ptr_engine_context->time_initialized = ifb_engine::platform_system_time_ms();
+    //create the managers
+    ifb_engine::context_initialize_managers();
 
     //we're done
     return(result);
@@ -130,3 +126,23 @@ ifb_engine::engine_frame_alloc(
 /**********************************************************************************/
 /* INTERNAL                                                                       */
 /**********************************************************************************/
+
+inline IFBEngineMemory* 
+ifb_engine::context_get_engine_memory(
+    ifb_void) {
+
+    IFBEngineContext* ptr_context
+
+}
+
+inline IFBEngineCore*   
+ifb_engine::context_get_engine_core(
+    ifb_void) {
+
+}
+
+inline IFBUserInput*    
+ifb_engine::context_get_user_input(
+    ifb_void) {
+
+}
