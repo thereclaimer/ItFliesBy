@@ -68,13 +68,13 @@ ifb_engine::context_initialize_memory(
 
 inline const ifb_ptr 
 ifb_engine::context_get_pointer(
-    const ifb_u32 reservation_offset) {
+    const IFBHND& handle) {
 
     //get memory
     IFBEngineMemory* engine_memory_ptr = ifb_engine::context_handles_get_memory();
 
     //get the pointer
-    const ifb_ptr pointer = ifb_engine::memory_get_pointer(engine_memory_ptr,reservation_offset);
+    const ifb_ptr pointer = ifb_engine::memory_get_pointer(engine_memory_ptr,handle);
     
     //we're done
     return(pointer);

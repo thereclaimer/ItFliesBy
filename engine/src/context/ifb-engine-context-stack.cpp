@@ -16,7 +16,7 @@ ifb_engine::context_stack_push(
 
     ref_handle.offset = ref_stack.position;
 
-    ref_global_stack.position = new_position;
+    ref_stack.position = new_position;
 }
 
 inline const ifb_void
@@ -36,7 +36,7 @@ inline const ifb_ptr
 ifb_engine::context_stack_get_pointer(
     const IFBHND& ref_handle) {
 
-    IFBEngineContextStack& stack_ref ifb_engine::context_get_stack();
+    IFBEngineContextStack& stack_ref = ifb_engine::context_get_stack();
 
     const ifb_ptr stack_ptr = &stack_ref.memory[ref_handle.offset];
 

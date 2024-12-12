@@ -1,5 +1,5 @@
-#ifndef IFB_COMMON_DEPENDENCIES_HPP
-#define IFB_COMMON_DEPENDENCIES_HPP
+#ifndef IFB_DEPENDENCIES_HPP
+#define IFB_DEPENDENCIES_HPP
 
 #include <meow_hash_x64_aesni.h>
 
@@ -11,4 +11,4 @@
 #include <GL/gl.h>
 #include <GL/glext.h>
 
-#endif //IFB_COMMON_DEPENDENCIES_HPP
+#endif //IFB_DEPENDENCIES_HPP

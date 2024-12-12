@@ -1,9 +1,9 @@
-#ifndef IFB_COMMON_USER_INPUT_HPP
-#define IFB_COMMON_USER_INPUT_HPP
+#ifndef IFB_USER_INPUT_HPP
+#define IFB_USER_INPUT_HPP
 
-#include "ifb-common-types.hpp"
-#include "ifb-common-scopes.hpp"
-#include "ifb-common-macros.hpp"
+#include "ifb-types.hpp"
+#include "ifb-scopes.hpp"
+#include "ifb-macros.hpp"
 
 /**********************************************************************************/
 /* KEYBOARD                                                                       */
@@ -306,4 +306,4 @@ namespace ifb_common {
     }
 };
 
-#endif //IFB_COMMON_USER_INPUT_HPP
+#endif //IFB_USER_INPUT_HPP

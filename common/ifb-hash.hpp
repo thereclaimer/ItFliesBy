@@ -1,20 +1,10 @@
-#ifndef IFB_COMMON_HASH_HPP
-#define IFB_COMMON_HASH_HPP
+#ifndef IFB_HASH_HPP
+#define IFB_HASH_HPP
 
 #include <string.h>
 
-#include "ifb-common-types.hpp"
-#include "ifb-common-scopes.hpp"
-
-union IFBHash {
-    struct {
-        ifb_u32 h1;
-        ifb_u32 h2;
-        ifb_u32 h3;
-        ifb_u32 h4;
-    };
-    ifb_u32 h[4];
-};
+#include "ifb-types.hpp"
+#include "ifb-scopes.hpp"
 
 namespace ifb_common {
 
@@ -175,4 +165,4 @@ namespace ifb_common {
 };
 
 
-#endif //IFB_COMMON_HASH_HPP
+#endif //IFB_HASH_HPP

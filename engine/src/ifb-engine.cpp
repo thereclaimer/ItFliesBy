@@ -10,7 +10,7 @@
 //context
 #include "ifb-engine-context-handles.cpp"
 #include "ifb-engine-context-stack.cpp"
-#include "ifb-engine-context-context.cpp"
+#include "ifb-engine-context.cpp"
 
 //managers
 #include "ifb-engine-manager-arena.cpp"

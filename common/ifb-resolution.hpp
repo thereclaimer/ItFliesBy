@@ -1,8 +1,8 @@
-#ifndef IFB_COMMON_RESOLUTION_HPP
-#define IFB_COMMON_RESOLUTION_HPP
+#ifndef IFB_RESOLUTION_HPP
+#define IFB_RESOLUTION_HPP
 
-#include "ifb-common-types.hpp"
-#include "ifb-common-aspect-ratio.hpp"
+#include "ifb-types.hpp"
+#include "ifb-aspect-ratio.hpp"
 
 enum IFBResolutionType_ {
 	IFBResolutionType_16_x_9_HD_720p_1280_x_720             = 0,
@@ -132,4 +132,4 @@ namespace ifb_common {
     }
 };
 
-#endif //IFB_COMMON_RESOLUTION_HPP
+#endif //IFB_RESOLUTION_HPP

@@ -1,9 +1,7 @@
 #ifndef IFB_ENGINE_HPP
 #define IFB_ENGINE_HPP
 
-#include <ifb-common.hpp>
-
-#include "ifb-engine-font-ui.hpp"
+#include <ifb.hpp>
 
 /**********************************************************************************/
 /* CONFIG                                                                         */
@@ -69,10 +67,10 @@ namespace ifb_engine {
 
 namespace ifb_engine {
 
-    ifb_api const IFBIDTag tag_reserve  (const ifb_cstr tag_cstr); 
-    ifb_api const ifb_b8   tag_release  (const IFBIDTag tag_id);
-    ifb_api const ifb_cstr tag_get_cstr (const IFBIDTag tag_id);
-    ifb_api const IFBHash  tag_get_hash (const IFBIDTag tag_id);
+    ifb_api const ifb_b8   tag_reserve  (const ifb_cstr  tag_cstr, IFBIDTag& tag_id_ref); 
+    ifb_api const ifb_b8   tag_release  (const IFBIDTag& tag_id_ref);
+    ifb_api const ifb_cstr tag_get_cstr (const IFBIDTag& tag_id_ref);
+    ifb_api const IFBHash  tag_get_hash (const IFBIDTag& tag_id_ref);
 };
 
 /**********************************************************************************/
@@ -81,16 +79,17 @@ namespace ifb_engine {
 
 namespace ifb_engine {
 
-    ifb_api const IFBIDArena
+    ifb_api const ifb_b8
     arena_commit(
-        const ifb_cstr arena_tag_cstr,
-        const ifb_u32  arena_size_minimum);    
+        const ifb_cstr    arena_tag_cstr,
+        const ifb_u32     arena_size_minimum,
+              IFBIDArena& arena_id_ref);    
     
-    ifb_api const ifb_u32    arena_page_start    (const IFBIDArena arena_id);
-    ifb_api const ifb_u32    arena_page_count    (const IFBIDArena arena_id);
-    ifb_api const ifb_cstr   arena_tag_cstr      (const IFBIDArena arena_id);
-    ifb_api const ifb_memory arena_memory_start  (const IFBIDArena arena_id);
-    ifb_api const ifb_memory arena_memory_offset (const IFBIDArena arena_id, const ifb_u32 offset);
+    ifb_api const ifb_u32    arena_page_start    (const IFBIDArena& arena_id_ref);
+    ifb_api const ifb_u32    arena_page_count    (const IFBIDArena& arena_id_ref);
+    ifb_api const ifb_cstr   arena_tag_cstr      (const IFBIDArena& arena_id_ref);
+    ifb_api const ifb_memory arena_memory_start  (const IFBIDArena& arena_id_ref);
+    ifb_api const ifb_memory arena_memory_offset (const IFBIDArena& arena_id_ref, const ifb_u32 offset);
 };
 
 /**********************************************************************************/
@@ -119,7 +118,7 @@ namespace ifb_engine {
 
 namespace ifb_engine {
 
-    const const IFBHNDBlockAllocator 
+    const IFBHNDBlockAllocator 
     block_allocator_commit(
         const ifb_cstr block_allocator_tag_cstr,
         const ifb_u32  block_size,

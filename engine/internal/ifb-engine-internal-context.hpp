@@ -2,12 +2,8 @@
 #define IFB_ENGINE_INTERNAL_CONTEXT_HPP
 
 #include "ifb-engine.hpp"
-#include "ifb-engine-internal-core.hpp"
-#include "ifb-engine-internal-asset.hpp"
 #include "ifb-engine-internal-platform.hpp"
-#include "ifb-engine-internal-tools.hpp"
 #include "ifb-engine-internal-allocators.hpp"
-#include "ifb-engine-internal-global.hpp"
 
 /**********************************************************************************/
 /* CONTEXT STACK                                                                  */
@@ -20,7 +16,7 @@
 struct IFBEngineContextStack {
     ifb_u32  size;
     ifb_u32  position;
-    ifb_byte memory[IFB_ENGINE_CONFIG_GLOBAL_STACK_SIZE];
+    ifb_byte memory[IFB_ENGINE_CONFIG_CONTEXT_STACK_SIZE];
 };
 
 namespace ifb_engine {

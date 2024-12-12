@@ -1,7 +1,10 @@
 #ifndef IFB_ENGINE_FONT_UI_HPP
 #define IFB_ENGINE_FONT_UI_HPP
-                             
-static const char IFB_ENGINE_FONT_UI_SEGOEUI[883035+1] =
+
+#include "ifb-types.hpp"
+#include "ifb-scopes.hpp"
+
+ifb_global const ifb_char IFB_FONT_UI_SEGOEUI[883035+1] =
     "7])#######dSZ>U'/###I),##iK$iL6s[D$;/fd=)JQQ`&jll&-0$##sp>t8j_<3Zb.ql&Fj)##lW-h<$bq`Zq0ql&Mw>>#(r-e=4brjE@+SM'as*##*sq*>SQtt0Zt(##b6+##Yk=:9"
     "(m&)*7@.Q'[L*XCSipe=FoEWBG/(##j([w't%_d>.K'&IxAS9#Z2i8#mNK+C@f8P3)FH7#&d.:#2Wq+C[1riL`fE:#+?D,#aS0jC],uU:Rt).#TTW$Mtk]5Di##/#993jLi6c^%3=HkE"
     "'uVHW?AaY#8vmo%8p*:C7a56R)P)##A5D>#+Y>UC2cv<#,N(##^WGwKf'TqL#/WO'wUaw'Dbbw'9.%KD1TjAAOqa'#8G+.#c?iQE6Jk_e_UA:#-ru=#hijkE]r*'@k469#1$_sL]=m3F"

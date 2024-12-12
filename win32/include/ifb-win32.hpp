@@ -3,7 +3,7 @@
 
 #include <Windows.h>
 #include <ifb-engine.hpp>
-#include <ifb-common.hpp>
+#include <ifb.hpp>
 
 /**********************************************************************************/
 /* SYSTEM                                                                         */

@@ -1,7 +1,7 @@
 #ifndef IFB_COLOR_HPP
 #define IFB_COLOR_HPP
 
-#include "ifb-common-types.hpp" 
+#include "ifb-types.hpp" 
 
 /**********************************************************************************/
 /* COLOR 32                                                                       */

@@ -3,7 +3,6 @@
 
 #include "ifb-engine.hpp"
 #include "ifb-engine-internal-memory.hpp"
-#include "ifb-engine-internal-global.hpp"
 
 
 #define IFB_ENGINE_PLATFORM_WINDOW_TITLE "It Flies By"
@@ -20,24 +19,6 @@ struct IFBEnginePlatformMonitorInfo {
     IFBDimensions dimensions;
     ifb_u32       refresh_hz;
 }; 
-
-struct IFBEnginePlatform {
-    struct {
-        IFBEngineGlobalHandle system;  // IFBEnginePlatformSystemInfo
-        IFBEngineGlobalHandle memory;  // IFBEnginePlatformMemoryReservation
-        IFBEngineGlobalHandle window;  // IFBEnginePlatformWindow
-        IFBEngineGlobalHandle monitor; // IFBEnginePlatformMonitorInfo
-    } global_handles;
-};
-
-namespace ifb_engine {
-
-    inline IFBEnginePlatform*                  platform_global_pointer              (const ifb_handle handle) { return(ifb_engine_memory_global_pointer_type(handle,IFBEnginePlatform));            }
-    inline IFBEnginePlatformSystemInfo*        platform_global_pointer_system_info  (const ifb_handle handle) { return(ifb_engine_memory_global_pointer_type(handle,IFBEnginePlatformSystemInfo));  }
-    inline IFBEnginePlatformMemoryReservation* platform_global_pointer_memory       (const ifb_handle handle) { return(ifb_engine_memory_global_pointer_type(handle,IFBEnginePlatformMemory));      }
-    inline IFBEnginePlatformWindow*            platform_global_pointer_window       (const ifb_handle handle) { return(ifb_engine_memory_global_pointer_type(handle,IFBEnginePlatformWindow));      }
-    inline IFBEnginePlatformMonitorInfo*       platform_global_pointer_monitor_info (const ifb_handle handle) { return(ifb_engine_memory_global_pointer_type(handle,IFBEnginePlatformMonitorInfo)); }
-};
 
 //api
 namespace ifb_engine {
@@ -70,7 +51,7 @@ namespace ifb_engine {
 
 namespace ifb_engine {
 
-    const ifb_handle platform_initialize(IFBPlatformApi& platform_api_ref);
+    ifb_void platform_initialize(IFBPlatformApi& platform_api_ref);
 };
 
 #endif //IFB_ENGINE_INTERNAL_PLATFORM_HPP

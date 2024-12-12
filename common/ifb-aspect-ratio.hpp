@@ -1,7 +1,7 @@
-#ifndef IFB_COMMON_ASPECT_RATIO_HPP
-#define IFB_COMMON_ASPECT_RATIO_HPP
+#ifndef IFB_ASPECT_RATIO_HPP
+#define IFB_ASPECT_RATIO_HPP
 
-#include "ifb-common-types.hpp"
+#include "ifb-types.hpp"
 
 enum IFBAspectRatioType_ {
     IFBAspectRatioType_16_x_9  = 0,
@@ -67,4 +67,4 @@ namespace ifb_common {
 
 
 
-#endif //IFB_COMMON_ASPECT_RATIO_HPP
+#endif //IFB_ASPECT_RATIO_HPP

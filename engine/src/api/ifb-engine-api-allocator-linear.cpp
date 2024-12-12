@@ -2,11 +2,9 @@
 
 #include "ifb-engine.hpp"
 
-#include "ifb-engine-allocators.hpp"
 #include "ifb-engine-internal-allocators.hpp"
-#include "ifb-engine-internal-global.hpp"
-#include "ifb-engine-internal-core.hpp"
 #include "ifb-engine-internal-context.hpp"
+#include "ifb-engine-internal-core.hpp"
 
 inline IFBLinearAllocator* 
 ifb_engine::linear_allocator_pointer(
@@ -27,26 +25,22 @@ ifb_engine::linear_allocator_commit(
     ifb_engine_context_push_struct(linear_allocator_handle,IFBLinearAllocator);
 
     //get the pointer
-    IFBLinearAllocator* ptr_linear_allocator = ifb_engine::linear_allocator_pointer(linear_allocator_handle); 
-    ifb_macro_assert(ptr_linear_allocator);
-
+    IFBLinearAllocator* linear_allocator_ptr = ifb_engine::linear_allocator_pointer(linear_allocator_handle); 
+    ifb_macro_assert(linear_allocator_ptr);
+    
     //commit an arena
-    IFBEngineArenaManager* arena_manager_ptr = ifb_engine::context_handles_get_arena_manager();
-    const IFBIDArena arena_id = ifb_engine::arena_manager_commit_arena(
-        arena_manager_ptr,
+    IFBArena linear_allocator_arena;
+    ifb_engine::core_arena_commit(
+        linear_allocator_tag_cstr,
         linear_allocator_size_minimum,
-        linear_allocator_tag_cstr);
-
-    //get the arena info
-    const ifb_u32 arena_size  = ifb_engine::arena_manager_get_arena_size (arena_manager_ptr, arena_id);
-    const ifb_u32 arena_start = ifb_engine::arena_manager_get_arena_start(arena_manager_ptr, arena_id);
+        &linear_allocator_arena);
 
     //initialize the structure
-    ptr_linear_allocator->arena_id   = arena_id;
-    ptr_linear_allocator->start      = arena_start;
-    ptr_linear_allocator->size       = arena_size;
-    ptr_linear_allocator->position   = 0;
-    ptr_linear_allocator->save_point = 0;
+    linear_allocator_ptr->arena_id   = linear_allocator_arena.id;
+    linear_allocator_ptr->start      = linear_allocator_arena.start;
+    linear_allocator_ptr->size       = linear_allocator_arena.size;
+    linear_allocator_ptr->position   = 0;
+    linear_allocator_ptr->save_point = 0;
 
     //we're done
     return(linear_allocator_handle);
@@ -61,8 +55,8 @@ ifb_engine::linear_allocator_reserve(
     IFBLinearAllocator* ptr_linear_allocator = ifb_engine::linear_allocator_pointer(linear_allocator_handle); 
 
     //make sure we can fit the reservation
-    ref_position = ptr_linear_allocator->position;
-    const ifb_u32 new_position = ref_position + size;
+    const ifb_u32 position     = ptr_linear_allocator->position;
+    const ifb_u32 new_position = position + size;
     if (new_position > ptr_linear_allocator->size) {
         return(0);
     }
@@ -82,7 +76,7 @@ ifb_engine::linear_allocator_get_pointer(
     const IFBHNDLinearAllocator linear_allocator_handle) {
  
     //get references
-    IFBEngineMemory*    ptr_memory           = ifb_engine::context_get_core_pointer_memory();
+    IFBEngineMemory*    ptr_memory           = ifb_engine::context_handles_get_memory();
     IFBLinearAllocator* ptr_linear_allocator = ifb_engine::linear_allocator_pointer(linear_allocator_handle); 
 
     //calculate the offset
@@ -97,7 +91,7 @@ ifb_engine::linear_allocator_get_pointer(
     return(pointer);
 }
 
-inline const ifb_b8
+inline const ifb_u32
 ifb_engine::linear_allocator_release(
     const IFBHNDLinearAllocator linear_allocator_handle,
     const ifb_u32               size) {

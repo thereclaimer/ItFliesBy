@@ -1,7 +1,7 @@
-#ifndef IFB_COMMON_STACK_HPP
-#define IFB_COMMON_STACK_HPP
+#ifndef IFB_STACK_HPP
+#define IFB_STACK_HPP
 
-#include "ifb-common-types.hpp"
+#include "ifb-types.hpp"
 
 struct IFBStack {
     ifb_u32 id;
@@ -61,4 +61,4 @@ ifb_common::stack_pointer(
     return(stack_pointer);
 }
 
-#endif //IFB_COMMON_STACK_HPP
+#endif //IFB_STACK_HPP

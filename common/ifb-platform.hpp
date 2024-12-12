@@ -1,9 +1,8 @@
-#ifndef IFB_COMMON_PLATFORM_HPP
-#define IFB_COMMON_PLATFORM_HPP
+#ifndef IFB_PLATFORM_HPP
+#define IFB_PLATFORM_HPP
 
-#include "ifb-common-types.hpp"
-#include "ifb-common-scopes.hpp"
-#include "ifb-common-arena.hpp"
+#include "ifb-types.hpp"
+#include "ifb-scopes.hpp"
 
 /**********************************************************************************/
 /* SYSTEM                                                                         */
@@ -188,18 +187,6 @@ struct IFBPlatformFileDialogApi {
     funcptr_ifb_platform_file_dialog_select_file select_file;
 };
 
-
-/**********************************************************************************/
-/* PLATFORM                                                                       */
-/**********************************************************************************/
-
-struct IFBPlatform {
-    IFBPlatformSystem  system;
-    IFBPlatformMemory  memory;
-    IFBPlatformWindow  window;
-    IFBPlatformMonitor monitor;
-};
-
 /**********************************************************************************/
 /* PLATFORM API                                                                   */
 /**********************************************************************************/
@@ -209,71 +196,6 @@ struct IFBPlatformApi {
     IFBPlatformMemoryApi  memory;
     IFBPlatformWindowApi  window;
     IFBPlatformMonitorApi monitor;
-};
-
-namespace ifb_platform {
-
-    //system
-
-
-    //file
-    // ifb_global funcptr_ifb_platform_file_open_read_only     file_open_read_only;
-    // ifb_global funcptr_ifb_platform_file_open_read_write    file_open_read_write;
-    // ifb_global funcptr_ifb_platform_file_close              file_close;
-    // ifb_global funcptr_ifb_platform_file_size               file_size;
-    // ifb_global funcptr_ifb_platform_file_read               file_read;
-    // ifb_global funcptr_ifb_platform_file_write              file_write;
-
-    // //file dialog
-    // ifb_global funcptr_ifb_platform_file_dialog_select_file file_dialog_select_file;
-
-    inline const ifb_b8
-    platform_api_validate(
-        IFBPlatformApi& platform_api_ref) {
-
-        //set the function pointers
-        ifb_platform::window_create           = platform_api_ref.window.create;
-        ifb_platform::window_destroy          = platform_api_ref.window.destroy;
-        ifb_platform::window_frame_start      = platform_api_ref.window.frame_start;
-        ifb_platform::window_frame_render     = platform_api_ref.window.frame_render;
-        ifb_platform::window_show             = platform_api_ref.window.show;
-        ifb_platform::window_opengl_init      = platform_api_ref.window.opengl_init;
-        ifb_platform::window_imgui_init       = platform_api_ref.window.imgui_init;
-        ifb_platform::monitor_info            = platform_api_ref.monitor.monitor_info;
-        ifb_platform::memory_reserve          = platform_api_ref.memory.reserve;
-        ifb_platform::memory_release          = platform_api_ref.memory.release;
-        ifb_platform::memory_commit           = platform_api_ref.memory.commit;
-        // ifb_platform::file_open_read_only     = platform_api_ref.file.open_read_only;
-        // ifb_platform::file_open_read_write    = platform_api_ref.file.open_read_write;
-        // ifb_platform::file_close              = platform_api_ref.file.close;
-        // ifb_platform::file_size               = platform_api_ref.file.size;
-        // ifb_platform::file_read               = platform_api_ref.file.read;
-        // ifb_platform::file_write              = platform_api_ref.file.write;
-        // ifb_platform::file_dialog_select_file = platform_api_ref.file_dialog.select_file;
-
-        //sanity check
-        ifb_b8 result = true;
-        result &= ifb_platform::memory_pages_commit;
-        result &= ifb_platform::memory_pages_decommit;
-        result &= ifb_platform::window_create;
-        result &= ifb_platform::window_destroy;
-        result &= ifb_platform::window_frame_start;
-        result &= ifb_platform::window_frame_render;
-        result &= ifb_platform::window_show;
-        result &= ifb_platform::window_opengl_init;
-        result &= ifb_platform::window_imgui_init;
-        result &= ifb_platform::monitor_info;
-        // result &= ifb_platform::file_open_read_only;
-        // result &= ifb_platform::file_open_read_write;
-        // result &= ifb_platform::file_close;
-        // result &= ifb_platform::file_size;
-        // result &= ifb_platform::file_read;
-        // result &= ifb_platform::file_write;
-        // result &= ifb_platform::file_dialog_select_file;
-
-        //we're done
-        return(result);
-    }
 };
 
 #endif //IFB_ENGINE_PLATFORM_HPP

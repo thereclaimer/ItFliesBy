@@ -14,7 +14,7 @@ ifb_engine::context_create(
     ifb_engine::context_handles_create_all();
 
     //get config values
-    IFBEngineConfig* ptr_config = ifb_engine::context_handles_get_config();
+    IFBEngineConfig* config_ptr = ifb_engine::context_handles_get_config();
     ifb_engine::config_get_values(config_ptr);
 
     //initialize the context
@@ -22,5 +22,5 @@ ifb_engine::context_create(
     ifb_engine::context_initialize_memory  (config_ptr);
 
     //we're done
-    return(result);
+    return(true);
 }

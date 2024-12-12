@@ -27,12 +27,12 @@ namespace ifb_engine {
         const ifb_u32              tag_c_str_length,
         const ifb_u32              tag_count_max);
 
-    const IFBTagId  tag_manager_reserve_tag             (IFBEngineTagManager* tag_manager_ptr, const ifb_cstr tag_c_str);
-          ifb_void  tag_manager_release_tag             (IFBEngineTagManager* tag_manager_ptr, const IFBTagId tag_id);
-    const ifb_cstr  tag_manager_get_tag_c_str           (IFBEngineTagManager* tag_manager_ptr, const IFBTagId tag_id);
-    const IFBHash   tag_manager_get_hash                (IFBEngineTagManager* tag_manager_ptr, const IFBTagId tag_id);
-          ifb_char* tag_manager_get_pointer_char_buffer (IFBEngineTagManager* tag_manager_ptr);
-          IFBHash*  tag_manager_get_pointer_hash_array  (IFBEngineTagManager* tag_manager_ptr);
+    const IFBIDTag  tag_manager_reserve_tag             (const IFBEngineTagManager* tag_manager_ptr, const ifb_cstr tag_c_str);
+          ifb_void  tag_manager_release_tag             (const IFBEngineTagManager* tag_manager_ptr, const IFBIDTag& tag_id_ref);
+    const ifb_cstr  tag_manager_get_tag_c_str           (const IFBEngineTagManager* tag_manager_ptr, const IFBIDTag& tag_id_ref);
+    const IFBHash   tag_manager_get_hash                (const IFBEngineTagManager* tag_manager_ptr, const IFBIDTag& tag_id_ref);
+          ifb_char* tag_manager_get_pointer_char_buffer (const IFBEngineTagManager* tag_manager_ptr, const IFBEngineMemory* memory_ptr);
+          IFBHash*  tag_manager_get_pointer_hash_array  (const IFBEngineTagManager* tag_manager_ptr, const IFBEngineMemory* memory_ptr);
 };
 
 /**********************************************************************************/
@@ -46,7 +46,7 @@ struct IFBEngineArenaManager {
     ifb_u32     arena_count_committed;
     struct {
         ifb_address start;
-        ifb_u32     offset_commit_id_array; // IFBCommitId
+        ifb_u32     offset_commit_id_array; // IFBIDCommit
         ifb_u32     offset_tag_id_array;    // IFBTagId
         IFBIDCommit id;
     } commit;
@@ -66,15 +66,15 @@ namespace ifb_engine {
         const IFBIDTag               arena_tag_id,
         const ifb_u32                arena_commit_size_minimum);
 
-    const ifb_u32      arena_manager_align_size_to_arena         (IFBEngineArenaManager* arena_manager_ptr, const ifb_u32 size);
-    const IFBIDCommit  arena_manager_get_arena_commit_id         (IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena arena_id);
-    const IFBIDTag     arena_manager_get_arena_tag_id            (IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena arena_id);
-    const ifb_u32      arena_manager_get_arena_size              (IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena arena_id);
-    const ifb_u32      arena_manager_get_arena_start             (IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena arena_id);
-    const ifb_u32      arena_manager_get_arena_pointer           (IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena arena_id);
-    const ifb_u32      arena_manager_get_arena_pointer           (IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena arena_id, const ifb_u32 offset);
-          IFBIDCommit* arena_manager_get_pointer_commit_id_array (IFBEngineArenaManager* arena_manager_ptr);
-          IFBIDTag*    arena_manager_get_pointer_tag_id_array    (IFBEngineArenaManager* arena_manager_ptr);
+    const ifb_u32      arena_manager_align_size_to_arena         (const IFBEngineArenaManager* arena_manager_ptr, const ifb_u32 size);
+    const IFBIDCommit  arena_manager_get_arena_commit_id         (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena arena_id);
+    const IFBIDTag     arena_manager_get_arena_tag_id            (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena arena_id);
+    const ifb_u32      arena_manager_get_arena_size              (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena arena_id);
+    const ifb_u32      arena_manager_get_arena_start             (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena arena_id);
+    const ifb_ptr      arena_manager_get_arena_pointer           (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena arena_id);
+    const ifb_ptr      arena_manager_get_arena_pointer           (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena arena_id, const ifb_u32 offset);
+          IFBIDCommit* arena_manager_get_pointer_commit_id_array (const IFBEngineArenaManager* arena_manager_ptr, const IFBEngineMemory* memory_ptr);
+          IFBIDTag*    arena_manager_get_pointer_tag_id_array    (const IFBEngineArenaManager* arena_manager_ptr, const IFBEngineMemory* memory_ptr);
 };
 
 #endif //IFB_ENGINE_INTERNAL_MANAGERS_HPP

@@ -1,12 +1,9 @@
 #ifndef IFB_MATH_TYPES_HPP
 #define IFB_MATH_TYPES_HPP
 
-#include <ifb-common.hpp>
+#include <ifb.hpp>
 
-typedef struct IFBMathVec2;
-typedef struct IFBMathMat3;
-
-typedef IFBMathVec2 ifb_vec_2_t;
-typedef IFBMathMat3 ifb_mat_3_t;
-
+struct IFBMathVec2;
+struct IFBMathMat3;
+5 45bedxcves4r6gvdxe454fdcx
 #endif //IFB_MATH_TYPES_HPP
