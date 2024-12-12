@@ -12,6 +12,9 @@
 #include "ifb-engine-context-stack.cpp"
 #include "ifb-engine-context.cpp"
 
+//core
+#include "ifb-engine-core-arena.cpp"
+
 //managers
 #include "ifb-engine-manager-arena.cpp"
 #include "ifb-engine-manager-tag.cpp"
@@ -21,3 +24,4 @@
 
 //platform
 #include "ifb-engine-platform.cpp"
+

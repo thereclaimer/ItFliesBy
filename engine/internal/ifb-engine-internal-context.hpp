@@ -50,11 +50,11 @@ namespace ifb_engine {
 
     ifb_void context_handles_create_all(ifb_void);
 
-    IFBUserInput*          context_handles_get_user_input    (ifb_void);
-    IFBEngineMemory*       context_handles_get_memory        (ifb_void);
-    IFBEngineTagManager*   context_handles_get_tag_manager   (ifb_void);
-    IFBEngineArenaManager* context_handles_get_arena_manager (ifb_void);
-    IFBEngineConfig*       context_handles_get_config        (ifb_void);
+    IFBUserInput*          context_get_user_input    (ifb_void);
+    IFBEngineMemory*       context_get_memory        (ifb_void);
+    IFBEngineTagManager*   context_get_tag_manager   (ifb_void);
+    IFBEngineArenaManager* context_get_arena_manager (ifb_void);
+    IFBEngineConfig*       context_get_config        (ifb_void);
 };
 
 /**********************************************************************************/

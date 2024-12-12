@@ -7,6 +7,7 @@
 inline ifb_void 
 ifb_engine::arena_manager_initialize(
           IFBEngineArenaManager* arena_manager_ptr,
+          IFBEngineMemory*       memory_ptr,
     const ifb_u32                arena_minimum_size,
     const ifb_u32                arena_count_max) {
 
@@ -16,26 +17,24 @@ ifb_engine::arena_manager_initialize(
     const ifb_u32 commit_size          = size_commit_id_array + size_tag_id_array;
 
     //do the commit
-    IFBEngineMemory*  engine_memory_ptr          = ifb_engine::context_handles_get_memory();
-    const ifb_u32     arena_minimum_size_aligned = ifb_engine::memory_align_size_to_page(engine_memory_ptr,arena_minimum_size);
-    const ifb_u32     arena_minimum_pages        = arena_minimum_size_aligned / engine_memory_ptr->system_page_size; 
-    const IFBIDCommit commit_id                  = ifb_engine::memory_commit(engine_memory_ptr,commit_size);
-    const ifb_address commit_start               = ifb_engine::memory_get_commit_address(engine_memory_ptr,commit_id); 
+    const ifb_u32     arena_minimum_size_aligned = ifb_engine::memory_align_size_to_page(memory_ptr,arena_minimum_size);
+    const ifb_u32     arena_minimum_pages        = arena_minimum_size_aligned / memory_ptr->system_page_size; 
+    const IFBIDCommit commit_id                  = ifb_engine::memory_commit(memory_ptr,commit_size);
 
     //calculate the commit sizes for the arrays
     arena_manager_ptr->arena_minimum_size            = arena_minimum_size_aligned;
     arena_manager_ptr->arena_minimum_pages           = arena_minimum_pages;
     arena_manager_ptr->arena_count_max               = arena_count_max;
     arena_manager_ptr->arena_count_committed         = 0;
-    arena_manager_ptr->commit.id                     = commit_id;
-    arena_manager_ptr->commit.offset_commit_id_array = 0;
-    arena_manager_ptr->commit.offset_tag_id_array    = size_commit_id_array;
-    arena_manager_ptr->commit.start                  = commit_start;
+    arena_manager_ptr->commit_id                     = commit_id;
+    ifb_engine::memory_get_handle(memory_ptr,commit_id, 0,                    arena_manager_ptr->handles.commit_id_array);
+    ifb_engine::memory_get_handle(memory_ptr,commit_id, size_commit_id_array, arena_manager_ptr->handles.tag_id_array);
 }
 
 inline const IFBIDArena 
 ifb_engine::arena_manager_commit_arena(
           IFBEngineArenaManager* arena_manager_ptr,
+          IFBEngineMemory*       memory_ptr,
     const IFBIDTag               arena_tag_id,
     const ifb_u32                arena_commit_size_minimum) {
 
@@ -47,7 +46,6 @@ ifb_engine::arena_manager_commit_arena(
     ++arena_manager_ptr->arena_count_committed;
 
     //do the commit
-    IFBEngineMemory* memory_ptr       = ifb_engine::context_handles_get_memory();
     const IFBIDCommit arena_commit_id = ifb_engine::memory_commit(memory_ptr,arena_commit_size_minimum);
 
     //get the arrays
@@ -83,15 +81,13 @@ ifb_engine::arena_manager_align_size_to_arena(
 inline const IFBIDCommit
 ifb_engine::arena_manager_get_arena_commit_id(
     const IFBEngineArenaManager* arena_manager_ptr, 
-    const IFBIDArena             arena_id) {
-
-    //get the memory
-    const IFBEngineMemory* engine_memory_ptr = ifb_engine::context_handles_get_memory();
+    const IFBEngineMemory*       memory_ptr,
+    const IFBIDArena&            arena_id) {
 
     //get the commit id array
     const IFBIDCommit* commit_id_array_ptr = ifb_engine::arena_manager_get_pointer_commit_id_array(
         arena_manager_ptr,
-        engine_memory_ptr);
+        memory_ptr);
 
     //get the commit id
     const IFBIDCommit commit_id = commit_id_array_ptr[arena_id.index];
@@ -102,16 +98,14 @@ ifb_engine::arena_manager_get_arena_commit_id(
 
 inline const IFBIDTag
 ifb_engine::arena_manager_get_arena_tag_id(
-          const IFBEngineArenaManager* arena_manager_ptr, 
-    const IFBIDArena             arena_id) {
-
-    //get the memory
-    const IFBEngineMemory* engine_memory_ptr = ifb_engine::context_handles_get_memory();
+    const IFBEngineArenaManager* arena_manager_ptr, 
+    const IFBEngineMemory*       memory_ptr,
+    const IFBIDArena&            arena_id) {
 
     //get the tag id array
     const IFBIDTag* tag_id_array_ptr = ifb_engine::arena_manager_get_pointer_tag_id_array(
         arena_manager_ptr,
-        engine_memory_ptr);
+        memory_ptr);
 
     //get the tag id
     const IFBIDTag tag_id = tag_id_array_ptr[arena_id.index];
@@ -122,20 +116,19 @@ ifb_engine::arena_manager_get_arena_tag_id(
 
 inline const ifb_u32
 ifb_engine::arena_manager_get_arena_size(
-          const IFBEngineArenaManager* arena_manager_ptr, 
-    const IFBIDArena             arena_id) {
-
-    //get the memory
-    const IFBEngineMemory* engine_memory_ptr = ifb_engine::context_handles_get_memory();
+    const IFBEngineArenaManager* arena_manager_ptr, 
+    const IFBEngineMemory*       memory_ptr,
+    const IFBIDArena&            arena_id) {
 
     //get the commit id
     const IFBIDCommit arena_commit_id = ifb_engine::arena_manager_get_arena_commit_id(
         arena_manager_ptr,
+        memory_ptr,
         arena_id);
 
     //get the commit size
     const ifb_u32 arena_commit_size = ifb_engine::memory_get_commit_size(
-        engine_memory_ptr,
+        memory_ptr,
         arena_commit_id);
 
     //we're done
@@ -145,19 +138,18 @@ ifb_engine::arena_manager_get_arena_size(
 inline const ifb_ptr
 ifb_engine::arena_manager_get_arena_pointer(
     const IFBEngineArenaManager* arena_manager_ptr, 
-    const IFBIDArena             arena_id) {
+    const IFBEngineMemory*       memory_ptr,
+    const IFBIDArena&            arena_id) {
 
     //get the commit id
     const IFBIDCommit arena_commit_id = ifb_engine::arena_manager_get_arena_commit_id(
         arena_manager_ptr,
+        memory_ptr,
         arena_id);
-
-    //get the memory
-    const IFBEngineMemory* engine_memory_ptr = ifb_engine::context_handles_get_memory();
 
     //get the commit pointer
     const ifb_ptr arena_ptr = ifb_engine::memory_get_commit_pointer(
-        engine_memory_ptr,
+        memory_ptr,
         arena_commit_id);
 
     //we're done
@@ -167,20 +159,19 @@ ifb_engine::arena_manager_get_arena_pointer(
 inline const ifb_ptr
 ifb_engine::arena_manager_get_arena_pointer(
     const IFBEngineArenaManager* arena_manager_ptr, 
-    const IFBIDArena             arena_id,
+    const IFBEngineMemory*       memory_ptr,
+    const IFBIDArena&            arena_id,
     const ifb_u32                offset) {
-
-    //get the memory
-    const IFBEngineMemory* engine_memory_ptr = ifb_engine::context_handles_get_memory();
 
     //get the commit id
     const IFBIDCommit arena_commit_id = ifb_engine::arena_manager_get_arena_commit_id(
         arena_manager_ptr,
+        memory_ptr,
         arena_id);
 
     //get the commit pointer
     const ifb_ptr arena_ptr = ifb_engine::memory_get_commit_pointer(
-        engine_memory_ptr,
+        memory_ptr,
         arena_commit_id,
         offset);
 
@@ -191,12 +182,11 @@ ifb_engine::arena_manager_get_arena_pointer(
 inline IFBIDCommit*
 ifb_engine::arena_manager_get_pointer_commit_id_array(
     const IFBEngineArenaManager* arena_manager_ptr, 
-    const IFBEngineMemory*       engine_memory_ptr) {
+    const IFBEngineMemory*       memory_ptr){
 
-    IFBIDCommit* commit_id_array_ptr = (IFBIDCommit*)ifb_engine::memory_get_commit_pointer(
-        engine_memory_ptr,
-        arena_manager_ptr->commit.id,
-        arena_manager_ptr->commit.offset_commit_id_array);
+    IFBIDCommit* commit_id_array_ptr = (IFBIDCommit*)ifb_engine::memory_get_pointer(
+        memory_ptr,
+        arena_manager_ptr->handles.commit_id_array);
 
     return(commit_id_array_ptr);
 }
@@ -204,12 +194,11 @@ ifb_engine::arena_manager_get_pointer_commit_id_array(
 inline IFBIDTag*
 ifb_engine::arena_manager_get_pointer_tag_id_array(
     const IFBEngineArenaManager* arena_manager_ptr, 
-    const IFBEngineMemory*       engine_memory_ptr) {
+    const IFBEngineMemory*       memory_ptr) {
 
-    IFBIDTag* tag_id_array_ptr = (IFBIDTag*)ifb_engine::memory_get_commit_pointer(
-        engine_memory_ptr,
-        arena_manager_ptr->commit.id,
-        arena_manager_ptr->commit.offset_tag_id_array);
+    IFBIDTag* tag_id_array_ptr = (IFBIDTag*)ifb_engine::memory_get_pointer(
+        memory_ptr,
+        arena_manager_ptr->handles.tag_id_array);
 
     return(tag_id_array_ptr);
 }

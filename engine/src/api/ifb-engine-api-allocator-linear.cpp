@@ -76,7 +76,7 @@ ifb_engine::linear_allocator_get_pointer(
     const IFBHNDLinearAllocator linear_allocator_handle) {
  
     //get references
-    IFBEngineMemory*    ptr_memory           = ifb_engine::context_handles_get_memory();
+    IFBEngineMemory*    ptr_memory           = ifb_engine::context_get_memory();
     IFBLinearAllocator* ptr_linear_allocator = ifb_engine::linear_allocator_pointer(linear_allocator_handle); 
 
     //calculate the offset

@@ -16,13 +16,13 @@
 #define IFB_ENGINE_CONFIG_TAG_COUNT_MAX           1024
 
 struct IFBEngineConfig {
-    ifb_u32 memory_minimum_gb;
-    ifb_u32 memory_commit_count_max;
-    ifb_u32 global_stack_kb;
-    ifb_u32 arena_minimum_kb;
-    ifb_u32 arena_count_max;
-    ifb_u32 tag_c_str_length;
-    ifb_u32 tag_count_max; 
+    ifb_u16 memory_minimum_gb;
+    ifb_u16 memory_commit_count_max;
+    ifb_u16 global_stack_kb;
+    ifb_u16 arena_minimum_kb;
+    ifb_u16 arena_count_max;
+    ifb_u16 tag_c_str_length;
+    ifb_u16 tag_count_max; 
 };
 
 namespace ifb_engine {
@@ -56,9 +56,7 @@ enum IFBEngineState_ {
 typedef ifb_u32 IFBEngineState;
 namespace ifb_engine {
 
-    ifb_api const ifb_b8
-    context_create(
-        IFBPlatformApi& platform_api_ref);
+    ifb_api const ifb_b8 context_create(IFBPlatformApi& platform_api_ref);
 };
 
 /**********************************************************************************/
@@ -79,17 +77,11 @@ namespace ifb_engine {
 
 namespace ifb_engine {
 
-    ifb_api const ifb_b8
-    arena_commit(
-        const ifb_cstr    arena_tag_cstr,
-        const ifb_u32     arena_size_minimum,
-              IFBIDArena& arena_id_ref);    
-    
-    ifb_api const ifb_u32    arena_page_start    (const IFBIDArena& arena_id_ref);
-    ifb_api const ifb_u32    arena_page_count    (const IFBIDArena& arena_id_ref);
-    ifb_api const ifb_cstr   arena_tag_cstr      (const IFBIDArena& arena_id_ref);
-    ifb_api const ifb_memory arena_memory_start  (const IFBIDArena& arena_id_ref);
-    ifb_api const ifb_memory arena_memory_offset (const IFBIDArena& arena_id_ref, const ifb_u32 offset);
+    ifb_api const ifb_u32    arena_get_page_start     (const IFBIDArena& arena_id_ref);
+    ifb_api const ifb_u32    arena_get_page_count     (const IFBIDArena& arena_id_ref);
+    ifb_api const ifb_cstr   arena_get_tag_cstr       (const IFBIDArena& arena_id_ref);
+    ifb_api const ifb_memory arena_get_pointer_start  (const IFBIDArena& arena_id_ref);
+    ifb_api const ifb_memory arena_get_pointer_offset (const IFBIDArena& arena_id_ref, const ifb_u32 offset);
 };
 
 /**********************************************************************************/

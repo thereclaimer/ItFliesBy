@@ -35,19 +35,22 @@ inline ifb_void
 ifb_engine::context_initialize_managers(
     const IFBEngineConfig* config_ptr) {
 
-    //get the manager pointers
-    IFBEngineTagManager*   tag_manager_ptr   = ifb_engine::context_handles_get_tag_manager();
-    IFBEngineArenaManager* arena_manager_ptr = ifb_engine::context_handles_get_arena_manager();
+    //get the memory
+    IFBEngineMemory* memory_ptr = ifb_engine::context_get_memory();
 
     //tag manager    
+    IFBEngineTagManager* tag_manager_ptr = ifb_engine::context_get_tag_manager();
     ifb_engine::tag_manager_initialize(
         tag_manager_ptr,
+        memory_ptr,
         config_ptr->tag_c_str_length,
         config_ptr->tag_count_max);
 
     //arena manager
+    IFBEngineArenaManager* arena_manager_ptr = ifb_engine::context_get_arena_manager();
     ifb_engine::arena_manager_initialize(
         arena_manager_ptr,
+        memory_ptr,
         config_ptr->arena_minimum_kb,
         config_ptr->arena_count_max);
 }
@@ -57,7 +60,7 @@ ifb_engine::context_initialize_memory(
     const IFBEngineConfig* config_ptr) {
 
     //get the memory pointer
-    IFBEngineMemory* ptr_memory = ifb_engine::context_handles_get_memory();
+    IFBEngineMemory* ptr_memory = ifb_engine::context_get_memory();
 
     //reserve memory
     ifb_engine::memory_reserve(
@@ -71,7 +74,7 @@ ifb_engine::context_get_pointer(
     const IFBHND& handle) {
 
     //get memory
-    IFBEngineMemory* engine_memory_ptr = ifb_engine::context_handles_get_memory();
+    IFBEngineMemory* engine_memory_ptr = ifb_engine::context_get_memory();
 
     //get the pointer
     const ifb_ptr pointer = ifb_engine::memory_get_pointer(engine_memory_ptr,handle);
