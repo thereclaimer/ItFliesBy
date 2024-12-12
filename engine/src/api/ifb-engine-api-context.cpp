@@ -24,3 +24,11 @@ ifb_engine::context_create(
     //we're done
     return(true);
 }
+
+ifb_api const ifb_b8 
+ifb_engine::context_destroy(
+    ifb_void) {
+
+    //TODO
+
+}

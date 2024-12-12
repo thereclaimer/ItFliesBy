@@ -56,7 +56,8 @@ enum IFBEngineState_ {
 typedef ifb_u32 IFBEngineState;
 namespace ifb_engine {
 
-    ifb_api const ifb_b8 context_create(IFBPlatformApi& platform_api_ref);
+    ifb_api const ifb_b8 context_create  (IFBPlatformApi& platform_api_ref);
+    ifb_api const ifb_b8 context_destroy (ifb_void);
 };
 
 /**********************************************************************************/

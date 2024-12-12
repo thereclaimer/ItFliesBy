@@ -230,10 +230,6 @@ ifb_win32::window_callback(
     return(wm_message_result);
 }
 
-/**********************************************************************************/
-/* INLINE                                                                         */
-/**********************************************************************************/
-
 inline const LRESULT 
 ifb_win32::window_on_wm_size(
     const WPARAM w_param, 
