@@ -8,8 +8,6 @@
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
-#define IFB_ENGINE_MEMORY_MANAGER_COMMIT_COUNT_MAX 128
-
 struct IFBEngineMemory {
     ifb_address reservation_start;
     ifb_u32     system_page_size;

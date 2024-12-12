@@ -3,7 +3,7 @@
 #include "ifb-engine-internal-managers.hpp"
 #include "ifb-engine-internal-context.hpp"
 
-inline const IFBEngineGlobalHandleArenaManager 
+inline ifb_void 
 ifb_engine::arena_manager_initialize(
           IFBEngineArenaManager* arena_manager_ptr,
     const ifb_u32                arena_minimum_size,
@@ -18,7 +18,7 @@ ifb_engine::arena_manager_initialize(
     IFBEngineMemory*  engine_memory_ptr          = ifb_engine::context_handles_get_memory();
     const ifb_u32     arena_minimum_size_aligned = ifb_engine::memory_align_size_to_page(engine_memory_ptr,arena_minimum_size);
     const ifb_u32     arena_minimum_pages        = arena_minimum_size_aligned / engine_memory_ptr->system_page_size; 
-    const IFBCommitId commit_id                  = ifb_engine::memory_commit(engine_memory_ptr,commit_size);
+    const IFBIDCommit commit_id                  = ifb_engine::memory_commit(engine_memory_ptr,commit_size);
     const ifb_address commit_start               = ifb_engine::memory_get_commit_address(engine_memory_ptr,commit_id); 
 
     //calculate the commit sizes for the arrays

@@ -59,7 +59,6 @@ namespace ifb_engine {
     IFBEngineTagManager*   context_handles_get_tag_manager   (ifb_void);
     IFBEngineArenaManager* context_handles_get_arena_manager (ifb_void);
     IFBEngineConfig*       context_handles_get_config        (ifb_void);
-
 };
 
 /**********************************************************************************/
@@ -91,7 +90,8 @@ namespace ifb_engine {
     IFBEngineContextHandles& context_get_handles (ifb_void);
     IFBEngineContextStats&   context_get_stats   (ifb_void);
 
-    ifb_void context_initialize_managers(ifb_void);
+    ifb_void context_initialize_managers (const IFBEngineConfig* config_ptr);
+    ifb_void context_initialize_memory   (const IFBEngineConfig* config_ptr);
 
     const ifb_ptr context_get_pointer(const IFBHND& handle);
 };

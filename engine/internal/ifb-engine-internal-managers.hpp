@@ -54,7 +54,7 @@ struct IFBEngineArenaManager {
 
 namespace ifb_engine {
 
-    const ifb_void 
+    ifb_void 
     arena_manager_initialize(
               IFBEngineArenaManager* arena_manager_ptr,
         const ifb_u32                arena_minimum_size,

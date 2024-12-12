@@ -31,13 +31,9 @@ ifb_engine::context_get_stats(
     return(_engine_context.stats);
 }
 
-
 inline ifb_void 
 ifb_engine::context_initialize_managers(
-    ifb_void) {
-
-    //get the config pointer
-    IFBEngineConfig* config_ptr = ifb_engine::context_handles_get_config();
+    const IFBEngineConfig* config_ptr) {
 
     //get the manager pointers
     IFBEngineTagManager*   tag_manager_ptr   = ifb_engine::context_handles_get_tag_manager();
@@ -54,6 +50,20 @@ ifb_engine::context_initialize_managers(
         arena_manager_ptr,
         config_ptr->arena_minimum_kb,
         config_ptr->arena_count_max);
+}
+
+inline ifb_void 
+ifb_engine::context_initialize_memory(
+    const IFBEngineConfig* config_ptr) {
+
+    //get the memory pointer
+    IFBEngineMemory* ptr_memory = ifb_engine::context_handles_get_memory();
+
+    //reserve memory
+    ifb_engine::memory_reserve(
+        ptr_memory,
+        config_ptr->memory_minimum_gb,
+        config_ptr->memory_commit_count_max);
 }
 
 inline const ifb_ptr 

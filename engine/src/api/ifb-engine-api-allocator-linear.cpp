@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ifb-engine.hpp"
+
 #include "ifb-engine-allocators.hpp"
 #include "ifb-engine-internal-allocators.hpp"
 #include "ifb-engine-internal-global.hpp"
