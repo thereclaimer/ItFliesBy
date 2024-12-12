@@ -3,8 +3,7 @@
 
 #include <Windows.h>
 #include <ifb-engine.hpp>
-
-
+#include <ifb.hpp>
 
 /**********************************************************************************/
 /* SYSTEM                                                                         */
@@ -12,10 +11,9 @@
 
 namespace ifb_win32 {
 
-    ifb_internal ifb_void system_api_initialize(IFBEnginePlatformSystem& platform_system_api_ref);
+    ifb_internal ifb_void system_api_initialize(IFBPlatformSystemApi& platform_system_api_ref);
 
-    ifb_internal const ifb_size system_page_size              (ifb_void);
-    ifb_internal const ifb_size system_allocation_granularity (ifb_void);
+    ifb_internal const ifb_b8 system_info (IFBPlatformSystemInfo& system_info_ref);
 };
 
 /**********************************************************************************/
@@ -24,12 +22,11 @@ namespace ifb_win32 {
 
 namespace ifb_win32 {
 
-    ifb_internal ifb_void memory_api_initialize(IFBEnginePlatformMemory& platform_memory_api_ref);
+    ifb_internal ifb_void memory_api_initialize(IFBPlatformMemoryApi& platform_memory_api_ref);
 
-    ifb_internal const ifb_memory memory_reserve  (const ifb_size   reservation_size);
-    ifb_internal const ifb_b8     memory_release  (const ifb_memory reservation_start, const ifb_size reservation_size);
-    ifb_internal const ifb_memory memory_commit   (const ifb_memory commit_start,      const ifb_size commit_size);
-    ifb_internal const ifb_b8     memory_decommit (const ifb_memory commit_start,      const ifb_size commit_size);
+    ifb_internal const ifb_b8 memory_reserve (IFBPlatformMemoryReservation& reservation_ref);
+    ifb_internal const ifb_b8 memory_release (IFBPlatformMemoryReservation& reservation_ref);
+    ifb_internal const ifb_b8 memory_commit  (IFBPlatformMemoryReservation& reservation_ref, IFBPlatformMemoryCommit& commit_ref);
 };
 
 /**********************************************************************************/
@@ -41,11 +38,6 @@ struct IFBWin32Window {
     HDC           device_context;
     HGLRC         opengl_context;
     ImGuiContext* imgui_context;
-    ifb_u32 width;
-    ifb_u32 height;
-    ifb_u32 pos_x;
-    ifb_u32 pos_y;
-    ifb_b32 quit_received;
 };
 
 extern IMGUI_IMPL_API LRESULT 
@@ -59,23 +51,16 @@ typedef const LRESULT
 (*ifb_win32_funcptr_on_wm_message_t)(
     const WPARAM w_param,
     const LPARAM l_param);
-
+ 
 namespace ifb_win32 {
 
-    ifb_internal const ifb_b8
-    window_create(
-        const ifb_cstr window_title,
-        const ifb_u32  window_width,
-        const ifb_u32  window_height,
-        const ifb_u32  window_position_x,
-        const ifb_u32  window_position_y);
-
-    ifb_internal const ifb_b8 window_destroy      (ifb_void);
-    ifb_internal const ifb_b8 window_frame_start  (ifb_void);
-    ifb_internal const ifb_b8 window_frame_render (ifb_void);
-    ifb_internal const ifb_b8 window_show         (ifb_void);
-    ifb_internal const ifb_b8 window_opengl_init  (ifb_void);
-    ifb_internal const ifb_b8 window_imgui_init   (ifb_void);
+    ifb_internal const ifb_b8 window_create       (IFBPlatformWindow* platform_window_ptr);
+    ifb_internal const ifb_b8 window_destroy      (IFBPlatformWindow* platform_window_ptr);
+    ifb_internal const ifb_b8 window_frame_start  (IFBPlatformWindow* platform_window_ptr);
+    ifb_internal const ifb_b8 window_frame_render (IFBPlatformWindow* platform_window_ptr);
+    ifb_internal const ifb_b8 window_show         (IFBPlatformWindow* platform_window_ptr);
+    ifb_internal const ifb_b8 window_opengl_init  (IFBPlatformWindow* platform_window_ptr);
+    ifb_internal const ifb_b8 window_imgui_init   (IFBPlatformWindow* platform_window_ptr);
 
     ifb_internal LRESULT CALLBACK
     window_callback(
@@ -84,7 +69,9 @@ namespace ifb_win32 {
         WPARAM w_param,
         LPARAM l_param);
 
-    ifb_void window_api_initialize(IFBEnginePlatformWindow& window_api_ref);
+    ifb_void window_api_initialize(IFBPlatformWindow& window_api_ref);
+
+    IFBWin32Window* window_platform_memory(const IFBPlatformWindow* platform_window_ptr);
 
     const LRESULT window_on_wm_size   (const WPARAM w_param, const LPARAM l_param);
     const LRESULT window_on_wm_move   (const WPARAM w_param, const LPARAM l_param);
@@ -207,7 +194,6 @@ struct IFBWin32Args {
 
 struct IFBWin32Context {
     IFBWin32Args   args;
-    IFBWin32Window window;
 };
 
 ifb_global IFBWin32Context* _ifb_win32_context_ptr;

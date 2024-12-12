@@ -37,22 +37,20 @@ if not exist %path_build%\lib mkdir %path_build%\lib
                       /Fo:%path_build%\obj\ItFliesBy.Engine.obj ^
                       /Fd:%path_build%\bin\ItFliesBy.Engine.pdb
 
-@set cl_includes=     /I engine\include        ^
-                      /I engine\internal       ^
-                      /I engine\external       ^
-                      /I engine\src            ^
-                      /I engine\src\allocators ^
-                      /I engine\src\algorithms ^
-                      /I engine\src\assets     ^
-                      /I engine\src\core       ^
-                      /I engine\src\memory     ^
-                      /I engine\src\platform   ^
-                      /I engine\src\rendering  ^
-                      /I engine\src\tag        ^
-                      /I engine\src\tools      ^
-                      /I common                ^
-                      /I external              ^
-                      /I math                  ^
+@set cl_includes=     /I engine\include      ^
+                      /I engine\internal     ^
+                      /I engine\external     ^
+                      /I engine\src          ^
+                      /I engine\src\api      ^
+                      /I engine\src\context  ^
+                      /I engine\src\core     ^
+                      /I engine\src\managers ^
+                      /I engine\src\memory   ^
+                      /I engine\src\platform ^
+                      /I engine\src\tools    ^
+                      /I common              ^
+                      /I external            ^
+                      /I math                ^
                       /I %path_vcpkg_include%
 
 @set cl_source=       engine\src\ifb-engine.cpp

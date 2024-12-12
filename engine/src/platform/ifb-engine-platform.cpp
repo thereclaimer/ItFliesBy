@@ -1,49 +1,45 @@
 #pragma once
 
 #include "ifb-engine-internal-platform.hpp"
-#include "ifb-engine-internal.hpp"
-
-ifb_api ifb_void 
-ifb_engine::platform_window_update_size(
-    const ifb_u32 window_width,
-    const ifb_u32 window_height) {
-
-    _engine_context->platform.window_width  = window_width;
-    _engine_context->platform.window_height = window_height;
-}
-
-ifb_api ifb_void 
-ifb_engine::platform_window_update_position(
-    const ifb_u32 window_position_x,
-    const ifb_u32 window_position_y) {
-
-    _engine_context->platform.window_position_x = window_position_x;
-    _engine_context->platform.window_position_y = window_position_y;
-}
+#include "ifb-engine-internal-memory.hpp"
 
 inline ifb_void 
-ifb_engine::platform_window_default_dimensions(
-    IFBDimensions& window_dimensions_ref) {
-    
-    //get monitor size
-    IFBEnginePlatformMonitorSize monitor_size;
-    ifb_engine::platform_monitor_size(monitor_size);
+ifb_engine::platform_initialize(
+    IFBPlatformApi& platform_api_ref) {
 
-    //get monitor aspect ratio
-    const IFBAspectRatioType aspect_ratio = ifb_common::aspect_ratio_lookup(
-        monitor_size.width,
-        monitor_size.height);
+    //set the api function pointers
+    ifb_engine::platform_system_page_size              = platform_api_ref.system.page_size;
+    ifb_engine::platform_system_allocation_granularity = platform_api_ref.system.allocation_granularity;
+    ifb_engine::platform_system_time_ms                = platform_api_ref.system.time_ms;
+    ifb_engine::platform_system_sleep                  = platform_api_ref.system.sleep;
+    ifb_engine::platform_window_create                 = platform_api_ref.window.create;
+    ifb_engine::platform_window_destroy                = platform_api_ref.window.destroy;
+    ifb_engine::platform_window_frame_start            = platform_api_ref.window.frame_start;
+    ifb_engine::platform_window_frame_render           = platform_api_ref.window.frame_render;
+    ifb_engine::platform_window_show                   = platform_api_ref.window.show;
+    ifb_engine::platform_window_opengl_init            = platform_api_ref.window.opengl_init;
+    ifb_engine::platform_window_imgui_init             = platform_api_ref.window.imgui_init;
+    ifb_engine::platform_monitor_dimensions            = platform_api_ref.monitor.dimensions;
+    ifb_engine::platform_monitor_refresh_hz            = platform_api_ref.monitor.refresh_hz;
+    ifb_engine::platform_memory_reserve                = platform_api_ref.memory.reserve;
+    ifb_engine::platform_memory_release                = platform_api_ref.memory.release;
+    ifb_engine::platform_memory_commit                 = platform_api_ref.memory.commit;
 
-    //get the monitor resolution
-    const IFBResolutionType resolution_type = ifb_common::resolution_default_type_from_aspect_ratio(aspect_ratio);
-    IFBResolution resolution;
-    ifb_common::resolution_dimensions(
-        resolution_type,
-        resolution);
-
-    //put together window arguments
-    window_dimensions_ref.width      = resolution.width;
-    window_dimensions_ref.height     = resolution.height;
-    window_dimensions_ref.position_x = (monitor_size.width  - resolution.width)  / 2;
-    window_dimensions_ref.position_y = (monitor_size.height - resolution.height) / 2;
+    //sanity check
+    ifb_macro_assert(ifb_engine::platform_system_page_size);
+    ifb_macro_assert(ifb_engine::platform_system_allocation_granularity);
+    ifb_macro_assert(ifb_engine::platform_system_time_ms);
+    ifb_macro_assert(ifb_engine::platform_system_sleep);
+    ifb_macro_assert(ifb_engine::platform_window_create);
+    ifb_macro_assert(ifb_engine::platform_window_destroy);
+    ifb_macro_assert(ifb_engine::platform_window_frame_start);
+    ifb_macro_assert(ifb_engine::platform_window_frame_render);
+    ifb_macro_assert(ifb_engine::platform_window_show);
+    ifb_macro_assert(ifb_engine::platform_window_opengl_init);
+    ifb_macro_assert(ifb_engine::platform_window_imgui_init);
+    ifb_macro_assert(ifb_engine::platform_monitor_dimensions);
+    ifb_macro_assert(ifb_engine::platform_monitor_refresh_hz);
+    ifb_macro_assert(ifb_engine::platform_memory_reserve);
+    ifb_macro_assert(ifb_engine::platform_memory_release);
+    ifb_macro_assert(ifb_engine::platform_memory_commit);
 }

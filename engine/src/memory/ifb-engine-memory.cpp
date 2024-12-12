@@ -1,131 +1,315 @@
 #pragma once
 
-#include "ifb-engine-internal.hpp"
 #include "ifb-engine-internal-memory.hpp"
 #include "ifb-engine-internal-platform.hpp"
 
-#include "ifb-engine-memory-manager.cpp"
-#include "ifb-engine-memory-arena.cpp"
+inline ifb_void 
+ifb_engine::memory_reserve(
+          IFBEngineMemory* memory_ptr,
+    const ifb_size         reservation_size_minimum,
+    const ifb_u32          commit_count_maximum) {
 
-/**********************************************************************************/
-/* API                                                                            */
-/**********************************************************************************/
+    //get the system info
+    memory_ptr->system_page_size              = ifb_engine::platform_system_page_size();
+    memory_ptr->system_allocation_granularity = ifb_engine::platform_system_allocation_granularity();
+    ifb_macro_assert(memory_ptr->system_page_size);
+    ifb_macro_assert(memory_ptr->system_allocation_granularity);
 
-ifb_api const ifb_memory 
-ifb_engine::memory_pointer_from_page_offset(
-    const ifb_u32 page_number,
-    const ifb_u32 page_offset) {
+    //get the reservation size and page count
+    const ifb_size reservation_size = ifb_engine::memory_align_large_size_to_granularity(memory_ptr, reservation_size_minimum);
+    memory_ptr->page_count_total = reservation_size / memory_ptr->system_page_size;
 
-    const ifb_u32 page_size   = ifb_engine::context_platform_page_size();
-    const ifb_u32 page_start  = page_number * page_size;
-    const ifb_u32 base_offset = page_start + page_offset;     
+    //make the reservation
+    const ifb_ptr ptr_reservation = ifb_engine::platform_memory_reserve(reservation_size);    
+    ifb_macro_assert(ptr_reservation);
+    memory_ptr->reservation_start = (ifb_address)ptr_reservation;
 
-    const ifb_memory base_pointer   = ifb_engine::context_base_pointer();
-    const ifb_memory memory_pointer = base_pointer + base_offset;
+    //set the commit count
+    memory_ptr->commit_count_max = commit_count_maximum;
 
-    return(memory_pointer); 
+    //push the commit array on the context stack
+    const ifb_u32 commit_array_size = ifb_macro_size_array(IFBCommit,commit_count_maximum);
+    ifb_engine::context_stack_push(
+        memory_ptr->commit_array_handle,
+        commit_array_size);
 }
 
-ifb_api const ifb_memory 
-ifb_engine::memory_pointer_from_page(
-    const ifb_u32 page_number) {
-    
-    const ifb_u32 page_size   = ifb_engine::context_platform_page_size();
-    const ifb_u32 page_start  = page_number * page_size;
+inline const IFBIDCommit 
+ifb_engine::memory_commit(
+          IFBEngineMemory* memory_ptr, 
+    const ifb_u32          commit_size_minimum) {
 
-    const ifb_memory base_pointer   = ifb_engine::context_base_pointer();
-    const ifb_memory memory_pointer = base_pointer + page_start;
+    ifb_macro_assert(memory_ptr->commit_count_current != memory_ptr->commit_count_max);
 
-    return(memory_pointer);
-}
+    //page align the commit size
+    const ifb_u32 page_size         = memory_ptr->system_page_size;
+    const ifb_u32 commit_size       = ifb_macro_align_a_to_b(commit_size_minimum,page_size); 
+    const ifb_u32 commit_page_count = commit_size / page_size; 
 
-ifb_api const ifb_memory 
-ifb_engine::memory_pointer_from_handle(
-    const ifb_u32 handle) {
-    
-    const ifb_memory base_pointer   = ifb_engine::context_base_pointer();
-    const ifb_memory memory_pointer = base_pointer + handle; 
+    //get the next commit id
+    IFBIDCommit commit_id;
+    commit_id.index = memory_ptr->commit_count_current;
 
-    return(memory_pointer);
-}
-
-ifb_api const ifb_u32 
-ifb_engine::memory_handle(
-    const ifb_u32 page_number,
-    const ifb_u32 page_offset) {
-    
-    const ifb_u32 page_size  = ifb_engine::context_platform_page_size();
-    const ifb_u32 page_start = page_number * page_size;
-    const ifb_u32 handle     = page_start + page_offset;     
-
-    return(handle);
-}
-
-ifb_api const ifb_b8
-ifb_engine::memory_handle_valid(
-    const ifb_u32 memory_handle) {
-    
-    //TODO(SAM): should also have a upper bound
-    return(memory_handle > IFB_ENGINE_MEMORY_HANDLE_INVALID);
-}
-
-ifb_api const ifb_u32 
-ifb_engine::memory_size_page_aligned(
-    const ifb_u32 size) {
-
-    const ifb_u32 page_size    = ifb_engine::context_platform_page_size();
-    const ifb_u32 size_aligned = ifb_macro_align_a_to_b(size,page_size);    
-
-    return(size_aligned);
-}
-
-ifb_api const ifb_u32 
-ifb_engine::memory_page_count(
-    const ifb_u32 size) {
-
-    const ifb_u32 page_size    = ifb_engine::context_platform_page_size();
-    const ifb_u32 size_aligned = ifb_macro_align_a_to_b(size,page_size);    
-    const ifb_u32 page_count   = size_aligned / page_size;  
-
-    return(page_count);
-}
-
-ifb_api const ifb_u32 
-ifb_engine::memory_page_size(
-    const ifb_u32 page_count) {
-
-    const ifb_u32 page_size       = ifb_engine::context_platform_page_size();
-    const ifb_u32 page_size_count = page_count * page_size;  
-
-    return(page_size_count);
-}
-
-ifb_api const ifb_u32 
-ifb_engine::memory_page_commit(
-    const ifb_u32 page_count) {
-
-    //calculate page sizes
-    const ifb_u32 page_size       = ifb_engine::context_platform_page_size();
-    const ifb_u32 page_current    = ifb_engine::context_platform_page_count_used();
-    const ifb_u32 page_start      = page_current * page_size;
-
-    //calculate commit    
-    const ifb_memory base_pointer = ifb_engine::context_base_pointer();
-    const ifb_memory commit_start = base_pointer + page_start;
-    const ifb_size   commit_size  = page_size * page_count;
+    //get the start for the commit
+    const ifb_u32     commit_offset        = ifb_engine::memory_get_size_committed(memory_ptr);
+    const ifb_u32     commit_page_start    = commit_offset / page_size;
+    const ifb_address commit_start_address = commit_offset + memory_ptr->reservation_start;
+    const ifb_ptr     commit_start_pointer = (ifb_ptr)commit_start_address;    
 
     //do the commit
-    const ifb_memory commit_result = ifb_engine::platform_memory_pages_commit(commit_start,commit_size);
+    const ifb_ptr commit_result_pointer = ifb_engine::platform_memory_commit(commit_start_pointer, commit_size);
+    ifb_macro_assert(commit_start_pointer == commit_result_pointer);
 
-    //if that failed, we're done
-    if (commit_start != commit_result) {
-        return(0);
-    } 
+    //update the commit array
+    IFBCommit* commit_array_pointer = ifb_engine::memory_get_commit_array_pointer(memory_ptr);
+    IFBCommit& ref_new_commit       = commit_array_pointer[commit_id.index];
+    ref_new_commit.page_count       = commit_page_count;
+    ref_new_commit.page_start       = commit_page_start;
 
-    //otherwise, update the context
-    const ifb_u32 page_count_new = page_current + page_count;
-    ifb_engine::context_platform_page_count_used_update(page_count_new);
+    //update the commit count
+    ++memory_ptr->commit_count_current;
 
-    //we're done, return the page start
-    return(page_current);
+    //we're done
+    return(commit_id);
+}
+
+inline const ifb_u32 
+ifb_engine::memory_get_commit_page_number(
+    const IFBEngineMemory* memory_ptr,
+    const IFBIDCommit      commit_id) {
+
+    //get the commit array
+    const IFBCommit* commit_array_ptr = ifb_engine::memory_get_commit_array_pointer(memory_ptr);
+
+    //get the commit page number
+    const ifb_u32 commit_page_number = commit_array_ptr[commit_id.index].page_start; 
+
+    //we're done
+    return(commit_page_number);
+}
+
+inline const ifb_u32 
+ifb_engine::memory_get_commit_page_count(
+    const IFBEngineMemory* memory_ptr,
+    const IFBIDCommit      commit_id) {
+
+    //get the commit array
+    const IFBCommit* commit_array_ptr = ifb_engine::memory_get_commit_array_pointer(memory_ptr);
+
+    //get the commit page count
+    const ifb_u32 commit_page_count = commit_array_ptr[commit_id.index].page_count; 
+
+    //we're done
+    return(commit_page_count);
+}
+
+inline const ifb_u32 
+ifb_engine::memory_get_commit_size(
+    const IFBEngineMemory* memory_ptr,
+    const IFBIDCommit      commit_id) {
+
+    //get the page count
+    const ifb_u32 commit_page_count = ifb_engine::memory_get_commit_page_count(
+        memory_ptr,
+        commit_id);
+    
+    //get the commit size
+    const ifb_u32 commit_size = commit_page_count * memory_ptr->system_page_size;
+
+    //we're done
+    return(commit_size);
+}
+
+inline const ifb_u32 
+ifb_engine::memory_get_commit_offset(
+    const IFBEngineMemory* memory_ptr,
+    const IFBIDCommit      commit_id) {
+
+    //get the page start
+    const ifb_u32 page_start = ifb_engine::memory_get_commit_page_number(
+        memory_ptr,
+        commit_id);
+
+    //get the page offset
+    const ifb_u32 commit_offset = page_start * memory_ptr->system_page_size;
+
+    //we're done
+    return(commit_offset);
+}
+
+inline const ifb_address
+ifb_engine::memory_get_commit_address(
+    const IFBEngineMemory* memory_ptr,
+    const IFBIDCommit      commit_id) {
+
+    //cache the reservation start
+    const ifb_address reservation_start = memory_ptr->reservation_start;
+
+    //get the commit offset
+    const ifb_u32 commit_offset = ifb_engine::memory_get_commit_offset(
+        memory_ptr,
+        commit_id);
+
+    //calculate the commit starting address
+    const ifb_address commit_start_address = reservation_start + commit_offset;
+
+    //we're done
+    return(commit_start_address);
+}
+
+inline const ifb_ptr 
+ifb_engine::memory_get_commit_pointer(
+    const IFBEngineMemory* memory_ptr,
+    const IFBIDCommit      commit_id) {
+
+    //get the commit address
+    const ifb_address commit_address = ifb_engine::memory_get_commit_address(
+        memory_ptr,
+        commit_id);
+
+    //cast the address to a pointer
+    const ifb_ptr commit_pointer = (ifb_ptr)commit_address;
+
+    //we're done
+    return(commit_pointer);
+}
+
+inline const ifb_ptr 
+ifb_engine::memory_get_commit_pointer(
+    const IFBEngineMemory* memory_ptr,
+    const IFBIDCommit      commit_id,
+    const ifb_u32          commit_offset) {
+
+    //get the commit address
+    const ifb_address commit_address = ifb_engine::memory_get_commit_address(
+        memory_ptr,
+        commit_id);
+
+    //get the commit size
+    const ifb_u32 commit_size = ifb_engine::memory_get_commit_size(
+        memory_ptr,
+        commit_id);
+
+    //sanity check, make sure the offset is inside the arena
+    ifb_macro_assert(commit_offset < commit_size);
+
+    //add the offset to the commit
+    const ifb_address commit_offset_address = commit_address + commit_offset;
+
+    //cast that to a pointer
+    const ifb_ptr commit_offset_pointer = (ifb_ptr)commit_offset_address;
+
+    //we're done
+    return(commit_offset_pointer);
+}
+
+inline const ifb_u32 
+ifb_engine::memory_align_size_to_page(
+    const IFBEngineMemory* memory_ptr,
+    const ifb_u32         size) {
+
+    //align the size to a page
+    const ifb_u32 size_page_aligned = ifb_macro_align_a_to_b(
+        size,
+        memory_ptr->system_page_size);
+
+    //we're done
+    return(size_page_aligned);
+}
+
+inline const ifb_u32 
+ifb_engine::memory_align_size_to_granularity(
+    const IFBEngineMemory* memory_ptr,
+    const ifb_u32          size) {
+
+    //align the size to system granularity
+    const ifb_u32 size_granularity_aligned = ifb_macro_align_a_to_b(
+        size,
+        memory_ptr->system_allocation_granularity);
+
+    //we're done
+    return(size_granularity_aligned);
+}
+
+inline const ifb_size
+ifb_engine::memory_align_large_size_to_page(
+    const IFBEngineMemory* memory_ptr, 
+    const ifb_size         size) {
+
+    //align the size to a page
+    const ifb_size size_page_aligned = ifb_macro_align_a_to_b(
+        size,
+        (ifb_size)memory_ptr->system_page_size);
+
+    //we're done
+    return(size_page_aligned);
+}
+
+inline const ifb_size
+ifb_engine::memory_align_large_size_to_granularity(
+    const IFBEngineMemory* memory_ptr, 
+    const ifb_size         size) {
+    
+    //align the size to system granularity
+    const ifb_size size_granularity_aligned = ifb_macro_align_a_to_b(
+        size,
+        (ifb_size)memory_ptr->system_allocation_granularity);
+
+    //we're done
+    return(size_granularity_aligned);
+}
+
+inline IFBCommit* 
+ifb_engine::memory_get_commit_array_pointer(
+    const IFBEngineMemory* memory_ptr) {
+
+    IFBCommit* commit_array_ptr = (IFBCommit*)ifb_engine::context_stack_get_pointer(memory_ptr->commit_array_handle);
+
+    return(commit_array_ptr);
+}
+
+inline ifb_void 
+ifb_engine::memory_get_handle(
+    const IFBEngineMemory* memory_ptr, 
+    const IFBIDCommit      commit_id, 
+    const ifb_u32          commit_offset, 
+          IFBHND&          handle_ref) {
+
+    const ifb_u32 commit_start = ifb_engine::memory_get_commit_offset(
+        memory_ptr,
+        commit_id);
+
+    handle_ref.offset = commit_start + commit_offset;
+}
+
+inline const ifb_ptr 
+ifb_engine::memory_get_pointer(
+    const IFBEngineMemory* memory_ptr,
+    const ifb_u32          offset) {
+
+    const ifb_address start   = memory_ptr->reservation_start + offset;
+    const ifb_ptr     pointer = (ifb_ptr)start; 
+
+    return(pointer);
+}
+
+inline const ifb_ptr 
+ifb_engine::memory_get_pointer(
+    const IFBEngineMemory* memory_ptr, 
+    const IFBHND&          handle_ref) {
+
+    const ifb_ptr pointer = ifb_engine::memory_get_pointer(memory_ptr,handle_ref.offset);
+
+    return(pointer);
+}
+
+inline const ifb_size 
+ifb_engine::memory_get_size_committed(
+    const IFBEngineMemory* memory_ptr) {
+
+    const ifb_size count_pages_committed = memory_ptr->page_count_committed;
+    const ifb_size page_size             = memory_ptr->system_page_size;
+    const ifb_size size_committed        = count_pages_committed * page_size;
+
+    return(size_committed);
 }
