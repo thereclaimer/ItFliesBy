@@ -32,29 +32,32 @@ namespace ifb_engine {
 /* CONTEXT HANDLES                                                                */
 /**********************************************************************************/
 
-struct IFBHNDUserInput          : IFBHND { };
-struct IFBHNDEngineMemory       : IFBHND { };
-struct IFBHNDEngineTagManager   : IFBHND { };
-struct IFBHNDEngineArenaManager : IFBHND { };
-struct IFBHNDEngineConfig       : IFBHND { };
+struct IFBHNDUserInput           : IFBHND { };
+struct IFBHNDEngineMemory        : IFBHND { };
+struct IFBHNDEngineTagManager    : IFBHND { };
+struct IFBHNDEngineArenaManager  : IFBHND { };
+struct IFBHNDEngineWindowManager : IFBHND { };
+struct IFBHNDEngineConfig        : IFBHND { };
 
 struct IFBEngineContextHandles {
-    IFBHNDUserInput          user_input;
-    IFBHNDEngineMemory       memory;
-    IFBHNDEngineTagManager   tag_manager;
-    IFBHNDEngineArenaManager arena_manager;
-    IFBHNDEngineConfig       config;
+    IFBHNDUserInput           user_input;
+    IFBHNDEngineMemory        memory;
+    IFBHNDEngineTagManager    tag_manager;
+    IFBHNDEngineArenaManager  arena_manager;
+    IFBHNDEngineWindowManager window_manager;
+    IFBHNDEngineConfig        config;
 };
 
 namespace ifb_engine {
 
     ifb_void context_handles_create_all(ifb_void);
 
-    IFBUserInput*          context_get_user_input    (ifb_void);
-    IFBEngineMemory*       context_get_memory        (ifb_void);
-    IFBEngineTagManager*   context_get_tag_manager   (ifb_void);
-    IFBEngineArenaManager* context_get_arena_manager (ifb_void);
-    IFBEngineConfig*       context_get_config        (ifb_void);
+    IFBUserInput*           context_get_user_input     (ifb_void);
+    IFBEngineMemory*        context_get_memory         (ifb_void);
+    IFBEngineTagManager*    context_get_tag_manager    (ifb_void);
+    IFBEngineArenaManager*  context_get_arena_manager  (ifb_void);
+    IFBEngineWindowManager* context_get_window_manager (ifb_void);
+    IFBEngineConfig*        context_get_config         (ifb_void);
 };
 
 /**********************************************************************************/

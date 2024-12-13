@@ -28,6 +28,11 @@ wWinMain(
         return(S_FALSE);
     } 
 
+    //engine startup
+    if (!ifb_engine::context_startup()) {
+        return(S_FALSE);
+    }
+
     //done
     return(S_OK);
 }

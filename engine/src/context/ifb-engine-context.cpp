@@ -68,6 +68,13 @@ ifb_engine::context_initialize_managers(
         memory_ptr,
         config_ptr->arena_minimum_kb,
         config_ptr->arena_count_max);
+
+    //window manager
+    IFBEngineWindowManager* window_manager_ptr = ifb_engine::context_get_window_manager();
+    ifb_engine::window_manger_initialize(
+        window_manager_ptr,
+        memory_ptr);
+    
 }
 
 inline ifb_void 

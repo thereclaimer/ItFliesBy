@@ -78,4 +78,41 @@ namespace ifb_engine {
           IFBIDTag*    arena_manager_get_pointer_tag_id_array    (const IFBEngineArenaManager* arena_manager_ptr, const IFBEngineMemory* memory_ptr);
 };
 
+/**********************************************************************************/ 
+/* WINDOW MANAGER                                                                 */
+/**********************************************************************************/
+
+struct IFBEngineWindowManager {
+    IFBResolution      window_resolution;
+    IFBPosition        window_position;
+    IFBAspectRatioType window_aspect_ratio;
+    IFBResolutionType  window_resolution_type_default;
+    IFBResolutionType  window_resolution_type_current;
+    ifb_b8             window_visible;
+    ifb_b8             window_created;
+    ifb_b8             window_has_imgui;
+    ifb_b8             window_has_opengl;
+};
+
+namespace ifb_engine {
+
+    ifb_void 
+    window_manger_initialize(
+        IFBEngineWindowManager* window_manager_ptr,
+        IFBEngineMemory*        memory_ptr);
+
+    ifb_void window_manager_create_window (
+              IFBEngineWindowManager* window_manager_ptr,
+        const ifb_cstr                window_title,
+        const ifb_b8                  use_opengl,
+        const ifb_b8                  use_imgui);
+
+    ifb_void window_manager_set_visibility(
+              IFBEngineWindowManager* window_manager_ptr,
+        const ifb_b8                  visible);
+
+    ifb_void window_manager_frame_start  (IFBEngineWindowManager* window_manager_ptr);
+    ifb_void window_manager_frame_render (IFBEngineWindowManager* window_manager_ptr);
+};
+
 #endif //IFB_ENGINE_INTERNAL_MANAGERS_HPP

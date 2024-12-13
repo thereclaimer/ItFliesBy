@@ -9,11 +9,12 @@ ifb_engine::context_handles_create_all(
 
     IFBEngineContextHandles& handles_ref = ifb_engine::context_get_handles();
 
-    ifb_engine_context_push_struct(handles_ref.user_input,    IFBUserInput);
-    ifb_engine_context_push_struct(handles_ref.memory,        IFBEngineMemory);
-    ifb_engine_context_push_struct(handles_ref.tag_manager,   IFBEngineTagManager);
-    ifb_engine_context_push_struct(handles_ref.arena_manager, IFBEngineArenaManager);
-    ifb_engine_context_push_struct(handles_ref.config,        IFBEngineConfig);
+    ifb_engine_context_push_struct(handles_ref.user_input,     IFBUserInput);
+    ifb_engine_context_push_struct(handles_ref.memory,         IFBEngineMemory);
+    ifb_engine_context_push_struct(handles_ref.tag_manager,    IFBEngineTagManager);
+    ifb_engine_context_push_struct(handles_ref.arena_manager,  IFBEngineArenaManager);
+    ifb_engine_context_push_struct(handles_ref.window_manager, IFBEngineWindowManager);
+    ifb_engine_context_push_struct(handles_ref.config,         IFBEngineConfig);
 }
 
 inline IFBUserInput*
@@ -54,6 +55,16 @@ ifb_engine::context_get_arena_manager(
         _engine_context.handles.arena_manager);
 
     return(ptr_arena_manager);
+}
+
+inline IFBEngineWindowManager*
+ifb_engine::context_get_window_manager(
+    ifb_void) {
+
+    IFBEngineWindowManager* ptr_window_manager = (IFBEngineWindowManager*)ifb_engine::context_stack_get_pointer(
+        _engine_context.handles.window_manager);
+
+    return(ptr_window_manager);
 }
 
 inline IFBEngineConfig*

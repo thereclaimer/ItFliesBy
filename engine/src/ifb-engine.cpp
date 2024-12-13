@@ -18,6 +18,7 @@
 //managers
 #include "ifb-engine-manager-arena.cpp"
 #include "ifb-engine-manager-tag.cpp"
+#include "ifb-engine-manager-window.cpp"
 
 //memory
 #include "ifb-engine-memory.cpp"
