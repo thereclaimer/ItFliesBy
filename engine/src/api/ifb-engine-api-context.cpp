@@ -45,7 +45,7 @@ ifb_engine::context_startup(
     IFBEngineConfig*        config_ptr         = ifb_engine::context_get_config();
 
     const ifb_b8 use_opengl = true;
-    const ifb_b8 use_imgui  = true;
+    const ifb_b8 use_imgui  = false;
 
     //create the window
     ifb_engine::window_manager_create_window(
