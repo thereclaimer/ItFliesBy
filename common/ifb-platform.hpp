@@ -123,7 +123,6 @@ struct IFBPlatformMonitorApi {
 /* FILES                                                                          */                            
 /**********************************************************************************/
 
-
 typedef const ifb_b8
 (*funcptr_ifb_platform_file_open_read_only) (
     const ifb_cstr    in_file_path,

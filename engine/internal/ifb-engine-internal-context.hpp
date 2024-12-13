@@ -86,6 +86,7 @@ namespace ifb_engine {
     IFBEngineContextHandles& context_get_handles (ifb_void);
     IFBEngineContextStats&   context_get_stats   (ifb_void);
 
+    ifb_void context_initialize_stack    (const IFBEngineConfig* config_ptr);
     ifb_void context_initialize_managers (const IFBEngineConfig* config_ptr);
     ifb_void context_initialize_memory   (const IFBEngineConfig* config_ptr);
 

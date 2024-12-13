@@ -32,6 +32,21 @@ ifb_engine::context_get_stats(
 }
 
 inline ifb_void 
+ifb_engine::context_initialize_stack(
+    const IFBEngineConfig* config_ptr) {
+
+    //get the stack
+    IFBEngineContextStack& stack_ref = ifb_engine::context_get_stack();
+
+    const ifb_u32 stack_size = ifb_macro_size_kilobytes(config_ptr->global_stack_kb);
+
+    stack_ref.size     = stack_size;
+    stack_ref.position = 0;
+    ifb_macro_assert(stack_ref.memory);
+}
+
+
+inline ifb_void 
 ifb_engine::context_initialize_managers(
     const IFBEngineConfig* config_ptr) {
 
