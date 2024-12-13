@@ -57,3 +57,10 @@ ifb_engine::context_startup(
     //we're done
     return(true);
 }
+
+ifb_api const ifb_b8 
+ifb_engine::context_update_and_render(
+    ifb_void) {
+
+    return(false);
+}

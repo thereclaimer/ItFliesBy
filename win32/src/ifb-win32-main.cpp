@@ -33,6 +33,9 @@ wWinMain(
         return(S_FALSE);
     }
 
+    //main loop
+    while(ifb_engine::context_update_and_render());
+
     //done
     return(S_OK);
 }
