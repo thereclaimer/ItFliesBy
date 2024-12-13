@@ -30,5 +30,6 @@ ifb_engine::context_destroy(
     ifb_void) {
 
     //TODO
-
+    ifb_macro_panic();
+    return(true);
 }

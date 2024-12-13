@@ -11,9 +11,12 @@
 
 namespace ifb_win32 {
 
-    ifb_internal ifb_void system_api_initialize(IFBPlatformSystemApi& platform_system_api_ref);
+    ifb_void system_api_initialize(IFBPlatformSystemApi& platform_system_api_ref);
 
-    ifb_internal const ifb_b8 system_info (IFBPlatformSystemInfo& system_info_ref);
+    ifb_internal const ifb_u32  system_page_size              (ifb_void);
+    ifb_internal const ifb_u32  system_allocation_granularity (ifb_void);
+    ifb_internal const ifb_u64  system_time_ms                (ifb_void);
+    ifb_internal       ifb_void system_sleep                  (const ifb_u32 ms);
 };
 
 /**********************************************************************************/
@@ -22,11 +25,11 @@ namespace ifb_win32 {
 
 namespace ifb_win32 {
 
-    ifb_internal ifb_void memory_api_initialize(IFBPlatformMemoryApi& platform_memory_api_ref);
+    ifb_void memory_api_initialize(IFBPlatformMemoryApi& platform_memory_api_ref);
 
-    ifb_internal const ifb_b8 memory_reserve (IFBPlatformMemoryReservation& reservation_ref);
-    ifb_internal const ifb_b8 memory_release (IFBPlatformMemoryReservation& reservation_ref);
-    ifb_internal const ifb_b8 memory_commit  (IFBPlatformMemoryReservation& reservation_ref, IFBPlatformMemoryCommit& commit_ref);
+    ifb_internal const ifb_ptr memory_reserve (const ifb_u32 reservation_size);
+    ifb_internal const ifb_b8  memory_release (const ifb_ptr reservation_start, const ifb_u32 reservation_size);
+    ifb_internal const ifb_ptr memory_commit  (const ifb_ptr commit_start,      const ifb_u32 commit_size);
 };
 
 /**********************************************************************************/
@@ -38,6 +41,11 @@ struct IFBWin32Window {
     HDC           device_context;
     HGLRC         opengl_context;
     ImGuiContext* imgui_context;
+    ifb_u32       width;
+    ifb_u32       height;
+    ifb_u32       position_x;
+    ifb_u32       position_y;
+    ifb_b8        quit_received;
 };
 
 extern IMGUI_IMPL_API LRESULT 
@@ -54,13 +62,22 @@ typedef const LRESULT
  
 namespace ifb_win32 {
 
-    ifb_internal const ifb_b8 window_create       (IFBPlatformWindow* platform_window_ptr);
-    ifb_internal const ifb_b8 window_destroy      (IFBPlatformWindow* platform_window_ptr);
-    ifb_internal const ifb_b8 window_frame_start  (IFBPlatformWindow* platform_window_ptr);
-    ifb_internal const ifb_b8 window_frame_render (IFBPlatformWindow* platform_window_ptr);
-    ifb_internal const ifb_b8 window_show         (IFBPlatformWindow* platform_window_ptr);
-    ifb_internal const ifb_b8 window_opengl_init  (IFBPlatformWindow* platform_window_ptr);
-    ifb_internal const ifb_b8 window_imgui_init   (IFBPlatformWindow* platform_window_ptr);
+    ifb_void window_api_initialize(IFBPlatformWindowApi& window_api_ref);
+
+    ifb_internal const ifb_b8 
+    window_create(
+        const ifb_cstr title,
+        const ifb_u32  width,
+        const ifb_u32  height,
+        const ifb_u32  position_x,
+        const ifb_u32  position_y);
+
+    ifb_internal const ifb_b8 window_destroy      (ifb_void);
+    ifb_internal const ifb_b8 window_frame_start  (ifb_void);
+    ifb_internal const ifb_b8 window_frame_render (ifb_void);
+    ifb_internal const ifb_b8 window_show         (ifb_void);
+    ifb_internal const ifb_b8 window_opengl_init  (ifb_void);
+    ifb_internal const ifb_b8 window_imgui_init   (ifb_void);
 
     ifb_internal LRESULT CALLBACK
     window_callback(
@@ -68,10 +85,6 @@ namespace ifb_win32 {
         UINT   message,
         WPARAM w_param,
         LPARAM l_param);
-
-    ifb_void window_api_initialize(IFBPlatformWindow& window_api_ref);
-
-    IFBWin32Window* window_platform_memory(const IFBPlatformWindow* platform_window_ptr);
 
     const LRESULT window_on_wm_size   (const WPARAM w_param, const LPARAM l_param);
     const LRESULT window_on_wm_move   (const WPARAM w_param, const LPARAM l_param);
@@ -85,11 +98,10 @@ namespace ifb_win32 {
 
 namespace ifb_win32 {
 
-    ifb_internal ifb_void monitor_size       (IFBEnginePlatformMonitorSize& monitor_size_ref);
-    ifb_internal const ifb_u32  monitor_refresh_hz (ifb_void);
-    
-    ifb_void monitor_api_initialize(IFBEnginePlatformMonitor& monitor_api_ref);
+    ifb_void monitor_api_initialize(IFBPlatformMonitorApi& monitor_api_ref);
 
+    ifb_internal       ifb_void monitor_dimensions (IFBDimensions& dimensions_ref);
+    ifb_internal const ifb_u32  monitor_refresh_hz (ifb_void);
 };
 
 /**********************************************************************************/
@@ -98,9 +110,9 @@ namespace ifb_win32 {
 
 #define IFB_WIN32_FILE_MANAGER_MAX_FILES 32
 
-struct IFBWin32FileOverlappedInfo {
+struct IFBWin32FileOverlappedInfo { 
     OVERLAPPED                 overlapped;
-    IFBEnginePlatformFileIndex file_index; 
+    ifb_index                  file_index; 
     ifb_size                   bytes_read;
     ifb_size                   bytes_written;
 };
@@ -116,27 +128,27 @@ struct IFBWin32FileTable {
 
 namespace ifb_win32 {
 
-    ifb_internal ifb_void file_api_initialize(IFBEnginePlatformFile& platform_file_api_ref);
+    ifb_internal ifb_void file_api_initialize(IFBPlatformFileApi& platform_file_api_ref);
 
-    ifb_internal const ifb_b8 file_open_read_only  (const ifb_cstr in_file_path, IFBEnginePlatformFileIndex& out_file_index_ref);
-    ifb_internal const ifb_b8 file_open_read_write (const ifb_cstr in_file_path, IFBEnginePlatformFileIndex& out_file_index_ref);
+    ifb_internal const ifb_b8 file_open_read_only  (const ifb_cstr in_file_path, ifb_index& out_file_index_ref);
+    ifb_internal const ifb_b8 file_open_read_write (const ifb_cstr in_file_path, ifb_index& out_file_index_ref);
 
-    ifb_internal const ifb_b8   file_close (const IFBEnginePlatformFileIndex file_index);
-    ifb_internal const ifb_size file_size  (const IFBEnginePlatformFileIndex file_index);
+    ifb_internal const ifb_b8   file_close (const ifb_index file_index);
+    ifb_internal const ifb_size file_size  (const ifb_index file_index);
     
     ifb_internal const ifb_b8 
     file_read(
-        const IFBEnginePlatformFileIndex in_file_index,
-        const ifb_size                   in_file_read_start,
-        const ifb_size                   in_file_read_size,
-              ifb_memory                out_file_read_buffer);
+        const ifb_index   in_file_index,
+        const ifb_size    in_file_read_start,
+        const ifb_size    in_file_read_size,
+              ifb_memory out_file_read_buffer);
 
     ifb_internal const ifb_b8 
     file_write(
-        const IFBEnginePlatformFileIndex in_file_index,
-        const ifb_size                   in_file_write_start,
-        const ifb_size                   in_file_write_size,
-        const ifb_memory                 in_file_write_buffer);
+        const ifb_index   in_file_index,
+        const ifb_size    in_file_write_start,
+        const ifb_size    in_file_write_size,
+              ifb_memory out_file_write_buffer);
 
     ifb_internal ifb_void CALLBACK
     file_read_callback(
@@ -163,7 +175,7 @@ namespace ifb_win32 {
 
     ifb_internal ifb_void 
     file_dialog_api_initialize(
-        IFBEnginePlatformFileDialog& platform_api_file_dialog_ref);
+        IFBPlatformFileDialogApi& platform_api_file_dialog_ref);
 
     ifb_internal const ifb_b8
     file_dialog_select_file(
@@ -175,15 +187,8 @@ namespace ifb_win32 {
 };
 
 /**********************************************************************************/
-/* WIN32 APPLICATION                                                              */
+/* WIN32 CONTEXT                                                              */
 /**********************************************************************************/
-
-ifb_s32 CALLBACK
-ifb_win32_main(    
-    HINSTANCE h_instance,
-    HINSTANCE h_prev_instance,
-    PWSTR     p_cmd_line,
-    int       n_cmd_show);
 
 struct IFBWin32Args {
     HINSTANCE h_instance;
@@ -193,21 +198,34 @@ struct IFBWin32Args {
 };
 
 struct IFBWin32Context {
+    IFBWin32Window window;
     IFBWin32Args   args;
 };
 
-ifb_global IFBWin32Context* _ifb_win32_context_ptr;
 
 namespace ifb_win32 {
+    
+    ifb_global IFBWin32Context _context;
 
-    inline const HINSTANCE context_args_h_instance      (ifb_void) { return(_ifb_win32_context_ptr->args.h_instance);      }
-    inline const HINSTANCE context_args_h_prev_instance (ifb_void) { return(_ifb_win32_context_ptr->args.h_prev_instance); }
-    inline const PWSTR     context_args_p_cmd_line      (ifb_void) { return(_ifb_win32_context_ptr->args.p_cmd_line);      }
-    inline const int       context_args_n_cmd_show      (ifb_void) { return(_ifb_win32_context_ptr->args.n_cmd_show);      }
+    inline ifb_void 
+    context_args_set_values(
+        const HINSTANCE h_instance,
+        const HINSTANCE h_prev_instance,
+        const PWSTR     p_cmd_line,
+        const int       n_cmd_show) {
 
+        _context.args.h_instance      = h_instance; 
+        _context.args.h_prev_instance = h_prev_instance; 
+        _context.args.p_cmd_line      = p_cmd_line; 
+        _context.args.n_cmd_show      = n_cmd_show; 
+    }
 
-    inline       IFBWin32Window& context_window_ref()       { return(_ifb_win32_context_ptr->window);                       }
-    inline const ifb_b8          context_window_has_imgui() { return(_ifb_win32_context_ptr->window.imgui_context != NULL); }
+    inline const HINSTANCE context_args_get_h_instance      (ifb_void) { return(_context.args.h_instance);      }
+    inline const HINSTANCE context_args_get_h_prev_instance (ifb_void) { return(_context.args.h_prev_instance); }
+    inline const PWSTR     context_args_get_p_cmd_line      (ifb_void) { return(_context.args.p_cmd_line);      }
+    inline const int       context_args_get_n_cmd_show      (ifb_void) { return(_context.args.n_cmd_show);      }
+
+    inline IFBWin32Window& context_get_window() { return(_context.window); }
 };
 
 

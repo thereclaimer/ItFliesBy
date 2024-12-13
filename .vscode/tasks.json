@@ -13,9 +13,6 @@
 				"$msCompile"
 			],
 			"group": "build",
-			"dependsOn":[
-				"Build IFB Engine"				
-			]
 		},
 		{
 			"label": "Build IFB Engine",
