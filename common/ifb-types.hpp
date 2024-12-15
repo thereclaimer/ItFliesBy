@@ -76,7 +76,7 @@ struct IFBHND {
 //global handle
 struct IFBGHND {
     ifb_u32 offset;
-}
+};
 
 
 struct IFBHNDLinearAllocator : IFBHND { };
