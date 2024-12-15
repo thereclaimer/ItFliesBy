@@ -17,18 +17,18 @@ ifb_engine::context_get_stack(
     return(_engine_context.stack);
 }
 
-inline IFBEngineContextHandles&
-ifb_engine::context_get_handles(
+inline IFBEngineContextManagers&
+ifb_engine::context_get_managers(
     ifb_void) {
 
-    return(_engine_context.handles);
+    return(_engine_context.managers);
 }
 
-inline IFBEngineContextStats&
-ifb_engine::context_get_stats(
+inline IFBEngineContextCore&
+ifb_engine::context_get_core(
     ifb_void) {
 
-    return(_engine_context.stats);
+    return(_engine_context.core);
 }
 
 inline ifb_void 
@@ -43,38 +43,6 @@ ifb_engine::context_initialize_stack(
     stack_ref.size     = stack_size;
     stack_ref.position = 0;
     ifb_macro_assert(stack_ref.memory);
-}
-
-
-inline ifb_void 
-ifb_engine::context_initialize_managers(
-    const IFBEngineConfig* config_ptr) {
-
-    //get the memory
-    IFBEngineMemory* memory_ptr = ifb_engine::context_get_memory();
-
-    //tag manager    
-    IFBEngineTagManager* tag_manager_ptr = ifb_engine::context_get_tag_manager();
-    ifb_engine::tag_manager_initialize(
-        tag_manager_ptr,
-        memory_ptr,
-        config_ptr->tag_c_str_length,
-        config_ptr->tag_count_max);
-
-    //arena manager
-    IFBEngineArenaManager* arena_manager_ptr = ifb_engine::context_get_arena_manager();
-    ifb_engine::arena_manager_initialize(
-        arena_manager_ptr,
-        memory_ptr,
-        config_ptr->arena_minimum_kb,
-        config_ptr->arena_count_max);
-
-    //window manager
-    IFBEngineWindowManager* window_manager_ptr = ifb_engine::context_get_window_manager();
-    ifb_engine::window_manger_initialize(
-        window_manager_ptr,
-        memory_ptr);
-    
 }
 
 inline ifb_void 

@@ -66,9 +66,18 @@ struct IFBIDArena : IFBID {
     IFBIDCommit commit_id;
 };
 
+struct IFBIDMonitor : IFBID { };
+
+//handle
 struct IFBHND {
     ifb_u32 offset;
 };
+
+//global handle
+struct IFBGHND {
+    ifb_u32 offset;
+}
+
 
 struct IFBHNDLinearAllocator : IFBHND { };
 struct IFBHNDBlockAllocator  : IFBHND { };
@@ -141,6 +150,25 @@ struct IFBBlockAllocator {
     IFBIDArena          arena_id;
     ifb_u32             block_size;
     ifb_u32             block_count;
+};
+
+/**********************************************************************************/
+/* GRAPHICS                                                                       */
+/**********************************************************************************/
+
+typedef ifb_u32 IFBAspectRatioType; 
+
+struct IFBMonitor {
+    IFBIDMonitor       id;
+    ifb_u32            refresh_hz;
+    IFBDimensions      dimensions;
+    IFBAspectRatioType aspect_ratio;
+};
+
+struct IFBWindow {
+    IFBIDMonitor  monitor_id;
+    IFBDimensions dimensions;
+
 };
 
 #endif //IFB_TYPES_HPP

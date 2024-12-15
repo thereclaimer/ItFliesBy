@@ -21,8 +21,8 @@ ifb_engine::window_manager_create_window(
     ifb_b8 result = true;
 
     //window dimensions
-    const ifb_u32 window_width      = 1920;
-    const ifb_u32 window_height     = 1080;
+    const ifb_u32 window_width      = 800;
+    const ifb_u32 window_height     = 600;
     const ifb_u32 window_position_x = 0;
     const ifb_u32 window_position_y = 0;
 

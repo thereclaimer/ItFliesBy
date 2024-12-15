@@ -115,4 +115,28 @@ namespace ifb_engine {
     ifb_void window_manager_frame_render (IFBEngineWindowManager* window_manager_ptr);
 };
 
+
+/**********************************************************************************/
+/* GRAPHICS MANAGER                                                               */
+/**********************************************************************************/
+
+struct IFBEngineGraphicsManager {
+    ifb_u32 monitor_count;
+    struct {
+        IFBHND monitors;
+    } handles;
+    IFBIDCommit commit_id;
+};
+
+namespace ifb_engine {
+
+    ifb_void 
+    graphics_manger_initialize(
+        IFBEngineGraphicsManager* graphics_manager_ptr,
+        IFBEngineMemory*        memory_ptr);
+
+
+};
+
+  
 #endif //IFB_ENGINE_INTERNAL_MANAGERS_HPP
