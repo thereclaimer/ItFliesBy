@@ -8,9 +8,9 @@ ifb_engine::context_managers_create_all(
           IFBEngineMemory*          memory_ptr,
     const IFBEngineConfig*          config_ptr) {
     
-    ifb_engine_context_push_struct(managers_ptr->handles.tag_manager,    IFBEngineTagManager);
-    ifb_engine_context_push_struct(managers_ptr->handles.arena_manager,  IFBEngineArenaManager);
-    ifb_engine_context_push_struct(managers_ptr->handles.window_manager, IFBEngineWindowManager);
+    ifb_engine_memory_global_push_struct(memory_ptr, managers_ptr->handles.tag_manager,    IFBEngineTagManager);
+    ifb_engine_memory_global_push_struct(memory_ptr, managers_ptr->handles.arena_manager,  IFBEngineArenaManager);
+    ifb_engine_memory_global_push_struct(memory_ptr, managers_ptr->handles.window_manager, IFBEngineWindowManager);
 
     //tag manager    
     IFBEngineTagManager* tag_manager_ptr = ifb_engine::context_managers_get_tag_manager(managers_ptr);

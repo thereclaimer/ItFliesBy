@@ -4,6 +4,15 @@
 #include "ifb-engine.hpp"
 
 /**********************************************************************************/
+/* SYSTEM INFO                                                                    */
+/**********************************************************************************/
+
+struct IFBEngineMemorySystemInfo {
+    ifb_u32 allocation_granularity;
+    ifb_u32 page_size;
+};
+
+/**********************************************************************************/
 /* GLOBAL STACK                                                                   */
 /**********************************************************************************/
 
@@ -24,13 +33,11 @@ struct IFBEngineMemoryGlobalStack {
 
 struct IFBEngineMemoryReservation {
     ifb_address start;
-    ifb_u32     system_allocation_granularity;
-    ifb_u32     system_page_size;
     ifb_u32     page_count_total;
     ifb_u32     page_count_committed;
     ifb_u32     commit_count_max;
     ifb_u32     commit_count_current;
-    IFBHND      commit_array_handle; // IFBCommit
+    IFBGHND     commit_array_handle; // IFBCommit
 };
 
 /**********************************************************************************/
@@ -39,6 +46,7 @@ struct IFBEngineMemoryReservation {
 
 struct IFBEngineMemory {
     IFBEngineMemoryGlobalStack global_stack;
+    IFBEngineMemorySystemInfo  system_info;
     IFBEngineMemoryReservation reservation;
 };
 
@@ -46,7 +54,9 @@ namespace ifb_engine {
 
           ifb_void    memory_reserve (IFBEngineMemory* memory_ptr, const ifb_size reservation_size_minimum, const ifb_u32 commit_count_max);
     const IFBIDCommit memory_commit  (IFBEngineMemory* memory_ptr, const ifb_u32  commit_size_minimum);
-    
+
+    const ifb_u32     memory_get_page_count (const IFBEngineMemory* memory_ptr, const ifb_u32 size);
+
     const ifb_u32     memory_get_commit_page_number (const IFBEngineMemory* memory_ptr, const IFBIDCommit commit_id);
     const ifb_u32     memory_get_commit_page_count  (const IFBEngineMemory* memory_ptr, const IFBIDCommit commit_id);
     const ifb_u32     memory_get_commit_size        (const IFBEngineMemory* memory_ptr, const IFBIDCommit commit_id);

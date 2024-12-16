@@ -18,7 +18,7 @@ ifb_engine::arena_manager_initialize(
 
     //do the commit
     const ifb_u32     arena_minimum_size_aligned = ifb_engine::memory_align_size_to_page(memory_ptr,arena_minimum_size);
-    const ifb_u32     arena_minimum_pages        = arena_minimum_size_aligned / memory_ptr->system_page_size; 
+    const ifb_u32     arena_minimum_pages        = ifb_engine::memory_get_page_count(memory_ptr,arena_minimum_size_aligned); 
     const IFBIDCommit commit_id                  = ifb_engine::memory_commit(memory_ptr,commit_size);
 
     //calculate the commit sizes for the arrays

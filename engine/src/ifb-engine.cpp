@@ -9,7 +9,6 @@
 
 //context
 #include "ifb-engine-context-managers.cpp"
-#include "ifb-engine-context-stack.cpp"
 #include "ifb-engine-context.cpp"
 
 //core

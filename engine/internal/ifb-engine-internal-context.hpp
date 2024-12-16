@@ -9,15 +9,15 @@
 /* MANAGERS                                                                       */
 /**********************************************************************************/
 
-struct IFBHNDEngineTagManager    : IFBHND { };
-struct IFBHNDEngineArenaManager  : IFBHND { };
-struct IFBHNDEngineWindowManager : IFBHND { };
+struct IFBGHNDEngineTagManager    : IFBGHND { };
+struct IFBGHNDEngineArenaManager  : IFBGHND { };
+struct IFBGHNDEngineWindowManager : IFBGHND { };
 
 struct IFBEngineContextManagers {
     struct {
-        IFBHNDEngineTagManager    tag_manager;
-        IFBHNDEngineArenaManager  arena_manager;
-        IFBHNDEngineWindowManager window_manager;
+        IFBGHNDEngineTagManager    tag_manager;
+        IFBGHNDEngineArenaManager  arena_manager;
+        IFBGHNDEngineWindowManager window_manager;
     } handles;
 };
 
@@ -62,13 +62,15 @@ namespace ifb_engine {
 
     ifb_global IFBEngineContext _context;
 
+    IFBEngineContext& context() { return(_context); }
+
     IFBEngineMemory*          context_get_memory   (ifb_void);
     IFBEngineContextManagers* context_get_managers (ifb_void);
     IFBEngineContextCore*     context_get_core     (ifb_void);
     IFBEngineConfig*          context_get_config   (ifb_void);
 
-    const ifb_ptr context_get_pointer(const IFBHND&  handle);
-    const ifb_ptr context_get_pointer(const IFBGHND& global_handle);
+    const ifb_ptr context_get_pointer (const IFBHND&  handle);
+    const ifb_ptr context_get_pointer (const IFBGHND& global_handle);
 };
 
 #endif //IFB_ENGINE_INTERNAL_CONTEXT_HPP
