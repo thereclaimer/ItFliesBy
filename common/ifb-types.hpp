@@ -2,6 +2,7 @@
 #define IFB_TYPES_HPP
 
 #include <cstdint>
+#include <xmmintrin.h>
 
 /**********************************************************************************/
 /* PRIMITIVES                                                                     */
@@ -49,6 +50,28 @@ typedef uint32_t   ifb_page;
 //time
 typedef uint64_t ifb_timems;
 
+/**********************************************************************************/
+/* SIMD                                                                           */
+/**********************************************************************************/
+
+#if _MSC_VER
+    #if !defined(__clang__)
+        #define INSTRUCTION_REORDER_BARRIER _ReadWriteBarrier()
+    #endif //!defined(__clang__)
+    #include <intrin.h>
+#else //_MSC_VER
+    #include <x86intrin.h>
+#endif //_MSC_VER
+
+typedef __m128 ifb_xmm_f128;
+
+#define ifb_xmm_f128_load_aligned(f32_ptr)          _mm_load_ps(f32_4_ptr)
+#define ifb_xmm_f128_load_unaligned(f32_ptr)        _mm_loadu_ps(f32_4_ptr)
+#define ifb_xmm_f128_add(f32_ptr_a, f32_ptr_b)      _mm_add_ps(f32_ptr_a, f32_ptr_b)
+#define ifb_xmm_f128_subtract(f32_ptr_a, f32_ptr_b) _mm_sub_ps(f32_ptr_a, f32_ptr_b)
+#define ifb_xmm_f128_multiply(f32_ptr_a, f32_ptr_b) _mm_mul_ps(f32_ptr_a, f32_ptr_b)
+#define ifb_xmm_f128_divide(f32_ptr_a, f32_ptr_b)   _mm_div_ps(f32_ptr_a, f32_ptr_b)
+#define ifb_xmm_f128_store(f32_4_ptr, f32_simd)     _mm_store_ps(f32_4_ptr, f32_simd)
 
 /**********************************************************************************/
 /* IDENTIFIERS                                                                    */
