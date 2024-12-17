@@ -34,8 +34,9 @@ namespace ifb_engine {
           ifb_void  tag_manager_release_tag             (const IFBEngineTagManager* tag_manager_ptr, const IFBIDTag& tag_id_ref);
     const ifb_cstr  tag_manager_get_tag_c_str           (const IFBEngineTagManager* tag_manager_ptr, const IFBIDTag& tag_id_ref);
     const IFBHash   tag_manager_get_hash                (const IFBEngineTagManager* tag_manager_ptr, const IFBIDTag& tag_id_ref);
-          ifb_char* tag_manager_get_pointer_char_buffer (const IFBEngineTagManager* tag_manager_ptr);
-          IFBHash*  tag_manager_get_pointer_hash_array  (const IFBEngineTagManager* tag_manager_ptr);
+    
+          ifb_char* tag_manager_get_pointer_char_buffer (const IFBEngineTagManagerMemory& tag_manager_memory_ref);
+          IFBHash*  tag_manager_get_pointer_hash_array  (const IFBEngineTagManagerMemory& tag_manager_memory_ref);
 };
 
 /**********************************************************************************/
