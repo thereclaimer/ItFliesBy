@@ -8,14 +8,17 @@
 /* TAG MANAGER                                                                    */
 /**********************************************************************************/
 
-struct IFBEngineTagManager {
-    ifb_u32     tag_c_str_length;
-    ifb_u32     tag_count_max;
+struct IFBEngineTagManagerMemory {
+    ifb_address commit_address;
+    ifb_u16     offset_char_buffer;
+    ifb_u16     offset_hash_array;
     IFBIDCommit commit_id;
-    struct {
-        IFBHND char_buffer; // ifb_char
-        IFBHND hash_array;  // IFBHash
-    } handles;
+};
+
+struct IFBEngineTagManager {
+    IFBEngineTagManagerMemory memory;
+    ifb_u32                   tag_c_str_length;
+    ifb_u32                   tag_count_max;
 };
 
 namespace ifb_engine {
@@ -27,28 +30,31 @@ namespace ifb_engine {
         const ifb_u32              tag_c_str_length,
         const ifb_u32              tag_count_max);
 
-    const IFBIDTag  tag_manager_reserve_tag             (const IFBEngineTagManager* tag_manager_ptr, const IFBEngineMemory* memory_ptr, const ifb_cstr tag_c_str);
-          ifb_void  tag_manager_release_tag             (const IFBEngineTagManager* tag_manager_ptr, const IFBEngineMemory* memory_ptr, const IFBIDTag& tag_id_ref);
-    const ifb_cstr  tag_manager_get_tag_c_str           (const IFBEngineTagManager* tag_manager_ptr, const IFBEngineMemory* memory_ptr, const IFBIDTag& tag_id_ref);
-    const IFBHash   tag_manager_get_hash                (const IFBEngineTagManager* tag_manager_ptr, const IFBEngineMemory* memory_ptr, const IFBIDTag& tag_id_ref);
-          ifb_char* tag_manager_get_pointer_char_buffer (const IFBEngineTagManager* tag_manager_ptr, const IFBEngineMemory* memory_ptr);
-          IFBHash*  tag_manager_get_pointer_hash_array  (const IFBEngineTagManager* tag_manager_ptr, const IFBEngineMemory* memory_ptr);
+    const IFBIDTag  tag_manager_reserve_tag             (const IFBEngineTagManager* tag_manager_ptr, const ifb_cstr  tag_c_str);
+          ifb_void  tag_manager_release_tag             (const IFBEngineTagManager* tag_manager_ptr, const IFBIDTag& tag_id_ref);
+    const ifb_cstr  tag_manager_get_tag_c_str           (const IFBEngineTagManager* tag_manager_ptr, const IFBIDTag& tag_id_ref);
+    const IFBHash   tag_manager_get_hash                (const IFBEngineTagManager* tag_manager_ptr, const IFBIDTag& tag_id_ref);
+          ifb_char* tag_manager_get_pointer_char_buffer (const IFBEngineTagManager* tag_manager_ptr);
+          IFBHash*  tag_manager_get_pointer_hash_array  (const IFBEngineTagManager* tag_manager_ptr);
 };
 
 /**********************************************************************************/
 /* ARENA MANAGER                                                                  */
 /**********************************************************************************/
 
-struct IFBEngineArenaManager {
-    ifb_u32     arena_minimum_size;
-    ifb_u32     arena_minimum_pages;
-    ifb_u32     arena_count_max;
-    ifb_u32     arena_count_committed;
+struct IFBEngineArenaManagerMemory {
+    ifb_address commit_address;
+    ifb_u16     offset_commit_id_array;
+    ifb_u16     offset_tag_id_array;
     IFBIDCommit commit_id;
-    struct {
-        IFBHND commit_id_array; // IFBIDCommit
-        IFBHND tag_id_array;    // IFBTagId
-    } handles;
+};
+
+struct IFBEngineArenaManager {
+    IFBEngineArenaManagerMemory memory;
+    ifb_u32                     arena_minimum_size;
+    ifb_u32                     arena_minimum_pages;
+    ifb_u32                     arena_count_max;
+    ifb_u32                     arena_count_committed;
 };
 
 namespace ifb_engine {
@@ -68,63 +74,30 @@ namespace ifb_engine {
         const ifb_u32                arena_commit_size_minimum);
 
     const ifb_u32      arena_manager_align_size_to_arena         (const IFBEngineArenaManager* arena_manager_ptr, const ifb_u32 size);
-    const IFBIDCommit  arena_manager_get_arena_commit_id         (const IFBEngineArenaManager* arena_manager_ptr, const IFBEngineMemory* memory_ptr, const IFBIDArena& arena_id_ref);
-    const IFBIDTag     arena_manager_get_arena_tag_id            (const IFBEngineArenaManager* arena_manager_ptr, const IFBEngineMemory* memory_ptr, const IFBIDArena& arena_id_ref);
-    const ifb_u32      arena_manager_get_arena_size              (const IFBEngineArenaManager* arena_manager_ptr, const IFBEngineMemory* memory_ptr, const IFBIDArena& arena_id_ref);
-    const ifb_u32      arena_manager_get_arena_start             (const IFBEngineArenaManager* arena_manager_ptr, const IFBEngineMemory* memory_ptr, const IFBIDArena& arena_id_ref);
-    const ifb_ptr      arena_manager_get_arena_pointer           (const IFBEngineArenaManager* arena_manager_ptr, const IFBEngineMemory* memory_ptr, const IFBIDArena& arena_id_ref);
-    const ifb_ptr      arena_manager_get_arena_pointer           (const IFBEngineArenaManager* arena_manager_ptr, const IFBEngineMemory* memory_ptr, const IFBIDArena& arena_id_ref, const ifb_u32 offset);
-          IFBIDCommit* arena_manager_get_pointer_commit_id_array (const IFBEngineArenaManager* arena_manager_ptr, const IFBEngineMemory* memory_ptr);
-          IFBIDTag*    arena_manager_get_pointer_tag_id_array    (const IFBEngineArenaManager* arena_manager_ptr, const IFBEngineMemory* memory_ptr);
+    const IFBIDCommit  arena_manager_get_arena_commit_id         (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena& arena_id_ref);
+    const IFBIDTag     arena_manager_get_arena_tag_id            (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena& arena_id_ref);
+    const ifb_u32      arena_manager_get_arena_size              (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena& arena_id_ref);
+    const ifb_u32      arena_manager_get_arena_start             (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena& arena_id_ref);
+    const ifb_ptr      arena_manager_get_arena_pointer           (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena& arena_id_ref);
+    const ifb_ptr      arena_manager_get_arena_pointer           (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena& arena_id_ref, const ifb_u32 offset);
+          IFBIDCommit* arena_manager_get_pointer_commit_id_array (const IFBEngineArenaManager* arena_manager_ptr);
+          IFBIDTag*    arena_manager_get_pointer_tag_id_array    (const IFBEngineArenaManager* arena_manager_ptr);
 };
-
-/**********************************************************************************/ 
-/* WINDOW MANAGER                                                                 */
-/**********************************************************************************/
-
-struct IFBEngineWindowManager {
-    IFBResolution      window_resolution;
-    IFBPosition        window_position;
-    IFBAspectRatioType window_aspect_ratio;
-    IFBResolutionType  window_resolution_type_default;
-    IFBResolutionType  window_resolution_type_current;
-};
-
-namespace ifb_engine {
-
-    ifb_void 
-    window_manger_initialize(
-        IFBEngineWindowManager* window_manager_ptr,
-        IFBEngineMemory*        memory_ptr);
-
-    ifb_void window_manager_create_window (
-              IFBEngineWindowManager* window_manager_ptr,
-        const ifb_cstr                window_title,
-        const ifb_b8                  use_opengl,
-        const ifb_b8                  use_imgui);
-
-    ifb_void window_manager_set_visibility(
-              IFBEngineWindowManager* window_manager_ptr,
-        const ifb_b8                  visible);
-
-    ifb_void window_manager_frame_start  (IFBEngineWindowManager* window_manager_ptr);
-    ifb_void window_manager_frame_render (IFBEngineWindowManager* window_manager_ptr);
-};
-
 
 /**********************************************************************************/
 /* GRAPHICS MANAGER                                                               */
 /**********************************************************************************/
 
-struct IFBEngineGraphicsManager {
-    IFBWindow    window;
-    IFBIDMonitor active_monitor_id;
-    ifb_u32      monitor_count;
-    ifb_address  commit_address;
-    struct {
-        ifb_u32 monitor_array;
-    } commit_offsets;
+struct IFBEngineGraphicsManagerMemory {
+    ifb_address commit_address;
+    ifb_u16     offset_window;
+    ifb_u16     offset_monitor_array;
     IFBIDCommit commit_id;
+};
+
+struct IFBEngineGraphicsManager {
+    IFBEngineGraphicsManagerMemory memory;
+    ifb_u32                        monitor_count;
 };
 
 namespace ifb_engine {
@@ -134,7 +107,14 @@ namespace ifb_engine {
         IFBEngineGraphicsManager* graphics_manager_ptr,
         IFBEngineMemory*          memory_ptr);
 
+    ifb_void 
+    graphics_manager_create_window (
+              IFBEngineGraphicsManager* graphics_manager_ptr,
+        const ifb_cstr                  window_title,
+        const IFBWindowFlags            window_flags);
 
+    ifb_void graphics_manager_frame_start  (IFBEngineGraphicsManager* graphics_manager_ptr);
+    ifb_void graphics_manager_frame_render (IFBEngineGraphicsManager* graphics_manager_ptr);
 };
 
   

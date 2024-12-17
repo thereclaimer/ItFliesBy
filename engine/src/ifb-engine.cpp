@@ -17,11 +17,10 @@
 //managers
 #include "ifb-engine-manager-arena.cpp"
 #include "ifb-engine-manager-tag.cpp"
-#include "ifb-engine-manager-window.cpp"
+#include "ifb-engine-manager-graphics.cpp"
 
 //memory
 #include "ifb-engine-memory.cpp"
 
 //platform
 #include "ifb-engine-platform.cpp"
-
