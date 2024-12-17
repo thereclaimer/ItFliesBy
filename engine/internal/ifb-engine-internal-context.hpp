@@ -9,24 +9,29 @@
 /* MANAGERS                                                                       */
 /**********************************************************************************/
 
-struct IFBGHNDEngineTagManager    : IFBGHND { };
-struct IFBGHNDEngineArenaManager  : IFBGHND { };
-struct IFBGHNDEngineWindowManager : IFBGHND { };
+struct IFBGHNDEngineTagManager      : IFBGHND { };
+struct IFBGHNDEngineArenaManager    : IFBGHND { };
+struct IFBGHNDEngineGraphicsManager : IFBGHND { };
 
 struct IFBEngineContextManagers {
     struct {
-        IFBGHNDEngineTagManager    tag_manager;
-        IFBGHNDEngineArenaManager  arena_manager;
-        IFBGHNDEngineWindowManager window_manager;
+        IFBGHNDEngineTagManager      tag_manager;
+        IFBGHNDEngineArenaManager    arena_manager;
+        IFBGHNDEngineGraphicsManager graphics_manager;
     } handles;
 };
 
 namespace ifb_engine {
 
-    ifb_void                context_managers_create_all         (IFBEngineContextManagers* managers_ptr, IFBEngineMemory* memory_ptr, const IFBEngineConfig* config_ptr);
-    IFBEngineTagManager*    context_managers_get_tag_manager    (const IFBEngineContextManagers* managers_ptr);
-    IFBEngineArenaManager*  context_managers_get_arena_manager  (const IFBEngineContextManagers* managers_ptr);
-    IFBEngineWindowManager* context_managers_get_window_manager (const IFBEngineContextManagers* managers_ptr);
+    ifb_void
+    context_managers_create_all(
+              IFBEngineContextManagers* managers_ptr, 
+              IFBEngineMemory*          memory_ptr, 
+        const IFBEngineConfig*          config_ptr);
+        
+    IFBEngineTagManager*      context_managers_get_tag_manager      (const IFBEngineContextManagers* managers_ptr);
+    IFBEngineArenaManager*    context_managers_get_arena_manager    (const IFBEngineContextManagers* managers_ptr);
+    IFBEngineGraphicsManager* context_managers_get_graphics_manager (const IFBEngineContextManagers* managers_ptr);
 };
 
 /**********************************************************************************/

@@ -11,11 +11,11 @@
 struct IFBEngineTagManager {
     ifb_u32     tag_c_str_length;
     ifb_u32     tag_count_max;
+    IFBIDCommit commit_id;
     struct {
         IFBHND char_buffer; // ifb_char
         IFBHND hash_array;  // IFBHash
     } handles;
-    IFBIDCommit commit_id;
 };
 
 namespace ifb_engine {
@@ -44,11 +44,11 @@ struct IFBEngineArenaManager {
     ifb_u32     arena_minimum_pages;
     ifb_u32     arena_count_max;
     ifb_u32     arena_count_committed;
+    IFBIDCommit commit_id;
     struct {
         IFBHND commit_id_array; // IFBIDCommit
         IFBHND tag_id_array;    // IFBTagId
     } handles;
-    IFBIDCommit commit_id;
 };
 
 namespace ifb_engine {
@@ -88,10 +88,6 @@ struct IFBEngineWindowManager {
     IFBAspectRatioType window_aspect_ratio;
     IFBResolutionType  window_resolution_type_default;
     IFBResolutionType  window_resolution_type_current;
-    ifb_b8             window_visible;
-    ifb_b8             window_created;
-    ifb_b8             window_has_imgui;
-    ifb_b8             window_has_opengl;
 };
 
 namespace ifb_engine {
@@ -121,10 +117,13 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineGraphicsManager {
-    ifb_u32 monitor_count;
+    IFBWindow    window;
+    IFBIDMonitor active_monitor_id;
+    ifb_u32      monitor_count;
+    ifb_address  commit_address;
     struct {
-        IFBHND monitors;
-    } handles;
+        ifb_u32 monitor_array;
+    } commit_offsets;
     IFBIDCommit commit_id;
 };
 
@@ -133,7 +132,7 @@ namespace ifb_engine {
     ifb_void 
     graphics_manger_initialize(
         IFBEngineGraphicsManager* graphics_manager_ptr,
-        IFBEngineMemory*        memory_ptr);
+        IFBEngineMemory*          memory_ptr);
 
 
 };

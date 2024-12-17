@@ -8,9 +8,9 @@ ifb_engine::context_managers_create_all(
           IFBEngineMemory*          memory_ptr,
     const IFBEngineConfig*          config_ptr) {
     
-    ifb_engine_memory_global_push_struct(memory_ptr, managers_ptr->handles.tag_manager,    IFBEngineTagManager);
-    ifb_engine_memory_global_push_struct(memory_ptr, managers_ptr->handles.arena_manager,  IFBEngineArenaManager);
-    ifb_engine_memory_global_push_struct(memory_ptr, managers_ptr->handles.window_manager, IFBEngineWindowManager);
+    ifb_engine_memory_global_push_struct(memory_ptr, managers_ptr->handles.tag_manager,      IFBEngineTagManager);
+    ifb_engine_memory_global_push_struct(memory_ptr, managers_ptr->handles.arena_manager,    IFBEngineArenaManager);
+    ifb_engine_memory_global_push_struct(memory_ptr, managers_ptr->handles.graphics_manager, IFBEngineGraphicsManager);
 
     //tag manager    
     IFBEngineTagManager* tag_manager_ptr = ifb_engine::context_managers_get_tag_manager(managers_ptr);
@@ -28,10 +28,10 @@ ifb_engine::context_managers_create_all(
         config_ptr->arena_minimum_kb,
         config_ptr->arena_count_max);
 
-    //window manager
-    IFBEngineWindowManager* window_manager_ptr = ifb_engine::context_managers_get_window_manager(managers_ptr);
-    ifb_engine::window_manger_initialize(
-        window_manager_ptr,
+    //graphics manager
+    IFBEngineGraphicsManager* graphics_manager_ptr = ifb_engine::context_managers_get_graphics_manager(managers_ptr);
+    ifb_engine::graphics_manger_initialize(
+        graphics_manager_ptr,
         memory_ptr);
 }
 
@@ -55,12 +55,12 @@ ifb_engine::context_managers_get_arena_manager(
     return(arena_manager_ptr);  
 }
 
-inline IFBEngineWindowManager* 
-ifb_engine::context_managers_get_window_manager(
+inline IFBEngineGraphicsManager* 
+ifb_engine::context_managers_get_graphics_manager(
     const IFBEngineContextManagers* managers_ptr) {
 
-    IFBEngineWindowManager* window_manager_ptr = (IFBEngineWindowManager*)ifb_engine::context_get_pointer(
-        managers_ptr->handles.window_manager);
+    IFBEngineGraphicsManager* graphics_manager_ptr = (IFBEngineGraphicsManager*)ifb_engine::context_get_pointer(
+        managers_ptr->handles.graphics_manager);
 
-    return(window_manager_ptr);   
+    return(graphics_manager_ptr);
 }
