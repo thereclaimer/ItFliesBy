@@ -58,14 +58,9 @@ struct IFBID {
     ifb_index index;
 };
 
-struct IFBIDTag    : IFBID { };
-struct IFBIDCommit : IFBID { };
-
-struct IFBIDArena : IFBID {
-    IFBIDTag    tag_id;
-    IFBIDCommit commit_id;
-};
-
+struct IFBIDTag     : IFBID { };
+struct IFBIDCommit  : IFBID { };
+struct IFBIDArena   : IFBID { };
 struct IFBIDMonitor : IFBID { };
 
 //handle
@@ -78,10 +73,8 @@ struct IFBGHND {
     ifb_u32 offset;
 };
 
-
 struct IFBHNDLinearAllocator : IFBHND { };
 struct IFBHNDBlockAllocator  : IFBHND { };
-
 
 /**********************************************************************************/
 /* STRINGS                                                                        */

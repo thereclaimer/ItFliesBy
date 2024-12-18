@@ -34,7 +34,7 @@ namespace ifb_engine {
           ifb_void  tag_manager_release_tag             (const IFBEngineTagManager* tag_manager_ptr, const IFBIDTag& tag_id_ref);
     const ifb_cstr  tag_manager_get_tag_c_str           (const IFBEngineTagManager* tag_manager_ptr, const IFBIDTag& tag_id_ref);
     const IFBHash   tag_manager_get_hash                (const IFBEngineTagManager* tag_manager_ptr, const IFBIDTag& tag_id_ref);
-    
+
           ifb_char* tag_manager_get_pointer_char_buffer (const IFBEngineTagManagerMemory& tag_manager_memory_ref);
           IFBHash*  tag_manager_get_pointer_hash_array  (const IFBEngineTagManagerMemory& tag_manager_memory_ref);
 };
@@ -44,9 +44,11 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineArenaManagerMemory {
-    ifb_address commit_address;
-    ifb_u16     offset_commit_id_array;
-    ifb_u16     offset_tag_id_array;
+    ifb_address start;
+    ifb_u16     offset_commit_id_array; // IFBIDCommit
+    ifb_u16     offset_tag_id_array;    // IFBIDTag
+    ifb_u16     offset_arena_start;     // ifb_address
+    ifb_u16     offset_arena_size;      // ifb_u32
     IFBIDCommit commit_id;
 };
 
@@ -74,15 +76,18 @@ namespace ifb_engine {
         const IFBIDTag               arena_tag_id,
         const ifb_u32                arena_commit_size_minimum);
 
-    const ifb_u32      arena_manager_align_size_to_arena         (const IFBEngineArenaManager* arena_manager_ptr, const ifb_u32 size);
-    const IFBIDCommit  arena_manager_get_arena_commit_id         (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena& arena_id_ref);
-    const IFBIDTag     arena_manager_get_arena_tag_id            (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena& arena_id_ref);
-    const ifb_u32      arena_manager_get_arena_size              (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena& arena_id_ref);
-    const ifb_u32      arena_manager_get_arena_start             (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena& arena_id_ref);
-    const ifb_ptr      arena_manager_get_arena_pointer           (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena& arena_id_ref);
-    const ifb_ptr      arena_manager_get_arena_pointer           (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena& arena_id_ref, const ifb_u32 offset);
-          IFBIDCommit* arena_manager_get_pointer_commit_id_array (const IFBEngineArenaManager* arena_manager_ptr);
-          IFBIDTag*    arena_manager_get_pointer_tag_id_array    (const IFBEngineArenaManager* arena_manager_ptr);
+    const ifb_u32      arena_manager_align_size_to_arena (const IFBEngineArenaManager* arena_manager_ptr, const ifb_u32 size);
+    const IFBIDCommit  arena_manager_get_arena_commit_id (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena& arena_id_ref);
+    const IFBIDTag     arena_manager_get_arena_tag_id    (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena& arena_id_ref);
+    const ifb_u32      arena_manager_get_arena_size      (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena& arena_id_ref);
+    const ifb_u32      arena_manager_get_arena_start     (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena& arena_id_ref);
+    const ifb_ptr      arena_manager_get_arena_pointer   (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena& arena_id_ref);
+    const ifb_ptr      arena_manager_get_arena_pointer   (const IFBEngineArenaManager* arena_manager_ptr, const IFBIDArena& arena_id_ref, const ifb_u32 offset);
+          
+    IFBIDCommit* arena_manager_get_pointer_commit_id_array   (const IFBEngineArenaManagerMemory& arena_manager_memory_ref);
+    IFBIDTag*    arena_manager_get_pointer_tag_id_array      (const IFBEngineArenaManagerMemory& arena_manager_memory_ref);
+    ifb_address* arena_manager_get_pointer_arena_start_array (const IFBEngineArenaManagerMemory& arena_manager_memory_ref);
+    ifb_u32*     arena_manager_get_pointer_arena_size_array  (const IFBEngineArenaManagerMemory& arena_manager_memory_ref);
 };
 
 /**********************************************************************************/
