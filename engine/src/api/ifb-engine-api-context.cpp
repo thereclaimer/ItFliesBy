@@ -32,24 +32,20 @@ ifb_engine::context_startup(
     ifb_void) {
         
     //get the pointers
-    IFBEngineWindowManager* window_manager_ptr = ifb_engine::context_get_window_manager();
-    IFBEngineConfig*        config_ptr         = ifb_engine::context_get_config();
-
-    const ifb_b8 use_opengl     = true;
-    const ifb_b8 use_imgui      = false;
-    const ifb_b8 window_visible = true;
+    IFBEngineContextManagers* managers_ptr         = ifb_engine::context_get_managers();
+    IFBEngineGraphicsManager* graphics_manager_ptr = ifb_engine::context_managers_get_graphics_manager(managers_ptr);
+    IFBEngineConfig*          config_ptr           = ifb_engine::context_get_config();
 
     //create the window
-    ifb_engine::window_manager_create_window(
-        window_manager_ptr,
-        config_ptr->window_title_cstr,
-        use_opengl,
-        use_imgui);
+    const IFBWindowFlags window_flags = 
+        IFBWindowFlags_Visible | 
+        IFBWindowFlags_ImGui   | 
+        IFBWindowFlags_OpenGL;
 
-    //show the window
-    ifb_engine::window_manager_set_visibility(
-        window_manager_ptr,
-        window_visible);
+    ifb_engine::graphics_manager_create_window(
+        graphics_manager_ptr,
+        config_ptr->window_title_cstr,
+        window_flags);
 
     //we're done
     return(true);
@@ -60,13 +56,14 @@ ifb_engine::context_update_and_render(
     ifb_void) {
 
     //get the pointers
-    IFBEngineWindowManager* window_manager_ptr = ifb_engine::context_get_window_manager();
+    IFBEngineContextManagers* managers_ptr         = ifb_engine::context_get_managers();
+    IFBEngineGraphicsManager* graphics_manager_ptr = ifb_engine::context_managers_get_graphics_manager(managers_ptr);
 
     //start a new frame
-    ifb_engine::window_manager_frame_start(window_manager_ptr);
+    ifb_engine::graphics_manager_frame_start(graphics_manager_ptr);
 
     //render the frame
-    ifb_engine::window_manager_frame_render(window_manager_ptr);
+    ifb_engine::graphics_manager_frame_render(graphics_manager_ptr);
 
     //we're done
     return(true);

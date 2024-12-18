@@ -20,7 +20,6 @@ struct IFBEngineMemorySystemInfo {
     #define IFB_ENGINE_CONFIG_GLOBAL_MEMORY_STACK_SIZE ifb_macro_size_kilobytes(64)
 #endif
 
-
 struct IFBEngineMemoryGlobalStack {
     ifb_u32  size;
     ifb_u32  position;

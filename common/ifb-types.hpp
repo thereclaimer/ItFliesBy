@@ -364,7 +364,6 @@ struct IFBWindow {
     IFBPosition        position;
     IFBAspectRatioType aspect_ratio;
     IFBIDMonitor       monitor_id;
-
 };
 
 #endif //IFB_TYPES_HPP

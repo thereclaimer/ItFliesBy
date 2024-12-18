@@ -1,8 +1,6 @@
 #pragma once
 
 //api
-#include "ifb-engine-api-allocator-block.cpp"
-#include "ifb-engine-api-allocator-linear.cpp"
 #include "ifb-engine-api-arena.cpp"
 #include "ifb-engine-api-context.cpp"
 #include "ifb-engine-api-tag.cpp"

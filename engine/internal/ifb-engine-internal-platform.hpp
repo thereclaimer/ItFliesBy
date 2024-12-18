@@ -2,23 +2,6 @@
 #define IFB_ENGINE_INTERNAL_PLATFORM_HPP
 
 #include "ifb-engine.hpp"
-#include "ifb-engine-internal-memory.hpp"
-
-
-#define IFB_ENGINE_PLATFORM_WINDOW_TITLE "It Flies By"
-
-struct IFBEnginePlatformWindow {
-    ifb_u32    width;
-    ifb_u32    height;
-    ifb_u32    position_x;
-    ifb_u32    position_y;
-    ifb_b32    quit_received;
-};
-
-struct IFBEnginePlatformMonitorInfo {
-    IFBDimensions dimensions;
-    ifb_u32       refresh_hz;
-}; 
 
 //api
 namespace ifb_engine {
@@ -39,8 +22,9 @@ namespace ifb_engine {
     ifb_global funcptr_ifb_platform_window_imgui_init             platform_window_imgui_init;
 
     //monitor
-    ifb_global funcptr_ifb_platform_monitor_dimensions            platform_monitor_dimensions;
-    ifb_global funcptr_ifb_platform_monitor_refresh_hz            platform_monitor_refresh_hz;
+    ifb_global funcptr_ifb_platform_monitor_count                 platform_monitor_count;
+    ifb_global funcptr_ifb_platform_monitor_active_index          platform_monitor_active_index;
+    ifb_global funcptr_ifb_platform_monitor_info                  platform_monitor_info;
 
     //memory
     ifb_global funcptr_ifb_platform_memory_reserve                platform_memory_reserve;

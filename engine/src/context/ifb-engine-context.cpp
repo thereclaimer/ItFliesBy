@@ -4,6 +4,15 @@
 #include "ifb-engine-internal-context.hpp"
 #include "ifb-engine-internal-memory.hpp"
 
+inline IFBEngineMemory*
+ifb_engine::context_get_memory(
+    ifb_void) {
+
+    IFBEngineContext& context_ref = ifb_engine::context();
+
+    return(&context_ref.memory);
+}
+
 inline IFBEngineContextManagers*
 ifb_engine::context_get_managers(
     ifb_void) {

@@ -95,7 +95,7 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineGraphicsManagerMemory {
-    ifb_address commit_address;
+    ifb_address start;
     ifb_u16     offset_window;
     ifb_u16     offset_monitor_array;
     IFBIDCommit commit_id;
@@ -121,6 +121,9 @@ namespace ifb_engine {
 
     ifb_void graphics_manager_frame_start  (IFBEngineGraphicsManager* graphics_manager_ptr);
     ifb_void graphics_manager_frame_render (IFBEngineGraphicsManager* graphics_manager_ptr);
+
+    IFBWindow*  graphics_manager_get_window_pointer        (IFBEngineGraphicsManagerMemory& graphics_manager_memory_ref);
+    IFBMonitor* graphics_manager_get_monitor_array_pointer (IFBEngineGraphicsManagerMemory& graphics_manager_memory_ref);
 };
 
   
