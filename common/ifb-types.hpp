@@ -94,15 +94,6 @@ union IFBHash {
 /* MISC                                                                           */
 /**********************************************************************************/
 
-struct IFBDimensions {
-    ifb_u32 width;
-    ifb_u32 height;
-};
-
-struct IFBPosition {
-    ifb_u32 x;
-    ifb_u32 y;
-};
 
 /**********************************************************************************/
 /* MEMORY                                                                         */
@@ -149,6 +140,15 @@ struct IFBBlockAllocator {
 /* GRAPHICS                                                                       */
 /**********************************************************************************/
 
+struct IFBDimensions {
+    ifb_u32 width;
+    ifb_u32 height;
+};
+
+struct IFBPosition {
+    ifb_u32 x;
+    ifb_u32 y;
+};
 
 enum IFBResolutionType_ {
 	IFBResolutionType_16_x_9_HD_720p_1280_x_720             = 0,
@@ -340,6 +340,18 @@ namespace ifb_common {
             ? IFB_RESOLUTION_LOOKUP[IFB_RESOLUTION_TYPE_DEFAULT]
             : IFB_RESOLUTION_LOOKUP[in_resolution_type];
     }
+
+    inline ifb_void
+    resolution_default_from_aspect_ratio(
+        const IFBAspectRatioType  in_aspect_ratio_type,        
+              IFBResolution&     out_resolution_ref) {
+
+        const IFBResolutionType resolution_type = ifb_common::resolution_default_type_from_aspect_ratio(in_aspect_ratio_type);
+
+        out_resolution_ref = (resolution_type >= IFBResolutionType_Count)
+            ? IFB_RESOLUTION_LOOKUP[IFB_RESOLUTION_TYPE_DEFAULT]
+            : IFB_RESOLUTION_LOOKUP[resolution_type];
+    }
 };
 
 struct IFBMonitor {
@@ -364,6 +376,33 @@ struct IFBWindow {
     IFBPosition        position;
     IFBAspectRatioType aspect_ratio;
     IFBIDMonitor       monitor_id;
+};
+
+namespace ifb_common {
+
+    inline ifb_void
+    window_set_resolution_based_on_monitor_aspect_ratio(
+              IFBWindow*  window_ptr,
+        const IFBMonitor* monitor_ptr) {
+
+        ifb_common::resolution_default_from_aspect_ratio(
+            monitor_ptr->aspect_ratio,
+            window_ptr->resolution);
+    }
+
+    inline ifb_void 
+    window_set_position_to_monitor_center(
+              IFBWindow*  window_ptr,
+        const IFBMonitor* monitor_ptr) {
+
+        //calculate the position for centering the window
+        window_ptr->position.x = (monitor_ptr->dimensions.width  - window_ptr->resolution.width)  / 2;
+        window_ptr->position.y = (monitor_ptr->dimensions.height - window_ptr->resolution.height) / 2;
+    }
+
+    inline const ifb_b8 window_flags_is_visible (const IFBWindowFlags window_flags) { return(window_flags & IFBWindowFlags_Visible); }
+    inline const ifb_b8 window_flags_use_imgui  (const IFBWindowFlags window_flags) { return(window_flags & IFBWindowFlags_ImGui);   }
+    inline const ifb_b8 window_flags_use_opengl (const IFBWindowFlags window_flags) { return(window_flags & IFBWindowFlags_OpenGL);  }
 };
 
 #endif //IFB_TYPES_HPP

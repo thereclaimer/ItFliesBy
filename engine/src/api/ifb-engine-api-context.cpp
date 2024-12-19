@@ -36,12 +36,13 @@ ifb_engine::context_startup(
     IFBEngineGraphicsManager* graphics_manager_ptr = ifb_engine::context_managers_get_graphics_manager(managers_ptr);
     IFBEngineConfig*          config_ptr           = ifb_engine::context_get_config();
 
-    //create the window
+    //set the window flags
     const IFBWindowFlags window_flags = 
         IFBWindowFlags_Visible | 
         IFBWindowFlags_ImGui   | 
         IFBWindowFlags_OpenGL;
 
+    //create the window
     ifb_engine::graphics_manager_create_window(
         graphics_manager_ptr,
         config_ptr->window_title_cstr,

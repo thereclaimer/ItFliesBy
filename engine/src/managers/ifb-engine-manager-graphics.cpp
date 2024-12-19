@@ -50,6 +50,39 @@ ifb_engine::graphics_manager_create_window (
     const ifb_cstr                  window_title,
     const IFBWindowFlags            window_flags) {
 
+    //get the active monitor
+    const ifb_u32 monitor_index = ifb_engine::platform_monitor_active_index();
+
+    //get the monitor and window
+    const IFBMonitor* monitor_ptr = ifb_engine::graphics_manager_get_monitor(graphics_manager_ptr, monitor_index);
+          IFBWindow*  window_ptr  = ifb_engine::graphics_manager_get_window_pointer(graphics_manager_ptr->memory);
+
+    //set the flags and monitor id
+    window_ptr->flags            = window_flags;
+    window_ptr->monitor_id.index = monitor_index;
+
+    //set window properties based on the monitor
+    ifb_common::window_set_resolution_based_on_monitor_aspect_ratio(window_ptr, monitor_ptr);
+    ifb_common::window_set_position_to_monitor_center              (window_ptr, monitor_ptr);
+
+    //result of platform window initialization
+    ifb_b8 result = true;
+
+    //instruct the platform to create a window handle
+    result &= ifb_engine::platform_window_create(
+        window_title,
+        window_ptr->resolution.width,
+        window_ptr->resolution.height,
+        window_ptr->position.x,        
+        window_ptr->position.y);
+    
+    //process flags
+    result &= ifb_common::window_flags_use_opengl(window_flags) ? ifb_engine::platform_window_opengl_init() : true;
+    result &= ifb_common::window_flags_use_imgui (window_flags) ? ifb_engine::platform_window_imgui_init()  : true;
+    result &= ifb_common::window_flags_is_visible(window_flags) ? ifb_engine::platform_window_show()        : true;
+
+    //sanity check, and we're done
+    ifb_macro_assert(result);
 }
 
 inline ifb_void 
@@ -64,9 +97,27 @@ ifb_engine::graphics_manager_frame_render(
 
 }
 
+inline const IFBMonitor*
+ifb_engine::graphics_manager_get_monitor(
+    const IFBEngineGraphicsManager* graphics_manager_ptr, 
+    const ifb_u32                   monitor_index) {
+
+    //sanity check
+    ifb_macro_assert(monitor_index < graphics_manager_ptr->monitor_count);
+
+    //get the monitor array
+    const IFBMonitor* monitor_array_ptr = ifb_engine::graphics_manager_get_monitor_array_pointer(graphics_manager_ptr->memory);
+
+    //get the monitor info at the index
+    const IFBMonitor* monitor_ptr = &monitor_array_ptr[monitor_index];
+
+    //we're done
+    return(monitor_ptr);
+}
+
 inline IFBWindow*  
 ifb_engine::graphics_manager_get_window_pointer(
-    IFBEngineGraphicsManagerMemory& graphics_manager_memory_ref) {
+    const IFBEngineGraphicsManagerMemory& graphics_manager_memory_ref) {
 
     //get the address
     const ifb_address memory_start   = graphics_manager_memory_ref.start;
@@ -81,7 +132,7 @@ ifb_engine::graphics_manager_get_window_pointer(
 
 inline IFBMonitor*
 ifb_engine::graphics_manager_get_monitor_array_pointer(
-    IFBEngineGraphicsManagerMemory& graphics_manager_memory_ref) {
+    const IFBEngineGraphicsManagerMemory& graphics_manager_memory_ref) {
 
     //get the address
     const ifb_address memory_start          = graphics_manager_memory_ref.start;
