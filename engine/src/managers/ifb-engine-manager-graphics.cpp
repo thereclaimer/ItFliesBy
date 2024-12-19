@@ -89,12 +89,14 @@ inline ifb_void
 ifb_engine::graphics_manager_frame_start(
     IFBEngineGraphicsManager* graphics_manager_ptr) {
 
+    ifb_macro_panic();
 }
 
 inline ifb_void 
 ifb_engine::graphics_manager_frame_render(
     IFBEngineGraphicsManager* graphics_manager_ptr) {
 
+    ifb_macro_panic();
 }
 
 inline const IFBMonitor*
