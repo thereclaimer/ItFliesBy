@@ -42,7 +42,7 @@ typedef uint8_t    ifb_byte;
 typedef uint8_t*   ifb_memory;
 typedef size_t     ifb_size;
 typedef ifb_u32    ifb_index;
-typedef ifb_u32    ifb_handle;
+typedef ifb_ptr    ifb_handle;
 typedef intptr_t   ifb_address;
 typedef uint32_t   ifb_page;
 
@@ -347,6 +347,7 @@ namespace ifb_common {
 
 struct IFBMonitor {
     IFBIDMonitor       id;
+    ifb_handle         platform_handle;
     ifb_u32            refresh_hz;
     IFBDimensions      dimensions;
     IFBAspectRatioType aspect_ratio;
