@@ -14,6 +14,7 @@ ifb_engine::graphics_manger_initialize(
 
     //first, we need to get the number of monitors the platform has available
     const ifb_u32 montitor_count = ifb_engine::platform_monitor_count();
+    ifb_macro_assert(montitor_count > 0);
 
     //calculate the size of the monitor array and other structures
     const ifb_u32 monitor_array_size = ifb_macro_size_array(IFBMonitor, montitor_count);

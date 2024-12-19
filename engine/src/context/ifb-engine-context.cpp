@@ -39,19 +39,6 @@ ifb_engine::context_get_core(
     return(core_ptr);
 }
 
-inline IFBEngineConfig*
-ifb_engine::context_get_config(
-    ifb_void) {
-
-    IFBEngineContext& context_ref = ifb_engine::context();
-
-    IFBEngineConfig* config_ptr = (IFBEngineConfig*)ifb_engine::memory_get_pointer(
-        &context_ref.memory,
-        context_ref.handles.config);
-
-    return(config_ptr);
-}
-
 inline const ifb_ptr 
 ifb_engine::context_get_pointer(
     const IFBHND& handle) {

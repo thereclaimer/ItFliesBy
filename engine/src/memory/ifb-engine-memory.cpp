@@ -27,6 +27,9 @@ ifb_engine::memory_reserve(
     //set the commit count
     memory_ptr->reservation.commit_count_max = commit_count_maximum;
 
+    //set the global stack size
+    memory_ptr->global_stack.size = IFB_ENGINE_CONFIG_GLOBAL_MEMORY_STACK_SIZE;
+
     //push the commit array on the context stack
     const ifb_u32 commit_array_size = ifb_macro_size_array(IFBCommit,commit_count_maximum);
     ifb_engine::memory_global_push(
@@ -69,6 +72,7 @@ ifb_engine::memory_commit(
 
     //update the commit count
     ++memory_ptr->reservation.commit_count_current;
+    memory_ptr->reservation.page_count_committed += commit_page_count;
 
     //we're done
     return(commit_id);

@@ -7,13 +7,18 @@ ifb_engine::context_managers_create_all(
           IFBEngineContextManagers* managers_ptr,
           IFBEngineMemory*          memory_ptr,
     const IFBEngineConfig*          config_ptr) {
-    
+
+    //allocate manager structures
     ifb_engine_memory_global_push_struct(memory_ptr, managers_ptr->handles.tag_manager,      IFBEngineTagManager);
     ifb_engine_memory_global_push_struct(memory_ptr, managers_ptr->handles.arena_manager,    IFBEngineArenaManager);
     ifb_engine_memory_global_push_struct(memory_ptr, managers_ptr->handles.graphics_manager, IFBEngineGraphicsManager);
 
+    //get the pointers
+    IFBEngineTagManager*      tag_manager_ptr      = ifb_engine::context_managers_get_tag_manager(managers_ptr);
+    IFBEngineArenaManager*    arena_manager_ptr    = ifb_engine::context_managers_get_arena_manager(managers_ptr);
+    IFBEngineGraphicsManager* graphics_manager_ptr = ifb_engine::context_managers_get_graphics_manager(managers_ptr);
+
     //tag manager    
-    IFBEngineTagManager* tag_manager_ptr = ifb_engine::context_managers_get_tag_manager(managers_ptr);
     ifb_engine::tag_manager_initialize(
         tag_manager_ptr,
         memory_ptr,
@@ -21,7 +26,6 @@ ifb_engine::context_managers_create_all(
         config_ptr->tag_count_max);
 
     //arena manager
-    IFBEngineArenaManager* arena_manager_ptr = ifb_engine::context_managers_get_arena_manager(managers_ptr);
     ifb_engine::arena_manager_initialize(
         arena_manager_ptr,
         memory_ptr,
@@ -29,7 +33,6 @@ ifb_engine::context_managers_create_all(
         config_ptr->arena_count_max);
 
     //graphics manager
-    IFBEngineGraphicsManager* graphics_manager_ptr = ifb_engine::context_managers_get_graphics_manager(managers_ptr);
     ifb_engine::graphics_manger_initialize(
         graphics_manager_ptr,
         memory_ptr);

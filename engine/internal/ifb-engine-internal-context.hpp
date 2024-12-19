@@ -49,7 +49,6 @@ struct IFBEngineContextCore {
 /**********************************************************************************/
 
 struct IFBGHNDEngineContextManagers  : IFBGHND { };
-struct IFBGHNDEngineContextConfig    : IFBGHND { };
 struct IFBGHNDEngineContextCore      : IFBGHND { }; 
 struct IFBGHNDEngineContextUserInput : IFBGHND { };
 
@@ -58,9 +57,9 @@ struct IFBEngineContext {
     struct {
         IFBGHNDEngineContextManagers  managers;
         IFBGHNDEngineContextCore      core;
-        IFBGHNDEngineContextConfig    config;
         IFBGHNDEngineContextUserInput user_input;
     } handles;
+    IFBEngineConfig config;
 };
 
 namespace ifb_engine {
