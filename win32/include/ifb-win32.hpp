@@ -2,8 +2,8 @@
 #define IFB_WIN32_HPP
 
 #include <Windows.h>
-#include <ifb-engine.hpp>
 #include <ifb.hpp>
+#include <ifb-engine.hpp>
 
 /**********************************************************************************/
 /* SYSTEM                                                                         */
@@ -100,8 +100,13 @@ namespace ifb_win32 {
 
     ifb_void monitor_api_initialize(IFBPlatformMonitorApi& monitor_api_ref);
 
-    ifb_internal       ifb_void monitor_dimensions (IFBDimensions& dimensions_ref);
-    ifb_internal const ifb_u32  monitor_refresh_hz (ifb_void);
+    const ifb_u32 monitor_count        (ifb_void);
+    const ifb_u32 monitor_active_index (ifb_void);
+    
+    ifb_void
+    monitor_info(
+        const ifb_u32     monitor_array_count,
+              IFBMonitor* monitor_array_ptr);
 };
 
 /**********************************************************************************/

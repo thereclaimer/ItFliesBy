@@ -105,13 +105,6 @@ struct IFBPlatformWindowApi {
 /* MONITOR                                                                        */
 /**********************************************************************************/
 
-struct IFBPlatformMonitorInfo {
-    ifb_u32 number;
-    ifb_u32 refresh_hz;
-    ifb_u32 width;
-    ifb_u32 height;
-};
-
 typedef const ifb_u32
 (*funcptr_ifb_platform_monitor_count) (
     ifb_void);
