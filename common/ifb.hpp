@@ -11,5 +11,6 @@
 #include "ifb-user-input.hpp"
 #include "ifb-platform.hpp"
 #include "ifb-graphics.hpp"
+#include "ifb-gl.hpp"
 
 #endif //IFB_HPP

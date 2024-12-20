@@ -29,15 +29,8 @@ namespace ifb_graphics {
     // color
     //-----------------------
 
-    ifb_void 
-    color_32_normalize(
-        const IFBColor32*            in_color_32_ptr, 
-              IFBColor32Normalized* out_color_32_normalized_ptr);
-    
-    const ifb_u32 
-    color_32_hex_value(
-        const IFBColor32Type color_32_type,
-              IFBColor32*    color_32_ptr);
+          ifb_void color_32_normalize (const IFBColor32*    in_color_32_ptr, IFBColor32Normalized* out_color_32_normalized_ptr);
+    const ifb_u32  color_32_hex_value (const IFBColor32Type color_32_type,   IFBColor32*           color_32_ptr);
 
     //-----------------------
     // aspect ratio
@@ -52,9 +45,8 @@ namespace ifb_graphics {
 
     const ifb_cstr          resolution_description                    (const IFBResolutionType  resolution_type);
     const IFBResolutionType resolution_default_type_from_aspect_ratio (const IFBAspectRatioType aspect_ratio_type);
-
-    ifb_void resolution_dimensions                (const IFBResolutionType  in_resolution_type,   IFBResolution& out_resolution_ref);
-    ifb_void resolution_default_from_aspect_ratio (const IFBAspectRatioType in_aspect_ratio_type, IFBResolution& out_resolution_ref);
+          ifb_void          resolution_dimensions                     (const IFBResolutionType  in_resolution_type,   IFBResolution& out_resolution_ref);
+          ifb_void          resolution_default_from_aspect_ratio      (const IFBAspectRatioType in_aspect_ratio_type, IFBResolution& out_resolution_ref);
 
     //-----------------------
     // monitor
@@ -67,18 +59,18 @@ namespace ifb_graphics {
     // window
     //-----------------------
 
-    ifb_void window_set_resolution_based_on_monitor_aspect_ratio (IFBWindow* window_ptr, const IFBMonitor* monitor_ptr);
-    ifb_void window_set_position_to_monitor_center               (IFBWindow* window_ptr, const IFBMonitor* monitor_ptr);
-
-    const ifb_b8 window_flags_is_visible (const IFBWindowFlags window_flags);
-    const ifb_b8 window_flags_use_imgui  (const IFBWindowFlags window_flags);
-    const ifb_b8 window_flags_use_opengl (const IFBWindowFlags window_flags);
+          ifb_void window_set_resolution_based_on_monitor_aspect_ratio (IFBWindow* window_ptr, const IFBMonitor* monitor_ptr);
+          ifb_void window_set_position_to_monitor_center               (IFBWindow* window_ptr, const IFBMonitor* monitor_ptr);
+    const ifb_b8   window_flags_is_visible                             (const IFBWindowFlags window_flags);
+    const ifb_b8   window_flags_use_imgui                              (const IFBWindowFlags window_flags);
+    const ifb_b8   window_flags_use_opengl                             (const IFBWindowFlags window_flags);
 
     //-----------------------
     // font
     //-----------------------
 
     const ifb_char* font_segoeui_data(ifb_void);
+
 };
 
 /**********************************************************************************/
@@ -464,7 +456,6 @@ inline const ifb_b8 ifb_graphics::window_flags_use_opengl (const IFBWindowFlags 
 /**********************************************************************************/
 /* FONT                                                                           */
 /**********************************************************************************/
-
 
 ifb_global const ifb_char IFB_FONT_SEGOEUI[883035+1] =
     "7])#######dSZ>U'/###I),##iK$iL6s[D$;/fd=)JQQ`&jll&-0$##sp>t8j_<3Zb.ql&Fj)##lW-h<$bq`Zq0ql&Mw>>#(r-e=4brjE@+SM'as*##*sq*>SQtt0Zt(##b6+##Yk=:9"

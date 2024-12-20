@@ -186,7 +186,7 @@ struct IFBKeyboard {
 };
 
 inline ifb_void
-keyboard_key_down(
+ifb_input::keyboard_key_down(
     IFBKeyboard& keyboard,
     IFBKeyCode   key_code) {
 
@@ -199,7 +199,7 @@ keyboard_key_down(
 }
 
 inline ifb_void
-keyboard_key_up(
+ifb_input::keyboard_key_up(
     IFBKeyboard& keyboard,
     IFBKeyCode   key_code) {
 
@@ -212,7 +212,7 @@ keyboard_key_up(
 }
 
 inline const ifb_b8
-keyboard_key_is_down(
+ifb_input::keyboard_key_is_down(
     IFBKeyboard& keyboard,
     IFBKeyCode   key_code) {
 
