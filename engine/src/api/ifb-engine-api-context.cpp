@@ -28,7 +28,7 @@ ifb_engine::context_create(
     //allocate context structures
     ifb_engine_memory_global_push_struct(&context_ref.memory, context_ref.handles.managers,   IFBEngineContextManagers);
     ifb_engine_memory_global_push_struct(&context_ref.memory, context_ref.handles.core,       IFBEngineContextCore);
-    ifb_engine_memory_global_push_struct(&context_ref.memory, context_ref.handles.user_input, IFBUserInput);
+    ifb_engine_memory_global_push_struct(&context_ref.memory, context_ref.handles.user_input, IFBInput);
 
     //create the managers
     IFBEngineContextManagers* managers_ptr = ifb_engine::context_get_managers();
