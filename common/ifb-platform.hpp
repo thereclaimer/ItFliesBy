@@ -3,26 +3,27 @@
 
 #include "ifb-types.hpp"
 #include "ifb-scopes.hpp"
+#include "ifb-graphics.hpp"
 
 /**********************************************************************************/
 /* SYSTEM                                                                         */
 /**********************************************************************************/
 
-typedef const ifb_size
+typedef const ifb_u32
 (*funcptr_ifb_platform_system_page_size)(
     ifb_void);
 
-typedef const ifb_size
+typedef const ifb_u32
 (*funcptr_ifb_platform_system_allocation_granularity)(
     ifb_void);
 
-typedef const ifb_size
+typedef const ifb_timems
 (*funcptr_ifb_platform_system_time_ms)(
     ifb_void);
 
-typedef const ifb_size
+typedef ifb_void
 (*funcptr_ifb_platform_system_sleep)(
-    ifb_u32 ms);
+    const ifb_u32 ms);
 
 struct IFBPlatformSystemApi {
     funcptr_ifb_platform_system_page_size              page_size;
@@ -61,11 +62,11 @@ struct IFBPlatformMemoryApi {
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_window_create) (
-    ifb_cstr title,
-    ifb_u32  width,
-    ifb_u32  height,
-    ifb_u32  position_x,
-    ifb_u32  position_y);
+    const ifb_cstr title,
+    const ifb_u32  width,
+    const ifb_u32  height,
+    const ifb_u32  position_x,
+    const ifb_u32  position_y);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_window_opengl_init) (
@@ -105,62 +106,60 @@ struct IFBPlatformWindowApi {
 /* MONITOR                                                                        */
 /**********************************************************************************/
 
-typedef ifb_void
-(*funcptr_ifb_platform_monitor_dimensions)(
-    IFBDimensions& dimensions_ref);
-
-typedef ifb_void
-(*funcptr_ifb_platform_monitor_refresh_hz)(
+typedef const ifb_u32
+(*funcptr_ifb_platform_monitor_count) (
     ifb_void);
 
+typedef ifb_void
+(*funcptr_ifb_platform_monitor_info)(
+    const ifb_u32     monitor_array_count,
+          IFBMonitor* monitor_array_ptr);
 
 struct IFBPlatformMonitorApi {
-    funcptr_ifb_platform_monitor_dimensions dimensions;
-    funcptr_ifb_platform_monitor_refresh_hz refresh_hz;
+    funcptr_ifb_platform_monitor_count count;
+    funcptr_ifb_platform_monitor_info  info;
 };
 
 /**********************************************************************************/
-/* FILES                                                                          */
+/* FILES                                                                          */                            
 /**********************************************************************************/
-
-typedef ifb_index IFBPlatformFileIndex;
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_file_open_read_only) (
-    const ifb_cstr               in_file_path,
-          IFBPlatformFileIndex& out_file_index_ref);
+    const ifb_cstr    in_file_path,
+          ifb_index& out_file_index_ref);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_file_open_read_write) (
-    const ifb_cstr               in_file_path,
-          IFBPlatformFileIndex& out_file_index_ref);
+    const ifb_cstr    in_file_path,
+          ifb_index& out_file_index_ref);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_file_open_read_write) (
-    const ifb_cstr               in_file_path,
-          IFBPlatformFileIndex& out_file_index_ref);
+    const ifb_cstr    in_file_path,
+          ifb_index& out_file_index_ref);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_file_close) (
-    const IFBPlatformFileIndex file_index);
+    const ifb_index file_index);
 
 typedef const ifb_size
 (*funcptr_ifb_platform_file_size) (
-    const IFBPlatformFileIndex file_index);
+    const ifb_index file_index);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_file_read)(
-    const IFBPlatformFileIndex in_file_index,
-    const ifb_size             in_file_read_start,
-    const ifb_size             in_file_read_size,
-          ifb_memory          out_file_read_buffer);
+    const ifb_index   in_file_index,
+    const ifb_size    in_file_read_start,
+    const ifb_size    in_file_read_size,
+          ifb_memory out_file_read_buffer);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_file_write)(
-    const IFBPlatformFileIndex file_index,
-    const ifb_size             file_write_start,
-    const ifb_size             file_write_size,
-          ifb_memory           file_write_buffer);
+    const ifb_index  file_index,
+    const ifb_size   file_write_start,
+    const ifb_size   file_write_size,
+          ifb_memory file_write_buffer);
 
 struct IFBPlatformFileApi {
     funcptr_ifb_platform_file_open_read_only  open_read_only;

@@ -42,7 +42,7 @@ typedef uint8_t    ifb_byte;
 typedef uint8_t*   ifb_memory;
 typedef size_t     ifb_size;
 typedef ifb_u32    ifb_index;
-typedef ifb_u32    ifb_handle;
+typedef ifb_ptr    ifb_handle;
 typedef intptr_t   ifb_address;
 typedef uint32_t   ifb_page;
 
@@ -58,21 +58,23 @@ struct IFBID {
     ifb_index index;
 };
 
-struct IFBIDTag    : IFBID { };
-struct IFBIDCommit : IFBID { };
+struct IFBIDTag     : IFBID { };
+struct IFBIDCommit  : IFBID { };
+struct IFBIDArena   : IFBID { };
+struct IFBIDMonitor : IFBID { };
 
-struct IFBIDArena : IFBID {
-    IFBIDTag    tag_id;
-    IFBIDCommit commit_id;
+//handle
+struct IFBHND {
+    ifb_u32 offset;
 };
 
-struct IFBHND {
+//global handle
+struct IFBGHND {
     ifb_u32 offset;
 };
 
 struct IFBHNDLinearAllocator : IFBHND { };
 struct IFBHNDBlockAllocator  : IFBHND { };
-
 
 /**********************************************************************************/
 /* STRINGS                                                                        */
@@ -89,26 +91,8 @@ union IFBHash {
 };
 
 /**********************************************************************************/
-/* MISC                                                                           */
-/**********************************************************************************/
-
-struct IFBDimensions {
-    ifb_u32 width;
-    ifb_u32 height;
-};
-
-struct IFBPosition {
-    ifb_u32 x;
-    ifb_u32 y;
-};
-
-/**********************************************************************************/
 /* MEMORY                                                                         */
 /**********************************************************************************/
-
-struct IFBMemory {
-    ifb_u32 reservation_offset;
-};
 
 struct IFBTag {
     IFBID    id;
