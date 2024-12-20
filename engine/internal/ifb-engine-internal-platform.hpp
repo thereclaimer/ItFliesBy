@@ -23,7 +23,6 @@ namespace ifb_engine {
 
     //monitor
     ifb_global funcptr_ifb_platform_monitor_count                 platform_monitor_count;
-    ifb_global funcptr_ifb_platform_monitor_active_index          platform_monitor_active_index;
     ifb_global funcptr_ifb_platform_monitor_info                  platform_monitor_info;
 
     //memory

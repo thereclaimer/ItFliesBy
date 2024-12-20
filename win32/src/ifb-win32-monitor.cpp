@@ -19,13 +19,6 @@ ifb_win32::monitor_count(
     return(result ? monitor_count : 0);
 }
 
-ifb_internal const ifb_u32
-ifb_win32::monitor_active_index(
-    ifb_void) {
-
-    return(0);
-}
-
 ifb_global ifb_u32 current_monitor_index;
 
 ifb_internal ifb_void
@@ -74,6 +67,8 @@ ifb_win32::monitor_enum_callback_info(
     const ifb_u32    monitor_index     = current_monitor_index;
     const ifb_u32    monitor_width     = rect_ptr->right - rect_ptr->left;
     const ifb_u32    monitor_height    = rect_ptr->bottom - rect_ptr->top;
+    const ifb_u32    monitor_origin_x  = rect_ptr->left; 
+    const ifb_u32    monitor_origin_y  = rect_ptr->top; 
 
     //calculate the aspect ratio
     const IFBAspectRatioType monitor_aspect_ratio_type = ifb_common::aspect_ratio_lookup(
@@ -85,6 +80,8 @@ ifb_win32::monitor_enum_callback_info(
     current_monitor_ref.platform_handle   = monitor_handle; 
     current_monitor_ref.dimensions.width  = monitor_width; 
     current_monitor_ref.dimensions.height = monitor_height; 
+    current_monitor_ref.desktop_origin.x  = monitor_origin_x; 
+    current_monitor_ref.desktop_origin.y  = monitor_origin_y; 
     current_monitor_ref.aspect_ratio      = monitor_aspect_ratio_type;
 
     //update the global monitor index

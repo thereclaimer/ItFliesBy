@@ -104,6 +104,7 @@ struct IFBEngineGraphicsManagerMemory {
 struct IFBEngineGraphicsManager {
     IFBEngineGraphicsManagerMemory memory;
     ifb_u32                        monitor_count;
+    ifb_u32                        monitor_primary_index;
 };
 
 namespace ifb_engine {
@@ -121,6 +122,8 @@ namespace ifb_engine {
 
     ifb_void graphics_manager_frame_start  (IFBEngineGraphicsManager* graphics_manager_ptr);
     ifb_void graphics_manager_frame_render (IFBEngineGraphicsManager* graphics_manager_ptr);
+
+    const ifb_u32 grahpics_manager_find_primary_monitor_index(const IFBMonitor* monitor_array_ptr);
 
     const IFBMonitor* graphics_manager_get_monitor(const IFBEngineGraphicsManager* graphics_manager_ptr, const ifb_u32 monitor_index);
 

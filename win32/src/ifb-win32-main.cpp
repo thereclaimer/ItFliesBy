@@ -76,6 +76,5 @@ ifb_win32::context_initialize_platform_api(
 
     //monitor
     platform_api_ref.monitor.count                 = ifb_win32::monitor_count;
-    platform_api_ref.monitor.active_index          = ifb_win32::monitor_active_index;
     platform_api_ref.monitor.info                  = ifb_win32::monitor_info;
 }

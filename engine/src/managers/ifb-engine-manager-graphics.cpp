@@ -50,21 +50,22 @@ ifb_engine::graphics_manager_create_window (
           IFBEngineGraphicsManager* graphics_manager_ptr,
     const ifb_cstr                  window_title,
     const IFBWindowFlags            window_flags) {
-
-    //get the active monitor
-    const ifb_u32 monitor_index = ifb_engine::platform_monitor_active_index();
+    
+    //get the monitor array and find the primary monitor
+    const IFBMonitor* monitor_array_ptr   = ifb_engine::graphics_manager_get_monitor_array_pointer(graphics_manager_ptr->memory); 
+    const IFBMonitor* monitor_primary_ptr = ifb_common::monitor_find_primary(graphics_manager_ptr->monitor_count,monitor_array_ptr); 
+    ifb_macro_assert(monitor_primary_ptr);
 
     //get the monitor and window
-    const IFBMonitor* monitor_ptr = ifb_engine::graphics_manager_get_monitor(graphics_manager_ptr, monitor_index);
-          IFBWindow*  window_ptr  = ifb_engine::graphics_manager_get_window_pointer(graphics_manager_ptr->memory);
+    IFBWindow* window_ptr = ifb_engine::graphics_manager_get_window_pointer(graphics_manager_ptr->memory);
 
     //set the flags and monitor id
-    window_ptr->flags            = window_flags;
-    window_ptr->monitor_id.index = monitor_index;
+    window_ptr->flags      = window_flags;
+    window_ptr->monitor_id = monitor_primary_ptr->id;
 
     //set window properties based on the monitor
-    ifb_common::window_set_resolution_based_on_monitor_aspect_ratio(window_ptr, monitor_ptr);
-    ifb_common::window_set_position_to_monitor_center              (window_ptr, monitor_ptr);
+    ifb_common::window_set_resolution_based_on_monitor_aspect_ratio(window_ptr, monitor_primary_ptr);
+    ifb_common::window_set_position_to_monitor_center              (window_ptr, monitor_primary_ptr);
 
     //result of platform window initialization
     ifb_b8 result = true;
@@ -74,9 +75,9 @@ ifb_engine::graphics_manager_create_window (
         window_title,
         window_ptr->resolution.width,
         window_ptr->resolution.height,
-        window_ptr->position.x,        
+        window_ptr->position.x,
         window_ptr->position.y);
-    
+
     //process flags
     result &= ifb_common::window_flags_use_opengl(window_flags) ? ifb_engine::platform_window_opengl_init() : true;
     result &= ifb_common::window_flags_use_imgui (window_flags) ? ifb_engine::platform_window_imgui_init()  : true;

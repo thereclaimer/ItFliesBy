@@ -20,7 +20,6 @@ ifb_engine::platform_initialize(
     ifb_engine::platform_window_opengl_init            = platform_api_ref.window.opengl_init;
     ifb_engine::platform_window_imgui_init             = platform_api_ref.window.imgui_init;
     ifb_engine::platform_monitor_count                 = platform_api_ref.monitor.count;
-    ifb_engine::platform_monitor_active_index          = platform_api_ref.monitor.active_index;
     ifb_engine::platform_monitor_info                  = platform_api_ref.monitor.info;
     ifb_engine::platform_memory_reserve                = platform_api_ref.memory.reserve;
     ifb_engine::platform_memory_release                = platform_api_ref.memory.release;
@@ -39,7 +38,6 @@ ifb_engine::platform_initialize(
     ifb_macro_assert(ifb_engine::platform_window_opengl_init);
     ifb_macro_assert(ifb_engine::platform_window_imgui_init);
     ifb_macro_assert(ifb_engine::platform_monitor_count);
-    ifb_macro_assert(ifb_engine::platform_monitor_active_index);
     ifb_macro_assert(ifb_engine::platform_monitor_info);
     ifb_macro_assert(ifb_engine::platform_memory_release);
     ifb_macro_assert(ifb_engine::platform_memory_commit);

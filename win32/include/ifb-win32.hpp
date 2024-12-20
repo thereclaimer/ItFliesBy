@@ -100,8 +100,7 @@ namespace ifb_win32 {
 
     ifb_void monitor_api_initialize(IFBPlatformMonitorApi& monitor_api_ref);
 
-    const ifb_u32 monitor_count        (ifb_void);
-    const ifb_u32 monitor_active_index (ifb_void);
+    const ifb_u32 monitor_count (ifb_void);
     
     ifb_void
     monitor_info(

@@ -3,6 +3,7 @@
 
 #include "ifb-types.hpp"
 #include "ifb-scopes.hpp"
+#include "ifb-graphics.hpp"
 
 /**********************************************************************************/
 /* SYSTEM                                                                         */
@@ -109,19 +110,14 @@ typedef const ifb_u32
 (*funcptr_ifb_platform_monitor_count) (
     ifb_void);
 
-typedef const ifb_u32
-(*funcptr_ifb_platform_monitor_active_index)(
-    ifb_void);
-
 typedef ifb_void
 (*funcptr_ifb_platform_monitor_info)(
     const ifb_u32     monitor_array_count,
           IFBMonitor* monitor_array_ptr);
 
 struct IFBPlatformMonitorApi {
-    funcptr_ifb_platform_monitor_count        count;
-    funcptr_ifb_platform_monitor_active_index active_index;
-    funcptr_ifb_platform_monitor_info         info;
+    funcptr_ifb_platform_monitor_count count;
+    funcptr_ifb_platform_monitor_info  info;
 };
 
 /**********************************************************************************/

@@ -6,7 +6,6 @@
 /* WINDOW API                                                                     */
 /**********************************************************************************/
 
-
 ifb_internal const ifb_b8
 ifb_win32::window_create(
     const ifb_cstr title,
@@ -126,10 +125,11 @@ ifb_win32::window_show(
     IFBWin32Window& window_ref = ifb_win32::context_get_window();
 
     //show the window
-    const ifb_b8 result = (ifb_b8)ShowWindow(window_ref.window_handle,1);
+    const ifb_b8  result = (ifb_b8)ShowWindow(window_ref.window_handle,1);
+    const ifb_u32 error  = GetLastError();
 
     //we're done
-    return(result);
+    return(true);
 }
 
 ifb_internal const ifb_b8 
@@ -191,7 +191,6 @@ ifb_win32::window_imgui_init(
 /**********************************************************************************/
 /* INLINE                                                                         */
 /**********************************************************************************/
-
 
 ifb_internal LRESULT CALLBACK
 ifb_win32::window_callback(
