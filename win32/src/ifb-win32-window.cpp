@@ -195,7 +195,7 @@ ifb_internal const ifb_b8
 ifb_win32::window_imgui_init(
     ifb_void) {
 
-    ifb_macro_panic();
+    // ifb_macro_panic();
 
     return(true);
 }

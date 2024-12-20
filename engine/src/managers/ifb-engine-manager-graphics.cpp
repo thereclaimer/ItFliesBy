@@ -90,14 +90,16 @@ inline ifb_void
 ifb_engine::graphics_manager_frame_start(
     IFBEngineGraphicsManager* graphics_manager_ptr) {
 
-    ifb_macro_panic();
+    const ifb_b8 result = ifb_engine::platform_window_frame_start();
+    ifb_macro_assert(result);
 }
 
 inline ifb_void 
 ifb_engine::graphics_manager_frame_render(
     IFBEngineGraphicsManager* graphics_manager_ptr) {
 
-    ifb_macro_panic();
+    const ifb_b8 result = ifb_engine::platform_window_frame_render();
+    ifb_macro_assert(result);
 }
 
 inline const IFBMonitor*
