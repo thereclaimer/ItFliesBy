@@ -195,7 +195,7 @@ namespace ifb_win32 {
 };
 
 /**********************************************************************************/
-/* WIN32 CONTEXT                                                              */
+/* WIN32 CONTEXT                                                                  */
 /**********************************************************************************/
 
 struct IFBWin32Args {
@@ -213,6 +213,7 @@ struct IFBWin32Context {
 
 namespace ifb_win32 {
     
+
     ifb_global IFBWin32Context _context;
 
     inline void context_reset(ifb_void) { _context = {0}; }

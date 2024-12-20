@@ -54,15 +54,18 @@ inline ifb_void
 ifb_win32::context_initialize_platform_api(
     IFBPlatformApi& platform_api_ref) {
 
+    //system
     platform_api_ref.system.page_size              = ifb_win32::system_page_size;
     platform_api_ref.system.allocation_granularity = ifb_win32::system_allocation_granularity;
     platform_api_ref.system.time_ms                = ifb_win32::system_time_ms;
     platform_api_ref.system.sleep                  = ifb_win32::system_sleep;
-    
+
+    //memory    
     platform_api_ref.memory.reserve                = ifb_win32::memory_reserve;
     platform_api_ref.memory.release                = ifb_win32::memory_release;
     platform_api_ref.memory.commit                 = ifb_win32::memory_commit;
-    
+
+    //window    
     platform_api_ref.window.create                 = ifb_win32::window_create;
     platform_api_ref.window.destroy                = ifb_win32::window_destroy;
     platform_api_ref.window.frame_start            = ifb_win32::window_frame_start;
@@ -71,6 +74,7 @@ ifb_win32::context_initialize_platform_api(
     platform_api_ref.window.opengl_init            = ifb_win32::window_opengl_init;
     platform_api_ref.window.imgui_init             = ifb_win32::window_imgui_init;
 
+    //monitor
     platform_api_ref.monitor.count                 = ifb_win32::monitor_count;
     platform_api_ref.monitor.active_index          = ifb_win32::monitor_active_index;
     platform_api_ref.monitor.info                  = ifb_win32::monitor_info;
