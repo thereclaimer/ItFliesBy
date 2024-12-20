@@ -53,7 +53,7 @@ ifb_engine::graphics_manager_create_window (
     
     //get the monitor array and find the primary monitor
     const IFBMonitor* monitor_array_ptr   = ifb_engine::graphics_manager_get_monitor_array_pointer(graphics_manager_ptr->memory); 
-    const IFBMonitor* monitor_primary_ptr = ifb_common::monitor_find_primary(graphics_manager_ptr->monitor_count,monitor_array_ptr); 
+    const IFBMonitor* monitor_primary_ptr = ifb_graphics::monitor_find_primary(graphics_manager_ptr->monitor_count,monitor_array_ptr); 
     ifb_macro_assert(monitor_primary_ptr);
 
     //get the monitor and window
@@ -64,8 +64,8 @@ ifb_engine::graphics_manager_create_window (
     window_ptr->monitor_id = monitor_primary_ptr->id;
 
     //set window properties based on the monitor
-    ifb_common::window_set_resolution_based_on_monitor_aspect_ratio(window_ptr, monitor_primary_ptr);
-    ifb_common::window_set_position_to_monitor_center              (window_ptr, monitor_primary_ptr);
+    ifb_graphics::window_set_resolution_based_on_monitor_aspect_ratio(window_ptr, monitor_primary_ptr);
+    ifb_graphics::window_set_position_to_monitor_center              (window_ptr, monitor_primary_ptr);
 
     //result of platform window initialization
     ifb_b8 result = true;
@@ -79,9 +79,9 @@ ifb_engine::graphics_manager_create_window (
         window_ptr->position.y);
 
     //process flags
-    result &= ifb_common::window_flags_use_opengl(window_flags) ? ifb_engine::platform_window_opengl_init() : true;
-    result &= ifb_common::window_flags_use_imgui (window_flags) ? ifb_engine::platform_window_imgui_init()  : true;
-    result &= ifb_common::window_flags_is_visible(window_flags) ? ifb_engine::platform_window_show()        : true;
+    result &= ifb_graphics::window_flags_use_opengl(window_flags) ? ifb_engine::platform_window_opengl_init() : true;
+    result &= ifb_graphics::window_flags_use_imgui (window_flags) ? ifb_engine::platform_window_imgui_init()  : true;
+    result &= ifb_graphics::window_flags_is_visible(window_flags) ? ifb_engine::platform_window_show()        : true;
 
     //sanity check, and we're done
     ifb_macro_assert(result);
