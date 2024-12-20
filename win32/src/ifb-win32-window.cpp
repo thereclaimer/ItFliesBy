@@ -6,18 +6,6 @@
 /* WINDOW API                                                                     */
 /**********************************************************************************/
 
-inline ifb_void 
-ifb_win32::window_api_initialize(
-    IFBPlatformWindowApi& window_api_ref) {
-    
-    window_api_ref.create       = ifb_win32::window_create;
-    window_api_ref.destroy      = ifb_win32::window_destroy;
-    window_api_ref.frame_start  = ifb_win32::window_frame_start;
-    window_api_ref.frame_render = ifb_win32::window_frame_render;
-    window_api_ref.show         = ifb_win32::window_show;
-    window_api_ref.opengl_init  = ifb_win32::window_opengl_init;
-    window_api_ref.imgui_init   = ifb_win32::window_imgui_init;
-}
 
 ifb_internal const ifb_b8
 ifb_win32::window_create(

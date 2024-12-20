@@ -2,14 +2,6 @@
 
 #include "ifb-win32.hpp"
 
-inline ifb_void 
-ifb_win32::memory_api_initialize(
-    IFBPlatformMemoryApi& platform_memory_api_ref) {
-    
-    platform_memory_api_ref.reserve = ifb_win32::memory_reserve;
-    platform_memory_api_ref.release = ifb_win32::memory_release;
-    platform_memory_api_ref.commit  = ifb_win32::memory_commit;
-}
 
 ifb_internal const ifb_ptr 
 ifb_win32::memory_reserve(

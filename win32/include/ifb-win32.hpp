@@ -208,32 +208,33 @@ struct IFBWin32Args {
 struct IFBWin32Context {
     IFBWin32Window window;
     IFBWin32Args   args;
+    IFBPlatformApi platform_api;
 };
-
 
 namespace ifb_win32 {
     
     ifb_global IFBWin32Context _context;
 
-    inline ifb_void 
-    context_args_set_values(
-        const HINSTANCE h_instance,
-        const HINSTANCE h_prev_instance,
-        const PWSTR     p_cmd_line,
-        const int       n_cmd_show) {
+    inline void context_reset(ifb_void) { _context = {0}; }
 
-        _context.args.h_instance      = h_instance; 
-        _context.args.h_prev_instance = h_prev_instance; 
-        _context.args.p_cmd_line      = p_cmd_line; 
-        _context.args.n_cmd_show      = n_cmd_show; 
-    }
+    inline ifb_void
+    context_args_set_values(
+              IFBWin32Args& args_ref,
+        const HINSTANCE     h_instance,
+        const HINSTANCE     h_prev_instance,
+        const PWSTR         p_cmd_line,
+        const int           n_cmd_show);
+
+    inline ifb_void context_initialize_platform_api(IFBPlatformApi& platform_api_ref);
 
     inline const HINSTANCE context_args_get_h_instance      (ifb_void) { return(_context.args.h_instance);      }
     inline const HINSTANCE context_args_get_h_prev_instance (ifb_void) { return(_context.args.h_prev_instance); }
     inline const PWSTR     context_args_get_p_cmd_line      (ifb_void) { return(_context.args.p_cmd_line);      }
     inline const int       context_args_get_n_cmd_show      (ifb_void) { return(_context.args.n_cmd_show);      }
 
-    inline IFBWin32Window& context_get_window() { return(_context.window); }
+    inline IFBWin32Args    context_get_args         (ifb_void) { return(_context.args);         }
+    inline IFBWin32Window& context_get_window       (ifb_void) { return(_context.window);       }
+    inline IFBPlatformApi& context_get_platform_api (ifb_void) { return(_context.platform_api); }
 };
 
 
