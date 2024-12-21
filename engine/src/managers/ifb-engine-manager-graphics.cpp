@@ -158,6 +158,18 @@ ifb_engine::graphics_manager_style_imgui(
     const ifb_b8  imgui_is_used = ifb_graphics::window_flags_use_imgui(window_ptr->flags);
     ifb_macro_assert(imgui_is_used && imgui_context);
 
+    //get our local font buffer
+    const ifb_char* font_buffer = ifb_graphics::font_segoeui_data();
+    ifb_macro_assert(font_buffer);
+
+    //load the font
+    ImGuiIO& imgui_io = ImGui::GetIO();
+    ImFont* imgui_font = imgui_io.Fonts->AddFontFromMemoryCompressedBase85TTF(
+        font_buffer,
+        18.0f,
+        NULL,
+        NULL);
+
     //default style dark
     ImGui::StyleColorsDark();
 }

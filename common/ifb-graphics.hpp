@@ -69,7 +69,8 @@ namespace ifb_graphics {
     // font
     //-----------------------
 
-    const ifb_char* font_segoeui_data(ifb_void);
+    const ifb_char* font_segoeui_data (ifb_void);
+    const ifb_size  font_segoeui_size (ifb_void);
 
 };
 
@@ -6767,8 +6768,7 @@ ifb_global const ifb_char IFB_FONT_SEGOEUI[883035+1] =
     "RJ:;$?q,)*tw8w>.KUN009dMpi&3mfpowgL]/Z<-P'LW.-rZS%x3RA-AcwA-)(R2Mq-AA-s4pr-[LOgL,ecgLH4$##%YGs-#WajL`$-/C=wLqL/rcW-SZc_&)e^w'/6(:B$RCn9=jL:1"
     "jhZlEqrt1F@wBNC#_Cn9;<rqLveWWB`*(XBx)WkD8i#&1R?,nZxK(##";
 
-inline const ifb_char* 
-ifb_graphics::font_segoeui_data(ifb_void) { return(IFB_FONT_SEGOEUI); }
-
+inline const ifb_char* ifb_graphics::font_segoeui_data(ifb_void) { return(IFB_FONT_SEGOEUI); }
+inline const ifb_size  ifb_graphics::font_segoeui_size(ifb_void) { return(sizeof(IFB_FONT_SEGOEUI));}
 
 #endif //IFB_GRAPHICS_HPP
