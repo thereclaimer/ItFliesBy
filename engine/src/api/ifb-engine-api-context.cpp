@@ -75,6 +75,9 @@ ifb_engine::context_startup(
     //create the viewport
     ifb_engine::graphics_manager_create_viewport(graphics_manager_ptr);
 
+    //style imgui
+    ifb_engine::graphics_manager_style_imgui(graphics_manager_ptr);
+
     //we're done
     return(true);
 }

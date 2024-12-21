@@ -179,13 +179,24 @@ ifb_win32::window_opengl_init(
     return(result);
 }
 
-ifb_internal const ifb_b8 
+ifb_internal ImGuiContext*
 ifb_win32::window_imgui_init(
     ifb_void) {
 
-    // ifb_macro_panic();
+    //sanity check
+    ifb_b8 result = IMGUI_CHECKVERSION();
 
-    return(true);
+    //get the window
+    IFBWin32Window& window_ref = ifb_win32::context_get_window();
+    
+    //create the imgui context for win32 opengl
+    window_ref.imgui_context = ImGui::CreateContext();
+    result &= window_ref.imgui_context != NULL;
+    result &= (ifb_b8)ImGui_ImplWin32_Init(window_ref.window_handle);
+    result &= (ifb_b8)ImGui_ImplOpenGL3_Init("#version 330");
+
+    //we're done
+    return(result ? window_ref.imgui_context : NULL);
 }
 
 /**********************************************************************************/

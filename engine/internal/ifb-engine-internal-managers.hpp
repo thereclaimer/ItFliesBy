@@ -128,6 +128,7 @@ namespace ifb_engine {
         const IFBWindowFlags            window_flags);
 
     ifb_void graphics_manager_create_viewport (IFBEngineGraphicsManager* graphics_manager_ptr);
+    ifb_void graphics_manager_style_imgui     (IFBEngineGraphicsManager* graphics_manager_ptr);
     ifb_void graphics_manager_frame_start     (IFBEngineGraphicsManager* graphics_manager_ptr);
     ifb_void graphics_manager_frame_render    (IFBEngineGraphicsManager* graphics_manager_ptr);
 
