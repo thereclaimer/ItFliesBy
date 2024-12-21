@@ -72,6 +72,9 @@ ifb_engine::context_startup(
         context_ref.config.window_title_cstr,
         window_flags);
 
+    //create the viewport
+    ifb_engine::graphics_manager_create_viewport(graphics_manager_ptr);
+
     //we're done
     return(true);
 }

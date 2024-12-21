@@ -59,8 +59,9 @@ if not exist %path_build%\lib mkdir %path_build%\lib
                       /LIBPATH:vcpkg_installed\x64-windows\lib ^
                       /IMPLIB:build\debug\lib\ItFliesBy.Engine.lib
 
-@set cl_libs=         imgui.lib ^
-                      opengl32.lib
+@set cl_libs=         imgui.lib    ^
+                      opengl32.lib ^
+                      glew32.lib
 
 ::----------------------------------------------------------------
 :: BUILD

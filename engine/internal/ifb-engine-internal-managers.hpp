@@ -97,6 +97,7 @@ namespace ifb_engine {
 struct IFBEngineGraphicsManagerMemory {
     ifb_address start;
     ifb_u16     offset_window;
+    ifb_u16     offset_viewport;
     ifb_u16     offset_monitor_array;
     IFBIDCommit commit_id;
 };
@@ -114,21 +115,28 @@ namespace ifb_engine {
         IFBEngineGraphicsManager* graphics_manager_ptr,
         IFBEngineMemory*          memory_ptr);
 
+    ifb_void
+    graphics_manager_commit_memory(
+              IFBEngineGraphicsManagerMemory& graphics_manager_memory,
+              IFBEngineMemory*                memory_ptr,
+        const ifb_u32                         monitor_count);
+
     ifb_void 
     graphics_manager_create_window (
               IFBEngineGraphicsManager* graphics_manager_ptr,
         const ifb_cstr                  window_title,
         const IFBWindowFlags            window_flags);
 
-    ifb_void graphics_manager_frame_start  (IFBEngineGraphicsManager* graphics_manager_ptr);
-    ifb_void graphics_manager_frame_render (IFBEngineGraphicsManager* graphics_manager_ptr);
+    ifb_void graphics_manager_create_viewport (IFBEngineGraphicsManager* graphics_manager_ptr);
+    ifb_void graphics_manager_frame_start     (IFBEngineGraphicsManager* graphics_manager_ptr);
+    ifb_void graphics_manager_frame_render    (IFBEngineGraphicsManager* graphics_manager_ptr);
 
-    const ifb_u32 grahpics_manager_find_primary_monitor_index(const IFBMonitor* monitor_array_ptr);
+    const ifb_u32     grahpics_manager_find_primary_monitor_index (const IFBMonitor* monitor_array_ptr);
+    const IFBMonitor* graphics_manager_get_monitor                (const IFBEngineGraphicsManager* graphics_manager_ptr, const ifb_u32 monitor_index);
 
-    const IFBMonitor* graphics_manager_get_monitor(const IFBEngineGraphicsManager* graphics_manager_ptr, const ifb_u32 monitor_index);
-
-    IFBWindow*  graphics_manager_get_window_pointer        (const IFBEngineGraphicsManagerMemory& graphics_manager_memory_ref);
-    IFBMonitor* graphics_manager_get_monitor_array_pointer (const IFBEngineGraphicsManagerMemory& graphics_manager_memory_ref);
+    IFBWindow*     graphics_manager_get_window_pointer        (const IFBEngineGraphicsManagerMemory& graphics_manager_memory_ref);
+    IFBMonitor*    graphics_manager_get_monitor_array_pointer (const IFBEngineGraphicsManagerMemory& graphics_manager_memory_ref);
+    IFBGLViewport* graphics_manager_get_viewport              (const IFBEngineGraphicsManagerMemory& graphics_manager_memory_ref);
 };
 
   
