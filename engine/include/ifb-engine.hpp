@@ -15,6 +15,7 @@
 #define IFB_ENGINE_CONFIG_TAG_C_STR_LENGTH        32
 #define IFB_ENGINE_CONFIG_TAG_COUNT_MAX           1024
 #define IFB_ENGINE_CONFIG_WINDOW_TITLE            "It Flies By"                 
+#define IFB_ENGINE_CONFIG_DEVTOOLS                1            
 
 struct IFBEngineConfig {
     ifb_u16  memory_minimum_gb;
@@ -24,6 +25,7 @@ struct IFBEngineConfig {
     ifb_u16  arena_count_max;
     ifb_u16  tag_c_str_length;
     ifb_u16  tag_count_max;
+    ifb_b16  use_devtools;
     ifb_cstr window_title_cstr;
 };
 
@@ -40,6 +42,7 @@ namespace ifb_engine {
         ptr_engine_config->tag_c_str_length        = IFB_ENGINE_CONFIG_TAG_C_STR_LENGTH;
         ptr_engine_config->tag_count_max           = IFB_ENGINE_CONFIG_TAG_COUNT_MAX;
         ptr_engine_config->window_title_cstr       = IFB_ENGINE_CONFIG_WINDOW_TITLE; 
+        ptr_engine_config->use_devtools            = IFB_ENGINE_CONFIG_DEVTOOLS; 
     }
 };
 

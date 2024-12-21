@@ -44,6 +44,7 @@ if not exist %path_build%\lib mkdir %path_build%\lib
                       /I engine\src\api      ^
                       /I engine\src\context  ^
                       /I engine\src\core     ^
+                      /I engine\src\devtools ^
                       /I engine\src\managers ^
                       /I engine\src\memory   ^
                       /I engine\src\platform ^
