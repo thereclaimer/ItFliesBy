@@ -38,7 +38,6 @@ struct IFBGLVertexArrayObject {
     IFBGLVertexFlags flags;    
 };
 
-
 /**********************************************************************************/
 /* VIEWPORT                                                                       */
 /**********************************************************************************/
@@ -46,9 +45,9 @@ struct IFBGLVertexArrayObject {
 struct IFBGLViewport {
     IFBPosition   position;
     IFBDimensions dimensions;
-}
+};
 
-namespace  ifb_gl{
+namespace ifb_gl{
 
     ifb_void viewport_clear                       (ifb_void);
     ifb_void viewport_set_clear_color             (IFBGLViewport& viewport, const IFBColor32& color_ref);
