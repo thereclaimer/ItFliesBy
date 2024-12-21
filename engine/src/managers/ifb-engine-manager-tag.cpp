@@ -43,7 +43,7 @@ ifb_engine::tag_manager_reserve_tag(
 
     //find the next available index
     IFBIDTag tag_id;
-    const ifb_b8 can_create_tag = ifb_common::hash_next_clear_value(
+    const ifb_b8 can_create_tag = ifb_hash::find_next_clear_value(
         tag_manager_ptr_hash_array,
         tag_count,
         tag_id.index);
@@ -52,7 +52,7 @@ ifb_engine::tag_manager_reserve_tag(
     ifb_macro_assert(can_create_tag);
 
     //hash the string and update the table
-    tag_manager_ptr_hash_array[tag_id.index] = ifb_common::hash_cstr(
+    tag_manager_ptr_hash_array[tag_id.index] = ifb_hash::get_hash(
         tag_c_str,
         tag_c_str_length);
 

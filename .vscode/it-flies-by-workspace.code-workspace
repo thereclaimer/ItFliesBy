@@ -7,7 +7,8 @@
 	],
 	"settings": {
 		"files.associations": {
-			"xlocale": "cpp"
+			"xlocale": "cpp",
+			"glew.c": "cpp"
 		}
 	}
 }

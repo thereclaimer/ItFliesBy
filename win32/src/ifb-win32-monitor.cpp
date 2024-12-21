@@ -71,7 +71,7 @@ ifb_win32::monitor_enum_callback_info(
     const ifb_u32    monitor_origin_y  = rect_ptr->top; 
 
     //calculate the aspect ratio
-    const IFBAspectRatioType monitor_aspect_ratio_type = ifb_common::aspect_ratio_lookup(
+    const IFBAspectRatioType monitor_aspect_ratio_type = ifb_graphics::aspect_ratio_lookup(
         monitor_width,
         monitor_height);
 

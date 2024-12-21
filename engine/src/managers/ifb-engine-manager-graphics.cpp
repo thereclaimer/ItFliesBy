@@ -13,36 +13,55 @@ ifb_engine::graphics_manger_initialize(
     ifb_macro_assert(memory_ptr);
 
     //first, we need to get the number of monitors the platform has available
-    const ifb_u32 montitor_count = ifb_engine::platform_monitor_count();
-    ifb_macro_assert(montitor_count > 0);
+    graphics_manager_ptr->monitor_count = ifb_engine::platform_monitor_count();
+    ifb_macro_assert(graphics_manager_ptr->monitor_count > 0);
 
+    //commit memory for the manager
+    ifb_engine::graphics_manager_commit_memory(
+        graphics_manager_ptr->memory,
+        memory_ptr,
+        graphics_manager_ptr->monitor_count);
+
+    //get the monitor array
+    IFBMonitor* monitor_array_pointer = ifb_engine::graphics_manager_get_monitor_array_pointer(graphics_manager_ptr->memory);
+    ifb_macro_assert(monitor_array_pointer);
+
+    //get the monitor information from the platform
+    ifb_engine::platform_monitor_info(
+        graphics_manager_ptr->monitor_count,
+        monitor_array_pointer);
+}
+
+inline ifb_void
+ifb_engine::graphics_manager_commit_memory(
+          IFBEngineGraphicsManagerMemory& graphics_manager_memory,
+          IFBEngineMemory*                memory_ptr,
+    const ifb_u32                         monitor_count) {
+    
     //calculate the size of the monitor array and other structures
-    const ifb_u32 monitor_array_size = ifb_macro_size_array(IFBMonitor, montitor_count);
-    const ifb_u32 window_size        = ifb_macro_align_size_struct(IFBWindow); 
-    const ifb_u32 commit_size        = monitor_array_size + window_size;
+    const ifb_u16 window_size        = ifb_macro_align_size_struct(IFBWindow); 
+    const ifb_u16 viewport_size      = ifb_macro_align_size_struct(IFBGLViewport);
+    const ifb_u16 monitor_array_size = ifb_macro_size_array(IFBMonitor, monitor_count);
+
+    //total commit size
+    const ifb_u32 commit_size = 
+        window_size        + 
+        viewport_size      +
+        monitor_array_size;
 
     //commit memory
     const IFBIDCommit commit_id            = ifb_engine::memory_commit(memory_ptr,commit_size);
     const ifb_address commit_start         = ifb_engine::memory_get_commit_address(memory_ptr,commit_id);
-    const ifb_u32     offset_window        = 0;
-    const ifb_u32     offset_monitor_array = window_size;
+    const ifb_u16     offset_window        = 0;
+    const ifb_u16     offset_viewport      = window_size;
+    const ifb_u16     offset_monitor_array = viewport_size;
 
     //set memory properties
-    IFBEngineGraphicsManagerMemory& graphics_manager_memory_ref = graphics_manager_ptr->memory;
-    graphics_manager_memory_ref.start                = commit_start;
-    graphics_manager_memory_ref.offset_window        = offset_window;
-    graphics_manager_memory_ref.offset_monitor_array = offset_monitor_array;
-    graphics_manager_memory_ref.commit_id            = commit_id;
-
-    //get the monitor array
-    IFBMonitor* monitor_array_pointer = ifb_engine::graphics_manager_get_monitor_array_pointer(graphics_manager_memory_ref);
-    ifb_macro_assert(monitor_array_pointer);
-
-    //get the monitor information from the platform
-    ifb_engine::platform_monitor_info(montitor_count,monitor_array_pointer);
-
-    //set the other properties and we're done, for now its just the monitor count
-    graphics_manager_ptr->monitor_count = montitor_count;
+    graphics_manager_memory.start                = commit_start;
+    graphics_manager_memory.offset_window        = offset_window;
+    graphics_manager_memory.offset_viewport      = offset_viewport;
+    graphics_manager_memory.offset_monitor_array = offset_monitor_array;
+    graphics_manager_memory.commit_id            = commit_id;
 }
 
 inline ifb_void 
@@ -53,7 +72,7 @@ ifb_engine::graphics_manager_create_window (
     
     //get the monitor array and find the primary monitor
     const IFBMonitor* monitor_array_ptr   = ifb_engine::graphics_manager_get_monitor_array_pointer(graphics_manager_ptr->memory); 
-    const IFBMonitor* monitor_primary_ptr = ifb_common::monitor_find_primary(graphics_manager_ptr->monitor_count,monitor_array_ptr); 
+    const IFBMonitor* monitor_primary_ptr = ifb_graphics::monitor_find_primary(graphics_manager_ptr->monitor_count,monitor_array_ptr); 
     ifb_macro_assert(monitor_primary_ptr);
 
     //get the monitor and window
@@ -64,8 +83,8 @@ ifb_engine::graphics_manager_create_window (
     window_ptr->monitor_id = monitor_primary_ptr->id;
 
     //set window properties based on the monitor
-    ifb_common::window_set_resolution_based_on_monitor_aspect_ratio(window_ptr, monitor_primary_ptr);
-    ifb_common::window_set_position_to_monitor_center              (window_ptr, monitor_primary_ptr);
+    ifb_graphics::window_set_resolution_based_on_monitor_aspect_ratio(window_ptr, monitor_primary_ptr);
+    ifb_graphics::window_set_position_to_monitor_center              (window_ptr, monitor_primary_ptr);
 
     //result of platform window initialization
     ifb_b8 result = true;
@@ -79,20 +98,59 @@ ifb_engine::graphics_manager_create_window (
         window_ptr->position.y);
 
     //process flags
-    result &= ifb_common::window_flags_use_opengl(window_flags) ? ifb_engine::platform_window_opengl_init() : true;
-    result &= ifb_common::window_flags_use_imgui (window_flags) ? ifb_engine::platform_window_imgui_init()  : true;
-    result &= ifb_common::window_flags_is_visible(window_flags) ? ifb_engine::platform_window_show()        : true;
+    result &= ifb_graphics::window_flags_use_opengl(window_flags) ? ifb_engine::platform_window_opengl_init() : true;
+    result &= ifb_graphics::window_flags_use_imgui (window_flags) ? ifb_engine::platform_window_imgui_init()  : true;
+    result &= ifb_graphics::window_flags_is_visible(window_flags) ? ifb_engine::platform_window_show()        : true;
 
     //sanity check, and we're done
     ifb_macro_assert(result);
 }
 
 inline ifb_void 
+ifb_engine::graphics_manager_create_viewport (
+    IFBEngineGraphicsManager* graphics_manager_ptr) {
+
+    //get the window and viewport
+    IFBWindow*     window_ptr   = ifb_engine::graphics_manager_get_window_pointer(graphics_manager_ptr->memory);
+    IFBGLViewport* viewport_ptr = ifb_engine::graphics_manager_get_viewport      (graphics_manager_ptr->memory);
+
+    //sanity check
+    ifb_macro_assert(window_ptr);
+    ifb_macro_assert(viewport_ptr);
+
+    //make sure we can create the viewport
+    const ifb_b8 can_create_viewport = 
+        ifb_graphics::window_flags_is_visible(window_ptr->flags) &&
+        ifb_graphics::window_flags_use_opengl(window_ptr->flags);
+    ifb_macro_assert(can_create_viewport);
+
+    //the position is at the window's origin, but matches its dimensions
+    viewport_ptr->position.x        = 0;
+    viewport_ptr->position.y        = 0;
+    viewport_ptr->dimensions.width  = window_ptr->resolution.width;
+    viewport_ptr->dimensions.height = window_ptr->resolution.height;
+
+    //set the clear color, for now its hardcoded as gray
+    viewport_ptr->clear_color.red   = (ifb_f32)(((ifb_f32)0x28) / ((ifb_f32)0xFF));
+    viewport_ptr->clear_color.green = (ifb_f32)(((ifb_f32)0x28) / ((ifb_f32)0xFF));
+    viewport_ptr->clear_color.blue  = (ifb_f32)(((ifb_f32)0x28) / ((ifb_f32)0xFF));
+    viewport_ptr->clear_color.alpha = (ifb_f32)(((ifb_f32)0xFF) / ((ifb_f32)0xFF));
+
+    //initialize the viewport
+    ifb_gl::viewport_initialize(viewport_ptr);
+}
+
+inline ifb_void 
 ifb_engine::graphics_manager_frame_start(
     IFBEngineGraphicsManager* graphics_manager_ptr) {
 
+    //start a new frame
     const ifb_b8 result = ifb_engine::platform_window_frame_start();
     ifb_macro_assert(result);
+
+    //clear the viewport
+    IFBGLViewport* viewport = ifb_engine::graphics_manager_get_viewport(graphics_manager_ptr->memory);
+    ifb_gl::viewport_clear(viewport);
 }
 
 inline ifb_void 
@@ -149,4 +207,19 @@ ifb_engine::graphics_manager_get_monitor_array_pointer(
 
     //we're done
     return(monitor_array_pointer);
+}
+
+inline IFBGLViewport* 
+ifb_engine::graphics_manager_get_viewport(
+    const IFBEngineGraphicsManagerMemory& graphics_manager_memory_ref) {
+
+    //get the address
+    const ifb_address memory_start     = graphics_manager_memory_ref.start;
+    const ifb_address viewport_address = memory_start + graphics_manager_memory_ref.offset_viewport;
+
+    //cast to a pointer
+    IFBGLViewport* viewport_pointer = (IFBGLViewport*)viewport_address;
+
+    //we're done
+    return(viewport_pointer);
 }
