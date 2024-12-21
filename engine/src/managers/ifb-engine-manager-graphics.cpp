@@ -131,10 +131,10 @@ ifb_engine::graphics_manager_create_viewport (
     viewport_ptr->dimensions.height = window_ptr->resolution.height;
 
     //set the clear color, for now its hardcoded as gray
-    viewport_ptr->clear_color.red   = 0x28 / 0x255;
-    viewport_ptr->clear_color.green = 0x28 / 0x255;
-    viewport_ptr->clear_color.blue  = 0x28 / 0x255;
-    viewport_ptr->clear_color.alpha = 0xFF / 0x255;
+    viewport_ptr->clear_color.red   = (ifb_f32)(((ifb_f32)0x28) / ((ifb_f32)0xFF));
+    viewport_ptr->clear_color.green = (ifb_f32)(((ifb_f32)0x28) / ((ifb_f32)0xFF));
+    viewport_ptr->clear_color.blue  = (ifb_f32)(((ifb_f32)0x28) / ((ifb_f32)0xFF));
+    viewport_ptr->clear_color.alpha = (ifb_f32)(((ifb_f32)0xFF) / ((ifb_f32)0xFF));
 
     //initialize the viewport
     ifb_gl::viewport_initialize(viewport_ptr);
