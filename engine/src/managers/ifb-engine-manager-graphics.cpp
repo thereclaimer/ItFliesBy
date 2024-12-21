@@ -137,10 +137,10 @@ ifb_engine::graphics_manager_create_viewport (
     viewport_ptr->dimensions.height = window_ptr->resolution.height;
 
     //set the clear color, for now its hardcoded as gray
-    viewport_ptr->clear_color.red   = (ifb_f32)(((ifb_f32)0x28) / ((ifb_f32)0xFF));
-    viewport_ptr->clear_color.green = (ifb_f32)(((ifb_f32)0x28) / ((ifb_f32)0xFF));
-    viewport_ptr->clear_color.blue  = (ifb_f32)(((ifb_f32)0x28) / ((ifb_f32)0xFF));
-    viewport_ptr->clear_color.alpha = (ifb_f32)(((ifb_f32)0xFF) / ((ifb_f32)0xFF));
+    viewport_ptr->clear_color.red   = ifb_macro_color_normalize_byte(0x28);
+    viewport_ptr->clear_color.green = ifb_macro_color_normalize_byte(0x28);
+    viewport_ptr->clear_color.blue  = ifb_macro_color_normalize_byte(0x28);
+    viewport_ptr->clear_color.alpha = ifb_macro_color_normalize_byte(0xFF);
 
     //initialize the viewport
     ifb_gl::viewport_initialize(viewport_ptr);
@@ -173,6 +173,9 @@ ifb_engine::graphics_manager_frame_start(
     //clear the viewport
     IFBGLViewport* viewport = ifb_engine::graphics_manager_get_viewport(graphics_manager_ptr->memory);
     ifb_gl::viewport_clear(viewport);
+
+    //show the imgui demo, temporarily
+    ImGui::ShowDemoWindow();
 }
 
 inline ifb_void 
