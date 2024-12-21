@@ -99,8 +99,14 @@ ifb_engine::graphics_manager_create_window (
 
     //process flags
     result &= ifb_graphics::window_flags_use_opengl(window_flags) ? ifb_engine::platform_window_opengl_init() : true;
-    result &= ifb_graphics::window_flags_use_imgui (window_flags) ? ifb_engine::platform_window_imgui_init()  : true;
     result &= ifb_graphics::window_flags_is_visible(window_flags) ? ifb_engine::platform_window_show()        : true;
+    
+    if (ifb_graphics::window_flags_use_imgui (window_flags)) {
+
+        ImGuiContext* imgui_context = ifb_engine::platform_window_imgui_init();
+        ImGui::SetCurrentContext(imgui_context);
+        result &= imgui_context != NULL;
+    }
 
     //sanity check, and we're done
     ifb_macro_assert(result);
@@ -131,13 +137,41 @@ ifb_engine::graphics_manager_create_viewport (
     viewport_ptr->dimensions.height = window_ptr->resolution.height;
 
     //set the clear color, for now its hardcoded as gray
-    viewport_ptr->clear_color.red   = (ifb_f32)(((ifb_f32)0x28) / ((ifb_f32)0xFF));
-    viewport_ptr->clear_color.green = (ifb_f32)(((ifb_f32)0x28) / ((ifb_f32)0xFF));
-    viewport_ptr->clear_color.blue  = (ifb_f32)(((ifb_f32)0x28) / ((ifb_f32)0xFF));
-    viewport_ptr->clear_color.alpha = (ifb_f32)(((ifb_f32)0xFF) / ((ifb_f32)0xFF));
+    viewport_ptr->clear_color.red   = ifb_macro_color_normalize_byte(0x28);
+    viewport_ptr->clear_color.green = ifb_macro_color_normalize_byte(0x28);
+    viewport_ptr->clear_color.blue  = ifb_macro_color_normalize_byte(0x28);
+    viewport_ptr->clear_color.alpha = ifb_macro_color_normalize_byte(0xFF);
 
     //initialize the viewport
     ifb_gl::viewport_initialize(viewport_ptr);
+}
+
+inline ifb_void 
+ifb_engine::graphics_manager_style_imgui(
+    IFBEngineGraphicsManager* graphics_manager_ptr) {
+
+    //get the window
+    IFBWindow* window_ptr = ifb_engine::graphics_manager_get_window_pointer(graphics_manager_ptr->memory);
+
+    //sanity check, do we have imgui
+    ImGuiContext* imgui_context = ImGui::GetCurrentContext();
+    const ifb_b8  imgui_is_used = ifb_graphics::window_flags_use_imgui(window_ptr->flags);
+    ifb_macro_assert(imgui_is_used && imgui_context);
+
+    //get our local font buffer
+    const ifb_char* font_buffer = ifb_graphics::font_segoeui_data();
+    ifb_macro_assert(font_buffer);
+
+    //load the font
+    ImGuiIO& imgui_io = ImGui::GetIO();
+    ImFont* imgui_font = imgui_io.Fonts->AddFontFromMemoryCompressedBase85TTF(
+        font_buffer,
+        18.0f,
+        NULL,
+        NULL);
+
+    //default style dark
+    ImGui::StyleColorsDark();
 }
 
 inline ifb_void 
@@ -151,6 +185,9 @@ ifb_engine::graphics_manager_frame_start(
     //clear the viewport
     IFBGLViewport* viewport = ifb_engine::graphics_manager_get_viewport(graphics_manager_ptr->memory);
     ifb_gl::viewport_clear(viewport);
+
+    //show the imgui demo, temporarily
+    ImGui::ShowDemoWindow();
 }
 
 inline ifb_void 

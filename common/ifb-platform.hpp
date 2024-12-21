@@ -72,7 +72,7 @@ typedef const ifb_b8
 (*funcptr_ifb_platform_window_opengl_init) (
     ifb_void);
 
-typedef const ifb_b8
+typedef ImGuiContext*
 (*funcptr_ifb_platform_window_imgui_init) (
     ifb_void);
 

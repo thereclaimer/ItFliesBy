@@ -19,5 +19,6 @@
 #define ifb_macro_bit_toggle(bit,val) val ^=  (1 << bit)
 #define ifb_macro_bit_test(bit,val)  (val >> bit) & 1
 
+#define ifb_macro_color_normalize_byte(byte) (ifb_f32)(((ifb_f32)byte) / ((ifb_f32)0xFF))
 
 #endif //IFB_MACROS_HPP

@@ -60,7 +60,6 @@ itfliesby_platform_win32_api_imgui_frame_start(
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
-
     return(NULL);
 }
 

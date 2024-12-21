@@ -40,12 +40,12 @@ struct IFBWin32Window {
     HWND          window_handle;
     HDC           device_context;
     HGLRC         opengl_context;
-    ImGuiContext* imgui_context;
     ifb_u32       width;
     ifb_u32       height;
     ifb_u32       position_x;
     ifb_u32       position_y;
     ifb_b8        quit_received;
+    ImGuiContext* imgui_context;
 };
 
 extern IMGUI_IMPL_API LRESULT 
@@ -72,12 +72,12 @@ namespace ifb_win32 {
         const ifb_u32  position_x,
         const ifb_u32  position_y);
 
-    ifb_internal const ifb_b8 window_destroy      (ifb_void);
-    ifb_internal const ifb_b8 window_frame_start  (ifb_void);
-    ifb_internal const ifb_b8 window_frame_render (ifb_void);
-    ifb_internal const ifb_b8 window_show         (ifb_void);
-    ifb_internal const ifb_b8 window_opengl_init  (ifb_void);
-    ifb_internal const ifb_b8 window_imgui_init   (ifb_void);
+    ifb_internal const ifb_b8        window_destroy      (ifb_void);
+    ifb_internal const ifb_b8        window_frame_start  (ifb_void);
+    ifb_internal const ifb_b8        window_frame_render (ifb_void);
+    ifb_internal const ifb_b8        window_show         (ifb_void);
+    ifb_internal const ifb_b8        window_opengl_init  (ifb_void);
+    ifb_internal       ImGuiContext* window_imgui_init   (ifb_void);
 
     ifb_internal LRESULT CALLBACK
     window_callback(
@@ -176,7 +176,6 @@ namespace ifb_win32 {
 
 #define IFB_WIN32_DIALOG_CSTR_LENGTH_MAX 256
 #define IFB_WIN32_DIALOG_WSTR_LENGTH_MAX 128
-
 
 namespace ifb_win32 {
 
