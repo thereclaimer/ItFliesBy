@@ -85,6 +85,16 @@ namespace ifb_engine {
     ifb_api const ifb_b8 context_destroy           (ifb_void);
     ifb_api const ifb_b8 context_startup           (ifb_void);
     ifb_api const ifb_b8 context_update_and_render (IFBEngineUpdate& update);
+
+    inline ifb_void context_update_window_flag_set_close     (IFBEngineUpdate& update_ref) { update_ref.window.flags |= IFBEngineWindowUpdateFlags_Close;      }
+    inline ifb_void context_update_window_flag_set_resize    (IFBEngineUpdate& update_ref) { update_ref.window.flags |= IFBEngineWindowUpdateFlags_Resize;     }
+    inline ifb_void context_update_window_flag_set_reposition(IFBEngineUpdate& update_ref) { update_ref.window.flags |= IFBEngineWindowUpdateFlags_Reposition; }
+    inline ifb_void context_update_window_flag_set_maximize  (IFBEngineUpdate& update_ref) { update_ref.window.flags |= IFBEngineWindowUpdateFlags_Maximize;   }
+
+    inline const ifb_b8 context_update_window_flag_is_set_close      (IFBEngineUpdate& update_ref) { return(update_ref.window.flags & IFBEngineWindowUpdateFlags_Close);      }
+    inline const ifb_b8 context_update_window_flag_is_set_resize     (IFBEngineUpdate& update_ref) { return(update_ref.window.flags & IFBEngineWindowUpdateFlags_Resize);     }
+    inline const ifb_b8 context_update_window_flag_is_set_reposition (IFBEngineUpdate& update_ref) { return(update_ref.window.flags & IFBEngineWindowUpdateFlags_Reposition); }
+    inline const ifb_b8 context_update_window_flag_is_set_maximize   (IFBEngineUpdate& update_ref) { return(update_ref.window.flags & IFBEngineWindowUpdateFlags_Maximize);   }
 };
 
 /**********************************************************************************/

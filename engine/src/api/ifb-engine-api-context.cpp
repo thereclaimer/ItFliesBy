@@ -90,14 +90,15 @@ ifb_engine::context_update_and_render(
     IFBEngineContextManagers* managers_ptr         = ifb_engine::context_get_managers();
     IFBEngineGraphicsManager* graphics_manager_ptr = ifb_engine::context_managers_get_graphics_manager(managers_ptr);
 
+    if (ifb_engine::context_update_window_flag_is_set_close(update)) {
+        return(false);
+    }
+
     //start a new frame
     ifb_engine::graphics_manager_frame_start(graphics_manager_ptr);
 
     //render the frame
     ifb_engine::graphics_manager_frame_render(graphics_manager_ptr);
-
-    //clear update data
-    update.window = {0};
 
     //we're done
     return(true);

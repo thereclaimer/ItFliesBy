@@ -31,7 +31,7 @@ wWinMain(
 
     //main loop
     ifb_b8 running = true;
-    while() {
+    while(running) {
 
         IFBEngineUpdate& engine_update = ifb_win32::context_get_engine_update();
 
