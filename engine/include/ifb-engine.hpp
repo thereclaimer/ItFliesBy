@@ -61,12 +61,30 @@ enum IFBEngineState_ {
 
 typedef ifb_u32 IFBEngineState;
 
+enum IFBEngineWindowUpdateFlags_ {
+    IFBEngineWindowUpdateFlags_None       = 0,
+    IFBEngineWindowUpdateFlags_Close      = (1 << 0),
+    IFBEngineWindowUpdateFlags_Resize     = (1 << 1),
+    IFBEngineWindowUpdateFlags_Reposition = (1 << 2),
+    IFBEngineWindowUpdateFlags_Maximize   = (1 << 3)
+};
+
+typedef ifb_u32 IFBEngineWindowUpdateFlags;
+
+struct IFBEngineUpdate {
+    struct {
+        IFBPosition                position;
+        IFBDimensions              dimensions;
+        IFBEngineWindowUpdateFlags flags;
+    } window;
+};
+
 namespace ifb_engine {
 
     ifb_api const ifb_b8 context_create            (IFBPlatformApi& platform_api_ref);
     ifb_api const ifb_b8 context_destroy           (ifb_void);
     ifb_api const ifb_b8 context_startup           (ifb_void);
-    ifb_api const ifb_b8 context_update_and_render (ifb_void);
+    ifb_api const ifb_b8 context_update_and_render (IFBEngineUpdate& update);
 };
 
 /**********************************************************************************/

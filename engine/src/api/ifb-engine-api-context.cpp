@@ -84,7 +84,7 @@ ifb_engine::context_startup(
 
 ifb_api const ifb_b8 
 ifb_engine::context_update_and_render(
-    ifb_void) {
+    IFBEngineUpdate& update) {
 
     //get the pointers
     IFBEngineContextManagers* managers_ptr         = ifb_engine::context_get_managers();
@@ -95,6 +95,9 @@ ifb_engine::context_update_and_render(
 
     //render the frame
     ifb_engine::graphics_manager_frame_render(graphics_manager_ptr);
+
+    //clear update data
+    update.window = {0};
 
     //we're done
     return(true);
