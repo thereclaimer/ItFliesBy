@@ -87,13 +87,42 @@ ifb_win32::window_frame_start(
     MSG window_message;
     while(PeekMessage(&window_message,window_ref.window_handle,0,0,PM_REMOVE)) {
 
-        //handle the messages
-        TranslateMessage(&window_message);
-        DispatchMessage(&window_message);
+        switch(window_message.message) {
 
-        //if it was a quit, set the quit received flag
-        if (window_message.message == WM_QUIT) {
-            window_ref.quit_received = true;
+            //key down
+            case WM_KEYDOWN:
+            case WM_SYSKEYDOWN: {
+
+                const IFBKeyCode keycode = ifb_win32::user_input_keycode((ifb_u32)window_message.wParam);
+
+                IFBEngineUpdate& update = ifb_win32::context_get_engine_update();
+
+                ifb_input::keyboard_key_down(update.input,keycode);
+
+            } break;
+
+            //key up
+            case WM_KEYUP:
+            case WM_SYSKEYUP: {
+
+                const IFBKeyCode keycode = ifb_win32::user_input_keycode((ifb_u32)window_message.wParam);
+
+                IFBEngineUpdate& update = ifb_win32::context_get_engine_update();
+
+                ifb_input::keyboard_key_up(update.input,keycode);
+
+            } break;
+
+            case WM_QUIT: {
+                window_ref.quit_received = true;
+            } break;
+
+            default: {
+                
+                //handle the messages
+                TranslateMessage(&window_message);
+                DispatchMessage(&window_message);
+            };
         }
     }
 
