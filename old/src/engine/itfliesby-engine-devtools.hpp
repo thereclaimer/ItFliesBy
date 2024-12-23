@@ -12,5 +12,4 @@ struct ItfliesbyEngineDevtools {
     ImGuiIO*      imgui_io;
 };
 
-
 #endif //ITFLIESBY_ENGINE_DEVTOOLS_HPP
