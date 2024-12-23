@@ -97,7 +97,7 @@ ifb_win32::window_frame_start(
 
                 IFBEngineUpdate& update = ifb_win32::context_get_engine_update();
 
-                ifb_input::keyboard_key_down(update.input,keycode);
+                ifb_input::keyboard_key_down(update.input.keyboard,keycode);
 
             } break;
 
@@ -109,7 +109,7 @@ ifb_win32::window_frame_start(
 
                 IFBEngineUpdate& update = ifb_win32::context_get_engine_update();
 
-                ifb_input::keyboard_key_up(update.input,keycode);
+                ifb_input::keyboard_key_up(update.input.keyboard,keycode);
 
             } break;
 

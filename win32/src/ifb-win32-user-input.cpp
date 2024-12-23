@@ -8,7 +8,7 @@ ifb_win32::user_input_keycode(
         
     IFBKeyCode ifb_keycode = 0;
 
-    switch (keycode ) {
+    switch (win32_keycode) {
 
         case VK_BACK:        { ifb_keycode = IFBKeyCode_Back;                  } break;
         case VK_TAB:         { ifb_keycode = IFBKeyCode_Tab;                   } break;
