@@ -47,7 +47,51 @@ namespace ifb_engine {
 };
 
 /**********************************************************************************/
-/* ENGINE                                                                            */
+/* UPDATE                                                                         */
+/**********************************************************************************/
+
+enum IFBEngineUpdateWindowFlags_ {
+    IFBEngineUpdateWindowFlags_None       = 0,
+    IFBEngineUpdateWindowFlags_Close      = (1 << 0),
+    IFBEngineUpdateWindowFlags_Resize     = (1 << 1),
+    IFBEngineUpdateWindowFlags_Reposition = (1 << 2),
+    IFBEngineUpdateWindowFlags_Maximize   = (1 << 3)
+};
+
+typedef ifb_u32 IFBEngineUpdateWindowFlags;
+
+struct IFBEngineUpdateWindow {
+    IFBPosition                position;
+    IFBDimensions              dimensions;
+    IFBEngineUpdateWindowFlags flags;
+};
+
+struct IFBEngineUpdate {
+    IFBInput              input;
+    IFBEngineUpdateWindow window;
+};
+
+namespace ifb_engine {
+
+    inline ifb_void context_update_window_flag_set_close             (IFBEngineUpdate& update_ref) { update_ref.window.flags |= IFBEngineUpdateWindowFlags_Close;      }
+    inline ifb_void context_update_window_flag_set_resize            (IFBEngineUpdate& update_ref) { update_ref.window.flags |= IFBEngineUpdateWindowFlags_Resize;     }
+    inline ifb_void context_update_window_flag_set_reposition        (IFBEngineUpdate& update_ref) { update_ref.window.flags |= IFBEngineUpdateWindowFlags_Reposition; }
+    inline ifb_void context_update_window_flag_set_maximize          (IFBEngineUpdate& update_ref) { update_ref.window.flags |= IFBEngineUpdateWindowFlags_Maximize;   }
+
+    inline ifb_void context_update_window_flag_clear_close           (IFBEngineUpdate& update_ref) { update_ref.window.flags &= ~(IFBEngineUpdateWindowFlags_Close);      }
+    inline ifb_void context_update_window_flag_clear_resize          (IFBEngineUpdate& update_ref) { update_ref.window.flags &= ~(IFBEngineUpdateWindowFlags_Resize);     }
+    inline ifb_void context_update_window_flag_clear_reposition      (IFBEngineUpdate& update_ref) { update_ref.window.flags &= ~(IFBEngineUpdateWindowFlags_Reposition); }
+    inline ifb_void context_update_window_flag_clear_maximize        (IFBEngineUpdate& update_ref) { update_ref.window.flags &= ~(IFBEngineUpdateWindowFlags_Maximize);   }
+
+    inline const ifb_b8 context_update_window_flag_is_set_close      (IFBEngineUpdate& update_ref) { return(update_ref.window.flags & IFBEngineUpdateWindowFlags_Close);      }
+    inline const ifb_b8 context_update_window_flag_is_set_resize     (IFBEngineUpdate& update_ref) { return(update_ref.window.flags & IFBEngineUpdateWindowFlags_Resize);     }
+    inline const ifb_b8 context_update_window_flag_is_set_reposition (IFBEngineUpdate& update_ref) { return(update_ref.window.flags & IFBEngineUpdateWindowFlags_Reposition); }
+    inline const ifb_b8 context_update_window_flag_is_set_maximize   (IFBEngineUpdate& update_ref) { return(update_ref.window.flags & IFBEngineUpdateWindowFlags_Maximize);   }
+
+};
+
+/**********************************************************************************/
+/* ENGINE                                                                         */
 /**********************************************************************************/
 
 enum IFBEngineState_ {
@@ -61,40 +105,12 @@ enum IFBEngineState_ {
 
 typedef ifb_u32 IFBEngineState;
 
-enum IFBEngineWindowUpdateFlags_ {
-    IFBEngineWindowUpdateFlags_None       = 0,
-    IFBEngineWindowUpdateFlags_Close      = (1 << 0),
-    IFBEngineWindowUpdateFlags_Resize     = (1 << 1),
-    IFBEngineWindowUpdateFlags_Reposition = (1 << 2),
-    IFBEngineWindowUpdateFlags_Maximize   = (1 << 3)
-};
-
-typedef ifb_u32 IFBEngineWindowUpdateFlags;
-
-struct IFBEngineUpdate {
-    struct {
-        IFBPosition                position;
-        IFBDimensions              dimensions;
-        IFBEngineWindowUpdateFlags flags;
-    } window;
-};
-
 namespace ifb_engine {
 
     ifb_api const ifb_b8 context_create            (IFBPlatformApi& platform_api_ref);
     ifb_api const ifb_b8 context_destroy           (ifb_void);
     ifb_api const ifb_b8 context_startup           (ifb_void);
     ifb_api const ifb_b8 context_update_and_render (IFBEngineUpdate& update);
-
-    inline ifb_void context_update_window_flag_set_close     (IFBEngineUpdate& update_ref) { update_ref.window.flags |= IFBEngineWindowUpdateFlags_Close;      }
-    inline ifb_void context_update_window_flag_set_resize    (IFBEngineUpdate& update_ref) { update_ref.window.flags |= IFBEngineWindowUpdateFlags_Resize;     }
-    inline ifb_void context_update_window_flag_set_reposition(IFBEngineUpdate& update_ref) { update_ref.window.flags |= IFBEngineWindowUpdateFlags_Reposition; }
-    inline ifb_void context_update_window_flag_set_maximize  (IFBEngineUpdate& update_ref) { update_ref.window.flags |= IFBEngineWindowUpdateFlags_Maximize;   }
-
-    inline const ifb_b8 context_update_window_flag_is_set_close      (IFBEngineUpdate& update_ref) { return(update_ref.window.flags & IFBEngineWindowUpdateFlags_Close);      }
-    inline const ifb_b8 context_update_window_flag_is_set_resize     (IFBEngineUpdate& update_ref) { return(update_ref.window.flags & IFBEngineWindowUpdateFlags_Resize);     }
-    inline const ifb_b8 context_update_window_flag_is_set_reposition (IFBEngineUpdate& update_ref) { return(update_ref.window.flags & IFBEngineWindowUpdateFlags_Reposition); }
-    inline const ifb_b8 context_update_window_flag_is_set_maximize   (IFBEngineUpdate& update_ref) { return(update_ref.window.flags & IFBEngineWindowUpdateFlags_Maximize);   }
 };
 
 /**********************************************************************************/
