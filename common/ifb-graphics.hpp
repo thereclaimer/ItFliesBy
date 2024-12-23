@@ -151,23 +151,28 @@ enum IFBAspectRatioType_ {
     IFBAspectRatioType_16_x_10 = 1,
     IFBAspectRatioType_21_x_9  = 2,
     IFBAspectRatioType_4_x_3   = 3,
-    IFBAspectRatioType_Count   = 4
+    IFBAspectRatioType_3_x_2   = 4,
+    IFBAspectRatioType_Custom  = 5,
+    IFBAspectRatioType_Count   = 6
 };
 
-#define IFB_ASPECT_RATIO_TYPE_DEFAULT IFBAspectRatioType_16_x_9
+#define IFB_ASPECT_RATIO_TYPE_DEFAULT IFBAspectRatioType_Custom
 
 const ifb_f32 IFB_ASPECT_RATIO_VALUE_LOOKUP[] = {
     16.0f /  9.0f, // IFBAspectRatioType_16_x_9
     16.0f / 10.0f, // IFBAspectRatioType_16_x_10
     21.0f /  9.0f, // IFBAspectRatioType_21_x_9
      4.0f /  3.0f, // IFBAspectRatioType_4_x_3
+     3.0f /  2.0f  // IFBAspectRatioType_3_x_2
 };
 
 const ifb_cstr IFB_ASPECT_RATIO_DESCRIPTION_LOOKUP[] = {
-    "16:9",  // IFBAspectRatio_16_x_9
-    "16:10", // IFBAspectRatio_16_x_10
-    "21:9",  // IFBAspectRatio_21_x_9
-    "4:3"    // IFBAspectRatio_4_x_3
+    "16:9",   // IFBAspectRatio_16_x_9
+    "16:10",  // IFBAspectRatio_16_x_10
+    "21:9",   // IFBAspectRatio_21_x_9
+    "4:3",    // IFBAspectRatio_4_x_3
+    "3:2",    // IFBAspectRatio_3_x_2
+    "Custom"  // IFBAspectRatio_Custom
 };
 
 inline const IFBAspectRatioType
@@ -228,8 +233,9 @@ enum IFBResolutionType_ {
     IFBResolutionType_4_x_3_SVGA_800_x_600                  = 17,	
     IFBResolutionType_4_x_3_XGA_1024_x_768                  = 18,	
     IFBResolutionType_4_x_3_SXGA_1280_x_960                 = 19,	
-    IFBResolutionType_4_x_3_UXGA_1600_x_1200                = 20,	
-    IFBResolutionType_Count                                 = 21,	
+    IFBResolutionType_4_x_3_UXGA_1600_x_1200                = 20,
+    IFBResolutionType_Custom                                = 21,	
+    IFBResolutionType_Count                                 = 22,	
 };
 
 struct IFBResolution {
@@ -334,7 +340,7 @@ ifb_graphics::resolution_dimensions(
 inline ifb_void
 ifb_graphics::resolution_default_from_aspect_ratio(
     const IFBAspectRatioType  in_aspect_ratio_type,        
-            IFBResolution&     out_resolution_ref) {
+          IFBResolution&     out_resolution_ref) {
 
     const IFBResolutionType resolution_type = ifb_graphics::resolution_default_type_from_aspect_ratio(in_aspect_ratio_type);
 
@@ -435,6 +441,17 @@ ifb_graphics::window_set_resolution_based_on_monitor_aspect_ratio(
           IFBWindow*  window_ptr,
     const IFBMonitor* monitor_ptr) {
 
+    if (!window_ptr || !monitor_ptr) {
+        return;
+    }
+
+    if (monitor_ptr->aspect_ratio == IFBAspectRatioType_Custom) {
+        window_ptr->resolution.type   = IFBResolutionType_Custom;
+        window_ptr->resolution.width  = monitor_ptr->dimensions.width;
+        window_ptr->resolution.height = monitor_ptr->dimensions.height;
+        return;
+    }
+
     ifb_graphics::resolution_default_from_aspect_ratio(
         monitor_ptr->aspect_ratio,
         window_ptr->resolution);
@@ -442,8 +459,12 @@ ifb_graphics::window_set_resolution_based_on_monitor_aspect_ratio(
 
 inline ifb_void 
 ifb_graphics::window_set_position_to_monitor_center(
-            IFBWindow*  window_ptr,
+          IFBWindow*  window_ptr,
     const IFBMonitor* monitor_ptr) {
+
+    if (!window_ptr || !monitor_ptr) {
+        return;
+    }
 
     //calculate the position for centering the window
     window_ptr->position.x = (monitor_ptr->dimensions.width  - window_ptr->resolution.width)  / 2;

@@ -63,6 +63,9 @@ ifb_win32::window_destroy(
 
     PostQuitMessage(0);
 
+    IFBEngineUpdate& update_ref = ifb_win32::context_get_engine_update();
+    ifb_engine::context_update_window_flags_set_close(update_ref);
+
     return(true);
 }
 
@@ -84,13 +87,46 @@ ifb_win32::window_frame_start(
     MSG window_message;
     while(PeekMessage(&window_message,window_ref.window_handle,0,0,PM_REMOVE)) {
 
-        //handle the messages
-        TranslateMessage(&window_message);
-        DispatchMessage(&window_message);
+        switch(window_message.message) {
 
-        //if it was a quit, set the quit received flag
-        if (window_message.message == WM_QUIT) {
-            window_ref.quit_received = true;
+            //key down
+            case WM_KEYDOWN:
+            case WM_SYSKEYDOWN: {
+
+                const IFBKeyCode keycode = ifb_win32::user_input_keycode((ifb_u32)window_message.wParam);
+
+                IFBEngineUpdate& update = ifb_win32::context_get_engine_update();
+
+                ifb_input::keyboard_key_down(update.input.keyboard,keycode);
+
+                const ifb_b8 x = ifb_input::keyboard_key_is_down(update.input.keyboard,keycode);
+
+                ifb_macro_nop();
+
+            } break;
+
+            //key up
+            case WM_KEYUP:
+            case WM_SYSKEYUP: {
+
+                const IFBKeyCode keycode = ifb_win32::user_input_keycode((ifb_u32)window_message.wParam);
+
+                IFBEngineUpdate& update = ifb_win32::context_get_engine_update();
+
+                ifb_input::keyboard_key_up(update.input.keyboard,keycode);
+
+            } break;
+
+            case WM_QUIT: {
+                window_ref.quit_received = true;
+            } break;
+
+            default: {
+                
+                //handle the messages
+                TranslateMessage(&window_message);
+                DispatchMessage(&window_message);
+            };
         }
     }
 
@@ -288,7 +324,11 @@ ifb_win32::window_on_wm_quit(
 
     //get the window
     IFBWin32Window& window_ref = ifb_win32::context_get_window();
-    
+
+    //set the close flag
+    IFBEngineUpdate& update_ref = ifb_win32::context_get_engine_update();
+    ifb_engine::context_update_window_flags_set_close(update_ref);
+
     //set quit received
     window_ref.quit_received = true;
 
@@ -303,6 +343,9 @@ ifb_win32::window_on_wm_destroy(
 
     //post the quit message
     PostQuitMessage(0);
+
+    IFBEngineUpdate& update_ref = ifb_win32::context_get_engine_update();
+    ifb_engine::context_update_window_flags_set_close(update_ref);
 
     //we're done
     return(S_OK);

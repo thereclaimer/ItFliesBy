@@ -39,6 +39,19 @@ ifb_engine::context_get_core(
     return(core_ptr);
 }
 
+inline IFBEngineDevTools*
+ifb_engine::context_get_devtools(
+    ifb_void) {
+
+    IFBEngineContext& context_ref = ifb_engine::context();
+
+    IFBEngineDevTools* devtools_ptr = (IFBEngineDevTools*)ifb_engine::memory_get_pointer(
+        &context_ref.memory,
+        context_ref.handles.devtools);
+
+    return(devtools_ptr);
+}
+
 inline const ifb_ptr 
 ifb_engine::context_get_pointer(
     const IFBHND& handle) {
@@ -69,4 +82,10 @@ ifb_engine::context_get_pointer(
     
     //we're done
     return(pointer);
+}
+
+inline ifb_void 
+ifb_engine::context_process_input(
+    IFBInput& input_ref) {
+
 }

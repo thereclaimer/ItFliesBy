@@ -12,6 +12,9 @@
 //core
 #include "ifb-engine-core-arena.cpp"
 
+//devtools
+#include "ifb-engine-devtools.cpp"
+
 //managers
 #include "ifb-engine-manager-arena.cpp"
 #include "ifb-engine-manager-tag.cpp"

@@ -193,6 +193,15 @@ namespace ifb_win32 {
 };
 
 /**********************************************************************************/
+/* USER INPUT                                                                     */
+/**********************************************************************************/
+
+namespace ifb_win32 {
+
+    const IFBKeyCode user_input_keycode(const ifb_u32 win32_keycode); 
+};
+
+/**********************************************************************************/
 /* WIN32 CONTEXT                                                                  */
 /**********************************************************************************/
 
@@ -204,9 +213,10 @@ struct IFBWin32Args {
 };
 
 struct IFBWin32Context {
-    IFBWin32Window window;
-    IFBWin32Args   args;
-    IFBPlatformApi platform_api;
+    IFBWin32Window  window;
+    IFBWin32Args    args;
+    IFBPlatformApi  platform_api;
+    IFBEngineUpdate engine_update;
 };
 
 namespace ifb_win32 {
@@ -231,9 +241,10 @@ namespace ifb_win32 {
     inline const PWSTR     context_args_get_p_cmd_line      (ifb_void) { return(_context.args.p_cmd_line);      }
     inline const int       context_args_get_n_cmd_show      (ifb_void) { return(_context.args.n_cmd_show);      }
 
-    inline IFBWin32Args    context_get_args         (ifb_void) { return(_context.args);         }
-    inline IFBWin32Window& context_get_window       (ifb_void) { return(_context.window);       }
-    inline IFBPlatformApi& context_get_platform_api (ifb_void) { return(_context.platform_api); }
+    inline IFBWin32Args     context_get_args           (ifb_void) { return(_context.args);          }
+    inline IFBWin32Window&  context_get_window         (ifb_void) { return(_context.window);        }
+    inline IFBPlatformApi&  context_get_platform_api   (ifb_void) { return(_context.platform_api);  }
+    inline IFBEngineUpdate& context_get_engine_update  (ifb_void) { return(_context.engine_update); }
 };
 
 

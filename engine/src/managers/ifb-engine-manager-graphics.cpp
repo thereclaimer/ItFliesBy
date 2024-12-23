@@ -166,7 +166,7 @@ ifb_engine::graphics_manager_style_imgui(
     ImGuiIO& imgui_io = ImGui::GetIO();
     ImFont* imgui_font = imgui_io.Fonts->AddFontFromMemoryCompressedBase85TTF(
         font_buffer,
-        18.0f,
+        14.0f,
         NULL,
         NULL);
 
@@ -185,9 +185,6 @@ ifb_engine::graphics_manager_frame_start(
     //clear the viewport
     IFBGLViewport* viewport = ifb_engine::graphics_manager_get_viewport(graphics_manager_ptr->memory);
     ifb_gl::viewport_clear(viewport);
-
-    //show the imgui demo, temporarily
-    ImGui::ShowDemoWindow();
 }
 
 inline ifb_void 
