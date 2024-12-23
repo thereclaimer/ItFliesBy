@@ -91,6 +91,10 @@ ifb_engine::context_update_and_render(
     IFBEngineContextManagers* managers_ptr         = ifb_engine::context_get_managers();
     IFBEngineGraphicsManager* graphics_manager_ptr = ifb_engine::context_managers_get_graphics_manager(managers_ptr);
 
+    if (ifb_input::keyboard_key_is_down(update.input.keyboard,IFBKeyCode_F1)) {
+        ifb_macro_nop();
+    }
+
     //get the close flag
     const ifb_b8 close = ifb_engine::context_update_window_flags_get_close(update); 
 
