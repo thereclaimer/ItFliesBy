@@ -26,10 +26,10 @@ enum IFBEngineDevToolsFlags_ {
 namespace ifb_engine {
 
     //set flags
-    inline ifb_void devtools_flags_set_hotkey_pressed     (IFBEngineDevToolsFlags& devtools_flags) { devtools_flags |= IFBEngineDevToolsFlags_HotKeyPressed; }
-    inline ifb_void devtools_flags_set_active             (IFBEngineDevToolsFlags& devtools_flags) { devtools_flags |= IFBEngineDevToolsFlags_Active;        }
-    inline ifb_void devtools_flags_set_quit_received      (IFBEngineDevToolsFlags& devtools_flags) { devtools_flags |= IFBEngineDevToolsFlags_QuitReceived;  }
-    inline ifb_void devtools_flags_set_imgui_demo         (IFBEngineDevToolsFlags& devtools_flags) { devtools_flags |= IFBEngineDevToolsFlags_ImGuiDemo;     }
+    inline ifb_void devtools_flags_set_hotkey_pressed     (IFBEngineDevToolsFlags& devtools_flags, const ifb_b8 value) { devtools_flags = value ? (devtools_flags | IFBEngineDevToolsFlags_HotKeyPressed) : (devtools_flags & ~(IFBEngineDevToolsFlags_HotKeyPressed)); }
+    inline ifb_void devtools_flags_set_active             (IFBEngineDevToolsFlags& devtools_flags, const ifb_b8 value) { devtools_flags = value ? (devtools_flags | IFBEngineDevToolsFlags_Active)        : (devtools_flags & ~(IFBEngineDevToolsFlags_Active));        }
+    inline ifb_void devtools_flags_set_quit_received      (IFBEngineDevToolsFlags& devtools_flags, const ifb_b8 value) { devtools_flags = value ? (devtools_flags | IFBEngineDevToolsFlags_QuitReceived)  : (devtools_flags & ~(IFBEngineDevToolsFlags_QuitReceived));  }
+    inline ifb_void devtools_flags_set_imgui_demo         (IFBEngineDevToolsFlags& devtools_flags, const ifb_b8 value) { devtools_flags = value ? (devtools_flags | IFBEngineDevToolsFlags_ImGuiDemo)     : (devtools_flags & ~(IFBEngineDevToolsFlags_ImGuiDemo));     }
 
     //clear flags
     inline ifb_void devtools_flags_clear_hotkey_pressed   (IFBEngineDevToolsFlags& devtools_flags) { devtools_flags &= ~(IFBEngineDevToolsFlags_HotKeyPressed); }

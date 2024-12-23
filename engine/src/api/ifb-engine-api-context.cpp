@@ -91,13 +91,6 @@ ifb_engine::context_update_and_render(
     IFBEngineContextManagers* managers_ptr         = ifb_engine::context_get_managers();
     IFBEngineGraphicsManager* graphics_manager_ptr = ifb_engine::context_managers_get_graphics_manager(managers_ptr);
 
-    if (ifb_input::keyboard_key_is_down(update.input.keyboard,IFBKeyCode_F1)) {
-        ifb_macro_nop();
-    }
-
-    //get the close flag
-    const ifb_b8 close = ifb_engine::context_update_window_flags_get_close(update); 
-
     //start a new frame
     ifb_engine::graphics_manager_frame_start(graphics_manager_ptr);
 
@@ -107,6 +100,11 @@ ifb_engine::context_update_and_render(
 
     //render the frame
     ifb_engine::graphics_manager_frame_render(graphics_manager_ptr);
+
+    //determine if we should close
+    ifb_b8 close = false;
+    close |= ifb_engine::context_update_window_flags_get_close(update); 
+    close |= ifb_engine::devtools_flags_get_quit_received(devtools_ptr->flags); 
 
     //we're done
     return(!close);

@@ -166,7 +166,7 @@ ifb_engine::graphics_manager_style_imgui(
     ImGuiIO& imgui_io = ImGui::GetIO();
     ImFont* imgui_font = imgui_io.Fonts->AddFontFromMemoryCompressedBase85TTF(
         font_buffer,
-        14.0f,
+        18.0f,
         NULL,
         NULL);
 
