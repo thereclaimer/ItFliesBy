@@ -3,6 +3,7 @@
 #include "ifb-engine.hpp"
 #include "ifb-engine-internal-context.hpp"
 #include "ifb-engine-internal-memory.hpp"
+#include "ifb-engine-internal-devtools.hpp"
 
 ifb_api const ifb_b8
 ifb_engine::context_create(
@@ -28,7 +29,7 @@ ifb_engine::context_create(
     //allocate context structures
     ifb_engine_memory_global_push_struct(&context_ref.memory, context_ref.handles.managers,   IFBEngineContextManagers);
     ifb_engine_memory_global_push_struct(&context_ref.memory, context_ref.handles.core,       IFBEngineContextCore);
-    ifb_engine_memory_global_push_struct(&context_ref.memory, context_ref.handles.user_input, IFBInput);
+    ifb_engine_memory_global_push_struct(&context_ref.memory, context_ref.handles.devtools,   IFBEngineDevTools);
 
     //create the managers
     IFBEngineContextManagers* managers_ptr = ifb_engine::context_get_managers();
@@ -91,10 +92,14 @@ ifb_engine::context_update_and_render(
     IFBEngineGraphicsManager* graphics_manager_ptr = ifb_engine::context_managers_get_graphics_manager(managers_ptr);
 
     //get the close flag
-    const ifb_b8 close = ifb_engine::context_update_window_flag_is_set_close(update); 
+    const ifb_b8 close = ifb_engine::context_update_window_flags_get_close(update); 
 
     //start a new frame
     ifb_engine::graphics_manager_frame_start(graphics_manager_ptr);
+
+    //devtools
+    IFBEngineDevTools* devtools_ptr = ifb_engine::context_get_devtools();
+    ifb_engine::devtools_update(devtools_ptr,update.input);
 
     //render the frame
     ifb_engine::graphics_manager_frame_render(graphics_manager_ptr);

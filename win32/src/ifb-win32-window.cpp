@@ -64,7 +64,7 @@ ifb_win32::window_destroy(
     PostQuitMessage(0);
 
     IFBEngineUpdate& update_ref = ifb_win32::context_get_engine_update();
-    ifb_engine::context_update_window_flag_set_close(update_ref);
+    ifb_engine::context_update_window_flags_set_close(update_ref);
 
     return(true);
 }
@@ -323,7 +323,7 @@ ifb_win32::window_on_wm_quit(
 
     //set the close flag
     IFBEngineUpdate& update_ref = ifb_win32::context_get_engine_update();
-    ifb_engine::context_update_window_flag_set_close(update_ref);
+    ifb_engine::context_update_window_flags_set_close(update_ref);
 
     //set quit received
     window_ref.quit_received = true;
@@ -341,7 +341,7 @@ ifb_win32::window_on_wm_destroy(
     PostQuitMessage(0);
 
     IFBEngineUpdate& update_ref = ifb_win32::context_get_engine_update();
-    ifb_engine::context_update_window_flag_set_close(update_ref);
+    ifb_engine::context_update_window_flags_set_close(update_ref);
 
     //we're done
     return(S_OK);

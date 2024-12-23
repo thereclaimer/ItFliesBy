@@ -4,6 +4,7 @@
 #include "ifb-engine.hpp"
 #include "ifb-engine-internal-platform.hpp"
 #include "ifb-engine-internal-allocators.hpp"
+#include "ifb-engine-internal-devtools.hpp"
 
 /**********************************************************************************/
 /* MANAGERS                                                                       */
@@ -50,14 +51,14 @@ struct IFBEngineContextCore {
 
 struct IFBGHNDEngineContextManagers  : IFBGHND { };
 struct IFBGHNDEngineContextCore      : IFBGHND { }; 
-struct IFBGHNDEngineContextUserInput : IFBGHND { };
+struct IFBGHNDEngineDevTools         : IFBGHND { };
 
 struct IFBEngineContext {
     IFBEngineMemory memory;
     struct {
-        IFBGHNDEngineContextManagers  managers;
-        IFBGHNDEngineContextCore      core;
-        IFBGHNDEngineContextUserInput user_input;
+        IFBGHNDEngineContextManagers managers;
+        IFBGHNDEngineContextCore     core;
+        IFBGHNDEngineDevTools        devtools;
     } handles;
     IFBEngineConfig config;
 };
@@ -72,9 +73,12 @@ namespace ifb_engine {
     IFBEngineContextManagers* context_get_managers (ifb_void);
     IFBEngineContextCore*     context_get_core     (ifb_void);
     IFBEngineConfig*          context_get_config   (ifb_void);
+    IFBEngineDevTools*        context_get_devtools (ifb_void);
 
     const ifb_ptr context_get_pointer (const IFBHND&  handle);
     const ifb_ptr context_get_pointer (const IFBGHND& global_handle);
+
+    ifb_void context_process_input(IFBInput& input_ref);
 };
 
 #endif //IFB_ENGINE_INTERNAL_CONTEXT_HPP

@@ -73,20 +73,20 @@ struct IFBEngineUpdate {
 
 namespace ifb_engine {
 
-    inline ifb_void context_update_window_flag_set_close             (IFBEngineUpdate& update_ref) { update_ref.window.flags |= IFBEngineUpdateWindowFlags_Close;      }
-    inline ifb_void context_update_window_flag_set_resize            (IFBEngineUpdate& update_ref) { update_ref.window.flags |= IFBEngineUpdateWindowFlags_Resize;     }
-    inline ifb_void context_update_window_flag_set_reposition        (IFBEngineUpdate& update_ref) { update_ref.window.flags |= IFBEngineUpdateWindowFlags_Reposition; }
-    inline ifb_void context_update_window_flag_set_maximize          (IFBEngineUpdate& update_ref) { update_ref.window.flags |= IFBEngineUpdateWindowFlags_Maximize;   }
+    inline ifb_void context_update_window_flags_set_close          (IFBEngineUpdate& update_ref) { update_ref.window.flags |= IFBEngineUpdateWindowFlags_Close;      }
+    inline ifb_void context_update_window_flags_set_resize         (IFBEngineUpdate& update_ref) { update_ref.window.flags |= IFBEngineUpdateWindowFlags_Resize;     }
+    inline ifb_void context_update_window_flags_set_reposition     (IFBEngineUpdate& update_ref) { update_ref.window.flags |= IFBEngineUpdateWindowFlags_Reposition; }
+    inline ifb_void context_update_window_flags_set_maximize       (IFBEngineUpdate& update_ref) { update_ref.window.flags |= IFBEngineUpdateWindowFlags_Maximize;   }
 
-    inline ifb_void context_update_window_flag_clear_close           (IFBEngineUpdate& update_ref) { update_ref.window.flags &= ~(IFBEngineUpdateWindowFlags_Close);      }
-    inline ifb_void context_update_window_flag_clear_resize          (IFBEngineUpdate& update_ref) { update_ref.window.flags &= ~(IFBEngineUpdateWindowFlags_Resize);     }
-    inline ifb_void context_update_window_flag_clear_reposition      (IFBEngineUpdate& update_ref) { update_ref.window.flags &= ~(IFBEngineUpdateWindowFlags_Reposition); }
-    inline ifb_void context_update_window_flag_clear_maximize        (IFBEngineUpdate& update_ref) { update_ref.window.flags &= ~(IFBEngineUpdateWindowFlags_Maximize);   }
+    inline ifb_void context_update_window_flags_clear_close        (IFBEngineUpdate& update_ref) { update_ref.window.flags &= ~(IFBEngineUpdateWindowFlags_Close);      }
+    inline ifb_void context_update_window_flags_clear_resize       (IFBEngineUpdate& update_ref) { update_ref.window.flags &= ~(IFBEngineUpdateWindowFlags_Resize);     }
+    inline ifb_void context_update_window_flags_clear_reposition   (IFBEngineUpdate& update_ref) { update_ref.window.flags &= ~(IFBEngineUpdateWindowFlags_Reposition); }
+    inline ifb_void context_update_window_flags_clear_maximize     (IFBEngineUpdate& update_ref) { update_ref.window.flags &= ~(IFBEngineUpdateWindowFlags_Maximize);   }
 
-    inline const ifb_b8 context_update_window_flag_is_set_close      (IFBEngineUpdate& update_ref) { return(update_ref.window.flags & IFBEngineUpdateWindowFlags_Close);      }
-    inline const ifb_b8 context_update_window_flag_is_set_resize     (IFBEngineUpdate& update_ref) { return(update_ref.window.flags & IFBEngineUpdateWindowFlags_Resize);     }
-    inline const ifb_b8 context_update_window_flag_is_set_reposition (IFBEngineUpdate& update_ref) { return(update_ref.window.flags & IFBEngineUpdateWindowFlags_Reposition); }
-    inline const ifb_b8 context_update_window_flag_is_set_maximize   (IFBEngineUpdate& update_ref) { return(update_ref.window.flags & IFBEngineUpdateWindowFlags_Maximize);   }
+    inline const ifb_b8 context_update_window_flags_get_close      (IFBEngineUpdate& update_ref) { return(update_ref.window.flags & IFBEngineUpdateWindowFlags_Close);      }
+    inline const ifb_b8 context_update_window_flags_get_resize     (IFBEngineUpdate& update_ref) { return(update_ref.window.flags & IFBEngineUpdateWindowFlags_Resize);     }
+    inline const ifb_b8 context_update_window_flags_get_reposition (IFBEngineUpdate& update_ref) { return(update_ref.window.flags & IFBEngineUpdateWindowFlags_Reposition); }
+    inline const ifb_b8 context_update_window_flags_get_maximize   (IFBEngineUpdate& update_ref) { return(update_ref.window.flags & IFBEngineUpdateWindowFlags_Maximize);   }
 
 };
 

@@ -24,6 +24,7 @@ namespace ifb_input {
           ifb_void keyboard_key_down      (IFBKeyboard& keyboard, IFBKeyCode key_code);
           ifb_void keyboard_key_up        (IFBKeyboard& keyboard, IFBKeyCode key_code);
     const ifb_b8   keyboard_key_is_down   (IFBKeyboard& keyboard, IFBKeyCode key_code);
+    const ifb_b8   keyboard_key_is_up     (IFBKeyboard& keyboard, IFBKeyCode key_code);
 
           ifb_void gamepad_button_down    (IFBGamepad& gamepad, IFBGamepadButtonCode button_code);
           ifb_void gamepad_button_up      (IFBGamepad& gamepad, IFBGamepadButtonCode button_code);
@@ -224,6 +225,21 @@ ifb_input::keyboard_key_is_down(
         keyboard.array[key_code_composite.group]);                        
 
     return(key_is_down);
+}
+
+inline const ifb_b8
+ifb_input::keyboard_key_is_up(
+    IFBKeyboard& keyboard,
+    IFBKeyCode   key_code) {
+
+    IFBKeyCodeComposite key_code_composite;
+    key_code_composite.key_code = key_code;
+
+    const ifb_b8 key_is_up = !ifb_macro_bit_test(
+        key_code_composite.index,
+        keyboard.array[key_code_composite.group]);                        
+
+    return(key_is_up);
 }
 
 /**********************************************************************************/
