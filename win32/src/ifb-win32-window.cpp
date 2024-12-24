@@ -120,14 +120,11 @@ ifb_win32::window_frame_start(
             case WM_QUIT: {
                 window_ref.quit_received = true;
             } break;
-
-            default: {
-                
-                //handle the messages
-                TranslateMessage(&window_message);
-                DispatchMessage(&window_message);
-            };
         }
+
+        //handle the messages
+        TranslateMessage(&window_message);
+        DispatchMessage(&window_message);
     }
 
     return(true);
