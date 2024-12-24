@@ -99,10 +99,6 @@ ifb_win32::window_frame_start(
 
                 ifb_input::keyboard_key_down(update.input.keyboard,keycode);
 
-                const ifb_b8 x = ifb_input::keyboard_key_is_down(update.input.keyboard,keycode);
-
-                ifb_macro_nop();
-
             } break;
 
             //key up
@@ -120,14 +116,11 @@ ifb_win32::window_frame_start(
             case WM_QUIT: {
                 window_ref.quit_received = true;
             } break;
-
-            default: {
-                
-                //handle the messages
-                TranslateMessage(&window_message);
-                DispatchMessage(&window_message);
-            };
         }
+
+        //handle the messages
+        TranslateMessage(&window_message);
+        DispatchMessage(&window_message);
     }
 
     return(true);

@@ -8,7 +8,12 @@
 	"settings": {
 		"files.associations": {
 			"xlocale": "cpp",
-			"glew.c": "cpp"
+			"glew.c": "cpp",
+			"iterator": "cpp",
+			"initializer_list": "cpp",
+			"type_traits": "cpp",
+			"xstring": "cpp",
+			"xutility": "cpp"
 		}
 	}
 }

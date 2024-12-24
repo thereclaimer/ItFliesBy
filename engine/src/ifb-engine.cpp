@@ -14,6 +14,7 @@
 
 //devtools
 #include "ifb-engine-devtools.cpp"
+#include "ifb-engine-devtools-memory.cpp"
 
 //managers
 #include "ifb-engine-manager-arena.cpp"
