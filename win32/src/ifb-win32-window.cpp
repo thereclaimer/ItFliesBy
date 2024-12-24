@@ -99,10 +99,6 @@ ifb_win32::window_frame_start(
 
                 ifb_input::keyboard_key_down(update.input.keyboard,keycode);
 
-                const ifb_b8 x = ifb_input::keyboard_key_is_down(update.input.keyboard,keycode);
-
-                ifb_macro_nop();
-
             } break;
 
             //key up
