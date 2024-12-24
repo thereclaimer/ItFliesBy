@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdio.h>
+
 #include "ifb-engine-internal-devtools.hpp"
 #include "ifb-engine-internal-context.hpp"
 
@@ -46,6 +48,43 @@ ifb_engine::devtools_memory_render_global_stack(
     ifb_macro_assert(engine_memory_ptr);
 
     if (ImGui::BeginTabItem("Global Stack",&enabled)) {
+
+        IFBEngineMemoryGlobalStack& global_stack_ref = engine_memory_ptr->global_stack;
+
+        if (ImGui::BeginTable("global-stack-table",2,ImGuiTableFlags_RowBg)) {
+
+            ifb_char stack_size_str      [32];
+            ifb_char stack_position_str  [32];
+            ifb_char stack_percentage_str[32];
+
+            const ifb_f32 stack_percent_used = 
+                (ifb_f32)global_stack_ref.position /
+                (ifb_f32)global_stack_ref.size;
+
+            sprintf(stack_size_str,      "%d",     global_stack_ref.size);
+            sprintf(stack_position_str,  "%d",     global_stack_ref.position);
+            sprintf(stack_percentage_str,"%.2f%%", stack_percent_used);
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextUnformatted("Stack Size");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::TextUnformatted(stack_size_str);
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextUnformatted("Stack Position");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::TextUnformatted(stack_position_str);
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextUnformatted("Percentage Used");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::TextUnformatted(stack_percentage_str);
+
+            ImGui::EndTable();
+        }
 
         ImGui::EndTabItem();
     }
