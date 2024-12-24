@@ -150,3 +150,43 @@ ifb_engine::devtools_render_imgui_demo(
         ifb_engine::devtools_flags_set_imgui_demo(devtools_ptr->flags, show_demo);
     }
 }
+
+inline ifb_void 
+ifb_engine::devtools_render_property_table(
+    const ifb_char*  table_name,
+    const ifb_u32    table_row_count,
+    const ifb_char** table_property_names,
+    const ifb_char** table_property_values) {
+
+    //sanity check
+    ifb_macro_assert(table_name);
+    ifb_macro_assert(table_row_count > 0);
+    ifb_macro_assert(table_property_names);
+    ifb_macro_assert(table_property_values);
+
+    if (ImGui::BeginTable(table_name,2,ImGuiTableFlags_RowBg)) {
+
+        for (
+            ifb_u32 row_index = 0;
+            row_index < table_row_count;
+            ++row_index) {
+
+            //get the property
+            const ifb_char* property_name  = table_property_names [row_index];
+            const ifb_char* property_value = table_property_values[row_index];
+
+            //start the next row
+            ImGui::TableNextRow();
+
+            //property name
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextUnformatted(property_name);
+            
+            //property value
+            ImGui::TableSetColumnIndex(1);
+            ImGui::TextUnformatted(property_value);
+        }
+
+        ImGui::EndTable();
+    }
+}
