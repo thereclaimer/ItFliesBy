@@ -37,6 +37,11 @@ namespace ifb_engine {
     //get flags
     inline const ifb_b8 devtools_control_flags_get_hotkey_pressed (const IFBEngineDevToolsFlagsControl devtools_flags) { return(devtools_flags & IFBEngineDevToolsFlagsControl_HotKeyPressed); }
     inline const ifb_b8 devtools_control_flags_get_active         (const IFBEngineDevToolsFlagsControl devtools_flags) { return(devtools_flags & IFBEngineDevToolsFlagsControl_Active);        }
+
+    const ifb_b8 
+    devtools_control_check_active_status(
+        IFBEngineDevToolsFlagsControl& control_flags_ref,
+        IFBKeyboard&                   keyboard_ref);
 };
 
 /**********************************************************************************/
@@ -52,28 +57,14 @@ enum IFBEngineDevToolsFlagsContext_ {
     IFBEngineDevToolsFlagsContext_Exit       = IFB_BIT_FLAG_4
 };
 
-ifb_global const ifb_char* IFB_ENGINE_DEVTOOLS_CONTEXT_MENU_ITEM_NAMES[] = {
-    "Context Structure",
-    "System Info",
-    "User Input",
-    "ImGui Demo",
-    "Exit"
-};
-
-ifb_global const IFBEngineDevToolsFlagsContext IFB_ENGINE_DEVTOOLS_CONTEXT_MENU_ITEM_FLAGS[] = {
-    IFBEngineDevToolsFlagsContext_Context,
-    IFBEngineDevToolsFlagsContext_SystemInfo,
-    IFBEngineDevToolsFlagsContext_UserInput,
-    IFBEngineDevToolsFlagsContext_ImGuiDemo,
-    IFBEngineDevToolsFlagsContext_Exit
-};
-
-ifb_global const ifb_u32 IFB_ENGINE_DEVTOOLS_CONTEXT_MENU_ITEM_COUNT = 
-    sizeof(IFB_ENGINE_DEVTOOLS_CONTEXT_MENU_ITEM_FLAGS) / sizeof(IFBEngineDevToolsFlagsContext);
-
 namespace ifb_engine {
 
-    ifb_void devtools_engine_context_render(IFBEngineDevToolsFlagsContext& devtools_context_flags);
+    ifb_void devtools_context_render(IFBEngineDevToolsFlagsContext& devtools_context_flags);
+
+    ifb_void devtools_context_render_context                   (IFBEngineDevToolsFlagsContext& devtools_context_flags);
+    ifb_void devtools_context_render_system_info               (IFBEngineDevToolsFlagsContext& devtools_context_flags);
+    ifb_void devtools_context_render_user_input                (IFBEngineDevToolsFlagsContext& devtools_context_flags);
+    ifb_void devtools_context_render_imgui_demo                (IFBEngineDevToolsFlagsContext& devtools_context_flags);
 
     inline ifb_void devtools_context_flags_set_context         (IFBEngineDevToolsFlagsContext& devtools_context_flags, const ifb_b8 value) { ifb_engine_macro_devtools_set_flag_value(devtools_context_flags, IFBEngineDevToolsFlagsContext_Context,    value); }
     inline ifb_void devtools_context_flags_set_system_info     (IFBEngineDevToolsFlagsContext& devtools_context_flags, const ifb_b8 value) { ifb_engine_macro_devtools_set_flag_value(devtools_context_flags, IFBEngineDevToolsFlagsContext_SystemInfo, value); }
@@ -88,7 +79,6 @@ namespace ifb_engine {
     inline const ifb_b8 devtools_context_flags_get_exit        (IFBEngineDevToolsFlagsContext& devtools_context_flags) { return(devtools_context_flags & IFBEngineDevToolsFlagsContext_Exit);       }
 };
 
-
 /**********************************************************************************/
 /* MANAGER TOOLS                                                                  */
 /**********************************************************************************/
@@ -99,21 +89,6 @@ enum IFBEngineDevToolsFlagsManagers_ {
     IFBEngineDevToolsFlagsManagers_Arena    = IFB_BIT_FLAG_1,
     IFBEngineDevToolsFlagsManagers_Graphics = IFB_BIT_FLAG_2
 };
-
-ifb_global const ifb_char* IFB_ENGINE_DEVTOOLS_MANAGER_MENU_ITEM_NAMES[] = {
-    "Tag Manager",
-    "Arena Manager",
-    "Graphics Manager"
-};
-
-ifb_global const IFBEngineDevToolsFlagsManagers IFB_ENGINE_DEVTOOLS_MANAGER_MENU_ITEM_FLAGS[] = {
-    IFBEngineDevToolsFlagsManagers_Tag,
-    IFBEngineDevToolsFlagsManagers_Arena,
-    IFBEngineDevToolsFlagsManagers_Graphics
-};
-
-ifb_global const ifb_u32 IFB_ENGINE_DEVTOOLS_MANAGER_MENU_ITEM_COUNT = 
-    sizeof(IFB_ENGINE_DEVTOOLS_MANAGER_MENU_ITEM_FLAGS) / sizeof(IFBEngineDevToolsFlagsManagers);
 
 namespace ifb_engine {
 
@@ -136,21 +111,6 @@ enum IFBEngineDevToolsFlagsMemory_ {
     IFBEngineDevToolsFlagsMemory_SystemReservation = IFB_BIT_FLAG_1,
     IFBEngineDevToolsFlagsMemory_SystemInfo        = IFB_BIT_FLAG_2
 };
-
-ifb_global const ifb_char* IFB_ENGINE_DEVTOOLS_MEMORY_MENU_ITEM_NAMES[] = {
-    "Global Stack",
-    "System Reservation",
-    "System Info"
-};
-
-ifb_global const IFBEngineDevToolsFlagsMemory IFB_ENGINE_DEVTOOLS_MEMORY_MENU_ITEM_FLAGS[] = {
-    IFBEngineDevToolsFlagsMemory_GlobalStack,
-    IFBEngineDevToolsFlagsMemory_SystemReservation,
-    IFBEngineDevToolsFlagsMemory_SystemInfo
-};
-
-ifb_global const ifb_u32 IFB_ENGINE_DEVTOOLS_MEMORY_MENU_ITEM_COUNT = 
-    sizeof(IFB_ENGINE_DEVTOOLS_MEMORY_MENU_ITEM_FLAGS) / sizeof(IFBEngineDevToolsFlagsMemory);
 
 struct IFBEngineDevToolsMemoryGlobalStackProperties {
     ifb_char size    [IFB_ENGINE_DEVTOOLS_PROPERTY_STRING_LENGTH];
@@ -207,6 +167,72 @@ namespace ifb_engine {
 };
 
 /**********************************************************************************/
+/* DEVTOOLS MENU BAR                                                              */
+/**********************************************************************************/
+
+ifb_global const ifb_char* IFB_ENGINE_DEVTOOLS_MENU_TITLES[] = {
+    "Engine",
+    "Memory",
+    "Managers"
+}; 
+
+#define IFB_ENGINE_DEVTOOLS_MENU_TITLE_ENGINE   IFB_ENGINE_DEVTOOLS_MENU_TITLES[0]
+#define IFB_ENGINE_DEVTOOLS_MENU_TITLE_MEMORY   IFB_ENGINE_DEVTOOLS_MENU_TITLES[1]
+#define IFB_ENGINE_DEVTOOLS_MENU_TITLE_MANAGERS IFB_ENGINE_DEVTOOLS_MENU_TITLES[2]
+
+ifb_global const ifb_char* IFB_ENGINE_DEVTOOLS_MENU_ITEM_NAMES_CONTEXT[] = {
+    "Context Structure",
+    "System Info",
+    "User Input",
+    "ImGui Demo",
+    "Exit"
+};
+
+ifb_global const ifb_char* IFB_ENGINE_DEVTOOLS_MENU_ITEM_NAMES_MEMORY[] = {
+    "Global Stack",
+    "System Reservation",
+    "System Info"
+};
+
+ifb_global const ifb_char* IFB_ENGINE_DEVTOOLS_MENU_ITEM_NAMES_MANAGERS[] = {
+    "Tag Manager",
+    "Arena Manager",
+    "Graphics Manager"
+};
+
+ifb_global const IFBEngineDevToolsFlagsContext IFB_ENGINE_DEVTOOLS_MENU_ITEM_FLAGS_CONTEXT[] = {
+    IFBEngineDevToolsFlagsContext_Context,
+    IFBEngineDevToolsFlagsContext_SystemInfo,
+    IFBEngineDevToolsFlagsContext_UserInput,
+    IFBEngineDevToolsFlagsContext_ImGuiDemo,
+    IFBEngineDevToolsFlagsContext_Exit
+};
+
+ifb_global const IFBEngineDevToolsFlagsMemory IFB_ENGINE_DEVTOOLS_MENU_ITEM_FLAGS_MEMORY[] = {
+    IFBEngineDevToolsFlagsMemory_GlobalStack,
+    IFBEngineDevToolsFlagsMemory_SystemReservation,
+    IFBEngineDevToolsFlagsMemory_SystemInfo
+};
+
+ifb_global const IFBEngineDevToolsFlagsManagers IFB_ENGINE_DEVTOOLS_MENU_ITEM_FLAGS_MANAGERS[] = {
+    IFBEngineDevToolsFlagsManagers_Tag,
+    IFBEngineDevToolsFlagsManagers_Arena,
+    IFBEngineDevToolsFlagsManagers_Graphics
+};
+
+ifb_global const ifb_u32 IFB_ENGINE_DEVTOOLS_MENU_ITEM_COUNT_CONTEXT  = sizeof(IFB_ENGINE_DEVTOOLS_MENU_ITEM_FLAGS_CONTEXT) / sizeof(IFBEngineDevToolsFlagsContext);
+ifb_global const ifb_u32 IFB_ENGINE_DEVTOOLS_MENU_ITEM_COUNT_MEMORY   = sizeof(IFB_ENGINE_DEVTOOLS_MENU_ITEM_FLAGS_MEMORY) / sizeof(IFBEngineDevToolsFlagsMemory);
+ifb_global const ifb_u32 IFB_ENGINE_DEVTOOLS_MENU_ITEM_COUNT_MANAGERS = sizeof(IFB_ENGINE_DEVTOOLS_MENU_ITEM_FLAGS_MANAGERS) / sizeof(IFBEngineDevToolsFlagsManagers);
+
+namespace ifb_engine {
+
+    ifb_void devtools_menu_render_main_bar (IFBEngineDevTools* devtools_ptr);
+    ifb_void devtools_menu_render_context  (IFBEngineDevToolsFlagsContext&  context_flags_ref);
+    ifb_void devtools_menu_render_memory   (IFBEngineDevToolsFlagsMemory&   memory_flags_ref);
+    ifb_void devtools_menu_render_managers (IFBEngineDevToolsFlagsManagers& managers_flags_ref);
+};
+
+/**********************************************************************************/
 /* DEVTOOLS                                                                       */
 /**********************************************************************************/
 
@@ -221,16 +247,14 @@ struct IFBEngineDevTools {
 
 namespace ifb_engine {
 
-    ifb_void devtools_initialize  (IFBEngineDevTools* devtools_ptr);
-    ifb_void devtools_update      (IFBEngineDevTools* devtools_ptr, IFBInput& input_ref);
-    ifb_void devtools_render_menu (IFBEngineDevTools* devtools_ptr);
-    
-    const ifb_b8 devtools_check_active_status(IFBEngineDevTools* devtools_ptr, IFBInput& input_ref);
-    
+    ifb_void devtools_initialize      (IFBEngineDevTools* devtools_ptr);
+    ifb_void devtools_update          (IFBEngineDevTools* devtools_ptr, IFBInput& input_ref);
+
     ifb_void devtools_render_imgui_demo(IFBEngineDevTools* devtools_ptr);
 
-    ifb_void devtools_render_menu_items(
-              ifb_u32&   menu_item_flags_ref,
+    ifb_void devtools_render_menu(
+              ifb_u32&   menu_flags_ref,
+        const ifb_char*  menu_title,
         const ifb_u32    menu_item_count,
         const ifb_char** menu_item_names,
         const ifb_u32*   menu_item_flag_bits);
