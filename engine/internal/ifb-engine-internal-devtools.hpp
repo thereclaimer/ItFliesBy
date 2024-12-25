@@ -12,6 +12,7 @@ struct IFBEngineDevTools;
 typedef ifb_u32 IFBEngineDevToolsFlags;
 typedef ifb_u32 IFBEngineDevToolsManagerFlags;
 typedef ifb_u32 IFBEngineDevToolsMemoryFlags;
+typedef ifb_u32 IFBEngineDevToolsEngineContextFlags;
 
 #define ifb_engine_macro_devtools_set_flag_value(flags_u32, flag_bit, value_b8) flags_u32 = value_b8 ? (flags_u32 | flag_bit) : (flags_u32 & ~(flag_bit))
 
@@ -57,6 +58,28 @@ namespace ifb_engine {
     inline const ifb_b8 devtools_flags_get_imgui_demo     (const IFBEngineDevToolsFlags devtools_flags) { return(devtools_flags & IFBEngineDevToolsFlags_ImGuiDemo);     }
 };
 
+
+/**********************************************************************************/
+/* CONTEXT TOOLS                                                                  */
+/**********************************************************************************/
+
+enum IFBEngineDevToolsEngineContextFlags_ {
+    IFBEngineDevToolsEngineContextFlags_None       = 0,
+    IFBEngineDevToolsEngineContextFlags_Context    = (1 << 0),
+    IFBEngineDevToolsEngineContextFlags_SystemInfo = (1 << 1),
+    IFBEngineDevToolsEngineContextFlags_UserInput  = (1 << 2)
+};
+
+namespace ifb_engine {
+
+    ifb_void devtools_engine_context_render(IFBEngineDevToolsEngineContextFlags& devtools_context_flags);
+
+    inline ifb_void devtools_engine_context_flags_set_context (IFBEngineDevToolsEngineContextFlags& devtools_context_flags, const ifb_b8 value) { ifb_engine_macro_devtools_set_flag_value(devtools_context_flags, IFBEngineDevToolsEngineContextFlags_Context, value); }
+
+    const ifb_b8 devtools_engine_context_flags_get_context    (IFBEngineDevToolsEngineContextFlags& devtools_context_flags) { return(devtools_context_flags & IFBEngineDevToolsEngineContextFlags_Context); }
+};
+
+
 /**********************************************************************************/
 /* MANAGER TOOLS                                                                  */
 /**********************************************************************************/
@@ -89,9 +112,9 @@ namespace ifb_engine {
     inline ifb_void devtools_manager_flags_set_arena    (IFBEngineDevToolsManagerFlags& devtools_manager_flags, const ifb_b8 value) { ifb_engine_macro_devtools_set_flag_value(devtools_manager_flags, IFBEngineDevToolsManagerFlags_Arena,    value); }
     inline ifb_void devtools_manager_flags_set_graphics (IFBEngineDevToolsManagerFlags& devtools_manager_flags, const ifb_b8 value) { ifb_engine_macro_devtools_set_flag_value(devtools_manager_flags, IFBEngineDevToolsManagerFlags_Graphics, value); }
 
-    const ifb_b8 devtools_manager_flags_get_tag      (IFBEngineDevToolsManagerFlags& devtools_manager_flags) { return(devtools_manager_flags & IFBEngineDevToolsManagerFlags_Tag);      }
-    const ifb_b8 devtools_manager_flags_get_arena    (IFBEngineDevToolsManagerFlags& devtools_manager_flags) { return(devtools_manager_flags & IFBEngineDevToolsManagerFlags_Arena);    }
-    const ifb_b8 devtools_manager_flags_get_graphics (IFBEngineDevToolsManagerFlags& devtools_manager_flags) { return(devtools_manager_flags & IFBEngineDevToolsManagerFlags_Graphics); }
+    const ifb_b8 devtools_manager_flags_get_tag         (IFBEngineDevToolsManagerFlags& devtools_manager_flags) { return(devtools_manager_flags & IFBEngineDevToolsManagerFlags_Tag);      }
+    const ifb_b8 devtools_manager_flags_get_arena       (IFBEngineDevToolsManagerFlags& devtools_manager_flags) { return(devtools_manager_flags & IFBEngineDevToolsManagerFlags_Arena);    }
+    const ifb_b8 devtools_manager_flags_get_graphics    (IFBEngineDevToolsManagerFlags& devtools_manager_flags) { return(devtools_manager_flags & IFBEngineDevToolsManagerFlags_Graphics); }
 };
 
 /**********************************************************************************/
@@ -165,9 +188,9 @@ namespace ifb_engine {
     ifb_void devtools_memory_get_system_reservation_info (IFBEngineDevToolsMemorySystemReservation& dev_system_reservation_ref, IFBEngineMemory* engine_memory_ptr);
     ifb_void devtools_memory_get_system_info             (IFBEngineDevToolsMemorySystemInfo&        dev_system_info_ref,        IFBEngineMemory* engine_memory_ptr);
 
-    const ifb_b8 devtools_memory_flags_get_global_stack      (const IFBEngineDevToolsMemoryFlags memory_flags) { return(memory_flags & IFBEngineDevToolsMemoryFlags_GlobalStack);       }
-    const ifb_b8 devtools_memory_flags_get_system_reservation(const IFBEngineDevToolsMemoryFlags memory_flags) { return(memory_flags & IFBEngineDevToolsMemoryFlags_SystemReservation); }
-    const ifb_b8 devtools_memory_flags_get_system_info       (const IFBEngineDevToolsMemoryFlags memory_flags) { return(memory_flags & IFBEngineDevToolsMemoryFlags_SystemInfo);        }
+    const ifb_b8 devtools_memory_flags_get_global_stack       (const IFBEngineDevToolsMemoryFlags memory_flags) { return(memory_flags & IFBEngineDevToolsMemoryFlags_GlobalStack);       }
+    const ifb_b8 devtools_memory_flags_get_system_reservation (const IFBEngineDevToolsMemoryFlags memory_flags) { return(memory_flags & IFBEngineDevToolsMemoryFlags_SystemReservation); }
+    const ifb_b8 devtools_memory_flags_get_system_info        (const IFBEngineDevToolsMemoryFlags memory_flags) { return(memory_flags & IFBEngineDevToolsMemoryFlags_SystemInfo);        }
 
     inline ifb_void devtools_memory_flags_set_global_stack       (IFBEngineDevToolsMemoryFlags& memory_flags_ref, const ifb_b8 value) { ifb_engine_macro_devtools_set_flag_value(memory_flags_ref, IFBEngineDevToolsMemoryFlags_GlobalStack,        value); }
     inline ifb_void devtools_memory_flags_set_system_reservation (IFBEngineDevToolsMemoryFlags& memory_flags_ref, const ifb_b8 value) { ifb_engine_macro_devtools_set_flag_value(memory_flags_ref, IFBEngineDevToolsMemoryFlags_SystemReservation,  value); }
@@ -180,9 +203,10 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineDevTools {
-    IFBEngineDevToolsFlags        flags;
-    IFBEngineDevToolsMemoryFlags  memory_flags;
-    IFBEngineDevToolsManagerFlags manager_flags;
+    IFBEngineDevToolsFlags              flags;
+    IFBEngineDevToolsEngineContextFlags engine_context_flags;
+    IFBEngineDevToolsMemoryFlags        memory_flags;
+    IFBEngineDevToolsManagerFlags       manager_flags;
 };
 
 namespace ifb_engine {
@@ -206,7 +230,6 @@ namespace ifb_engine {
         const ifb_u32    table_row_count,
         const ifb_char** table_property_names,
         const ifb_char** table_property_values);
-
 };
 
 #endif //IFB_ENGINE_INTERNAL_DEVTOOLS_HPP
