@@ -7,7 +7,10 @@ inline ifb_void
 ifb_engine::devtools_initialize(
     IFBEngineDevTools* devtools_ptr) {
 
-    devtools_ptr->flags = IFBEngineDevToolsFlags_None;
+    devtools_ptr->flags.control  = IFBEngineDevToolsFlagsControl_None;
+    devtools_ptr->flags.context  = IFBEngineDevToolsFlagsContext_None;
+    devtools_ptr->flags.memory   = IFBEngineDevToolsFlagsMemory_None;
+    devtools_ptr->flags.managers = IFBEngineDevToolsFlagsManagers_None;
 }
 
 inline ifb_void 
@@ -26,7 +29,7 @@ ifb_engine::devtools_update(
     //render the controls
     ifb_engine::devtools_render_menu(devtools_ptr);
     ifb_engine::devtools_render_imgui_demo(devtools_ptr);
-    ifb_engine::devtools_memory_render(devtools_ptr->memory_flags);
+    ifb_engine::devtools_memory_render(devtools_ptr->flags.memory);
 }
 
 inline const ifb_b8 
@@ -39,27 +42,27 @@ ifb_engine::devtools_check_active_status(
 
     //set hotkey flag if it was pressed
     if (ifb_input::keyboard_key_is_down(input_ref.keyboard,IFBKeyCode_F1)) {
-        ifb_engine::devtools_flags_set_hotkey_pressed(devtools_ptr->flags, true);
+        ifb_engine::devtools_control_flags_set_hotkey_pressed(devtools_ptr->flags.control, true);
     }
 
     //if the hotkey flag is high and the key is up, it was toggled
     const ifb_b8 hotkey_toggled = 
-        ifb_engine::devtools_flags_get_hotkey_pressed(devtools_ptr->flags) &&
+        ifb_engine::devtools_control_flags_get_hotkey_pressed(devtools_ptr->flags.control) &&
         ifb_input::keyboard_key_is_up(input_ref.keyboard,IFBKeyCode_F1);
 
     //first, determine if we are turning the tools on or off
     if (hotkey_toggled) {
 
-        const ifb_b8 devtools_active = ifb_engine::devtools_flags_get_active(devtools_ptr->flags);
+        const ifb_b8 devtools_active = ifb_engine::devtools_control_flags_get_active(devtools_ptr->flags.control);
 
-        ifb_engine::devtools_flags_set_active(devtools_ptr->flags, !devtools_active);
+        ifb_engine::devtools_control_flags_set_active(devtools_ptr->flags.control, !devtools_active);
 
         //now, we can clear the hotkey flag and wait till the next toggle
-        ifb_engine::devtools_flags_set_hotkey_pressed(devtools_ptr->flags,false);
+        ifb_engine::devtools_control_flags_set_hotkey_pressed(devtools_ptr->flags.control,false);
     } 
 
     //get the active status
-    const ifb_b8 devtools_active = ifb_engine::devtools_flags_get_active(devtools_ptr->flags); 
+    const ifb_b8 devtools_active = ifb_engine::devtools_control_flags_get_active(devtools_ptr->flags.control); 
 
     //we're done
     return(devtools_active);
@@ -77,17 +80,17 @@ ifb_engine::devtools_render_menu(
         if (ImGui::BeginMenu("Engine")) {
 
             ifb_engine::devtools_render_menu_items(
-                devtools_ptr->flags,
-                IFB_ENGINE_DEVTOOLS_ENGINE_MENU_ITEM_COUNT,
-                IFB_ENGINE_DEVTOOLS_ENGINE_MENU_ITEM_NAMES,
-                IFB_ENGINE_DEVTOOLS_ENGINE_MENU_ITEM_FLAGS);
+                devtools_ptr->flags.context,
+                IFB_ENGINE_DEVTOOLS_CONTEXT_MENU_ITEM_COUNT,
+                IFB_ENGINE_DEVTOOLS_CONTEXT_MENU_ITEM_NAMES,
+                IFB_ENGINE_DEVTOOLS_CONTEXT_MENU_ITEM_FLAGS);
 
             ImGui::EndMenu();
         }
         if (ImGui::BeginMenu("Memory")) {
 
             ifb_engine::devtools_render_menu_items(
-                devtools_ptr->memory_flags,
+                devtools_ptr->flags.memory,
                 IFB_ENGINE_DEVTOOLS_MEMORY_MENU_ITEM_COUNT,
                 IFB_ENGINE_DEVTOOLS_MEMORY_MENU_ITEM_NAMES,
                 IFB_ENGINE_DEVTOOLS_MEMORY_MENU_ITEM_FLAGS);
@@ -97,7 +100,7 @@ ifb_engine::devtools_render_menu(
         if (ImGui::BeginMenu("Managers")) {
 
             ifb_engine::devtools_render_menu_items(
-                devtools_ptr->manager_flags,
+                devtools_ptr->flags.managers,
                 IFB_ENGINE_DEVTOOLS_MANAGER_MENU_ITEM_COUNT,
                 IFB_ENGINE_DEVTOOLS_MANAGER_MENU_ITEM_NAMES,
                 IFB_ENGINE_DEVTOOLS_MANAGER_MENU_ITEM_FLAGS);
@@ -144,10 +147,10 @@ inline ifb_void
 ifb_engine::devtools_render_imgui_demo(
     IFBEngineDevTools* devtools_ptr) {
 
-    bool show_demo = ifb_engine::devtools_flags_get_imgui_demo(devtools_ptr->flags);
+    bool show_demo = ifb_engine::devtools_context_flags_get_imgui_demo(devtools_ptr->flags.context);
     if (show_demo) {
         ImGui::ShowDemoWindow(&show_demo);
-        ifb_engine::devtools_flags_set_imgui_demo(devtools_ptr->flags, show_demo);
+        ifb_engine::devtools_context_flags_set_imgui_demo(devtools_ptr->flags.context, show_demo);
     }
 }
 

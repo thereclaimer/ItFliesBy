@@ -104,7 +104,7 @@ ifb_engine::context_update_and_render(
     //determine if we should close
     ifb_b8 close = false;
     close |= ifb_engine::context_update_window_flags_get_close(update); 
-    close |= ifb_engine::devtools_flags_get_quit_received(devtools_ptr->flags); 
+    close |= ifb_engine::devtools_context_flags_get_exit(devtools_ptr->flags.context); 
 
     //we're done
     return(!close);

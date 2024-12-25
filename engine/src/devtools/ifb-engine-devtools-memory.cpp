@@ -7,9 +7,9 @@
 
 inline ifb_void
 ifb_engine::devtools_memory_render(
-    IFBEngineDevToolsMemoryFlags& memory_flags_ref) {
+    IFBEngineDevToolsFlagsMemory& memory_flags_ref) {
 
-    bool enabled = memory_flags_ref > IFBEngineDevToolsMemoryFlags_None; 
+    bool enabled = memory_flags_ref > IFBEngineDevToolsFlagsMemory_None; 
 
     if (!enabled || !ImGui::Begin("Memory",&enabled)) {
         return;
@@ -30,7 +30,7 @@ ifb_engine::devtools_memory_render(
     }
     //if the window was closed, turn off the flags
     if (!enabled) {
-        memory_flags_ref = IFBEngineDevToolsMemoryFlags_None;
+        memory_flags_ref = IFBEngineDevToolsFlagsMemory_None;
     }
 
     ImGui::End();
@@ -38,7 +38,7 @@ ifb_engine::devtools_memory_render(
 
 inline ifb_void
 ifb_engine::devtools_memory_render_global_stack(
-    IFBEngineDevToolsMemoryFlags& memory_flags_ref,
+    IFBEngineDevToolsFlagsMemory& memory_flags_ref,
     IFBEngineMemory*              engine_memory_ptr) {
 
     //get the flag, if its not enabled we're done
@@ -85,7 +85,7 @@ ifb_engine::devtools_memory_render_global_stack(
 
 inline ifb_void
 ifb_engine::devtools_memory_render_system_reservation(
-    IFBEngineDevToolsMemoryFlags& memory_flags_ref,
+    IFBEngineDevToolsFlagsMemory& memory_flags_ref,
     IFBEngineMemory*              engine_memory_ptr) {
 
     //get the flag, if its not enabled we're done
@@ -134,7 +134,7 @@ ifb_engine::devtools_memory_render_system_reservation(
 
 inline ifb_void
 ifb_engine::devtools_memory_render_system_info(
-    IFBEngineDevToolsMemoryFlags& memory_flags_ref,
+    IFBEngineDevToolsFlagsMemory& memory_flags_ref,
     IFBEngineMemory*              engine_memory_ptr) {
 
     //get the flag, if its not enabled we're done
