@@ -28,7 +28,7 @@ ifb_engine::devtools_update(
 
     //render the controls
     ifb_engine::devtools_menu_render_main_bar(devtools_ptr);
-    ifb_engine::devtools_render_imgui_demo(devtools_ptr);
+    ifb_engine::devtools_context_render(devtools_ptr->flags.context);
     ifb_engine::devtools_memory_render(devtools_ptr->flags.memory);
 }
 
@@ -67,17 +67,6 @@ ifb_engine::devtools_render_menu(
         }
     
         ImGui::EndMenu();
-    }
-}
-
-inline ifb_void 
-ifb_engine::devtools_render_imgui_demo(
-    IFBEngineDevTools* devtools_ptr) {
-
-    bool show_demo = ifb_engine::devtools_context_flags_get_imgui_demo(devtools_ptr->flags.context);
-    if (show_demo) {
-        ImGui::ShowDemoWindow(&show_demo);
-        ifb_engine::devtools_context_flags_set_imgui_demo(devtools_ptr->flags.context, show_demo);
     }
 }
 
