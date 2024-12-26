@@ -148,10 +148,12 @@ struct IFBEngineDevToolsMemorySystemInfo {
 
 namespace ifb_engine {
 
-    ifb_void devtools_memory_render                    (IFBEngineDevToolsFlagsMemory& memory_flags_ref);
-    ifb_void devtools_memory_render_global_stack       (IFBEngineDevToolsFlagsMemory& memory_flags_ref, IFBEngineMemory* engine_memory_ptr);
-    ifb_void devtools_memory_render_system_reservation (IFBEngineDevToolsFlagsMemory& memory_flags_ref, IFBEngineMemory* engine_memory_ptr);
-    ifb_void devtools_memory_render_system_info        (IFBEngineDevToolsFlagsMemory& memory_flags_ref, IFBEngineMemory* engine_memory_ptr);
+    ifb_void devtools_memory_render_window             (IFBEngineDevToolsFlagsMemory& memory_flags_ref);
+    ifb_void devtools_memory_render_tab_bar            (IFBEngineDevToolsFlagsMemory& memory_flags_ref, IFBEngineMemory* engine_memory_ptr);
+    
+    ifb_void devtools_memory_render_global_stack       (IFBEngineMemory* engine_memory_ptr);
+    ifb_void devtools_memory_render_system_reservation (IFBEngineMemory* engine_memory_ptr);
+    ifb_void devtools_memory_render_system_info        (IFBEngineMemory* engine_memory_ptr);
 
     ifb_void devtools_memory_get_global_stack_info       (IFBEngineDevToolsMemoryGlobalStack&       dev_global_stack_ref,       IFBEngineMemory* engine_memory_ptr);
     ifb_void devtools_memory_get_system_reservation_info (IFBEngineDevToolsMemorySystemReservation& dev_system_reservation_ref, IFBEngineMemory* engine_memory_ptr);
@@ -247,8 +249,7 @@ struct IFBEngineDevTools {
 
 typedef ifb_void
 (*funcptr_devtools_render_tab_items_callback)(
-    ifb_void* tab_item_data_ptr,
-    ifb_b8&   tab_item_enabled_ref);
+    ifb_void* tab_item_data_ptr);
 
 namespace ifb_engine {
 

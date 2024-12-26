@@ -5,44 +5,13 @@
 #include "ifb-engine-internal-devtools.hpp"
 #include "ifb-engine-internal-context.hpp"
 
-// inline ifb_void
-// ifb_engine::devtools_memory_render(
-//     IFBEngineDevToolsFlagsMemory& memory_flags_ref) {
-
-//     bool enabled = memory_flags_ref > IFBEngineDevToolsFlagsMemory_None; 
-
-//     if (!enabled || !ImGui::Begin("Memory",&enabled)) {
-//         return;
-//     }
-
-//     //get the memory reference
-//     IFBEngineMemory* context_memory_ptr = ifb_engine::context_get_memory();
-//     ifb_macro_assert(context_memory_ptr);
-
-//     if (ImGui::BeginTabBar("memory-tab-bar")) {
-
-//         //render the controls
-//         ifb_engine::devtools_memory_render_global_stack       (memory_flags_ref,context_memory_ptr);
-//         ifb_engine::devtools_memory_render_system_reservation (memory_flags_ref,context_memory_ptr);
-//         ifb_engine::devtools_memory_render_system_info        (memory_flags_ref,context_memory_ptr);
-
-//         ImGui::EndTabBar();
-//     }
-//     //if the window was closed, turn off the flags
-//     if (!enabled) {
-//         memory_flags_ref = IFBEngineDevToolsFlagsMemory_None;
-//     }
-
-//     ImGui::End();
-// }
-
-
 inline ifb_void
-ifb_engine::devtools_memory_render(
+ifb_engine::devtools_memory_render_window(
     IFBEngineDevToolsFlagsMemory& memory_flags_ref) {
 
     bool enabled = memory_flags_ref > IFBEngineDevToolsFlagsMemory_None; 
 
+    //window start
     if (!enabled || !ImGui::Begin("Memory",&enabled)) {
         return;
     }
@@ -51,162 +20,143 @@ ifb_engine::devtools_memory_render(
     IFBEngineMemory* context_memory_ptr = ifb_engine::context_get_memory();
     ifb_macro_assert(context_memory_ptr);
 
-    const ifb_char* tab_bar_title = "memory-tab-bar"; 
+    //render the tab bar
+    ifb_engine::devtools_memory_render_tab_bar(
+        memory_flags_ref,
+        context_memory_ptr);
 
-    if (ImGui::BeginTabBar("memory-tab-bar")) {
-
-        //render the controls
-        ifb_engine::devtools_memory_render_global_stack       (memory_flags_ref,context_memory_ptr);
-        ifb_engine::devtools_memory_render_system_reservation (memory_flags_ref,context_memory_ptr);
-        ifb_engine::devtools_memory_render_system_info        (memory_flags_ref,context_memory_ptr);
-
-        ImGui::EndTabBar();
-    }
     //if the window was closed, turn off the flags
     if (!enabled) {
         memory_flags_ref = IFBEngineDevToolsFlagsMemory_None;
     }
 
+    //window end
     ImGui::End();
+}
+
+inline ifb_void 
+ifb_engine::devtools_memory_render_tab_bar(
+    IFBEngineDevToolsFlagsMemory& memory_flags_ref,
+    IFBEngineMemory*              engine_memory_ptr) {
+
+    //tab bar title and tab count
+    const ifb_u32   tab_item_count = 3;
+    const ifb_char* tab_bar_title  = "memory-tab-bar"; 
+    
+    //tab callbacks
+    const funcptr_devtools_render_tab_items_callback tab_item_callbacks[tab_item_count] = {
+        (funcptr_devtools_render_tab_items_callback)ifb_engine::devtools_memory_render_global_stack,
+        (funcptr_devtools_render_tab_items_callback)ifb_engine::devtools_memory_render_system_reservation,
+        (funcptr_devtools_render_tab_items_callback)ifb_engine::devtools_memory_render_system_info
+    };
+
+    //flag bits
+    const IFBEngineDevToolsFlagsMemory tab_item_flag_bits[tab_item_count] {
+        IFBEngineDevToolsFlagsMemory_GlobalStack,
+        IFBEngineDevToolsFlagsMemory_SystemReservation,
+        IFBEngineDevToolsFlagsMemory_SystemInfo
+    };
+
+    //render the tab bar
+    ifb_engine::devtools_render_tab_bar(
+        memory_flags_ref,
+        engine_memory_ptr,
+        tab_bar_title,
+        tab_item_count,
+        IFB_ENGINE_DEVTOOLS_MENU_ITEM_NAMES_MEMORY,
+        tab_item_callbacks,
+        tab_item_flag_bits);
 }
 
 inline ifb_void
 ifb_engine::devtools_memory_render_global_stack(
-    IFBEngineDevToolsFlagsMemory& memory_flags_ref,
-    IFBEngineMemory*              engine_memory_ptr) {
+    IFBEngineMemory* engine_memory_ptr) {
 
-    //get the flag, if its not enabled we're done
-    bool enabled = ifb_engine::devtools_memory_flags_get_global_stack(memory_flags_ref);
-    if (!enabled) return;
+    IFBEngineDevToolsMemoryGlobalStack dev_global_stack;
+    ifb_engine::devtools_memory_get_global_stack_info(
+        dev_global_stack,
+        engine_memory_ptr);
 
-    //make sure our engine memory is valid
-    ifb_macro_assert(engine_memory_ptr);
+    const ifb_char* global_stack_table_name      = "global-stack-table";
+    const ifb_u32   global_stack_table_row_count = 3;
+    
+    const ifb_char* global_stack_property_names[global_stack_table_row_count] = {
+        dev_global_stack.names.size,
+        dev_global_stack.names.position,
+        dev_global_stack.names.percent            
+    };
 
-    if (ImGui::BeginTabItem("Global Stack",&enabled)) {
+    const ifb_char* global_stack_property_values[global_stack_table_row_count] = {
+        dev_global_stack.values.size,
+        dev_global_stack.values.position,
+        dev_global_stack.values.percent
+    };
 
-        IFBEngineDevToolsMemoryGlobalStack dev_global_stack;
-        ifb_engine::devtools_memory_get_global_stack_info(
-            dev_global_stack,
-            engine_memory_ptr);
-
-        const ifb_char* global_stack_table_name      = "global-stack-table";
-        const ifb_u32   global_stack_table_row_count = 3;
-        
-        const ifb_char* global_stack_property_names[global_stack_table_row_count] = {
-            dev_global_stack.names.size,
-            dev_global_stack.names.position,
-            dev_global_stack.names.percent            
-        };
-
-        const ifb_char* global_stack_property_values[global_stack_table_row_count] = {
-            dev_global_stack.values.size,
-            dev_global_stack.values.position,
-            dev_global_stack.values.percent
-        };
-
-        ifb_engine::devtools_render_property_table(
-            global_stack_table_name,
-            global_stack_table_row_count,
-            global_stack_property_names,
-            global_stack_property_values);
-
-        ImGui::EndTabItem();
-    }
-
-    //update the flag
-    ifb_engine::devtools_memory_flags_set_global_stack(memory_flags_ref,enabled);
+    ifb_engine::devtools_render_property_table(
+        global_stack_table_name,
+        global_stack_table_row_count,
+        global_stack_property_names,
+        global_stack_property_values);
 }
 
 inline ifb_void
 ifb_engine::devtools_memory_render_system_reservation(
-    IFBEngineDevToolsFlagsMemory& memory_flags_ref,
-    IFBEngineMemory*              engine_memory_ptr) {
+    IFBEngineMemory* engine_memory_ptr) {
 
-    //get the flag, if its not enabled we're done
-    bool enabled = ifb_engine::devtools_memory_flags_get_system_reservation(memory_flags_ref);
-    if (!enabled) return;
+    //get the system reservation properties
+    IFBEngineDevToolsMemorySystemReservation dev_reservation_info;
+    ifb_engine::devtools_memory_get_system_reservation_info(dev_reservation_info,engine_memory_ptr);
 
-    //make sure our engine memory is valid
-    ifb_macro_assert(engine_memory_ptr);
+    const ifb_char* table_name      = "memory-reservation-table";
+    const ifb_u32   table_row_count = 5;
+    
+    const ifb_char* table_property_names[table_row_count] = {
+        dev_reservation_info.names.start,
+        dev_reservation_info.names.page_count_total,
+        dev_reservation_info.names.page_count_committed,
+        dev_reservation_info.names.commit_count_max,
+        dev_reservation_info.names.commit_count_current  
+    };
+    const ifb_char* table_property_values[table_row_count] = {
+        dev_reservation_info.values.start,
+        dev_reservation_info.values.page_count_total,
+        dev_reservation_info.values.page_count_committed,
+        dev_reservation_info.values.commit_count_max,
+        dev_reservation_info.values.commit_count_current  
+    };
 
-    if (ImGui::BeginTabItem("System Reservation",&enabled)) {
-
-        //get the system reservation properties
-        IFBEngineDevToolsMemorySystemReservation dev_reservation_info;
-        ifb_engine::devtools_memory_get_system_reservation_info(dev_reservation_info,engine_memory_ptr);
-
-        const ifb_char* table_name      = "memory-reservation-table";
-        const ifb_u32   table_row_count = 5;
-        
-        const ifb_char* table_property_names[table_row_count] = {
-            dev_reservation_info.names.start,
-            dev_reservation_info.names.page_count_total,
-            dev_reservation_info.names.page_count_committed,
-            dev_reservation_info.names.commit_count_max,
-            dev_reservation_info.names.commit_count_current  
-        };
-        const ifb_char* table_property_values[table_row_count] = {
-            dev_reservation_info.values.start,
-            dev_reservation_info.values.page_count_total,
-            dev_reservation_info.values.page_count_committed,
-            dev_reservation_info.values.commit_count_max,
-            dev_reservation_info.values.commit_count_current  
-        };
-
-        ifb_engine::devtools_render_property_table(
-            table_name,
-            table_row_count,
-            table_property_names,
-            table_property_values);
-
-        ImGui::EndTabItem();
-    }
-
-    //update the flag
-    ifb_engine::devtools_memory_flags_set_system_reservation(memory_flags_ref,enabled);
+    ifb_engine::devtools_render_property_table(
+        table_name,
+        table_row_count,
+        table_property_names,
+        table_property_values);
 }
 
 inline ifb_void
 ifb_engine::devtools_memory_render_system_info(
-    IFBEngineDevToolsFlagsMemory& memory_flags_ref,
-    IFBEngineMemory*              engine_memory_ptr) {
+    IFBEngineMemory* engine_memory_ptr) {
 
-    //get the flag, if its not enabled we're done
-    bool enabled = ifb_engine::devtools_memory_flags_get_system_info(memory_flags_ref);
-    if (!enabled) return;
+    //get the system reservation properties
+    IFBEngineDevToolsMemorySystemInfo dev_system_info;
+    ifb_engine::devtools_memory_get_system_info(dev_system_info,engine_memory_ptr);
 
-    //make sure our engine memory is valid
-    ifb_macro_assert(engine_memory_ptr);
+    const ifb_char* table_name      = "memory-sysinfo-table";
+    const ifb_u32   table_row_count = 2;
+    
+    const ifb_char* table_property_names[table_row_count] = {
+        dev_system_info.names.page_size,
+        dev_system_info.names.allocation_granularity
+    };
+    const ifb_char* table_property_values[table_row_count] = {
+        dev_system_info.values.page_size,
+        dev_system_info.values.allocation_granularity
+    };
 
-    if (ImGui::BeginTabItem("System Info",&enabled)) {
-
-        //get the system reservation properties
-        IFBEngineDevToolsMemorySystemInfo dev_system_info;
-        ifb_engine::devtools_memory_get_system_info(dev_system_info,engine_memory_ptr);
-
-        const ifb_char* table_name      = "memory-sysinfo-table";
-        const ifb_u32   table_row_count = 2;
-        
-        const ifb_char* table_property_names[table_row_count] = {
-            dev_system_info.names.page_size,
-            dev_system_info.names.allocation_granularity
-        };
-        const ifb_char* table_property_values[table_row_count] = {
-            dev_system_info.values.page_size,
-            dev_system_info.values.allocation_granularity
-        };
-
-        ifb_engine::devtools_render_property_table(
-            table_name,
-            table_row_count,
-            table_property_names,
-            table_property_values);
-
-        ImGui::EndTabItem();
-    }
-
-    //update the flag
-    ifb_engine::devtools_memory_flags_set_system_info(memory_flags_ref,enabled);
+    ifb_engine::devtools_render_property_table(
+        table_name,
+        table_row_count,
+        table_property_names,
+        table_property_values);
 }
 
 inline ifb_void 

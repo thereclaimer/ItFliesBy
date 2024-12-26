@@ -29,7 +29,7 @@ ifb_engine::devtools_update(
     //render the controls
     ifb_engine::devtools_menu_render_main_bar(devtools_ptr);
     ifb_engine::devtools_context_render(devtools_ptr->flags.context);
-    ifb_engine::devtools_memory_render(devtools_ptr->flags.memory);
+    ifb_engine::devtools_memory_render_window(devtools_ptr->flags.memory);
 }
 
 inline ifb_void 
@@ -145,9 +145,7 @@ ifb_engine::devtools_render_tab_bar(
         }
 
         //render the tab specific data
-        tab_item_callback(
-            tab_item_data,
-            tab_item_enabled);
+        tab_item_callback(tab_item_data);
 
         //update the flag value
         ifb_engine_macro_devtools_set_flag_value(
