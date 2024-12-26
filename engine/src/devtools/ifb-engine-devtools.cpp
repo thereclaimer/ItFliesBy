@@ -109,3 +109,56 @@ ifb_engine::devtools_render_property_table(
         ImGui::EndTable();
     }
 }
+
+inline ifb_void
+ifb_engine::devtools_render_tab_bar(
+          ifb_u32&                                    tab_item_flags_ref,
+          ifb_void*                                   tab_item_data,
+    const ifb_char*                                   tab_bar_title,
+    const ifb_u32                                     tab_item_count,
+    const ifb_char**                                  tab_item_titles,
+    const funcptr_devtools_render_tab_items_callback* tab_item_callbacks,
+    const ifb_u32*                                    tab_item_flag_bits) {
+
+    //tab bar begin
+    if (tab_item_flags_ref == 0 || !ImGui::BeginTabBar(tab_bar_title)) {
+        return;
+    }
+
+    ifb_b8 tab_item_enabled = false;
+    for (
+        ifb_u32 tab_item_index = 0;
+        tab_item_index < tab_item_count;
+        ++tab_item_index) {
+
+        //get the data for this tab
+        const funcptr_devtools_render_tab_items_callback tab_item_callback = tab_item_callbacks[tab_item_index];
+        const ifb_char* tab_item_title    = tab_item_titles[tab_item_index];
+        const ifb_u32   tab_item_flag_bit = tab_item_flag_bits[tab_item_index];
+
+        //check if the tab is enabled
+        tab_item_enabled = tab_item_flags_ref & tab_item_flag_bit;
+
+        //tab begin
+        if (!tab_item_enabled || !ImGui::BeginTabItem(tab_item_title,(bool*)&tab_item_enabled)) {
+            continue;
+        }
+
+        //render the tab specific data
+        tab_item_callback(
+            tab_item_data,
+            tab_item_enabled);
+
+        //update the flag value
+        ifb_engine_macro_devtools_set_flag_value(
+            tab_item_flags_ref,
+            tab_item_flag_bit,
+            tab_item_enabled);
+
+        //tab end
+        ImGui::EndTabItem();
+    }
+
+    //tab bar end
+    ImGui::EndTabBar();
+}

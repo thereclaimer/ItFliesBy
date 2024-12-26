@@ -5,6 +5,38 @@
 #include "ifb-engine-internal-devtools.hpp"
 #include "ifb-engine-internal-context.hpp"
 
+// inline ifb_void
+// ifb_engine::devtools_memory_render(
+//     IFBEngineDevToolsFlagsMemory& memory_flags_ref) {
+
+//     bool enabled = memory_flags_ref > IFBEngineDevToolsFlagsMemory_None; 
+
+//     if (!enabled || !ImGui::Begin("Memory",&enabled)) {
+//         return;
+//     }
+
+//     //get the memory reference
+//     IFBEngineMemory* context_memory_ptr = ifb_engine::context_get_memory();
+//     ifb_macro_assert(context_memory_ptr);
+
+//     if (ImGui::BeginTabBar("memory-tab-bar")) {
+
+//         //render the controls
+//         ifb_engine::devtools_memory_render_global_stack       (memory_flags_ref,context_memory_ptr);
+//         ifb_engine::devtools_memory_render_system_reservation (memory_flags_ref,context_memory_ptr);
+//         ifb_engine::devtools_memory_render_system_info        (memory_flags_ref,context_memory_ptr);
+
+//         ImGui::EndTabBar();
+//     }
+//     //if the window was closed, turn off the flags
+//     if (!enabled) {
+//         memory_flags_ref = IFBEngineDevToolsFlagsMemory_None;
+//     }
+
+//     ImGui::End();
+// }
+
+
 inline ifb_void
 ifb_engine::devtools_memory_render(
     IFBEngineDevToolsFlagsMemory& memory_flags_ref) {
@@ -18,6 +50,8 @@ ifb_engine::devtools_memory_render(
     //get the memory reference
     IFBEngineMemory* context_memory_ptr = ifb_engine::context_get_memory();
     ifb_macro_assert(context_memory_ptr);
+
+    const ifb_char* tab_bar_title = "memory-tab-bar"; 
 
     if (ImGui::BeginTabBar("memory-tab-bar")) {
 

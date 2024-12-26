@@ -220,8 +220,8 @@ ifb_global const IFBEngineDevToolsFlagsManagers IFB_ENGINE_DEVTOOLS_MENU_ITEM_FL
     IFBEngineDevToolsFlagsManagers_Graphics
 };
 
-ifb_global const ifb_u32 IFB_ENGINE_DEVTOOLS_MENU_ITEM_COUNT_CONTEXT  = sizeof(IFB_ENGINE_DEVTOOLS_MENU_ITEM_FLAGS_CONTEXT) / sizeof(IFBEngineDevToolsFlagsContext);
-ifb_global const ifb_u32 IFB_ENGINE_DEVTOOLS_MENU_ITEM_COUNT_MEMORY   = sizeof(IFB_ENGINE_DEVTOOLS_MENU_ITEM_FLAGS_MEMORY) / sizeof(IFBEngineDevToolsFlagsMemory);
+ifb_global const ifb_u32 IFB_ENGINE_DEVTOOLS_MENU_ITEM_COUNT_CONTEXT  = sizeof(IFB_ENGINE_DEVTOOLS_MENU_ITEM_FLAGS_CONTEXT)  / sizeof(IFBEngineDevToolsFlagsContext);
+ifb_global const ifb_u32 IFB_ENGINE_DEVTOOLS_MENU_ITEM_COUNT_MEMORY   = sizeof(IFB_ENGINE_DEVTOOLS_MENU_ITEM_FLAGS_MEMORY)   / sizeof(IFBEngineDevToolsFlagsMemory);
 ifb_global const ifb_u32 IFB_ENGINE_DEVTOOLS_MENU_ITEM_COUNT_MANAGERS = sizeof(IFB_ENGINE_DEVTOOLS_MENU_ITEM_FLAGS_MANAGERS) / sizeof(IFBEngineDevToolsFlagsManagers);
 
 namespace ifb_engine {
@@ -245,6 +245,11 @@ struct IFBEngineDevTools {
     } flags;
 };
 
+typedef ifb_void
+(*funcptr_devtools_render_tab_items_callback)(
+    ifb_void* tab_item_data_ptr,
+    ifb_b8&   tab_item_enabled_ref);
+
 namespace ifb_engine {
 
     ifb_void devtools_initialize      (IFBEngineDevTools* devtools_ptr);
@@ -252,18 +257,30 @@ namespace ifb_engine {
 
     ifb_void devtools_render_imgui_demo(IFBEngineDevTools* devtools_ptr);
 
-    ifb_void devtools_render_menu(
+    ifb_void
+    devtools_render_menu(
               ifb_u32&   menu_flags_ref,
         const ifb_char*  menu_title,
         const ifb_u32    menu_item_count,
         const ifb_char** menu_item_names,
         const ifb_u32*   menu_item_flag_bits);
 
-    ifb_void devtools_render_property_table(
+    ifb_void
+    devtools_render_property_table(
         const ifb_char*  table_name,
         const ifb_u32    table_row_count,
         const ifb_char** table_property_names,
         const ifb_char** table_property_values);
+
+    ifb_void
+    devtools_render_tab_bar(
+              ifb_u32&                                    tab_item_flags_ref,
+              ifb_void*                                   tab_item_data,
+        const ifb_char*                                   tab_bar_title,
+        const ifb_u32                                     tab_item_count,
+        const ifb_char**                                  tab_item_titles,
+        const funcptr_devtools_render_tab_items_callback* tab_item_callbacks,
+        const ifb_u32*                                    tab_item_flag_bits);
 };
 
 #endif //IFB_ENGINE_INTERNAL_DEVTOOLS_HPP
