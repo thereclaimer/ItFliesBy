@@ -18,7 +18,6 @@ ifb_engine::devtools_memory_render_window(
 
     //get the memory reference
     IFBEngineMemory* context_memory_ptr = ifb_engine::context_get_memory();
-    ifb_macro_assert(context_memory_ptr);
 
     //render the tab bar
     ifb_engine::devtools_memory_render_tab_bar(
@@ -39,15 +38,18 @@ ifb_engine::devtools_memory_render_tab_bar(
     IFBEngineDevToolsFlagsMemory& memory_flags_ref,
     IFBEngineMemory*              engine_memory_ptr) {
 
+    //sanity 
+    ifb_macro_assert(engine_memory_ptr);
+
     //tab bar title and tab count
     const ifb_u32   tab_item_count = 3;
     const ifb_char* tab_bar_title  = "memory-tab-bar"; 
     
     //tab callbacks
     const funcptr_devtools_render_tab_items_callback tab_item_callbacks[tab_item_count] = {
-        (funcptr_devtools_render_tab_items_callback)ifb_engine::devtools_memory_render_global_stack,
-        (funcptr_devtools_render_tab_items_callback)ifb_engine::devtools_memory_render_system_reservation,
-        (funcptr_devtools_render_tab_items_callback)ifb_engine::devtools_memory_render_system_info
+        (funcptr_devtools_render_tab_items_callback)ifb_engine::devtools_memory_render_tab_data_global_stack,
+        (funcptr_devtools_render_tab_items_callback)ifb_engine::devtools_memory_render_tab_data_system_reservation,
+        (funcptr_devtools_render_tab_items_callback)ifb_engine::devtools_memory_render_tab_data_system_info
     };
 
     //flag bits
@@ -69,7 +71,7 @@ ifb_engine::devtools_memory_render_tab_bar(
 }
 
 inline ifb_void
-ifb_engine::devtools_memory_render_global_stack(
+ifb_engine::devtools_memory_render_tab_data_global_stack(
     IFBEngineMemory* engine_memory_ptr) {
 
     IFBEngineDevToolsMemoryGlobalStack dev_global_stack;
@@ -100,7 +102,7 @@ ifb_engine::devtools_memory_render_global_stack(
 }
 
 inline ifb_void
-ifb_engine::devtools_memory_render_system_reservation(
+ifb_engine::devtools_memory_render_tab_data_system_reservation(
     IFBEngineMemory* engine_memory_ptr) {
 
     //get the system reservation properties
@@ -133,7 +135,7 @@ ifb_engine::devtools_memory_render_system_reservation(
 }
 
 inline ifb_void
-ifb_engine::devtools_memory_render_system_info(
+ifb_engine::devtools_memory_render_tab_data_system_info(
     IFBEngineMemory* engine_memory_ptr) {
 
     //get the system reservation properties
