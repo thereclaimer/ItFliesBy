@@ -9,13 +9,6 @@ inline ifb_void
 ifb_engine::devtools_memory_render_window(
     IFBEngineDevToolsFlagsMemory& memory_flags_ref) {
 
-    bool enabled = memory_flags_ref > IFBEngineDevToolsFlagsMemory_None; 
-
-    //window start
-    if (!enabled || !ImGui::Begin("Memory",&enabled)) {
-        return;
-    }
-
     //get the memory reference
     IFBEngineMemory* context_memory_ptr = ifb_engine::context_get_memory();
 
@@ -23,14 +16,6 @@ ifb_engine::devtools_memory_render_window(
     ifb_engine::devtools_memory_render_tab_bar(
         memory_flags_ref,
         context_memory_ptr);
-
-    //if the window was closed, turn off the flags
-    if (!enabled) {
-        memory_flags_ref = IFBEngineDevToolsFlagsMemory_None;
-    }
-
-    //window end
-    ImGui::End();
 }
 
 inline ifb_void 

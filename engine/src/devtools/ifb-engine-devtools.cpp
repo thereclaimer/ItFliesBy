@@ -14,7 +14,7 @@ ifb_engine::devtools_initialize(
 }
 
 inline ifb_void 
-ifb_engine::devtools_update(
+ifb_engine::devtools_render(
     IFBEngineDevTools* devtools_ptr,
     IFBInput&          input_ref) {
 
@@ -28,8 +28,26 @@ ifb_engine::devtools_update(
 
     //render the controls
     ifb_engine::devtools_menu_render_main_bar(devtools_ptr);
-    ifb_engine::devtools_context_render(devtools_ptr->flags.context);
-    ifb_engine::devtools_memory_render_window(devtools_ptr->flags.memory);
+
+    //get the properties for the windows
+    ifb_u32 window_flags[] = {
+        devtools_ptr->flags.context,
+        devtools_ptr->flags.memory
+    };
+    const ifb_u32    window_count     = sizeof(window_flags) / sizeof(ifb_u32); 
+    const ifb_char** window_titles    = IFB_DEVTOOLS_WINDOW_NAMES;
+    const auto       window_callbacks = IFB_DEVTOOLS_WINDOW_CALLBACKS;
+
+    //render the windows
+    ifb_engine::devtools_render_windows(
+        window_flags,
+        2,
+        window_titles,
+        window_callbacks);
+
+    //update the flags
+    devtools_ptr->flags.context = window_flags[0];
+    devtools_ptr->flags.memory  = window_flags[1];   
 }
 
 inline ifb_void 
@@ -45,29 +63,33 @@ ifb_engine::devtools_render_menu(
     ifb_macro_assert(menu_item_names);
     ifb_macro_assert(menu_item_flag_bits);
 
-    if (ImGui::BeginMenu(menu_title)) {
-
-        for (
-            ifb_u32 menu_item_index = 0;
-            menu_item_index < menu_item_count;
-            ++menu_item_index) {
-
-            //get the flag and name for the menu item
-            const ifb_u32   menu_item_flag = menu_item_flag_bits[menu_item_index];
-            const ifb_char* menu_item_name = menu_item_names    [menu_item_index]; 
-
-            //get the current selection status
-            bool menu_item_selected = menu_flags_ref & menu_item_flag;
-
-            //render the menu item and get the user selection
-            ImGui::MenuItem(menu_item_name,NULL,&menu_item_selected);
-
-            //update the flag value
-            ifb_engine_macro_devtools_set_flag_value(menu_flags_ref,menu_item_flag,menu_item_selected);
-        }
-    
-        ImGui::EndMenu();
+    //menu start
+    if (!ImGui::BeginMenu(menu_title)) {
+        return;
     }
+
+    //render menu items
+    for (
+        ifb_u32 menu_item_index = 0;
+        menu_item_index < menu_item_count;
+        ++menu_item_index) {
+
+        //get the flag and name for the menu item
+        const ifb_u32   menu_item_flag = menu_item_flag_bits[menu_item_index];
+        const ifb_char* menu_item_name = menu_item_names    [menu_item_index]; 
+
+        //get the current selection status
+        bool menu_item_selected = menu_flags_ref & menu_item_flag;
+
+        //render the menu item and get the user selection
+        ImGui::MenuItem(menu_item_name,NULL,&menu_item_selected);
+
+        //update the flag value
+        ifb_engine_macro_devtools_set_flag_value(menu_flags_ref,menu_item_flag,menu_item_selected);
+    }
+
+    //menu end
+    ImGui::EndMenu();
 }
 
 inline ifb_void 
@@ -107,6 +129,52 @@ ifb_engine::devtools_render_property_table(
         }
 
         ImGui::EndTable();
+    }
+}
+
+inline ifb_void
+ifb_engine::devtools_render_windows(
+          ifb_u32*                                 window_flags_ptr,
+    const ifb_u32                                  window_count,
+    const ifb_char**                               window_titles,
+    const funcptr_devtools_render_window_callback* window_callbacks) {
+
+    //sanity check
+    ifb_macro_assert(window_titles);
+    ifb_macro_assert(window_flags_ptr);
+    ifb_macro_assert(window_callbacks);    
+
+    bool window_enabled = false;
+
+    for (
+        ifb_u32 window_index = 0;
+        window_index < window_count;
+        ++window_index) {
+
+        //get the properties for this window
+        const funcptr_devtools_render_window_callback window_callback = window_callbacks[window_index];
+        const ifb_char* window_title = window_titles[window_index];
+        ifb_u32 window_flags = window_flags_ptr[window_index];
+
+        //render the window if its enabled
+        window_enabled = window_flags > 0;
+        if (!window_enabled || !ImGui::Begin(window_title,&window_enabled)) {
+            continue;
+        }
+
+        //render the window data
+        window_callback(window_flags);
+
+        //clear the flags if the window was closed
+        if (!window_enabled) {
+            window_flags = 0;
+        }
+
+        //update the flags
+        window_flags_ptr[window_index] = window_flags;
+
+        //window end
+        ImGui::End();
     }
 }
 

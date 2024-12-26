@@ -2,6 +2,8 @@
 #define IFB_ENGINE_INTERNAL_DEVTOOLS_HPP
 
 #include "ifb-engine.hpp"
+#include "ifb-engine-internal-memory.hpp"
+#include "ifb-engine-internal-context.hpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -57,13 +59,20 @@ enum IFBEngineDevToolsFlagsContext_ {
     IFBEngineDevToolsFlagsContext_Exit       = IFB_BIT_FLAG_4
 };
 
+struct IFBEngineContext;
+
 namespace ifb_engine {
 
-    ifb_void devtools_context_render(IFBEngineDevToolsFlagsContext& devtools_context_flags);
-
-    ifb_void devtools_context_render_context                   (IFBEngineDevToolsFlagsContext& devtools_context_flags);
-    ifb_void devtools_context_render_system_info               (IFBEngineDevToolsFlagsContext& devtools_context_flags);
-    ifb_void devtools_context_render_user_input                (IFBEngineDevToolsFlagsContext& devtools_context_flags);
+    //window
+    ifb_void devtools_context_render_window                    (IFBEngineDevToolsFlagsContext& devtools_context_flags);
+    
+    //tabs
+    ifb_void devtools_context_render_tab_bar                   (IFBEngineDevToolsFlagsContext& devtools_context_flags, IFBEngineContext* engine_context);
+    ifb_void devtools_context_render_tab_data_context          (IFBEngineContext* engine_context);
+    ifb_void devtools_context_render_tab_data_system_info      (IFBEngineContext* engine_context);
+    ifb_void devtools_context_render_tab_data_user_input       (IFBEngineContext* engine_context);
+    
+    //imgui
     ifb_void devtools_context_render_imgui_demo                (IFBEngineDevToolsFlagsContext& devtools_context_flags);
 
     inline ifb_void devtools_context_flags_set_context         (IFBEngineDevToolsFlagsContext& devtools_context_flags, const ifb_b8 value) { ifb_engine_macro_devtools_set_flag_value(devtools_context_flags, IFBEngineDevToolsFlagsContext_Context,    value); }
@@ -246,16 +255,29 @@ struct IFBEngineDevTools {
     } flags;
 };
 
+typedef void
+(*funcptr_devtools_render_window_callback)(
+    ifb_u32& flags_ref);
+
 typedef ifb_void
 (*funcptr_devtools_render_tab_items_callback)(
     ifb_void* tab_item_data_ptr);
 
+
+ifb_global const ifb_char* IFB_DEVTOOLS_WINDOW_NAMES[] = {
+    "Engine Context",
+    "Memory"
+};
+
+ifb_global const funcptr_devtools_render_window_callback IFB_DEVTOOLS_WINDOW_CALLBACKS[] = {
+    (funcptr_devtools_render_window_callback)ifb_engine::devtools_context_render_window,
+    (funcptr_devtools_render_window_callback)ifb_engine::devtools_memory_render_window
+};
+
 namespace ifb_engine {
 
     ifb_void devtools_initialize      (IFBEngineDevTools* devtools_ptr);
-    ifb_void devtools_update          (IFBEngineDevTools* devtools_ptr, IFBInput& input_ref);
-
-    ifb_void devtools_render_imgui_demo(IFBEngineDevTools* devtools_ptr);
+    ifb_void devtools_render          (IFBEngineDevTools* devtools_ptr, IFBInput& input_ref);
 
     ifb_void
     devtools_render_menu(
@@ -271,6 +293,13 @@ namespace ifb_engine {
         const ifb_u32    table_row_count,
         const ifb_char** table_property_names,
         const ifb_char** table_property_values);
+
+    ifb_void
+    devtools_render_windows(
+              ifb_u32*                                 window_flags_ptr,
+        const ifb_u32                                  window_count,
+        const ifb_char**                               window_titles,
+        const funcptr_devtools_render_window_callback* window_callbacks);
 
     ifb_void
     devtools_render_tab_bar(

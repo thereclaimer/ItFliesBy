@@ -96,7 +96,7 @@ ifb_engine::context_update_and_render(
 
     //devtools
     IFBEngineDevTools* devtools_ptr = ifb_engine::context_get_devtools();
-    ifb_engine::devtools_update(devtools_ptr,update.input);
+    ifb_engine::devtools_render(devtools_ptr,update.input);
 
     //render the frame
     ifb_engine::graphics_manager_frame_render(graphics_manager_ptr);
