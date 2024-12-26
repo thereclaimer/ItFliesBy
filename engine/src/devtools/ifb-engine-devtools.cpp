@@ -105,31 +105,35 @@ ifb_engine::devtools_render_property_table(
     ifb_macro_assert(table_property_names);
     ifb_macro_assert(table_property_values);
 
-    if (ImGui::BeginTable(table_name,2,ImGuiTableFlags_RowBg)) {
-
-        for (
-            ifb_u32 row_index = 0;
-            row_index < table_row_count;
-            ++row_index) {
-
-            //get the property
-            const ifb_char* property_name  = table_property_names [row_index];
-            const ifb_char* property_value = table_property_values[row_index];
-
-            //start the next row
-            ImGui::TableNextRow();
-
-            //property name
-            ImGui::TableSetColumnIndex(0);
-            ImGui::TextUnformatted(property_name);
-            
-            //property value
-            ImGui::TableSetColumnIndex(1);
-            ImGui::TextUnformatted(property_value);
-        }
-
-        ImGui::EndTable();
+    //table start
+    if (!ImGui::BeginTable(table_name,2,ImGuiTableFlags_RowBg)) {
+        return;
     }
+
+    //table rows
+    for (
+        ifb_u32 row_index = 0;
+        row_index < table_row_count;
+        ++row_index) {
+
+        //get the property
+        const ifb_char* property_name  = table_property_names [row_index];
+        const ifb_char* property_value = table_property_values[row_index];
+
+        //start the next row
+        ImGui::TableNextRow();
+
+        //property name
+        ImGui::TableSetColumnIndex(0);
+        ImGui::TextUnformatted(property_name);
+        
+        //property value
+        ImGui::TableSetColumnIndex(1);
+        ImGui::TextUnformatted(property_value);
+    }
+
+    //table end
+    ImGui::EndTable();
 }
 
 inline ifb_void
