@@ -24,7 +24,7 @@ ifb_engine::devtools_context_render_tab_bar(
     ifb_macro_assert(engine_context);
 
     //tab bar title and tab count
-    const ifb_u32   tab_item_count = 3;
+    const ifb_u32   tab_item_count = 4;
     const ifb_char* tab_bar_title  = "context-tab-bar";
 
     //tab callbacks
@@ -32,19 +32,22 @@ ifb_engine::devtools_context_render_tab_bar(
         (funcptr_devtools_render_tab_items_callback)ifb_engine::devtools_context_render_tab_data_context,
         (funcptr_devtools_render_tab_items_callback)ifb_engine::devtools_context_render_tab_data_system_info,
         (funcptr_devtools_render_tab_items_callback)ifb_engine::devtools_context_render_tab_data_user_input,
+        (funcptr_devtools_render_tab_items_callback)ifb_engine::devtools_context_render_tab_data_config,
     };
 
     //flag bits
     const IFBEngineDevToolsFlagsContext tab_item_flag_bits[tab_item_count] = {
         IFBEngineDevToolsFlagsContext_Context,
         IFBEngineDevToolsFlagsContext_SystemInfo,
-        IFBEngineDevToolsFlagsContext_UserInput
+        IFBEngineDevToolsFlagsContext_UserInput,
+        IFBEngineDevToolsFlagsContext_Config,
     };
 
     const ifb_char* tab_item_titles[tab_item_count] = {
         "Context Structure",
         "System Info",
-        "User Input"
+        "User Input",
+        "Config"
     };
 
     //render the tab bar
@@ -166,6 +169,13 @@ ifb_engine::devtools_context_render_tab_data_user_input(
     IFBEngineContext* engine_context) {
 
 }
+
+inline ifb_void 
+ifb_engine::devtools_context_render_tab_data_config(
+    IFBEngineContext* engine_context) {
+
+}
+
 
 inline ifb_void 
 ifb_engine::devtools_context_render_imgui_demo(

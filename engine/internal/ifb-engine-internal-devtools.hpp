@@ -56,7 +56,8 @@ enum IFBEngineDevToolsFlagsContext_ {
     IFBEngineDevToolsFlagsContext_SystemInfo = IFB_BIT_FLAG_1,
     IFBEngineDevToolsFlagsContext_UserInput  = IFB_BIT_FLAG_2,
     IFBEngineDevToolsFlagsContext_ImGuiDemo  = IFB_BIT_FLAG_3,
-    IFBEngineDevToolsFlagsContext_Exit       = IFB_BIT_FLAG_4
+    IFBEngineDevToolsFlagsContext_Exit       = IFB_BIT_FLAG_4,
+    IFBEngineDevToolsFlagsContext_Config     = IFB_BIT_FLAG_5,
 };
 
 struct IFBEngineContext;
@@ -71,6 +72,7 @@ namespace ifb_engine {
     ifb_void devtools_context_render_tab_data_context          (IFBEngineContext* engine_context);
     ifb_void devtools_context_render_tab_data_system_info      (IFBEngineContext* engine_context);
     ifb_void devtools_context_render_tab_data_user_input       (IFBEngineContext* engine_context);
+    ifb_void devtools_context_render_tab_data_config           (IFBEngineContext* engine_context);
     
     //imgui
     ifb_void devtools_context_render_imgui_demo                (IFBEngineDevToolsFlagsContext& devtools_context_flags);
@@ -80,12 +82,14 @@ namespace ifb_engine {
     inline ifb_void devtools_context_flags_set_user_input      (IFBEngineDevToolsFlagsContext& devtools_context_flags, const ifb_b8 value) { ifb_engine_macro_devtools_set_flag_value(devtools_context_flags, IFBEngineDevToolsFlagsContext_UserInput,  value); }
     inline ifb_void devtools_context_flags_set_imgui_demo      (IFBEngineDevToolsFlagsContext& devtools_context_flags, const ifb_b8 value) { ifb_engine_macro_devtools_set_flag_value(devtools_context_flags, IFBEngineDevToolsFlagsContext_ImGuiDemo,  value); }
     inline ifb_void devtools_context_flags_set_exit            (IFBEngineDevToolsFlagsContext& devtools_context_flags, const ifb_b8 value) { ifb_engine_macro_devtools_set_flag_value(devtools_context_flags, IFBEngineDevToolsFlagsContext_Exit,       value); }
+    inline ifb_void devtools_context_flags_set_config          (IFBEngineDevToolsFlagsContext& devtools_context_flags, const ifb_b8 value) { ifb_engine_macro_devtools_set_flag_value(devtools_context_flags, IFBEngineDevToolsFlagsContext_Config,     value); }
 
     inline const ifb_b8 devtools_context_flags_get_context     (IFBEngineDevToolsFlagsContext& devtools_context_flags) { return(devtools_context_flags & IFBEngineDevToolsFlagsContext_Context);    }
     inline const ifb_b8 devtools_context_flags_get_system_info (IFBEngineDevToolsFlagsContext& devtools_context_flags) { return(devtools_context_flags & IFBEngineDevToolsFlagsContext_SystemInfo); }
     inline const ifb_b8 devtools_context_flags_get_user_input  (IFBEngineDevToolsFlagsContext& devtools_context_flags) { return(devtools_context_flags & IFBEngineDevToolsFlagsContext_UserInput);  }
     inline const ifb_b8 devtools_context_flags_get_imgui_demo  (IFBEngineDevToolsFlagsContext& devtools_context_flags) { return(devtools_context_flags & IFBEngineDevToolsFlagsContext_ImGuiDemo);  }
     inline const ifb_b8 devtools_context_flags_get_exit        (IFBEngineDevToolsFlagsContext& devtools_context_flags) { return(devtools_context_flags & IFBEngineDevToolsFlagsContext_Exit);       }
+    inline const ifb_b8 devtools_context_flags_get_config      (IFBEngineDevToolsFlagsContext& devtools_context_flags) { return(devtools_context_flags & IFBEngineDevToolsFlagsContext_Config);     }
 };
 
 /**********************************************************************************/
@@ -195,6 +199,7 @@ ifb_global const ifb_char* IFB_ENGINE_DEVTOOLS_MENU_ITEM_NAMES_CONTEXT[] = {
     "System Info",
     "User Input",
     "ImGui Demo",
+    "Config",
     "Exit"
 };
 
@@ -215,6 +220,7 @@ ifb_global const IFBEngineDevToolsFlagsContext IFB_ENGINE_DEVTOOLS_MENU_ITEM_FLA
     IFBEngineDevToolsFlagsContext_SystemInfo,
     IFBEngineDevToolsFlagsContext_UserInput,
     IFBEngineDevToolsFlagsContext_ImGuiDemo,
+    IFBEngineDevToolsFlagsContext_Config,
     IFBEngineDevToolsFlagsContext_Exit
 };
 
