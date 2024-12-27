@@ -23,7 +23,7 @@ ifb_engine::devtools_memory_render_tab_bar(
     IFBEngineDevToolsFlagsMemory& memory_flags_ref,
     IFBEngineMemory*              engine_memory_ptr) {
 
-    //sanity 
+    //sanity check
     ifb_macro_assert(engine_memory_ptr);
 
     //tab bar title and tab count
@@ -38,7 +38,7 @@ ifb_engine::devtools_memory_render_tab_bar(
     };
 
     //flag bits
-    const IFBEngineDevToolsFlagsMemory tab_item_flag_bits[tab_item_count] {
+    const IFBEngineDevToolsFlagsMemory tab_item_flag_bits[tab_item_count] = {
         IFBEngineDevToolsFlagsMemory_GlobalStack,
         IFBEngineDevToolsFlagsMemory_SystemReservation,
         IFBEngineDevToolsFlagsMemory_SystemInfo
