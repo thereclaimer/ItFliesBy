@@ -15,9 +15,12 @@
 //devtools
 #include "ifb-engine-devtools.cpp"
 #include "ifb-engine-devtools-menu.cpp"
+#include "ifb-engine-devtools-window.cpp"
 #include "ifb-engine-devtools-context.cpp"
 #include "ifb-engine-devtools-memory.cpp"
 #include "ifb-engine-devtools-control.cpp"
+#include "ifb-engine-devtools-tools.cpp"
+#include "ifb-engine-devtools-tabs.cpp"
 
 //managers
 #include "ifb-engine-manager-arena.cpp"
