@@ -21,6 +21,7 @@
 #include "ifb-engine-devtools-control.cpp"
 #include "ifb-engine-devtools-tools.cpp"
 #include "ifb-engine-devtools-tabs.cpp"
+#include "ifb-engine-devtools-property-table.cpp"
 
 //managers
 #include "ifb-engine-manager-arena.cpp"

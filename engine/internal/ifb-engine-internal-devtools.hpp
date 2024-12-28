@@ -361,6 +361,190 @@ ifb_global const devtools_tab_item_render_callback IFB_ENGINE_DEVTOOLS_TAB_ITEM_
 #define IFB_ENGINE_DEVTOOLS_TAB_ITEM_RENDER_CALLBACK_MEMORY_SYSTEM_INFO          IFB_ENGINE_DEVTOOLS_TAB_ITEM_RENDER_CALLBACKS[IFBEngineDevToolsTabItems_Memory_SystemInfo] 
 
 /**********************************************************************************/
+/* PROPERTY TABLES                                                                */
+/**********************************************************************************/
+
+enum IFBEngineDevToolsPropertyTable_ {
+    IFBEngineDevToolsPropertyTable_ContextSizes            = 0,
+    IFBEngineDevToolsPropertyTable_ContextHandles          = 1,
+    IFBEngineDevToolsPropertyTable_ContextConfig           = 2,
+    IFBEngineDevToolsPropertyTable_MemoryGlobalStack       = 3,
+    IFBEngineDevToolsPropertyTable_MemorySystemReservation = 4,
+    IFBEngineDevToolsPropertyTable_MemorySystemInfo        = 5
+};
+
+ifb_global const ifb_char* IFB_ENGINE_DEVTOOLS_PROPERTY_TABLE_NAMES[] = {
+    "property-table-context-sizes",
+    "property-table-context-handles",
+    "property-table-context-config",
+    "property-table-memory-global-stack",
+    "property-table-memory-system-reservation",
+    "property-table-memory-system-info"
+};
+
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_TABLE_NAME_CONTEXT_SIZES             IFB_ENGINE_DEVTOOLS_PROPERTY_TABLE_NAMES[IFBEngineDevToolsPropertyTable_ContextSizes]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_TABLE_NAME_CONTEXT_HANDLES           IFB_ENGINE_DEVTOOLS_PROPERTY_TABLE_NAMES[IFBEngineDevToolsPropertyTable_ContextHandles]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_TABLE_NAME_CONTEXT_CONFIG            IFB_ENGINE_DEVTOOLS_PROPERTY_TABLE_NAMES[IFBEngineDevToolsPropertyTable_ContextConfig]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_TABLE_NAME_MEMORY_GLOBAL_STACK       IFB_ENGINE_DEVTOOLS_PROPERTY_TABLE_NAMES[IFBEngineDevToolsPropertyTable_MemoryGlobalStack]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_TABLE_NAME_MEMORY_SYSTEM_RESERVATION IFB_ENGINE_DEVTOOLS_PROPERTY_TABLE_NAMES[IFBEngineDevToolsPropertyTable_MemorySystemReservation]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_TABLE_NAME_MEMORY_SYSTEM_INFO        IFB_ENGINE_DEVTOOLS_PROPERTY_TABLE_NAMES[IFBEngineDevToolsPropertyTable_MemorySystemInfo]
+
+enum IFBEngineDevToolsProperty_ {
+
+    //----------------------------------------------------------------
+    // context sizes
+    //----------------------------------------------------------------
+    IFBEngineDevToolsProperty_ContextSizes_Context                   = 0,
+    IFBEngineDevToolsProperty_ContextSizes_Memory                    = 1,
+    IFBEngineDevToolsProperty_ContextSizes_Handles                   = 2,
+    IFBEngineDevToolsProperty_ContextSizes_Config                    = 3,
+    //----------------------------------------------------------------
+    // context handles 
+    //----------------------------------------------------------------
+    IFBEngineDevToolsProperty_ContextHandles_Managers                = 4,
+    IFBEngineDevToolsProperty_ContextHandles_Core                    = 5,
+    IFBEngineDevToolsProperty_ContextHandles_DevTools                = 6,
+    //----------------------------------------------------------------
+    // context config
+    //----------------------------------------------------------------
+    IFBEngineDevToolsProperty_ContextConfig_MemoryMinimumGB          = 7,
+    IFBEngineDevToolsProperty_ContextConfig_CommitCountMax           = 8,
+    IFBEngineDevToolsProperty_ContextConfig_GlobalStackKB            = 9,
+    IFBEngineDevToolsProperty_ContextConfig_ArenaMinimumKB           = 10,
+    IFBEngineDevToolsProperty_ContextConfig_ArenaCountMax            = 11,
+    IFBEngineDevToolsProperty_ContextConfig_TagLength                = 12,
+    IFBEngineDevToolsProperty_ContextConfig_TagCountMax              = 13,
+    IFBEngineDevToolsProperty_ContextConfig_UseDevTools              = 14,
+    IFBEngineDevToolsProperty_ContextConfig_WindowTitle              = 15,
+    //----------------------------------------------------------------
+    // memory global stack
+    //----------------------------------------------------------------
+    IFBEngineDevToolsProperty_MemoryGlobalStack_Size                 = 16,
+    IFBEngineDevToolsProperty_MemoryGlobalStack_Position             = 17,
+    IFBEngineDevToolsProperty_MemoryGlobalStack_PercentUsed          = 18,
+    //----------------------------------------------------------------
+    // memory system reservation
+    //----------------------------------------------------------------
+    IFBEngineDevToolsProperty_MemoryReservation_StartingAddress      = 19,
+    IFBEngineDevToolsProperty_MemoryReservation_PagesTotal           = 20,
+    IFBEngineDevToolsProperty_MemoryReservation_PagesCommitted       = 21,
+    IFBEngineDevToolsProperty_MemoryReservation_CommitCountMax       = 22,
+    IFBEngineDevToolsProperty_MemoryReservation_CommitCountCurrent   = 23,
+    //----------------------------------------------------------------
+    // memory system info
+    //----------------------------------------------------------------
+    IFBEngineDevToolsProperty_MemorySystemInfo_PageSize              = 24,
+    IFBEngineDevToolsProperty_MemorySystemInfo_AllocationGranularity = 25
+};
+
+ifb_global const ifb_char* IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[] = {
+    
+    //-----------------------------------
+    // context sizes                     
+    //-----------------------------------
+    "Context Size Total",              // IFBEngineDevToolsProperty_ContextSizes_Context
+    "Memory Size",                     // IFBEngineDevToolsProperty_ContextSizes_Memory
+    "Handles Size",                    // IFBEngineDevToolsProperty_ContextSizes_Handles
+    "Config Size",                     // IFBEngineDevToolsProperty_ContextSizes_Config
+    //-----------------------------------
+    // context handles                   
+    //-----------------------------------
+    "Managers Handle",                 // IFBEngineDevToolsProperty_ContextHandles_Managers
+    "Core Handle",                     // IFBEngineDevToolsProperty_ContextHandles_Core
+    "DevTools Handle",                 // IFBEngineDevToolsProperty_ContextHandles_DevTools
+    //-----------------------------------
+    // context config
+    //-----------------------------------
+    "Minimum Memory Requirement (GB)", // IFBEngineDevToolsProperty_ContextConfig_MemoryMinimumGB
+    "Max Memory Commit Count",         // IFBEngineDevToolsProperty_ContextConfig_CommitCountMax 
+    "Global Stack Size (KB)",          // IFBEngineDevToolsProperty_ContextConfig_GlobalStackKB 
+    "Arena Minimum Size (KB)",         // IFBEngineDevToolsProperty_ContextConfig_ArenaMinimumKB 
+    "Max Arena Count",                 // IFBEngineDevToolsProperty_ContextConfig_ArenaCountMax 
+    "Tag Length",                      // IFBEngineDevToolsProperty_ContextConfig_TagLength 
+    "Max Tag Count",                   // IFBEngineDevToolsProperty_ContextConfig_TagCountMax 
+    "Use DevTools",                    // IFBEngineDevToolsProperty_ContextConfig_UseDevTools 
+    "Window Title",                    // IFBEngineDevToolsProperty_ContextConfig_WindowTitle 
+    //-----------------------------------
+    // memory global stack
+    //-----------------------------------
+    "Stack Size",                      // IFBEngineDevToolsProperty_MemoryGlobalStack_Size
+    "Stack Position",                  // IFBEngineDevToolsProperty_MemoryGlobalStack_Position
+    "Percent Used",                    // IFBEngineDevToolsProperty_MemoryGlobalStack_PercentUsed
+    //-----------------------------------
+    // memory reservation
+    //-----------------------------------
+    "Starting Address",                // IFBEngineDevToolsProperty_MemoryReservation_StartingAddress
+    "Pages Total",                     // IFBEngineDevToolsProperty_MemoryReservation_PagesTotal
+    "Pages Committed",                 // IFBEngineDevToolsProperty_MemoryReservation_PagesCommitted
+    "Commit Count Max",                // IFBEngineDevToolsProperty_MemoryReservation_CommitCountMax
+    "Commit Count Current",            // IFBEngineDevToolsProperty_MemoryReservation_CommitCountCurrent
+    //-----------------------------------
+    // memory system info
+    //-----------------------------------
+    "Page Size",                       // IFBEngineDevToolsProperty_MemorySystemInfo_PageSize
+    "Allocation Granularity"           // IFBEngineDevToolsProperty_MemorySystemInfo_AllocationGranularity
+};
+
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_CONTEXT_SIZE_TABLE_CONTEXT                      IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_ContextSizes_Context]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_CONTEXT_SIZE_TABLE_MEMORY                       IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_ContextSizes_Memory]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_CONTEXT_SIZE_TABLE_HANDLES                      IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_ContextSizes_Handles]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_CONTEXT_SIZE_TABLE_CONFIG                       IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_ContextSizes_Config]
+
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_CONTEXT_HANDLES_TABLE_MANAGERS                  IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_ContextHandles_Managers]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_CONTEXT_HANDLES_TABLE_CORE                      IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_ContextHandles_Core]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_CONTEXT_HANDLES_TABLE_DEVTOOLS                  IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_ContextHandles_DevTools]
+
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_CONTEXT_CONFIG_TABLE_MEMORY_REQUIREMENT         IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_ContextConfig_MemoryMinimumGB]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_CONTEXT_CONFIG_TABLE_MEMORY_COMMIT_COUNT        IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_ContextConfig_CommitCountMax]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_CONTEXT_CONFIG_TABLE_GLOBAL_STACK_SIZE          IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_ContextConfig_GlobalStackKB]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_CONTEXT_CONFIG_TABLE_ARENA_SIZE                 IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_ContextConfig_ArenaMinimumKB]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_CONTEXT_CONFIG_TABLE_MAX_ARENA_COUNT            IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_ContextConfig_ArenaCountMax]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_CONTEXT_CONFIG_TABLE_TAG_LENGTH                 IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_ContextConfig_TagLength]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_CONTEXT_CONFIG_TABLE_MAX_TAG_COUNT              IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_ContextConfig_TagCountMax]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_CONTEXT_CONFIG_TABLE_USE_DEVTOOLS               IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_ContextConfig_UseDevTools]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_CONTEXT_CONFIG_TABLE_WINDOW_TITLE               IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_ContextConfig_WindowTitle]
+
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_MEMORY_GLOBAL_STACK_TABLE_STACK_SIZE            IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_MemoryGlobalStack_Size]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_MEMORY_GLOBAL_STACK_TABLE_STACK_POSITION        IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_MemoryGlobalStack_Position]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_MEMORY_GLOBAL_STACK_TABLE_PERCENT_USED          IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_MemoryGlobalStack_PercentUsed]
+
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_MEMORY_RESERVATION_TABLE_STARTING_ADDRESS       IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_MemoryReservation_StartingAddress]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_MEMORY_RESERVATION_TABLE_PAGES_TOTAL            IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_MemoryReservation_PagesTotal]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_MEMORY_RESERVATION_TABLE_PAGES_COMMITTED        IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_MemoryReservation_PagesCommitted]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_MEMORY_RESERVATION_TABLE_COMMIT_COUNT_MAX       IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_MemoryReservation_CommitCountMax]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_MEMORY_RESERVATION_TABLE_COMMIT_COUNT_CURRENT   IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_MemoryReservation_CommitCountCurrent] 
+
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_MEMORY_SYSTEM_INFO_TABLE_PAGE_SIZE              IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_MemorySystemInfo_PageSize]
+#define IFB_ENGINE_DEVTOOLS_PROPERTY_NAME_MEMORY_SYSTEM_INFO_TABLE_ALLOCATION_GRANULARITY IFB_ENGINE_DEVTOOLS_PROPERTY_NAMES[IFBEngineDevToolsProperty_MemorySystemInfo_AllocationGranularity]
+namespace ifb_engine {
+
+    //-----------------------
+    // context property tables
+    //-----------------------
+    ifb_void devtools_property_table_render_context_sizes   (IFBEngineContext* context_ptr);
+    ifb_void devtools_property_table_render_context_handles (IFBEngineContext* context_ptr);
+    ifb_void devtools_property_table_render_context_config  (IFBEngineConfig&  config_ref);
+
+    //-----------------------
+    // memory property tables
+    //-----------------------
+    ifb_void devtools_property_table_render_memory_global_stack       (IFBEngineMemoryGlobalStack& global_stack_ref);
+    ifb_void devtools_property_table_render_memory_system_reservation (IFBEngineMemoryReservation& reservation_ref);
+    ifb_void devtools_property_table_render_memory_system_info        (IFBEngineMemorySystemInfo&  system_info);
+
+    //-----------------------
+    // property table control
+    //-----------------------
+    ifb_void
+    devtools_property_table_render(
+        const ifb_char*  property_table_name,
+        const ifb_u32    property_table_row_count,
+        const ifb_char** property_table_property_names,
+        const ifb_char** property_table_property_values);
+
+};
+
+/**********************************************************************************/
 /* DEVTOOLS                                                                       */
 /**********************************************************************************/
 
@@ -378,21 +562,6 @@ namespace ifb_engine {
 
     ifb_void devtools_initialize (IFBEngineDevTools* devtools_ptr);
     ifb_void devtools_render     (IFBEngineDevTools* devtools_ptr, IFBInput& input_ref);
-
-    ifb_void
-    devtools_render_menu(
-              ifb_u32&   menu_flags_ref,
-        const ifb_char*  menu_title,
-        const ifb_u32    menu_item_count,
-        const ifb_char** menu_item_names,
-        const ifb_u32*   menu_item_flag_bits);
-
-    ifb_void
-    devtools_render_property_table(
-        const ifb_char*  table_name,
-        const ifb_u32    table_row_count,
-        const ifb_char** table_property_names,
-        const ifb_char** table_property_values);
 };
 
 #endif //IFB_ENGINE_INTERNAL_DEVTOOLS_HPP
