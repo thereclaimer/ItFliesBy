@@ -11,33 +11,32 @@
 
 #define ifb_gl_macro_check_error(b8_no_error,gl_error) b8_no_error &= ((gl_error = glGetError()) == GL_NO_ERROR) 
 
-struct IFBGLPosition;
-struct IFBGLUvCoordinate;
-struct IFBGLVertexArrayObject;
 struct IFBGLViewport;
 
-typedef ifb_u32 IFBGLVertexFlags; 
+struct IFBGLShaderStage;
+struct IFBGLShaderStageVertex;
+struct IFBGLShaderStageFragment;
 
-enum IFBGLVertexFlags_ {
-    IFBGLVertexFlags_None          = 0,
-    IFBGLVertexFlags_Position      = (1 << 0),
-    IFBGLVertexFlags_UvCoordinate  = (1 << 1),
-};
+struct IFBGLShaderProgram;
 
-struct IFBGLPosition {
-    ifb_f32 x;
-    ifb_f32 y;
-};
+struct IFBGLUniform;
+struct IFBGLUniformU32;
+struct IFBGLUniformF32;
+struct IFBGLUniformVec2F32;
+struct IFBGLUniformVec3F32;
+struct IFBGLUniformMat3F32;
+struct IFBGLUniformMat4F32;
 
-struct IFBGLUvCoordinate {
-    ifb_f32 x;
-    ifb_f32 y;
-};
+struct IFBGLBuffer;
+struct IFBGLBufferVertex;
+struct IFBGLBufferElement;
 
-struct IFBGLVertexArrayObject {
-    GLint            vao;
-    IFBGLVertexFlags flags;    
-};
+struct IFBGLVertex;
+
+typedef ifb_enum IFBGLVertexAttributeType;
+
+#define IFB_GL_INVALID_UNIFORM_LOCATION -1
+
 
 /**********************************************************************************/
 /* VIEWPORT                                                                       */
@@ -373,7 +372,6 @@ struct IFBGLUniformVec3F32 : IFBGLUniform { };
 struct IFBGLUniformMat3F32 : IFBGLUniform { };
 struct IFBGLUniformMat4F32 : IFBGLUniform { };
 
-#define IFB_GL_INVALID_UNIFORM_LOCATION -1
 
 namespace ifb_gl {
 
@@ -543,6 +541,173 @@ struct IFBGLBuffer {
 struct IFBGLBufferVertex  : IFBGLBuffer { };
 struct IFBGLBufferElement : IFBGLBuffer { };
 
+namespace ifb_gl {
+
+    const ifb_b8 buffer_create(const ifb_u32 buffer_count, IFBGLBuffer* buffer_array);
+
+    const ifb_b8 buffer_create_vertex  (const ifb_u32 vertex_buffer_count,  IFBGLBufferVertex*  vertex_buffer_array);
+    const ifb_b8 buffer_create_element (const ifb_u32 element_buffer_count, IFBGLBufferElement* element_buffer_array);
+
+    const ifb_b8
+    buffer_data_upload_vertex(
+        const ifb_u32            vertex_buffer_count,
+        const IFBGLBufferVertex* vertex_buffer_array,
+        const ifb_u32*           vertex_buffer_size_array,
+        const ifb_void*          vertex_buffer_data);
+
+    const ifb_b8
+    buffer_data_upload_element(
+        const ifb_u32             element_buffer_count,
+        const IFBGLBufferElement* element_buffer_array,
+        const ifb_u32*            element_buffer_size_array,
+        const ifb_void*           element_buffer_data);
+};
+
+inline const ifb_b8 
+ifb_gl::buffer_create(
+    const ifb_u32      buffer_count, 
+          IFBGLBuffer* buffer_array) {
+
+    //sanity check
+    ifb_macro_assert(buffer_count != 0);
+    ifb_macro_assert(buffer_array != NULL);
+
+    //forward declarations
+    ifb_b8 result   = true;
+    GLenum gl_error = 0;
+
+    //generate the buffers
+    glGenBuffers(buffer_count,(GLuint*)buffer_array);
+
+    //check errors
+    ifb_gl_macro_check_error(result,gl_error);
+
+    //we're done
+    return(result);
+}
+
+inline const ifb_b8 
+ifb_gl::buffer_create_vertex(
+    const ifb_u32            vertex_buffer_count,
+          IFBGLBufferVertex* vertex_buffer_array) {
+
+    const ifb_b8 result = ifb_gl::buffer_create(
+        vertex_buffer_count,
+        vertex_buffer_array);
+
+    return(result);
+}
+
+inline const ifb_b8 
+ifb_gl::buffer_create_element(
+    const ifb_u32             element_buffer_count,
+          IFBGLBufferElement* element_buffer_array) {
+    
+    const ifb_b8 result = ifb_gl::buffer_create(
+        element_buffer_count,
+        element_buffer_array);
+
+    return(result);
+}
+
+inline const ifb_b8
+ifb_gl::buffer_data_upload_vertex(
+    const ifb_u32            vertex_buffer_count,
+    const IFBGLBufferVertex* vertex_buffer_array,
+    const ifb_u32*           vertex_buffer_size_array,
+    const ifb_void*          vertex_buffer_data) {
+
+    //sanity check
+    ifb_macro_assert(vertex_buffer_count      != 0);
+    ifb_macro_assert(vertex_buffer_array      != NULL);
+    ifb_macro_assert(vertex_buffer_size_array != NULL);
+    ifb_macro_assert(vertex_buffer_data       != NULL);
+
+    //forward declarations
+    ifb_u32 buffer_offset = 0;
+    ifb_b8  result        = true;
+    GLenum  gl_error      = 0;
+
+    for (
+        ifb_u32 vertex_buffer_index = 0;
+        vertex_buffer_index < vertex_buffer_count;
+        ++vertex_buffer_index) {
+
+        //get the buffer id, size, and data
+        const GLuint    buffer_id   = vertex_buffer_array     [vertex_buffer_index].gl_buffer_id;
+        const ifb_u32   buffer_size = vertex_buffer_size_array[vertex_buffer_index];
+        const ifb_void* buffer_data = (ifb_byte*)vertex_buffer_data + buffer_offset;
+
+        //bind the buffer
+        glBindBuffer(GL_ARRAY_BUFFER,buffer_id);
+
+        //set the data
+        glBufferData(
+            GL_ARRAY_BUFFER,
+            buffer_size,
+            buffer_data,
+            GL_STATIC_DRAW);
+
+        //check errors
+        ifb_gl_macro_check_error(result,gl_error);
+
+        //update the offset
+        buffer_offset += buffer_size;
+    }
+
+    //we're done
+    return(result);
+}
+
+inline const ifb_b8
+ifb_gl::buffer_data_upload_element(
+    const ifb_u32             element_buffer_count,
+    const IFBGLBufferElement* element_buffer_array,
+    const ifb_u32*            element_buffer_size_array,
+    const ifb_void*           element_buffer_data) {
+
+    //sanity check
+    ifb_macro_assert(element_buffer_count      != 0);
+    ifb_macro_assert(element_buffer_array      != NULL);
+    ifb_macro_assert(element_buffer_size_array != NULL);
+    ifb_macro_assert(element_buffer_data       != NULL);
+
+    //forward declarations
+    ifb_u32 buffer_offset = 0;
+    ifb_b8  result        = true;
+    GLenum  gl_error      = 0;
+
+    for (
+        ifb_u32 element_buffer_index = 0;
+        element_buffer_index < element_buffer_index;
+        ++element_buffer_index) {
+
+        //get the buffer id, size, and data
+        const GLuint    buffer_id   = element_buffer_array     [element_buffer_index].gl_buffer_id;
+        const ifb_u32   buffer_size = element_buffer_size_array[element_buffer_index];
+        const ifb_void* buffer_data = (ifb_byte*)element_buffer_data + buffer_offset;
+
+        //bind the buffer
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,buffer_id);
+
+        //set the data
+        glBufferData(
+            GL_ELEMENT_ARRAY_BUFFER,
+            buffer_size,
+            buffer_data,
+            GL_STATIC_DRAW);
+
+        //check errors
+        ifb_gl_macro_check_error(result,gl_error);
+
+        //update the offset
+        buffer_offset += buffer_size;
+    }
+
+    //we're done
+    return(result);
+}
+
 /**********************************************************************************/
 /* VERTEX                                                                         */
 /**********************************************************************************/
@@ -560,8 +725,6 @@ enum IFBGLVertexAttributeType_ {
     IFBGLVertexAttributeType_U32 = 5,
     IFBGLVertexAttributeType_F32 = 6
 };
-
-typedef ifb_u32 IFBGLVertexAttributeType;
 
 ifb_global const ifb_u32 IFB_GL_VERTEX_ATTRIBUTE_GL_TYPES[] = {
     GL_BYTE,
@@ -635,7 +798,7 @@ ifb_gl::vertex_create(
 
 inline const ifb_b8
 ifb_gl::vertex_enable_attributes(
-    const IFBGLVertex               vertex_ref,
+    const IFBGLVertex               vertex,
     const ifb_u32                   vertex_size,
     const IFBGLBuffer               vertex_buffer,
     const ifb_address               vertex_buffer_offset,
@@ -654,7 +817,7 @@ ifb_gl::vertex_enable_attributes(
     GLenum gl_error = 0;
 
     //bind the vertex array
-    glBindVertexArray(vertex_ref.vertex_array_object);
+    glBindVertexArray(vertex.vertex_array_object);
     ifb_gl_macro_check_error(result,gl_error);
 
     //bind the vertex buffer
@@ -694,7 +857,7 @@ ifb_gl::vertex_enable_attributes(
     }
 
     //unbind the vertex array
-    glBindVertexArray(vertex_ref.vertex_array_object);
+    glBindVertexArray(0);
 
     //last error check
     ifb_gl_macro_check_error(result,gl_error);

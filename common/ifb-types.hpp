@@ -19,6 +19,9 @@ typedef uint16_t   ifb_u16;
 typedef uint32_t   ifb_u32;
 typedef uint64_t   ifb_u64;
 
+//enum
+typedef uint32_t   ifb_enum;
+
 //floats
 typedef float      ifb_f32;
 typedef double     ifb_f64;
