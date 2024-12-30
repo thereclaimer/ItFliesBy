@@ -372,7 +372,6 @@ struct IFBGLUniformVec3F32 : IFBGLUniform { };
 struct IFBGLUniformMat3F32 : IFBGLUniform { };
 struct IFBGLUniformMat4F32 : IFBGLUniform { };
 
-
 namespace ifb_gl {
 
     const ifb_b8 
