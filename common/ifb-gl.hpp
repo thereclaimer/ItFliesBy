@@ -540,6 +540,9 @@ struct IFBGLBuffer {
     GLuint gl_buffer_id;
 };
 
+struct IFBGLBufferVertex  : IFBGLBuffer { };
+struct IFBGLBufferElement : IFBGLBuffer { };
+
 /**********************************************************************************/
 /* VERTEX                                                                         */
 /**********************************************************************************/
@@ -671,23 +674,23 @@ ifb_gl::vertex_enable_attributes(
         const IFBGLVertexAttributeType vertex_attribute_type = vertex_attribute_types_array[vertex_attribute_index];
 
         //get the gl type, attribute size, and offset
-        const GLenum  gl_type     = ifb_gl::vertex_attribute_type_get_gl_type (vertex_attribute_type);
-        const ifb_u32 type_size   = ifb_gl::vertex_attribute_type_get_size    (vertex_attribute_type);
-        const ifb_u32 base_offset = vertex_attribute_base_offset_array[vertex_attribute_index];
+        const GLenum    vertex_attribute_gl_type = ifb_gl::vertex_attribute_type_get_gl_type (vertex_attribute_type);
+        const ifb_u32   vertex_attribute_size    = ifb_gl::vertex_attribute_type_get_size    (vertex_attribute_type);
+        const ifb_u32   vertex_attribute_offset  = vertex_attribute_base_offset_array[vertex_attribute_index];
+        const ifb_void* vertex_attribute_ptr     = (ifb_void*)(vertex_buffer_offset + vertex_attribute_offset); 
 
         //enable the attribute
         glEnableVertexAttribArray(vertex_attribute_index);
-        glVertexAttribFormat(
+        glVertexAttribPointer(
             vertex_attribute_index,
-            type_size,
-            gl_type,
+            vertex_attribute_size,
+            vertex_attribute_gl_type,
             GL_FALSE,
-            base_offset);
-        glVertexAttribBinding(vertex_attribute_index,0);
+            vertex_size,
+            vertex_attribute_ptr);
 
         //check errors
         ifb_gl_macro_check_error(result,gl_error);
-
     }
 
     //unbind the vertex array
