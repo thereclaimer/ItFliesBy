@@ -14,6 +14,8 @@
 #define ifb_macro_align_a_to_b(a,b)         (a + b - 1) & ~(b - 1)
 #define ifb_macro_align_size_struct(struct) ifb_macro_align_a_to_b(sizeof(struct),alignof(struct))
 
+#define ifb_macro_struct_member_offset(struct,member) ((size_t)&(((struct*)0)->member))
+
 #define ifb_macro_bit_set(bit,val)    val |=  (1 << bit)  
 #define ifb_macro_bit_clear(bit,val)  val &= ~(1 << bit)  
 #define ifb_macro_bit_toggle(bit,val) val ^=  (1 << bit)
