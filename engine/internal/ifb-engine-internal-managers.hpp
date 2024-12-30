@@ -231,28 +231,28 @@ struct IFBEngineUniformManagerDataF32 {
     ifb_f32         value;
 };
 
-struct IFBEngineUniformManagerDataVec2F32 {
+struct IFBEngineUniformManagerDataVec2 {
     IFBGLUniformVec2F32 gl_uniform_vec2;    
     IFBIDShader         shader;
     IFBIDTag            tag;
     ifb_f32             value[2];
 };
 
-struct IFBEngineUniformManagerDataVec3F32 {
+struct IFBEngineUniformManagerDataVec3 {
     IFBGLUniformVec3F32 gl_uniform_vec3;
     IFBIDShader         shader;
     IFBIDTag            tag;
     ifb_f32             value[3];
 };
 
-struct IFBEngineUniformManagerDataMat3F32 {
+struct IFBEngineUniformManagerDataMat3 {
     IFBGLUniformMat3F32 gl_uniform_mat3;
     IFBIDShader         shader;
     IFBIDTag            tag;
     ifb_f32             value[9];
 };
 
-struct IFBEngineUniformManagerDataMat4F32 {
+struct IFBEngineUniformManagerDataMat4 {
     IFBGLUniformMat4F32 gl_uniform_mat4;
     IFBIDShader         shader;
     IFBIDTag            tag;
@@ -325,12 +325,12 @@ namespace ifb_engine {
     ifb_void uniform_manager_set_value_mat3 (const IFBEngineUniformManager* uniform_manager_ptr, const IFBIDUniformMat3 uniform_id, const ifb_f32* uniform_value);
     ifb_void uniform_manager_set_value_mat4 (const IFBEngineUniformManager* uniform_manager_ptr, const IFBIDUniformMat4 uniform_id, const ifb_f32* uniform_value);
 
-    IFBEngineUniformManagerDataU32*     uniform_manager_get_array_u32  (const IFBEngineUniformManagerMemory& uniform_manager_memory_ref);
-    IFBEngineUniformManagerDataF32*     uniform_manager_get_array_f32  (const IFBEngineUniformManagerMemory& uniform_manager_memory_ref);
-    IFBEngineUniformManagerDataVec2F32* uniform_manager_get_array_vec2 (const IFBEngineUniformManagerMemory& uniform_manager_memory_ref);
-    IFBEngineUniformManagerDataVec3F32* uniform_manager_get_array_vec3 (const IFBEngineUniformManagerMemory& uniform_manager_memory_ref);
-    IFBEngineUniformManagerDataMat3F32* uniform_manager_get_array_mat3 (const IFBEngineUniformManagerMemory& uniform_manager_memory_ref);
-    IFBEngineUniformManagerDataMat4F32* uniform_manager_get_array_mat4 (const IFBEngineUniformManagerMemory& uniform_manager_memory_ref);
+    IFBEngineUniformManagerDataU32*  uniform_manager_get_array_u32  (const IFBEngineUniformManagerMemory& uniform_manager_memory_ref);
+    IFBEngineUniformManagerDataF32*  uniform_manager_get_array_f32  (const IFBEngineUniformManagerMemory& uniform_manager_memory_ref);
+    IFBEngineUniformManagerDataVec2* uniform_manager_get_array_vec2 (const IFBEngineUniformManagerMemory& uniform_manager_memory_ref);
+    IFBEngineUniformManagerDataVec3* uniform_manager_get_array_vec3 (const IFBEngineUniformManagerMemory& uniform_manager_memory_ref);
+    IFBEngineUniformManagerDataMat3* uniform_manager_get_array_mat3 (const IFBEngineUniformManagerMemory& uniform_manager_memory_ref);
+    IFBEngineUniformManagerDataMat4* uniform_manager_get_array_mat4 (const IFBEngineUniformManagerMemory& uniform_manager_memory_ref);
 };
 
 #endif //IFB_ENGINE_INTERNAL_MANAGERS_HPP
