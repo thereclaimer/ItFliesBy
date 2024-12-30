@@ -140,5 +140,23 @@ namespace ifb_engine {
     IFBGLViewport* graphics_manager_get_viewport              (const IFBEngineGraphicsManagerMemory& graphics_manager_memory_ref);
 };
 
+/**********************************************************************************/
+/* SHADER MANAGER                                                               */
+/**********************************************************************************/
+
+struct IFBEngineShaderManagerMemory {
+    ifb_address start;
+    ifb_u32     offset_shader_program_array;
+    ifb_u32     offset_shader_stage_vertex_array;
+    ifb_u32     offset_shader_stage_fragment_array;
+    IFBIDCommit commit_id;
+};
+
+struct IFBEngineShaderManager {
+    ifb_u32                  shader_program_count;
+    IFBGLShaderProgram       shader_program;
+    IFBGLShaderStageVertex   shader_stage_vertex;
+    IFBGLShaderStageFragment shader_stage_fragment;
+};
   
 #endif //IFB_ENGINE_INTERNAL_MANAGERS_HPP
