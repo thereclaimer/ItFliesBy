@@ -147,14 +147,14 @@ namespace ifb_engine {
 struct IFBEngineShaderManagerMemory {
     ifb_address start;
     ifb_u32     offset_shader_program_array;
-    ifb_u32     offset_shader_stage_vertex_array;
-    ifb_u32     offset_shader_stage_fragment_array;
+    ifb_u32     offset_shader_program_tag;
     IFBIDCommit commit_id;
 };
 
 struct IFBEngineShaderManager {
     IFBEngineShaderManagerMemory memory;
-    ifb_u32                      shader_program_count;
+    ifb_u32                      shader_program_count_total;
+    ifb_u32                      shader_program_count_committed;
 };
 
 namespace ifb_engine { 
@@ -166,24 +166,20 @@ namespace ifb_engine {
         const ifb_u32                 shader_count_max);
 
     ifb_void
-    shader_manager_commit_memory(
-              IFBEngineShaderManagerMemory& shader_manager_memory,
-              IFBEngineMemory*              engine_memory,
-        const ifb_u32                       shader_count_max);
+    shader_manager_commit_shaders(
+              IFBEngineShaderManager*   shader_manager,
+        const ifb_u32                   shader_count,
+        const IFBGLShaderStageVertex*   shader_stage_array_vertex,
+        const IFBGLShaderStageFragment* shader_stage_array_fragment,
+        const IFBIDTag*                 shader_tag_array,
+              IFBIDShader*              shader_id_array);
 
-    ifb_void
-    shader_manager_reserve_shaders(
-        const ifb_u32      shader_count,
-        const ifb_u32*     shader_stage_buffer_offset_array_vertex,
-        const ifb_u32*     shader_stage_buffer_offset_array_fragment,
-        const ifb_char*    shader_stage_buffer_vertex,
-        const ifb_char*    shader_stage_buffer_fragment,
-              IFBIDShader* shader_id_array);
+    const ifb_b8              shader_manager_use_program        (const IFBEngineShaderManager* shader_manager_ptr, const IFBIDShader shader_id);
+    const IFBIDTag            shader_manager_get_tag_id         (const IFBEngineShaderManager* shader_manager_ptr, const IFBIDShader shader_id);
+    const IFBGLShaderProgram  shader_manager_get_shader_program (const IFBEngineShaderManager* shader_manager_ptr, const IFBIDShader shader_id);
 
-    ifb_void
-    shader_manager_release_shaders(
-        const ifb_u32      shader_count,
-        const IFBIDShader* shader_id_array);
+    IFBIDTag*                 shader_manager_get_array_tag_id         (IFBEngineShaderManagerMemory& shader_manager_memory_ref);
+    IFBGLShaderProgram*       shader_manager_get_array_shader_program (IFBEngineShaderManagerMemory& shader_manager_memory_ref);
 
 };
 
@@ -297,12 +293,12 @@ namespace ifb_engine {
     const ifb_f32*            uniform_manager_get_value_mat3       (const IFBEngineUniformManager* uniform_manager_ptr, const IFBIDUniformMat3 uniform_id);
     const ifb_f32*            uniform_manager_get_value_mat4       (const IFBEngineUniformManager* uniform_manager_ptr, const IFBIDUniformMat4 uniform_id);
 
-    const ifb_cstr            uniform_manager_get_name_u32         (const IFBEngineUniformManager* uniform_manager_ptr, const IFBIDUniformU32  uniform_id);
-    const ifb_cstr            uniform_manager_get_name_f32         (const IFBEngineUniformManager* uniform_manager_ptr, const IFBIDUniformF32  uniform_id);
-    const ifb_cstr            uniform_manager_get_name_vec2        (const IFBEngineUniformManager* uniform_manager_ptr, const IFBIDUniformVec2 uniform_id);
-    const ifb_cstr            uniform_manager_get_name_vec3        (const IFBEngineUniformManager* uniform_manager_ptr, const IFBIDUniformVec3 uniform_id);
-    const ifb_cstr            uniform_manager_get_name_mat3        (const IFBEngineUniformManager* uniform_manager_ptr, const IFBIDUniformMat3 uniform_id);
-    const ifb_cstr            uniform_manager_get_name_mat4        (const IFBEngineUniformManager* uniform_manager_ptr, const IFBIDUniformMat4 uniform_id);
+    const IFBIDTag            uniform_manager_get_tag_u32          (const IFBEngineUniformManager* uniform_manager_ptr, const IFBIDUniformU32  uniform_id);
+    const IFBIDTag            uniform_manager_get_tag_f32          (const IFBEngineUniformManager* uniform_manager_ptr, const IFBIDUniformF32  uniform_id);
+    const IFBIDTag            uniform_manager_get_tag_vec2         (const IFBEngineUniformManager* uniform_manager_ptr, const IFBIDUniformVec2 uniform_id);
+    const IFBIDTag            uniform_manager_get_tag_vec3         (const IFBEngineUniformManager* uniform_manager_ptr, const IFBIDUniformVec3 uniform_id);
+    const IFBIDTag            uniform_manager_get_tag_mat3         (const IFBEngineUniformManager* uniform_manager_ptr, const IFBIDUniformMat3 uniform_id);
+    const IFBIDTag            uniform_manager_get_tag_mat4         (const IFBEngineUniformManager* uniform_manager_ptr, const IFBIDUniformMat4 uniform_id);
 
     const IFBIDShader         uniform_manager_get_shader_id_u32    (const IFBEngineUniformManager* uniform_manager_ptr, const IFBIDUniformU32  uniform_id);
     const IFBIDShader         uniform_manager_get_shader_id_f32    (const IFBEngineUniformManager* uniform_manager_ptr, const IFBIDUniformF32  uniform_id);

@@ -3,6 +3,7 @@
 
 #include "ifb-types.hpp"
 #include "ifb-gl.hpp"
+#include "ifb-memory.hpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -55,11 +56,11 @@ struct IFBShader {
 /**********************************************************************************/
 
 struct IFBBufferVertex {
-    IFBIDBuffer id;
-    IFBIDTag    tag;
-    ifb_u32     size;
-    ifb_u32     stride;
-    ifb_handle  data_handle;
+    IFBIDBufferVertex id;
+    IFBIDTag          tag;
+    ifb_u32           size;
+    ifb_u32           stride;
+    ifb_handle        data_handle;
 };
 
 struct IFBBufferElement {
@@ -115,7 +116,7 @@ struct IFBUniformMat3 {
 };
 
 struct IFBUniformMat4 {
-    IFBIDUniformMat4F32 id;
+    IFBIDUniformMat4    id;
     IFBGLUniformMat4F32 gl_uniform_mat4;
     IFBIDShader         shader;
     IFBIDTag            tag;
