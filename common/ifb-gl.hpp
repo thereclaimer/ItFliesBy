@@ -4,6 +4,7 @@
 #include "ifb-dependencies.hpp"
 #include "ifb-graphics.hpp"
 #include "ifb-types.hpp"
+#include "ifb-math.hpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -13,30 +14,30 @@
 
 struct IFBGLViewport;
 
-struct IFBGLShaderStage;
-struct IFBGLShaderStageVertex;
-struct IFBGLShaderStageFragment;
+struct IFBGLID { GLuint gl_id; };
 
-struct IFBGLShaderProgram;
+struct IFBGLIDShaderStage   : IFBGLID { };
+struct IFBGLIDShaderProgram : IFBGLID { };
+struct IFBGLIDUniform       : IFBGLID { };
+struct IFBGLIDVertex        : IFBGLID { };
+struct IFBGLIDBuffer        : IFBGLID { };
 
-struct IFBGLUniform;
-struct IFBGLUniformU32;
-struct IFBGLUniformF32;
-struct IFBGLUniformVec2F32;
-struct IFBGLUniformVec3F32;
-struct IFBGLUniformMat3F32;
-struct IFBGLUniformMat4F32;
+struct IFBGLIDShaderStageVertex   : IFBGLIDShaderStage { };   
+struct IFBGLIDShaderStageFragment : IFBGLIDShaderStage { }; 
 
-struct IFBGLBuffer;
-struct IFBGLBufferVertex;
-struct IFBGLBufferElement;
+struct IFBGLIDUniformU32  : IFBGLIDUniform { };
+struct IFBGLIDUniformF32  : IFBGLIDUniform { };
+struct IFBGLIDUniformVec2 : IFBGLIDUniform { };
+struct IFBGLIDUniformVec3 : IFBGLIDUniform { };
+struct IFBGLIDUniformMat3 : IFBGLIDUniform { };
+struct IFBGLIDUniformMat4 : IFBGLIDUniform { };
 
-struct IFBGLVertex;
-
-typedef ifb_enum IFBGLVertexAttributeType;
+struct IFBGLIDBufferVertex  : IFBGLIDBuffer { };
+struct IFBGLIDBufferElement : IFBGLIDBuffer { };
 
 #define IFB_GL_INVALID_UNIFORM_LOCATION -1
 
+typedef ifb_enum IFBGLVertexAttributeType;
 
 /**********************************************************************************/
 /* VIEWPORT                                                                       */
@@ -45,7 +46,7 @@ typedef ifb_enum IFBGLVertexAttributeType;
 struct IFBGLViewport {
     IFBPosition          position;
     IFBDimensions        dimensions;
-    IFBColor32Normalized clear_color;
+    IFBColor clear_color;
 };
 
 namespace ifb_gl{
@@ -110,44 +111,34 @@ ifb_gl::viewport_set_position_and_dimensions(
 /* SHADER STAGE                                                                   */
 /**********************************************************************************/
 
-struct IFBGLShaderStage {
-    GLuint id;
-};
-
-struct IFBGLShaderStageVertex   : IFBGLShaderStage { };
-struct IFBGLShaderStageFragment : IFBGLShaderStage { };
-
 namespace ifb_gl {
 
     const ifb_b8
     shader_stage_compile(
-        const GLuint            shader_stage_type,
-        const ifb_u32           shader_stage_count,
-        const ifb_u32*          shader_stage_offsets,
-        const ifb_char*         shader_stage_buffer,
-              IFBGLShaderStage* shader_stage_array); 
+        const GLuint              shader_stage_type,
+        const ifb_u32             shader_stage_count,
+        const ifb_char**          shader_stage_buffers,
+              IFBGLIDShaderStage* shader_stage_array); 
     
-    const ifb_b8 shader_stage_compile_vertex   (const ifb_u32 shader_stage_vertex_count,   const ifb_u32* shader_stage_vertex_offsets,   const ifb_char* shader_stage_vertex_buffer,   IFBGLShaderStageVertex*   shader_stage_vertex_array); 
-    const ifb_b8 shader_stage_compile_fragment (const ifb_u32 shader_stage_fragment_count, const ifb_u32* shader_stage_fragment_offsets, const ifb_char* shader_stage_fragment_buffer, IFBGLShaderStageFragment* shader_stage_fragment_array); 
+    const ifb_b8 shader_stage_compile_vertex   (const ifb_u32 shader_stage_vertex_count,   const ifb_char** shader_stage_vertex_buffers,   IFBGLIDShaderStageVertex*   shader_stage_vertex_array); 
+    const ifb_b8 shader_stage_compile_fragment (const ifb_u32 shader_stage_fragment_count, const ifb_char** shader_stage_fragment_buffers, IFBGLIDShaderStageFragment* shader_stage_fragment_array); 
     
     const ifb_b8
     shader_stage_delete(
         const ifb_u32           shader_stage_count,
-        const IFBGLShaderStage* shader_stage_array);
+        const IFBGLIDShaderStage* shader_stage_array);
 };
 
 inline const ifb_b8
 ifb_gl::shader_stage_compile(
-    const GLuint            shader_stage_type,
-    const ifb_u32           shader_stage_count,
-    const ifb_u32*          shader_stage_offsets,
-    const ifb_char*         shader_stage_buffer,
-          IFBGLShaderStage* shader_stage_array) {
+    const GLuint              shader_stage_type,
+    const ifb_u32             shader_stage_count,
+    const ifb_char**          shader_stage_buffers,
+          IFBGLIDShaderStage* shader_stage_array) {
 
     //sanity check
     ifb_macro_assert(shader_stage_count   != 0);
-    ifb_macro_assert(shader_stage_offsets != NULL);
-    ifb_macro_assert(shader_stage_buffer  != NULL);
+    ifb_macro_assert(shader_stage_buffers != NULL);
     ifb_macro_assert(shader_stage_array   != NULL);
 
     //forward declarations
@@ -161,26 +152,20 @@ ifb_gl::shader_stage_compile(
         ++shader_stage_index) {
 
         //get the current shader stage and buffer
-        IFBGLShaderStage& shader_stage_ref    = shader_stage_array  [shader_stage_index];
-        const ifb_u32     shader_stage_offset = shader_stage_offsets[shader_stage_index];
-        const ifb_char*   shader_stage_data   = shader_stage_buffer + shader_stage_offset ;
-
+        IFBGLIDShaderStage& shader_stage_ref    = shader_stage_array[shader_stage_index];
+        const ifb_char*     shader_stage_buffer = shader_stage_buffers[shader_stage_index];
+        
         //compile the shader stage
-        shader_stage_ref.id = glCreateShader(shader_stage_type); 
-        glShaderSource(
-            shader_stage_ref.id, //shader id
-            1,                   //string count
-            &shader_stage_data,  //string address
-            0);                  //string length 0 (null terminated)
+        shader_stage_ref.gl_id = glCreateShader(shader_stage_type); 
 
         //check the shader stage status
         const GLenum last_error = glGetError();
-        glGetShaderiv(shader_stage_ref.id,GL_COMPILE_STATUS,&shader_stage_compiled);
+        glGetShaderiv(shader_stage_ref.gl_id,GL_COMPILE_STATUS,&shader_stage_compiled);
 
         //update the result
-        result &= shader_stage_ref.id   != GL_ZERO;     // the shader stage id should be non-zero
-        result &= last_error            == GL_NO_ERROR; // OpenGL should have no errors
-        result &= shader_stage_compiled == GL_TRUE;     // the shader stage should be compiled 
+        result &= shader_stage_ref.gl_id != GL_ZERO;     // the shader stage id should be non-zero
+        result &= last_error             == GL_NO_ERROR; // OpenGL should have no errors
+        result &= shader_stage_compiled  == GL_TRUE;     // the shader stage should be compiled 
     }
 
     //we're done
@@ -189,16 +174,14 @@ ifb_gl::shader_stage_compile(
 
 inline const ifb_b8
 ifb_gl::shader_stage_compile_vertex(
-    const ifb_u32                 shader_stage_vertex_count,
-    const ifb_u32*                shader_stage_vertex_offsets,
-    const ifb_char*               shader_stage_vertex_buffer,
-          IFBGLShaderStageVertex* shader_stage_vertex_array) {
+    const ifb_u32                   shader_stage_vertex_count,
+    const ifb_char**                shader_stage_vertex_buffers,
+          IFBGLIDShaderStageVertex* shader_stage_vertex_array) {
 
     const ifb_b8 result = ifb_gl::shader_stage_compile(
         GL_VERTEX_SHADER,
         shader_stage_vertex_count,
-        shader_stage_vertex_offsets,
-        shader_stage_vertex_buffer,
+        shader_stage_vertex_buffers,
         shader_stage_vertex_array);
 
     return(result);
@@ -206,16 +189,14 @@ ifb_gl::shader_stage_compile_vertex(
 
 inline const ifb_b8
 ifb_gl::shader_stage_compile_fragment(
-    const ifb_u32                   shader_stage_fragment_count,
-    const ifb_u32*                  shader_stage_fragment_offsets,
-    const ifb_char*                 shader_stage_fragment_buffer,
-          IFBGLShaderStageFragment* shader_stage_fragment_array) {
+    const ifb_u32                     shader_stage_fragment_count,
+    const ifb_char**                  shader_stage_fragment_buffers,
+          IFBGLIDShaderStageFragment* shader_stage_fragment_array) {
 
     const ifb_b8 result = ifb_gl::shader_stage_compile(
         GL_FRAGMENT_SHADER,
         shader_stage_fragment_count,
-        shader_stage_fragment_offsets,
-        shader_stage_fragment_buffer,
+        shader_stage_fragment_buffers,
         shader_stage_fragment_array);
 
     return(result);
@@ -223,8 +204,8 @@ ifb_gl::shader_stage_compile_fragment(
 
 inline const ifb_b8
 ifb_gl::shader_stage_delete(
-    const ifb_u32           shader_stage_count,
-    const IFBGLShaderStage* shader_stage_array) {
+    const ifb_u32             shader_stage_count,
+    const IFBGLIDShaderStage* shader_stage_array) {
 
     ifb_macro_assert(shader_stage_count != 0);
     ifb_macro_assert(shader_stage_array != NULL);
@@ -236,7 +217,7 @@ ifb_gl::shader_stage_delete(
         shader_stage_index < shader_stage_count;
         ++shader_stage_index) {
 
-        const GLuint gl_shader_id = shader_stage_array[shader_stage_index].id;
+        const GLuint gl_shader_id = shader_stage_array[shader_stage_index].gl_id;
 
         glDeleteShader(gl_shader_id);
 
@@ -252,34 +233,30 @@ ifb_gl::shader_stage_delete(
 /* SHADER PROGRAM                                                                 */
 /**********************************************************************************/
 
-struct IFBGLShaderProgram {
-    GLuint id;
-};
-
 namespace ifb_gl {
 
     const ifb_b8
     shader_program_create(
-        const ifb_u32                   shader_program_count,
-        const IFBGLShaderStageVertex*   shader_stage_array_vertex,
-        const IFBGLShaderStageFragment* shader_stage_array_fragment,
-              IFBGLShaderProgram*       shader_program_array);
+        const ifb_u32                     shader_program_count,
+        const IFBGLIDShaderStageVertex*   shader_stage_array_vertex,
+        const IFBGLIDShaderStageFragment* shader_stage_array_fragment,
+              IFBGLIDShaderProgram*       shader_program_array);
 
     const ifb_b8
     shader_program_delete(
-        const ifb_u32             shader_program_count,
-        const IFBGLShaderProgram* shader_program_array);
+        const ifb_u32               shader_program_count,
+        const IFBGLIDShaderProgram* shader_program_array);
 
     const ifb_b8 
-    shader_program_set_active(const IFBGLShaderProgram& shader_program_ref);
+    shader_program_set_active(const IFBGLIDShaderProgram shader_program);
 };
 
 inline const ifb_b8
 ifb_gl::shader_program_create(
-    const ifb_u32                   shader_program_count,
-    const IFBGLShaderStageVertex*   shader_stage_array_vertex,
-    const IFBGLShaderStageFragment* shader_stage_array_fragment,
-          IFBGLShaderProgram*       shader_program_array) {
+    const ifb_u32                     shader_program_count,
+    const IFBGLIDShaderStageVertex*   shader_stage_array_vertex,
+    const IFBGLIDShaderStageFragment* shader_stage_array_fragment,
+          IFBGLIDShaderProgram*       shader_program_array) {
 
     //sanity check
     ifb_macro_assert(shader_program_count        != 0);
@@ -298,30 +275,30 @@ ifb_gl::shader_program_create(
         ++shader_program_index) {
     
         //get the current shader program reference and stage ids
-        IFBGLShaderProgram& shader_program_ref       = shader_program_array       [shader_program_index]; 
-        const GLuint        shader_stage_id_vertex   = shader_stage_array_vertex  [shader_program_index].id;
-        const GLuint        shader_stage_id_fragment = shader_stage_array_fragment[shader_program_index].id;
+        IFBGLIDShaderProgram& shader_program_ref       = shader_program_array       [shader_program_index]; 
+        const GLuint          shader_stage_id_vertex   = shader_stage_array_vertex  [shader_program_index].gl_id;
+        const GLuint          shader_stage_id_fragment = shader_stage_array_fragment[shader_program_index].gl_id;
 
         //create the program
-        shader_program_ref.id = glCreateProgram();
+        shader_program_ref.gl_id = glCreateProgram();
         
         //attach the shaders
-        glAttachShader(shader_program_ref.id, shader_stage_id_vertex);
-        glAttachShader(shader_program_ref.id, shader_stage_id_fragment);
+        glAttachShader(shader_program_ref.gl_id, shader_stage_id_vertex);
+        glAttachShader(shader_program_ref.gl_id, shader_stage_id_fragment);
     
         //link the program
-        glLinkProgram(shader_program_ref.id);
+        glLinkProgram(shader_program_ref.gl_id);
 
         //detach the shaders
-        glDetachShader(shader_program_ref.id, shader_stage_id_vertex);
-        glDetachShader(shader_program_ref.id, shader_stage_id_fragment);
+        glDetachShader(shader_program_ref.gl_id, shader_stage_id_vertex);
+        glDetachShader(shader_program_ref.gl_id, shader_stage_id_fragment);
 
         //check our program status
         const GLenum error = glGetError();
-        glGetProgramiv(shader_program_ref.id,GL_LINK_STATUS,&shader_program_link_status);
+        glGetProgramiv(shader_program_ref.gl_id,GL_LINK_STATUS,&shader_program_link_status);
         
         //update the result with our shader program status
-        result &= shader_program_ref.id      != GL_ZERO;     // shader program should be non-zero
+        result &= shader_program_ref.gl_id   != GL_ZERO;     // shader program should be non-zero
         result &= error                      == GL_NO_ERROR; // OpenGL should be error free
         result &= shader_program_link_status == GL_TRUE;     // shader program should be linked
     }
@@ -332,8 +309,8 @@ ifb_gl::shader_program_create(
 
 inline const ifb_b8
 ifb_gl::shader_program_delete(
-    const ifb_u32             shader_program_count,
-    const IFBGLShaderProgram* shader_program_array) {
+    const ifb_u32               shader_program_count,
+    const IFBGLIDShaderProgram* shader_program_array) {
 
     //sanity check
     ifb_macro_assert(shader_program_count != 0);
@@ -348,7 +325,7 @@ ifb_gl::shader_program_delete(
         shader_program_index < shader_program_count; 
         ++shader_program_index) {
     
-        const GLuint shader_program_id = shader_program_array[shader_program_index].id;
+        const GLuint shader_program_id = shader_program_array[shader_program_index].gl_id;
 
         glDeleteProgram(shader_program_id);
 
@@ -361,9 +338,9 @@ ifb_gl::shader_program_delete(
 
 inline const ifb_b8 
 ifb_gl::shader_program_set_active(
-    const IFBGLShaderProgram& shader_program_ref) {
+    const IFBGLIDShaderProgram shader_program) {
 
-    glUseProgram(shader_program_ref.id);
+    glUseProgram(shader_program.gl_id);
 
     const GLenum error = glGetError();
 
@@ -374,50 +351,38 @@ ifb_gl::shader_program_set_active(
 /* UNIFORMS                                                                       */
 /**********************************************************************************/
 
-struct IFBGLUniform {
-    GLint location;
-};
-
-struct IFBGLUniformU32     : IFBGLUniform { };
-struct IFBGLUniformF32     : IFBGLUniform { };
-struct IFBGLUniformVec2F32 : IFBGLUniform { };
-struct IFBGLUniformVec3F32 : IFBGLUniform { };
-struct IFBGLUniformMat3F32 : IFBGLUniform { };
-struct IFBGLUniformMat4F32 : IFBGLUniform { };
-
 namespace ifb_gl {
 
     const ifb_b8 
     uniform_get_locations_in_shader_program(
-        const IFBGLShaderProgram program,
-        const ifb_u32            uniform_count,
-        const ifb_char**         uniform_names,
-              IFBGLUniform*      uniform_array);
+        const IFBGLIDShaderProgram program,
+        const ifb_u32              uniform_count,
+        const ifb_char**           uniform_names,
+              IFBGLIDUniform*      uniform_array);
 
-    const ifb_b8 uniform_update_u32      (const ifb_u32 uniform_element_count, const IFBGLUniformU32&     uniform_ref, const ifb_u32* uniform_data);
-    const ifb_b8 uniform_update_f32      (const ifb_u32 uniform_element_count, const IFBGLUniformF32&     uniform_ref, const ifb_f32* uniform_data);
-    const ifb_b8 uniform_update_vec2_f32 (const ifb_u32 uniform_element_count, const IFBGLUniformVec2F32& uniform_ref, const ifb_f32* uniform_data);
-    const ifb_b8 uniform_update_vec3_f32 (const ifb_u32 uniform_element_count, const IFBGLUniformVec3F32& uniform_ref, const ifb_f32* uniform_data);
-    const ifb_b8 uniform_update_mat3_f32 (const ifb_u32 uniform_element_count, const IFBGLUniformMat3F32& uniform_ref, const ifb_f32* uniform_data);
-    const ifb_b8 uniform_update_mat4_f32 (const ifb_u32 uniform_element_count, const IFBGLUniformMat4F32& uniform_ref, const ifb_f32* uniform_data);
+    const ifb_b8 uniform_update_u32  (const IFBGLIDUniformU32  uniform, const ifb_u32 count, const ifb_u32* u32);
+    const ifb_b8 uniform_update_f32  (const IFBGLIDUniformF32  uniform, const ifb_u32 count, const ifb_f32* f32);
+    const ifb_b8 uniform_update_vec2 (const IFBGLIDUniformVec2 uniform, const ifb_u32 count, const IFBVec2* vec2);
+    const ifb_b8 uniform_update_vec3 (const IFBGLIDUniformVec3 uniform, const ifb_u32 count, const IFBVec3* vec3);
+    const ifb_b8 uniform_update_mat3 (const IFBGLIDUniformMat3 uniform, const ifb_u32 count, const IFBMat3* mat3);
 };
 
 inline const ifb_b8 
 ifb_gl::uniform_get_locations_in_shader_program(
-    const IFBGLShaderProgram program,
-    const ifb_u32            uniform_count,
-    const ifb_char**         uniform_names,
-          IFBGLUniform*      uniform_array) {
+    const IFBGLIDShaderProgram program,
+    const ifb_u32              uniform_count,
+    const ifb_char**           uniform_names,
+          IFBGLIDUniform*      uniform_array) {
 
     //sanity check
-    ifb_macro_assert(program.id    != GL_ZERO);
+    ifb_macro_assert(program.gl_id != GL_ZERO);
     ifb_macro_assert(uniform_count != 0);
     ifb_macro_assert(uniform_names != NULL);
     ifb_macro_assert(uniform_array != NULL);
 
     //forward declarations
     ifb_b8       result        = true;
-    const GLuint gl_program_id = program.id;
+    const GLuint gl_program_id = program.gl_id;
 
     //loop throught the uniform names and query the program for their location
     for (
@@ -426,18 +391,18 @@ ifb_gl::uniform_get_locations_in_shader_program(
         ++uniform_index) {
 
         //get the current uniform reference and name
-        IFBGLUniform&   uniform_ref  = uniform_array[uniform_index];  
+        IFBGLIDUniform& uniform_ref  = uniform_array[uniform_index];  
         const ifb_char* uniform_name = uniform_names[uniform_index];
 
         //query for the uniform location
-        uniform_ref.location = glGetUniformLocation(gl_program_id,uniform_name);
+        uniform_ref.gl_id = glGetUniformLocation(gl_program_id,uniform_name);
 
         //check for errors        
         const GLenum error = glGetError();
         
         //update the result
-        result &= uniform_ref.location != IFB_GL_INVALID_UNIFORM_LOCATION; // the location should be valid (not -1)
-        result &= error                == GL_NO_ERROR;                     // no opengl errors
+        result &= uniform_ref.gl_id != IFB_GL_INVALID_UNIFORM_LOCATION; // the location should be valid (not -1)
+        result &= error             == GL_NO_ERROR;                     // no opengl errors
     }
 
     //we're done
@@ -446,14 +411,14 @@ ifb_gl::uniform_get_locations_in_shader_program(
 
 inline const ifb_b8 
 ifb_gl::uniform_update_u32(
-    const ifb_u32          uniform_element_count,
-    const IFBGLUniformU32& uniform_ref,     
-    const ifb_u32*         uniform_data) {
+    const IFBGLIDUniformU32 uniform,     
+    const ifb_u32           count,
+    const ifb_u32*          u32) {
 
     glUniform1uiv(
-        uniform_ref.location,
-        uniform_element_count,
-        uniform_data);
+        uniform.gl_id,
+        count,
+        u32);
 
     const GLenum error = glGetError();
 
@@ -462,14 +427,14 @@ ifb_gl::uniform_update_u32(
 
 inline const ifb_b8 
 ifb_gl::uniform_update_f32(
-    const ifb_u32          uniform_element_count,
-    const IFBGLUniformF32& uniform_ref,     
-    const ifb_f32*         uniform_data) {
+    const IFBGLIDUniformF32 uniform,     
+    const ifb_u32           count,
+    const ifb_f32*          f32) {
 
     glUniform1fv(
-        uniform_ref.location,
-        uniform_element_count,
-        uniform_data);
+        uniform.gl_id,
+        count,
+        f32);
 
     const GLenum error = glGetError();
 
@@ -477,15 +442,15 @@ ifb_gl::uniform_update_f32(
 }
 
 inline const ifb_b8 
-ifb_gl::uniform_update_vec2_f32(
-    const ifb_u32              uniform_element_count,
-    const IFBGLUniformVec2F32& uniform_ref,
-    const ifb_f32*             uniform_data) {
+ifb_gl::uniform_update_vec2(
+    const IFBGLIDUniformVec2 uniform,
+    const ifb_u32            count,
+    const IFBVec2*           vec2) {
 
     glUniform2fv(
-        uniform_ref.location,
-        uniform_element_count,
-        uniform_data);
+        uniform.gl_id,
+        count,
+        (ifb_f32*)vec2);
 
     const GLenum error = glGetError();
 
@@ -493,15 +458,15 @@ ifb_gl::uniform_update_vec2_f32(
 }
 
 inline const ifb_b8 
-ifb_gl::uniform_update_vec3_f32(
-    const ifb_u32              uniform_element_count,
-    const IFBGLUniformVec3F32& uniform_ref,
-    const ifb_f32*             uniform_data) {
+ifb_gl::uniform_update_vec3(
+    const IFBGLIDUniformVec3 uniform,
+    const ifb_u32            count,
+    const IFBVec3*           vec3) {
 
     glUniform3fv(
-        uniform_ref.location,
-        uniform_element_count,
-        uniform_data);
+        uniform.gl_id,
+        count,
+        (ifb_f32*)vec3);
 
     const GLenum error = glGetError();
 
@@ -509,33 +474,16 @@ ifb_gl::uniform_update_vec3_f32(
 }
 
 inline const ifb_b8 
-ifb_gl::uniform_update_mat3_f32(
-    const ifb_u32              uniform_element_count,
-    const IFBGLUniformMat3F32& uniform_ref,
-    const ifb_f32*             uniform_data) {
+ifb_gl::uniform_update_mat3(
+    const IFBGLIDUniformMat3 uniform,
+    const ifb_u32            count,
+    const IFBMat3*           mat3) {
 
     glUniformMatrix3fv(
-        uniform_ref.location,
-        uniform_element_count,
+        uniform.gl_id,
+        count,
         GL_FALSE, //no transpose
-        uniform_data);
-
-    const GLenum error = glGetError();
-
-    return(error == GL_NO_ERROR);
-}
-
-inline const ifb_b8 
-ifb_gl::uniform_update_mat4_f32(
-    const ifb_u32              uniform_element_count,
-    const IFBGLUniformMat4F32& uniform_ref,
-    const ifb_f32*             uniform_data) {
-
-    glUniformMatrix4fv(
-        uniform_ref.location,
-        uniform_element_count,
-        GL_FALSE, //no transpose
-        uniform_data);
+        (ifb_f32*)mat3);
 
     const GLenum error = glGetError();
 
@@ -546,39 +494,32 @@ ifb_gl::uniform_update_mat4_f32(
 /* BUFFERS                                                                        */
 /**********************************************************************************/
 
-struct IFBGLBuffer {
-    GLuint gl_buffer_id;
-};
-
-struct IFBGLBufferVertex  : IFBGLBuffer { };
-struct IFBGLBufferElement : IFBGLBuffer { };
-
 namespace ifb_gl {
 
-    const ifb_b8 buffer_create(const ifb_u32 buffer_count, IFBGLBuffer* buffer_array);
+    const ifb_b8 buffer_create(const ifb_u32 buffer_count, IFBGLIDBuffer* buffer_array);
 
-    const ifb_b8 buffer_create_vertex  (const ifb_u32 vertex_buffer_count,  IFBGLBufferVertex*  vertex_buffer_array);
-    const ifb_b8 buffer_create_element (const ifb_u32 element_buffer_count, IFBGLBufferElement* element_buffer_array);
+    const ifb_b8 buffer_create_vertex  (const ifb_u32 vertex_buffer_count,  IFBGLIDBufferVertex*  vertex_buffer_array);
+    const ifb_b8 buffer_create_element (const ifb_u32 element_buffer_count, IFBGLIDBufferElement* element_buffer_array);
 
     const ifb_b8
     buffer_data_upload_vertex(
-        const ifb_u32            vertex_buffer_count,
-        const IFBGLBufferVertex* vertex_buffer_array,
-        const ifb_u32*           vertex_buffer_size_array,
-        const ifb_void*          vertex_buffer_data);
+        const ifb_u32              vertex_buffer_count,
+        const IFBGLIDBufferVertex* vertex_buffer_array,
+        const ifb_u32*             vertex_buffer_size_array,
+        const ifb_void*            vertex_buffer_data);
 
     const ifb_b8
     buffer_data_upload_element(
-        const ifb_u32             element_buffer_count,
-        const IFBGLBufferElement* element_buffer_array,
-        const ifb_u32*            element_buffer_size_array,
-        const ifb_void*           element_buffer_data);
+        const ifb_u32               element_buffer_count,
+        const IFBGLIDBufferElement* element_buffer_array,
+        const ifb_u32*              element_buffer_size_array,
+        const ifb_void*             element_buffer_data);
 };
 
 inline const ifb_b8 
 ifb_gl::buffer_create(
-    const ifb_u32      buffer_count, 
-          IFBGLBuffer* buffer_array) {
+    const ifb_u32        buffer_count, 
+          IFBGLIDBuffer* buffer_array) {
 
     //sanity check
     ifb_macro_assert(buffer_count != 0);
@@ -600,8 +541,8 @@ ifb_gl::buffer_create(
 
 inline const ifb_b8 
 ifb_gl::buffer_create_vertex(
-    const ifb_u32            vertex_buffer_count,
-          IFBGLBufferVertex* vertex_buffer_array) {
+    const ifb_u32              vertex_buffer_count,
+          IFBGLIDBufferVertex* vertex_buffer_array) {
 
     const ifb_b8 result = ifb_gl::buffer_create(
         vertex_buffer_count,
@@ -612,8 +553,8 @@ ifb_gl::buffer_create_vertex(
 
 inline const ifb_b8 
 ifb_gl::buffer_create_element(
-    const ifb_u32             element_buffer_count,
-          IFBGLBufferElement* element_buffer_array) {
+    const ifb_u32               element_buffer_count,
+          IFBGLIDBufferElement* element_buffer_array) {
     
     const ifb_b8 result = ifb_gl::buffer_create(
         element_buffer_count,
@@ -624,10 +565,10 @@ ifb_gl::buffer_create_element(
 
 inline const ifb_b8
 ifb_gl::buffer_data_upload_vertex(
-    const ifb_u32            vertex_buffer_count,
-    const IFBGLBufferVertex* vertex_buffer_array,
-    const ifb_u32*           vertex_buffer_size_array,
-    const ifb_void*          vertex_buffer_data) {
+    const ifb_u32              vertex_buffer_count,
+    const IFBGLIDBufferVertex* vertex_buffer_array,
+    const ifb_u32*             vertex_buffer_size_array,
+    const ifb_void*            vertex_buffer_data) {
 
     //sanity check
     ifb_macro_assert(vertex_buffer_count      != 0);
@@ -646,7 +587,7 @@ ifb_gl::buffer_data_upload_vertex(
         ++vertex_buffer_index) {
 
         //get the buffer id, size, and data
-        const GLuint    buffer_id   = vertex_buffer_array     [vertex_buffer_index].gl_buffer_id;
+        const GLuint    buffer_id   = vertex_buffer_array     [vertex_buffer_index].gl_id;
         const ifb_u32   buffer_size = vertex_buffer_size_array[vertex_buffer_index];
         const ifb_void* buffer_data = (ifb_byte*)vertex_buffer_data + buffer_offset;
 
@@ -673,10 +614,10 @@ ifb_gl::buffer_data_upload_vertex(
 
 inline const ifb_b8
 ifb_gl::buffer_data_upload_element(
-    const ifb_u32             element_buffer_count,
-    const IFBGLBufferElement* element_buffer_array,
-    const ifb_u32*            element_buffer_size_array,
-    const ifb_void*           element_buffer_data) {
+    const ifb_u32               element_buffer_count,
+    const IFBGLIDBufferElement* element_buffer_array,
+    const ifb_u32*              element_buffer_size_array,
+    const ifb_void*             element_buffer_data) {
 
     //sanity check
     ifb_macro_assert(element_buffer_count      != 0);
@@ -695,7 +636,7 @@ ifb_gl::buffer_data_upload_element(
         ++element_buffer_index) {
 
         //get the buffer id, size, and data
-        const GLuint    buffer_id   = element_buffer_array     [element_buffer_index].gl_buffer_id;
+        const GLuint    buffer_id   = element_buffer_array     [element_buffer_index].gl_id;
         const ifb_u32   buffer_size = element_buffer_size_array[element_buffer_index];
         const ifb_void* buffer_data = (ifb_byte*)element_buffer_data + buffer_offset;
 
@@ -723,10 +664,6 @@ ifb_gl::buffer_data_upload_element(
 /**********************************************************************************/
 /* VERTEX                                                                         */
 /**********************************************************************************/
-
-struct IFBGLVertex {
-    GLuint vertex_array_object;
-};
 
 enum IFBGLVertexAttributeType_ {
     IFBGLVertexAttributeType_S8  = 0,
@@ -762,14 +699,14 @@ namespace ifb_gl {
 
     const ifb_b8
     vertex_create(
-        const ifb_u32      vertex_count,
-              IFBGLVertex* vertex_array);
+        const ifb_u32        vertex_count,
+              IFBGLIDVertex* vertex_array);
 
     const ifb_b8
     vertex_enable_attributes(
-        const IFBGLVertex               vertex_ref,
+        const IFBGLIDVertex             vertex_ref,
         const ifb_u32                   vertex_size,
-        const IFBGLBuffer               vertex_buffer,
+        const IFBGLIDBuffer             vertex_buffer,
         const ifb_address               vertex_buffer_offset,
         const ifb_u32                   vertex_attribute_count,
         const IFBGLVertexAttributeType* vertex_attribute_types_array,
@@ -781,8 +718,8 @@ namespace ifb_gl {
 
 inline const ifb_b8
 ifb_gl::vertex_create(
-    const ifb_u32      vertex_count,
-          IFBGLVertex* vertex_array) {
+    const ifb_u32        vertex_count,
+          IFBGLIDVertex* vertex_array) {
 
     //forward declarations
     ifb_b8 result   = true;
@@ -810,9 +747,9 @@ ifb_gl::vertex_create(
 
 inline const ifb_b8
 ifb_gl::vertex_enable_attributes(
-    const IFBGLVertex               vertex,
+    const IFBGLIDVertex             vertex,
     const ifb_u32                   vertex_size,
-    const IFBGLBuffer               vertex_buffer,
+    const IFBGLIDBuffer             vertex_buffer,
     const ifb_address               vertex_buffer_offset,
     const ifb_u32                   vertex_attribute_count,
     const IFBGLVertexAttributeType* vertex_attribute_types_array,
@@ -829,13 +766,13 @@ ifb_gl::vertex_enable_attributes(
     GLenum gl_error = 0;
 
     //bind the vertex array
-    glBindVertexArray(vertex.vertex_array_object);
+    glBindVertexArray(vertex.gl_id);
     ifb_gl_macro_check_error(result,gl_error);
 
     //bind the vertex buffer
     glBindVertexBuffer(
         0,
-        vertex_buffer.gl_buffer_id,
+        vertex_buffer.gl_id,
         vertex_buffer_offset,
         vertex_size);
 

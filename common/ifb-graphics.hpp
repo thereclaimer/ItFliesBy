@@ -14,12 +14,14 @@ struct IFBResolution;
 struct IFBMonitor;
 struct IFBWindow;
 struct IFBColor32;
-struct IFBColor32Normalized;
+struct IFBColor;
 
-typedef ifb_u32 IFBAspectRatioType;
-typedef ifb_u32 IFBResolutionType;
-typedef ifb_u32 IFBWindowFlags;
-typedef ifb_u32 IFBColor32Type;
+typedef ifb_enum IFBAspectRatioType;
+typedef ifb_enum IFBResolutionType;
+typedef ifb_enum IFBWindowFlags;
+typedef ifb_enum IFBColor32Type;
+typedef ifb_enum IFBColorTableIndex;
+
 
 struct IFBIDMonitor : IFBID { };
 
@@ -29,7 +31,7 @@ namespace ifb_graphics {
     // color
     //-----------------------
 
-          ifb_void color_32_normalize (const IFBColor32*    in_color_32_ptr, IFBColor32Normalized* out_color_32_normalized_ptr);
+          ifb_void color_32_normalize (const IFBColor32*    in_color_32_ptr, IFBColor* out_color_32_normalized_ptr);
     const ifb_u32  color_32_hex_value (const IFBColor32Type color_32_type,   IFBColor32*           color_32_ptr);
 
     //-----------------------
@@ -75,7 +77,7 @@ namespace ifb_graphics {
 };
 
 /**********************************************************************************/
-/* COLOR 32                                                                       */
+/* COLOR                                                                          */
 /**********************************************************************************/
 
 enum IFBColor32Type_ {
@@ -91,8 +93,52 @@ struct IFBColor32 {
     ifb_u8 blue;
     ifb_u8 alpha;
 };
+struct IFBColorTable {
+    union {
+        struct {
+            IFBColor red_dark;
+            IFBColor red_light;
+            IFBColor green_dark;
+            IFBColor green_light;
+            IFBColor yellow_dark;
+            IFBColor yellow_light;
+            IFBColor blue_dark;
+            IFBColor blue_light;
+            IFBColor purple_dark;
+            IFBColor purple_light;
+            IFBColor orange_dark;
+            IFBColor orange_light;
+            IFBColor gray_dark;
+            IFBColor gray_light;
+            IFBColor white;
+            IFBColor black;
+        };
+        IFBColor array[IFB_ENGINE_COLOR_TABLE_COUNT];
+    };
+};
 
-struct IFBColor32Normalized {
+enum IFBColorTableIndex_ {
+    IFBColorTableIndex_RedDark     = 0,
+    IFBColorTableIndex_RedLight    = 1,
+    IFBColorTableIndex_GreenDark   = 2,
+    IFBColorTableIndex_GreenLight  = 3,
+    IFBColorTableIndex_YellowDark  = 4,
+    IFBColorTableIndex_YellowLight = 5,
+    IFBColorTableIndex_BlueDark    = 6,
+    IFBColorTableIndex_BlueLight   = 7,
+    IFBColorTableIndex_PurpleDark  = 8,
+    IFBColorTableIndex_PurpleLight = 9,
+    IFBColorTableIndex_OrangeDark  = 10,
+    IFBColorTableIndex_OrangeLight = 11,
+    IFBColorTableIndex_GrayDark    = 12,
+    IFBColorTableIndex_GrayLight   = 13,
+    IFBColorTableIndex_White       = 14,
+    IFBColorTableIndex_Black       = 15
+};
+
+
+
+struct IFBColor {
     ifb_f32 red;
     ifb_f32 green;
     ifb_f32 blue;
@@ -101,13 +147,13 @@ struct IFBColor32Normalized {
 
 inline ifb_void
 ifb_graphics::color_32_normalize(
-        const IFBColor32*            in_color_32_ptr,
-              IFBColor32Normalized* out_color_32_normalized_ptr) {
+        const IFBColor32* in_color_32_ptr,
+              IFBColor*  out_color_ptr) {
 
-    out_color_32_normalized_ptr->red   = in_color_32_ptr->red;
-    out_color_32_normalized_ptr->green = in_color_32_ptr->green;
-    out_color_32_normalized_ptr->blue  = in_color_32_ptr->blue;
-    out_color_32_normalized_ptr->alpha = in_color_32_ptr->alpha;
+    out_color_ptr->red   = in_color_32_ptr->red;
+    out_color_ptr->green = in_color_32_ptr->green;
+    out_color_ptr->blue  = in_color_32_ptr->blue;
+    out_color_ptr->alpha = in_color_32_ptr->alpha;
 }
 
 inline const ifb_u32 
