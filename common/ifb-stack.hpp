@@ -4,7 +4,6 @@
 #include "ifb-types.hpp"
 
 struct IFBStack {
-    ifb_u32 id;
     ifb_u32 start;
     ifb_u32 size;
     ifb_u32 position;

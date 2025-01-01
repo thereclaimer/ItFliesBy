@@ -13,5 +13,7 @@
 #include "ifb-platform.hpp"
 #include "ifb-graphics.hpp"
 #include "ifb-gl.hpp"
+#include "ifb-rendering.hpp"
+#include "ifb-math.hpp"
 
 #endif //IFB_HPP

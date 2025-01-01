@@ -140,5 +140,47 @@ namespace ifb_engine {
     IFBGLViewport* graphics_manager_get_viewport              (const IFBEngineGraphicsManagerMemory& graphics_manager_memory_ref);
 };
 
-  
+/**********************************************************************************/
+/* SHADER MANAGER                                                                 */
+/**********************************************************************************/
+
+struct IFBEngineShaderManagerMemory {
+    ifb_address start;
+    ifb_u32     offset_shader_program_array;
+    ifb_u32     offset_shader_program_tag;
+    IFBIDCommit commit_id;
+};
+
+struct IFBEngineShaderManager {
+    IFBEngineShaderManagerMemory memory;
+    ifb_u32                      shader_program_count_total;
+    ifb_u32                      shader_program_count_committed;
+};
+
+namespace ifb_engine { 
+
+    ifb_void
+    shader_manager_initialize(
+              IFBEngineShaderManager* shader_manager,
+              IFBEngineMemory*        memory,
+        const ifb_u32                 shader_count_max);
+
+    ifb_void
+    shader_manager_commit_shaders(
+              IFBEngineShaderManager*     shader_manager,
+        const ifb_u32                     shader_count,
+        const IFBGLIDShaderStageVertex*   shader_stage_array_vertex,
+        const IFBGLIDShaderStageFragment* shader_stage_array_fragment,
+        const IFBIDTag*                   shader_tag_array,
+              IFBIDShader*                shader_id_array);
+
+    const ifb_b8              shader_manager_use_program        (const IFBEngineShaderManager* shader_manager_ptr, const IFBIDShader shader_id);
+    const IFBIDTag            shader_manager_get_tag_id         (const IFBEngineShaderManager* shader_manager_ptr, const IFBIDShader shader_id);
+    const IFBGLIDShaderProgram  shader_manager_get_shader_program (const IFBEngineShaderManager* shader_manager_ptr, const IFBIDShader shader_id);
+
+    IFBIDTag*                 shader_manager_get_array_tag_id         (const IFBEngineShaderManagerMemory& shader_manager_memory_ref);
+    IFBGLIDShaderProgram*     shader_manager_get_array_shader_program (const IFBEngineShaderManagerMemory& shader_manager_memory_ref);
+
+};
+
 #endif //IFB_ENGINE_INTERNAL_MANAGERS_HPP
