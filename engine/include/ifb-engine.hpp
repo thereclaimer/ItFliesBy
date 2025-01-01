@@ -2,6 +2,8 @@
 #define IFB_ENGINE_HPP
 
 #include <ifb.hpp>
+#include <ifb-math.hpp>
+
 
 /**********************************************************************************/
 /* CONFIG                                                                         */

@@ -5,6 +5,21 @@
 #include <xmmintrin.h>
 
 /**********************************************************************************/
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
+
+struct IFBID;
+struct IFBHND;
+struct IFBGHND;
+
+struct IFBVec2;
+struct IFBVec3;
+struct IFBMat3;
+struct IFBPoint;
+struct IFBLine;
+struct IFBTransform;
+
+/**********************************************************************************/
 /* PRIMITIVES                                                                     */
 /**********************************************************************************/
 
@@ -67,6 +82,69 @@ typedef uint64_t ifb_timems;
 #endif //_MSC_VER
 
 typedef __m128 ifb_xmm_f128;
+
+/**********************************************************************************/
+/* MATH                                                                           */
+/**********************************************************************************/
+
+struct IFBVec2 {
+    union {
+        struct {
+            ifb_f32 x;
+            ifb_f32 y;
+        };
+        ifb_f32 xy[2];
+    };
+};
+
+struct IFBVec3 {
+    union {
+        struct {
+            ifb_f32 x;
+            ifb_f32 y;
+            ifb_f32 z;
+        };
+        ifb_f32 xyz[3];
+    };
+};
+
+struct IFBMat3 {
+    union {
+        struct {
+            ifb_f32 r0c0;
+            ifb_f32 r0c1;
+            ifb_f32 r0c2;
+            ifb_f32 r1c0;
+            ifb_f32 r1c1;
+            ifb_f32 r1c2;
+            ifb_f32 r2c0;
+            ifb_f32 r2c1;
+            ifb_f32 r2c2;
+        };
+        struct {
+            IFBVec3 row_vec_0;
+            IFBVec3 row_vec_1;
+            IFBVec3 row_vec_2;
+        };
+        ifb_f32 array[9];        
+    };
+};
+
+struct IFBTransform {
+    IFBVec2 translation;
+    IFBVec2 scale;
+    ifb_f32 rotation_radians;
+};
+
+struct IFBPoint {
+    ifb_f32 x;
+    ifb_f32 y;
+};
+
+struct IFBLine {
+    IFBPoint point_a;
+    IFBPoint point_b;
+};
 
 /**********************************************************************************/
 /* IDENTIFIERS                                                                    */
