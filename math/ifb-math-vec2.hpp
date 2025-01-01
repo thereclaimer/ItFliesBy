@@ -25,7 +25,7 @@ namespace ifb_math {
 
     void vec2_batch_a_add_b     (IFBVec2* v2_a_add_b,    const ifb_u32 count, const IFBVec2* v2_a,  const IFBVec2* v2_b);
     void vec2_batch_a_sub_b     (IFBVec2* v2_a_sub_b,    const ifb_u32 count, const IFBVec2* v2_a,  const IFBVec2* v2_b);
-    void vec2_batch_a_dot_b     (IFBVec2* v2_a_dot_b,    const ifb_u32 count, const IFBVec2* v2_a,  const IFBVec2* v2_b);
+    void vec2_batch_a_dot_b     (ifb_f32* v2_a_dot_b,    const ifb_u32 count, const IFBVec2* v2_a,  const IFBVec2* v2_b);
     void vec2_batch_a_project_b (IFBVec2* v2_a_proj_b,   const ifb_u32 count, const IFBVec2* v2_a,  const IFBVec2* v2_b);
     void vec2_batch_a_reject_b  (IFBVec2* v2_a_rej_b,    const ifb_u32 count, const IFBVec2* v2_a,  const IFBVec2* v2_b);
     void vec2_batch_scalar      (IFBVec2* v2_scalar,     const ifb_u32 count, const IFBVec2* v2_in, const ifb_f32* scalar);
@@ -82,7 +82,7 @@ ifb_math::vec2_a_project_b(
     const ifb_f32 scalar = v2_a_dot_b / v2_b_dot_b;
 
     //apply the scalar to b to get the projection
-    ifb_math::vec2_scalar(v2_a_proj_b,scalar);
+    ifb_math::vec2_scalar(v2_a_proj_b,v2_a_proj_b, scalar);
 }
 
 inline void
@@ -153,7 +153,7 @@ ifb_math::vec2_batch_a_add_b(
         const IFBVec2& v2_b_i = v2_b[index];
 
         ifb_math::vec2_a_add_b(
-            v2_a_dot_b [index],
+            v2_a_add_b [index],
             v2_a       [index],
             v2_b       [index]);                       
     }
@@ -172,7 +172,7 @@ ifb_math::vec2_batch_a_sub_b(
         ++index) {
     
         ifb_math::vec2_a_sub_b(
-            v2_a_dot_b [index],
+            v2_a_sub_b [index],
             v2_a       [index],
             v2_b       [index]);  
     }

@@ -4,7 +4,6 @@
 #include <math.h>
 
 #include <ifb.hpp>
-#include "ifb-math-types.hpp"
 
 namespace ifb_math {
 
@@ -119,7 +118,7 @@ ifb_math::mat3_translate_scale(
 }
 
 inline void
-ifb_engine::mat3_translate_scale_rotate(
+ifb_math::mat3_translate_scale_rotate(
           IFBMat3& m3, 
     const IFBVec2& translation,
     const IFBVec2& scale, 

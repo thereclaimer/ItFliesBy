@@ -8,9 +8,12 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
+
 struct IFBID;
 struct IFBHND;
 struct IFBGHND;
+
+struct IFBIDTransform; 
 
 struct IFBVec2;
 struct IFBVec3;
@@ -67,6 +70,14 @@ typedef uint32_t   ifb_page;
 
 //time
 typedef uint64_t ifb_timems;
+
+/**********************************************************************************/
+/* IDENTIFIERS                                                                    */
+/**********************************************************************************/
+
+struct IFBID   { ifb_index index;  }; // id            | unique index in a collection
+struct IFBHND  { ifb_u32   offset; }; // handle        | offset from engine memory reservation
+struct IFBGHND { ifb_u32   offset; }; // global handle | offset from engine global stack
 
 /**********************************************************************************/
 /* SIMD                                                                           */
@@ -130,7 +141,10 @@ struct IFBMat3 {
     };
 };
 
-struct IFBTransform {
+struct IFBIDTransform : IFBID { }; 
+
+
+struct IFBTransform : IFBIDTransform {
     IFBVec2 translation;
     IFBVec2 scale;
     ifb_f32 rotation_radians;
@@ -145,13 +159,5 @@ struct IFBLine {
     IFBPoint point_a;
     IFBPoint point_b;
 };
-
-/**********************************************************************************/
-/* IDENTIFIERS                                                                    */
-/**********************************************************************************/
-
-struct IFBID   { ifb_index index;  }; // id            | unique index in a collection
-struct IFBHND  { ifb_u32   offset; }; // handle        | offset from engine memory reservation
-struct IFBGHND { ifb_u32   offset; }; // global handle | offset from engine global stack
 
 #endif //IFB_TYPES_HPP

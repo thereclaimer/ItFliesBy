@@ -183,4 +183,71 @@ namespace ifb_engine {
 
 };
 
+/**********************************************************************************/
+/* TRANSFORM MANAGER                                                              */
+/**********************************************************************************/
+
+#define IFB_ENGINE_TRANSFORM_MANAGER_FLAG_GROUP_UNAVAILABLE 0xFF
+#define IFB_ENGINE_TRANSFORM_MANAGER_FLAG_GROUP_SIZE        8
+
+struct IFBEngineTransformManagerData {
+    IFBVec2*  array_translation;
+    IFBVec2*  array_scale;
+    ifb_f32*  array_rotation_radians;
+    ifb_byte* array_flags;
+};
+
+struct IFBEngineTransformManagerMemory {
+    ifb_address start;
+    ifb_u32     offset_array_translation;
+    ifb_u32     offset_array_scale;
+    ifb_u32     offset_array_rotation_radians;
+    ifb_u32     offset_array_flags;
+    IFBIDCommit commit_id;
+};
+
+struct IFBEngineTransformManager {
+    IFBEngineTransformManagerMemory memory;
+    ifb_u32                         transform_count_max;
+    ifb_u32                         transform_flag_group_count;
+};
+
+namespace ifb_engine {
+
+    void transform_manager_initialize(
+              IFBEngineTransformManager* transform_manager_ptr,
+              IFBEngineMemory*           engine_memory_ptr,
+        const ifb_u32                    transform_count_minimum);
+
+    void transform_manager_reserve             (IFBEngineTransformManager* transform_manager_ptr, const ifb_u32 transform_count,       IFBIDTransform* transform_ids);
+    void transform_manager_release             (IFBEngineTransformManager* transform_manager_ptr, const ifb_u32 transform_count, const IFBIDTransform* transform_ids);
+    void transform_manager_update_translation  (IFBEngineTransformManager* transform_manager_ptr, const ifb_u32 transform_count, const IFBIDTransform* transform_ids, const IFBVec2*      transform_translations);
+    void transform_manager_update_scale        (IFBEngineTransformManager* transform_manager_ptr, const ifb_u32 transform_count, const IFBIDTransform* transform_ids, const IFBVec2*      transform_scales);
+    void transform_manager_update_rotation     (IFBEngineTransformManager* transform_manager_ptr, const ifb_u32 transform_count, const IFBIDTransform* transform_ids, const ifb_f32*      transform_radians);
+    void transform_manager_get_transforms      (IFBEngineTransformManager* transform_manager_ptr, const ifb_u32 transform_count, const IFBIDTransform* transform_ids,       IFBTransform* transforms);
+
+    void transform_manager_flags_find_next_available(
+        const ifb_byte*       flag_array,
+        const ifb_u32         flag_group_count,           
+        const ifb_u32         transform_count,
+              IFBIDTransform* transform_ids);
+    
+    void transform_manager_flags_set(
+              ifb_byte*       flag_array,
+        const ifb_u32         flag_group_count,           
+        const ifb_u32         transform_count,
+        const IFBIDTransform* transform_ids);
+
+    void transform_manager_flags_clear(
+              ifb_byte*       flag_array,
+        const ifb_u32         flag_group_count,           
+        const ifb_u32         transform_count,
+        const IFBIDTransform* transform_ids);
+
+    IFBVec2*  transform_manager_memory_get_array_translation      (const IFBEngineTransformManagerMemory& transform_manager_memory_ref);
+    IFBVec2*  transform_manager_memory_get_array_scale            (const IFBEngineTransformManagerMemory& transform_manager_memory_ref);
+    ifb_f32*  transform_manager_memory_get_array_rotation_radians (const IFBEngineTransformManagerMemory& transform_manager_memory_ref);
+    ifb_byte* transform_manager_memory_get_array_flags            (const IFBEngineTransformManagerMemory& transform_manager_memory_ref);
+};
+
 #endif //IFB_ENGINE_INTERNAL_MANAGERS_HPP

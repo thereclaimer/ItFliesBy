@@ -23,7 +23,6 @@ struct IFBIDUniformVec3        : IFBID { };
 struct IFBIDUniformMat3        : IFBID { };
 struct IFBIDUniformColor       : IFBID { };
 struct IFBIDUniformSpriteAtlas : IFBID { };
-struct IFBIDTransform          : IFBID { };
 
 //--------------------
 // structs

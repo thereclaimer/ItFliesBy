@@ -26,6 +26,7 @@
 #include "ifb-engine-manager-tag.cpp"
 #include "ifb-engine-manager-graphics.cpp"
 #include "ifb-engine-manager-shader.cpp"
+#include "ifb-engine-manager-transform.cpp"
 
 //memory
 #include "ifb-engine-memory.cpp"
