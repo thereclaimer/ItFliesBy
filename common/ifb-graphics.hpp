@@ -1,10 +1,532 @@
-#ifndef IFB_ENGINE_FONT_UI_HPP
-#define IFB_ENGINE_FONT_UI_HPP
+#ifndef IFB_GRAPHICS_HPP
+#define IFB_GRAPHICS_HPP
 
 #include "ifb-types.hpp"
-#include "ifb-scopes.hpp"
+#include "ifb-macros.hpp"
 
-ifb_global const ifb_char IFB_FONT_UI_SEGOEUI[883035+1] =
+/**********************************************************************************/
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
+
+struct IFBDimensions;
+struct IFBPosition;
+struct IFBResolution;
+struct IFBMonitor;
+struct IFBWindow;
+struct IFBColor32;
+struct IFBColor;
+
+typedef ifb_enum IFBAspectRatioType;
+typedef ifb_enum IFBResolutionType;
+typedef ifb_enum IFBWindowFlags;
+typedef ifb_enum IFBColor32Type;
+typedef ifb_enum IFBColorTableIndex;
+
+
+struct IFBIDMonitor : IFBID { };
+
+namespace ifb_graphics {
+
+    //-----------------------
+    // color
+    //-----------------------
+
+          ifb_void color_32_normalize (const IFBColor32*    in_color_32_ptr, IFBColor* out_color_32_normalized_ptr);
+    const ifb_u32  color_32_hex_value (const IFBColor32Type color_32_type,   IFBColor32*           color_32_ptr);
+
+    //-----------------------
+    // aspect ratio
+    //-----------------------
+
+    const IFBAspectRatioType aspect_ratio_lookup      (const ifb_u32 width, const ifb_u32 height);
+    const ifb_cstr           aspect_ratio_description (const IFBAspectRatioType aspect_ratio_type);
+
+    //-----------------------
+    // resolution
+    //-----------------------
+
+    const ifb_cstr          resolution_description                    (const IFBResolutionType  resolution_type);
+    const IFBResolutionType resolution_default_type_from_aspect_ratio (const IFBAspectRatioType aspect_ratio_type);
+          ifb_void          resolution_dimensions                     (const IFBResolutionType  in_resolution_type,   IFBResolution& out_resolution_ref);
+          ifb_void          resolution_default_from_aspect_ratio      (const IFBAspectRatioType in_aspect_ratio_type, IFBResolution& out_resolution_ref);
+
+    //-----------------------
+    // monitor
+    //-----------------------
+
+    const ifb_b8      monitor_has_primary_origin (const IFBMonitor* monitor_ptr);
+    const IFBMonitor* monitor_find_primary       (const ifb_u32 monitor_count, const IFBMonitor* monitor_array_ptr);
+
+    //-----------------------
+    // window
+    //-----------------------
+
+          ifb_void window_set_resolution_based_on_monitor_aspect_ratio (IFBWindow* window_ptr, const IFBMonitor* monitor_ptr);
+          ifb_void window_set_position_to_monitor_center               (IFBWindow* window_ptr, const IFBMonitor* monitor_ptr);
+    const ifb_b8   window_flags_is_visible                             (const IFBWindowFlags window_flags);
+    const ifb_b8   window_flags_use_imgui                              (const IFBWindowFlags window_flags);
+    const ifb_b8   window_flags_use_opengl                             (const IFBWindowFlags window_flags);
+
+    //-----------------------
+    // font
+    //-----------------------
+
+    const ifb_char* font_segoeui_data (ifb_void);
+    const ifb_size  font_segoeui_size (ifb_void);
+
+};
+
+/**********************************************************************************/
+/* COLOR                                                                          */
+/**********************************************************************************/
+
+enum IFBColor32Type_ {
+    IFBColor32Type_RGBA = 0,
+    IFBColor32Type_ARGB = 1,
+    IFBColor32Type_ABGR = 2,
+    IFBColor32Type_BGRA = 3
+};
+
+struct IFBColor {
+    ifb_f32 red;
+    ifb_f32 green;
+    ifb_f32 blue;
+    ifb_f32 alpha;
+};
+
+struct IFBColor32 {
+    ifb_u8 red;
+    ifb_u8 green;
+    ifb_u8 blue;
+    ifb_u8 alpha;
+};
+
+#define IFB_ENGINE_COLOR_TABLE_COUNT 16
+
+struct IFBColorTable {
+    union {
+        struct {
+            IFBColor red_dark;
+            IFBColor red_light;
+            IFBColor green_dark;
+            IFBColor green_light;
+            IFBColor yellow_dark;
+            IFBColor yellow_light;
+            IFBColor blue_dark;
+            IFBColor blue_light;
+            IFBColor purple_dark;
+            IFBColor purple_light;
+            IFBColor orange_dark;
+            IFBColor orange_light;
+            IFBColor gray_dark;
+            IFBColor gray_light;
+            IFBColor white;
+            IFBColor black;
+        };
+        IFBColor array[IFB_ENGINE_COLOR_TABLE_COUNT];
+    };
+};
+
+enum IFBColorTableIndex_ {
+    IFBColorTableIndex_RedDark     = 0,
+    IFBColorTableIndex_RedLight    = 1,
+    IFBColorTableIndex_GreenDark   = 2,
+    IFBColorTableIndex_GreenLight  = 3,
+    IFBColorTableIndex_YellowDark  = 4,
+    IFBColorTableIndex_YellowLight = 5,
+    IFBColorTableIndex_BlueDark    = 6,
+    IFBColorTableIndex_BlueLight   = 7,
+    IFBColorTableIndex_PurpleDark  = 8,
+    IFBColorTableIndex_PurpleLight = 9,
+    IFBColorTableIndex_OrangeDark  = 10,
+    IFBColorTableIndex_OrangeLight = 11,
+    IFBColorTableIndex_GrayDark    = 12,
+    IFBColorTableIndex_GrayLight   = 13,
+    IFBColorTableIndex_White       = 14,
+    IFBColorTableIndex_Black       = 15
+};
+
+inline ifb_void
+ifb_graphics::color_32_normalize(
+        const IFBColor32* in_color_32_ptr,
+              IFBColor*  out_color_ptr) {
+
+    out_color_ptr->red   = in_color_32_ptr->red;
+    out_color_ptr->green = in_color_32_ptr->green;
+    out_color_ptr->blue  = in_color_32_ptr->blue;
+    out_color_ptr->alpha = in_color_32_ptr->alpha;
+}
+
+inline const ifb_u32 
+ifb_graphics::color_32_hex_value(
+    const IFBColor32Type color_32_type, 
+          IFBColor32*    color_32_ptr) {
+
+    ifb_u32 color_32_hex;
+    
+    switch (color_32_type) {
+
+        case IFBColor32Type_RGBA: color_32_hex = (color_32_ptr->red   << 24) | (color_32_ptr->green << 16) | (color_32_ptr->blue  << 8) | (color_32_ptr->alpha); break;
+        case IFBColor32Type_ARGB: color_32_hex = (color_32_ptr->alpha << 24) | (color_32_ptr->red   << 16) | (color_32_ptr->green << 8) | (color_32_ptr->blue);  break;
+        case IFBColor32Type_ABGR: color_32_hex = (color_32_ptr->alpha << 24) | (color_32_ptr->blue  << 16) | (color_32_ptr->green << 8) | (color_32_ptr->red);   break;
+        case IFBColor32Type_BGRA: color_32_hex = (color_32_ptr->blue  << 24) | (color_32_ptr->green << 16) | (color_32_ptr->red   << 8) | (color_32_ptr->alpha); break;
+    }
+
+    return(color_32_hex);
+}
+
+/**********************************************************************************/
+/* SIZES AND COORDINATES                                                          */
+/**********************************************************************************/
+
+struct IFBDimensions {
+    ifb_u32 width;
+    ifb_u32 height;
+};
+
+struct IFBPosition {
+    ifb_u32 x;
+    ifb_u32 y;
+};
+
+/**********************************************************************************/
+/* ASPECT RATIO                                                                   */
+/**********************************************************************************/
+
+enum IFBAspectRatioType_ {
+    IFBAspectRatioType_16_x_9  = 0,
+    IFBAspectRatioType_16_x_10 = 1,
+    IFBAspectRatioType_21_x_9  = 2,
+    IFBAspectRatioType_4_x_3   = 3,
+    IFBAspectRatioType_3_x_2   = 4,
+    IFBAspectRatioType_Custom  = 5,
+    IFBAspectRatioType_Count   = 6
+};
+
+#define IFB_ASPECT_RATIO_TYPE_DEFAULT IFBAspectRatioType_Custom
+
+const ifb_f32 IFB_ASPECT_RATIO_VALUE_LOOKUP[] = {
+    16.0f /  9.0f, // IFBAspectRatioType_16_x_9
+    16.0f / 10.0f, // IFBAspectRatioType_16_x_10
+    21.0f /  9.0f, // IFBAspectRatioType_21_x_9
+     4.0f /  3.0f, // IFBAspectRatioType_4_x_3
+     3.0f /  2.0f  // IFBAspectRatioType_3_x_2
+};
+
+const ifb_cstr IFB_ASPECT_RATIO_DESCRIPTION_LOOKUP[] = {
+    "16:9",   // IFBAspectRatio_16_x_9
+    "16:10",  // IFBAspectRatio_16_x_10
+    "21:9",   // IFBAspectRatio_21_x_9
+    "4:3",    // IFBAspectRatio_4_x_3
+    "3:2",    // IFBAspectRatio_3_x_2
+    "Custom"  // IFBAspectRatio_Custom
+};
+
+inline const IFBAspectRatioType
+ifb_graphics::aspect_ratio_lookup(
+    const ifb_u32 width,
+    const ifb_u32 height) {
+
+    const ifb_f32 aspect_ratio_value = (ifb_f32)width / (ifb_f32)height;
+
+    for (
+        IFBAspectRatioType ratio_index = 0;
+        ratio_index < IFBAspectRatioType_Count;
+        ++ratio_index) {
+
+        const ifb_f32 lookup = IFB_ASPECT_RATIO_VALUE_LOOKUP[ratio_index]; 
+
+        if (aspect_ratio_value == lookup) {
+            return(ratio_index);
+        }                    
+    }
+
+    return(IFB_ASPECT_RATIO_TYPE_DEFAULT);
+}
+
+inline const ifb_cstr
+ifb_graphics::aspect_ratio_description(
+    const IFBAspectRatioType aspect_ratio_type) {
+
+    const ifb_cstr aspect_ratio_description = (aspect_ratio_type >= IFBAspectRatioType_Count)
+        ? IFB_ASPECT_RATIO_DESCRIPTION_LOOKUP[IFB_ASPECT_RATIO_TYPE_DEFAULT]
+        : IFB_ASPECT_RATIO_DESCRIPTION_LOOKUP[aspect_ratio_type];
+
+    return(aspect_ratio_description);
+}
+
+/**********************************************************************************/
+/* RESOLUTION                                                                     */
+/**********************************************************************************/
+
+enum IFBResolutionType_ {
+	IFBResolutionType_16_x_9_HD_720p_1280_x_720             = 0,
+	IFBResolutionType_16_x_9_Full_HD_1080p_1920_x_1080      = 1,
+	IFBResolutionType_16_x_9_Quad_HD_1440p_2560_x_1440      = 2,
+	IFBResolutionType_16_x_9_Ultra_HD_4K_3840_x_2160        = 3,
+	IFBResolutionType_16_x_9_Ultra_HD_8K_7680_x_4320        = 4,
+	IFBResolutionType_16_x_9_HD_Variant_0_1600_x_900        = 5,
+	IFBResolutionType_16_x_9_HD_Variant_1_1366_x_768        = 6,
+    IFBResolutionType_16_x_10_WXGA_1280_x_800               = 7,
+    IFBResolutionType_16_x_10_WSXGA_plus_1680_x_1050        = 8,
+    IFBResolutionType_16_x_10_WUXGA_1920_x_1200             = 9,
+    IFBResolutionType_16_x_10_WQXGA_2560_x_1600             = 10,
+    IFBResolutionType_16_x_10_4K_UW_3840_x_2400             = 11,
+    IFBResolutionType_21_x_9_Ultrawide_Full_HD_2560_x_1080  = 12,
+    IFBResolutionType_21_x_9_Ultrawide_Quad_HD_3440_x_1440  = 13,
+    IFBResolutionType_21_x_9_Ultrawide_Variants_3840_x_1600 = 14,
+    IFBResolutionType_21_x_9_Ultrawide_4K_5120_x_2160       = 15,
+    IFBResolutionType_4_x_3_VGA_640_x_480                   = 16,	
+    IFBResolutionType_4_x_3_SVGA_800_x_600                  = 17,	
+    IFBResolutionType_4_x_3_XGA_1024_x_768                  = 18,	
+    IFBResolutionType_4_x_3_SXGA_1280_x_960                 = 19,	
+    IFBResolutionType_4_x_3_UXGA_1600_x_1200                = 20,
+    IFBResolutionType_Custom                                = 21,	
+    IFBResolutionType_Count                                 = 22,	
+};
+
+struct IFBResolution {
+    IFBResolutionType type;
+    ifb_u32           width;
+    ifb_u32           height;
+};
+
+#define IFB_RESOLUTION_TYPE_DEFAULT_FOR_ASPECT_RATIO_16_x_9   IFBResolutionType_16_x_9_Full_HD_1080p_1920_x_1080
+#define IFB_RESOLUTION_TYPE_DEFAULT_FOR_ASPECT_RATIO_16_x_10  IFBResolutionType_16_x_10_WUXGA_1920_x_1200
+#define IFB_RESOLUTION_TYPE_DEFAULT_FOR_ASPECT_RATIO_21_x_9   IFBResolutionType_16_x_9_Full_HD_1080p_1920_x_1080
+#define IFB_RESOLUTION_TYPE_DEFAULT_FOR_ASPECT_RATIO_4_x_3    IFBResolutionType_4_x_3_XGA_1024_x_768
+#define IFB_RESOLUTION_TYPE_DEFAULT                           IFBResolutionType_4_x_3_XGA_1024_x_768
+
+const IFBResolutionType_ IFB_RESOLUTION_TYPE_DEFAULT_FOR_ASPECT_RATIO_LOOKUP[] = {
+    IFB_RESOLUTION_TYPE_DEFAULT_FOR_ASPECT_RATIO_16_x_9,  // IFBAspectRatioType_16_x_9
+    IFB_RESOLUTION_TYPE_DEFAULT_FOR_ASPECT_RATIO_16_x_10, // IFBAspectRatioType_16_x_10
+    IFB_RESOLUTION_TYPE_DEFAULT_FOR_ASPECT_RATIO_21_x_9,  // IFBAspectRatioType_21_x_9
+    IFB_RESOLUTION_TYPE_DEFAULT_FOR_ASPECT_RATIO_4_x_3    // IFBAspectRatioType_4_x_3
+};
+
+const ifb_cstr IFB_RESOLUTION_DESCRIPTION_LOOKUP[] = {
+    "HD (720p)",                  // IFBResolutionType_16_x_9_HD_720p_1280_x_720
+    "Full HD (1080p)",            // IFBResolutionType_16_x_9_Full_HD_1080p_1920_x_1080
+    "Quad HD (QHD, 1440p)",       // IFBResolutionType_16_x_9_Quad_HD_1440p_2560_x_1440
+    "Ultra HD (4K)",              // IFBResolutionType_16_x_9_Ultra_HD_4K_3840_x_2160
+    "8K UHD",                     // IFBResolutionType_16_x_9_Ultra_HD_8K_7680_x_4320
+    "HD Variant 0",               // IFBResolutionType_16_x_9_HD_Variant_0_1600_x_900
+    "HD Variant 1",               // IFBResolutionType_16_x_9_HD_Variant_1_1366_x_768
+    "WXGA",                       // IFBResolutionType_16_x_10_WXGA_1280_x_800
+    "WSXGA+",                     // IFBResolutionType_16_x_10_WSXGA_plus_1680_x_1050
+    "WUXGA",                      // IFBResolutionType_16_x_10_WUXGA_1920_x_1200
+    "WQXGA",                      // IFBResolutionType_16_x_10_WQXGA_2560_x_1600
+    "4K UW (Ultra-Wide)",         // IFBResolutionType_16_x_10_4K_UW_3840_x_2400
+    "Ultrawide Full HD (UW-FHD)", // IFBResolutionType_21_x_9_Ultrawide_Full_HD_2560_x_1080
+    "Ultrawide Quad HD (UW-QHD)", // IFBResolutionType_21_x_9_Ultrawide_Quad_HD_3440_x_1440
+    "Ultrawide Variants",         // IFBResolutionType_21_x_9_Ultrawide_Variants_3840_x_1600
+    "Ultrawide 4K",               // IFBResolutionType_21_x_9_Ultrawide_4K_5120_x_2160
+    "VGA",                        // IFBResolutionType_4_x_3_VGA_640_x_480
+    "SVGA",                       // IFBResolutionType_4_x_3_SVGA_800_x_600
+    "XGA",                        // IFBResolutionType_4_x_3_XGA_1024_x_768
+    "SXGA (Standard)",            // IFBResolutionType_4_x_3_SXGA_1280_x_960
+    "UXGA"                        // IFBResolutionType_4_x_3_UXGA_1600_x_1200
+};
+
+const IFBResolution IFB_RESOLUTION_LOOKUP[] = {
+    { IFBResolutionType_16_x_9_HD_720p_1280_x_720,             1280, 720  },
+    { IFBResolutionType_16_x_9_Full_HD_1080p_1920_x_1080,      1920, 1080 },
+    { IFBResolutionType_16_x_9_Quad_HD_1440p_2560_x_1440,      2560, 1440 },
+    { IFBResolutionType_16_x_9_Ultra_HD_4K_3840_x_2160,        3840, 2160 },
+    { IFBResolutionType_16_x_9_Ultra_HD_8K_7680_x_4320,        7680, 4320 },
+    { IFBResolutionType_16_x_9_HD_Variant_0_1600_x_900,        1600, 900  },
+    { IFBResolutionType_16_x_9_HD_Variant_1_1366_x_768,        1366, 768  },
+    { IFBResolutionType_16_x_10_WXGA_1280_x_800,               1280, 800  },
+    { IFBResolutionType_16_x_10_WSXGA_plus_1680_x_1050,        1680, 1050 },
+    { IFBResolutionType_16_x_10_WUXGA_1920_x_1200,             1920, 1200 },
+    { IFBResolutionType_16_x_10_WQXGA_2560_x_1600,             2560, 1600 },
+    { IFBResolutionType_16_x_10_4K_UW_3840_x_2400,             3840, 2400 },
+    { IFBResolutionType_21_x_9_Ultrawide_Full_HD_2560_x_1080,  2560, 1080 },
+    { IFBResolutionType_21_x_9_Ultrawide_Quad_HD_3440_x_1440,  3440, 1440 },
+    { IFBResolutionType_21_x_9_Ultrawide_Variants_3840_x_1600, 3840, 1600 },
+    { IFBResolutionType_21_x_9_Ultrawide_4K_5120_x_2160,       5120, 2160 },
+    { IFBResolutionType_4_x_3_VGA_640_x_480,                   640,  480  },
+    { IFBResolutionType_4_x_3_SVGA_800_x_600,                  800,  600  },
+    { IFBResolutionType_4_x_3_XGA_1024_x_768,                  1024, 768  },
+    { IFBResolutionType_4_x_3_SXGA_1280_x_960,                 1280, 960  },
+    { IFBResolutionType_4_x_3_UXGA_1600_x_1200,                1600, 1200 }
+};
+
+inline const ifb_cstr
+ifb_graphics::resolution_description(
+    const IFBResolutionType resolution_type) {
+
+    const ifb_cstr resolution_description = (resolution_type >= IFBResolutionType_Count) 
+        ? IFB_RESOLUTION_DESCRIPTION_LOOKUP[IFB_RESOLUTION_TYPE_DEFAULT] 
+        : IFB_RESOLUTION_DESCRIPTION_LOOKUP[resolution_type];
+
+    return(resolution_description);
+}
+
+inline const IFBResolutionType
+ifb_graphics::resolution_default_type_from_aspect_ratio(
+    const IFBAspectRatioType aspect_ratio_type) {
+
+    const IFBResolutionType resolution_type = (aspect_ratio_type >= IFBAspectRatioType_Count)
+        ? IFB_RESOLUTION_TYPE_DEFAULT
+        : IFB_RESOLUTION_TYPE_DEFAULT_FOR_ASPECT_RATIO_LOOKUP[aspect_ratio_type];      
+
+    return(resolution_type);
+}
+
+inline ifb_void
+ifb_graphics::resolution_dimensions(
+    const IFBResolutionType in_resolution_type,
+            IFBResolution&   out_resolution_ref) {
+
+    out_resolution_ref = (in_resolution_type >= IFBResolutionType_Count)
+        ? IFB_RESOLUTION_LOOKUP[IFB_RESOLUTION_TYPE_DEFAULT]
+        : IFB_RESOLUTION_LOOKUP[in_resolution_type];
+}
+
+inline ifb_void
+ifb_graphics::resolution_default_from_aspect_ratio(
+    const IFBAspectRatioType  in_aspect_ratio_type,        
+          IFBResolution&     out_resolution_ref) {
+
+    const IFBResolutionType resolution_type = ifb_graphics::resolution_default_type_from_aspect_ratio(in_aspect_ratio_type);
+
+    out_resolution_ref = (resolution_type >= IFBResolutionType_Count)
+        ? IFB_RESOLUTION_LOOKUP[IFB_RESOLUTION_TYPE_DEFAULT]
+        : IFB_RESOLUTION_LOOKUP[resolution_type];
+}
+
+/**********************************************************************************/
+/* MONITOR                                                                        */
+/**********************************************************************************/
+
+struct IFBMonitor {
+    IFBPosition        desktop_origin;
+    IFBDimensions      dimensions;
+    IFBAspectRatioType aspect_ratio;
+    ifb_u32            refresh_hz;
+    ifb_handle         platform_handle;
+    IFBIDMonitor       id;
+};
+
+
+inline const ifb_b8
+ifb_graphics::monitor_has_primary_origin(
+    const IFBMonitor* monitor_ptr) {
+
+    // we have found the primary origin if the coordinates are (0,0)
+    const ifb_b8 result = (
+        monitor_ptr->desktop_origin.x == 0 &&
+        monitor_ptr->desktop_origin.y == 0);
+
+    return(result);
+}
+
+inline const IFBMonitor*
+ifb_graphics::monitor_find_primary(
+    const ifb_u32     monitor_count,
+    const IFBMonitor* monitor_array_ptr) {
+
+    //sanity check
+    if (
+        monitor_count     == 0 ||
+        monitor_array_ptr == NULL) {
+
+        return(NULL);
+    }
+
+    ifb_b8  primary_monitor_found = false;
+    ifb_u32 primary_monitor_index = 0;
+
+    //iterate through the monitor array and find the primary
+    for (
+        ifb_u32 monitor_index = 0;
+                monitor_index < monitor_count;
+                ++monitor_index) {
+            
+        if (ifb_graphics::monitor_has_primary_origin(&monitor_array_ptr[monitor_index])) {
+            
+            // there should only be one, or something was set up incorrectly
+            if (primary_monitor_found) {
+                return(NULL);
+            }
+
+            primary_monitor_found = true;
+            primary_monitor_index = monitor_index;
+        }
+    }
+
+    const IFBMonitor* primary_monitor_ptr = primary_monitor_found
+        ? &monitor_array_ptr[primary_monitor_index]
+        : NULL;
+
+    return(primary_monitor_ptr);
+}
+
+/**********************************************************************************/
+/* WINDOW                                                                         */
+/**********************************************************************************/
+
+enum IFBWindowFlags_ {
+    IFBWindowFlags_None    = 0,
+    IFBWindowFlags_Visible = (1 << 0),
+    IFBWindowFlags_ImGui   = (1 << 1),
+    IFBWindowFlags_OpenGL  = (1 << 2)
+};
+
+struct IFBWindow {
+    IFBColor32Type     color_type;
+    IFBResolution      resolution;
+    IFBWindowFlags     flags;
+    IFBPosition        position;
+    IFBAspectRatioType aspect_ratio;
+    IFBIDMonitor       monitor_id;
+};
+
+inline ifb_void
+ifb_graphics::window_set_resolution_based_on_monitor_aspect_ratio(
+          IFBWindow*  window_ptr,
+    const IFBMonitor* monitor_ptr) {
+
+    if (!window_ptr || !monitor_ptr) {
+        return;
+    }
+
+    if (monitor_ptr->aspect_ratio == IFBAspectRatioType_Custom) {
+        window_ptr->resolution.type   = IFBResolutionType_Custom;
+        window_ptr->resolution.width  = monitor_ptr->dimensions.width;
+        window_ptr->resolution.height = monitor_ptr->dimensions.height;
+        return;
+    }
+
+    ifb_graphics::resolution_default_from_aspect_ratio(
+        monitor_ptr->aspect_ratio,
+        window_ptr->resolution);
+}
+
+inline ifb_void 
+ifb_graphics::window_set_position_to_monitor_center(
+          IFBWindow*  window_ptr,
+    const IFBMonitor* monitor_ptr) {
+
+    if (!window_ptr || !monitor_ptr) {
+        return;
+    }
+
+    //calculate the position for centering the window
+    window_ptr->position.x = (monitor_ptr->dimensions.width  - window_ptr->resolution.width)  / 2;
+    window_ptr->position.y = (monitor_ptr->dimensions.height - window_ptr->resolution.height) / 2;
+}
+
+inline const ifb_b8 ifb_graphics::window_flags_is_visible (const IFBWindowFlags window_flags) { return(window_flags & IFBWindowFlags_Visible); }
+inline const ifb_b8 ifb_graphics::window_flags_use_imgui  (const IFBWindowFlags window_flags) { return(window_flags & IFBWindowFlags_ImGui);   }
+inline const ifb_b8 ifb_graphics::window_flags_use_opengl (const IFBWindowFlags window_flags) { return(window_flags & IFBWindowFlags_OpenGL);  }
+
+/**********************************************************************************/
+/* FONT                                                                           */
+/**********************************************************************************/
+
+ifb_global const ifb_char IFB_FONT_SEGOEUI[883035+1] =
     "7])#######dSZ>U'/###I),##iK$iL6s[D$;/fd=)JQQ`&jll&-0$##sp>t8j_<3Zb.ql&Fj)##lW-h<$bq`Zq0ql&Mw>>#(r-e=4brjE@+SM'as*##*sq*>SQtt0Zt(##b6+##Yk=:9"
     "(m&)*7@.Q'[L*XCSipe=FoEWBG/(##j([w't%_d>.K'&IxAS9#Z2i8#mNK+C@f8P3)FH7#&d.:#2Wq+C[1riL`fE:#+?D,#aS0jC],uU:Rt).#TTW$Mtk]5Di##/#993jLi6c^%3=HkE"
     "'uVHW?AaY#8vmo%8p*:C7a56R)P)##A5D>#+Y>UC2cv<#,N(##^WGwKf'TqL#/WO'wUaw'Dbbw'9.%KD1TjAAOqa'#8G+.#c?iQE6Jk_e_UA:#-ru=#hijkE]r*'@k469#1$_sL]=m3F"
@@ -6314,4 +6836,7 @@ ifb_global const ifb_char IFB_FONT_UI_SEGOEUI[883035+1] =
     "RJ:;$?q,)*tw8w>.KUN009dMpi&3mfpowgL]/Z<-P'LW.-rZS%x3RA-AcwA-)(R2Mq-AA-s4pr-[LOgL,ecgLH4$##%YGs-#WajL`$-/C=wLqL/rcW-SZc_&)e^w'/6(:B$RCn9=jL:1"
     "jhZlEqrt1F@wBNC#_Cn9;<rqLveWWB`*(XBx)WkD8i#&1R?,nZxK(##";
 
-#endif //IFB_ENGINE_FONT_UI_HPP
+inline const ifb_char* ifb_graphics::font_segoeui_data(ifb_void) { return(IFB_FONT_SEGOEUI); }
+inline const ifb_size  ifb_graphics::font_segoeui_size(ifb_void) { return(sizeof(IFB_FONT_SEGOEUI));}
+
+#endif //IFB_GRAPHICS_HPP

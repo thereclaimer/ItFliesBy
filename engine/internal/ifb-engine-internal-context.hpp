@@ -4,92 +4,81 @@
 #include "ifb-engine.hpp"
 #include "ifb-engine-internal-platform.hpp"
 #include "ifb-engine-internal-allocators.hpp"
+#include "ifb-engine-internal-devtools.hpp"
 
 /**********************************************************************************/
-/* CONTEXT STACK                                                                  */
+/* MANAGERS                                                                       */
 /**********************************************************************************/
 
-#ifndef IFB_ENGINE_CONFIG_CONTEXT_STACK_SIZE
-    #define IFB_ENGINE_CONFIG_CONTEXT_STACK_SIZE ifb_macro_size_kilobytes(64)
-#endif
+struct IFBGHNDEngineTagManager      : IFBGHND { };
+struct IFBGHNDEngineArenaManager    : IFBGHND { };
+struct IFBGHNDEngineGraphicsManager : IFBGHND { };
 
-struct IFBEngineContextStack {
-    ifb_u32  size;
-    ifb_u32  position;
-    ifb_byte memory[IFB_ENGINE_CONFIG_CONTEXT_STACK_SIZE];
+struct IFBEngineContextManagers {
+    struct {
+        IFBGHNDEngineTagManager      tag_manager;
+        IFBGHNDEngineArenaManager    arena_manager;
+        IFBGHNDEngineGraphicsManager graphics_manager;
+    } handles;
 };
 
 namespace ifb_engine {
 
-    const ifb_void context_stack_push         (IFBHND& ref_handle, const ifb_u32 size);
-    const ifb_void context_stack_push_aligned (IFBHND& ref_handle, const ifb_u32 size, const ifb_u32 alignment);
-    const ifb_ptr  context_stack_get_pointer  (const IFBHND& ref_handle);
-};
-
-#define ifb_engine_context_push_struct(handle,type) ifb_engine::context_stack_push_aligned(handle,sizeof(type),alignof(type))
-
-/**********************************************************************************/
-/* CONTEXT HANDLES                                                                */
-/**********************************************************************************/
-
-struct IFBHNDUserInput          : IFBHND { };
-struct IFBHNDEngineMemory       : IFBHND { };
-struct IFBHNDEngineTagManager   : IFBHND { };
-struct IFBHNDEngineArenaManager : IFBHND { };
-struct IFBHNDEngineConfig       : IFBHND { };
-
-struct IFBEngineContextHandles {
-    IFBHNDUserInput          user_input;
-    IFBHNDEngineMemory       memory;
-    IFBHNDEngineTagManager   tag_manager;
-    IFBHNDEngineArenaManager arena_manager;
-    IFBHNDEngineConfig       config;
-};
-
-namespace ifb_engine {
-
-    ifb_void context_handles_create_all(ifb_void);
-
-    IFBUserInput*          context_get_user_input    (ifb_void);
-    IFBEngineMemory*       context_get_memory        (ifb_void);
-    IFBEngineTagManager*   context_get_tag_manager   (ifb_void);
-    IFBEngineArenaManager* context_get_arena_manager (ifb_void);
-    IFBEngineConfig*       context_get_config        (ifb_void);
+    ifb_void
+    context_managers_create_all(
+              IFBEngineContextManagers* managers_ptr, 
+              IFBEngineMemory*          memory_ptr, 
+        const IFBEngineConfig*          config_ptr);
+        
+    IFBEngineTagManager*      context_managers_get_tag_manager      (const IFBEngineContextManagers* managers_ptr);
+    IFBEngineArenaManager*    context_managers_get_arena_manager    (const IFBEngineContextManagers* managers_ptr);
+    IFBEngineGraphicsManager* context_managers_get_graphics_manager (const IFBEngineContextManagers* managers_ptr);
 };
 
 /**********************************************************************************/
-/* CONTEXT STATS                                                                  */
+/* CONTEXT CORE                                                                   */
 /**********************************************************************************/
 
-struct IFBEngineContextStats {
-    IFBEngineState     state;
-    ifb_timems         time_initialized;
+struct IFBEngineContextCore {
+    IFBEngineState   state;
+    ifb_timems       time_initialized;
+    ifb_u32          frames_per_second_target;
 };
 
 /**********************************************************************************/
 /* CONTEXT                                                                        */
 /**********************************************************************************/
 
+struct IFBGHNDEngineContextManagers  : IFBGHND { };
+struct IFBGHNDEngineContextCore      : IFBGHND { }; 
+struct IFBGHNDEngineDevTools         : IFBGHND { };
+
 struct IFBEngineContext {
-    IFBEngineContextHandles handles;
-    IFBEngineContextStack   stack;
-    IFBEngineContextStats   stats;
+    IFBEngineMemory memory;
+    struct {
+        IFBGHNDEngineContextManagers managers;
+        IFBGHNDEngineContextCore     core;
+        IFBGHNDEngineDevTools        devtools;
+    } handles;
+    IFBEngineConfig config;
 };
 
 namespace ifb_engine {
 
-    ifb_global IFBEngineContext _engine_context;
+    ifb_global IFBEngineContext _context;
 
-    ifb_void context_reset (ifb_void);
+    IFBEngineContext& context() { return(_context); }
 
-    IFBEngineContextStack&   context_get_stack   (ifb_void);
-    IFBEngineContextHandles& context_get_handles (ifb_void);
-    IFBEngineContextStats&   context_get_stats   (ifb_void);
+    IFBEngineMemory*          context_get_memory   (ifb_void);
+    IFBEngineContextManagers* context_get_managers (ifb_void);
+    IFBEngineContextCore*     context_get_core     (ifb_void);
+    IFBEngineConfig*          context_get_config   (ifb_void);
+    IFBEngineDevTools*        context_get_devtools (ifb_void);
 
-    ifb_void context_initialize_managers (const IFBEngineConfig* config_ptr);
-    ifb_void context_initialize_memory   (const IFBEngineConfig* config_ptr);
+    const ifb_ptr context_get_pointer (const IFBHND&  handle);
+    const ifb_ptr context_get_pointer (const IFBGHND& global_handle);
 
-    const ifb_ptr context_get_pointer(const IFBHND& handle);
+    ifb_void context_process_input(IFBInput& input_ref);
 };
 
 #endif //IFB_ENGINE_INTERNAL_CONTEXT_HPP
