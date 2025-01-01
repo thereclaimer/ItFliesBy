@@ -13,18 +13,17 @@
 // ids
 //--------------------
 
-struct IFBIDShader;
-struct IFBIDBufferVertex;
-struct IFBIDBufferElement;
-struct IFBIDUniform;
-struct IFBIDUniformU32;
-struct IFBIDUniformF32;
-struct IFBIDUniformVec2;
-struct IFBIDUniformVec3;
-struct IFBIDUniformMat3;
-struct IFBIDUniformColor;
-struct IFBIDUniformSpriteAtlas;
-struct IFBIDTransform;
+struct IFBIDShader             : IFBID { };
+struct IFBIDBufferVertex       : IFBID { };
+struct IFBIDBufferElement      : IFBID { };
+struct IFBIDUniformU32         : IFBID { };
+struct IFBIDUniformF32         : IFBID { };
+struct IFBIDUniformVec2        : IFBID { };
+struct IFBIDUniformVec3        : IFBID { };
+struct IFBIDUniformMat3        : IFBID { };
+struct IFBIDUniformColor       : IFBID { };
+struct IFBIDUniformSpriteAtlas : IFBID { };
+struct IFBIDTransform          : IFBID { };
 
 //--------------------
 // structs
@@ -46,72 +45,88 @@ struct IFBTransform;
 /* SHADERS                                                                        */
 /**********************************************************************************/
 
-struct IFBIDShader : IFBID {
-    struct {
-        IFBIDTag                 tag;
-        IFBGLIDShaderProgram     gl_shader_program;
-        IFBGLIDVertex            gl_vertex;
-    } foreign_ids;
-};
-
 struct IFBShader : IFBIDShader {
-    ifb_u32 uniform_count;
+    IFBIDTag              tag;
+    IFBGLIDShaderProgram  gl_shader_program;
+    IFBGLIDVertex         gl_vertex;
+    ifb_u32               uniform_count;
 };
 
 /**********************************************************************************/
 /* BUFFERS                                                                        */
 /**********************************************************************************/
 
-struct IFBIDBufferVertex  : IFBID { 
-    struct {
-        IFBIDTag            tag;
-        IFBGLIDBufferVertex gl_vertex_buffer;
-    } foreign_ids;
-};
-
 struct IFBBufferVertex : IFBIDBufferVertex {
-    ifb_u32 size;
-    ifb_u32 stride;
-    IFBHND  data_handle;
-};
-
-struct IFBIDBufferElement : IFBID {
-    struct {
-        IFBIDTag             tag;
-        IFBGLIDBufferElement gl_element_buffer; 
-    } foreign_ids;
+    IFBIDTag            tag;
+    IFBGLIDBufferVertex gl_vertex_buffer;
+    ifb_u32             size;
+    ifb_u32             stride;
+    IFBHND              data_handle;
 };
 
 struct IFBBufferElement : IFBIDBufferElement {
-    ifb_u32  count;
-    ifb_u32* data;
+    ifb_u32              count;
+    ifb_u32*             data;
+    IFBIDTag             tag;
+    IFBGLIDBufferElement gl_element_buffer; 
 };
 
 /**********************************************************************************/
 /* UNIFORMS                                                                       */
 /**********************************************************************************/
 
-struct IFBIDUniform : IFBID {
-    struct {
-        IFBIDShader    shader;
-        IFBIDTag       tag;
-        IFBGLIDUniform gl_uniform;
-    } foreign_ids;
+struct IFBUniformU32 : IFBIDUniformU32 {
+    IFBIDShader    shader;
+    IFBIDTag       tag;
+    IFBGLIDUniform gl_uniform;
+    ifb_u32        count;
 };
 
-struct IFBIDUniformU32         : IFBIDUniform { };
-struct IFBIDUniformF32         : IFBIDUniform { };
-struct IFBIDUniformVec2        : IFBIDUniform { };
-struct IFBIDUniformVec3        : IFBIDUniform { };
-struct IFBIDUniformMat3        : IFBIDUniform { };
-struct IFBIDUniformColor       : IFBIDUniform { };
-struct IFBIDUniformSpriteAtlas : IFBIDUniform { };
+struct IFBUniformF32 : IFBIDUniformF32 {
+    IFBIDShader    shader;
+    IFBIDTag       tag;
+    IFBGLIDUniform gl_uniform;
+    ifb_u32        count;
+};
+
+struct IFBUniformVec2 : IFBIDUniformVec2 {
+    IFBIDShader    shader;
+    IFBIDTag       tag;
+    IFBGLIDUniform gl_uniform;
+    ifb_u32        count;
+};
+
+struct IFBUniformVec3 : IFBIDUniformVec3 {
+    IFBIDShader    shader;
+    IFBIDTag       tag;
+    IFBGLIDUniform gl_uniform;
+    ifb_u32        count;
+};
+
+struct IFBUniformMat3 : IFBIDUniformMat3 {
+    IFBIDShader    shader;
+    IFBIDTag       tag;
+    IFBGLIDUniform gl_uniform;
+    ifb_u32        count;
+};
+
+struct IFBUniformColor : IFBIDUniformColor {
+    IFBIDShader    shader;
+    IFBIDTag       tag;
+    IFBGLIDUniform gl_uniform;
+    ifb_u32        count;
+};
+
+struct IFBUniformSpriteAtlas : IFBIDUniformSpriteAtlas {
+    IFBIDShader    shader;
+    IFBIDTag       tag;
+    IFBGLIDUniform gl_uniform;
+    ifb_u32        count;
+};
 
 /**********************************************************************************/
 /* TRANSFORMS                                                                     */
 /**********************************************************************************/
-
-struct IFBIDTransform : IFBID { };
 
 struct IFBTransform : IFBIDTransform {
     IFBVec2 translation;

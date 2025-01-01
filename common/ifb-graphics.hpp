@@ -87,12 +87,22 @@ enum IFBColor32Type_ {
     IFBColor32Type_BGRA = 3
 };
 
+struct IFBColor {
+    ifb_f32 red;
+    ifb_f32 green;
+    ifb_f32 blue;
+    ifb_f32 alpha;
+};
+
 struct IFBColor32 {
     ifb_u8 red;
     ifb_u8 green;
     ifb_u8 blue;
     ifb_u8 alpha;
 };
+
+#define IFB_ENGINE_COLOR_TABLE_COUNT 16
+
 struct IFBColorTable {
     union {
         struct {
@@ -134,15 +144,6 @@ enum IFBColorTableIndex_ {
     IFBColorTableIndex_GrayLight   = 13,
     IFBColorTableIndex_White       = 14,
     IFBColorTableIndex_Black       = 15
-};
-
-
-
-struct IFBColor {
-    ifb_f32 red;
-    ifb_f32 green;
-    ifb_f32 blue;
-    ifb_f32 alpha;
 };
 
 inline ifb_void

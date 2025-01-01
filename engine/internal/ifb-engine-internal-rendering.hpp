@@ -7,8 +7,6 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-#define IFB_ENGINE_COLOR_TABLE_COUNT 16
-
 struct IFBEngineRenderer;
 struct IFBEngineColorTable;
 struct IFBEngineSpriteShaderUniformData;
