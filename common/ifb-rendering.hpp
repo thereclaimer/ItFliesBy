@@ -124,14 +124,4 @@ struct IFBUniformSpriteAtlas : IFBIDUniformSpriteAtlas {
     ifb_u32        count;
 };
 
-/**********************************************************************************/
-/* TRANSFORMS                                                                     */
-/**********************************************************************************/
-
-struct IFBTransform : IFBIDTransform {
-    IFBVec2 translation;
-    IFBVec2 scale;
-    ifb_f32 rotation_radians;
-};
-
 #endif //IFB_RENDERING_HPP

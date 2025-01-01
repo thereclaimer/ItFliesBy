@@ -21,6 +21,15 @@
 #define ifb_macro_bit_toggle(bit,val) val ^=  (1 << bit)
 #define ifb_macro_bit_test(bit,val)  (val >> bit) & 1
 
+#define ifb_macro_xmm_f128_load_aligned(f32_ptr)   _mm_load_ps(f32_4_ptr)
+#define ifb_macro_xmm_f128_load_unaligned(f32_ptr) _mm_loadu_ps(f32_4_ptr)
+#define ifb_macro_xmm_f128_add(xmm_a, xmm_b)       _mm_add_ps(xmm_a, xmm_b)
+#define ifb_macro_xmm_f128_subtract(xmm_a, xmm_b)  _mm_sub_ps(xmm_a, xmm_b)
+#define ifb_macro_xmm_f128_multiply(xmm_a, xmm_b)  _mm_mul_ps(xmm_a, xmm_b)
+#define ifb_macro_xmm_f128_divide(xmm_a, xmm_b)    _mm_div_ps(xmm_a, xmm_b)
+#define ifb_macro_xmm_f128_sqrt(xmm)               _mm_sqrt_ps(xmm)
+#define ifb_macro_xmm_f128_store(f32_ptr, xmm)     _mm_store_ps(f32_ptr, xmm)
+
 #define ifb_macro_color_normalize_byte(byte) (ifb_f32)(((ifb_f32)byte) / ((ifb_f32)0xFF))
 
 #endif //IFB_MACROS_HPP
