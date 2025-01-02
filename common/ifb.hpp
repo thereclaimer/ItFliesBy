@@ -14,5 +14,6 @@
 #include "ifb-graphics.hpp"
 #include "ifb-gl.hpp"
 #include "ifb-rendering.hpp"
+#include "ifb-sprite.hpp"
 
 #endif //IFB_HPP

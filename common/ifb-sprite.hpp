@@ -33,10 +33,9 @@ struct IFBSpriteAtlas : IFBIDSpriteAtlas {
 /**********************************************************************************/
 
 struct IFBSprite : IFBIDSprite {
+    IFBIDTag           tag_id;
     IFBIDTransform     transform_id;
-    IFBIDSpriteAtlas   sprite_atlas_id;
     IFBColorTableIndex color_table_index;
-    ifb_u32            sprite_atlas_index;
 };
 
 #endif //IFB_SPRITE_HPP

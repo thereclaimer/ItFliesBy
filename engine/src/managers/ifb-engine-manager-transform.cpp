@@ -159,7 +159,7 @@ ifb_engine::transform_manager_flags_clear(
 }
 
 inline void
-ifb_engine::transform_manager_reserve(
+ifb_engine::transform_manager_reserve_transforms(
           IFBEngineTransformManager* transform_manager_ptr,
     const ifb_u32                    transform_count,
           IFBIDTransform*            transform_ids) {
@@ -191,7 +191,7 @@ ifb_engine::transform_manager_reserve(
 }
 
 inline void
-ifb_engine::transform_manager_release(
+ifb_engine::transform_manager_release_transforms(
           IFBEngineTransformManager* transform_manager_ptr,
     const ifb_u32                    transform_count,
     const IFBIDTransform*            transform_ids) {

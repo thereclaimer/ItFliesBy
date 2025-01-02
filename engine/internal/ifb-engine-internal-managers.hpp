@@ -174,9 +174,9 @@ namespace ifb_engine {
         const IFBIDTag*                   shader_tag_array,
               IFBIDShader*                shader_id_array);
 
-    const ifb_b8              shader_manager_use_program        (const IFBEngineShaderManager* shader_manager_ptr, const IFBIDShader shader_id);
-    const IFBIDTag            shader_manager_get_tag_id         (const IFBEngineShaderManager* shader_manager_ptr, const IFBIDShader shader_id);
-    const IFBGLIDShaderProgram  shader_manager_get_shader_program (const IFBEngineShaderManager* shader_manager_ptr, const IFBIDShader shader_id);
+    const ifb_b8               shader_manager_use_program        (const IFBEngineShaderManager* shader_manager_ptr, const IFBIDShader shader_id);
+    const IFBIDTag             shader_manager_get_tag_id         (const IFBEngineShaderManager* shader_manager_ptr, const IFBIDShader shader_id);
+    const IFBGLIDShaderProgram shader_manager_get_shader_program (const IFBEngineShaderManager* shader_manager_ptr, const IFBIDShader shader_id);
 
     IFBIDTag*                 shader_manager_get_array_tag_id         (const IFBEngineShaderManagerMemory& shader_manager_memory_ref);
     IFBGLIDShaderProgram*     shader_manager_get_array_shader_program (const IFBEngineShaderManagerMemory& shader_manager_memory_ref);
@@ -214,40 +214,107 @@ struct IFBEngineTransformManager {
 
 namespace ifb_engine {
 
-    void transform_manager_initialize(
+    void
+    transform_manager_initialize(
               IFBEngineTransformManager* transform_manager_ptr,
               IFBEngineMemory*           engine_memory_ptr,
         const ifb_u32                    transform_count_minimum);
 
-    void transform_manager_reserve             (IFBEngineTransformManager* transform_manager_ptr, const ifb_u32 transform_count,       IFBIDTransform* transform_ids);
-    void transform_manager_release             (IFBEngineTransformManager* transform_manager_ptr, const ifb_u32 transform_count, const IFBIDTransform* transform_ids);
-    void transform_manager_update_translation  (IFBEngineTransformManager* transform_manager_ptr, const ifb_u32 transform_count, const IFBIDTransform* transform_ids, const IFBVec2*      transform_translations);
-    void transform_manager_update_scale        (IFBEngineTransformManager* transform_manager_ptr, const ifb_u32 transform_count, const IFBIDTransform* transform_ids, const IFBVec2*      transform_scales);
-    void transform_manager_update_rotation     (IFBEngineTransformManager* transform_manager_ptr, const ifb_u32 transform_count, const IFBIDTransform* transform_ids, const ifb_f32*      transform_radians);
-    void transform_manager_get_transforms      (IFBEngineTransformManager* transform_manager_ptr, const ifb_u32 transform_count, const IFBIDTransform* transform_ids,       IFBTransform* transforms);
-
-    void transform_manager_flags_find_next_available(
+    void
+    transform_manager_flags_find_next_available(
         const ifb_byte*       flag_array,
         const ifb_u32         flag_group_count,           
         const ifb_u32         transform_count,
               IFBIDTransform* transform_ids);
     
-    void transform_manager_flags_set(
+    void
+    transform_manager_flags_set(
               ifb_byte*       flag_array,
         const ifb_u32         flag_group_count,           
         const ifb_u32         transform_count,
         const IFBIDTransform* transform_ids);
 
-    void transform_manager_flags_clear(
+    void
+    transform_manager_flags_clear(
               ifb_byte*       flag_array,
         const ifb_u32         flag_group_count,           
         const ifb_u32         transform_count,
         const IFBIDTransform* transform_ids);
+
+    void transform_manager_reserve_transforms (IFBEngineTransformManager* transform_manager_ptr, const ifb_u32 transform_count,       IFBIDTransform* transform_ids);
+    void transform_manager_release_transforms (IFBEngineTransformManager* transform_manager_ptr, const ifb_u32 transform_count, const IFBIDTransform* transform_ids);
+    void transform_manager_update_translation (IFBEngineTransformManager* transform_manager_ptr, const ifb_u32 transform_count, const IFBIDTransform* transform_ids, const IFBVec2*      transform_translations);
+    void transform_manager_update_scale       (IFBEngineTransformManager* transform_manager_ptr, const ifb_u32 transform_count, const IFBIDTransform* transform_ids, const IFBVec2*      transform_scales);
+    void transform_manager_update_rotation    (IFBEngineTransformManager* transform_manager_ptr, const ifb_u32 transform_count, const IFBIDTransform* transform_ids, const ifb_f32*      transform_radians);
+    void transform_manager_get_transforms     (IFBEngineTransformManager* transform_manager_ptr, const ifb_u32 transform_count, const IFBIDTransform* transform_ids,       IFBTransform* transforms);
 
     IFBVec2*  transform_manager_memory_get_array_translation      (const IFBEngineTransformManagerMemory& transform_manager_memory_ref);
     IFBVec2*  transform_manager_memory_get_array_scale            (const IFBEngineTransformManagerMemory& transform_manager_memory_ref);
     ifb_f32*  transform_manager_memory_get_array_rotation_radians (const IFBEngineTransformManagerMemory& transform_manager_memory_ref);
     ifb_byte* transform_manager_memory_get_array_flags            (const IFBEngineTransformManagerMemory& transform_manager_memory_ref);
+};
+
+/**********************************************************************************/
+/* SPRITE MANAGER                                                                 */
+/**********************************************************************************/
+
+struct IFBEngineSpriteManagerData {
+    IFBIDTag*           array_tag_id;
+    IFBIDTransform*     array_transform_id;
+    IFBColorTableIndex* array_color_table_index;
+    ifb_byte*           array_flags;
+};
+
+struct IFBEngineSpriteManagerMemory {
+    ifb_address start;
+    ifb_u32     offset_array_tag_id;
+    ifb_u32     offset_array_transform_id;
+    ifb_u32     offset_array_color_table_index;
+    ifb_u32     offset_array_flags;
+    IFBIDCommit commit_id;
+};
+
+struct IFBEngineSpriteManager {
+    IFBEngineSpriteManagerMemory memory;
+    ifb_u32                      sprite_count_max;
+    ifb_u32                      flag_group_count;
+};
+
+namespace ifb_engine {
+
+    void
+    sprite_manager_initialize(
+              IFBEngineSpriteManager* sprite_manager_ptr,
+              IFBEngineMemory*        engine_memory_ptr,
+        const ifb_u32                 sprite_count_minimum);
+
+    void
+    sprite_manager_reserve_sprites(
+              IFBEngineSpriteManager* sprite_manager_ptr,
+        const ifb_u32                 sprite_count,
+        const IFBIDTag*               sprite_tag_ids,
+        const IFBIDTransform*         sprite_transform_ids,
+        const IFBColorTableIndex*     sprite_color_table_index,
+              IFBIDSprite*            sprite_ids);
+
+    void
+    sprite_manager_release_sprites(
+              IFBEngineSpriteManager* sprite_manager_ptr,
+        const ifb_u32                 sprite_count,
+        const IFBIDSprite*            sprite_ids);
+
+    void
+    sprite_manager_get_sprites(
+              IFBEngineSpriteManager* sprite_manager_ptr,
+        const ifb_u32                 sprite_count,
+        const IFBIDSprite*            sprite_ids,
+              IFBSprite*              sprites);
+
+    IFBIDTransform*     sprite_manager_memory_get_array_transform_id      (IFBEngineSpriteManagerMemory& sprite_manager_memory_ref);
+    IFBIDTag*           sprite_manager_memory_get_array_tag_id            (IFBEngineSpriteManagerMemory& sprite_manager_memory_ref);
+    IFBColorTableIndex* sprite_manager_memory_get_array_color_table_index (IFBEngineSpriteManagerMemory& sprite_manager_memory_ref);
+    ifb_byte*           sprite_manager_memory_get_array_flags             (IFBEngineSpriteManagerMemory& sprite_manager_memory_ref);
+
 };
 
 #endif //IFB_ENGINE_INTERNAL_MANAGERS_HPP
