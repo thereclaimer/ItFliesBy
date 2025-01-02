@@ -5,7 +5,7 @@
 
 inline ifb_void 
 ifb_engine::graphics_manger_initialize(
-    IFBEngineGraphicsManager* graphics_manager_ptr,
+    IFBEngineManagerGraphics* graphics_manager_ptr,
     IFBEngineMemory*          memory_ptr) {
 
     //sanity check
@@ -34,7 +34,7 @@ ifb_engine::graphics_manger_initialize(
 
 inline ifb_void
 ifb_engine::graphics_manager_commit_memory(
-          IFBEngineGraphicsManagerMemory& graphics_manager_memory,
+          IFBEngineManagerMemoryGraphics& graphics_manager_memory,
           IFBEngineMemory*                memory_ptr,
     const ifb_u32                         monitor_count) {
     
@@ -66,7 +66,7 @@ ifb_engine::graphics_manager_commit_memory(
 
 inline ifb_void 
 ifb_engine::graphics_manager_create_window (
-          IFBEngineGraphicsManager* graphics_manager_ptr,
+          IFBEngineManagerGraphics* graphics_manager_ptr,
     const ifb_cstr                  window_title,
     const IFBWindowFlags            window_flags) {
     
@@ -114,7 +114,7 @@ ifb_engine::graphics_manager_create_window (
 
 inline ifb_void 
 ifb_engine::graphics_manager_create_viewport (
-    IFBEngineGraphicsManager* graphics_manager_ptr) {
+    IFBEngineManagerGraphics* graphics_manager_ptr) {
 
     //get the window and viewport
     IFBWindow*     window_ptr   = ifb_engine::graphics_manager_get_window_pointer(graphics_manager_ptr->memory);
@@ -148,7 +148,7 @@ ifb_engine::graphics_manager_create_viewport (
 
 inline ifb_void 
 ifb_engine::graphics_manager_style_imgui(
-    IFBEngineGraphicsManager* graphics_manager_ptr) {
+    IFBEngineManagerGraphics* graphics_manager_ptr) {
 
     //get the window
     IFBWindow* window_ptr = ifb_engine::graphics_manager_get_window_pointer(graphics_manager_ptr->memory);
@@ -176,7 +176,7 @@ ifb_engine::graphics_manager_style_imgui(
 
 inline ifb_void 
 ifb_engine::graphics_manager_frame_start(
-    IFBEngineGraphicsManager* graphics_manager_ptr) {
+    IFBEngineManagerGraphics* graphics_manager_ptr) {
 
     //start a new frame
     const ifb_b8 result = ifb_engine::platform_window_frame_start();
@@ -189,7 +189,7 @@ ifb_engine::graphics_manager_frame_start(
 
 inline ifb_void 
 ifb_engine::graphics_manager_frame_render(
-    IFBEngineGraphicsManager* graphics_manager_ptr) {
+    IFBEngineManagerGraphics* graphics_manager_ptr) {
 
     const ifb_b8 result = ifb_engine::platform_window_frame_render();
     ifb_macro_assert(result);
@@ -197,7 +197,7 @@ ifb_engine::graphics_manager_frame_render(
 
 inline const IFBMonitor*
 ifb_engine::graphics_manager_get_monitor(
-    const IFBEngineGraphicsManager* graphics_manager_ptr, 
+    const IFBEngineManagerGraphics* graphics_manager_ptr, 
     const ifb_u32                   monitor_index) {
 
     //sanity check
@@ -215,7 +215,7 @@ ifb_engine::graphics_manager_get_monitor(
 
 inline IFBWindow*  
 ifb_engine::graphics_manager_get_window_pointer(
-    const IFBEngineGraphicsManagerMemory& graphics_manager_memory_ref) {
+    const IFBEngineManagerMemoryGraphics& graphics_manager_memory_ref) {
 
     //get the address
     const ifb_address memory_start   = graphics_manager_memory_ref.start;
@@ -230,7 +230,7 @@ ifb_engine::graphics_manager_get_window_pointer(
 
 inline IFBMonitor*
 ifb_engine::graphics_manager_get_monitor_array_pointer(
-    const IFBEngineGraphicsManagerMemory& graphics_manager_memory_ref) {
+    const IFBEngineManagerMemoryGraphics& graphics_manager_memory_ref) {
 
     //get the address
     const ifb_address memory_start          = graphics_manager_memory_ref.start;
@@ -245,7 +245,7 @@ ifb_engine::graphics_manager_get_monitor_array_pointer(
 
 inline IFBGLViewport* 
 ifb_engine::graphics_manager_get_viewport(
-    const IFBEngineGraphicsManagerMemory& graphics_manager_memory_ref) {
+    const IFBEngineManagerMemoryGraphics& graphics_manager_memory_ref) {
 
     //get the address
     const ifb_address memory_start     = graphics_manager_memory_ref.start;

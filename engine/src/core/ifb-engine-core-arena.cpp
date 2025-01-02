@@ -12,8 +12,8 @@ ifb_engine::core_arena_commit(
     //get the pointers
     IFBEngineMemory*          memory_ptr        = ifb_engine::context_get_memory();
     IFBEngineContextManagers* managers_ptr      = ifb_engine::context_get_managers(); 
-    IFBEngineTagManager*      tag_manager_ptr   = ifb_engine::context_managers_get_tag_manager(managers_ptr);
-    IFBEngineArenaManager*    arena_manager_ptr = ifb_engine::context_managers_get_arena_manager(managers_ptr);
+    IFBEngineManagerTag*      tag_manager_ptr   = ifb_engine::context_managers_get_tag_manager(managers_ptr);
+    IFBEngineManagerArena*    arena_manager_ptr = ifb_engine::context_managers_get_arena_manager(managers_ptr);
 
     //sanity check
     ifb_macro_assert(memory_ptr);
@@ -49,8 +49,8 @@ ifb_engine::core_arena_get_info(
 
     //get the pointers
     IFBEngineContextManagers* managers_ptr      = ifb_engine::context_get_managers(); 
-    IFBEngineTagManager*      tag_manager_ptr   = ifb_engine::context_managers_get_tag_manager(managers_ptr);
-    IFBEngineArenaManager*    arena_manager_ptr = ifb_engine::context_managers_get_arena_manager(managers_ptr);
+    IFBEngineManagerTag*      tag_manager_ptr   = ifb_engine::context_managers_get_tag_manager(managers_ptr);
+    IFBEngineManagerArena*    arena_manager_ptr = ifb_engine::context_managers_get_arena_manager(managers_ptr);
 
     //sanity check
     ifb_macro_assert(arena_manager_ptr);
@@ -71,7 +71,7 @@ ifb_engine::core_arena_get_page_start(
 
     //get the pointers
     IFBEngineContextManagers* managers_ptr      = ifb_engine::context_get_managers(); 
-    IFBEngineArenaManager*    arena_manager_ptr = ifb_engine::context_managers_get_arena_manager(managers_ptr);
+    IFBEngineManagerArena*    arena_manager_ptr = ifb_engine::context_managers_get_arena_manager(managers_ptr);
 
     const ifb_u32 arena_page_start = ifb_engine::arena_manager_get_arena_start(
         arena_manager_ptr,
@@ -87,8 +87,8 @@ ifb_engine::core_arena_get_tag_cstr(
 
     //get the pointers
     IFBEngineContextManagers* managers_ptr      = ifb_engine::context_get_managers(); 
-    IFBEngineArenaManager*    arena_manager_ptr = ifb_engine::context_managers_get_arena_manager(managers_ptr);
-    IFBEngineTagManager*      tag_manager_ptr   = ifb_engine::context_managers_get_tag_manager(managers_ptr);
+    IFBEngineManagerArena*    arena_manager_ptr = ifb_engine::context_managers_get_arena_manager(managers_ptr);
+    IFBEngineManagerTag*      tag_manager_ptr   = ifb_engine::context_managers_get_tag_manager(managers_ptr);
 
     //get the tag id
     const IFBIDTag arena_tag_id = ifb_engine::arena_manager_get_arena_tag_id(arena_manager_ptr,arena_id_ref);
@@ -107,7 +107,7 @@ ifb_engine::core_arena_get_pointer_start(
 
     //get the pointers
     IFBEngineContextManagers* managers_ptr      = ifb_engine::context_get_managers(); 
-    IFBEngineArenaManager*    arena_manager_ptr = ifb_engine::context_managers_get_arena_manager(managers_ptr);
+    IFBEngineManagerArena*    arena_manager_ptr = ifb_engine::context_managers_get_arena_manager(managers_ptr);
 
     const ifb_ptr pointer = ifb_engine::arena_manager_get_arena_pointer(
         arena_manager_ptr,
@@ -123,7 +123,7 @@ ifb_engine::core_arena_get_pointer_offset(
 
     //get the pointers
     IFBEngineContextManagers* managers_ptr      = ifb_engine::context_get_managers(); 
-    IFBEngineArenaManager*    arena_manager_ptr = ifb_engine::context_managers_get_arena_manager(managers_ptr);
+    IFBEngineManagerArena*    arena_manager_ptr = ifb_engine::context_managers_get_arena_manager(managers_ptr);
 
     const ifb_ptr pointer = ifb_engine::arena_manager_get_arena_pointer(
         arena_manager_ptr,

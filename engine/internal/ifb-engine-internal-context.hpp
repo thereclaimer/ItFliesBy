@@ -29,9 +29,9 @@ namespace ifb_engine {
               IFBEngineMemory*          memory_ptr, 
         const IFBEngineConfig*          config_ptr);
         
-    IFBEngineTagManager*      context_managers_get_tag_manager      (const IFBEngineContextManagers* managers_ptr);
-    IFBEngineArenaManager*    context_managers_get_arena_manager    (const IFBEngineContextManagers* managers_ptr);
-    IFBEngineGraphicsManager* context_managers_get_graphics_manager (const IFBEngineContextManagers* managers_ptr);
+    IFBEngineManagerTag*      context_managers_get_tag_manager      (const IFBEngineContextManagers* managers_ptr);
+    IFBEngineManagerArena*    context_managers_get_arena_manager    (const IFBEngineContextManagers* managers_ptr);
+    IFBEngineManagerGraphics* context_managers_get_graphics_manager (const IFBEngineContextManagers* managers_ptr);
 };
 
 /**********************************************************************************/

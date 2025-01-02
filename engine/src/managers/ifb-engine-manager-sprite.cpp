@@ -4,7 +4,7 @@
 
 inline void
 ifb_engine::sprite_manager_initialize(
-          IFBEngineSpriteManager* sprite_manager_ptr,
+          IFBEngineManagerSprite* sprite_manager_ptr,
           IFBEngineMemory*        engine_memory_ptr,
     const ifb_u32                 sprite_count_minimum) {
 
@@ -45,7 +45,7 @@ ifb_engine::sprite_manager_initialize(
     const ifb_address commit_start = ifb_engine::memory_get_commit_address(engine_memory_ptr,commit_id);
 
     //initialize the memory
-    IFBEngineSpriteManagerMemory& sprite_manager_memory_ref = sprite_manager_ptr->memory;
+    IFBEngineManagerMemorySprite& sprite_manager_memory_ref = sprite_manager_ptr->memory;
     sprite_manager_memory_ref.start                          = commit_start;
     sprite_manager_memory_ref.offset_array_tag_id            = offset_array_tag_id;
     sprite_manager_memory_ref.offset_array_transform_id      = offset_array_transform_id;
@@ -71,7 +71,7 @@ ifb_engine::sprite_manager_initialize(
 
 inline void
 ifb_engine::sprite_manager_reserve_sprites(
-          IFBEngineSpriteManager* sprite_manager_ptr,
+          IFBEngineManagerSprite* sprite_manager_ptr,
     const ifb_u32                 sprite_count,
     const IFBIDTag*               sprite_tag_ids,
     const IFBIDTransform*         sprite_transform_ids,
@@ -130,7 +130,7 @@ ifb_engine::sprite_manager_reserve_sprites(
 
 inline void
 ifb_engine::sprite_manager_release_sprites(
-          IFBEngineSpriteManager* sprite_manager_ptr,
+          IFBEngineManagerSprite* sprite_manager_ptr,
     const ifb_u32                 sprite_count,
     const IFBIDSprite*            sprite_ids) {
 
@@ -152,13 +152,13 @@ ifb_engine::sprite_manager_release_sprites(
 
 inline void
 ifb_engine::sprite_manager_get_sprites(
-          IFBEngineSpriteManager* sprite_manager_ptr,
+          IFBEngineManagerSprite* sprite_manager_ptr,
     const ifb_u32                 sprite_count,
     const IFBIDSprite*            sprite_ids,
           IFBSprite*              sprites) {
 
     //get the arrays
-    IFBEngineSpriteManagerMemory& sprite_manager_memory_ref = sprite_manager_ptr->memory;
+    IFBEngineManagerMemorySprite& sprite_manager_memory_ref = sprite_manager_ptr->memory;
     IFBIDTransform*     array_transform_ids       = sprite_manager_memory_get_array_transform_id     (sprite_manager_memory_ref);
     IFBIDTag*           array_tag_ids             = sprite_manager_memory_get_array_tag_id           (sprite_manager_memory_ref);
     IFBColorTableIndex* array_color_table_indexes = sprite_manager_memory_get_array_color_table_index(sprite_manager_memory_ref);
@@ -184,7 +184,7 @@ ifb_engine::sprite_manager_get_sprites(
 
 inline IFBIDTransform*
 ifb_engine::sprite_manager_memory_get_array_transform_id(
-    const IFBEngineSpriteManagerMemory& sprite_manager_memory_ref) {
+    const IFBEngineManagerMemorySprite& sprite_manager_memory_ref) {
 
     IFBIDTransform* array = ifb_macro_pointer_from_offset(
         sprite_manager_memory_ref.start,
@@ -196,7 +196,7 @@ ifb_engine::sprite_manager_memory_get_array_transform_id(
 
 inline IFBIDTag*
 ifb_engine::sprite_manager_memory_get_array_tag_id(
-    const IFBEngineSpriteManagerMemory& sprite_manager_memory_ref) {
+    const IFBEngineManagerMemorySprite& sprite_manager_memory_ref) {
 
     IFBIDTag* array = ifb_macro_pointer_from_offset(
         sprite_manager_memory_ref.start,
@@ -208,7 +208,7 @@ ifb_engine::sprite_manager_memory_get_array_tag_id(
 
 inline IFBColorTableIndex*
 ifb_engine::sprite_manager_memory_get_array_color_table_index(
-    const IFBEngineSpriteManagerMemory& sprite_manager_memory_ref) {
+    const IFBEngineManagerMemorySprite& sprite_manager_memory_ref) {
     
     IFBColorTableIndex* array = ifb_macro_pointer_from_offset(
         sprite_manager_memory_ref.start,
@@ -220,7 +220,7 @@ ifb_engine::sprite_manager_memory_get_array_color_table_index(
 
 inline ifb_byte*
 ifb_engine::sprite_manager_memory_get_array_flags(
-    const IFBEngineSpriteManagerMemory& sprite_manager_memory_ref) {
+    const IFBEngineManagerMemorySprite& sprite_manager_memory_ref) {
 
     ifb_byte* array = ifb_macro_pointer_from_offset(
         sprite_manager_memory_ref.start,

@@ -86,6 +86,7 @@ namespace ifb_engine {
     const ifb_void memory_global_push_aligned (IFBEngineMemory* memory_ptr, IFBGHND& global_handle_ref, const ifb_u32 size, const ifb_u32 alignment);
 };
 
-#define ifb_engine_memory_global_push_struct(memory_ptr,handle,type) ifb_engine::memory_global_push_aligned(memory_ptr,handle,sizeof(type),alignof(type))
+#define ifb_engine_macro_memory_global_push_struct(memory_ptr,handle,type)        ifb_engine::memory_global_push_aligned(memory_ptr,handle,sizeof(type),alignof(type))
+#define ifb_engine_macro_memory_get_pointer(memory_ptr,handle,type)        (type*)ifb_engine::memory_get_pointer(memory_ptr,handle)
 
 #endif //IFB_ENGINE_INTERNAL_MEMORY_HPP
