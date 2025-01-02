@@ -18,7 +18,7 @@ struct IFBGHNDEngineSpriteShader         : IFBGHND;
 struct IFBGHNDEngineSpriteShaderUniforms : IFBGHND;
 
 /**********************************************************************************/
-/* SPRITE SHADER                                                                  */
+/* VERTICES                                                                       */
 /**********************************************************************************/
 
 struct IFBEngineSpriteVertex {
@@ -26,11 +26,34 @@ struct IFBEngineSpriteVertex {
     IFBEngineColorTableIndex color_table_index;
 };
 
+#define IFB_ENGINE_SPRITE_VERTEX_DATA_SIZE (sizeof(IFBMat3) + sizeof(IFBEngineColorTableIndex))
+
 struct IFBEngineSpriteVertexData {
-    IFBMat3  transform_matrix;
-    IFBColor color;
-    IFBVec2  sprite_coordinates;
+    union {
+        struct {
+            IFBMat3                  transform_matrix;
+            IFBEngineColorTableIndex color_table_index;
+        };
+        ifb_byte array[IFB_ENGINE_SPRITE_VERTEX_DATA_SIZE]
+    };
 };
+
+namespace ifb_engine {
+
+    ifb_void
+    rendering_vertex_encode_sprite_to_buffer(
+        const ifb_u32                    sprite_vertex_count,
+        const IFBEngineSpriteVertexData* sprite_vertex_array,
+              ifb_memory                 sprite_vertex_buffer);
+
+};
+
+/**********************************************************************************/
+/* SPRITE SHADER                                                                  */
+/**********************************************************************************/
+
+
+
 
 struct IFBEngineSpriteShaderUniformData {
     IFBEngineColorTable     color_table;

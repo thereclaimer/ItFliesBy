@@ -30,6 +30,7 @@ namespace ifb_math {
     void mat3_batch_a_mul_b          (IFBMat3* m3_ab,  const ifb_u32 count, const IFBMat3* m3_a, const IFBMat3* m3_b);
     void mat3_batch_determinant      (IFBMat3* m3_det, const ifb_u32 count, const IFBMat3* m3);
     void mat3_batch_inverse          (IFBMat3* m3_inv, const ifb_u32 count, const IFBMat3* m3);
+    void mat3_batch_transform        (IFBMat3* m3_trs, const ifb_u32 count, const IFBTransform* transform);
 };
 
 inline void 
@@ -154,6 +155,29 @@ ifb_math::mat3_transform(
         transform.scale,
         transform.rotation_radians);
 }
+
+inline void 
+ifb_engine::mat3_batch_transform(
+          IFBMat3*      m3_trs,
+    const ifb_u32       count,
+    const IFBTransform* transform) {
+
+    for (
+        ifb_u32 index = 0;
+        index < count;
+        ++index) {
+
+        const IFBTransform& transform_ref = transform[index];
+
+        ifb_engine::mat3_transform(
+            m3_trs[index],
+            transform_ref.translation,
+            transform_ref.scale,
+            transform_ref.rotation_radians);
+    }
+
+}
+
 
 
 #endif //IFB_MATH_MAT3_HPP
