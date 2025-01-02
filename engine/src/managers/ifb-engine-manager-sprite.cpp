@@ -55,15 +55,15 @@ ifb_engine::sprite_manager_get_sprites(
 
         //update the sprite data
         sprite_ref.index             = sprite_index;
-        sprite_ref.tag_id            = array_transform_ids      [sprite_index]; 
-        sprite_ref.transform_id      = array_tag_ids            [sprite_index]; 
-        sprite_ref.color_table_index = array_color_table_indexes[sprite_index];         
+        sprite_ref.tag_id            = array_tag_ids             [sprite_index]; 
+        sprite_ref.transform_id      = array_transform_ids       [sprite_index]; 
+        sprite_ref.color_table_index = array_color_table_indexes [sprite_index];         
     }
 }
 
 inline IFBIDTransform*
 ifb_engine::sprite_manager_memory_get_array_transform_id(
-    IFBEngineSpriteManagerMemory& sprite_manager_memory_ref) {
+    const IFBEngineSpriteManagerMemory& sprite_manager_memory_ref) {
 
     IFBIDTransform* array = ifb_macro_pointer_from_offset(
         sprite_manager_memory_ref.start,
@@ -75,7 +75,7 @@ ifb_engine::sprite_manager_memory_get_array_transform_id(
 
 inline IFBIDTag*
 ifb_engine::sprite_manager_memory_get_array_tag_id(
-    IFBEngineSpriteManagerMemory& sprite_manager_memory_ref) {
+    const IFBEngineSpriteManagerMemory& sprite_manager_memory_ref) {
 
     IFBIDTag* array = ifb_macro_pointer_from_offset(
         sprite_manager_memory_ref.start,
@@ -87,7 +87,7 @@ ifb_engine::sprite_manager_memory_get_array_tag_id(
 
 inline IFBColorTableIndex*
 ifb_engine::sprite_manager_memory_get_array_color_table_index(
-    IFBEngineSpriteManagerMemory& sprite_manager_memory_ref) {
+    const IFBEngineSpriteManagerMemory& sprite_manager_memory_ref) {
     
     IFBColorTableIndex* array = ifb_macro_pointer_from_offset(
         sprite_manager_memory_ref.start,
@@ -99,7 +99,7 @@ ifb_engine::sprite_manager_memory_get_array_color_table_index(
 
 inline ifb_byte*
 ifb_engine::sprite_manager_memory_get_array_flags(
-    IFBEngineSpriteManagerMemory& sprite_manager_memory_ref) {
+    const IFBEngineSpriteManagerMemory& sprite_manager_memory_ref) {
 
     ifb_byte* array = ifb_macro_pointer_from_offset(
         sprite_manager_memory_ref.start,

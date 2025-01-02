@@ -69,40 +69,16 @@ ifb_engine::transform_manager_flags_find_next_available(
     const ifb_u32                    transform_count,
           IFBIDTransform*            transform_ids) {
 
-    const ifb_u32 flag_group_size = IFB_ENGINE_TRANSFORM_MANAGER_FLAG_GROUP_SIZE;
-
-    ifb_u32 transform_ids_remaining = transform_count;
-
-    for (
-        ifb_u32 flag_group_index = 0;
-        flag_group_index < flag_group_count;
-        ++flag_group_index) {
-
-        const ifb_byte flag_group            = flag_array[flag_group_index];
-        const ifb_u32  transform_index_start = flag_group_count * flag_group_size;  
-        const ifb_b8   flag_group_available  = flag_group != IFB_ENGINE_TRANSFORM_MANAGER_FLAG_GROUP_UNAVAILABLE; 
-
-        for (
-            ifb_u32 flag_index = 0;
-            flag_group_available && flag_index < sizeof(ifb_byte) && transform_ids_remaining != 0;
-            ++flag_index) {
-
-            if (ifb_macro_bit_is_clear(flag_index,flag_group)) {
-
-                //update the transform id at this index                
-                const ifb_u32 transform_index =  transform_index_start + flag_index;
-                transform_ids[transform_index].index = transform_index;
-
-                //decrease our transforms remaining
-                --transform_ids_remaining;
-            }
-        }
-    }
+    //find available flags
+    const ifb_u32 flags_count_found = ifb_bitwise::flags_find_bits_clear(
+        flag_group_count,
+        transform_count,
+        flag_array,
+        (ifb_u32*)transform_ids);
 
     //sanity check, we got our transforms
-    ifb_macro_assert(transform_ids_remaining == 0);
+    ifb_macro_assert(flags_count_found == transform_count);
 }
-
 
 inline void
 ifb_engine::transform_manager_flags_set(
@@ -111,51 +87,25 @@ ifb_engine::transform_manager_flags_set(
     const ifb_u32         transform_count,
     const IFBIDTransform* transform_ids) {
 
-    const ifb_u32 flag_group_size = IFB_ENGINE_TRANSFORM_MANAGER_FLAG_GROUP_SIZE;
-
-    for (
-        ifb_u32 transform_index = 0;
-        transform_index < transform_count;
-        ++transform_index) {
-
-        //get the flag group and flag indexes
-        const ifb_u32 transform_id_index = transform_ids[transform_index].index; 
-        const ifb_u32 flag_group_index   = (ifb_u32)((ifb_f32)transform_id_index / (ifb_f32)flag_group_size);
-        const ifb_u32 flag_index         = transform_id_index - (flag_group_index * flag_group_size);  
-
-        //get the flag group 
-        ifb_byte& flag_group_ref = flag_array[flag_group_index];
-
-        //set the flag
-        ifb_macro_bit_set(flag_index,flag_group_ref);
-    }  
+    ifb_bitwise::flags_set(
+        flag_group_count,
+        transform_count,
+        flag_array,
+        (ifb_u32*)transform_ids);
 }
 
 inline void
 ifb_engine::transform_manager_flags_clear(
-            ifb_byte*     flag_array,
+          ifb_byte*     flag_array,
     const ifb_u32         flag_group_count,           
     const ifb_u32         transform_count,
     const IFBIDTransform* transform_ids) {
 
-    const ifb_u32 flag_group_size = IFB_ENGINE_TRANSFORM_MANAGER_FLAG_GROUP_SIZE;
-
-    for (
-        ifb_u32 transform_index = 0;
-        transform_index < transform_count;
-        ++transform_index) {
-
-        //get the flag group and flag indexes
-        const ifb_u32 transform_id_index = transform_ids[transform_index].index; 
-        const ifb_u32 flag_group_index   = (ifb_u32)((ifb_f32)transform_id_index / (ifb_f32)flag_group_size);
-        const ifb_u32 flag_index         = transform_id_index - (flag_group_index * flag_group_size);  
-
-        //get the flag group 
-        ifb_byte& flag_group_ref = flag_array[flag_group_index];
-
-        //set the flag
-        ifb_macro_bit_clear(flag_index,flag_group_ref);
-    }  
+    ifb_bitwise::flags_clear(
+        flag_group_count,
+        transform_count,
+        flag_array,
+        (ifb_u32*)transform_ids);
 }
 
 inline void

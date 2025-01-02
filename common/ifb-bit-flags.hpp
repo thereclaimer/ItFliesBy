@@ -1,6 +1,9 @@
 #ifndef IFB_BIT_FLAGS_HPP
 #define IFB_BIT_FLAGS_HPP
 
+#include "ifb-types.hpp"
+#include "ifb-macros.hpp"
+
 #define IFB_BIT_FLAG_0  (1 << 0)
 #define IFB_BIT_FLAG_1  (1 << 1)
 #define IFB_BIT_FLAG_2  (1 << 2)
@@ -65,5 +68,131 @@
 #define IFB_BIT_FLAG_61 (1 << 61)
 #define IFB_BIT_FLAG_62 (1 << 62)
 #define IFB_BIT_FLAG_63 (1 << 63)
+
+#define IFB_BIT_FLAG_GROUP_SIZE        8
+#define IFB_BIT_FLAG_GROUP_UNAVAILABLE 0xFF
+
+namespace ifb_bitwise {
+
+    const ifb_u32
+    flags_find_bits_clear(
+        const ifb_u32   flag_group_count,
+        const ifb_u32   flag_index_count,
+        const ifb_byte* flag_group_array,
+              ifb_u32*  flag_index_array);
+
+    ifb_void flags_set   (const ifb_u32 flag_group_count, const ifb_u32 flag_index_count, ifb_byte* flag_group_array, const ifb_u32*  flag_index_array);
+    ifb_void flags_clear (const ifb_u32 flag_group_count, const ifb_u32 flag_index_count, ifb_byte* flag_group_array, const ifb_u32*  flag_index_array);
+};
+
+inline const ifb_u32
+ifb_bitwise::flags_find_bits_clear(
+    const ifb_u32   flag_group_count,
+    const ifb_u32   flag_index_count,
+    const ifb_byte* flag_group_array,
+          ifb_u32*  flag_index_array) {
+
+    ifb_macro_assert(flag_group_count);
+    ifb_macro_assert(flag_index_count);
+    ifb_macro_assert(flag_group_array);
+    ifb_macro_assert(flag_index_array);
+
+    const ifb_u32  flag_group_size        = IFB_BIT_FLAG_GROUP_SIZE;
+    const ifb_byte flag_group_unavailable = IFB_BIT_FLAG_GROUP_UNAVAILABLE; 
+    
+    ifb_u32 flags_found = 0;
+
+    for (
+        ifb_u32 flag_group_index = 0;
+        flag_group_index < flag_group_count;
+        ++flag_group_index) {
+
+        const ifb_byte flag_group           = flag_group_array[flag_group_index];
+        const ifb_u32  flag_index_start     = flag_group_count * flag_group_size;  
+        const ifb_b8   flag_group_available = flag_group != flag_group_unavailable; 
+
+        for (
+            ifb_u32 flag_index = 0;
+            flag_group_available && (flag_index < flag_group_size) && (flags_found < flag_index_count);
+            ++flag_index) {
+
+            if (ifb_macro_bit_is_clear(flag_index,flag_group)) {
+
+                flag_index_array[flags_found] = flag_index_start + flag_index; 
+                ++flags_found;
+            }
+        }
+    }
+
+    return(flags_found);
+}
+
+inline ifb_void
+ifb_bitwise::flags_clear(
+    const ifb_u32   flag_group_count,
+    const ifb_u32   flag_index_count,
+          ifb_byte* flag_group_array,
+    const ifb_u32*  flag_index_array) {
+
+    ifb_macro_assert(flag_group_count);
+    ifb_macro_assert(flag_index_count);
+    ifb_macro_assert(flag_group_array);
+    ifb_macro_assert(flag_index_array);
+
+    const ifb_u32 flag_group_size = IFB_BIT_FLAG_GROUP_SIZE;
+
+    for (
+        ifb_u32 flag_index = 0;
+        flag_index_count < flag_index_count;
+        ++flag_index) {
+
+        //get the flag group and flag indexes
+        const ifb_u32 flag             = flag_index_array[flag_index]; 
+        const ifb_u32 flag_group_index = (ifb_u32)((ifb_f32)flag / (ifb_f32)flag_group_size);
+        const ifb_u32 bit              = flag - (flag_group_index * flag_group_size);  
+
+        ifb_macro_assert(flag_group_index < flag_group_count);
+
+        //get the flag group 
+        ifb_byte& flag_group_ref = flag_group_array[flag_group_index];
+
+        //set the flag
+        ifb_macro_bit_clear(bit,flag_group_ref);
+    }  
+}
+
+inline ifb_void
+ifb_bitwise::flags_set(
+    const ifb_u32   flag_group_count,
+    const ifb_u32   flag_index_count,
+          ifb_byte* flag_group_array,
+    const ifb_u32*  flag_index_array) {
+
+    ifb_macro_assert(flag_group_count);
+    ifb_macro_assert(flag_index_count);
+    ifb_macro_assert(flag_group_array);
+    ifb_macro_assert(flag_index_array);
+
+    const ifb_u32 flag_group_size = IFB_BIT_FLAG_GROUP_SIZE;
+
+    for (
+        ifb_u32 flag_index = 0;
+        flag_index_count < flag_index_count;
+        ++flag_index) {
+
+        //get the flag group and flag indexes
+        const ifb_u32 flag             = flag_index_array[flag_index]; 
+        const ifb_u32 flag_group_index = (ifb_u32)((ifb_f32)flag / (ifb_f32)flag_group_size);
+        const ifb_u32 bit              = flag - (flag_group_index * flag_group_size);  
+
+        ifb_macro_assert(flag_group_index < flag_group_count);
+
+        //get the flag group 
+        ifb_byte& flag_group_ref = flag_group_array[flag_group_index];
+
+        //set the flag
+        ifb_macro_bit_set(bit,flag_group_ref);
+    }  
+}
 
 #endif //IFB_BIT_FLAGS_HPP

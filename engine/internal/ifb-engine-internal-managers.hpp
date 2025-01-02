@@ -310,10 +310,10 @@ namespace ifb_engine {
         const IFBIDSprite*            sprite_ids,
               IFBSprite*              sprites);
 
-    IFBIDTransform*     sprite_manager_memory_get_array_transform_id      (IFBEngineSpriteManagerMemory& sprite_manager_memory_ref);
-    IFBIDTag*           sprite_manager_memory_get_array_tag_id            (IFBEngineSpriteManagerMemory& sprite_manager_memory_ref);
-    IFBColorTableIndex* sprite_manager_memory_get_array_color_table_index (IFBEngineSpriteManagerMemory& sprite_manager_memory_ref);
-    ifb_byte*           sprite_manager_memory_get_array_flags             (IFBEngineSpriteManagerMemory& sprite_manager_memory_ref);
+    IFBIDTransform*     sprite_manager_memory_get_array_transform_id      (const IFBEngineSpriteManagerMemory& sprite_manager_memory_ref);
+    IFBIDTag*           sprite_manager_memory_get_array_tag_id            (const IFBEngineSpriteManagerMemory& sprite_manager_memory_ref);
+    IFBColorTableIndex* sprite_manager_memory_get_array_color_table_index (const IFBEngineSpriteManagerMemory& sprite_manager_memory_ref);
+    ifb_byte*           sprite_manager_memory_get_array_flags             (const IFBEngineSpriteManagerMemory& sprite_manager_memory_ref);
 
 };
 
