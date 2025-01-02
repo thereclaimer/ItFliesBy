@@ -1,7 +1,7 @@
 #ifndef IFB_MACROS_HPP
 #define IFB_MACROS_HPP
 
-#define ifb_macro_assert(cond) if (!(cond)) { *((int*)(NULL)) = 1; }
+#define ifb_macro_assert(cond) if (!(cond)) (*((int*)(NULL)) = 1)
 #define ifb_macro_nop()        ifb_macro_assert(true) 
 #define ifb_macro_panic()      ifb_macro_assert(false)
 

@@ -5,8 +5,59 @@
 #include "ifb-engine-internal-memory.hpp"
 
 /**********************************************************************************/
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
+
+struct IFBEngineManagerMemory {
+    ifb_address start;
+    IFBIDCommit commit_id;
+};
+
+struct IFBGHNDEngineManagerTag       : IFBGHND { };
+struct IFBGHNDEngineManagerArena     : IFBGHND { };
+struct IFBGHNDEngineManagerGraphics  : IFBGHND { };
+struct IFBGHNDEngineManagerShader    : IFBGHND { };
+struct IFBGHNDEngineManagerTransform : IFBGHND { };
+struct IFBGHNDEngineManagerSprite    : IFBGHND { };
+
+struct IFBEngineManagerHandles {
+    IFBGHNDEngineManagerTag       tag;
+    IFBGHNDEngineManagerArena     arena;
+    IFBGHNDEngineManagerGraphics  graphics;
+    IFBGHNDEngineManagerShader    shader;
+    IFBGHNDEngineManagerTransform transform;
+    IFBGHNDEngineManagerSprite    sprite;
+};
+
+struct IFBEngineManagerDataTag;
+struct IFBEngineManagerDataArena;
+struct IFBEngineManagerDataGraphics;
+struct IFBEngineManagerDataShader;
+struct IFBEngineManagerDataTransform;
+struct IFBEngineManagerDataSprite;
+
+struct IFBEngineManagerMemoryTag;
+struct IFBEngineManagerMemoryArena;
+struct IFBEngineManagerMemoryGraphics;
+struct IFBEngineManagerMemoryShader;
+struct IFBEngineManagerMemoryTransform;
+struct IFBEngineManagerMemorySprite;
+
+struct IFBEngineManagerTag;
+struct IFBEngineManagerArena;
+struct IFBEngineManagerGraphics;
+struct IFBEngineManagerShader;
+struct IFBEngineManagerTransform;
+struct IFBEngineManagerSprite;
+
+/**********************************************************************************/
 /* TAG MANAGER                                                                    */
 /**********************************************************************************/
+
+struct IFBEngineTagManagerData {
+    ifb_char* char_buffer;
+    IFBHash*  hash_array;
+};
 
 struct IFBEngineTagManagerMemory {
     ifb_address commit_address;
@@ -187,9 +238,6 @@ namespace ifb_engine {
 /* TRANSFORM MANAGER                                                              */
 /**********************************************************************************/
 
-#define IFB_ENGINE_TRANSFORM_MANAGER_FLAG_GROUP_UNAVAILABLE 0xFF
-#define IFB_ENGINE_TRANSFORM_MANAGER_FLAG_GROUP_SIZE        8
-
 struct IFBEngineTransformManagerData {
     IFBVec2*  array_translation;
     IFBVec2*  array_scale;
@@ -294,7 +342,7 @@ namespace ifb_engine {
         const ifb_u32                 sprite_count,
         const IFBIDTag*               sprite_tag_ids,
         const IFBIDTransform*         sprite_transform_ids,
-        const IFBColorTableIndex*     sprite_color_table_index,
+        const IFBColorTableIndex*     sprite_color_table_indexes,
               IFBIDSprite*            sprite_ids);
 
     void

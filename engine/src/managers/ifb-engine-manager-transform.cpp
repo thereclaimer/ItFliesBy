@@ -10,9 +10,9 @@ ifb_engine::transform_manager_initialize(
           IFBEngineMemory*           engine_memory_ptr,
     const ifb_u32                    transform_count_minimum) {
 
-    ifb_macro_assert(transform_manager_ptr)
-    ifb_macro_assert(engine_memory_ptr)
-    ifb_macro_assert(transform_count_minimum)
+    ifb_macro_assert(transform_manager_ptr);
+    ifb_macro_assert(engine_memory_ptr);
+    ifb_macro_assert(transform_count_minimum);
 
     const ifb_u32 transform_count_max = ifb_macro_align_a_to_multiple_of_b(
         transform_count_minimum,
@@ -44,7 +44,7 @@ ifb_engine::transform_manager_initialize(
 
     //clear the memory
     ifb_ptr           commit_ptr         = ifb_engine::memory_get_commit_pointer(engine_memory_ptr,commit_id);
-    const ifb_address commit_start        = ifb_engine::memory_get_commit_address(engine_memory_ptr,commit_id);
+    const ifb_address commit_start       = ifb_engine::memory_get_commit_address(engine_memory_ptr,commit_id);
     const ifb_u32     commit_size_actual = ifb_engine::memory_get_commit_size   (engine_memory_ptr,commit_id);
     memset(commit_ptr,0,commit_size_actual);
 
@@ -59,7 +59,7 @@ ifb_engine::transform_manager_initialize(
 
     //initialize the rest of the manager properties
     transform_manager_ptr->transform_count_max        = transform_count_max;
-    transform_manager_ptr->transform_flag_group_count = transform_count_max / IFB_ENGINE_TRANSFORM_MANAGER_FLAG_GROUP_SIZE;
+    transform_manager_ptr->transform_flag_group_count = transform_count_max / IFB_BIT_FLAG_GROUP_SIZE;
 }
 
 inline void

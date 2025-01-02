@@ -10,15 +10,14 @@
 /* MANAGERS                                                                       */
 /**********************************************************************************/
 
-struct IFBGHNDEngineTagManager      : IFBGHND { };
-struct IFBGHNDEngineArenaManager    : IFBGHND { };
-struct IFBGHNDEngineGraphicsManager : IFBGHND { };
-
 struct IFBEngineContextManagers {
     struct {
-        IFBGHNDEngineTagManager      tag_manager;
-        IFBGHNDEngineArenaManager    arena_manager;
-        IFBGHNDEngineGraphicsManager graphics_manager;
+        IFBGHNDEngineManagerTag       tag;
+        IFBGHNDEngineManagerArena     arena;
+        IFBGHNDEngineManagerGraphics  graphics;
+        IFBGHNDEngineManagerShader    shader;
+        IFBGHNDEngineManagerTransform transform;
+        IFBGHNDEngineManagerSprite    sprite;
     } handles;
 };
 
