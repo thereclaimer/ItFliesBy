@@ -106,10 +106,10 @@ struct IFBEngineManagerArena {
 };
 
 struct IFBEngineManagerArenaData {
-    IFBIDCommit*               array_commit_id;
-    IFBIDTag*                  array_tag_id;
-    ifb_address*               array_start;
-    ifb_u32*                   array_size;
+    IFBIDCommit*               commit_id;
+    IFBIDTag*                  tag_id;
+    ifb_address*               start;
+    ifb_u32*                   size;
     IFBEngineManagerArenaQuery query;
 };
 
@@ -131,16 +131,6 @@ namespace ifb_engine {
     const ifb_ptr      arena_manager_get_arena_pointer   (const IFBEngineManagerArena* arena_manager_ptr, const IFBIDArena arena_id, const ifb_u32 offset);
           
     ifb_void arena_manager_data_query (const IFBEngineManagerArena* arena_manager_ptr,IFBEngineManagerArenaData& arena_manager_data_ref);
-
-    const IFBIDCommit arena_manager_data_get_commit_id   (const IFBEngineManagerArenaData& arena_manager_data_ref, const IFBIDArena arena_id);
-    const IFBIDTag    arena_manager_data_get_tag_id      (const IFBEngineManagerArenaData& arena_manager_data_ref, const IFBIDArena arena_id);
-    const ifb_address arena_manager_data_get_arena_start (const IFBEngineManagerArenaData& arena_manager_data_ref, const IFBIDArena arena_id);
-    const ifb_u32     arena_manager_data_get_arena_size  (const IFBEngineManagerArenaData& arena_manager_data_ref, const IFBIDArena arena_id);    
-
-    ifb_void arena_manager_data_set_commit_id   (IFBEngineManagerArenaData& arena_manager_data_ref, const IFBIDArena arena_id, const IFBIDCommit commit_id);
-    ifb_void arena_manager_data_set_tag_id      (IFBEngineManagerArenaData& arena_manager_data_ref, const IFBIDArena arena_id, const IFBIDTag    tag_id);
-    ifb_void arena_manager_data_set_arena_start (IFBEngineManagerArenaData& arena_manager_data_ref, const IFBIDArena arena_id, const ifb_address start);
-    ifb_void arena_manager_data_set_arena_size  (IFBEngineManagerArenaData& arena_manager_data_ref, const IFBIDArena arena_id, const ifb_u32     arena_size);   
 };
 
 /**********************************************************************************/
@@ -156,21 +146,24 @@ struct IFBEngineManagerGraphics {
     ifb_u16     monitor_primary_index;
 };
 
-struct IFBEngineManagerGraphicsData {
-    IFBWindow*     window;
-    IFBMonitor*    monitor_array;
-    IFBGLViewport* viewport;
+enum IFBEngineMangerGraphicsQuery_ {
+    IFBEngineMangerGraphicsQuery_None     = 0, 
+    IFBEngineMangerGraphicsQuery_Window   = IFB_BIT_FLAG_0,
+    IFBEngineMangerGraphicsQuery_Viewport = IFB_BIT_FLAG_1,
+    IFBEngineMangerGraphicsQuery_Monitors = IFB_BIT_FLAG_2
 };
 
+typedef enum IFBEngineMangerGraphicsQuery;
+
+struct IFBEngineManagerGraphicsData {
+    IFBWindow*                   window;
+    IFBGLViewport*               viewport;
+    IFBMonitor*                  monitors;
+    IFBEngineMangerGraphicsQuery query;
+};
+
+
 namespace ifb_engine {
-
-    ifb_void graphics_manger_initialize(IFBEngineManagerGraphics* graphics_manager_ptr);
-
-    ifb_void
-    graphics_manager_commit_memory(
-              IFBEngineManagerMemoryGraphics& graphics_manager_memory,
-              IFBEngineMemory*                memory_ptr,
-        const ifb_u32                         monitor_count);
 
     ifb_void 
     graphics_manager_create_window (
@@ -186,9 +179,9 @@ namespace ifb_engine {
     const ifb_u32     grahpics_manager_find_primary_monitor_index (const IFBMonitor* monitor_array_ptr);
     const IFBMonitor* graphics_manager_get_monitor                (const IFBEngineManagerGraphics* graphics_manager_ptr, const ifb_u32 monitor_index);
 
-    IFBWindow*     graphics_manager_get_window_pointer        (const IFBEngineManagerGraphics* graphics_manager_ptr, IFBEngineManagerGraphicsData& graphics_manager_data_ref);
-    IFBMonitor*    graphics_manager_get_monitor_array_pointer (const IFBEngineManagerGraphics* graphics_manager_ptr, IFBEngineManagerGraphicsData& graphics_manager_data_ref);
-    IFBGLViewport* graphics_manager_get_viewport              (const IFBEngineManagerGraphics* graphics_manager_ptr, IFBEngineManagerGraphicsData& graphics_manager_data_ref);
+    ifb_void graphics_manager_data_query(
+        const IFBEngineManagerGraphics*     graphics_manager_ptr,
+              IFBEngineManagerGraphicsData& graphics_manager_data_ref);
 };
 
 /**********************************************************************************/
@@ -278,11 +271,33 @@ namespace ifb_engine {
 /* SPRITE MANAGER                                                                 */
 /**********************************************************************************/
 
+enum IFBEngineMangerSpriteQuery_ {
+    IFBEngineMangerSpriteQuery_None            = 0,
+    IFBEngineMangerSpriteQuery_TagId           = IFB_BIT_FLAG_0,
+    IFBEngineMangerSpriteQuery_TransformId     = IFB_BIT_FLAG_1,
+    IFBEngineMangerSpriteQuery_ColorTableIndex = IFB_BIT_FLAG_2,
+    IFBEngineMangerSpriteQuery_Flags           = IFB_BIT_FLAG_3,
+
+    IFBEngineMangerSpriteQuery_SpriteData = (
+        IFBEngineMangerSpriteQuery_TagId       |
+        IFBEngineMangerSpriteQuery_TransformId |
+        IFBEngineMangerSpriteQuery_ColorTableIndex)
+
+    IFBEngineMangerSpriteQuery_All             = (
+        IFBEngineMangerSpriteQuery_TagId           |
+        IFBEngineMangerSpriteQuery_TransformId     |
+        IFBEngineMangerSpriteQuery_ColorTableIndex |
+        IFBEngineMangerSpriteQuery_Flags)
+};
+
+typedef ifb_enum IFBEngineMangerSpriteQuery;
+
 struct IFBEngineManagerSpriteData {
-    IFBIDTag*           array_tag_id;
-    IFBIDTransform*     array_transform_id;
-    IFBColorTableIndex* array_color_table_index;
-    ifb_byte*           array_flags;
+    IFBIDTag*                  tag_id;
+    IFBIDTransform*            transform_id;
+    IFBColorTableIndex*        color_table_index;
+    ifb_byte*                  flags;
+    IFBEngineMangerSpriteQuery query;
 };
 
 struct IFBEngineManagerSprite {
@@ -297,7 +312,7 @@ struct IFBEngineManagerSprite {
 
 namespace ifb_engine {
 
-    void
+    ifb_void
     sprite_manager_reserve_sprites(
               IFBEngineManagerSprite* sprite_manager_ptr,
         const ifb_u32                 sprite_count,
@@ -306,24 +321,23 @@ namespace ifb_engine {
         const IFBColorTableIndex*     sprite_color_table_indexes,
               IFBIDSprite*            sprite_ids);
 
-    void
+    ifb_void
     sprite_manager_release_sprites(
               IFBEngineManagerSprite* sprite_manager_ptr,
         const ifb_u32                 sprite_count,
         const IFBIDSprite*            sprite_ids);
 
-    void
+    ifb_void
     sprite_manager_get_sprites(
               IFBEngineManagerSprite* sprite_manager_ptr,
         const ifb_u32                 sprite_count,
         const IFBIDSprite*            sprite_ids,
               IFBSprite*              sprites);
 
-    IFBIDTransform*     sprite_manager_memory_get_array_transform_id      (const IFBEngineManagerSprite* sprite_manager_ptr, IFBEngineManagerSpriteData& sprite_manager_data_ref);
-    IFBIDTag*           sprite_manager_memory_get_array_tag_id            (const IFBEngineManagerSprite* sprite_manager_ptr, IFBEngineManagerSpriteData& sprite_manager_data_ref);
-    IFBColorTableIndex* sprite_manager_memory_get_array_color_table_index (const IFBEngineManagerSprite* sprite_manager_ptr, IFBEngineManagerSpriteData& sprite_manager_data_ref);
-    ifb_byte*           sprite_manager_memory_get_array_flags             (const IFBEngineManagerSprite* sprite_manager_ptr, IFBEngineManagerSpriteData& sprite_manager_data_ref);
-
+    ifb_void
+    sprite_manager_data_query(
+        const IFBEngineManagerSprite*     sprite_manager_ptr,
+              IFBEngineManagerSpriteData& sprite_manager_data_ref);
 };
 
 /**********************************************************************************/
@@ -354,4 +368,4 @@ namespace ifb_engine {
 
 };
 
-#endif //IFB_ENGINE_INTERNAL_MANAGERS_HPP
+#endif //IFB_ENGINE_INTERNAL_MANAGERS_HPP  
