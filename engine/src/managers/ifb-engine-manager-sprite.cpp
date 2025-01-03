@@ -123,25 +123,3 @@ ifb_engine::sprite_manager_get_sprites(
         sprite_ref.color_table_index = sprite_data.color_table_index [sprite_index];         
     }
 }
-
-inline ifb_void
-ifb_engine::sprite_manager_data_query(
-    const IFBEngineManagerSprite*     sprite_manager_ptr,
-          IFBEngineManagerSpriteData& sprite_manager_data_ref) {
-
-    //get data start and query
-    data_start = sprite_manager_ptr->memory_start;
-    data_query = sprite_manager_data_ref.query;
-
-    //get the addresses of our requested data
-    const ifb_address address_tag_id            = (data_query & IFBEngineMangerSpriteQuery_TagId)           ? (data_start + sprite_manager_ptr->offset_array_tag_id)            : 0;
-    const ifb_address address_transform_id      = (data_query & IFBEngineMangerSpriteQuery_TransformId)     ? (data_start + sprite_manager_ptr->offset_array_transform_id)      : 0;
-    const ifb_address address_color_table_index = (data_query & IFBEngineMangerSpriteQuery_ColorTableIndex) ? (data_start + sprite_manager_ptr->offset_array_color_table_index) : 0;
-    const ifb_address address_flags             = (data_query & IFBEngineMangerSpriteQuery_Flags)           ? (data_start + sprite_manager_ptr->offset_array_flags)             : 0;
-
-    //cast the pointers
-    sprite_manager_data_ref.tag_id            =           (IFBIDTag*)address_tag_id;
-    sprite_manager_data_ref.transform_id      =     (IFBIDTransform*)address_transform_id;
-    sprite_manager_data_ref.color_table_index = (IFBColorTableIndex*)address_color_table_index;
-    sprite_manager_data_ref.flags             =           (ifb_byte*)address_flags;    
-}

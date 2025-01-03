@@ -45,10 +45,9 @@ struct IFBTransform;
 /**********************************************************************************/
 
 struct IFBShader : IFBIDShader {
-    IFBIDTag              tag;
+    IFBIDArena            arena_id;              
     IFBGLIDShaderProgram  gl_shader_program;
     IFBGLIDVertex         gl_vertex;
-    ifb_u32               uniform_count;
 };
 
 /**********************************************************************************/
