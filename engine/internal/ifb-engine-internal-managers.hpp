@@ -283,7 +283,7 @@ enum IFBEngineMangerSpriteQuery_ {
         IFBEngineMangerSpriteQuery_TransformId |
         IFBEngineMangerSpriteQuery_ColorTableIndex)
 
-    IFBEngineMangerSpriteQuery_All             = (
+    IFBEngineMangerSpriteQuery_All = (
         IFBEngineMangerSpriteQuery_TagId           |
         IFBEngineMangerSpriteQuery_TransformId     |
         IFBEngineMangerSpriteQuery_ColorTableIndex |
