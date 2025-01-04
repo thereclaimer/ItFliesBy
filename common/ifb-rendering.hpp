@@ -48,6 +48,9 @@ struct IFBShader : IFBIDShader {
     IFBIDArena            arena_id;              
     IFBGLIDShaderProgram  gl_shader_program;
     IFBGLIDVertex         gl_vertex;
+    ifb_address           vertex_buffer_start;
+    ifb_u32               vertex_buffer_size;
+    ifb_u32               vertex_buffer_position;
 };
 
 /**********************************************************************************/

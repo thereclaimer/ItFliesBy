@@ -3,6 +3,7 @@
 
 #include "ifb-engine.hpp"
 #include "ifb-engine-internal-memory.hpp"
+#include "ifb-engine-internal-data.hpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -25,12 +26,6 @@ struct IFBEngineManagerHandles {
     IFBGHNDEngineManagerSprite    sprite;
 };
 
-struct IFBEngineManagers {
-    IFBEngineManagerHandles handles;
-    IFBIDCommit             commit_id;
-    ifb_address             commit_start;
-};
-
 
 //managers
 struct IFBEngineManagerTag;
@@ -48,222 +43,12 @@ struct IFBEngineManagerDataShader;
 struct IFBEngineManagerDataTransform;
 struct IFBEngineManagerDataSprite;
 
-//queries
-typedef ifb_enum IFBEngineManagerDataFlagsTag;
-typedef ifb_enum IFBEngineManagerDataFlagsArena;
-typedef ifb_enum IFBEngineManagerDataFlagsGraphics;
-typedef ifb_enum IFBEngineManagerDataFlagsShader;
-typedef ifb_enum IFBEngineManagerDataFlagsTransform;
-typedef ifb_enum IFBEngineManagerDataFlagsSprite;
-
-/**********************************************************************************/
-/* MANAGER MEMORY                                                                   */
-/**********************************************************************************/
-
-struct IFBEngineManagerMemory {
-    IFBIDCommit commit_id;
-    ifb_address commit_start;
-    struct {
-        ifb_u16 arena_commit_id;
-        ifb_u16 arena_tag_id;
-        ifb_u16 arena_start;
-        ifb_u16 arena_size;
-        ifb_u16 graphics_window;
-        ifb_u16 graphics_viewport;
-        ifb_u16 graphics_monitors;
-        ifb_u16 shader_arena_id;
-        ifb_u16 shader_gl_shader_program_id;
-        ifb_u16 shader_gl_vertex_id;
-        ifb_u16 transform_translation;
-        ifb_u16 transform_scale;
-        ifb_u16 transform_rotation;
-        ifb_u16 transform_flags;
-        ifb_u16 sprite_tag_id;
-        ifb_u16 sprite_transform_id;
-        ifb_u16 sprite_color_table_index;
-        ifb_u16 sprite_flags;
-    } offsets;
-};
-
-/**********************************************************************************/
-/* MANAGER DATA                                                                   */
-/**********************************************************************************/
-
-enum IFBEngineManagerDataTag_ {
-    IFBEngineManagerDataTag_None           = 0,
-    IFBEngineManagerDataTag_CharBuffer     = IFB_BIT_FLAG_0,
-    IFBEngineManagerDataTag_HashArray      = IFB_BIT_FLAG_1,
-    IFBEngineManagerDataTag_All            = 
-        IFBEngineManagerDataTag_CharBuffer |
-        IFBEngineManagerDataTag_HashArray
-};
-
-enum IFBEngineManagerDataArena_ {
-    IFBEngineManagerDataArena_None           = 0,
-    IFBEngineManagerDataArena_CommitId       = IFB_BIT_FLAG_0, 
-    IFBEngineManagerDataArena_TagId          = IFB_BIT_FLAG_1,
-    IFBEngineManagerDataArena_ArenaStart     = IFB_BIT_FLAG_2,
-    IFBEngineManagerDataArena_ArenaSize      = IFB_BIT_FLAG_3,
-    IFBEngineManagerDataArena_ArenaData      = 
-        IFBEngineManagerDataArena_CommitId   |
-        IFBEngineManagerDataArena_TagId      |
-        IFBEngineManagerDataArena_ArenaStart |
-        IFBEngineManagerDataArena_ArenaSize
-};
-
-enum IFBEngineManagerDataGraphics_ {
-    IFBEngineManagerDataGraphics_None         = 0, 
-    IFBEngineManagerDataGraphics_Window       = IFB_BIT_FLAG_0,
-    IFBEngineManagerDataGraphics_Viewport     = IFB_BIT_FLAG_1,
-    IFBEngineManagerDataGraphics_Monitors     = IFB_BIT_FLAG_2,
-    IFBEngineManagerDataGraphics_GraphicsData = 
-        IFBEngineManagerDataGraphics_Window   |
-        IFBEngineManagerDataGraphics_Viewport |
-        IFBEngineManagerDataGraphics_Monitors
-};
-
-enum IFBEngineManagerDataShader_ {
-    IFBEngineManagerDataShader_None                  = 0,
-    IFBEngineManagerDataShader_ArenaId               = IFB_BIT_FLAG_0,
-    IFBEngineManagerDataShader_GLIDShaderProgram     = IFB_BIT_FLAG_1,
-    IFBEngineManagerDataShader_GLIDVertex            = IFB_BIT_FLAG_2,
-    IFBEngineManagerDataShader_ShaderData            = ,
-        IFBEngineManagerDataShader_ArenaId           |
-        IFBEngineManagerDataShader_GLIDShaderProgram |
-        IFBEngineManagerDataShader_GLIDVertex
-};
-
-enum IFBEngineManagerDataTransform_ {
-    IFBEngineManagerDataTransform_None           = 0,
-    IFBEngineManagerDataTransform_Translation    = IFB_BIT_FLAG_0,
-    IFBEngineManagerDataTransform_Scale          = IFB_BIT_FLAG_1,
-    IFBEngineManagerDataTransform_Rotation       = IFB_BIT_FLAG_2,
-    IFBEngineManagerDataTransform_Flags          = IFB_BIT_FLAG_3,
-    IFBEngineManagerDataTransform_TransformData  =
-       IFBEngineManagerDataTransform_Translation |
-       IFBEngineManagerDataTransform_Scale       |
-       IFBEngineManagerDataTransform_Rotation,
-    IFBEngineManagerDataTransform_All            = 
-       IFBEngineManagerDataTransform_Translation |
-       IFBEngineManagerDataTransform_Scale       |
-       IFBEngineManagerDataTransform_Rotation    |
-       IFBEngineManagerDataTransform_Flags
-};
-
-enum IFBEngineManagerDataSprite_ {
-    IFBEngineManagerDataSprite_None               = 0,
-    IFBEngineManagerDataSprite_TagId              = IFB_BIT_FLAG_0,
-    IFBEngineManagerDataSprite_TransformId        = IFB_BIT_FLAG_1,
-    IFBEngineManagerDataSprite_ColorTableIndex    = IFB_BIT_FLAG_2,
-    IFBEngineManagerDataSprite_Flags              = IFB_BIT_FLAG_3,
-    IFBEngineManagerDataSprite_SpriteData         = 
-       IFBEngineManagerDataSprite_TagId           |
-       IFBEngineManagerDataSprite_TransformId     |
-       IFBEngineManagerDataSprite_ColorTableIndex,
-    IFBEngineManagerDataSprite_All                = 
-       IFBEngineManagerDataSprite_TagId           |
-       IFBEngineManagerDataSprite_TransformId     |
-       IFBEngineManagerDataSprite_ColorTableIndex |
-       IFBEngineManagerDataSprite_Flags
-};
-
-struct IFBEngineManagerDataTableTag {
-    ifb_char* char_buffer;
-    IFBHash*  hash_array;
-};
-
-struct IFBEngineManageraDataTableArena {
-    IFBIDCommit* commit_id;
-    IFBIDTag*    tag_id;
-    ifb_address* start;
-    ifb_u32*     size;
-};
-
-struct IFBEngineManagerDataTableGraphics {
-    IFBWindow*     window;
-    IFBGLViewport* viewport;
-    IFBMonitor*    monitors;
-};
-
-struct IFBEngineManagerDataTableShader {
-    IFBIDArena*           arena_id;
-    IFBGLIDShaderProgram* gl_shader_program_id;
-    IFBGLIDVertex*        gl_vertex_id;
-};
-
-struct IFBEngineManagerDataTableTransform {
-    IFBVec2*  translation; 
-    IFBVec2*  scale;
-    ifb_f32*  rotation;
-    ifb_byte* flags;
-};
-
-struct IFBEngineManagerDataTableSprite {
-    IFBIDTag*           tag_id;
-    IFBIDTransform*     transform_id;
-    IFBColorTableIndex* color_table_index;
-    ifb_byte*           flags;
-};
-
-struct IFBEngineManagerDataTables {
-    IFBEngineManagerDataTableTag       tag;
-    IFBEngineManagerDataTableArena     arena; 
-    IFBEngineManagerDataTableGraphics  graphics; 
-    IFBEngineManagerDataTableShader    shader; 
-    IFBEngineManagerDataTableTransform transform; 
-    IFBEngineManagerDataTableSprite    sprite; 
-};
-
-#define IFB_ENGINE_MANAGER_DATA_PROPERTIES_COUNT (sizeof(IFBEngineManagerDataTables) / sizeof(ifb_ptr))
-
-struct IFBEngineManagerDataQuery {
-    ifb_u32 data_request_count;
-    struct {
-        IFBEngineManagerDataFlagsTag       tag;
-        IFBEngineManagerDataFlagsArena     arena;
-        IFBEngineManagerDataFlagsGraphics  graphics;
-        IFBEngineManagerDataFlagsShader    shader;
-        IFBEngineManagerDataFlagsTransform transform;
-        IFBEngineManagerDataFlagsSprite    sprite;
-    } data_flags;
-    ifb_ptr data_pointers[IFB_ENGINE_MANAGER_DATA_PROPERTIES_COUNT];
-};
-
-namespace ifb_engine {
-
-    ifb_void manager_data_query_execute();
-
-    ifb_void manger_data_query_add_tag_char_buffer             (IFBEngineManagerDataQuery& data_query_ref);
-    ifb_void manger_data_query_add_tag_hash_array              (IFBEngineManagerDataQuery& data_query_ref);
-    ifb_void manger_data_query_add_arena_commit_id             (IFBEngineManagerDataQuery& data_query_ref);
-    ifb_void manger_data_query_add_arena_tag_id                (IFBEngineManagerDataQuery& data_query_ref);
-    ifb_void manger_data_query_add_arena_start                 (IFBEngineManagerDataQuery& data_query_ref);
-    ifb_void manger_data_query_add_arena_size                  (IFBEngineManagerDataQuery& data_query_ref);
-    ifb_void manger_data_query_add_graphics_window             (IFBEngineManagerDataQuery& data_query_ref);
-    ifb_void manger_data_query_add_graphics_viewport           (IFBEngineManagerDataQuery& data_query_ref);
-    ifb_void manger_data_query_add_graphics_monitors           (IFBEngineManagerDataQuery& data_query_ref);
-    ifb_void manger_data_query_add_shader_arena_id             (IFBEngineManagerDataQuery& data_query_ref);
-    ifb_void manger_data_query_add_shader_gl_shader_program_id (IFBEngineManagerDataQuery& data_query_ref);
-    ifb_void manger_data_query_add_shader_gl_vertex_id         (IFBEngineManagerDataQuery& data_query_ref);
-    ifb_void manger_data_query_add_transform_translation       (IFBEngineManagerDataQuery& data_query_ref);
-    ifb_void manger_data_query_add_transform_scale             (IFBEngineManagerDataQuery& data_query_ref);
-    ifb_void manger_data_query_add_transform_rotation          (IFBEngineManagerDataQuery& data_query_ref);
-    ifb_void manger_data_query_add_transform_flags             (IFBEngineManagerDataQuery& data_query_ref);
-    ifb_void manger_data_query_add_sprite_tag_id               (IFBEngineManagerDataQuery& data_query_ref);
-    ifb_void manger_data_query_add_sprite_transform_id         (IFBEngineManagerDataQuery& data_query_ref);
-    ifb_void manger_data_query_add_sprite_color_table_index    (IFBEngineManagerDataQuery& data_query_ref);
-    ifb_void manger_data_query_add_sprite_flags                (IFBEngineManagerDataQuery& data_query_ref);
-
-};
 
 /**********************************************************************************/
 /* TAG MANAGER                                                                    */
 /**********************************************************************************/
 
 struct IFBEngineManagerTag {
-    ifb_address memory_start;
-    ifb_u16     offset_char_buffer;
-    ifb_u16     offset_hash_array;
     ifb_u16     tag_c_str_length;
     ifb_u16     tag_count_max;
 };
