@@ -157,7 +157,7 @@ ifb_math::mat3_transform(
 }
 
 inline void 
-ifb_engine::mat3_batch_transform(
+ifb_math::mat3_batch_transform(
           IFBMat3*      m3_trs,
     const ifb_u32       count,
     const IFBTransform* transform) {
@@ -169,11 +169,11 @@ ifb_engine::mat3_batch_transform(
 
         const IFBTransform& transform_ref = transform[index];
 
-        ifb_engine::mat3_transform(
-            m3_trs[index],
-            transform_ref.translation,
-            transform_ref.scale,
-            transform_ref.rotation_radians);
+        // ifb_math::mat3_transform(
+        //     m3_trs[index],
+        //     transform_ref.translation,
+        //     transform_ref.scale,
+        //     transform_ref.rotation_radians);
     }
 
 }

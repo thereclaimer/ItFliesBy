@@ -3,37 +3,8 @@
 
 #include "ifb-engine.hpp"
 #include "ifb-engine-internal-platform.hpp"
-#include "ifb-engine-internal-allocators.hpp"
 #include "ifb-engine-internal-devtools.hpp"
 #include "ifb-engine-internal-data.hpp"
-
-/**********************************************************************************/
-/* MANAGERS                                                                       */
-/**********************************************************************************/
-
-struct IFBEngineContextManagers {
-    struct {
-        IFBGHNDEngineManagerTag       tag;
-        IFBGHNDEngineManagerArena     arena;
-        IFBGHNDEngineManagerGraphics  graphics;
-        IFBGHNDEngineManagerShader    shader;
-        IFBGHNDEngineManagerTransform transform;
-        IFBGHNDEngineManagerSprite    sprite;
-    } handles;
-};
-
-namespace ifb_engine {
-
-    ifb_void
-    context_managers_create_all(
-              IFBEngineContextManagers* managers_ptr, 
-              IFBEngineMemory*          memory_ptr, 
-        const IFBEngineConfig*          config_ptr);
-        
-    IFBEngineManagerTag*      context_managers_get_tag_manager      (const IFBEngineContextManagers* managers_ptr);
-    IFBEngineManagerArena*    context_managers_get_arena_manager    (const IFBEngineContextManagers* managers_ptr);
-    IFBEngineManagerGraphics* context_managers_get_graphics_manager (const IFBEngineContextManagers* managers_ptr);
-};
 
 /**********************************************************************************/
 /* CONTEXT CORE                                                                   */

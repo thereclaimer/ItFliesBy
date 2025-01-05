@@ -13,13 +13,13 @@ namespace ifb_engine {
 
     const ifb_b8 tag_update_value (const IFBIDTag  tag_id,    const ifb_char* tag_value_array);
     const ifb_b8 tag_reserve      (const ifb_char* tag_value,       IFBIDTag& tag_id_ref);
-    const ifb_b8 tag_find         (const ifb_char* tag_value,       IFBIDTag& tag_id_array_ref)
+    const ifb_b8 tag_find         (const ifb_char* tag_value,       IFBIDTag& tag_id_array_ref);
     const ifb_b8 tag_get          (const IFBIDTag  tag_id_array,    IFBTag&   tag_ref);
     const ifb_b8 tag_release      (const IFBIDTag  tag_id);
 
     const ifb_b8 tag_update_value (const ifb_u32 tag_count, const IFBIDTag*  tag_id_array,    const ifb_char** tag_value_array);
     const ifb_b8 tag_reserve      (const ifb_u32 tag_count, const ifb_char** tag_value_array, IFBIDTag*        tag_id_array);
-    const ifb_b8 tag_find         (const ifb_u32 tag_count, const ifb_char** tag_value_array, IFBIDTag*        tag_id_array)
+    const ifb_b8 tag_find         (const ifb_u32 tag_count, const ifb_char** tag_value_array, IFBIDTag*        tag_id_array);
     const ifb_b8 tag_get          (const ifb_u32 tag_count, const IFBIDTag*  tag_id_array,    IFBTag*          tag_array);
     const ifb_b8 tag_release      (const ifb_u32 tag_count, const IFBIDTag*  tag_id_array);
 };

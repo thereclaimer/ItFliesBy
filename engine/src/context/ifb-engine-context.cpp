@@ -13,19 +13,6 @@ ifb_engine::context_get_memory(
     return(&context_ref.memory);
 }
 
-inline IFBEngineContextManagers*
-ifb_engine::context_get_managers(
-    ifb_void) {
-
-    IFBEngineContext& context_ref = ifb_engine::context();
-
-    IFBEngineContextManagers* managers_ptr = (IFBEngineContextManagers*)ifb_engine::memory_get_pointer(
-        &context_ref.memory,
-        context_ref.handles.managers);
-
-    return(managers_ptr);
-}
-
 inline IFBEngineContextCore*
 ifb_engine::context_get_core(
     ifb_void) {

@@ -224,11 +224,6 @@ namespace ifb_engine {
 
 namespace ifb_engine {
 
-    ifb_void 
-    managers_initialize(
-        IFBEngineManagers* managers_ptr,
-        IFBEngineMemory*   engine_memory_ptr,
-        IFBEngineConfig*   engine_config);
 
     IFBEngineManagerTag*       managers_get_manager_tag       (const IFBEngineManagerHandles* manager_handles_ptr, const IFBEngineMemory* engine_memory_ptr);
     IFBEngineManagerArena*     managers_get_manager_arena     (const IFBEngineManagerHandles* manager_handles_ptr, const IFBEngineMemory* engine_memory_ptr);
