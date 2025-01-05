@@ -355,18 +355,23 @@ struct IFBEngineDataMemory {
 namespace ifb_engine {
 
     ifb_ptr               data_memory_get_pointer                               (const IFBEngineDataMemory& data_memory_ref, const ifb_u16                        data_offset);
+    
+    //tag
     ifb_char*             data_memory_get_pointer_tag_char_buffer               (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsTag&       data_offsets_tag_ref);
     IFBHash*              data_memory_get_pointer_tag_hash_array                (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsTag&       data_offsets_tag_ref);
     
+    //arena
     IFBIDCommit*          data_memory_get_pointer_arena_commit_id               (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsArena&     data_offsets_arena_ref);
     IFBIDTag*             data_memory_get_pointer_arena_tag_id                  (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsArena&     data_offsets_arena_ref);
     ifb_address*          data_memory_get_pointer_arena_start                   (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsArena&     data_offsets_arena_ref);
     ifb_u32*              data_memory_get_pointer_arena_size                    (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsArena&     data_offsets_arena_ref);
     
+    //graphics
     IFBWindow*            data_memory_get_pointer_graphics_window               (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsGraphics&  data_offsets_graphics_ref);
     IFBGLViewport*        data_memory_get_pointer_graphics_viewport             (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsGraphics&  data_offsets_graphics_ref);
     IFBMonitor*           data_memory_get_pointer_graphics_monitors             (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsGraphics&  data_offsets_graphics_ref);
     
+    //shader
     IFBIDArena*           data_memory_get_pointer_shader_arena_id               (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsShader&    data_offsets_shader_ref);
     IFBGLIDShaderProgram* data_memory_get_pointer_shader_gl_shader_program_id   (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsShader&    data_offsets_shader_ref);
     IFBGLIDVertex*        data_memory_get_pointer_shader_gl_vertex_id           (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsShader&    data_offsets_shader_ref);
@@ -375,11 +380,13 @@ namespace ifb_engine {
     ifb_u32*              data_memory_get_pointer_shader_vertex_buffer_size     (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsShader&    data_offsets_shader_ref);
     ifb_u32*              data_memory_get_pointer_shader_vertex_buffer_position (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsShader&    data_offsets_shader_ref);
     
+    //transform
     IFBVec2*              data_memory_get_pointer_transform_translation         (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsTransform& data_offsets_transform_ref);
     IFBVec2*              data_memory_get_pointer_transform_scale               (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsTransform& data_offsets_transform_ref);
     ifb_f32*              data_memory_get_pointer_transform_rotation            (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsTransform& data_offsets_transform_ref);
     ifb_byte*             data_memory_get_pointer_transform_flags               (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsTransform& data_offsets_transform_ref);
     
+    //sprite
     IFBIDTag*             data_memory_get_pointer_sprite_tag_id                 (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsSprite&    data_offsets_sprite_ref);
     IFBIDTransform*       data_memory_get_pointer_sprite_transform_id           (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsSprite&    data_offsets_sprite_ref);
     IFBColorTableIndex*   data_memory_get_pointer_sprite_color_table_index      (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsSprite&    data_offsets_sprite_ref);
@@ -407,37 +414,114 @@ struct IFBEngineDataQuery {
 
 namespace ifb_engine {
 
-    ifb_void data_query_add_tag_char_buffer               (IFBEngineDataQuery* data_query_ptr);
-    ifb_void data_query_add_tag_hash_array                (IFBEngineDataQuery* data_query_ptr);
+    //------------------------
+    // request add property
+    //------------------------
     
-    ifb_void data_query_add_arena_commit_id               (IFBEngineDataQuery* data_query_ptr);
-    ifb_void data_query_add_arena_tag_id                  (IFBEngineDataQuery* data_query_ptr);
-    ifb_void data_query_add_arena_start                   (IFBEngineDataQuery* data_query_ptr);
-    ifb_void data_query_add_arena_size                    (IFBEngineDataQuery* data_query_ptr);
-    
-    ifb_void data_query_add_graphics_window               (IFBEngineDataQuery* data_query_ptr);
-    ifb_void data_query_add_graphics_viewport             (IFBEngineDataQuery* data_query_ptr);
-    ifb_void data_query_add_graphics_monitors             (IFBEngineDataQuery* data_query_ptr);
-    
-    ifb_void data_query_add_shader_arena_id               (IFBEngineDataQuery* data_query_ptr);
-    ifb_void data_query_add_shader_gl_shader_program_id   (IFBEngineDataQuery* data_query_ptr);
-    ifb_void data_query_add_shader_gl_vertex_id           (IFBEngineDataQuery* data_query_ptr);
-    ifb_void data_query_add_shader_vertex_size            (IFBEngineDataQuery* data_query_ptr);
-    ifb_void data_query_add_shader_vertex_buffer_start    (IFBEngineDataQuery* data_query_ptr);
-    ifb_void data_query_add_shader_vertex_buffer_size     (IFBEngineDataQuery* data_query_ptr);
-    ifb_void data_query_add_shader_vertex_buffer_position (IFBEngineDataQuery* data_query_ptr);
-    
-    ifb_void data_query_add_transform_translation         (IFBEngineDataQuery* data_query_ptr);
-    ifb_void data_query_add_transform_scale               (IFBEngineDataQuery* data_query_ptr);
-    ifb_void data_query_add_transform_rotation            (IFBEngineDataQuery* data_query_ptr);
-    ifb_void data_query_add_transform_flags               (IFBEngineDataQuery* data_query_ptr);
-    
-    ifb_void data_query_add_sprite_tag_id                 (IFBEngineDataQuery* data_query_ptr);
-    ifb_void data_query_add_sprite_transform_id           (IFBEngineDataQuery* data_query_ptr);
-    ifb_void data_query_add_sprite_color_table_index      (IFBEngineDataQuery* data_query_ptr);
-    ifb_void data_query_add_sprite_flags                  (IFBEngineDataQuery* data_query_ptr);
+    ifb_void data_query_request_add_tag_char_buffer                   (IFBEngineDataQueryRequest& data_query_request_ref);
+    ifb_void data_query_request_add_tag_hash_array                    (IFBEngineDataQueryRequest& data_query_request_ref);
 
+    ifb_void data_query_request_add_arena_commit_id                   (IFBEngineDataQueryRequest& data_query_request_ref);
+    ifb_void data_query_request_add_arena_tag_id                      (IFBEngineDataQueryRequest& data_query_request_ref);
+    ifb_void data_query_request_add_arena_start                       (IFBEngineDataQueryRequest& data_query_request_ref);
+    ifb_void data_query_request_add_arena_size                        (IFBEngineDataQueryRequest& data_query_request_ref);
+
+    ifb_void data_query_request_add_graphics_window                   (IFBEngineDataQueryRequest& data_query_request_ref);
+    ifb_void data_query_request_add_graphics_viewport                 (IFBEngineDataQueryRequest& data_query_request_ref);
+    ifb_void data_query_request_add_graphics_monitors                 (IFBEngineDataQueryRequest& data_query_request_ref);
+
+    ifb_void data_query_request_add_shader_arena_id                   (IFBEngineDataQueryRequest& data_query_request_ref);
+    ifb_void data_query_request_add_shader_gl_shader_program_id       (IFBEngineDataQueryRequest& data_query_request_ref);
+    ifb_void data_query_request_add_shader_gl_vertex_id               (IFBEngineDataQueryRequest& data_query_request_ref);
+    ifb_void data_query_request_add_shader_vertex_size                (IFBEngineDataQueryRequest& data_query_request_ref);
+    ifb_void data_query_request_add_shader_vertex_buffer_start        (IFBEngineDataQueryRequest& data_query_request_ref);
+    ifb_void data_query_request_add_shader_vertex_buffer_size         (IFBEngineDataQueryRequest& data_query_request_ref);
+    ifb_void data_query_request_add_shader_vertex_buffer_position     (IFBEngineDataQueryRequest& data_query_request_ref);
+
+    ifb_void data_query_request_add_transform_translation             (IFBEngineDataQueryRequest& data_query_request_ref);
+    ifb_void data_query_request_add_transform_scale                   (IFBEngineDataQueryRequest& data_query_request_ref);
+    ifb_void data_query_request_add_transform_rotation                (IFBEngineDataQueryRequest& data_query_request_ref);
+    ifb_void data_query_request_add_transform_flags                   (IFBEngineDataQueryRequest& data_query_request_ref);
+
+    ifb_void data_query_request_add_sprite_tag_id                     (IFBEngineDataQueryRequest& data_query_request_ref);
+    ifb_void data_query_request_add_sprite_transform_id               (IFBEngineDataQueryRequest& data_query_request_ref);
+    ifb_void data_query_request_add_sprite_color_table_index          (IFBEngineDataQueryRequest& data_query_request_ref);
+    ifb_void data_query_request_add_sprite_flags                      (IFBEngineDataQueryRequest& data_query_request_ref);
     
+    //------------------------
+    // request has property
+    //------------------------
+
+    const ifb_b8 data_query_request_has_properties_tag                (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_properties_arena              (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_properties_graphics           (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_properties_shader             (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_properties_transform          (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_properties_sprite             (const IFBEngineDataQueryRequest& data_query_request_ref);
+
+    const ifb_b8 data_query_request_has_tag_char_buffer               (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_tag_hash_array                (const IFBEngineDataQueryRequest& data_query_request_ref);
+    
+    const ifb_b8 data_query_request_has_arena_commit_id               (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_arena_tag_id                  (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_arena_start                   (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_arena_size                    (const IFBEngineDataQueryRequest& data_query_request_ref);
+    
+    const ifb_b8 data_query_request_has_graphics_window               (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_graphics_viewport             (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_graphics_monitors             (const IFBEngineDataQueryRequest& data_query_request_ref);
+    
+    const ifb_b8 data_query_request_has_shader_arena_id               (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_shader_gl_shader_program_id   (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_shader_gl_vertex_id           (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_shader_vertex_size            (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_shader_vertex_buffer_start    (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_shader_vertex_buffer_size     (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_shader_vertex_buffer_position (const IFBEngineDataQueryRequest& data_query_request_ref);
+    
+    const ifb_b8 data_query_request_has_transform_translation         (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_transform_scale               (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_transform_rotation            (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_transform_flags               (const IFBEngineDataQueryRequest& data_query_request_ref);
+    
+    const ifb_b8 data_query_request_has_sprite_tag_id                 (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_sprite_transform_id           (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_sprite_color_table_index      (const IFBEngineDataQueryRequest& data_query_request_ref);
+    const ifb_b8 data_query_request_has_sprite_flags                  (const IFBEngineDataQueryRequest& data_query_request_ref);
+    
+    //------------------------
+    // result add property
+    //------------------------
+
+    const ifb_b8 data_query_result_add_tag_char_buffer                (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    const ifb_b8 data_query_result_add_tag_hash_array                 (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    
+    const ifb_b8 data_query_result_add_arena_commit_id                (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    const ifb_b8 data_query_result_add_arena_tag_id                   (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    const ifb_b8 data_query_result_add_arena_start                    (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    const ifb_b8 data_query_result_add_arena_size                     (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    
+    const ifb_b8 data_query_result_add_graphics_window                (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    const ifb_b8 data_query_result_add_graphics_viewport              (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    const ifb_b8 data_query_result_add_graphics_monitors              (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    
+    const ifb_b8 data_query_result_add_shader_arena_id                (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    const ifb_b8 data_query_result_add_shader_gl_shader_program_id    (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    const ifb_b8 data_query_result_add_shader_gl_vertex_id            (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    const ifb_b8 data_query_result_add_shader_vertex_size             (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    const ifb_b8 data_query_result_add_shader_vertex_buffer_start     (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    const ifb_b8 data_query_result_add_shader_vertex_buffer_size      (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    const ifb_b8 data_query_result_add_shader_vertex_buffer_position  (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    
+    const ifb_b8 data_query_result_add_transform_translation          (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    const ifb_b8 data_query_result_add_transform_scale                (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    const ifb_b8 data_query_result_add_transform_rotation             (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    const ifb_b8 data_query_result_add_transform_flags                (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    
+    const ifb_b8 data_query_result_add_sprite_tag_id                  (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    const ifb_b8 data_query_result_add_sprite_transform_id            (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    const ifb_b8 data_query_result_add_sprite_color_table_index       (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
+    const ifb_b8 data_query_result_add_sprite_flags                   (const IFBEngineDataQueryResult& data_query_result_ref, const IFBEngineDataStore* data_store_ptr);
 
 };
 
