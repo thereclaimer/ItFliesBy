@@ -5,6 +5,7 @@
 #include "ifb-engine-internal-platform.hpp"
 #include "ifb-engine-internal-allocators.hpp"
 #include "ifb-engine-internal-devtools.hpp"
+#include "ifb-engine-internal-data.hpp"
 
 /**********************************************************************************/
 /* MANAGERS                                                                       */
@@ -48,16 +49,16 @@ struct IFBEngineContextCore {
 /* CONTEXT                                                                        */
 /**********************************************************************************/
 
-struct IFBGHNDEngineContextManagers  : IFBGHND { };
-struct IFBGHNDEngineContextCore      : IFBGHND { }; 
-struct IFBGHNDEngineDevTools         : IFBGHND { };
+struct IFBGHNDEngineContextCore : IFBGHND { }; 
+struct IFBGHNDEngineDevTools    : IFBGHND { };
+struct IFBGHNDEngineDataStore   : IFBGHND { };
 
 struct IFBEngineContext {
     IFBEngineMemory memory;
     struct {
-        IFBGHNDEngineContextManagers managers;
-        IFBGHNDEngineContextCore     core;
-        IFBGHNDEngineDevTools        devtools;
+        IFBGHNDEngineDataStore   data_store;
+        IFBGHNDEngineContextCore core;
+        IFBGHNDEngineDevTools    devtools;
     } handles;
     IFBEngineConfig config;
 };
@@ -68,11 +69,11 @@ namespace ifb_engine {
 
     IFBEngineContext& context() { return(_context); }
 
-    IFBEngineMemory*          context_get_memory   (ifb_void);
-    IFBEngineContextManagers* context_get_managers (ifb_void);
-    IFBEngineContextCore*     context_get_core     (ifb_void);
-    IFBEngineConfig*          context_get_config   (ifb_void);
-    IFBEngineDevTools*        context_get_devtools (ifb_void);
+    IFBEngineMemory*          context_get_memory     (ifb_void);
+    IFBEngineDataStore*       context_get_data_store (ifb_void);
+    IFBEngineContextCore*     context_get_core       (ifb_void);
+    IFBEngineConfig*          context_get_config     (ifb_void);
+    IFBEngineDevTools*        context_get_devtools   (ifb_void);
 
     const ifb_ptr context_get_pointer (const IFBHND&  handle);
     const ifb_ptr context_get_pointer (const IFBGHND& global_handle);
