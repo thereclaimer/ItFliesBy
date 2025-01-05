@@ -201,7 +201,7 @@ enum IFBEngineDataPropertiesSprite_ {
        IFBEngineDataPropertiesSprite_ColorTableIndex |
        IFBEngineDataPropertiesSprite_Flags
 };
-
+ 
 struct IFBEngineDataProperties {
     IFBEngineDataPropertiesTag       tag;
     IFBEngineDataPropertiesArena     arena;
@@ -354,11 +354,6 @@ struct IFBEngineDataMemory {
 
 namespace ifb_engine {
 
-    ifb_void 
-    data_memory_commit(
-        IFBEngineDataMemory& data_memory_ref,
-        IFBEngineMemory*     engine_memory_ptr);
-
     ifb_ptr               data_memory_get_pointer                               (const IFBEngineDataMemory& data_memory_ref, const ifb_u16                        data_offset);
     ifb_char*             data_memory_get_pointer_tag_char_buffer               (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsTag&       data_offsets_tag_ref);
     IFBHash*              data_memory_get_pointer_tag_hash_array                (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsTag&       data_offsets_tag_ref);
@@ -374,11 +369,11 @@ namespace ifb_engine {
     
     IFBIDArena*           data_memory_get_pointer_shader_arena_id               (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsShader&    data_offsets_shader_ref);
     IFBGLIDShaderProgram* data_memory_get_pointer_shader_gl_shader_program_id   (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsShader&    data_offsets_shader_ref);
-    IFBGLIDVertex*        data_memory_get_pointer_shader_gl_vertex_id           (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsShader&    data_offsets_shader_ref));
-    ifb_u32*              data_memory_get_pointer_shader_vertex_size            (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsShader&    data_offsets_shader_ref));
-    ifb_address*          data_memory_get_pointer_shader_vertex_buffer_start    (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsShader&    data_offsets_shader_ref));
-    ifb_u32*              data_memory_get_pointer_shader_vertex_buffer_size     (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsShader&    data_offsets_shader_ref));
-    ifb_u32*              data_memory_get_pointer_shader_vertex_buffer_position (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsShader&    data_offsets_shader_ref));
+    IFBGLIDVertex*        data_memory_get_pointer_shader_gl_vertex_id           (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsShader&    data_offsets_shader_ref);
+    ifb_u32*              data_memory_get_pointer_shader_vertex_size            (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsShader&    data_offsets_shader_ref);
+    ifb_address*          data_memory_get_pointer_shader_vertex_buffer_start    (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsShader&    data_offsets_shader_ref);
+    ifb_u32*              data_memory_get_pointer_shader_vertex_buffer_size     (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsShader&    data_offsets_shader_ref);
+    ifb_u32*              data_memory_get_pointer_shader_vertex_buffer_position (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsShader&    data_offsets_shader_ref);
     
     IFBVec2*              data_memory_get_pointer_transform_translation         (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsTransform& data_offsets_transform_ref);
     IFBVec2*              data_memory_get_pointer_transform_scale               (const IFBEngineDataMemory& data_memory_ref, const IFBEngineDataOffsetsTransform& data_offsets_transform_ref);
@@ -441,6 +436,9 @@ namespace ifb_engine {
     ifb_void data_query_add_sprite_transform_id           (IFBEngineDataQuery* data_query_ptr);
     ifb_void data_query_add_sprite_color_table_index      (IFBEngineDataQuery* data_query_ptr);
     ifb_void data_query_add_sprite_flags                  (IFBEngineDataQuery* data_query_ptr);
+
+    
+
 };
 
 /**********************************************************************************/
@@ -457,13 +455,20 @@ struct IFBEngineDataStore {
 namespace ifb_engine {
 
     ifb_void
-    data_manager_initialize(
+    data_store_initialize(
         IFBEngineDataStore* data_store_ptr,
         IFBEngineMemory*    engine_memory_ptr,
         IFBEngineConfig*    engine_config_ptr);
 
+
+    ifb_void 
+    data_store_commit_memory(
+        IFBEngineDataMemory& data_memory_ref,
+        IFBEngineMemory*     engine_memory_ptr);
+
+
     ifb_void
-    data_manager_execute_query(
+    data_store_execute_query(
         IFBEngineDataStore* data_store_ptr,
         IFBEngineDataQuery* data_query_ptr);
 };
