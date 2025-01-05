@@ -10,15 +10,15 @@ ifb_engine::data_store_initialize(
 
 }
 
-inline ifb_void
-ifb_engine::data_store_commit_memory(
-    IFBEngineDataStore* data_store_ptr,
-    IFBEngineDataQuery* data_query_ptr) {
+// inline ifb_void
+// ifb_engine::data_store_commit_memory(
+//     IFBEngineDataStore* data_store_ptr,
+//     IFBEngineDataQuery* data_query_ptr) {
 
-}
+// }
 
 
-inline ifb_void
+inline const ifb_b8
 ifb_engine::data_store_execute_query(
     IFBEngineDataStore* data_store_ptr,
     IFBEngineDataQuery* data_query_ptr) {
@@ -68,4 +68,9 @@ ifb_engine::data_store_execute_query(
         if (data_query_request_has_sprite_flags             (request)) ifb_engine::data_query_result_add_sprite_flags             (result, data_store_ptr);
     }
 
+    //make sure the count in the result is the count we requested
+    const ifb_b8 result = request.property_count == result.property_count;
+
+    //we're done 
+    return(result);
 }

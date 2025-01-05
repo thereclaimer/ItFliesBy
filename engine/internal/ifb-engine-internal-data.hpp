@@ -529,9 +529,20 @@ namespace ifb_engine {
 /* DATA STORE                                                                     */
 /**********************************************************************************/
 
+struct IFBEngineDataInfo {
+    ifb_u16 count_tags;
+    ifb_u16 count_arenas;
+    ifb_u16 arena_size;
+    ifb_u16 count_monitors;
+    ifb_u16 count_shaders;
+    ifb_u16 count_transforms;
+    ifb_u16 count_sprites;
+};
+
 struct IFBEngineDataStore {
     IFBEngineDataMemory  memory;
     IFBEngineDataOffsets offsets;
+    IFBEngineDataInfo    info;
     IFBEngineDataConfig  config;
     IFBEngineDataSizes   sizes;
 };
@@ -551,10 +562,12 @@ namespace ifb_engine {
         IFBEngineMemory*     engine_memory_ptr);
 
 
-    ifb_void
+    const ifb_b8
     data_store_execute_query(
         IFBEngineDataStore* data_store_ptr,
         IFBEngineDataQuery* data_query_ptr);
+
+    const IFBEngineDataInfo& data_store_get_info(IFBEngineDataStore* data_store_ptr) { return(data_store_ptr->info); }
 };
 
 #endif //IFB_ENGINE_INTERNAL_DATA_HPP

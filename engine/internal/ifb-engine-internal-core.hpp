@@ -116,7 +116,7 @@ namespace ifb_engine {
     const ifb_b8 shader_get                        (const IFBIDShader shader_id, IFBShader&            shader_ref);
     const ifb_b8 shader_get_tag                    (const IFBIDShader shader_id, IFBTag&               shader_tag_ref);
     const ifb_b8 shader_get_arena                  (const IFBIDShader shader_id, IFBArena&             shader_arena);
-    const ifb_b8 shader_get_gl_program_id          (const IFBIDShader shader_id, IFBGLIDShaderProgram& shader_gl_program_id_ref;
+    const ifb_b8 shader_get_gl_program_id          (const IFBIDShader shader_id, IFBGLIDShaderProgram& shader_gl_program_id_ref);
     const ifb_b8 shader_get_gl_vertex_id           (const IFBIDShader shader_id, IFBGLIDVertex&        shader_gl_vertex_id_ref);
     const ifb_b8 shader_get_vertex_size            (const IFBIDShader shader_id, ifb_u32&              shader_vertex_size_ref);
     const ifb_b8 shader_get_vertex_buffer_start    (const IFBIDShader shader_id, ifb_address&          shader_vertex_buffer_start_ref);
