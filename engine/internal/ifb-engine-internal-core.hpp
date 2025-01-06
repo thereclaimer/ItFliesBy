@@ -38,17 +38,16 @@ namespace ifb_engine {
         const ifb_char*   arena_tag_value,
               IFBIDArena& arena_id_ref);
     
-    const ifb_b8 arena_get                (const IFBIDArena arena_id, IFBArena&    arena_ref);
-    const ifb_b8 arena_get_size           (const IFBIDArena arena_id, ifb_u32&     arena_size_ref);
-    const ifb_b8 arena_get_tag            (const IFBIDArena arena_id, IFBTag&      arena_tag_ref);
-    const ifb_b8 arena_get_address_start  (const IFBIDArena arena_id, ifb_address& address_start_ref);
-    const ifb_b8 arena_get_pointer_start  (const IFBIDArena arena_id, ifb_ptr&     pointer_start_ref);
+    const ifb_b8 arena_get                   (const IFBIDArena arena_id, IFBArena&    arena_ref);
+    const ifb_b8 arena_get_size              (const IFBIDArena arena_id, ifb_u32&     arena_size_ref);
+    const ifb_b8 arena_get_tag               (const IFBIDArena arena_id, IFBTag&      arena_tag_ref);
+    const ifb_b8 arena_get_address_start     (const IFBIDArena arena_id, ifb_address& address_start_ref);
+    const ifb_b8 arena_get_pointer_start     (const IFBIDArena arena_id, ifb_ptr&     pointer_start_ref);
 
-    const ifb_b8 arena_align_size         (const IFBIDArena arena_id, const ifb_u32   size,   ifb_u32&     size_aligned);
-    const ifb_b8 arena_get_address_offset (const IFBIDArena arena_id, const ifb_u32   offset, ifb_address& address_start_ref);
-    const ifb_b8 arena_get_pointer_offset (const IFBIDArena arena_id, const ifb_u32   offset, ifb_ptr&     pointer_start_ref);
-    
-    const ifb_b8 arena_update_tag         (const IFBIDArena arena_id, const ifb_char* arena_tag_value);
+    const ifb_b8 arena_align_size            (const IFBIDArena arena_id, const ifb_u32   size,   ifb_u32&     size_aligned);
+    const ifb_b8 arena_get_address_offset    (const IFBIDArena arena_id, const ifb_u32   offset, ifb_address& address_start_ref);
+    const ifb_b8 arena_get_pointer_offset    (const IFBIDArena arena_id, const ifb_u32   offset, ifb_ptr&     pointer_start_ref);
+    const ifb_b8 arena_update_tag            (const IFBIDArena arena_id, const ifb_char* arena_tag_value);
 
     const ifb_b8
     arena_commit(
@@ -57,17 +56,24 @@ namespace ifb_engine {
         const ifb_char**   arena_tag_value_array,
               IFBIDArena*  arena_id_array);
     
-    const ifb_b8 arena_get                (const ifb_u32 arena_count, const IFBIDArena* arena_id_array, IFBArena*    arena_array);
-    const ifb_b8 arena_get_size           (const ifb_u32 arena_count, const IFBIDArena* arena_id_array, ifb_u32*     arena_size_array);
-    const ifb_b8 arena_get_tag            (const ifb_u32 arena_count, const IFBIDArena* arena_id_array, IFBTag*      arena_tag_array);
-    const ifb_b8 arena_get_address_start  (const ifb_u32 arena_count, const IFBIDArena* arena_id_array, ifb_address* address_start_array);
-    const ifb_b8 arena_get_pointer_start  (const ifb_u32 arena_count, const IFBIDArena* arena_id_array, ifb_ptr*     pointer_start_array);
+    const ifb_b8 arena_get                   (const ifb_u32 arena_count, const IFBIDArena* arena_id_array, IFBArena*    arena_array);
+    const ifb_b8 arena_get_size              (const ifb_u32 arena_count, const IFBIDArena* arena_id_array, ifb_u32*     arena_size_array);
+    const ifb_b8 arena_get_tag               (const ifb_u32 arena_count, const IFBIDArena* arena_id_array, IFBTag*      arena_tag_array);
+    const ifb_b8 arena_get_address_start     (const ifb_u32 arena_count, const IFBIDArena* arena_id_array, ifb_address* address_start_array);
+    const ifb_b8 arena_get_pointer_start     (const ifb_u32 arena_count, const IFBIDArena* arena_id_array, ifb_ptr*     pointer_start_array);
 
-    const ifb_b8 arena_align_size         (const ifb_u32 arena_count, const IFBIDArena* arena_id_array, const ifb_u32* size_array,   ifb_u32*     size_aligned_array);
-    const ifb_b8 arena_get_address_offset (const ifb_u32 arena_count, const IFBIDArena* arena_id_array, const ifb_u32* offset_array, ifb_address* address_start_array);
-    const ifb_b8 arena_get_pointer_offset (const ifb_u32 arena_count, const IFBIDArena* arena_id_array, const ifb_u32* offset_array, ifb_ptr*     pointer_start_array);
+    const ifb_b8 arena_align_size            (const ifb_u32 arena_count, const IFBIDArena* arena_id_array, const ifb_u32* size_array,   ifb_u32*     size_aligned_array);
+    const ifb_b8 arena_get_address_offset    (const ifb_u32 arena_count, const IFBIDArena* arena_id_array, const ifb_u32* offset_array, ifb_address* address_start_array);
+    const ifb_b8 arena_get_pointer_offset    (const ifb_u32 arena_count, const IFBIDArena* arena_id_array, const ifb_u32* offset_array, ifb_ptr*     pointer_start_array);
     
-    const ifb_b8 arena_update_tag         (const ifb_u32 arena_count, const IFBIDArena* arena_id_array, const ifb_char** arena_tag_value_array);
+    const ifb_b8 arena_update_tag            (const ifb_u32 arena_count, const IFBIDArena* arena_i bg90d_array, const ifb_char** arena_tag_value_array);
+
+    const ifb_b8 arena_scratch_space_reserve (IFBScratchArena& scratch_arena_ref);
+    const ifb_b8 arena_scratch_space_release (IFBScratchArena& scratch_arena_ref);
+
+    ifb_ptr arena_frame_push_engine          (const ifb_u32 size);
+    ifb_ptr arena_frame_push_game            (const ifb_u32 size);
+    ifb_ptr arena_frame_push_platform        (const ifb_u32 size);
 };
 
 /**********************************************************************************/

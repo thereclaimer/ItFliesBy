@@ -10,14 +10,6 @@ ifb_engine::data_store_initialize(
 
 }
 
-// inline ifb_void
-// ifb_engine::data_store_commit_memory(
-//     IFBEngineDataStore* data_store_ptr,
-//     IFBEngineDataQuery* data_query_ptr) {
-
-// }
-
-
 inline const ifb_b8
 ifb_engine::data_store_execute_query(
     IFBEngineDataStore* data_store_ptr,
@@ -69,8 +61,8 @@ ifb_engine::data_store_execute_query(
     }
 
     //make sure the count in the result is the count we requested
-    const ifb_b8 result = request.property_count == result.property_count;
+    const ifb_b8 success = request.property_count == result.property_count;
 
     //we're done 
-    return(result);
+    return(success);
 }

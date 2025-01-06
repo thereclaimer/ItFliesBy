@@ -4,9 +4,9 @@
 #include "ifb-types.hpp"
 
 struct IFBStack {
-    ifb_u32 start;
-    ifb_u32 size;
-    ifb_u32 position;
+    ifb_address start;
+    ifb_u32     size;
+    ifb_u32     position;
 };
 
 namespace ifb_common {

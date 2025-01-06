@@ -213,17 +213,83 @@ ifb_engine::tag_find(
     const ifb_char* tag_value,
           IFBIDTag& tag_id_array_ref) {
 
+    //sanity check
+    if (!tag_value) return(false);
+
+    //hash the value
+    const IFBHash tag_hash = ifb_engine::tag_hash(tag_value);
+
+    //get the hash data and search for the hashed tag value
+    ifb_b8 result = true;
+    IFBEngineTagHashData tag_hash_data;
+    result &= ifb_engine::tag_hash_data_query(tag_hash_data);
+    result &= ifb_hash::search(
+        tag_hash_data.hash_array,
+        tag_hash_data.tag_count_total,
+        tag_hash);
+
+    //we're done
+    return(result);
 }
 
 inline const ifb_b8
 ifb_engine::tag_get(
-    const IFBIDTag tag_id_array,
+    const IFBIDTag tag_id,
           IFBTag&  tag_ref) {
 
+    ifb_b8 result = true;
+    
+    //get the tag data
+    IFBEngineTagData tag_data = {0};
+    result &= ifb_engine::tag_data_query(tag_data);
+
+    //sanity check
+    result &= tag_id.index < tag_data.tag_count_total;
+    result &= tag_data.tag_count_total > 0;
+    result &= tag_data.char_buffer != NULL;
+    result &= tag_data.hash_array  != NULL; 
+    if (!result) return(false);
+    
+    //get the tag_value offset
+    const ifb_u32 offset = ifb_engine::tag_char_buffer_offset(tag_id);
+
+    //set the tag properties
+    tag_ref.index = tag_id.index;
+    tag_ref.hash  = tag_data.hash_array[tag_id.index];
+
+    const ifb_char* tag_value = &tag_data.char_buffer[offset];
+    for (
+        ifb_u32 char_index = 0;
+        char_index < IFB_TAG_LENGTH;
+        ++char_index) {
+        
+        tag_ref.value[char_index] = tag_value[char_index];
+    }
+
+    //we're done
+    return(true);
 }
 
 inline const ifb_b8
 ifb_engine::tag_release(
     const IFBIDTag tag_id) {
+  
+    ifb_b8 result = true;
+  
+    //get the tag data
+    IFBEngineTagData tag_data = {0};
+    result &= ifb_engine::tag_data_query(tag_data);
 
+    //sanity check
+    result &= tag_id.index < tag_data.tag_count_total;
+    result &= tag_data.tag_count_total > 0;
+    result &= tag_data.char_buffer != NULL;
+    result &= tag_data.hash_array  != NULL; 
+    if (!result) return(false);
+
+    //clear the hash value
+    tag_data.hash_array[tag_id.index] = {0};
+
+    //we're done
+    return(true);
 }

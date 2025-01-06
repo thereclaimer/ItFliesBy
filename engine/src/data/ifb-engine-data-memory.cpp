@@ -9,7 +9,7 @@ ifb_engine::data_memory_get_pointer(
 
     //get the data address
     const ifb_address data_address = data_memory_ref.commit_start + data_offset;
-    `
+
     //cast the address to a pointer
     ifb_ptr data_pointer = (ifb_ptr)data_address;
 
