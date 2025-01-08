@@ -24,8 +24,6 @@
 #define ifb_macro_bit_is_set(bit,val)    ifb_macro_bit_test(bit,val)
 #define ifb_macro_bit_is_clear(bit,val)  !ifb_macro_bit_test(bit,val)
 
-
-
 #define ifb_macro_xmm_f128_load_aligned(f32_ptr)   _mm_load_ps(f32_ptr)
 #define ifb_macro_xmm_f128_load_unaligned(f32_ptr) _mm_loadu_ps(f32_ptr)
 #define ifb_macro_xmm_f128_add(xmm_a, xmm_b)       _mm_add_ps(xmm_a, xmm_b)
