@@ -99,23 +99,46 @@ ifb_engine::arena_data_query_tag(
     result &= ifb_engine::data_store_execute_query(data_store_ptr,&data_query);
 
     //get the pointers
-    result &= (arena_data_all_ref.tag_id_array        =    (IFBIDTag*)data_query.result.property_array[1]) != NULL;
-    result &= (arena_data_all_ref.start_address_array = (ifb_address*)data_query.result.property_array[2]) != NULL;
-    result &= (arena_data_all_ref.size_array          =     (ifb_u32*)data_query.result.property_array[3]) != NULL;
-    result &= (arena_data_all_ref.tag_char_buffer     =    (ifb_char*)data_query.result.property_array[4]) != NULL;
-    result &= (arena_data_all_ref.tag_hash_array      =     (IFBHash*)data_query.result.property_array[5]) != NULL;
+    result &= (arena_data_tag_ref.char_buffer = (ifb_char*)data_query.result.property_array[0]) != NULL;
+    result &= (arena_data_tag_ref.hash_array  =  (IFBHash*)data_query.result.property_array[1]) != NULL;
     
     //set the counts/sizes
-    result &= (arena_data_all_ref.arena_count = data_info.count_arenas) != 0;    
-    result &= (arena_data_all_ref.arena_size  = data_info.arena_size)   != 0;
-    result &= (arena_data_all_ref.tag_count   = data_info.count_tags)   != 0;
-
+    result &= (arena_data_tag_ref.tag_count   = data_info.count_tags) != 0;
 }
 
 inline const ifb_b8
 ifb_engine::arena_data_query_memory(
     IFBEngineArenaDataMemory& arena_data_memory_ref) {
 
+    //build the query
+    IFBEngineDataQuery data_query = {0};
+    ifb_engine::data_query_request_add_arena_commit_id (data_query.request);
+    ifb_engine::data_query_request_add_arena_tag_id    (data_query.request);
+    ifb_engine::data_query_request_add_arena_start     (data_query.request);
+    ifb_engine::data_query_request_add_arena_size      (data_query.request);
+
+    //return value
+    ifb_b8 result = true;
+
+    //execute the query and get the data store info
+    IFBEngineDataStore* data_store_ptr = ifb_engine::context_get_data_store();
+    const IFBEngineDataInfo& data_info = ifb_engine::data_store_get_info(data_store_ptr);
+
+    //execute the query    
+    result &= ifb_engine::data_store_execute_query(data_store_ptr,&data_query);
+
+    //get the pointers
+    result &= (arena_data_memory_ref.commit_id_array     = (IFBIDCommit*)data_query.result.property_array[0]) != NULL;
+    result &= (arena_data_memory_ref.tag_id_array        =    (IFBIDTag*)data_query.result.property_array[1]) != NULL;
+    result &= (arena_data_memory_ref.start_address_array = (ifb_address*)data_query.result.property_array[2]) != NULL;
+    result &= (arena_data_memory_ref.size_array          =     (ifb_u32*)data_query.result.property_array[3]) != NULL;
+    
+    //set the counts/sizes
+    result &= (arena_data_memory_ref.arena_count = data_info.count_arenas) != 0;    
+    result &= (arena_data_memory_ref.arena_size  = data_info.arena_size)   != 0;
+
+    //we're done
+    return(result);
 }
 
 /**********************************************************************************/
@@ -127,6 +150,19 @@ ifb_engine::arena_commit(
     const ifb_u32     arena_minimum_size,
     const ifb_char*   arena_tag_value,
           IFBIDArena& arena_id_ref) {
+
+    //sanity check
+    if (arena_minimum_size == 0 || arena_tag_value == NULL) {
+        return(false);
+    }
+    
+    ifb_b8 result = true;
+    
+    //get the arena data
+    IFBEngineArenaDataAll arena_data;
+    result &= ifb_engine::arena_data_query_all(arena_data);
+
+    
 
 }
 

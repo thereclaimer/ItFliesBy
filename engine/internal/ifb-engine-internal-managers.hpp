@@ -54,7 +54,7 @@ struct IFBEngineScratchArenas  {
             IFBScratchArena arena_30;
             IFBScratchArena arena_31;
         };
-        IFBScratchArena array[IFB_ENGINE_SCRATCH_STACK_COUNT];
+        IFBScratchArena array[IFB_ENGINE_SCRATCH_ARENA_COUNT];
     };
 };
 
@@ -65,7 +65,7 @@ struct IFBEngineArenaManager {
 
 namespace ifb_engine {
 
-    arena_mangager_initialize(IFBEngineArenaManager* arena_manager_ptr);
+    ifb_void arena_mangager_initialize               (IFBEngineArenaManager* arena_manager_ptr);
 
     const ifb_b8 arena_manager_scratch_space_reserve (IFBEngineArenaManager* arena_manager_ptr, IFBScratchArena& scratch_arena_ref);
     const ifb_b8 arena_manager_scratch_space_release (IFBEngineArenaManager* arena_manager_ptr, IFBScratchArena& scratch_arena_ref);

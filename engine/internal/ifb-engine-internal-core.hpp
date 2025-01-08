@@ -11,15 +11,13 @@
 
 namespace ifb_engine {
 
-    const IFBHash tag_hash        (const ifb_char* tag_value);
-
-    const ifb_b8  tag_update_value (const IFBIDTag  tag_id,    const ifb_char* tag_value_array);
-    const ifb_b8  tag_reserve      (const ifb_char* tag_value,       IFBIDTag& tag_id_ref);
-    const ifb_b8  tag_find         (const ifb_char* tag_value,       IFBIDTag& tag_id_array_ref);
-    const ifb_b8  tag_get          (const IFBIDTag  tag_id_array,    IFBTag&   tag_ref);
+    const ifb_b8  tag_reserve      (const ifb_char* tag_value,    IFBIDTag&       tag_id_ref);
+    const ifb_b8  tag_find         (const ifb_char* tag_value,    IFBIDTag&       tag_id_array_ref);
+    const ifb_b8  tag_update_value (const IFBIDTag  tag_id,       const ifb_char* tag_value_new);
+    const ifb_b8  tag_get          (const IFBIDTag  tag_id_array, IFBTag&         tag_ref);
     const ifb_b8  tag_release      (const IFBIDTag  tag_id);
 
-    const ifb_b8  tag_update_value (const ifb_u32 tag_count, const IFBIDTag*  tag_id_array,    const ifb_char** tag_value_array);
+    const ifb_b8  tag_update_value (const ifb_u32 tag_count, const IFBIDTag*  tag_id_array,    const ifb_char** tag_value_new_array);
     const ifb_b8  tag_reserve      (const ifb_u32 tag_count, const ifb_char** tag_value_array, IFBIDTag*        tag_id_array);
     const ifb_b8  tag_find         (const ifb_u32 tag_count, const ifb_char** tag_value_array, IFBIDTag*        tag_id_array);
     const ifb_b8  tag_get          (const ifb_u32 tag_count, const IFBIDTag*  tag_id_array,    IFBTag*          tag_array);
@@ -66,7 +64,7 @@ namespace ifb_engine {
     const ifb_b8 arena_get_address_offset    (const ifb_u32 arena_count, const IFBIDArena* arena_id_array, const ifb_u32* offset_array, ifb_address* address_start_array);
     const ifb_b8 arena_get_pointer_offset    (const ifb_u32 arena_count, const IFBIDArena* arena_id_array, const ifb_u32* offset_array, ifb_ptr*     pointer_start_array);
     
-    const ifb_b8 arena_update_tag            (const ifb_u32 arena_count, const IFBIDArena* arena_i bg90d_array, const ifb_char** arena_tag_value_array);
+    const ifb_b8 arena_update_tag            (const ifb_u32 arena_count, const IFBIDArena* arena_id_array, const ifb_char** arena_tag_value_array);
 
     const ifb_b8 arena_scratch_space_reserve (IFBScratchArena& scratch_arena_ref);
     const ifb_b8 arena_scratch_space_release (IFBScratchArena& scratch_arena_ref);

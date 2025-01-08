@@ -2,17 +2,15 @@
 #define IFB_MEMORY_HPP
 
 #include "ifb-types.hpp"
+#include "ifb-tag.hpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-struct IFBIDTag     : IFBID { };
 struct IFBIDCommit  : IFBID { };
 struct IFBIDArena   : IFBID { };
 
-
-struct IFBTag;
 struct IFBCommit;
 struct IFBArena;
 struct IFBLinearArena;
@@ -22,13 +20,6 @@ struct IFBScratchArena;
 /**********************************************************************************/
 /* MEMORY                                                                         */
 /**********************************************************************************/
-
-#define IFB_TAG_LENGTH 32
-
-struct IFBTag : IFBIDTag {
-    ifb_char value[IFB_TAG_LENGTH];
-    IFBHash  hash;
-};
 
 struct IFBCommit : IFBIDCommit{
     ifb_u32 page_start;

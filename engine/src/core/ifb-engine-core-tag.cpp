@@ -21,26 +21,14 @@ struct IFBEngineTagHashData {
 
 namespace ifb_engine {
 
-    const ifb_b8 tag_data_query         (IFBEngineTagData& tag_data_ref);
-    const ifb_b8 tag_data_update_value  (IFBEngineTagData& tag_data_ref, const IFBIDTag tag_id, const ifb_char* tag_value);
-    const ifb_b8 tag_data_update_hash   (IFBEngineTagData& tag_data_ref, const IFBIDTag tag_id, const ifb_char* tag_value);
-
-    const ifb_b8 tag_hash_data_query    (IFBEngineTagHashData& tag_hash_data_ref);
-
-    const ifb_u32 tag_char_buffer_offset (const IFBIDTag tag_id);
+    const ifb_b8  tag_data_query         (IFBEngineTagData& tag_data_ref);
+    const ifb_b8  tag_hash_data_query    (IFBEngineTagHashData& tag_hash_data_ref);
 };
 
 /**********************************************************************************/
 /* TAG                                                                            */
 /**********************************************************************************/
 
-inline const IFBHash 
-ifb_engine::tag_hash(
-    const ifb_char* tag_value) {
-
-    const IFBHash tag_hash = ifb_hash::get_hash((ifb_cstr)tag_value,IFB_TAG_LENGTH);
-    return(tag_hash);
-}
 
 inline const ifb_b8
 ifb_engine::tag_data_query(
@@ -100,82 +88,29 @@ ifb_engine::tag_hash_data_query(
     return(result);
 }
 
-
-inline const ifb_b8
-ifb_engine::tag_data_update_value(
-          IFBEngineTagData& tag_data_ref,
-    const IFBIDTag          tag_id,
-    const ifb_char*         tag_value) {
-
-    const ifb_u32 offset = ifb_engine::tag_char_buffer_offset(tag_id);
-
-    //sanity check
-    ifb_b8 valid = true;
-    valid &= tag_data_ref.char_buffer     != NULL;
-    valid &= tag_data_ref.tag_count_total <= tag_id.index;
-    valid &= tag_value                    != NULL;
-
-    if (!valid) return(false);
-
-    //update the char buffer    
-    ifb_char* tag_char_buffer = &tag_data_ref.char_buffer[offset]; 
-    for (
-        ifb_u32 char_index = 0;
-        char_index < IFB_TAG_LENGTH;
-        ++char_index) {
-
-        tag_char_buffer[char_index] = tag_value[char_index];
-    }
-
-    return(true);
-}
-
-inline const ifb_b8
-ifb_engine::tag_data_update_hash(
-          IFBEngineTagData& tag_data_ref,
-    const IFBIDTag          tag_id,
-    const ifb_char*         tag_value) {
-
-    //sanity check
-    ifb_b8 valid = true;
-    valid &= tag_data_ref.hash_array      != NULL;
-    valid &= tag_data_ref.tag_count_total <= tag_id.index;
-    valid &= tag_value                    != NULL;
-    if (!valid) return(false);
-
-    //do the hash
-    const IFBHash tag_hash = ifb_engine::tag_hash(tag_value);
-    
-    //make sure we have a value
-    if (ifb_hash::hash_is_clear(tag_hash)) return(false);
-
-    //update the hash array
-    tag_data_ref.hash_array[tag_id.index] = tag_hash; 
-
-    //we're done
-    return(true);
-}
-
-inline const ifb_u32 
-ifb_engine::tag_char_buffer_offset(
-    const IFBIDTag tag_id) {
-
-    const ifb_u32 char_buffer_offset = IFB_TAG_LENGTH * tag_id.index;
-    return(char_buffer_offset);
-}
-
 inline const ifb_b8
 ifb_engine::tag_update_value(
     const IFBIDTag  tag_id,
-    const ifb_char* tag_value_array) {
+    const ifb_char* tag_value_new) {
 
     ifb_b8 result = true;
 
     //get the tag data and update the values
     IFBEngineTagData tag_data = {0};
     result &= ifb_engine::tag_data_query(tag_data);
-    result &= ifb_engine::tag_data_update_value (tag_data,tag_id,tag_value_array);
-    result &= ifb_engine::tag_data_update_hash  (tag_data,tag_id,tag_value_array);
+
+    //get the new hash and the pointer to the current value
+    const IFBHash tag_hash_new      = ifb_tag::tag_hash(tag_value_new);
+    const ifb_u32 offset            = ifb_tag::tag_value_offset(tag_id);
+    ifb_char*     tag_value_current = tag_data.char_buffer + offset;
+
+    //copy the tag value
+    result &= ifb_tag::tag_copy_value(
+        tag_value_new,
+        tag_value_current);
+
+    //update the hash
+    tag_data.hash_array[tag_id.index] = tag_hash_new;
 
     //we're done
     return(result);
@@ -199,9 +134,9 @@ ifb_engine::tag_reserve(
     //if that didn't work, we're done
     if (!result) return(false);
 
-    //update the values
-    result &= ifb_engine::tag_data_update_value (tag_data,tag_id_ref,tag_value);
-    result &= ifb_engine::tag_data_update_hash  (tag_data,tag_id_ref,tag_value);
+    result = ifb_tag::tag_update_value(
+        
+    )
 
     //we're done
     return(result);

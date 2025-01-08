@@ -385,7 +385,7 @@ ifb_engine::data_memory_get_pointer_sprite_transform_id(
         data_offsets_sprite_ref.transform_id);
 
     //cast it to the requested type
-    IFBIDTransform* transform_id_ptr  = (IFBIDTag*)data_pointer;
+    IFBIDTransform* transform_id_ptr  = (IFBIDTransform*)data_pointer;
 
     //we're done
     return(transform_id_ptr);

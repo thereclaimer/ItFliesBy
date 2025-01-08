@@ -8,7 +8,6 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-
 struct IFBID;
 struct IFBHND;
 struct IFBGHND;

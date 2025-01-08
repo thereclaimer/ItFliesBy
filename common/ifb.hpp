@@ -15,5 +15,7 @@
 #include "ifb-gl.hpp"
 #include "ifb-rendering.hpp"
 #include "ifb-sprite.hpp"
+#include "ifb-tag.hpp"
+
 
 #endif //IFB_HPP
