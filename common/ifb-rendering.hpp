@@ -23,7 +23,6 @@ struct IFBIDUniformVec3        : IFBID { };
 struct IFBIDUniformMat3        : IFBID { };
 struct IFBIDUniformColor       : IFBID { };
 struct IFBIDUniformSpriteAtlas : IFBID { };
-struct IFBIDTransform          : IFBID { };
 
 //--------------------
 // structs
@@ -46,10 +45,12 @@ struct IFBTransform;
 /**********************************************************************************/
 
 struct IFBShader : IFBIDShader {
-    IFBIDTag              tag;
+    IFBIDArena            arena_id;              
     IFBGLIDShaderProgram  gl_shader_program;
     IFBGLIDVertex         gl_vertex;
-    ifb_u32               uniform_count;
+    ifb_address           vertex_buffer_start;
+    ifb_u32               vertex_buffer_size;
+    ifb_u32               vertex_buffer_position;
 };
 
 /**********************************************************************************/

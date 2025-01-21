@@ -27,9 +27,9 @@ ifb_engine::context_create(
         memory_commit_count_max);
 
     //allocate context structures
-    ifb_engine_memory_global_push_struct(&context_ref.memory, context_ref.handles.managers,   IFBEngineContextManagers);
-    ifb_engine_memory_global_push_struct(&context_ref.memory, context_ref.handles.core,       IFBEngineContextCore);
-    ifb_engine_memory_global_push_struct(&context_ref.memory, context_ref.handles.devtools,   IFBEngineDevTools);
+    ifb_engine_macro_memory_global_push_struct(&context_ref.memory, context_ref.handles.managers,   IFBEngineContextManagers);
+    ifb_engine_macro_memory_global_push_struct(&context_ref.memory, context_ref.handles.core,       IFBEngineContextCore);
+    ifb_engine_macro_memory_global_push_struct(&context_ref.memory, context_ref.handles.devtools,   IFBEngineDevTools);
 
     //create the managers
     IFBEngineContextManagers* managers_ptr = ifb_engine::context_get_managers();
@@ -59,7 +59,7 @@ ifb_engine::context_startup(
 
     //get the pointers
     IFBEngineContextManagers* managers_ptr         = ifb_engine::context_get_managers();
-    IFBEngineGraphicsManager* graphics_manager_ptr = ifb_engine::context_managers_get_graphics_manager(managers_ptr);
+    IFBEngineManagerGraphics* graphics_manager_ptr = ifb_engine::context_managers_get_graphics_manager(managers_ptr);
 
     //set the window flags
     const IFBWindowFlags window_flags = 
@@ -89,7 +89,7 @@ ifb_engine::context_update_and_render(
 
     //get the pointers
     IFBEngineContextManagers* managers_ptr         = ifb_engine::context_get_managers();
-    IFBEngineGraphicsManager* graphics_manager_ptr = ifb_engine::context_managers_get_graphics_manager(managers_ptr);
+    IFBEngineManagerGraphics* graphics_manager_ptr = ifb_engine::context_managers_get_graphics_manager(managers_ptr);
 
     //start a new frame
     ifb_engine::graphics_manager_frame_start(graphics_manager_ptr);

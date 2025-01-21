@@ -8,12 +8,14 @@
 #include "ifb-types.hpp"
 #include "ifb-hash.hpp"
 #include "ifb-memory.hpp"
-#include "ifb-stack.hpp"
+#include "ifb-data-structures.hpp"
 #include "ifb-user-input.hpp"
 #include "ifb-platform.hpp"
 #include "ifb-graphics.hpp"
 #include "ifb-gl.hpp"
 #include "ifb-rendering.hpp"
-#include "ifb-math.hpp"
+#include "ifb-sprite.hpp"
+#include "ifb-tag.hpp"
+
 
 #endif //IFB_HPP

@@ -4,7 +4,7 @@
 
 inline ifb_void
 ifb_engine::shader_manager_initialize(
-          IFBEngineShaderManager* shader_manager,
+          IFBEngineManagerShader* shader_manager,
           IFBEngineMemory*        memory,
     const ifb_u32                 shader_count_max) {
 
@@ -37,7 +37,7 @@ ifb_engine::shader_manager_initialize(
         commit_id);
 
     //initialize memory
-    IFBEngineShaderManagerMemory& shader_manager_memory = shader_manager->memory;
+    IFBEngineManagerMemoryShader& shader_manager_memory = shader_manager->memory;
     shader_manager_memory.start                       = commit_start;
     shader_manager_memory.offset_shader_program_array = offset_array_shader_program;
     shader_manager_memory.offset_shader_program_tag   = offset_array_shader_tag;
@@ -64,7 +64,7 @@ ifb_engine::shader_manager_initialize(
 
 inline ifb_void
 ifb_engine::shader_manager_commit_shaders(
-          IFBEngineShaderManager*   shader_manager,
+          IFBEngineManagerShader*   shader_manager,
     const ifb_u32                   shader_count,
     const IFBGLIDShaderStageVertex*   shader_stage_array_vertex,
     const IFBGLIDShaderStageFragment* shader_stage_array_fragment,
@@ -120,7 +120,7 @@ ifb_engine::shader_manager_commit_shaders(
 
 inline const ifb_b8
 ifb_engine::shader_manager_use_program(
-    const IFBEngineShaderManager* shader_manager_ptr,
+    const IFBEngineManagerShader* shader_manager_ptr,
     const IFBIDShader             shader_id) {
 
     const IFBGLIDShaderProgram shader_program = ifb_engine::shader_manager_get_shader_program(
@@ -134,7 +134,7 @@ ifb_engine::shader_manager_use_program(
 
 inline const IFBIDTag
 ifb_engine::shader_manager_get_tag_id(
-    const IFBEngineShaderManager* shader_manager_ptr,
+    const IFBEngineManagerShader* shader_manager_ptr,
     const IFBIDShader             shader_id) {
 
     IFBIDTag* shader_tag_id_array = ifb_engine::shader_manager_get_array_tag_id(shader_manager_ptr->memory);
@@ -146,7 +146,7 @@ ifb_engine::shader_manager_get_tag_id(
 
 inline const IFBGLIDShaderProgram
 ifb_engine::shader_manager_get_shader_program(
-    const IFBEngineShaderManager* shader_manager_ptr,
+    const IFBEngineManagerShader* shader_manager_ptr,
     const IFBIDShader             shader_id) {
 
     IFBGLIDShaderProgram* shader_program_array = ifb_engine::shader_manager_get_array_shader_program(shader_manager_ptr->memory);
@@ -158,7 +158,7 @@ ifb_engine::shader_manager_get_shader_program(
 
 inline IFBIDTag*
 ifb_engine::shader_manager_get_array_tag_id(
-    const IFBEngineShaderManagerMemory& shader_manager_memory_ref) {
+    const IFBEngineManagerMemoryShader& shader_manager_memory_ref) {
 
     //get the starting address
     const ifb_address memory_start    = shader_manager_memory_ref.start;
@@ -173,7 +173,7 @@ ifb_engine::shader_manager_get_array_tag_id(
 
 inline IFBGLIDShaderProgram*
 ifb_engine::shader_manager_get_array_shader_program(
-    const IFBEngineShaderManagerMemory& shader_manager_memory_ref) {
+    const IFBEngineManagerMemoryShader& shader_manager_memory_ref) {
 
     //get the starting address
     const ifb_address memory_start       = shader_manager_memory_ref.start;

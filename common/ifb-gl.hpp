@@ -39,6 +39,11 @@ struct IFBGLIDBufferElement : IFBGLIDBuffer { };
 
 typedef ifb_enum IFBGLVertexAttributeType;
 
+struct IFBGLShaderContext {
+    IFBGLIDShaderProgram gl_shader_program;
+    IFBGLIDVertex        gl_vertex_object;
+};
+
 /**********************************************************************************/
 /* VIEWPORT                                                                       */
 /**********************************************************************************/

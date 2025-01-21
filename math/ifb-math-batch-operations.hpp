@@ -197,10 +197,10 @@ ifb_math::batch_trig_cos(
         index < count;
         index += 4) {
             
-        val_trig_sin[index]   = cosf(val[index]);
-        val_trig_sin[index+1] = cosf(val[index+1]);
-        val_trig_sin[index+2] = cosf(val[index+2]);
-        val_trig_sin[index+3] = cosf(val[index+3]);
+        val_trig_cos[index]   = cosf(val[index]);
+        val_trig_cos[index+1] = cosf(val[index+1]);
+        val_trig_cos[index+2] = cosf(val[index+2]);
+        val_trig_cos[index+3] = cosf(val[index+3]);
     }
 }
 

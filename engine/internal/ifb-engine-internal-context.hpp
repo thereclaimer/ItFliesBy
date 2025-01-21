@@ -3,37 +3,8 @@
 
 #include "ifb-engine.hpp"
 #include "ifb-engine-internal-platform.hpp"
-#include "ifb-engine-internal-allocators.hpp"
 #include "ifb-engine-internal-devtools.hpp"
-
-/**********************************************************************************/
-/* MANAGERS                                                                       */
-/**********************************************************************************/
-
-struct IFBGHNDEngineTagManager      : IFBGHND { };
-struct IFBGHNDEngineArenaManager    : IFBGHND { };
-struct IFBGHNDEngineGraphicsManager : IFBGHND { };
-
-struct IFBEngineContextManagers {
-    struct {
-        IFBGHNDEngineTagManager      tag_manager;
-        IFBGHNDEngineArenaManager    arena_manager;
-        IFBGHNDEngineGraphicsManager graphics_manager;
-    } handles;
-};
-
-namespace ifb_engine {
-
-    ifb_void
-    context_managers_create_all(
-              IFBEngineContextManagers* managers_ptr, 
-              IFBEngineMemory*          memory_ptr, 
-        const IFBEngineConfig*          config_ptr);
-        
-    IFBEngineTagManager*      context_managers_get_tag_manager      (const IFBEngineContextManagers* managers_ptr);
-    IFBEngineArenaManager*    context_managers_get_arena_manager    (const IFBEngineContextManagers* managers_ptr);
-    IFBEngineGraphicsManager* context_managers_get_graphics_manager (const IFBEngineContextManagers* managers_ptr);
-};
+#include "ifb-engine-internal-data.hpp"
 
 /**********************************************************************************/
 /* CONTEXT CORE                                                                   */
@@ -49,16 +20,16 @@ struct IFBEngineContextCore {
 /* CONTEXT                                                                        */
 /**********************************************************************************/
 
-struct IFBGHNDEngineContextManagers  : IFBGHND { };
-struct IFBGHNDEngineContextCore      : IFBGHND { }; 
-struct IFBGHNDEngineDevTools         : IFBGHND { };
+struct IFBGHNDEngineContextCore : IFBGHND { }; 
+struct IFBGHNDEngineDevTools    : IFBGHND { };
+struct IFBGHNDEngineDataStore   : IFBGHND { };
 
 struct IFBEngineContext {
     IFBEngineMemory memory;
     struct {
-        IFBGHNDEngineContextManagers managers;
-        IFBGHNDEngineContextCore     core;
-        IFBGHNDEngineDevTools        devtools;
+        IFBGHNDEngineDataStore   data_store;
+        IFBGHNDEngineContextCore core;
+        IFBGHNDEngineDevTools    devtools;
     } handles;
     IFBEngineConfig config;
 };
@@ -69,11 +40,11 @@ namespace ifb_engine {
 
     IFBEngineContext& context() { return(_context); }
 
-    IFBEngineMemory*          context_get_memory   (ifb_void);
-    IFBEngineContextManagers* context_get_managers (ifb_void);
-    IFBEngineContextCore*     context_get_core     (ifb_void);
-    IFBEngineConfig*          context_get_config   (ifb_void);
-    IFBEngineDevTools*        context_get_devtools (ifb_void);
+    IFBEngineMemory*          context_get_memory     (ifb_void);
+    IFBEngineDataStore*       context_get_data_store (ifb_void);
+    IFBEngineContextCore*     context_get_core       (ifb_void);
+    IFBEngineConfig*          context_get_config     (ifb_void);
+    IFBEngineDevTools*        context_get_devtools   (ifb_void);
 
     const ifb_ptr context_get_pointer (const IFBHND&  handle);
     const ifb_ptr context_get_pointer (const IFBGHND& global_handle);

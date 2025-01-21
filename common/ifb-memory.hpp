@@ -2,59 +2,48 @@
 #define IFB_MEMORY_HPP
 
 #include "ifb-types.hpp"
+#include "ifb-tag.hpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-struct IFBIDTag     : IFBID { };
 struct IFBIDCommit  : IFBID { };
 struct IFBIDArena   : IFBID { };
 
-struct IFBHNDLinearAllocator : IFBHND { };
-struct IFBHNDBlockAllocator  : IFBHND { };
-
-struct IFBTag;
 struct IFBCommit;
 struct IFBArena;
-struct IFBLinearAllocator;
-struct IFBBlockAllocator;
+struct IFBLinearArena;
+struct IFBBlockArena;
+struct IFBScratchArena;
 
 /**********************************************************************************/
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
-struct IFBTag {
-    IFBID    id;
-    ifb_cstr value;
-    IFBHash  hash;
+struct IFBCommit : IFBIDCommit{
+    ifb_u32 page_start;
+    ifb_u32 page_count;
 };
 
-struct IFBCommit {
-    IFBIDCommit id;
-    ifb_u32     page_start;
-    ifb_u32     page_count;
+struct IFBArena : IFBIDArena {
+    IFBIDTag    tag_id;
+    ifb_address start;
+    ifb_u32     size;
 };
 
-struct IFBArena {
-    IFBIDArena id;
-    ifb_u32    size;
-    ifb_u32    start;
-    ifb_cstr   tag_c_str;
+struct IFBLinearArena : IFBArena {
+    ifb_u32 position;
 };
 
-struct IFBLinearAllocator {
-    IFBIDArena arena_id;
-    ifb_u32    start;
-    ifb_u32    size;
-    ifb_u32    position;
-    ifb_u32    save_point;
+#define IFB_BLOCK_ARENA_MAX_BLOCKS 32
+
+struct IFBBlockArena : IFBArena {
+    ifb_u32 flags;
+    ifb_u32 block_count;
+    ifb_u32 block_size;
 };
 
-struct IFBBlockAllocator {
-    IFBIDArena          arena_id;
-    ifb_u32             block_size;
-    ifb_u32             block_count;
-};
+struct IFBScratchArena : IFBLinearArena { };
 
 #endif //IFB_MEMORY_HPP

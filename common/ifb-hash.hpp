@@ -14,35 +14,39 @@ struct IFBHash;
 
 namespace ifb_hash {
 
-    inline const IFBHash 
+    const IFBHash 
     get_hash(
         const ifb_cstr c_str,
         const ifb_u32  c_str_length_max);
 
-    inline const ifb_b8
+    const ifb_b8
     collision_check(
         const IFBHash* hash_value_array_ptr,
         const ifb_u32  hash_value_array_count,
         const IFBHash  hash_value);
     
-    inline const ifb_b8
+    const ifb_b8
     find_next_clear_value(
         const IFBHash*  in_hash_value_array_ptr,
         const ifb_u32   in_hash_value_array_count,
               ifb_u32& out_hash_index_ref);
 
-    inline const ifb_b8
+    const ifb_b8
     search(
         const IFBHash*  in_hash_value_array_ptr,
         const ifb_u32   in_hash_value_array_count,
         const IFBHash   in_hash_value,
               ifb_u32& out_hash_index_ref);
     
-    inline const ifb_b8
+    const ifb_b8
     search(
         const IFBHash* hash_value_array_ptr,
         const ifb_u32  hash_value_array_count,
         const IFBHash  hash_value);
+
+    const ifb_b8
+    hash_is_clear(
+        const IFBHash& hash_value);
 };
 
 /**********************************************************************************/
@@ -214,6 +218,19 @@ ifb_hash::search(
 
     //no collisions, we're done
     return(false); 
+}
+
+
+inline const ifb_b8
+ifb_hash::hash_is_clear(
+    const IFBHash& hash_value) {
+
+    return (
+        hash_value.h1 == 0 &&
+        hash_value.h2 == 0 &&
+        hash_value.h3 == 0 &&
+        hash_value.h4 == 0);
+
 }
 
 #endif //IFB_HASH_HPP
