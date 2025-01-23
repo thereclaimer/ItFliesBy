@@ -127,39 +127,34 @@ struct IFBPlatformMonitorApi {
 typedef const ifb_b8
 (*funcptr_ifb_platform_file_open_read_only) (
     const ifb_cstr    in_file_path,
-          ifb_index& out_file_index_ref);
+          IFBFile&   out_file_ref);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_file_open_read_write) (
     const ifb_cstr    in_file_path,
-          ifb_index& out_file_index_ref);
-
-typedef const ifb_b8
-(*funcptr_ifb_platform_file_open_read_write) (
-    const ifb_cstr    in_file_path,
-          ifb_index& out_file_index_ref);
+          IFBFile&   out_file_ref);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_file_close) (
-    const ifb_index file_index);
+    const IFBFile& file_ref);
 
-typedef const ifb_size
+typedef const ifb_u64
 (*funcptr_ifb_platform_file_size) (
-    const ifb_index file_index);
+    const IFBFile& file_ref);
 
-typedef const ifb_b8
+typedef const ifb_u64
 (*funcptr_ifb_platform_file_read)(
-    const ifb_index   in_file_index,
-    const ifb_size    in_file_read_start,
-    const ifb_size    in_file_read_size,
+    const IFBFile&    in_file_ref,
+    const ifb_u64     in_file_read_start,
+    const ifb_u64     in_file_read_size,
           ifb_memory out_file_read_buffer);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_file_write)(
-    const ifb_index  file_index,
-    const ifb_size   file_write_start,
-    const ifb_size   file_write_size,
-          ifb_memory file_write_buffer);
+    const IFBFile&   file_ref,
+    const ifb_u64    file_write_start,
+    const ifb_u64    file_write_size,
+    const ifb_memory file_write_buffer);
 
 struct IFBPlatformFileApi {
     funcptr_ifb_platform_file_open_read_only  open_read_only;

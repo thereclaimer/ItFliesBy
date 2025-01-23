@@ -159,4 +159,14 @@ struct IFBLine {
     IFBPoint point_b;
 };
 
+/**********************************************************************************/
+/* IO                                                                             */
+/**********************************************************************************/
+
+#define IFB_FILE_PATH_MAX_LENGTH 256
+
+struct IFBFile {
+    ifb_ptr  handle;
+};
+
 #endif //IFB_TYPES_HPP
