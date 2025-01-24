@@ -117,46 +117,35 @@ namespace ifb_win32 {
 
 #define IFB_WIN32_FILE_MANAGER_MAX_FILES 32
 
-struct IFBWin32FileOverlappedInfo { 
-    OVERLAPPED                 overlapped;
-    ifb_index                  file_index; 
-    ifb_size                   bytes_read;
-    ifb_size                   bytes_written;
-};
-
 struct IFBWin32FileTable {
-    ifb_size row_count;
-    struct {
-        HANDLE                     handle    [IFB_WIN32_FILE_MANAGER_MAX_FILES];
-        ifb_size                   size      [IFB_WIN32_FILE_MANAGER_MAX_FILES];
-        IFBWin32FileOverlappedInfo overlapped[IFB_WIN32_FILE_MANAGER_MAX_FILES];
-    } columns;
+    HANDLE     handle [IFB_WIN32_FILE_MANAGER_MAX_FILES];
+    OVERLAPPED op     [IFB_WIN32_FILE_MANAGER_MAX_FILES];
 };
 
 namespace ifb_win32 {
 
     ifb_internal ifb_void file_api_initialize(IFBPlatformFileApi& platform_file_api_ref);
 
-    ifb_internal const ifb_b8 file_open_read_only  (const ifb_cstr in_file_path, ifb_index& out_file_index_ref);
-    ifb_internal const ifb_b8 file_open_read_write (const ifb_cstr in_file_path, ifb_index& out_file_index_ref);
+    ifb_internal const ifb_b8 file_open_read_only  (const ifb_cstr in_file_path, IFBFile& out_file_ref);
+    ifb_internal const ifb_b8 file_open_read_write (const ifb_cstr in_file_path, IFBFile& out_file_ref);
 
-    ifb_internal const ifb_b8   file_close (const ifb_index file_index);
-    ifb_internal const ifb_size file_size  (const ifb_index file_index);
+    ifb_internal const ifb_b8   file_close (const IFBFile& file_ref);
+    ifb_internal const ifb_size file_size  (const IFBFile& file_ref);
     
     ifb_internal const ifb_b8 
-    file_read(
-        const ifb_index   in_file_index,
+    file_read( 
+        const IFBFile&    in_file_ref,
         const ifb_size    in_file_read_start,
         const ifb_size    in_file_read_size,
               ifb_memory out_file_read_buffer);
 
     ifb_internal const ifb_b8 
     file_write(
-        const ifb_index   in_file_index,
-        const ifb_size    in_file_write_start,
-        const ifb_size    in_file_write_size,
-              ifb_memory out_file_write_buffer);
-
+        const IFBFile&   file_ref,
+        const ifb_size   file_write_start,
+        const ifb_size   file_write_size,
+        const ifb_memory file_write_buffer);
+ 
     ifb_internal ifb_void CALLBACK
     file_read_callback(
         DWORD        error_code,

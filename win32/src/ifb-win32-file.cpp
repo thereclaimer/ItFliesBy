@@ -14,37 +14,36 @@ ifb_win32::file_api_initialize(
     platform_file_api_ref.write              = ifb_win32::file_write;
 }
 
-ifb_internal const r_b8 
+ifb_internal const ifb_b8 
 ifb_win32::file_open_read_only(
-    const ifb_cstr                     in_file_path,
-          IFBEnginePlatformFileIndex& out_file_index_ref) {
+    const ifb_cstr  in_file_path,
+          IFBFile& out_file_ref) {
 
     //get the file table
     IFBWin32FileTable& file_table_ref = ifb_win32::file_table_ref();
 
     //find the first free file
-    ifb_b8 file_available = false;
-    IFBEnginePlatformFileIndex file_index;
-    
+    out_file_ref.index = IFB_WIN32_FILE_MANAGER_MAX_FILES;
+
     for (
-        out_file_index_ref = 0;
-        out_file_index_ref < IFB_WIN32_FILE_MANAGER_MAX_FILES;
-        ++out_file_index_ref) {
+        ifb_u32 file_index = 0;
+        file_index < IFB_WIN32_FILE_MANAGER_MAX_FILES;
+        ++file_index) {
 
         //if the handle is null, its available
-        if (!file_table_ref.columns.handle[out_file_index_ref]) {
-            file_available = true;
+        if (!file_table_ref.handle[out_file_index_ref]) {
+            out_file_ref.index = file_index;
             break;
         }
     }
 
     //if we didn't find an available file, we're done
-    if (!file_available) {
+    if (out_file_ref.index == IFB_WIN32_FILE_MANAGER_MAX_FILES) {
         return(false);
     }
 
     //open the file
-    const HANDLE file_handle = 
+    out_file_ref.handle = 
         CreateFile(
             in_file_path,
             GENERIC_READ,
@@ -55,52 +54,48 @@ ifb_win32::file_open_read_only(
             NULL);
 
     //if we couldn't open the file, we're done
-    if (!file_handle) {
+    if (!out_file_ref.handle) {
         return(false);
     }
 
-    //get the file size
-    const ifb_size file_size = GetFileSize(file_handle,NULL);
-
     //initialize this row in the table
-    file_table_ref.columns.handle    [out_file_index_ref] = file_handle;
-    file_table_ref.columns.size      [out_file_index_ref] = file_size;
-    file_table_ref.columns.overlapped[out_file_index_ref] = {0};
+    file_table_ref.handle[out_file_ref.index] = out_file_ref.handle;
+    file_table_ref.op    [out_file_ref.index] = {0};
 
     //we're done
     return(true);
 }
 
-ifb_internal const r_b8 
+ifb_internal const ifb_b8 
 ifb_win32::file_open_read_write(
-    const ifb_cstr                     in_file_path,
-          IFBEnginePlatformFileIndex& out_file_index_ref) {
+    const ifb_cstr  in_file_path,
+          IFBFile& out_file_ref) {
 
     //get the file table
     IFBWin32FileTable& file_table_ref = ifb_win32::file_table_ref();
 
     //find the first free file
-    ifb_b8 file_available = false;
-    
+    out_file_ref.index = IFB_WIN32_FILE_MANAGER_MAX_FILES;
+
     for (
-        out_file_index_ref = 0;
-        out_file_index_ref < IFB_WIN32_FILE_MANAGER_MAX_FILES;
-        ++out_file_index_ref) {
+        ifb_u32 file_index = 0;
+        file_index < IFB_WIN32_FILE_MANAGER_MAX_FILES;
+        ++file_index) {
 
         //if the handle is null, its available
-        if (!file_table_ref.columns.handle[out_file_index_ref]) {
-            file_available = true;
+        if (!file_table_ref.handle[out_file_index_ref]) {
+            out_file_ref.index = file_index;
             break;
         }
     }
 
     //if we didn't find an available file, we're done
-    if (!file_available) {
+    if (out_file_ref.index == IFB_WIN32_FILE_MANAGER_MAX_FILES) {
         return(false);
     }
 
     //open the file
-    const HANDLE file_handle = 
+    out_file_ref.handle = 
         CreateFile(
             in_file_path,
             GENERIC_READ    | GENERIC_WRITE,
@@ -111,17 +106,13 @@ ifb_win32::file_open_read_write(
             NULL);
 
     //if we couldn't open the file, we're done
-    if (!file_handle) {
+    if (!out_file_ref.handle) {
         return(false);
     }
 
-    //get the file size
-    const ifb_size file_size = GetFileSize(file_handle,NULL);
-
     //initialize this row in the table
-    file_table_ref.columns.handle    [out_file_index_ref] = file_handle;
-    file_table_ref.columns.size      [out_file_index_ref] = file_size;
-    file_table_ref.columns.overlapped[out_file_index_ref] = {0};
+    file_table_ref.handle[out_file_ref.index] = file_handle;
+    file_table_ref.op    [out_file_ref.index] = {0};
 
     //we're done
     return(true);
@@ -129,23 +120,22 @@ ifb_win32::file_open_read_write(
 
 ifb_internal const ifb_b8
 ifb_win32::file_close(
-    const IFBEnginePlatformFileIndex file_index) {
+    const IFBFile& file_ref) {
 
     //get the file table
     IFBWin32FileTable& file_table_ref = ifb_win32::file_table_ref();
 
     //sanity check
-    if (file_index > IFB_WIN32_FILE_MANAGER_MAX_FILES) {
+    if (file_ref.index >= IFB_WIN32_FILE_MANAGER_MAX_FILES) {
         return(false);
     }
 
     //close the handle
-    ifb_b8 result = (ifb_b8)CloseHandle(file_table_ref.columns.handle[file_index]);    
+    ifb_b8 result = (ifb_b8)CloseHandle(file_table_ref.handle[file_ref.index]);    
     
     //update the table
-    file_table_ref.columns.handle    [file_index] = NULL;
-    file_table_ref.columns.size      [file_index] = 0;
-    file_table_ref.columns.overlapped[file_index] = {0};
+    file_table_ref.handle[file_index] = NULL;
+    file_table_ref.op    [file_index] = {0};
 
     //we're done
     return(result);
@@ -153,7 +143,7 @@ ifb_win32::file_close(
 
 ifb_internal const ifb_size
 ifb_win32::file_size(
-    const IFBEnginePlatformFileIndex file_index) {
+    const IFBFile& file_ref) {
 
     //get the file table
     IFBWin32FileTable& file_table_ref = ifb_win32::file_table_ref();
@@ -173,10 +163,10 @@ ifb_win32::file_size(
 
 ifb_internal const ifb_b8 
 ifb_win32::file_read(
-    const IFBEnginePlatformFileIndex in_file_index,
-    const ifb_size                   in_file_read_start,
-    const ifb_size                   in_file_read_size,
-          ifb_memory                out_file_read_buffer) {
+    const IFBFile&    in_file_ref,
+    const ifb_size    in_file_read_start,
+    const ifb_size    in_file_read_size,
+          ifb_memory out_file_read_buffer) {
 
     //get the file table
     IFBWin32FileTable& file_table_ref = ifb_win32::file_table_ref();
@@ -211,10 +201,10 @@ ifb_win32::file_read(
 
 ifb_internal const ifb_b8 
 ifb_win32::file_write(
-    const IFBEnginePlatformFileIndex in_file_index,
-    const ifb_size                   in_file_write_start,
-    const ifb_size                   in_file_write_size,
-    const ifb_memory                 in_file_write_buffer) {
+    const IFBFile&   in_file_ref,
+    const ifb_size   in_file_write_start,
+    const ifb_size   in_file_write_size,
+    const ifb_memory in_file_write_buffer) {
 
     //get the file table
     IFBWin32FileTable& file_table_ref = ifb_win32::file_table_ref();

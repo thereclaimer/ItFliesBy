@@ -165,7 +165,7 @@ struct IFBLine {
 
 #define IFB_FILE_PATH_MAX_LENGTH 256
 
-struct IFBFile {
+struct IFBFile : IFBID {
     ifb_ptr  handle;
 };
 
