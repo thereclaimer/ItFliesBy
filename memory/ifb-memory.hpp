@@ -99,12 +99,16 @@ namespace ifb_memory {
         const IFBMemoryArena* arena,
         const ifb_u32         size);
 
-    const ifb_ptr stack_allocator_reset        (IFBMemoryStackAllocator* stack_allocator);
-    const ifb_ptr stack_allocator_push         (IFBMemoryStackAllocator* stack_allocator, const ifb_u32 size);
-    const ifb_ptr stack_allocator_pull         (IFBMemoryStackAllocator* stack_allocator, const ifb_u32 size);
-    const ifb_ptr stack_allocator_push_aligned (IFBMemoryStackAllocator* stack_allocator, const ifb_u32 size, const ifb_u32 alignment);
-    const ifb_ptr stack_allocator_pull_aligned (IFBMemoryStackAllocator* stack_allocator, const ifb_u32 size, const ifb_u32 alignment);
-
+    const ifb_ptr stack_alocator_save_point_set       (IFBMemoryStackAllocator* stack_allocator);
+    const ifb_ptr stack_alocator_save_point_clear     (IFBMemoryStackAllocator* stack_allocator);
+    const ifb_ptr stack_alocator_save_point_get       (IFBMemoryStackAllocator* stack_allocator);
+    const ifb_ptr stack_allocator_reset               (IFBMemoryStackAllocator* stack_allocator);
+    const ifb_ptr stack_allocator_reset_to_save_point (IFBMemoryStackAllocator* stack_allocator);
+    const ifb_ptr stack_allocator_push                (IFBMemoryStackAllocator* stack_allocator, const ifb_u32 size);
+    const ifb_ptr stack_allocator_pull                (IFBMemoryStackAllocator* stack_allocator, const ifb_u32 size);
+    const ifb_ptr stack_allocator_push_aligned        (IFBMemoryStackAllocator* stack_allocator, const ifb_u32 size, const ifb_u32 alignment);
+    const ifb_ptr stack_allocator_pull_aligned        (IFBMemoryStackAllocator* stack_allocator, const ifb_u32 size, const ifb_u32 alignment);
+    
     const ifb_u32 stack_allocator_get_size_total (const IFBMemoryStackAllocator* stack_allocator);
     const ifb_u32 stack_allocator_get_size_used  (const IFBMemoryStackAllocator* stack_allocator);
     const ifb_u32 stack_allocator_get_size_free  (const IFBMemoryStackAllocator* stack_allocator);

@@ -47,4 +47,18 @@ struct IFBMemoryManager {
     IFBMemoryArenaList    arena_list;
 };
 
+struct IFBMemoryStackAllocator {
+    ifb_address start;
+    ifb_u32     size;
+    ifb_u32     position;
+    ifb_u32     save_point;    
+};
+
+struct IFBMemoryBlockAllocator {
+    ifb_address start;
+    ifb_u32     block_size;
+    ifb_u32     block_count;
+    ifb_u32*    block_flags_array;
+};
+
 #endif //IFB_MEMORY_INTERNAL_HPP
