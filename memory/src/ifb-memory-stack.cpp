@@ -140,8 +140,15 @@ ifb_memory::stack_push_block_allocator(
     IFBMemoryBlockAllocatorHandle block_allocator_handle;
     block_allocator_handle.allocator = (ifb_ptr)block_allocator_ptr; 
 
-    //calculate the flags pointer
+    //calculate the flags pointer and clear the flags
     ifb_u32* block_flags_array = (ifb_u32*)((ifb_address)block_allocator_handle + block_allocator_size); 
+    for (
+        ifb_u32 flag_index = 0;
+        flag_index < block_flag_count;
+        ++flag_index) {
+
+        block_flags_array[flag_index] = 0;
+    }
 
     //sanity check
     if (!block_allocator_ptr) {

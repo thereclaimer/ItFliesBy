@@ -26,6 +26,7 @@ ifb_memory::reserve(
     //initialize the reservation
     reservation_ref.start           = (ifb_address)reservation_ptr;
     reservation_ref.size            = reservation_size;
+    reservation_ref.granularity     = allocation_granularity;
     reservation_ref.page_size       = page_size;
     reservation_ref.pages_total     = reservation_size / page_size;
     reservation_ref.pages_committed = 0;
@@ -49,6 +50,28 @@ ifb_memory::release(
 
     //we're done
     return(result);
+}
+
+inline const ifb_u32
+ifb_memory::reservation_size_align_to_page(
+    const IFBMemory* memory_ptr,
+    const ifb_u32    size) {
+
+    const ifb_u32 page_size    = memory_ptr->reservation.page_size;
+    const ifb_u32 size_aligned = ifb_macro_align_a_to_b(size,page_size); 
+
+    return(size_aligned);
+}
+ 
+inline const ifb_u32
+ifb_memory::reservation_size_align_to_granularity(
+    const IFBMemory* memory_ptr,
+    const ifb_u32    size) {
+
+    const ifb_u32 granularity  = memory_ptr->reservation.granularity;
+    const ifb_u32 size_aligned = ifb_macro_align_a_to_b(size,granularity); 
+
+    return(size_aligned);
 }
 
 inline const ifb_address
@@ -107,6 +130,17 @@ ifb_memory::reservation_get_pages_committed(
     return(page_count);
 }
 
+inline const ifb_u32
+ifb_memory::reservation_get_page_count_from_size(
+    const IFBMemory* memory_ptr,
+    const ifb_u32    size) {
+
+    const ifb_u32 page_size  = memory_ptr->reservation.page_size;
+    const ifb_u32 page_count = size / page_size;
+
+    return(page_count);
+}
+
 inline const ifb_u64
 ifb_memory::reservation_get_size_total(
     const IFBMemory* memory_ptr) {
@@ -131,4 +165,88 @@ ifb_memory::reservation_get_size_committed(
     const ifb_u64 committed_size = page_count * page_size;
 
     return(committed_size);
+}
+
+inline const ifb_ptr
+ifb_memory::reservation_get_page_start_next(
+    const IFBMemory* memory_ptr) {
+
+    if (!memory_ptr) return(NULL);
+
+    const ifb_u32 page_number = memory_ptr->reservation.pages_committed;
+    const ifb_ptr page_start  = ifb_memory::reservation_get_page_start(
+        memory_ptr,
+        page_number);
+
+    return(page_start);
+}
+
+
+inline const ifb_ptr 
+ifb_memory::reservation_get_page_start(
+    const IFBMemory* memory_ptr,
+    const ifb_u32    page_number) {
+
+    IFBMemoryReservation& reservation_ref = memory_ptr->reservation;
+
+    //calculate the pointer
+    const ifb_u32     page_offset        = reservation_ref.page_size * page_number;
+    const ifb_address page_start_address = reservation_ref.start     + page_offset;
+    const ifb_ptr     page_start_pointer = (ifb_ptr)page_start_address;  
+
+    //we're done
+    return(page_start_pointer);
+}
+
+inline const ifb_b8
+ifb_memory::reservation_page_commit(
+    IFBMemory*           memory_ptr,
+    IFBMemoryPageCommit& page_commit_ref) {
+
+    //sanity check
+    if (!memory_ptr || page_commit_ref.size == 0) {
+        return(false);
+    }
+
+    //cache reservation
+    IFBMemoryReservation& reservation_ref = memory_ptr->reservation;
+
+    //align the size
+    const ifb_u32 page_commit_size = ifb_memory::reservation_size_align_to_page(
+        memory_ptr,
+        page_commit_ref.size);
+
+    //make sure we can do the commit
+    const ifb_u32 page_commit_count  = commit_size / reservation_ref.page_size;
+    const ifb_u32 page_commit_number = reservation_ref.pages_committed;
+    const ifb_u32 page_committed_new = page_commit_number + page_commit_ref.page_count;
+    if (page_committed_new > reservation_ref.pages_total) {
+        return(false);
+    }
+
+    //get the start address of the commit
+    const ifb_ptr page_commit_start = ifb_memory::reservation_get_page_start_next(memory_ptr);
+    const ifb_u32 page_commit_size  = page_commit_ref.page_count / reservation_ref.page_size; 
+
+    //do the commit
+    const ifb_ptr page_commit_result = ifb_memory::platform_memory_commit(
+        page_commit_start,
+        page_commit_size);
+
+    //sanity check
+    if (page_commit_result != page_commit_start) {
+        return(false);
+    }
+
+    //update the page commit reference
+    page_commit_ref.page_start.page_number  = page_commit_number; 
+    page_commit_ref.page_start.page_address = ; 
+
+    page_commit_ref.start       = (ifb_address)page_commit_result; 
+    page_commit_ref.size        = page_commit_size; 
+    page_commit_ref.page_number = page_commit_number; 
+    page_commit_ref.page_count  = page_commit_count; 
+
+    //we're done
+    return(true);
 }

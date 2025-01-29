@@ -7,12 +7,7 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-struct IFBMemoryStack;
-struct IFBMemoryReservation;
-struct IFBMemoryArena;
-struct IFBMemoryArenaTable;
-struct IFBMemoryStackAllocator;
-struct IFBMemoryBlockAllocator;
+
 
 /**********************************************************************************/
 /* PLATFORM                                                                       */
@@ -38,17 +33,45 @@ struct IFBMemoryStack {
 
 namespace ifb_memory {
 
-    const IFBMemoryHandle               stack_push_arenas          (IFBMemory* memory_ptr, const ifb_u32 arena_count);
-    const IFBMemoryBlockAllocatorHandle stack_push_block_allocator (IFBMemory* memory_ptr, const ifb_u32 block_count);
-    const IFBMemoryStackAllocatorHandle stack_push_stack_allocator (IFBMemory* memory_ptr);
+    const IFBMemoryStackAllocator* stack_push_stack_allocators (const IFBMemoryHandle memory_handle);
+    const IFBMemoryBlockAllocator* stack_push_block_allocators (const IFBMemoryHandle memory_handle, const ifb_u32 block_count);
+    const IFBMemoryArena*          stack_push_arenas           (const IFBMemoryHandle memory_handle, const ifb_u32 arena_count);
 };
 
 struct IFBMemoryReservation {
     ifb_address start;
     ifb_u64     size;
+    ifb_u32     granularity;
     ifb_u32     page_size;
     ifb_u32     pages_total;
     ifb_u32     pages_committed;
+};
+
+struct IFBMemoryPage {
+    ifb_u32     page_number;
+    ifb_address page_address;
+};
+
+
+struct IFBMemoryPageCommit {
+    ifb_address   start;
+    ifb_u32       size;
+    ifb_u32       page_number;
+    ifb_u32       page_count;
+};
+
+namespace ifb_memory {
+
+    const ifb_address reservation_get_start_address   (const IFBMemory* memory_ptr);
+    const ifb_ptr     reservation_get_start_pointer   (const IFBMemory* memory_ptr);
+    const ifb_ptr     reservation_get_page_start_next (const IFBMemory* memory_ptr);
+    const ifb_ptr     reservation_get_page_start      (const IFBMemory* memory_ptr, const ifb_u32 page_number);
+
+    const ifb_b8
+    reservation_page_commit(
+        IFBMemory*           memory_ptr,
+        IFBMemoryPageCommit& page_commit_ref);
+
 };
 
 struct IFBMemoryArenaAllocators {
@@ -56,22 +79,29 @@ struct IFBMemoryArenaAllocators {
     IFBMemoryBlockAllocator* block_allocator_array;
     ifb_u32                  stack_allocator_count;
     ifb_u32                  block_allocator_count;
+    ifb_u32                  stack_allocator_memory_size;
+    ifb_u32                  block_allocator_memory_size;
 };
 
-struct IFBMemoryArena : IFBMemoryArenaHandle {
+struct IFBMemoryArena {
     IFBMemoryArenaAllocators allocators;
-    ifb_address              start;
+    IFBMemoryPageCommit      page_commit;
     ifb_u32                  index;             
     ifb_u32                  position;
-    ifb_u32                  page_count;
-    ifb_u32                  page_start;
 };
+
 
 struct IFBMemoryArenaTable {
     IFBMemoryArena* arena_array;    
     IFBMemoryHandle arena_array_handle;
     ifb_u32         count_total;
     ifb_u32         count_used;    
+};
+
+namespace ifb_memory {
+
+    const IFBMemoryArena* arena_get_next    (const IFBMemory* memory_ptr);
+    const ifb_ptr         arena_get_pointer (const IFBMemoryArenaHandle arena_handle, const ifb_u32 offset);
 };
 
 struct IFBMemoryStackAllocator {
@@ -85,7 +115,6 @@ struct IFBMemoryStackAllocator {
 #define IFB_MEMORY_BLOCK_FLAG_BIT_COUNT 32
 
 struct IFBMemoryBlockAllocator  {
-    IFBMemoryArenaHandle arena_handle;
     ifb_address          start;
     ifb_u32              block_size;
     ifb_u32              block_count;
