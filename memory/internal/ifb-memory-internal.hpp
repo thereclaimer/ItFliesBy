@@ -23,7 +23,7 @@ namespace ifb_memory {
 };
 
 /**********************************************************************************/
-/* IMPLEMENTATIONS                                                                */
+/* STACK                                                                          */
 /**********************************************************************************/
 
 struct IFBMemoryStack {
@@ -38,6 +38,10 @@ namespace ifb_memory {
     const IFBMemoryArena*          stack_push_arenas           (const IFBMemoryHandle memory_handle, const ifb_u32 arena_count);
 };
 
+/**********************************************************************************/
+/* RESERVATION                                                                    */
+/**********************************************************************************/
+
 struct IFBMemoryReservation {
     ifb_address start;
     ifb_u64     size;
@@ -51,7 +55,6 @@ struct IFBMemoryPage {
     ifb_u32     page_number;
     ifb_address page_address;
 };
-
 
 struct IFBMemoryPageCommit {
     ifb_address   start;
@@ -74,58 +77,53 @@ namespace ifb_memory {
 
 };
 
-struct IFBMemoryArenaAllocators {
-    IFBMemoryStackAllocator* stack_allocator_array;
-    IFBMemoryBlockAllocator* block_allocator_array;
-    ifb_u32                  stack_allocator_count;
-    ifb_u32                  block_allocator_count;
-    ifb_u32                  stack_allocator_memory_size;
-    ifb_u32                  block_allocator_memory_size;
+/**********************************************************************************/
+/* ARENA BASE                                                                     */
+/**********************************************************************************/
+
+enum IFBMemoryArenaType_ {
+    IFBMemoryArenaType_Normal = 0,
+    IFBMemoryArenaType_Linear = 1,
+    IFBMemoryArenaType_Block  = 2
 };
 
 struct IFBMemoryArena {
-    IFBMemoryArenaAllocators allocators;
-    IFBMemoryPageCommit      page_commit;
-    ifb_u32                  index;             
-    ifb_u32                  position;
+    IFBMemoryArena*     next;
+    IFBMemoryPageCommit page_commit;
+    IFBMemoryArenaType  type;    
 };
 
-
-struct IFBMemoryArenaTable {
-    IFBMemoryArena* arena_array;    
-    IFBMemoryHandle arena_array_handle;
-    ifb_u32         count_total;
-    ifb_u32         count_used;    
+struct IFBMemoryArenaList {
+    IFBMemoryArena* first;    
+    ifb_u32         count;
 };
 
-namespace ifb_memory {
+/**********************************************************************************/
+/* ARENA LINEAR                                                                   */
+/**********************************************************************************/
 
-    const IFBMemoryArena* arena_get_next    (const IFBMemory* memory_ptr);
-    const ifb_ptr         arena_get_pointer (const IFBMemoryArenaHandle arena_handle, const ifb_u32 offset);
+struct IFBMemoryLinearArena : IFBMemoryArena {
+    ifb_u32 position;
+    ifb_u32 save_point;
 };
 
-struct IFBMemoryStackAllocator {
-    IFBMemoryArenaHandle arena_handle;
-    ifb_address          start;
-    ifb_u32              size;
-    ifb_u32              position;
-    ifb_u32              save_point;
-};
+/**********************************************************************************/
+/* ARENA BLOCK                                                                    */
+/**********************************************************************************/
 
 #define IFB_MEMORY_BLOCK_FLAG_BIT_COUNT 32
 
-struct IFBMemoryBlockAllocator  {
-    ifb_address          start;
-    ifb_u32              block_size;
-    ifb_u32              block_count;
-    ifb_u32              block_flags_count;
-    ifb_u32*             block_flags_array;
+struct IFBMemoryBlockArena : IFBMemoryArena  {
+    ifb_u32  block_size;
+    ifb_u32  block_count;
+    ifb_u32  block_flags_count;
+    ifb_u32* block_flags_array;
 };
 
 struct IFBMemory {
-    IFBMemoryStack        stack;
-    IFBMemoryReservation  reservation;
-    IFBMemoryArenaTable   arena_table;
+    IFBMemoryStack       stack;
+    IFBMemoryReservation reservation;
+    IFBMemoryArenaList   arena_list;
 };
 
 #endif //IFB_MEMORY_INTERNAL_HPP
