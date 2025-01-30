@@ -47,12 +47,21 @@ namespace ifb_memory {
 
 namespace ifb_memory {
 
-    //push
-    const ifb_ptr stack_push         (const IFBMemoryHandle memory_handle, const ifb_u32 size);
-    const ifb_ptr stack_push_aligned (const IFBMemoryHandle memory_handle, const ifb_u32 size, const ifb_u32 alignment);
+    //push absolute
+    const ifb_ptr stack_push                  (const IFBMemoryHandle memory_handle, const ifb_u32 size);
+    const ifb_ptr stack_push_aligned          (const IFBMemoryHandle memory_handle, const ifb_u32 size, const ifb_u32 alignment);
+
+    //push relative
+    const ifb_u32 stack_push_relative         (const IFBMemoryHandle memory_handle, const ifb_ptr reference, const ifb_u32 size);
+    const ifb_u32 stack_push_relative_aligned (const IFBMemoryHandle memory_handle, const ifb_ptr reference, const ifb_u32 size, const ifb_u32 alignment);
+
+    //pointers
+    const ifb_ptr stack_get_pointer           (const IFBMemoryHandle memory_handle, const ifb_u32 stack_position);
+    const ifb_ptr stack_get_pointer_relative  (const IFBMemoryHandle memory_handle, const ifb_ptr reference const ifb_u32 offset);
 };
 
-#define ifb_memory_macro_stack_push_struct(memory_handle,struct) ifb_memory::stack_push_aligned(memory_handle, sizeof(struct), alignof(struct))
+#define ifb_memory_macro_stack_push_struct(memory_handle,struct)                    ifb_memory::stack_push_aligned(memory_handle, sizeof(struct), alignof(struct))
+#define ifb_memory_macro_stack_push_struct_relative(memory_handle,reference,struct) ifb_memory::stack_push_relative_aligned(memory_handle, reference, sizeof(struct), alignof(struct))
 
 /**********************************************************************************/
 /* RESERVATION                                                                    */
@@ -61,23 +70,23 @@ namespace ifb_memory {
 namespace ifb_memory {
 
     //reserve/release
-    const ifb_b8 reserve (const IFBMemoryHandle memory_handle, const ifb_u64 reservation_size_minimum);
-    const ifb_b8 release (const IFBMemoryHandle memory_handle);
+    const ifb_b8 reserve                                (const IFBMemoryHandle memory_handle, const ifb_u64 reservation_size_minimum);
+    const ifb_b8 release                                (const IFBMemoryHandle memory_handle);
 
     //alignment
     const ifb_u32 reservation_size_align_to_page        (const IFBMemoryHandle memory_handle, const ifb_u32 size);    
     const ifb_u32 reservation_size_align_to_granularity (const IFBMemoryHandle memory_handle, const ifb_u32 size);
     
     //pages
-    const ifb_u32 reservation_get_page_size            (const IFBMemoryHandle memory_handle);
-    const ifb_u32 reservation_get_page_count_total     (const IFBMemoryHandle memory_handle);
-    const ifb_u32 reservation_get_page_count_committed (const IFBMemoryHandle memory_handle);
-    const ifb_u32 reservation_get_page_count_free      (const IFBMemoryHandle memory_handle);
-    const ifb_u32 reservation_get_page_count_from_size (const IFBMemoryHandle memory_handle, const ifb_u32 size);
+    const ifb_u32 reservation_get_page_size             (const IFBMemoryHandle memory_handle);
+    const ifb_u32 reservation_get_page_count_total      (const IFBMemoryHandle memory_handle);
+    const ifb_u32 reservation_get_page_count_committed  (const IFBMemoryHandle memory_handle);
+    const ifb_u32 reservation_get_page_count_free       (const IFBMemoryHandle memory_handle);
+    const ifb_u32 reservation_get_page_count_from_size  (const IFBMemoryHandle memory_handle, const ifb_u32 size);
 
     //size
-    const ifb_u64 reservation_get_size_total     (const IFBMemoryHandle memory_handle);
-    const ifb_u64 reservation_get_size_committed (const IFBMemoryHandle memory_handle);
+    const ifb_u64 reservation_get_size_total            (const IFBMemoryHandle memory_handle);
+    const ifb_u64 reservation_get_size_committed        (const IFBMemoryHandle memory_handle);
 };
 
 /**********************************************************************************/

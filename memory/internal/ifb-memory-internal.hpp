@@ -27,15 +27,16 @@ namespace ifb_memory {
 /**********************************************************************************/
 
 struct IFBMemoryStack {
-    ifb_u32   size;
-    ifb_u32   position;
+    ifb_address end;
+    ifb_u32     size;
+    ifb_u32     position;
 };
 
 namespace ifb_memory {
-
-    const IFBMemoryStackAllocator* stack_push_stack_allocators (const IFBMemoryHandle memory_handle);
-    const IFBMemoryBlockAllocator* stack_push_block_allocators (const IFBMemoryHandle memory_handle, const ifb_u32 block_count);
-    const IFBMemoryArena*          stack_push_arenas           (const IFBMemoryHandle memory_handle, const ifb_u32 arena_count);
+    
+    const IFBMemoryArena*      stack_push_arena_base   (const IFBMemoryHandle memory_handle);
+    const IFBMemoryStackArena* stack_push_arena_linear (const IFBMemoryHandle memory_handle);
+    const IFBMemoryBlockArena* stack_push_arena_block  (const IFBMemoryHandle memory_handle, const ifb_u32 block_count);
 };
 
 /**********************************************************************************/
@@ -95,7 +96,13 @@ struct IFBMemoryArena {
 
 struct IFBMemoryArenaList {
     IFBMemoryArena* first;    
+    IFBMemoryArena* last;    
     ifb_u32         count;
+};
+
+namespace ifb_memory {
+
+    ifb_void arena_list_add (IFBMemoryArenaList& arena_list_ref, IFBMemoryArena* arena_base_ptr);
 };
 
 /**********************************************************************************/
