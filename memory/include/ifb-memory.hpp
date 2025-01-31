@@ -51,16 +51,23 @@ namespace ifb_memory {
     const ifb_ptr stack_push                  (const IFBMemoryHandle memory_handle, const ifb_u32 size);
     const ifb_ptr stack_push_aligned          (const IFBMemoryHandle memory_handle, const ifb_u32 size, const ifb_u32 alignment);
 
+    //push offset
+    const ifb_u32 stack_push_offset           (const IFBMemoryHandle memory_handle, const ifb_u32 size);
+    const ifb_u32 stack_push_offset_aligned   (const IFBMemoryHandle memory_handle, const ifb_u32 size, const ifb_u32 alignment);
+    
     //push relative
     const ifb_u32 stack_push_relative         (const IFBMemoryHandle memory_handle, const ifb_ptr reference, const ifb_u32 size);
     const ifb_u32 stack_push_relative_aligned (const IFBMemoryHandle memory_handle, const ifb_ptr reference, const ifb_u32 size, const ifb_u32 alignment);
 
     //pointers
     const ifb_ptr stack_get_pointer           (const IFBMemoryHandle memory_handle, const ifb_u32 stack_position);
-    const ifb_ptr stack_get_pointer_relative  (const IFBMemoryHandle memory_handle, const ifb_ptr reference const ifb_u32 offset);
+    const ifb_ptr stack_get_pointer_relative  (const IFBMemoryHandle memory_handle, const ifb_u32 reference, const ifb_u32 offset);
 };
 
-#define ifb_memory_macro_stack_push_struct(memory_handle,struct)                    ifb_memory::stack_push_aligned(memory_handle, sizeof(struct), alignof(struct))
+#define ifb_memory_macro_stack_push_type(memory_handle,type)                    (struct*)ifb_memory::stack_push(memory_handle, sizeof(struct))
+#define ifb_memory_macro_stack_push_type_relative(memory_handle,reference,type) ifb_memory::stack_push_relative(memory_handle, reference, sizeof(struct))
+
+#define ifb_memory_macro_stack_push_struct(memory_handle,struct)                    (struct*)ifb_memory::stack_push_aligned(memory_handle, sizeof(struct), alignof(struct))
 #define ifb_memory_macro_stack_push_struct_relative(memory_handle,reference,struct) ifb_memory::stack_push_relative_aligned(memory_handle, reference, sizeof(struct), alignof(struct))
 
 /**********************************************************************************/
@@ -119,6 +126,7 @@ namespace ifb_memory {
 
 namespace ifb_memory {
 
+    //commit
     const IFBMemoryLinearArenaHandle
     linear_arena_commit(
         const IFBMemoryHandle memory_handle,
@@ -162,7 +170,7 @@ namespace ifb_memory {
 
     //reserve/release
     const ifb_ptr block_arena_block_reserve         (const IFBMemoryBlockArenaHandle block_arena_handle);
-    const ifb_ptr block_arena_block_release         (const IFBMemoryBlockArenaHandle block_arena_handle);
+    const ifb_b8  block_arena_block_release         (const IFBMemoryBlockArenaHandle block_arena_handle);
 
     //size/count
     const ifb_u32 block_arena_get_size_total        (const IFBMemoryBlockArenaHandle block_arena_handle);

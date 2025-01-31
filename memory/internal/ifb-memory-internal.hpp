@@ -34,9 +34,9 @@ struct IFBMemoryStack {
 
 namespace ifb_memory {
     
-    const IFBMemoryArena*      stack_push_arena_base   (const IFBMemoryHandle memory_handle);
-    const IFBMemoryStackArena* stack_push_arena_linear (const IFBMemoryHandle memory_handle);
-    const IFBMemoryBlockArena* stack_push_arena_block  (const IFBMemoryHandle memory_handle, const ifb_u32 block_count);
+    IFBMemoryArena*       stack_push_arena_base   (const IFBMemoryHandle memory_handle);
+    IFBMemoryLinearArena* stack_push_arena_linear (const IFBMemoryHandle memory_handle);
+    IFBMemoryBlockArena*  stack_push_arena_block  (const IFBMemoryHandle memory_handle, const ifb_u32 block_count);
 };
 
 /**********************************************************************************/
@@ -71,11 +71,7 @@ namespace ifb_memory {
     const ifb_ptr     reservation_get_page_start_next (const IFBMemory* memory_ptr);
     const ifb_ptr     reservation_get_page_start      (const IFBMemory* memory_ptr, const ifb_u32 page_number);
 
-    const ifb_b8
-    reservation_page_commit(
-        IFBMemory*           memory_ptr,
-        IFBMemoryPageCommit& page_commit_ref);
-
+    const ifb_b8 reservation_page_commit (IFBMemory* memory_ptr, IFBMemoryPageCommit& page_commit_ref);
 };
 
 /**********************************************************************************/
@@ -83,7 +79,7 @@ namespace ifb_memory {
 /**********************************************************************************/
 
 enum IFBMemoryArenaType_ {
-    IFBMemoryArenaType_Normal = 0,
+    IFBMemoryArenaType_Base   = 0,
     IFBMemoryArenaType_Linear = 1,
     IFBMemoryArenaType_Block  = 2
 };
@@ -102,7 +98,7 @@ struct IFBMemoryArenaList {
 
 namespace ifb_memory {
 
-    ifb_void arena_list_add (IFBMemoryArenaList& arena_list_ref, IFBMemoryArena* arena_base_ptr);
+    const ifb_b8 arena_list_add (IFBMemoryArenaList& arena_list_ref, IFBMemoryArena* arena_base_ptr);
 };
 
 /**********************************************************************************/
