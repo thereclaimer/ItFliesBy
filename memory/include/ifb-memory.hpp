@@ -77,8 +77,8 @@ namespace ifb_memory {
 namespace ifb_memory {
 
     //reserve/release
-    const ifb_b8 reserve                                (const IFBMemoryHandle memory_handle, const ifb_u64 reservation_size_minimum);
-    const ifb_b8 release                                (const IFBMemoryHandle memory_handle);
+    const ifb_b8  reserve                               (const IFBMemoryHandle memory_handle, const ifb_u64 reservation_size_minimum);
+    const ifb_b8  release                               (const IFBMemoryHandle memory_handle);
 
     //alignment
     const ifb_u32 reservation_size_align_to_page        (const IFBMemoryHandle memory_handle, const ifb_u32 size);    
@@ -166,7 +166,7 @@ namespace ifb_memory {
         const ifb_u32         block_count);
 
     //reset
-    const ifb_ptr block_arena_reset                 (const IFBMemoryBlockArenaHandle block_arena_handle);
+    const ifb_b8  block_arena_reset                 (const IFBMemoryBlockArenaHandle block_arena_handle);
 
     //reserve/release
     const ifb_ptr block_arena_block_reserve         (const IFBMemoryBlockArenaHandle block_arena_handle);

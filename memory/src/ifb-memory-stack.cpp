@@ -248,33 +248,30 @@ ifb_memory::stack_push_arena_block(
     if (block_count == 0) return(NULL);
 
     //calculate the push size
-    const ifb_u32 block_flag_count      = ifb_macro_align_a_to_multiple_of_b(block_count, IFB_MEMORY_BLOCK_FLAG_BIT_COUNT);
-    const ifb_u32 block_flag_array_size = ifb_macro_size_array(ifb_u32,block_flag_count);
-    const ifb_u32 block_arena_size      = ifb_macro_align_size_struct(IFBMemoryBlockArena);
-    const ifb_u32 push_size             = block_arena_size + block_flag_array_size;
+    const ifb_u32 block_arena_size = ifb_macro_align_size_struct(IFBMemoryBlockArena);
 
     //do the push
-    const ifb_address block_arena_start = (ifb_address)ifb_memory::stack_push(memory_ptr,push_size);
-    if (block_arena_start == 0) return(NULL);
-
-    //get the pointers
-    IFBMemoryBlockArena* block_arena_ptr   = (IFBMemoryBlockArena*)block_arena_start;    
-    ifb_u32*             block_flags_array = (ifb_u32*)(block_arena_start + block_arena_size); 
-
-    //clear the flags
-    for (
-        ifb_u32 flag_index = 0;
-        flag_index < block_flag_count;
-        ++flag_index) {
-
-        block_flags_array[flag_index] = 0;
-    }
-
-    //initialize the struct
-    block_arena_ptr->block_count       = block_count;
-    block_arena_ptr->block_flags_count = block_flag_count;
-    block_arena_ptr->block_flags_array = block_flags_array;
+    IFBMemoryBlockArena* block_arena_ptr  = (IFBMemoryBlockArena*)ifb_memory::stack_push(memory_ptr,push_size);
 
     //we're done
     return(block_arena_ptr);
+}
+
+inline ifb_u32*
+ifb_memory::stack_push_arena_block_flags(
+    const IFBMemoryHandle memory_handle,
+    const ifb_u32         block_flag_group_count) {
+
+    //sanity check
+    ifb_macro_assert(memory_handle);
+    ifb_macro_assert(block_flag_group_count > 0);
+
+    //calculate the push size
+    const ifb_u32 push_size = block_flag_group_count * sizeof(ifb_u32);
+
+    //do the push
+    ifb_u32* flags = ifb_memory::stack_push(memory_handle,push_size);
+
+    //we're done
+    return(flags);
 }
