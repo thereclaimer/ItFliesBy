@@ -37,7 +37,7 @@ namespace ifb_memory {
     IFBMemoryArena*       stack_push_arena_base        (const IFBMemoryHandle memory_handle);
     IFBMemoryLinearArena* stack_push_arena_linear      (const IFBMemoryHandle memory_handle);
     IFBMemoryBlockArena*  stack_push_arena_block       (const IFBMemoryHandle memory_handle);
-    ifb_u32*              stack_push_arena_block_flags (const IFBMemoryHandle memory_handle, const ifb_u32 block_count);
+    IFBMemoryBlock*       stack_push_arena_block_array (const IFBMemoryHandle memory_handle, const ifb_u32 block_count);
 };
 
 /**********************************************************************************/
@@ -115,13 +115,14 @@ struct IFBMemoryLinearArena : IFBMemoryArena {
 /* ARENA BLOCK                                                                    */
 /**********************************************************************************/
 
-#define IFB_MEMORY_BLOCK_FLAG_GROUP_SIZE 32
+struct IFBMemoryBlock {
+    ifb_address start;
+};
 
 struct IFBMemoryBlockArena : IFBMemoryArena  {
-    ifb_u32  block_size;
-    ifb_u32  block_count;
-    ifb_u32  block_flag_group_count;
-    ifb_u32* block_flag_group_array;
+    IFBMemoryBlock* block_array;
+    ifb_u32         block_count;
+    ifb_u32         block_size;
 };
 
 struct IFBMemory {

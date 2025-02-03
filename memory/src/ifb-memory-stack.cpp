@@ -257,21 +257,23 @@ ifb_memory::stack_push_arena_block(
     return(block_arena_ptr);
 }
 
-inline ifb_u32*
-ifb_memory::stack_push_arena_block_flags(
+inline IFBMemoryBlock*
+ifb_memory::stack_push_arena_block_array(
     const IFBMemoryHandle memory_handle,
-    const ifb_u32         block_flag_group_count) {
+    const ifb_u32         block_count) {
 
     //sanity check
     ifb_macro_assert(memory_handle);
     ifb_macro_assert(block_flag_group_count > 0);
 
     //calculate the push size
-    const ifb_u32 push_size = block_flag_group_count * sizeof(ifb_u32);
+    const ifb_u32 push_size = ifb_macro_size_array(IFBMemoryBlock,block_count); 
 
     //do the push
-    ifb_u32* flags = ifb_memory::stack_push(memory_handle,push_size);
+    IFBMemoryBlock* block_array = (IFBMemoryBlock*)ifb_memory::stack_push(
+        memory_handle,
+        push_size);
 
     //we're done
-    return(flags);
+    return(block_array);
 }

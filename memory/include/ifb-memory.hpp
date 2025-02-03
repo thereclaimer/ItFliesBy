@@ -17,11 +17,13 @@ struct IFBMemoryArena;
 struct IFBMemoryArenaTable;
 struct IFBMemoryLinearArena;
 struct IFBMemoryBlockAllocator;
+struct IFBMemoryBlock;
 
 typedef IFBMemory*            IFBMemoryHandle;
 typedef IFBMemoryArena*       IFBMemoryArenaHandle;
 typedef IFBMemoryLinearArena* IFBMemoryLinearArenaHandle;
 typedef IFBMemoryBlockArena*  IFBMemoryBlockArenaHandle;
+typedef IFBMemoryBlock*       IFBMemoryBlockHandle;
 
 typedef ifb_u32 IFBMemoryArenaType;
 
@@ -157,27 +159,33 @@ namespace ifb_memory {
 /* ARENA - BLOCK                                                                  */
 /**********************************************************************************/
 
+
 namespace ifb_memory {
 
-    const IFBMemoryBlockArena
+    const IFBMemoryBlockArenaHandle
     block_arena_commit(
         const IFBMemoryHandle memory_handle,
         const ifb_u32         block_size_minimum,
         const ifb_u32         block_count);
 
     //reset
-    const ifb_b8  block_arena_reset                 (const IFBMemoryBlockArenaHandle block_arena_handle);
+    ifb_void      block_arena_reset                      (const IFBMemoryBlockArenaHandle block_arena_handle);
 
     //reserve/release
-    const ifb_ptr block_arena_block_reserve         (const IFBMemoryBlockArenaHandle block_arena_handle);
-    const ifb_b8  block_arena_block_release         (const IFBMemoryBlockArenaHandle block_arena_handle);
+    const ifb_b8  block_arena_block_reserve              (const IFBMemoryBlockArenaHandle block_arena_handle, ifb_u32&      block_index_ref);
+    const ifb_b8  block_arena_block_reserve_index        (const IFBMemoryBlockArenaHandle block_arena_handle, const ifb_u32 block_index);
+    const ifb_b8  block_arena_block_release              (const IFBMemoryBlockArenaHandle block_arena_handle, const ifb_u32 block_index);
+    const ifb_b8  block_arena_block_is_free              (const IFBMemoryBlockArenaHandle block_arena_handle, const ifb_u32 block_index);
+
+    //pointers
+    const ifb_ptr block_get_pointer                      (const IFBMemoryBlockArenaHandle block_arena_handle, const ifb_u32 block_index, const ifb_u32 offset = 0);
 
     //size/count
-    const ifb_u32 block_arena_get_size_total        (const IFBMemoryBlockArenaHandle block_arena_handle);
-    const ifb_u32 block_arena_get_block_size        (const IFBMemoryBlockArenaHandle block_arena_handle);
-    const ifb_u32 block_arena_get_block_count_total (const IFBMemoryBlockArenaHandle block_arena_handle);
-    const ifb_u32 block_arena_get_block_count_used  (const IFBMemoryBlockArenaHandle block_arena_handle);
-    const ifb_u32 block_arena_get_block_count_free  (const IFBMemoryBlockArenaHandle block_arena_handle);
+    const ifb_u32 block_arena_get_size_total             (const IFBMemoryBlockArenaHandle block_arena_handle);
+    const ifb_u32 block_arena_get_block_size             (const IFBMemoryBlockArenaHandle block_arena_handle);
+    const ifb_u32 block_arena_get_block_count_total      (const IFBMemoryBlockArenaHandle block_arena_handle);
+    const ifb_u32 block_arena_get_block_count_used       (const IFBMemoryBlockArenaHandle block_arena_handle);
+    const ifb_u32 block_arena_get_block_count_free       (const IFBMemoryBlockArenaHandle block_arena_handle);
 };
 
 
