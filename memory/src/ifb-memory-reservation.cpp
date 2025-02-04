@@ -5,11 +5,12 @@
 
 inline const ifb_b8
 ifb_memory::reserve(
-          IFBMemory* memory_ptr,
-    const ifb_u64    reservation_size_minimum) {
+    const IFBMemoryHandle memory_handle,
+    const ifb_u64         reservation_size_minimum) {
 
-    //sanity check
-    if (!memory_ptr) return(false);
+    //cast the handle
+    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    ifb_macro_assert(memory_ptr);
 
     //cache reservation
     IFBMemoryReservation& reservation_ref = memory_ptr->reservation;
@@ -37,11 +38,15 @@ ifb_memory::reserve(
 
 inline const ifb_b8
 ifb_memory::release(
-    IFBMemory* memory_ptr) {
+    const IFBMemoryHandle memory_handle) {
+
+    //cast the handle
+    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    ifb_macro_assert(memory_ptr);
 
     //get reservation start and size if we have it
-    const ifb_ptr reservation_start = memory_ptr ? (ifb_ptr)memory_ptr->reservation.start : NULL;
-    const ifb_u64 reservation_size  = memory_ptr ? memory_ptr->reservation.size           : 0;
+    const ifb_ptr reservation_start = (ifb_ptr)reservation.start;
+    const ifb_u64 reservation_size  = reservation.size;          
 
     //tell the platform to release the memory
     const ifb_b8 result = ifb_memory::platform_memory_release(
@@ -49,145 +54,154 @@ ifb_memory::release(
         reservation_size);
 
     //we're done
-    return(result);
+    return(result);  
 }
 
 inline const ifb_u32
 ifb_memory::reservation_size_align_to_page(
-    const IFBMemory* memory_ptr,
-    const ifb_u32    size) {
+    const IFBMemoryHandle memory_handle,
+    const ifb_u32         size) {
 
+    //cast the handle
+    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    ifb_macro_assert(memory_ptr);
+
+    //calculate the aligned size
     const ifb_u32 page_size    = memory_ptr->reservation.page_size;
     const ifb_u32 size_aligned = ifb_macro_align_a_to_b(size,page_size); 
 
+    //we're done
     return(size_aligned);
 }
  
 inline const ifb_u32
 ifb_memory::reservation_size_align_to_granularity(
-    const IFBMemory* memory_ptr,
-    const ifb_u32    size) {
+    const IFBMemoryHandle memory_handle,
+    const ifb_u32         size) {
 
+    //cast the handle
+    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    ifb_macro_assert(memory_ptr);
+
+    //calculate the aligned size
     const ifb_u32 granularity  = memory_ptr->reservation.granularity;
     const ifb_u32 size_aligned = ifb_macro_align_a_to_b(size,granularity); 
 
+    //we're done
     return(size_aligned);
-}
-
-inline const ifb_address
-ifb_memory::reservation_get_start_address(
-    const IFBMemory* memory_ptr) {
-
-    const ifb_address reservation_start = memory_ptr 
-        ? memory_ptr->reservation.start
-        : 0;
-
-    return(reservation_start);
-}
-
-inline const ifb_ptr
-ifb_memory::reservation_get_start_pointer(
-    const IFBMemory* memory_ptr) {
-
-    const ifb_ptr reservation_start = memory_ptr 
-        ? (ifb_ptr)memory_ptr->reservation.start
-        : NULL;
-
-    return(reservation_start);
 }
 
 inline const ifb_u32
 ifb_memory::reservation_get_page_size(
-    const IFBMemory* memory_ptr) {
+    const IFBMemoryHandle memory_handle) {
 
-    const ifb_u32 page_size = memory_ptr
-        ? memory_ptr->reservation.page_size
-        : 0;
+    //cast the handle
+    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    ifb_macro_assert(memory_ptr);
 
+    //get the page size
+    const ifb_u32 page_size = memory_ptr->reservation.page_size;
+
+    //we're done
     return(page_size);
 }
 
 inline const ifb_u32
 ifb_memory::reservation_get_pages_total(
-    const IFBMemory* memory_ptr) {
+    const IFBMemoryHandle memory_handle) {
 
-    const ifb_u32 page_count = memory_ptr
-        ? memory_ptr->reservation.pages_total
-        : 0;
+    //cast the handle
+    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    ifb_macro_assert(memory_ptr);
 
+    //get the page count
+    const ifb_u32 page_count = memory_ptr->reservation.pages_total;
+
+    //we're done
     return(page_count);
-
 }
 
 inline const ifb_u32
 ifb_memory::reservation_get_pages_committed(
-    const IFBMemory* memory_ptr) {
+    const IFBMemoryHandle memory_handle) {
 
-    const ifb_u32 page_count = memory_ptr
-        ? memory_ptr->reservation.pages_committed
-        : 0;
+    //cast the handle
+    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    ifb_macro_assert(memory_ptr);
 
-    return(page_count);
-}
+    //get the page count
+    const ifb_u32 page_count = memory_ptr->reservation.pages_committed;
 
-inline const ifb_u32
-ifb_memory::reservation_get_page_count_from_size(
-    const IFBMemory* memory_ptr,
-    const ifb_u32    size) {
-
-    const ifb_u32 page_size  = memory_ptr->reservation.page_size;
-    const ifb_u32 page_count = size / page_size;
-
+    //we're done
     return(page_count);
 }
 
 inline const ifb_u64
 ifb_memory::reservation_get_size_total(
-    const IFBMemory* memory_ptr) {
+    const IFBMemoryHandle memory_handle) {
 
-    if (!memory_ptr) return(0);
+    //cast the handle
+    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    ifb_macro_assert(memory_ptr);
 
-    const ifb_u64 page_count = memory_ptr->reservation.pages_total;
-    const ifb_u64 page_size  = memory_ptr->reservation.page_size;
-    const ifb_u64 total_size = page_count * page_size;
+    //get the size
+    const ifb_u64 total_size = memory_ptr->reservation.size; 
 
-    return(reservation_size);
+    //we're done
+    return(total_size);
 }  
 
 inline const ifb_u64
 ifb_memory::reservation_get_size_committed(
-    const IFBMemory* memory_ptr) {
+    const IFBMemoryHandle memory_handle) {
 
-    if (!memory_ptr) return(0);
+    //cast the handle
+    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    ifb_macro_assert(memory_ptr);
 
+    //calculate the committed size
     const ifb_u64 page_count     = memory_ptr->reservation.pages_committed;
     const ifb_u64 page_size      = memory_ptr->reservation.page_size;
     const ifb_u64 committed_size = page_count * page_size;
 
+    //we're done
     return(committed_size);
 }
+
+/**********************************************************************************/
+/* INTERNAL                                                                       */
+/**********************************************************************************/
 
 inline const ifb_ptr
 ifb_memory::reservation_get_page_start_next(
     const IFBMemory* memory_ptr) {
 
-    if (!memory_ptr) return(NULL);
+    //sanity check
+    ifb_macro_assert(memory_ptr);
 
+    //calculate the start of the next page
     const ifb_u32 page_number = memory_ptr->reservation.pages_committed;
     const ifb_ptr page_start  = ifb_memory::reservation_get_page_start(
         memory_ptr,
         page_number);
 
+    //we're done
     return(page_start);
 }
-
 
 inline const ifb_ptr 
 ifb_memory::reservation_get_page_start(
     const IFBMemory* memory_ptr,
     const ifb_u32    page_number) {
 
+    //sanity check
+    ifb_macro_assert(memory_ptr);
+
+    //cache the reservation
     IFBMemoryReservation& reservation_ref = memory_ptr->reservation;
+
+    //make sure the page number is within our reservation
+    if (page_number >= reservation_ref.pages_total) return(NULL);
 
     //calculate the pointer
     const ifb_u32     page_offset        = reservation_ref.page_size * page_number;
@@ -216,13 +230,13 @@ ifb_memory::reservation_page_commit(
         memory_ptr,
         page_commit_ref.size);
 
-    //make sure we can do the commit
+    //calculate the page count and numbers
     const ifb_u32 page_commit_count  = commit_size / reservation_ref.page_size;
     const ifb_u32 page_commit_number = reservation_ref.pages_committed;
     const ifb_u32 page_committed_new = page_commit_number + page_commit_ref.page_count;
-    if (page_committed_new > reservation_ref.pages_total) {
-        return(false);
-    }
+
+    //make sure we can do the commit
+    if (page_committed_new > reservation_ref.pages_total) return(false);
 
     //get the start address of the commit
     const ifb_ptr page_commit_start = ifb_memory::reservation_get_page_start_next(memory_ptr);
@@ -234,14 +248,9 @@ ifb_memory::reservation_page_commit(
         page_commit_size);
 
     //sanity check
-    if (page_commit_result != page_commit_start) {
-        return(false);
-    }
+    if (page_commit_result != page_commit_start) return(false);
 
     //update the page commit reference
-    page_commit_ref.page_start.page_number  = page_commit_number; 
-    page_commit_ref.page_start.page_address = ; 
-
     page_commit_ref.start       = (ifb_address)page_commit_result; 
     page_commit_ref.size        = page_commit_size; 
     page_commit_ref.page_number = page_commit_number; 

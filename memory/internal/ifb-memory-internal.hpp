@@ -53,11 +53,6 @@ struct IFBMemoryReservation {
     ifb_u32     pages_committed;
 };
 
-struct IFBMemoryPage {
-    ifb_u32     page_number;
-    ifb_address page_address;
-};
-
 struct IFBMemoryPageCommit {
     ifb_address   start;
     ifb_u32       size;
@@ -67,12 +62,10 @@ struct IFBMemoryPageCommit {
 
 namespace ifb_memory {
 
-    const ifb_address reservation_get_start_address   (const IFBMemory* memory_ptr);
-    const ifb_ptr     reservation_get_start_pointer   (const IFBMemory* memory_ptr);
-    const ifb_ptr     reservation_get_page_start_next (const IFBMemory* memory_ptr);
-    const ifb_ptr     reservation_get_page_start      (const IFBMemory* memory_ptr, const ifb_u32 page_number);
-
-    const ifb_b8 reservation_page_commit (IFBMemory* memory_ptr, IFBMemoryPageCommit& page_commit_ref);
+    const ifb_ptr reservation_get_page_start_next (const IFBMemory* memory_ptr);
+    const ifb_ptr reservation_get_page_start      (const IFBMemory* memory_ptr, const ifb_u32 page_number);
+    
+    const ifb_b8  reservation_page_commit (IFBMemory* memory_ptr, IFBMemoryPageCommit& page_commit_ref);
 };
 
 /**********************************************************************************/
