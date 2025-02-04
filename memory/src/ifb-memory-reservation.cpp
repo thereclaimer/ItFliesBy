@@ -3,6 +3,10 @@
 #include "ifb-memory.hpp"
 #include "ifb-memory-internal.hpp"
 
+/**********************************************************************************/
+/* RESERVE/RELEASE                                                                */
+/**********************************************************************************/
+
 inline const ifb_b8
 ifb_memory::reserve(
     const IFBMemoryHandle memory_handle,
@@ -57,6 +61,10 @@ ifb_memory::release(
     return(result);  
 }
 
+/**********************************************************************************/
+/* ALIGNMENT                                                                      */
+/**********************************************************************************/
+
 inline const ifb_u32
 ifb_memory::reservation_size_align_to_page(
     const IFBMemoryHandle memory_handle,
@@ -90,6 +98,10 @@ ifb_memory::reservation_size_align_to_granularity(
     //we're done
     return(size_aligned);
 }
+
+/**********************************************************************************/
+/* PAGES                                                                          */
+/**********************************************************************************/
 
 inline const ifb_u32
 ifb_memory::reservation_get_page_size(
@@ -135,6 +147,10 @@ ifb_memory::reservation_get_pages_committed(
     //we're done
     return(page_count);
 }
+
+/**********************************************************************************/
+/* SIZE                                                                           */
+/**********************************************************************************/
 
 inline const ifb_u64
 ifb_memory::reservation_get_size_total(
