@@ -10,14 +10,16 @@ ifb_global IFBEngineContext _context;
 
 ifb_api const ifb_b8
 ifb_engine::context_create(
-    IFBPlatformApi* platform_api_ptr) {
+    const  IFBPlatformApi* platform_api_ptr) {
 
+    return(false);
 }
 
 ifb_api const ifb_b8
 ifb_engine::context_destroy(
     ifb_void) {
 
+    return(false);
 }
 
 /**********************************************************************************/
@@ -28,19 +30,26 @@ ifb_api const ifb_b8
 ifb_engine::context_startup(
     ifb_void) {
 
+    return(false);
 }
 
 ifb_api const ifb_b8
 ifb_engine::context_shutdown(
     ifb_void) {
 
+    return(false);
 }
 
 /**********************************************************************************/
-/* RENDERING                                                                                */
+/* RENDERING                                                                      */
 /**********************************************************************************/
 
-ifb_api const ifb_b8 ifb_engine::context_render_frame (ifb_void);
+ifb_api const ifb_b8
+ifb_engine::context_render_frame(
+    ifb_void) {
+
+    return(false);
+}
 
 /**********************************************************************************/
 /* INTERNAL                                                                       */

@@ -2,6 +2,7 @@
 #define IFB_MEMORY_HPP
 
 #include <ifb.hpp>
+#include <ifb-platform.hpp>
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -35,7 +36,7 @@ namespace ifb_memory {
 
     const IFBMemoryHandle
     create(
-        const IFBPlatformApi& platform_api_ref,
+        const IFBPlatformApi* platform_api_ptr,
         const ifb_byte*       stack_memory,
         const ifb_u32         stack_size,
         const ifb_u32         arena_count);

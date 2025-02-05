@@ -39,8 +39,17 @@ if not exist %path_build%\lib mkdir %path_build%\lib
 
 @set cl_includes=     /I engine\include      ^
                       /I engine\internal     ^
+                      /I engine\external     ^
                       /I engine\src          ^
-                      /I memory\include      ^
+                      /I engine\src\api      ^
+                      /I engine\src\context  ^
+                      /I engine\src\core     ^
+                      /I engine\src\data     ^
+                      /I engine\src\devtools ^
+                      /I engine\src\managers ^
+                      /I engine\src\memory   ^
+                      /I engine\src\platform ^
+                      /I engine\src\tools    ^
                       /I common              ^
                       /I external            ^
                       /I math                ^
@@ -50,13 +59,12 @@ if not exist %path_build%\lib mkdir %path_build%\lib
 
 @set cl_link=         /link                                    ^
                       /LIBPATH:vcpkg_installed\x64-windows\lib ^
-                      /LIBPATH:build\debug\lib                 ^
                       /IMPLIB:build\debug\lib\ItFliesBy.Engine.lib
 
 @set cl_libs=         imgui.lib    ^
                       opengl32.lib ^
-                      glew32.lib   ^
-                      ItFliesBy.Memory.lib
+                      glew32.lib
+
 ::----------------------------------------------------------------
 :: BUILD
 ::----------------------------------------------------------------
