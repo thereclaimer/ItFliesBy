@@ -10,19 +10,17 @@
 
 inline const IFBMemoryHandle
 ifb_memory::create(
-    const IFBPlatformApi* platform_api_ptr,
+    const IFBPlatformApi& platform_api_ref,
     const ifb_byte*       stack_memory,
     const ifb_u32         stack_size,
     const ifb_u32         arena_count) {
 
     //initialize the platform api
-    if (platform_api_ptr) {
-        ifb_memory::platform_memory_reserve         = platform_api_ptr->memory.reserve;
-        ifb_memory::platform_memory_release         = platform_api_ptr->memory.release;
-        ifb_memory::platform_memory_commit          = platform_api_ptr->memory.commit;
-        ifb_memory::platform_page_size              = platform_api_ptr->system.page_size;
-        ifb_memory::platform_allocation_granularity = platform_api_ptr->system.allocation_granularity;
-    }
+    ifb_memory::platform_memory_reserve         = platform_api_ref.memory.reserve;
+    ifb_memory::platform_memory_release         = platform_api_ref.memory.release;
+    ifb_memory::platform_memory_commit          = platform_api_ref.memory.commit;
+    ifb_memory::platform_page_size              = platform_api_ref.system.page_size;
+    ifb_memory::platform_allocation_granularity = platform_api_ref.system.allocation_granularity;
 
     //calculate the size of the memory struct
     const ifb_u32 memory_struct_size = ifb_macro_align_size_struct(IFBMemory);

@@ -7,7 +7,7 @@ namespace ifb_engine {
 
     // create/destroy
     ifb_api const ifb_b8 context_create(
-        const IFBPlatformApi* platform_api_ptr);
+        const IFBPlatformApi& platform_api_ref);
     
     ifb_api const ifb_b8 context_destroy      (ifb_void);
     

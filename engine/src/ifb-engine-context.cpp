@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ifb-engine-internal-context.hpp"
+#include "ifb-engine-internal-platform.hpp"
 
 ifb_global IFBEngineContext _context;
 
@@ -10,7 +11,7 @@ ifb_global IFBEngineContext _context;
 
 ifb_api const ifb_b8
 ifb_engine::context_create(
-    const  IFBPlatformApi* platform_api_ptr) {
+    const IFBPlatformApi& platform_api_ref) {
 
     return(false);
 }
