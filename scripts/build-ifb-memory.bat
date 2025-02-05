@@ -30,6 +30,7 @@ pushd ..
 
 if not exist %path_build%\bin mkdir %path_build%\bin
 if not exist %path_build%\obj mkdir %path_build%\obj
+if not exist %path_build%\lib mkdir %path_build%\lib
 
 ::----------------------------------------------------------------
 :: COMPILER ARGUMENTS
@@ -64,7 +65,9 @@ call cl.exe       ^
 :: LIB
 ::----------------------------------------------------------------
 
-
+call lib.exe                                  ^
+    /OUT:build\debug\lib\ItFliesBy.Memory.lib ^
+    %path_build%\obj\ItFliesBy.Memory.obj
 
 ::----------------------------------------------------------------
 :: END
