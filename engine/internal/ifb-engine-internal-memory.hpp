@@ -3,90 +3,61 @@
 
 #include "ifb-engine.hpp"
 
-/**********************************************************************************/
-/* SYSTEM INFO                                                                    */
-/**********************************************************************************/
-
-struct IFBEngineMemorySystemInfo {
-    ifb_u32 allocation_granularity;
-    ifb_u32 page_size;
+struct IFBEngineMemoryLinearArenas {
+    IFBMemoryLinearArenaHandle frame;
 };
 
-/**********************************************************************************/
-/* GLOBAL STACK                                                                   */
-/**********************************************************************************/
-
-#ifndef IFB_ENGINE_CONFIG_GLOBAL_MEMORY_STACK_SIZE
-    #define IFB_ENGINE_CONFIG_GLOBAL_MEMORY_STACK_SIZE ifb_macro_size_kilobytes(64)
-#endif
-
-struct IFBEngineMemoryGlobalStack {
-    ifb_u32  size;
-    ifb_u32  position;
-    ifb_byte memory[IFB_ENGINE_CONFIG_GLOBAL_MEMORY_STACK_SIZE];
+enum IFBEngineMemoryBlockArenaId_ {
+    IFBEngineMemoryBlockArenaId_Small     = 0,
+    IFBEngineMemoryBlockArenaId_Large     = 1,
+    IFBEngineMemoryBlockArenaId_AssetData = 2,
+    IFBEngineMemoryBlockArenaId_Count     = 3
 };
 
-/**********************************************************************************/
-/* RESERVATION                                                                    */
-/**********************************************************************************/
+typedef ifb_u32 IFBEngineMemoryBlockArenaId;
 
-struct IFBEngineMemoryReservation {
-    ifb_address start;
-    ifb_u32     page_count_total;
-    ifb_u32     page_count_committed;
-    ifb_u32     commit_count_max;
-    ifb_u32     commit_count_current;
-    IFBGHND     commit_array_handle; // IFBCommit
+struct IFBEngineMemoryBlockArenas {
+    union {
+        struct {
+            IFBMemoryBlockArenaHandle small;
+            IFBMemoryBlockArenaHandle large;
+            IFBMemoryBlockArenaHandle asset_data;
+        };
+        IFBMemoryBlockArenaHandle array[IFBEngineMemoryBlockArenaId_Count];
+    };
 };
 
-/**********************************************************************************/
-/* MEMORY                                                                         */
-/**********************************************************************************/
+struct IFBEngineMemoryBlock {
+    IFBEngineMemoryBlockArenaId arena_id;
+    ifb_u32                     index;
+};
 
-struct IFBEngineMemory {
-    IFBEngineMemoryGlobalStack global_stack;
-    IFBEngineMemorySystemInfo  system_info;
-    IFBEngineMemoryReservation reservation;
+struct IFBEngineMemoryArenas {
+    IFBEngineMemoryLinearArenas linear;
+    IFBEngineMemoryBlockArenas  block;
+};
+
+struct IFBEngineMemoryManager {
+    IFBMemoryHandle       memory_handle;
+    IFBEngineMemoryArenas arenas;
 };
 
 namespace ifb_engine {
 
-          ifb_void    memory_reserve (IFBEngineMemory* memory_ptr, const ifb_size reservation_size_minimum, const ifb_u32 commit_count_max);
-    const IFBIDCommit memory_commit  (IFBEngineMemory* memory_ptr, const ifb_u32  commit_size_minimum);
+    //create/destroy
+    const ifb_b8   memory_manager_create    (ifb_void);
+    const ifb_b8   memory_manager_destroy   (ifb_void);
 
-    const ifb_u32     memory_get_page_count (const IFBEngineMemory* memory_ptr, const ifb_u32 size);
+    //frame memory
+    const ifb_ptr  memory_frame_reserve     (const ifb_u32 size);
+    const ifb_ptr  memory_frame_release     (const ifb_u32 size);
+    const ifb_void memory_frame_reset       (ifb_void);
 
-    const ifb_u32     memory_get_commit_page_number (const IFBEngineMemory* memory_ptr, const IFBIDCommit commit_id);
-    const ifb_u32     memory_get_commit_page_count  (const IFBEngineMemory* memory_ptr, const IFBIDCommit commit_id);
-    const ifb_u32     memory_get_commit_size        (const IFBEngineMemory* memory_ptr, const IFBIDCommit commit_id);
-    const ifb_u32     memory_get_commit_offset      (const IFBEngineMemory* memory_ptr, const IFBIDCommit commit_id);
-    const ifb_address memory_get_commit_address     (const IFBEngineMemory* memory_ptr, const IFBIDCommit commit_id);
-    const ifb_ptr     memory_get_commit_pointer     (const IFBEngineMemory* memory_ptr, const IFBIDCommit commit_id);
-    const ifb_ptr     memory_get_commit_pointer     (const IFBEngineMemory* memory_ptr, const IFBIDCommit commit_id, const ifb_u32 commit_offset);
-    
-    const ifb_u32     memory_align_size_to_page              (const IFBEngineMemory* memory_ptr, const ifb_u32  size);
-    const ifb_u32     memory_align_size_to_granularity       (const IFBEngineMemory* memory_ptr, const ifb_u32  size);
-    const ifb_size    memory_align_large_size_to_page        (const IFBEngineMemory* memory_ptr, const ifb_size size);
-    const ifb_size    memory_align_large_size_to_granularity (const IFBEngineMemory* memory_ptr, const ifb_size size);
+    //block memory
+    const ifb_b8   memory_block_reserve     (IFBEngineMemoryBlock* memory_block_ptr);
 
-    ifb_void memory_get_handle(
-        const IFBEngineMemory* memory_ptr, 
-        const IFBIDCommit      commit_id, 
-        const ifb_u32          commit_offset, 
-              IFBHND&          handle_ref);
-
-    const ifb_ptr     memory_get_pointer (const IFBEngineMemory* memory_ptr, const ifb_u32  offset);
-    const ifb_ptr     memory_get_pointer (const IFBEngineMemory* memory_ptr, const IFBHND&  handle_ref);
-    const ifb_ptr     memory_get_pointer (const IFBEngineMemory* memory_ptr, const IFBGHND& global_handle_ref);
-
-          IFBCommit*  memory_get_commit_array_pointer (const IFBEngineMemory* memory_ptr);
-    const ifb_size    memory_get_size_committed       (const IFBEngineMemory* memory_ptr);
-
-    const ifb_void memory_global_push         (IFBEngineMemory* memory_ptr, IFBGHND& global_handle_ref, const ifb_u32 size);
-    const ifb_void memory_global_push_aligned (IFBEngineMemory* memory_ptr, IFBGHND& global_handle_ref, const ifb_u32 size, const ifb_u32 alignment);
+    const ifb_b8   memory_block_release     (const IFBEngineMemoryBlock* memory_block_ptr);
+    const ifb_ptr  memory_block_get_pointer (const IFBEngineMemoryBlock* memory_block_ptr, const ifb_u32 offset);
 };
-
-#define ifb_engine_macro_memory_global_push_struct(memory_ptr,handle,type)        ifb_engine::memory_global_push_aligned(memory_ptr,handle,sizeof(type),alignof(type))
-#define ifb_engine_macro_memory_get_pointer(memory_ptr,handle,type)        (type*)ifb_engine::memory_get_pointer(memory_ptr,handle)
 
 #endif //IFB_ENGINE_INTERNAL_MEMORY_HPP
