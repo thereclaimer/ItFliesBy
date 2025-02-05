@@ -148,14 +148,14 @@ namespace ifb_win32 {
         const ifb_index   in_file_index,
         const ifb_size    in_file_read_start,
         const ifb_size    in_file_read_size,
-              ifb_memory out_file_read_buffer);
+              ifb_byte*  out_file_read_buffer);
 
     ifb_internal const ifb_b8 
     file_write(
         const ifb_index   in_file_index,
         const ifb_size    in_file_write_start,
         const ifb_size    in_file_write_size,
-              ifb_memory out_file_write_buffer);
+              ifb_byte*  out_file_write_buffer);
 
     ifb_internal ifb_void CALLBACK
     file_read_callback(
@@ -216,7 +216,7 @@ struct IFBWin32Context {
     IFBWin32Window  window;
     IFBWin32Args    args;
     IFBPlatformApi  platform_api;
-    IFBEngineUpdate engine_update;
+    // IFBEngineUpdate engine_update;
 };
 
 namespace ifb_win32 {
@@ -244,7 +244,7 @@ namespace ifb_win32 {
     inline IFBWin32Args     context_get_args           (ifb_void) { return(_context.args);          }
     inline IFBWin32Window&  context_get_window         (ifb_void) { return(_context.window);        }
     inline IFBPlatformApi&  context_get_platform_api   (ifb_void) { return(_context.platform_api);  }
-    inline IFBEngineUpdate& context_get_engine_update  (ifb_void) { return(_context.engine_update); }
+    // inline IFBEngineUpdate& context_get_engine_update  (ifb_void) { return(_context.engine_update); }
 };
 
 

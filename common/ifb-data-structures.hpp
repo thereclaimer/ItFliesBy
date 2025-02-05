@@ -2,7 +2,6 @@
 #define IFB_ENGINE_DATA_STRUCTURES_HPP
 
 #include "ifb-types.hpp"
-#include "ifb-memory.hpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */

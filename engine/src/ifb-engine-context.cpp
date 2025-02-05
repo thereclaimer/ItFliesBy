@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ifb-engine-internal-context.hpp"
-#include "ifb-engine-internal-platform.hpp"
 
 ifb_global IFBEngineContext _context;
 
