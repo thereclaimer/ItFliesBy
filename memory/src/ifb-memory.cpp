@@ -27,12 +27,12 @@ ifb_memory::create(
 
     //make sure the api methods are defined and the stack is valid and large enough
     ifb_b8 result = true;
-    result &= ifb_memory::platform_memory_reserve;
-    result &= ifb_memory::platform_memory_release;
-    result &= ifb_memory::platform_memory_commit;
-    result &= ifb_memory::platform_page_size;
-    result &= ifb_memory::platform_allocation_granularity;
-    result &= stack_memory != NULL;
+    result &= ifb_memory::platform_memory_reserve         != NULL;
+    result &= ifb_memory::platform_memory_release         != NULL;
+    result &= ifb_memory::platform_memory_commit          != NULL;
+    result &= ifb_memory::platform_page_size              != NULL;
+    result &= ifb_memory::platform_allocation_granularity != NULL;
+    result &= stack_memory                                != NULL;
     result &= stack_size >= memory_struct_size;
 
     //if everything isn't valid, we're done
@@ -72,7 +72,7 @@ ifb_memory::destroy(
     //clear the stack
     const ifb_u32 stack_size  = memory_ptr->stack.size;
     const ifb_ptr stack_start = (ifb_ptr)memory_ptr; 
-    memset(stack_start,0,stack_start);
+    memset(stack_start,0,stack_size);
 
     //we're done
     return(result);

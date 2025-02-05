@@ -6,7 +6,7 @@
 /* COMMIT                                                                         */
 /**********************************************************************************/
 
-const IFBMemoryBlockArena
+inline const IFBMemoryBlockArena*
 block_arena_commit(
     const IFBMemoryHandle memory_handle,
     const ifb_u32         block_size_minimum,
@@ -139,7 +139,7 @@ ifb_memory::block_arena_block_reserve_index(
     if (block_index < block_arena_ptr->block_count) return(false);
 
     //get the block
-    IFBMemoryBlock& block_ref = block_array[block_index];
+    IFBMemoryBlock& block_ref = block_arena_ptr->block_array[block_index];
 
     //if its already reserved, we're done
     if (block_ref.start > 0) return(false);
@@ -168,7 +168,7 @@ ifb_memory::block_arena_block_release(
     if (block_index < block_arena_ptr->block_count) return(false);
 
     //get the block
-    IFBMemoryBlock& block_ref = block_array[block_index];
+    IFBMemoryBlock& block_ref = block_arena_ptr->block_array[block_index];
 
     //set the start to 0
     block_ref.start = 0;
@@ -190,7 +190,7 @@ ifb_memory::block_arena_block_is_free(
     if (block_index < block_arena_ptr->block_count) return(false);
 
     //get the block
-    IFBMemoryBlock& block_ref = block_array[block_index];
+    IFBMemoryBlock& block_ref = block_arena_ptr->block_array[block_index];
 
     //if the start is 0, the block is free
     const ifb_b8 block_free = block_ref.start == 0;  
@@ -217,7 +217,7 @@ ifb_memory::block_get_pointer(
     if (block_index < block_arena_ptr->block_count) return(false);
 
     //get the block
-    IFBMemoryBlock& block_ref = block_array[block_index];
+    IFBMemoryBlock& block_ref = block_arena_ptr->block_array[block_index];
 
     //if the block isn't reserved, the address will just be 0
     const ifb_address block_offset_address = block_ref.start > 0
@@ -304,6 +304,9 @@ ifb_memory::block_arena_get_block_count_free(
     //cast the pointer
     IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
     ifb_macro_assert(block_arena_handle);
+
+    //cache the array
+    IFBMemoryBlock* block_array = block_arena_ptr->block_array;
 
     //loop through the blocks and count the ones without addresses
     ifb_u32 block_count_free = 0;

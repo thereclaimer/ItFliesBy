@@ -27,9 +27,9 @@ struct IFBStack : IFBDataStructure {
 
 namespace ifb_data {
 
-    const ifb_u32    stack_push    (IFBStack& stack_ref, const ifb_u32    size);
-    const ifb_b8     stack_pull    (IFBStack& stack_ref, const ifb_u32    size);
-    const ifb_memory stack_pointer (IFBStack& stack_ref, const ifb_memory base_memory);
+    const ifb_u32   stack_push    (IFBStack& stack_ref, const ifb_u32    size);
+    const ifb_b8    stack_pull    (IFBStack& stack_ref, const ifb_u32    size);
+    const ifb_byte* stack_pointer (IFBStack& stack_ref, const ifb_byte*  base_memory);
 };
 
 inline const ifb_u32
@@ -63,12 +63,12 @@ ifb_data::stack_pull(
     return(true);
 }
 
-inline const ifb_memory
+inline const ifb_byte*
 ifb_data::stack_pointer(
-          IFBStack&  stack_ref, 
-    const ifb_memory base_memory) {
+          IFBStack& stack_ref, 
+    const ifb_byte* base_memory) {
 
-    const ifb_memory stack_pointer = 
+    const ifb_byte* stack_pointer = 
         base_memory     + 
         stack_ref.start + 
         stack_ref.position;
@@ -119,9 +119,9 @@ namespace ifb_data {
     const ifb_ptr array_list_element_at_index        (const IFBArrayList& array_list_ref, const ifb_u32 index);
 
     const ifb_b8  array_list_reset                   (IFBArrayList& array_list_ref);
-    const ifb_b8  array_list_element_remove_at_index (IFBArrayList& array_list_ref, const ifb_u32    index);
-    const ifb_u32 array_list_element_add             (IFBArrayList& array_list_ref, const ifb_memory element_ptr);
-    const ifb_u32 array_list_element_add_at_index    (IFBArrayList& array_list_ref, const ifb_memory element_ptr, const ifb_u32 index);
+    const ifb_b8  array_list_element_remove_at_index (IFBArrayList& array_list_ref, const ifb_u32   index);
+    const ifb_u32 array_list_element_add             (IFBArrayList& array_list_ref, const ifb_byte* element_ptr);
+    const ifb_u32 array_list_element_add_at_index    (IFBArrayList& array_list_ref, const ifb_byte* element_ptr, const ifb_u32 index);
 };
 
 #endif //IFB_ENGINE_DATA_STRUCTURES_HPP

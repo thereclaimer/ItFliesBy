@@ -20,7 +20,7 @@ ifb_memory::linear_arena_commit(
     if (!linear_arena_ptr) return(NULL);
 
     //commit the pages for the arena
-    linear_arena_ptr->page_commit = arena_size_minimum;
+    linear_arena_ptr->page_commit.size = arena_size_minimum;
     const ifb_b8 commit_result = ifb_memory::reservation_page_commit(memory_ptr,linear_arena_ptr->page_commit);
 
     //this MUST work, or everything is fucked up

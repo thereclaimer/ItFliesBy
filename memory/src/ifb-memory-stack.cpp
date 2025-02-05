@@ -121,8 +121,8 @@ ifb_memory::stack_push_relative(
     //calculate the addresses
     const ifb_address address_stack             = (ifb_address)memory_ptr; 
     const ifb_address address_reference         = (ifb_address)reference;
-    const ifb_address address_reference_minimum = address_stack + sizeof(IFBMemory);
-    const ifb_address address_relative          = reference_address + stack_ref.position;
+    const ifb_address address_reference_minimum = address_stack     + sizeof(IFBMemory);
+    const ifb_address address_relative          = address_reference + stack_ref.position;
 
     //calculate the new stack position
     const ifb_u32 new_position = stack_ref.position + size; 
@@ -131,7 +131,7 @@ ifb_memory::stack_push_relative(
     ifb_b8 result = true;                                     // this is a valid push                                   IF...
     result &= address_reference >= address_reference_minimum; // the reference is ahead of the memory structure         AND...
     result &= address_relative  <  stack_ref.end;             // the result address is before the end of the stack      AND... 
-    result &= address_relative  >  address_reference          // the relative address is ahead of the reference address AND...
+    result &= address_relative  >  address_reference;         // the relative address is ahead of the reference address AND...
     result &= new_position      <  stack_ref.size;            // the new stack position is within the stack size
     if (!result) return(0);
 
@@ -202,7 +202,7 @@ ifb_memory::stack_get_pointer_relative(
     const ifb_u32 offset_absolute = reference + offset;
     const ifb_ptr pointer         = ifb_memory::stack_get_pointer(
         memory_handle,
-        pointer);
+        offset_absolute);
 
     return(pointer);
 }
@@ -241,17 +241,13 @@ ifb_memory::stack_push_arena_linear(
 
 inline IFBMemoryBlockArena*
 ifb_memory::stack_push_arena_block(
-          IFBMemory* memory_ptr,
-    const ifb_u32    block_count) {
-
-    //sanity check
-    if (block_count == 0) return(NULL);
+    const IFBMemoryHandle memory_handle) {
 
     //calculate the push size
     const ifb_u32 block_arena_size = ifb_macro_align_size_struct(IFBMemoryBlockArena);
 
     //do the push
-    IFBMemoryBlockArena* block_arena_ptr  = (IFBMemoryBlockArena*)ifb_memory::stack_push(memory_ptr,push_size);
+    IFBMemoryBlockArena* block_arena_ptr  = (IFBMemoryBlockArena*)ifb_memory::stack_push(memory_handle,block_arena_size);
 
     //we're done
     return(block_arena_ptr);
@@ -264,7 +260,7 @@ ifb_memory::stack_push_arena_block_array(
 
     //sanity check
     ifb_macro_assert(memory_handle);
-    ifb_macro_assert(block_flag_group_count > 0);
+    ifb_macro_assert(block_count > 0);
 
     //calculate the push size
     const ifb_u32 push_size = ifb_macro_size_array(IFBMemoryBlock,block_count); 

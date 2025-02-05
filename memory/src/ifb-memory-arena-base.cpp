@@ -20,7 +20,7 @@ ifb_memory::arena_commit(
     if (!arena_ptr) return(NULL);
 
     //commit the pages for the arena
-    arena_ptr->page_commit = arena_size_minimum;
+    arena_ptr->page_commit.size = arena_size_minimum;
     const ifb_b8 commit_result = ifb_memory::reservation_page_commit(memory_ptr,arena_ptr->page_commit);
 
     //this MUST work, or everything is fucked up
@@ -58,7 +58,7 @@ ifb_memory::arena_reset(
 
     //get the commit pointer and size 
     const ifb_ptr commit_start = (ifb_ptr)page_commit_ref.start;
-    const ifb_32  commit_size  = page_commit_ref.size; 
+    const ifb_u32 commit_size  = page_commit_ref.size; 
     
     //clear the memory
     memset(
