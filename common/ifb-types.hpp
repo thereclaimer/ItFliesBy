@@ -60,7 +60,6 @@ typedef wchar_t*   ifb_wstr;
 typedef void       ifb_void;
 typedef void*      ifb_ptr;
 typedef uint8_t    ifb_byte;
-typedef uint8_t*   ifb_memory;
 typedef size_t     ifb_size;
 typedef ifb_u32    ifb_index;
 typedef ifb_ptr    ifb_handle;

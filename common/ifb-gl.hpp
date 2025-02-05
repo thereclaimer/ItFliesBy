@@ -4,7 +4,6 @@
 #include "ifb-dependencies.hpp"
 #include "ifb-graphics.hpp"
 #include "ifb-types.hpp"
-#include "ifb-math.hpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */

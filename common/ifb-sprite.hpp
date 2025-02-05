@@ -5,6 +5,7 @@
 #include "ifb-graphics.hpp"
 #include "ifb-rendering.hpp"
 #include "ifb-memory.hpp"
+#include "ifb-tag.hpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */

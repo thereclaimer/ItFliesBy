@@ -149,17 +149,17 @@ typedef const ifb_size
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_file_read)(
-    const ifb_index   in_file_index,
-    const ifb_size    in_file_read_start,
-    const ifb_size    in_file_read_size,
-          ifb_memory out_file_read_buffer);
+    const ifb_index  in_file_index,
+    const ifb_size   in_file_read_start,
+    const ifb_size   in_file_read_size,
+          ifb_byte* out_file_read_buffer);
 
 typedef const ifb_b8
 (*funcptr_ifb_platform_file_write)(
-    const ifb_index  file_index,
-    const ifb_size   file_write_start,
-    const ifb_size   file_write_size,
-          ifb_memory file_write_buffer);
+    const ifb_index file_index,
+    const ifb_size  file_write_start,
+    const ifb_size  file_write_size,
+          ifb_byte* file_write_buffer);
 
 struct IFBPlatformFileApi {
     funcptr_ifb_platform_file_open_read_only  open_read_only;

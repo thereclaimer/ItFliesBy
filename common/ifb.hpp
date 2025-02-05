@@ -12,9 +12,6 @@
 #include "ifb-user-input.hpp"
 #include "ifb-platform.hpp"
 #include "ifb-graphics.hpp"
-#include "ifb-gl.hpp"
-#include "ifb-rendering.hpp"
-#include "ifb-sprite.hpp"
 #include "ifb-tag.hpp"
 
 
