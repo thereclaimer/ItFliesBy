@@ -29,10 +29,16 @@ block_arena_commit(
         memory_handle,
         block_arena_ptr->page_commit);
 
+    //add the arena to the list
+    const ifb_b8 arena_list_result = ifb_memory::arena_list_add(
+        memory_handle->arena_list,
+        block_arena_ptr);
+    
     //sanity check
     ifb_macro_assert(block_arena_ptr);
     ifb_macro_assert(block_array);
     ifb_macro_assert(commit_result);
+    ifb_macro_assert(arena_list_result);
 
     //initialize the blocks
     for (
