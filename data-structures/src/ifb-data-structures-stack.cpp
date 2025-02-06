@@ -33,13 +33,13 @@ ifb_stack::create(
     const ifb_u32 struct_size = ifb_macro_align_size_struct(IFBStack);
     
     //sanity check
-    if (!base_pointer || size == 0 || struct_size <= size) return(NULL);
+    if (!memory || size == 0 || struct_size <= size) return(NULL);
 
     //cast the stack
-    IFBStack* stack_ptr = (IFBStack*)base_pointer;
+    IFBStack* stack_ptr = (IFBStack*)memory;
 
     //calculate the start and size of the stack memory
-    const ifb_address stack_memory_start = (ifb_address)base_pointer + struct_size;
+    const ifb_address stack_memory_start = (ifb_address)memory + struct_size;
     const ifb_u32     stack_memory_size  = size - struct_size; 
 
     //initialize the stack
@@ -101,7 +101,7 @@ ifb_stack::push_absolute(
     const ifb_u32   size) {
 
     //do the relative push
-    const ifb_u32 position = ifb_data::stack_push_relative(
+    const ifb_u32 position = ifb_stack::push_relative(
         stack_ptr,
         size);
 
@@ -138,7 +138,7 @@ ifb_stack::pull(
 
 inline const ifb_ptr
 ifb_stack::get_pointer(
-          IFBStack* stack_ptr,
+    const IFBStack* stack_ptr,
     const ifb_u32   position) {
 
     //sanity check
@@ -158,7 +158,7 @@ ifb_stack::get_pointer(
 
 inline const ifb_u32
 ifb_stack::get_size_total(
-    IFBStack* stack_ptr) {
+    const IFBStack* stack_ptr) {
 
     const ifb_u32 size_total = stack_ptr
         ? stack_ptr->size
@@ -169,18 +169,18 @@ ifb_stack::get_size_total(
 
 inline const ifb_u32
 ifb_stack::get_size_free(
-    IFBStack* stack_ptr) {
+    const IFBStack* stack_ptr) {
 
     const ifb_u32 size_free = stack_ptr
         ? stack_ptr->size - stack_ptr->position 
         : 0;
 
-    return(size_total);
+    return(size_free);
 }
 
 inline const ifb_u32
 ifb_stack::get_size_used(
-    IFBStack* stack_ptr) {
+    const IFBStack* stack_ptr) {
 
     const ifb_u32 size_used = stack_ptr
         ? stack_ptr->position

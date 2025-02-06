@@ -37,13 +37,14 @@ if not exist %path_build%\lib mkdir %path_build%\lib
                       /Fo:%path_build%\obj\ItFliesBy.Engine.obj ^
                       /Fd:%path_build%\bin\ItFliesBy.Engine.pdb
 
-@set cl_includes=     /I engine\include      ^
-                      /I engine\internal     ^
-                      /I engine\src          ^
-                      /I memory\include      ^
-                      /I common              ^
-                      /I external            ^
-                      /I math                ^
+@set cl_includes=     /I engine\include          ^
+                      /I engine\internal         ^
+                      /I engine\src              ^
+                      /I memory\include          ^
+                      /I data-structures\include ^
+                      /I common                  ^
+                      /I external                ^
+                      /I math                    ^
                       /I %path_vcpkg_include%
 
 @set cl_source=       engine\src\ifb-engine.cpp
@@ -53,10 +54,12 @@ if not exist %path_build%\lib mkdir %path_build%\lib
                       /LIBPATH:build\debug\lib                 ^
                       /IMPLIB:build\debug\lib\ItFliesBy.Engine.lib
 
-@set cl_libs=         imgui.lib    ^
-                      opengl32.lib ^
-                      glew32.lib   ^
-                      ItFliesBy.Memory.lib
+@set cl_libs=         imgui.lib                    ^
+                      opengl32.lib                 ^
+                      glew32.lib                   ^
+                      ItFliesBy.Memory.lib         ^
+                      ItFliesBy.DataStructures.lib
+
 ::----------------------------------------------------------------
 :: BUILD
 ::----------------------------------------------------------------

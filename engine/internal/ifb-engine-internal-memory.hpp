@@ -1,6 +1,8 @@
 #ifndef IFB_ENGINE_INTERNAL_MEMORY_HPP
 #define IFB_ENGINE_INTERNAL_MEMORY_HPP
 
+#include <ifb-data-structures.hpp>
+
 #include "ifb-engine.hpp"
 
 /**********************************************************************************/
@@ -36,19 +38,15 @@ namespace ifb_engine {
 /* SINGLETONS                                                                     */
 /**********************************************************************************/
 
-struct IFBEngineMemorySingletonId {
-    ifb_u16 stack_offset;
-};
-
 namespace ifb_engine {
 
-    const IFBEngineMemorySingletonId
+    const ifb_u16
     memory_singleton_commit(
         const ifb_u32 size,
         const ifb_u32 alignment);
     
     const ifb_ptr
-    memory_singleton_get_pointer(const IFBEngineMemorySingletonId singleton_id);
+    memory_singleton_get_pointer(const ifb_u16 singleton_id);
 };
 
 #define ifb_engine_macro_memory_singleton_commit(struct)                  ifb_engine::memory_singleton_commit(sizeof(struct),alignof(struct))
@@ -67,8 +65,6 @@ namespace ifb_engine {
 
     const ifb_ptr memory_block_reserve(const IFBEngineMemoryBlockAllocator* blocks);
     const ifb_b8  memory_block_release(const IFBEngineMemoryBlockAllocator* blocks, const ifb_ptr block_memory);
-
-
 };
 
 /**********************************************************************************/

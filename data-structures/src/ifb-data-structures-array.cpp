@@ -72,7 +72,7 @@ ifb_array::get_pointer_indexed(
     if (!array_ptr || index >= array_ptr->element_count) return(NULL);
 
     //calculate the pointer at the index
-    const ifb_u32     offset  = index * array array_ptr->element_size;
+    const ifb_u32     offset  = index * array_ptr->element_size;
     const ifb_address address = array_ptr->start + offset;
     const ifb_ptr     pointer = (ifb_ptr)address;
 
@@ -104,7 +104,7 @@ ifb_array::get_element_size(
     const IFBArray* array_ptr) {
 
     const ifb_u32 element_size = array_ptr
-        ? array_ptr->element_size;
+        ? array_ptr->element_size
         : 0;
         
     return(element_size);

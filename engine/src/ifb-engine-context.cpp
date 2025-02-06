@@ -54,10 +54,3 @@ ifb_engine::context_render_frame(
 /**********************************************************************************/
 /* INTERNAL                                                                       */
 /**********************************************************************************/
-
-inline IFBEngineMemoryManager& 
-ifb_engine::context_get_memory_manager(
-    ifb_void) {
-
-    return(_context.memory_manager);
-}

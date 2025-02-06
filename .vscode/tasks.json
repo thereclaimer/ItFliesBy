@@ -39,6 +39,19 @@
 				"$msCompile"
 			],
 			"group": "build",
+		},
+		{
+			"label":   "Build IFB Data Structures",
+			"command": "build-ifb-data-structures.bat",
+			"args":[
+            ],
+			"options": {
+				"cwd": "${workspaceFolder}/scripts"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build",
 		}
 	]
 }
