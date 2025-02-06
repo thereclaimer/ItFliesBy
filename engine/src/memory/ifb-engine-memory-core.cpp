@@ -57,29 +57,39 @@ inline const ifb_b8
 ifb_engine::memory_core_release(
     ifb_void) {
 
+    const ifb_b8 result = ifb_memory::release(_memory_core_handle);
+    return(result);
 }
 
 /**********************************************************************************/
 /* RESERVATION                                                                    */
 /**********************************************************************************/
 
-
 inline const ifb_u64
 ifb_engine::memory_core_get_reservation_size_total(
     ifb_void) {
-
+    
+    const ifb_u64 size_total = ifb_memory::reservation_get_size_total(_memory_core_handle);
+    return(size_total);
 }
 
 inline const ifb_u64
 ifb_engine::memory_core_get_reservation_size_free(
     ifb_void) {
 
+    const ifb_u64 size_total = ifb_memory::reservation_get_size_total     (_memory_core_handle);
+    const ifb_u64 size_used  = ifb_memory::reservation_get_size_committed (_memory_core_handle);
+    const ifb_u64 size_free  = size_total - size_used;
+
+    return(size_total);
 }
 
 inline const ifb_u64
 ifb_engine::memory_core_get_reservation_size_used(
     ifb_void) {
 
+    const ifb_u64 size_used = ifb_memory::reservation_get_size_committed (_memory_core_handle);
+    return(size_used)
 }
 
 /**********************************************************************************/
@@ -90,16 +100,22 @@ inline const ifb_u32
 ifb_engine::memory_core_get_stack_size_total(
     ifb_void) {
 
+    const ifb_u32 size_total = ifb_memory::stack_get_size_total(_memory_core_handle);
+    return(size_total);
 }
 
 inline const ifb_u32
 ifb_engine::memory_core_get_stack_size_free(
     ifb_void) {
 
+    const ifb_u32 size_free = ifb_memory::stack_get_size_free(_memory_core_handle);
+    return(size_total);
 }
 
 inline const ifb_u32
 ifb_engine::memory_core_get_stack_size_used(
     ifb_void) {
 
+    const ifb_u32 size_used = ifb_memory::stack_get_size_used(_memory_core_handle);
+    return(size_used);
 }

@@ -207,6 +207,52 @@ ifb_memory::stack_get_pointer_relative(
     return(pointer);
 }
 
+/**********************************************************************************/
+/* SIZE                                                                           */
+/**********************************************************************************/
+
+inline const ifb_u32
+ifb_memory::stack_get_size_total(
+    const IFBMemoryHandle memory_handle) {
+       
+    //cast the handle
+    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    if (!memory_ptr) return(NULL);
+
+    //return the stack size
+    const ifb_u32 size_total = memory_ptr->stack.size;
+    return(size_total);
+}
+
+inline const ifb_u32
+ifb_memory::stack_get_size_free(
+    const IFBMemoryHandle memory_handle) {
+  
+    //cast the handle
+    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    if (!memory_ptr) return(NULL);
+
+    //calculate the free size
+    const ifb_u32 size_total = memory_ptr->stack.size;
+    const ifb_u32 size_used  = memory_ptr->stack.position;
+    const ifb_u32 size_free  = size_total - size_used;
+
+    //we're done
+    return(size_free);
+}
+
+inline const ifb_u32
+ifb_memory::stack_get_size_used(
+    const IFBMemoryHandle memory_handle) {
+  
+    //cast the handle
+    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    if (!memory_ptr) return(NULL);
+
+    //return the stack position
+    const ifb_u32 size_used = memory_ptr->stack.position;
+    return(size_used);
+}
 
 /**********************************************************************************/
 /* INTERNAL                                                                       */

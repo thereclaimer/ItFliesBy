@@ -64,6 +64,11 @@ namespace ifb_memory {
     //pointers
     const ifb_ptr stack_get_pointer           (const IFBMemoryHandle memory_handle, const ifb_u32 stack_position);
     const ifb_ptr stack_get_pointer_relative  (const IFBMemoryHandle memory_handle, const ifb_u32 reference, const ifb_u32 offset);
+
+    //size
+    const ifb_u32 stack_get_size_total        (const IFBMemoryHandle memory_handle);
+    const ifb_u32 stack_get_size_free         (const IFBMemoryHandle memory_handle);
+    const ifb_u32 stack_get_size_used         (const IFBMemoryHandle memory_handle);
 };
 
 #define ifb_memory_macro_stack_push_type(memory_handle,type)                    (struct*)ifb_memory::stack_push(memory_handle, sizeof(struct))
