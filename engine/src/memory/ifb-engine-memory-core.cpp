@@ -55,7 +55,7 @@ ifb_engine::memory_core_reserve(
 
 inline const ifb_b8
 ifb_engine::memory_core_release(
-    IFBPlatformApi& platform_api_ref) {
+    ifb_void) {
 
 }
 

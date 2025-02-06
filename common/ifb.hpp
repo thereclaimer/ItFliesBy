@@ -7,7 +7,7 @@
 #include "ifb-macros.hpp"
 #include "ifb-types.hpp"
 #include "ifb-hash.hpp"
-#include "ifb-data-structures.hpp"
+#include "_ifb-data-structures.hpp"
 #include "ifb-user-input.hpp"
 #include "ifb-platform.hpp"
 #include "ifb-graphics.hpp"
