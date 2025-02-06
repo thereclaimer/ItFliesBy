@@ -164,7 +164,6 @@ namespace ifb_memory {
 /* ARENA - BLOCK                                                                  */
 /**********************************************************************************/
 
-
 namespace ifb_memory {
 
     const IFBMemoryBlockArenaHandle

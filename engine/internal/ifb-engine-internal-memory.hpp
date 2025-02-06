@@ -10,8 +10,10 @@
 /**********************************************************************************/
 
 struct IFBEngineMemorySingletonId;
-struct IFBEngineMemoryBlockAllocator;  
-struct IFBEngineMemoryLinearAllocator; 
+struct IFBEngineMemoryUnmanaged;
+struct IFBEngineMemoryBlocks;
+struct IFBEngineMemoryLinear;
+
 
 /**********************************************************************************/
 /* CORE                                                                           */
@@ -35,47 +37,45 @@ namespace ifb_engine {
 };
 
 /**********************************************************************************/
-/* SINGLETONS                                                                     */
+/* BLOCK MEMORY                                                                   */
 /**********************************************************************************/
 
 namespace ifb_engine {
 
-    const ifb_u16
-    memory_singleton_commit(
-        const ifb_u32 size,
-        const ifb_u32 alignment);
-    
-    const ifb_ptr
-    memory_singleton_get_pointer(const ifb_u16 singleton_id);
-};
-
-#define ifb_engine_macro_memory_singleton_commit(struct)                  ifb_engine::memory_singleton_commit(sizeof(struct),alignof(struct))
-#define ifb_engine_macro_memory_singleton_get_pointer(struct,id) (struct*)ifb_engine::memory_singleton_get_pointer(id)
-
-/**********************************************************************************/
-/* BLOCK ALLOCATOR                                                                */
-/**********************************************************************************/
-
-namespace ifb_engine {
-
-    const IFBEngineMemoryBlockAllocator*
-    memory_commit_block_allocator(
+    //commit
+    IFBEngineMemoryBlocks*
+    memory_commit_blocks(
         const ifb_u32 block_size_minimum,
         const ifb_u32 block_count);
 
-    const ifb_ptr memory_block_reserve(const IFBEngineMemoryBlockAllocator* blocks);
-    const ifb_b8  memory_block_release(const IFBEngineMemoryBlockAllocator* blocks, const ifb_ptr block_memory);
+    //reserve/release
+    const ifb_b8  memory_block_reset                  (IFBEngineMemoryBlocks* blocks);
+    const ifb_ptr memory_block_reserve                (IFBEngineMemoryBlocks* blocks);
+    const ifb_b8  memory_block_release                (IFBEngineMemoryBlocks* blocks, const ifb_ptr block_memory);
+
+    //size
+    const ifb_u32 memory_blocks_get_size_total        (const IFBEngineMemoryBlocks* blocks);
+    const ifb_u32 memory_blocks_get_size_free         (const IFBEngineMemoryBlocks* blocks);
+    const ifb_u32 memory_blocks_get_size_used         (const IFBEngineMemoryBlocks* blocks);
+
+    //count    
+    const ifb_u32 memory_blocks_get_block_count_total (const IFBEngineMemoryBlocks* blocks);
+    const ifb_u32 memory_blocks_get_block_count_free  (const IFBEngineMemoryBlocks* blocks);
+    const ifb_u32 memory_blocks_get_block_count_used  (const IFBEngineMemoryBlocks* blocks);
 };
 
 /**********************************************************************************/
-/* LINEAR ALLOCATOR                                                                */
+/* LINEAR MEMORY                                                                  */
 /**********************************************************************************/
 
 namespace ifb_engine {
 
-    const IFBEngineMemoryLinearAllocator*
-    memory_commit_linear_allocator(
+    const IFBEngineMemoryLinear*
+    memory_commit_linear(
         const ifb_u32 size_minumum);
+    
+    memory_linear_reserve(IFBEngineMemoryLinear*);
+    memory_linear_release(IFBEngineMemoryLinear*);
 
 };
 
