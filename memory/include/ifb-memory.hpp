@@ -38,8 +38,7 @@ namespace ifb_memory {
     create(
         const IFBPlatformApi& platform_api_ref,
         const ifb_byte*       stack_memory,
-        const ifb_u32         stack_size,
-        const ifb_u32         arena_count);
+        const ifb_u32         stack_size);
     
     const ifb_b8 destroy(const IFBMemoryHandle memory_handle);
 };

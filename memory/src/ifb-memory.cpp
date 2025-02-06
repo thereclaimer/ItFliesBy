@@ -12,8 +12,7 @@ inline const IFBMemoryHandle
 ifb_memory::create(
     const IFBPlatformApi& platform_api_ref,
     const ifb_byte*       stack_memory,
-    const ifb_u32         stack_size,
-    const ifb_u32         arena_count) {
+    const ifb_u32         stack_size) {
 
     //initialize the platform api
     ifb_memory::platform_memory_reserve         = platform_api_ref.memory.reserve;

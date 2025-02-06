@@ -3,61 +3,84 @@
 
 #include "ifb-engine.hpp"
 
-struct IFBEngineMemoryLinearArenas {
-    IFBMemoryLinearArenaHandle frame;
+/**********************************************************************************/
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
+
+struct IFBEngineMemorySingletonId;
+struct IFBEngineMemoryBlockAllocator;  
+struct IFBEngineMemoryLinearAllocator; 
+
+/**********************************************************************************/
+/* CORE                                                                           */
+/**********************************************************************************/
+
+namespace ifb_engine {
+
+    //reserve/release
+    const ifb_b8  memory_core_reserve                    (const IFBPlatformApi& platform_api_ref);
+    const ifb_b8  memory_core_release                    (ifb_void);
+
+    //reservation
+    const ifb_u64 memory_core_get_reservation_size_total (ifb_void);
+    const ifb_u64 memory_core_get_reservation_size_free  (ifb_void);
+    const ifb_u64 memory_core_get_reservation_size_used  (ifb_void);
+
+    //stack     
+    const ifb_u32 memory_core_get_stack_size_total       (ifb_void);
+    const ifb_u32 memory_core_get_stack_size_free        (ifb_void);
+    const ifb_u32 memory_core_get_stack_size_used        (ifb_void);
 };
 
-enum IFBEngineMemoryBlockArenaId_ {
-    IFBEngineMemoryBlockArenaId_Small     = 0,
-    IFBEngineMemoryBlockArenaId_Large     = 1,
-    IFBEngineMemoryBlockArenaId_AssetData = 2,
-    IFBEngineMemoryBlockArenaId_Count     = 3
-};
+/**********************************************************************************/
+/* SINGLETONS                                                                     */
+/**********************************************************************************/
 
-typedef ifb_u32 IFBEngineMemoryBlockArenaId;
-
-struct IFBEngineMemoryBlockArenas {
-    union {
-        struct {
-            IFBMemoryBlockArenaHandle small;
-            IFBMemoryBlockArenaHandle large;
-            IFBMemoryBlockArenaHandle asset_data;
-        };
-        IFBMemoryBlockArenaHandle array[IFBEngineMemoryBlockArenaId_Count];
-    };
-};
-
-struct IFBEngineMemoryBlock {
-    IFBEngineMemoryBlockArenaId arena_id;
-    ifb_u32                     index;
-};
-
-struct IFBEngineMemoryArenas {
-    IFBEngineMemoryLinearArenas linear;
-    IFBEngineMemoryBlockArenas  block;
-};
-
-struct IFBEngineMemoryManager {
-    IFBMemoryHandle       memory_handle;
-    IFBEngineMemoryArenas arenas;
+struct IFBEngineMemorySingletonId {
+    ifb_u16 stack_offset;
 };
 
 namespace ifb_engine {
 
-    //create/destroy
-    const ifb_b8   memory_manager_create    (ifb_void);
-    const ifb_b8   memory_manager_destroy   (ifb_void);
+    const IFBEngineMemorySingletonId
+    memory_singleton_commit(
+        const ifb_u32 size,
+        const ifb_u32 alignment);
+    
+    const ifb_ptr
+    memory_singleton_get_pointer(const IFBEngineMemorySingletonId singleton_id);
+};
 
-    //frame memory
-    const ifb_ptr  memory_frame_reserve     (const ifb_u32 size);
-    const ifb_ptr  memory_frame_release     (const ifb_u32 size);
-    const ifb_void memory_frame_reset       (ifb_void);
+#define ifb_engine_macro_memory_singleton_commit(struct)                  ifb_engine::memory_singleton_commit(sizeof(struct),alignof(struct))
+#define ifb_engine_macro_memory_singleton_get_pointer(struct,id) (struct*)ifb_engine::memory_singleton_get_pointer(id)
 
-    //block memory
-    const ifb_b8   memory_block_reserve     (IFBEngineMemoryBlock* memory_block_ptr);
+/**********************************************************************************/
+/* BLOCK ALLOCATOR                                                                */
+/**********************************************************************************/
 
-    const ifb_b8   memory_block_release     (const IFBEngineMemoryBlock* memory_block_ptr);
-    const ifb_ptr  memory_block_get_pointer (const IFBEngineMemoryBlock* memory_block_ptr, const ifb_u32 offset);
+namespace ifb_engine {
+
+    const IFBEngineMemoryBlockAllocator*
+    memory_commit_block_allocator(
+        const ifb_u32 block_size_minimum,
+        const ifb_u32 block_count);
+
+    const ifb_ptr memory_block_reserve(const IFBEngineMemoryBlockAllocator* blocks);
+    const ifb_b8  memory_block_release(const IFBEngineMemoryBlockAllocator* blocks, const ifb_ptr block_memory);
+
+
+};
+
+/**********************************************************************************/
+/* LINEAR ALLOCATOR                                                                */
+/**********************************************************************************/
+
+namespace ifb_engine {
+
+    const IFBEngineMemoryLinearAllocator*
+    memory_commit_linear_allocator(
+        const ifb_u32 size_minumum);
+
 };
 
 #endif //IFB_ENGINE_INTERNAL_MEMORY_HPP
