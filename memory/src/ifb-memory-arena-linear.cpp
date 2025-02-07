@@ -6,14 +6,14 @@
 /* COMMIT                                                                         */
 /**********************************************************************************/
 
-const IFBMemoryLinearArenaHandle
+IFBMemoryLinearArena*
 ifb_memory::linear_arena_commit(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u32         arena_size_minimum) {
+          IFBMemory* memory_ptr,
+    const ifb_u32    arena_size_minimum) {
     
-    //cast the handle
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
-    if (!memory_ptr || arena_size_minimum == 0) return(NULL);
+    //sanity check
+    ifb_macro_assert(memory_ptr);
+    if (arena_size_minimum == 0) return(NULL);
 
     //allocate the arena structure
     IFBMemoryLinearArena* linear_arena_ptr = ifb_memory::stack_push_arena_linear(memory_ptr);
@@ -49,18 +49,17 @@ ifb_memory::linear_arena_commit(
 
 inline const ifb_ptr
 ifb_memory::linear_arena_save_point_set(
-    const IFBMemoryLinearArenaHandle linear_arena_handle) {
+    IFBMemoryLinearArena* linear_arena_ptr) {
 
-    //cast the handle
-    ifb_macro_assert(linear_arena_handle);
-    IFBMemoryLinearArena* linear_arena_ptr = (IFBMemoryLinearArena*)linear_arena_handle;
-
+    //sanity check
+    ifb_macro_assert(linear_arena_ptr);
+    
     //update the save point to the position
     linear_arena_ptr->save_point = linear_arena_ptr->position; 
 
     //get the pointer at the save point
     const ifb_ptr save_point_ptr = ifb_memory::arena_get_pointer(
-        linear_arena_handle,
+        linear_arena_ptr,
         linear_arena_ptr->save_point);
 
     //we're done
@@ -69,18 +68,17 @@ ifb_memory::linear_arena_save_point_set(
 
 inline const ifb_ptr
 ifb_memory::linear_arena_save_point_clear(
-    const IFBMemoryLinearArenaHandle linear_arena_handle) {
+    IFBMemoryLinearArena* linear_arena_ptr) {
 
-    //cast the handle
-    ifb_macro_assert(linear_arena_handle);
-    IFBMemoryLinearArena* linear_arena_ptr = (IFBMemoryLinearArena*)linear_arena_handle;
-
+    //sanity check
+    ifb_macro_assert(linear_arena_ptr);
+    
     //clear the save point
     linear_arena_ptr->save_point = 0;
 
     //get the pointer at the save point
     const ifb_ptr save_point_ptr = ifb_memory::arena_get_pointer(
-        linear_arena_handle,
+        linear_arena_ptr,
         linear_arena_ptr->save_point);
 
     //we're done
@@ -89,15 +87,14 @@ ifb_memory::linear_arena_save_point_clear(
 
 inline const ifb_ptr
 ifb_memory::linear_arena_save_point_get(
-    const IFBMemoryLinearArenaHandle linear_arena_handle) {
+    IFBMemoryLinearArena* linear_arena_ptr) {
 
-    //cast the handle
-    ifb_macro_assert(linear_arena_handle);
-    IFBMemoryLinearArena* linear_arena_ptr = (IFBMemoryLinearArena*)linear_arena_handle;
-
+    //sanity check
+    ifb_macro_assert(linear_arena_ptr);
+    
     //get the pointer at the save point
     const ifb_ptr save_point_ptr = ifb_memory::arena_get_pointer(
-        linear_arena_handle,
+        linear_arena_ptr,
         linear_arena_ptr->save_point);
 
     //we're done
@@ -111,18 +108,17 @@ ifb_memory::linear_arena_save_point_get(
 
 inline const ifb_ptr
 ifb_memory::linear_arena_reset(
-    const IFBMemoryLinearArenaHandle linear_arena_handle) {
+    IFBMemoryLinearArena* linear_arena_ptr) {
 
-    //cast the handle
-    ifb_macro_assert(linear_arena_handle);
-    IFBMemoryLinearArena* linear_arena_ptr = (IFBMemoryLinearArena*)linear_arena_handle;
-
+    //sanity check
+    ifb_macro_assert(linear_arena_ptr);
+    
     //clear the position
     linear_arena_ptr->position = 0;
 
     //get the pointer at the position
     const ifb_ptr position = ifb_memory::arena_get_pointer(
-        linear_arena_handle,
+        linear_arena_ptr,
         linear_arena_ptr->position);
 
     //we're done
@@ -131,18 +127,17 @@ ifb_memory::linear_arena_reset(
 
 inline const ifb_ptr
 ifb_memory::linear_arena_reset_to_save_point(
-    const IFBMemoryLinearArenaHandle linear_arena_handle) {
+    IFBMemoryLinearArena* linear_arena_ptr) {
 
-    //cast the handle
-    ifb_macro_assert(linear_arena_handle);
-    IFBMemoryLinearArena* linear_arena_ptr = (IFBMemoryLinearArena*)linear_arena_handle;
-
+    //sanity check
+    ifb_macro_assert(linear_arena_ptr);
+    
     //set the position to the save point
     linear_arena_ptr->position = linear_arena_ptr->save_point;
 
     //get the pointer at the position
     const ifb_ptr position = ifb_memory::arena_get_pointer(
-        linear_arena_handle,
+        linear_arena_ptr,
         linear_arena_ptr->position);
 
     //we're done
@@ -155,12 +150,11 @@ ifb_memory::linear_arena_reset_to_save_point(
 
 inline const ifb_ptr
 ifb_memory::linear_arena_bytes_reserve(
-    const IFBMemoryLinearArenaHandle linear_arena_handle,
-    const ifb_u32                    size) {
+          IFBMemoryLinearArena* linear_arena_ptr,
+    const ifb_u32               size) {
 
-    //cast the handle
-    ifb_macro_assert(linear_arena_handle);
-    IFBMemoryLinearArena* linear_arena_ptr = (IFBMemoryLinearArena*)linear_arena_handle;
+    //sanity check
+    ifb_macro_assert(linear_arena_ptr);
     
     //sanity check
     if (size == 0)  return(NULL);
@@ -175,7 +169,7 @@ ifb_memory::linear_arena_bytes_reserve(
 
     //get the reservation pointer
     const ifb_ptr reservation_ptr = ifb_memory::arena_get_pointer(
-        linear_arena_handle,
+        linear_arena_ptr,
         reservation_position);
 
     //we're done
@@ -184,13 +178,12 @@ ifb_memory::linear_arena_bytes_reserve(
 
 inline const ifb_ptr
 ifb_memory::linear_arena_bytes_release(
-    const IFBMemoryLinearArenaHandle linear_arena_handle,
-    const ifb_u32                    size) {
-    
-    //cast the handle
-    ifb_macro_assert(linear_arena_handle);
-    IFBMemoryLinearArena* linear_arena_ptr = (IFBMemoryLinearArena*)linear_arena_handle;
+          IFBMemoryLinearArena* linear_arena_ptr,
+    const ifb_u32               size) {
 
+    //sanity check
+    ifb_macro_assert(linear_arena_ptr);
+    
     //make sure we can release the bytes
     if (size == 0 || size > linear_arena_ptr->page_commit.size) return(NULL);
 
@@ -199,7 +192,7 @@ ifb_memory::linear_arena_bytes_release(
 
     //get the pointer
     const ifb_ptr pointer = ifb_memory::arena_get_pointer(
-        linear_arena_handle,
+        linear_arena_ptr,
         linear_arena_ptr->position);
 
     //we're done
@@ -208,20 +201,19 @@ ifb_memory::linear_arena_bytes_release(
 
 inline const ifb_ptr
 ifb_memory::linear_arena_bytes_reserve_aligned(
-    const IFBMemoryLinearArenaHandle linear_arena_handle,
-    const ifb_u32                    size, 
-    const ifb_u32                    alignment) {
+          IFBMemoryLinearArena* linear_arena_ptr,
+    const ifb_u32               size, 
+    const ifb_u32               alignment) {
 
-    //cast the handle
-    ifb_macro_assert(linear_arena_handle);
-    IFBMemoryLinearArena* linear_arena_ptr = (IFBMemoryLinearArena*)linear_arena_handle;
-
+    //sanity check
+    ifb_macro_assert(linear_arena_ptr);
+    
     //align the size
     const ifb_u32 size_aligned = ifb_macro_align_a_to_b(size,alignment);
 
     //do the reservation
     const ifb_ptr reservation_ptr = ifb_memory::linear_arena_bytes_reserve(
-        linear_arena_handle,
+        linear_arena_ptr,
         size_aligned);
 
     //we're done
@@ -230,20 +222,19 @@ ifb_memory::linear_arena_bytes_reserve_aligned(
 
 inline const ifb_ptr
 ifb_memory::linear_arena_bytes_release_aligned(
-    const IFBMemoryLinearArenaHandle linear_arena_handle,
-    const ifb_u32                    size, 
-    const ifb_u32                    alignment) {
+          IFBMemoryLinearArena* linear_arena_ptr,
+    const ifb_u32               size, 
+    const ifb_u32               alignment) {
 
-    //cast the handle
-    ifb_macro_assert(linear_arena_handle);
-    IFBMemoryLinearArena* linear_arena_ptr = (IFBMemoryLinearArena*)linear_arena_handle;
-
+    //sanity check
+    ifb_macro_assert(linear_arena_ptr);
+    
     //align the size
     const ifb_u32 size_aligned = ifb_macro_align_a_to_b(size,alignment);
 
     //do the release
     const ifb_ptr release_ptr = ifb_memory::linear_arena_bytes_release(
-        linear_arena_handle,
+        linear_arena_ptr,
         size_aligned);
 
     //we're done
@@ -256,11 +247,10 @@ ifb_memory::linear_arena_bytes_release_aligned(
 
 inline const ifb_u32
 ifb_memory::linear_arena_get_size_total(
-    const IFBMemoryLinearArenaHandle linear_arena_handle) {
+    const IFBMemoryLinearArena* linear_arena_ptr) {
 
-    //cast the handle
-    ifb_macro_assert(linear_arena_handle);
-    IFBMemoryLinearArena* linear_arena_ptr = (IFBMemoryLinearArena*)linear_arena_handle;
+    //sanity check
+    ifb_macro_assert(linear_arena_ptr);
 
     //return the size
     const ifb_u32 arena_size = linear_arena_ptr->page_commit.size;
@@ -269,11 +259,10 @@ ifb_memory::linear_arena_get_size_total(
 
 inline const ifb_u32
 ifb_memory::linear_arena_get_size_used(
-    const IFBMemoryLinearArenaHandle linear_arena_handle) {
+    const IFBMemoryLinearArena* linear_arena_ptr) {
 
-    //cast the handle
-    ifb_macro_assert(linear_arena_handle);
-    IFBMemoryLinearArena* linear_arena_ptr = (IFBMemoryLinearArena*)linear_arena_handle;
+    //sanity check
+    ifb_macro_assert(linear_arena_ptr);
 
     //return the position
     const ifb_u32 position = linear_arena_ptr->position;
@@ -282,11 +271,10 @@ ifb_memory::linear_arena_get_size_used(
 
 inline const ifb_u32
 ifb_memory::linear_arena_get_size_free(
-    const IFBMemoryLinearArenaHandle linear_arena_handle) {
+    const IFBMemoryLinearArena* linear_arena_ptr) {
 
-    //cast the handle
-    ifb_macro_assert(linear_arena_handle);
-    IFBMemoryLinearArena* linear_arena_ptr = (IFBMemoryLinearArena*)linear_arena_handle;
+    //sanity check
+    ifb_macro_assert(linear_arena_ptr);
 
     //calculate the free size
     const ifb_u32 arena_size = linear_arena_ptr->page_commit.size;

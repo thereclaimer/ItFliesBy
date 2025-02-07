@@ -6,32 +6,33 @@
 /* COMMIT                                                                         */
 /**********************************************************************************/
 
-inline const IFBMemoryBlockArena*
+inline IFBMemoryBlockArena*
 block_arena_commit(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u32         block_size_minimum,
-    const ifb_u32         block_count) {
+          IFBMemory* memory_ptr,
+    const ifb_u32    block_size_minimum,
+    const ifb_u32    block_count) {
 
     //sanity check
-    ifb_macro_assert(memory_handle && block_count > 1);        
+    ifb_macro_assert(memory_ptr);
+    if (block_count == 0) return(NULL);
 
     //calculate the flag group array size
-    const ifb_u32 block_size  = ifb_memory::reservation_size_align_to_page(memory_handle,block_size_minimum);
+    const ifb_u32 block_size  = ifb_memory::reservation_size_align_to_page(memory_ptr,block_size_minimum);
     const ifb_u32 commit_size = block_size * block_count; 
 
     //allocate a block arena and flags
-    IFBMemoryBlockArena* block_arena_ptr = ifb_memory::stack_push_arena_block       (memory_handle);
-    IFBMemoryBlock*      block_array     = ifb_memory::stack_push_arena_block_array (memory_handle,block_count); 
+    IFBMemoryBlockArena* block_arena_ptr = ifb_memory::stack_push_arena_block       (memory_ptr);
+    IFBMemoryBlock*      block_array     = ifb_memory::stack_push_arena_block_array (memory_ptr,block_count); 
 
     //commit the pages
     block_arena_ptr->page_commit.size = commit_size;
     const ifb_b8 commit_result = ifb_memory::reservation_page_commit(
-        memory_handle,
+        memory_ptr,
         block_arena_ptr->page_commit);
 
     //add the arena to the list
     const ifb_b8 arena_list_result = ifb_memory::arena_list_add(
-        memory_handle->arena_list,
+        memory_ptr->arena_list,
         block_arena_ptr);
     
     //sanity check
@@ -68,11 +69,10 @@ block_arena_commit(
 
 inline ifb_void
 ifb_memory::block_arena_reset(
-    const IFBMemoryBlockArenaHandle block_arena_handle) {
+    IFBMemoryBlockArena* block_arena_ptr) {
 
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
+    //sanity check
+    ifb_macro_assert(block_arena_ptr);
 
     //cache the blocks
     IFBMemoryBlock* block_array = block_arena_ptr->block_array;
@@ -95,12 +95,11 @@ ifb_memory::block_arena_reset(
 
 inline const ifb_b8
 ifb_memory::block_arena_block_reserve(
-    const IFBMemoryBlockArenaHandle block_arena_handle,
-          ifb_u32&                  block_index_ref) {
+    IFBMemoryBlockArena* block_arena_ptr,
+    ifb_u32&             block_index_ref) {
 
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
+    //sanity check
+    ifb_macro_assert(block_arena_ptr);
 
     //cache the blocks
     IFBMemoryBlock* block_array = block_arena_ptr->block_array;
@@ -134,12 +133,11 @@ ifb_memory::block_arena_block_reserve(
 
 inline const ifb_b8
 ifb_memory::block_arena_block_reserve_index(
-    const IFBMemoryBlockArenaHandle block_arena_handle,
-    const ifb_u32                   block_index) {
+          IFBMemoryBlockArena* block_arena_ptr,
+    const ifb_u32              block_index) {
     
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
+    //sanity check
+    ifb_macro_assert(block_arena_ptr);
 
     //if the index isn't valid, we're done
     if (block_index < block_arena_ptr->block_count) return(false);
@@ -163,12 +161,11 @@ ifb_memory::block_arena_block_reserve_index(
 
 inline const ifb_b8
 ifb_memory::block_arena_block_release(
-    const IFBMemoryBlockArenaHandle block_arena_handle,
-    const ifb_u32                   block_index) {
+          IFBMemoryBlockArena* block_arena_ptr,
+    const ifb_u32              block_index) {
     
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
+    //sanity check
+    ifb_macro_assert(block_arena_ptr);
 
     //if the index isn't valid, we're done
     if (block_index < block_arena_ptr->block_count) return(false);
@@ -185,12 +182,11 @@ ifb_memory::block_arena_block_release(
 
 inline const ifb_b8
 ifb_memory::block_arena_block_is_free(
-    const IFBMemoryBlockArenaHandle block_arena_handle,
-    const ifb_u32                   block_index) {
+          IFBMemoryBlockArena* block_arena_ptr,
+    const ifb_u32              block_index) {
     
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
+    //sanity check
+    ifb_macro_assert(block_arena_ptr);
 
     //if the index isn't valid, we're done
     if (block_index < block_arena_ptr->block_count) return(false);
@@ -211,13 +207,12 @@ ifb_memory::block_arena_block_is_free(
 
 inline const ifb_ptr 
 ifb_memory::block_get_pointer(
-    const IFBMemoryBlockArenaHandle block_arena_handle,
-    const ifb_u32                   block_index,
-    const ifb_u32                   offset) {
+    const IFBMemoryBlockArena* block_arena_ptr,
+    const ifb_u32              block_index,
+    const ifb_u32              offset) {
 
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
+    //sanity check
+    ifb_macro_assert(block_arena_ptr);
 
     //if the index isn't valid, we're done
     if (block_index < block_arena_ptr->block_count) return(false);
@@ -243,11 +238,10 @@ ifb_memory::block_get_pointer(
 
 inline const ifb_u32
 ifb_memory::block_arena_get_size_total(
-    const IFBMemoryBlockArenaHandle block_arena_handle) {
+    const IFBMemoryBlockArena* block_arena_ptr) {
 
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
+    //sanity check
+    ifb_macro_assert(block_arena_ptr);
 
     //return the commit size
     return(block_arena_ptr->page_commit.size);
@@ -255,11 +249,10 @@ ifb_memory::block_arena_get_size_total(
 
 inline const ifb_u32
 ifb_memory::block_arena_get_block_size(
-    const IFBMemoryBlockArenaHandle block_arena_handle) {
+    const IFBMemoryBlockArena* block_arena_ptr) {
 
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
+    //sanity check
+    ifb_macro_assert(block_arena_ptr);
 
     //return the block size
     return(block_arena_ptr->block_size);
@@ -267,11 +260,10 @@ ifb_memory::block_arena_get_block_size(
 
 inline const ifb_u32
 ifb_memory::block_arena_get_block_count_total(
-    const IFBMemoryBlockArenaHandle block_arena_handle) {
+    const IFBMemoryBlockArena* block_arena_ptr) {
 
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
+    //sanity check
+    ifb_macro_assert(block_arena_ptr);
 
     //return the block count
     return(block_arena_ptr->block_count);
@@ -279,11 +271,10 @@ ifb_memory::block_arena_get_block_count_total(
 
 inline const ifb_u32
 ifb_memory::block_arena_get_block_count_used(
-    const IFBMemoryBlockArenaHandle block_arena_handle) {
+    const IFBMemoryBlockArena* block_arena_ptr) {
 
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
+    //sanity check
+    ifb_macro_assert(block_arena_ptr);
 
     //cache the array
     IFBMemoryBlock* block_array = block_arena_ptr->block_array;
@@ -305,11 +296,10 @@ ifb_memory::block_arena_get_block_count_used(
 
 inline const ifb_u32
 ifb_memory::block_arena_get_block_count_free(
-    const IFBMemoryBlockArenaHandle block_arena_handle) {
+    const IFBMemoryBlockArena* block_arena_ptr) {
 
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
+    //sanity check
+    ifb_macro_assert(block_arena_ptr);
 
     //cache the array
     IFBMemoryBlock* block_array = block_arena_ptr->block_array;

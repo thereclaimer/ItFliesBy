@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ifb-memory.hpp"
 #include "ifb-memory-internal.hpp"
 
 /**********************************************************************************/
@@ -8,12 +9,12 @@
 
 inline const ifb_ptr
 ifb_memory::stack_push(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u32         size) {
+          IFBMemory* memory_ptr,
+    const ifb_u32    size) {
 
-    //cast the memory
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
-    if (!memory_ptr || size == 0) return(NULL);
+    //sanity check
+    ifb_macro_assert(memory_ptr);
+    if (size == 0) return(NULL);
 
     //cache the stack
     IFBMemoryStack& stack_ref = memory_ptr->stack;
@@ -35,16 +36,16 @@ ifb_memory::stack_push(
 
 inline const ifb_ptr
 ifb_memory::stack_push_aligned(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u32         size,
-    const ifb_u32         alignment) {
+          IFBMemory* memory_ptr,
+    const ifb_u32    size,
+    const ifb_u32    alignment) {
 
     //align the size
     const ifb_u32 size_aligned = ifb_macro_align_a_to_b(size,alignment);
 
     //do the push
     const ifb_ptr pointer = ifb_memory::stack_push(
-        memory_handle,
+        memory_ptr,
         size_aligned);
 
     //we're done
@@ -57,12 +58,12 @@ ifb_memory::stack_push_aligned(
 
 inline const ifb_u32
 ifb_memory::stack_push_offset(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u32         size) {
+          IFBMemory* memory_ptr,
+    const ifb_u32    size) {
 
-    //cast the memory
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
-    if (!memory_ptr || size == 0) return(NULL);
+    //sanity check
+    ifb_macro_assert(memory_ptr);
+    if (size == 0) return(NULL);
 
     //cache the stack
     IFBMemoryStack& stack_ref = memory_ptr->stack;
@@ -83,13 +84,13 @@ ifb_memory::stack_push_offset(
 
 inline const ifb_u32
 ifb_memory::stack_push_offset_aligned(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u32         size,
-    const ifb_u32         alignment) {
+          IFBMemory* memory_ptr,
+    const ifb_u32    size,
+    const ifb_u32    alignment) {
 
     const ifb_u32 size_aligned = ifb_macro_align_a_to_b(size,alignment);
     const ifb_u32 offset       = ifb_memory::stack_push_offset(
-        memory_handle,
+        memory_ptr,
         size_aligned);
 
     return(offset);
@@ -101,21 +102,15 @@ ifb_memory::stack_push_offset_aligned(
 
 inline const ifb_u32
 ifb_memory::stack_push_relative(
-    const IFBMemoryHandle memory_handle,
-    const ifb_ptr         reference, 
-    const ifb_u32         size) {
+          IFBMemory* memory_ptr,
+    const ifb_ptr    reference, 
+    const ifb_u32    size) {
 
     //sanity check
-    if (
-        memory_handle == NULL ||
-        reference     == NULL ||
-        size          == 0) {
-
-        return(0);
-    }
+    ifb_macro_assert(memory_ptr);
+    if (!reference || size == 0) return(0);
 
     //cast the handle and cache the stack
-    IFBMemory*      memory_ptr = (IFBMemory*)memory_handle;
     IFBMemoryStack& stack_ref  = memory_ptr->stack;
 
     //calculate the addresses
@@ -144,14 +139,14 @@ ifb_memory::stack_push_relative(
 
 inline const ifb_u32
 ifb_memory::stack_push_relative_aligned(
-    const IFBMemoryHandle memory_handle,
-    const ifb_ptr         reference, 
-    const ifb_u32         size,
-    const ifb_u32         alignment) {
+          IFBMemory* memory_ptr,
+    const ifb_ptr    reference, 
+    const ifb_u32    size,
+    const ifb_u32    alignment) {
 
     const ifb_u32 size_aligned      = ifb_macro_align_a_to_b(size,alignment);
     const ifb_u32 relative_position = ifb_memory::stack_push_relative(
-        memory_handle,
+        memory_ptr,
         reference,
         size_aligned);
 
@@ -164,17 +159,16 @@ ifb_memory::stack_push_relative_aligned(
 
 inline const ifb_ptr
 ifb_memory::stack_get_pointer(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u32         offset) {
-    
-    //cast the handle
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
-    if (!memory_ptr) return(NULL);
+    const IFBMemory* memory_ptr,
+    const ifb_u32    offset) {
+
+    //sanity check
+    ifb_macro_assert(memory_ptr);
 
     //cache the stack properties
-    IFBMemoryStack&   stack_ref          = memory_ptr->stack;
-    const ifb_u32     memory_struct_size = sizeof(IFBMemory); 
-    const ifb_address stack_start        = (ifb_address)memory_ptr;
+    const IFBMemoryStack&   stack_ref          = memory_ptr->stack;
+    const ifb_u32           memory_struct_size = sizeof(IFBMemory); 
+    const ifb_address       stack_start        = (ifb_address)memory_ptr;
 
     //make sure the offset is valid
     ifb_b8 offset_valid = true;                   // the offset is valid                      IF...
@@ -195,13 +189,13 @@ ifb_memory::stack_get_pointer(
 
 inline const ifb_ptr 
 ifb_memory::stack_get_pointer_relative(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u32         reference,
-    const ifb_u32         offset) {
+    const IFBMemory* memory_ptr,
+    const ifb_u32    reference,
+    const ifb_u32    offset) {
 
     const ifb_u32 offset_absolute = reference + offset;
     const ifb_ptr pointer         = ifb_memory::stack_get_pointer(
-        memory_handle,
+        memory_ptr,
         offset_absolute);
 
     return(pointer);
@@ -213,11 +207,10 @@ ifb_memory::stack_get_pointer_relative(
 
 inline const ifb_u32
 ifb_memory::stack_get_size_total(
-    const IFBMemoryHandle memory_handle) {
+    const IFBMemory* memory_ptr) {
        
-    //cast the handle
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
-    if (!memory_ptr) return(NULL);
+    //sanity check
+    ifb_macro_assert(memory_ptr);
 
     //return the stack size
     const ifb_u32 size_total = memory_ptr->stack.size;
@@ -226,11 +219,10 @@ ifb_memory::stack_get_size_total(
 
 inline const ifb_u32
 ifb_memory::stack_get_size_free(
-    const IFBMemoryHandle memory_handle) {
+    const IFBMemory* memory_ptr) {
   
-    //cast the handle
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
-    if (!memory_ptr) return(NULL);
+    //sanity check
+    ifb_macro_assert(memory_ptr);
 
     //calculate the free size
     const ifb_u32 size_total = memory_ptr->stack.size;
@@ -243,11 +235,10 @@ ifb_memory::stack_get_size_free(
 
 inline const ifb_u32
 ifb_memory::stack_get_size_used(
-    const IFBMemoryHandle memory_handle) {
+    const IFBMemory* memory_ptr) {
   
-    //cast the handle
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
-    if (!memory_ptr) return(NULL);
+    //sanity check
+    ifb_macro_assert(memory_ptr);
 
     //return the stack position
     const ifb_u32 size_used = memory_ptr->stack.position;
@@ -260,11 +251,11 @@ ifb_memory::stack_get_size_used(
 
 inline IFBMemoryArena*
 ifb_memory::stack_push_arena_base(
-    const IFBMemoryHandle memory_handle) {
+    IFBMemory* memory_ptr) {
 
     //allocate base arena struct
     IFBMemoryArena* arena_ptr = ifb_memory_macro_stack_push_struct(
-        memory_handle,
+        memory_ptr,
         IFBMemoryArena);
     
     //we're done
@@ -273,11 +264,11 @@ ifb_memory::stack_push_arena_base(
 
 inline IFBMemoryLinearArena*
 ifb_memory::stack_push_arena_linear(
-    const IFBMemoryHandle memory_handle) {
+    IFBMemory* memory_ptr) {
 
     //allocate linear arena struct
     IFBMemoryLinearArena* linear_arena_ptr = ifb_memory_macro_stack_push_struct(
-        memory_handle,
+        memory_ptr,
         IFBMemoryLinearArena);
 
     //we're done
@@ -287,13 +278,13 @@ ifb_memory::stack_push_arena_linear(
 
 inline IFBMemoryBlockArena*
 ifb_memory::stack_push_arena_block(
-    const IFBMemoryHandle memory_handle) {
+    IFBMemory* memory_ptr) {
 
     //calculate the push size
     const ifb_u32 block_arena_size = ifb_macro_align_size_struct(IFBMemoryBlockArena);
 
     //do the push
-    IFBMemoryBlockArena* block_arena_ptr  = (IFBMemoryBlockArena*)ifb_memory::stack_push(memory_handle,block_arena_size);
+    IFBMemoryBlockArena* block_arena_ptr  = (IFBMemoryBlockArena*)ifb_memory::stack_push(memory_ptr,block_arena_size);
 
     //we're done
     return(block_arena_ptr);
@@ -301,19 +292,19 @@ ifb_memory::stack_push_arena_block(
 
 inline IFBMemoryBlock*
 ifb_memory::stack_push_arena_block_array(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u32         block_count) {
+          IFBMemory* memory_ptr,
+    const ifb_u32    block_count) {
 
     //sanity check
-    ifb_macro_assert(memory_handle);
-    ifb_macro_assert(block_count > 0);
+    ifb_macro_assert(memory_ptr);
+    if (block_count == 0) return(NULL);
 
     //calculate the push size
     const ifb_u32 push_size = ifb_macro_size_array(IFBMemoryBlock,block_count); 
 
     //do the push
     IFBMemoryBlock* block_array = (IFBMemoryBlock*)ifb_memory::stack_push(
-        memory_handle,
+        memory_ptr,
         push_size);
 
     //we're done

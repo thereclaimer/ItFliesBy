@@ -8,7 +8,7 @@
 #include "ifb-memory-reservation.cpp"
 #include "ifb-memory-stack.cpp"
 
-inline const IFBMemoryHandle
+inline IFBMemory*
 ifb_memory::create(
     const IFBPlatformApi& platform_api_ref,
     const ifb_byte*       stack_memory,
@@ -59,11 +59,10 @@ ifb_memory::create(
 
 inline const ifb_b8
 ifb_memory::destroy(
-    const IFBMemoryHandle memory_handle) {
+    IFBMemory* memory_ptr) {
 
-    //cast the handle
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle; 
-    ifb_macro_assert(memory_handle);
+    //sanity check
+    ifb_macro_assert(memory_ptr);
 
     //release the reservation
     const ifb_b8 result = ifb_memory::release(memory_ptr);

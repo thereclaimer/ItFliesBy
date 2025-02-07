@@ -9,11 +9,10 @@
 
 inline const ifb_b8
 ifb_memory::reserve(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u64         reservation_size_minimum) {
+          IFBMemory* memory_ptr,
+    const ifb_u64    reservation_size_minimum) {
 
-    //cast the handle
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    //sanity check
     ifb_macro_assert(memory_ptr);
 
     //cache reservation
@@ -42,10 +41,9 @@ ifb_memory::reserve(
 
 inline const ifb_b8
 ifb_memory::release(
-    const IFBMemoryHandle memory_handle) {
+    IFBMemory* memory_ptr) {
 
-    //cast the handle
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    //sanity check
     ifb_macro_assert(memory_ptr);
 
     //cache the reservation
@@ -70,12 +68,12 @@ ifb_memory::release(
 
 inline const ifb_u32
 ifb_memory::reservation_size_align_to_page(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u32         size) {
+    const IFBMemory* memory_ptr,
+    const ifb_u32    size) {
 
-    //cast the handle
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    //sanity check
     ifb_macro_assert(memory_ptr);
+
 
     //calculate the aligned size
     const ifb_u32 page_size    = memory_ptr->reservation.page_size;
@@ -87,11 +85,10 @@ ifb_memory::reservation_size_align_to_page(
  
 inline const ifb_u32
 ifb_memory::reservation_size_align_to_granularity(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u32         size) {
+    const IFBMemory* memory_ptr,
+    const ifb_u32    size) {
 
-    //cast the handle
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    //sanity check
     ifb_macro_assert(memory_ptr);
 
     //calculate the aligned size
@@ -108,10 +105,9 @@ ifb_memory::reservation_size_align_to_granularity(
 
 inline const ifb_u32
 ifb_memory::reservation_get_page_size(
-    const IFBMemoryHandle memory_handle) {
+    const IFBMemory* memory_ptr) {
 
-    //cast the handle
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    //sanity check
     ifb_macro_assert(memory_ptr);
 
     //get the page size
@@ -123,10 +119,9 @@ ifb_memory::reservation_get_page_size(
 
 inline const ifb_u32
 ifb_memory::reservation_get_page_count_total(
-    const IFBMemoryHandle memory_handle) {
+    const IFBMemory* memory_ptr) {
 
-    //cast the handle
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    //sanity check
     ifb_macro_assert(memory_ptr);
 
     //get the page count
@@ -138,10 +133,9 @@ ifb_memory::reservation_get_page_count_total(
 
 inline const ifb_u32
 ifb_memory::reservation_get_page_count_committed(
-    const IFBMemoryHandle memory_handle) {
+    const IFBMemory* memory_ptr) {
 
-    //cast the handle
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    //sanity check
     ifb_macro_assert(memory_ptr);
 
     //get the page count
@@ -157,10 +151,9 @@ ifb_memory::reservation_get_page_count_committed(
 
 inline const ifb_u64
 ifb_memory::reservation_get_size_total(
-    const IFBMemoryHandle memory_handle) {
+    const IFBMemory* memory_ptr) {
 
-    //cast the handle
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    //sanity check
     ifb_macro_assert(memory_ptr);
 
     //get the size
@@ -172,10 +165,9 @@ ifb_memory::reservation_get_size_total(
 
 inline const ifb_u64
 ifb_memory::reservation_get_size_committed(
-    const IFBMemoryHandle memory_handle) {
+    const IFBMemory* memory_ptr) {
 
-    //cast the handle
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
+    //sanity check
     ifb_macro_assert(memory_ptr);
 
     //calculate the committed size
@@ -237,9 +229,8 @@ ifb_memory::reservation_page_commit(
     IFBMemoryPageCommit& page_commit_ref) {
 
     //sanity check
-    if (!memory_ptr || page_commit_ref.size == 0) {
-        return(false);
-    }
+    ifb_macro_assert(memory_ptr);
+    if (page_commit_ref.size == 0) return(false);
 
     //cache reservation
     IFBMemoryReservation& reservation_ref = memory_ptr->reservation;

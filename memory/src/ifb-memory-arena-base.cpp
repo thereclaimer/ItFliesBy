@@ -6,14 +6,14 @@
 /* COMMIT                                                                         */
 /**********************************************************************************/
 
-inline const IFBMemoryArenaHandle
+inline IFBMemoryArena*
 ifb_memory::arena_commit(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u32         arena_size_minimum) {
+          IFBMemory* memory_ptr,
+    const ifb_u32    arena_size_minimum) {
 
-    //cast the handle
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
-    if (!memory_ptr || arena_size_minimum == 0) return(NULL);
+    //sanity check
+    ifb_macro_assert(memory_ptr);
+    if (arena_size_minimum == 0) return(NULL);
 
     //allocate the arena structure
     IFBMemoryArena* arena_ptr = ifb_memory::stack_push_arena_base(memory_ptr);
@@ -47,11 +47,10 @@ ifb_memory::arena_commit(
 
 inline const ifb_b8
 ifb_memory::arena_reset(
-    const IFBMemoryArenaHandle arena_handle) {
+    IFBMemoryArena* arena_ptr) {
 
-    //cast the handle
-    IFBMemoryArena* arena_ptr = (IFBMemoryArena*)arena_handle;
-    if (!arena_ptr) return(false); 
+    //sanity check
+    ifb_macro_assert(arena_ptr);
 
     //cache the commit
     IFBMemoryPageCommit& page_commit_ref = arena_ptr->page_commit;
@@ -76,12 +75,11 @@ ifb_memory::arena_reset(
 
 inline const ifb_ptr
 ifb_memory::arena_get_pointer(
-    const IFBMemoryArenaHandle arena_handle,
-    const ifb_u32              offset) {
+    const IFBMemoryArena* arena_ptr,
+    const ifb_u32         offset) {
 
-    //cast the arena
-    IFBMemoryArena* arena_ptr = (IFBMemoryArena*)arena_handle;
-    if (!arena_ptr) return(NULL);
+    //sanity check
+    ifb_macro_assert(arena_ptr);
 
     //we can get the pointer if...
     ifb_b8 can_get_pointer = true;
@@ -106,11 +104,10 @@ ifb_memory::arena_get_pointer(
 
 inline const ifb_u32
 ifb_memory::arena_get_page_count(
-    const IFBMemoryArenaHandle arena_handle) {
+    const IFBMemoryArena* arena_ptr) {
 
-    //cast the arena
-    IFBMemoryArena* arena_ptr = (IFBMemoryArena*)arena_handle;
-    if (!arena_ptr) return(NULL);
+    //sanity check
+    ifb_macro_assert(arena_ptr);
 
     //return the page count
     const ifb_u32 page_count = arena_ptr->page_commit.page_count;
@@ -119,11 +116,10 @@ ifb_memory::arena_get_page_count(
 
 inline const ifb_u32
 ifb_memory::arena_get_page_start(
-    const IFBMemoryArenaHandle arena_handle) {
+    const IFBMemoryArena* arena_ptr) {
 
-    //cast the arena
-    IFBMemoryArena* arena_ptr = (IFBMemoryArena*)arena_handle;
-    if (!arena_ptr) return(NULL);
+    //sanity check
+    ifb_macro_assert(arena_ptr);;
 
     //return the page start
     const ifb_u32 page_start = arena_ptr->page_commit.page_number;
@@ -132,11 +128,10 @@ ifb_memory::arena_get_page_start(
 
 inline const ifb_u32
 ifb_memory::arena_get_size_total(
-    const IFBMemoryArenaHandle arena_handle) {
+    const IFBMemoryArena* arena_ptr) {
 
-    //cast the arena
-    IFBMemoryArena* arena_ptr = (IFBMemoryArena*)arena_handle;
-    if (!arena_ptr) return(NULL);
+    //sanity check
+    ifb_macro_assert(arena_ptr);
 
     //return the size
     const ifb_u32 arena_size = arena_ptr->page_commit.size;
