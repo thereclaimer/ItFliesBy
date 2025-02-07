@@ -14,7 +14,12 @@
 			"type_traits": "cpp",
 			"xstring": "cpp",
 			"xutility": "cpp",
-			"memory": "cpp"
+			"memory": "cpp",
+			"utility": "cpp",
+			"compare": "cpp",
+			"tuple": "cpp",
+			"xmemory": "cpp",
+			"xtr1common": "cpp"
 		}
 	}
 }

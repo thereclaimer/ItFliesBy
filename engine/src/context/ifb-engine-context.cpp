@@ -1,6 +1,17 @@
 #pragma once
 
 #include "ifb-engine-internal-context.hpp"
+#include "ifb-engine-internal-config.hpp"
+
+/**********************************************************************************/
+/* CONTEXT                                                                        */
+/**********************************************************************************/
+
+struct IFBEngineContext {
+    IFBEngineConfig config;
+    IFBPlatformApi  platform_api;
+    IFBMemory*      memory;
+};
 
 ifb_global IFBEngineContext _context;
 
@@ -12,7 +23,19 @@ ifb_api const ifb_b8
 ifb_engine::context_create(
     const IFBPlatformApi& platform_api_ref) {
 
-    return(false);
+    ifb_b8 result = true;
+
+    //set the platform api
+    _context.platform_api = platform_api_ref;
+
+    //get the config
+    ifb_engine::config_get_values(_context.config);
+
+    //reserve the memory
+    result &= ifb_engine::memory_reserve();
+
+
+    return(result);
 }
 
 ifb_api const ifb_b8
