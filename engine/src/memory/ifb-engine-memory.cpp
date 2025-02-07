@@ -8,6 +8,8 @@
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
+#define IFB_ENGINE_MEMORY_STACK_SIZE ifb_macro_size_kilobytes(IFB_ENGINE_CONFIG_MEMORY_STACK_SIZE_KB)
+
 struct IFBEngineMemory {
     ifb_byte*  stack_buffer_ptr;
     IFBMemory* base_memory_ptr;
@@ -31,17 +33,17 @@ ifb_engine::memory_reserve(
     const ifb_u64 memory_size_reservation = ifb_macro_size_gigabytes(engine_config_ref.memory_reservation_size_gb);
 
     //create the stack buffer
-    ifb_local ifb_byte memory_stack_buffer[memory_size_stack];
+    ifb_local ifb_byte memory_stack_buffer[IFB_ENGINE_MEMORY_STACK_SIZE];
 
     //create the memory
-    const IFBMemory* memory_ptr = ifb_memory::create(
+    IFBMemory* memory_ptr = ifb_memory::create(
         platform_api_ref,
         memory_stack_buffer,
         memory_size_stack);
     if (!memory_ptr) return(false);
 
     //reserve the memory    
-    if (!ifb_memory::reserve(_memory_core_handle,core_size_reservation)) {
+    if (!ifb_memory::reserve(memory_ptr,memory_size_reservation)) {
         return(false);
     }
 
@@ -82,10 +84,10 @@ ifb_engine::memory_get_info(
     if (!result) return(false);
 
     //get the memory info
-    memory_ref.reservation_size_total = ifb_memory::reservation_get_size_total     (memory_ref.base_memory_ptr);
-    memory_ref.reservation_size_used  = ifb_memory::reservation_get_size_committed (memory_ref.base_memory_ptr);
-    memory_ref.stack_size_total       = ifb_memory::stack_get_size_total           (memory_ref.base_memory_ptr);
-    memory_ref.stack_size_used        = ifb_memory::stack_get_size_used            (memory_ref.base_memory_ptr);
+    memory_info_ptr->reservation_size_total = ifb_memory::reservation_get_size_total     (memory_ref.base_memory_ptr);
+    memory_info_ptr->reservation_size_used  = ifb_memory::reservation_get_size_committed (memory_ref.base_memory_ptr);
+    memory_info_ptr->stack_size_total       = ifb_memory::stack_get_size_total           (memory_ref.base_memory_ptr);
+    memory_info_ptr->stack_size_used        = ifb_memory::stack_get_size_used            (memory_ref.base_memory_ptr);
 
     //we're done
     return(true);

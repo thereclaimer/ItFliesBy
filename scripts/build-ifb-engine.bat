@@ -40,6 +40,8 @@ if not exist %path_build%\lib mkdir %path_build%\lib
 @set cl_includes=     /I engine\include          ^
                       /I engine\internal         ^
                       /I engine\src              ^
+                      /I engine\src\context      ^
+                      /I engine\src\memory       ^
                       /I memory\include          ^
                       /I data-structures\include ^
                       /I common                  ^

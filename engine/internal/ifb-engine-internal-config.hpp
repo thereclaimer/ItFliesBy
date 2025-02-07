@@ -1,3 +1,5 @@
+#include <ifb.hpp>
+
 #ifndef IFB_ENGINE_INTERNAL_CONFIG_HPP
 #define IFB_ENGINE_INTERNAL_CONFIG_HPP
 

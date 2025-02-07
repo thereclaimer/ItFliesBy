@@ -2,6 +2,7 @@
 #define IFB_ENGINE_INTERNAL_CONTEXT_HPP
 
 #include "ifb-engine.hpp"
+#include "ifb-engine-internal-config.hpp"
 #include "ifb-engine-internal-memory.hpp"
 
 /**********************************************************************************/
