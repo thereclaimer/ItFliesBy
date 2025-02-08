@@ -7,19 +7,30 @@
 	],
 	"settings": {
 		"files.associations": {
-			"xlocale": "cpp",
-			"glew.c": "cpp",
-			"iterator": "cpp",
-			"initializer_list": "cpp",
-			"type_traits": "cpp",
-			"xstring": "cpp",
-			"xutility": "cpp",
-			"memory": "cpp",
 			"utility": "cpp",
+			"xutility": "cpp",
 			"compare": "cpp",
+			"format": "cpp",
+			"functional": "cpp",
+			"memory": "cpp",
+			"ratio": "cpp",
 			"tuple": "cpp",
+			"type_traits": "cpp",
 			"xmemory": "cpp",
-			"xtr1common": "cpp"
+			"xstring": "cpp",
+			"xtr1common": "cpp",
+			"ios": "cpp",
+			"xfacet": "cpp",
+			"xiosbase": "cpp",
+			"xlocale": "cpp",
+			"xlocinfo": "cpp",
+			"xlocnum": "cpp",
+			"xstddef": "cpp",
+			"atomic": "cpp",
+			"iterator": "cpp",
+			"glew.c": "cpp",
+			"initializer_list": "cpp",
+			"system_error": "cpp"
 		}
 	}
 }

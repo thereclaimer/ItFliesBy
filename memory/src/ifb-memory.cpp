@@ -2,13 +2,13 @@
 
 #include "ifb-memory-internal.hpp"
 
-#include "ifb-memory-arena-base.cpp"
-#include "ifb-memory-arena-block.cpp"
 #include "ifb-memory-arena-linear.cpp"
 #include "ifb-memory-reservation.cpp"
 #include "ifb-memory-stack.cpp"
+#include "ifb-memory-arena-base.cpp"
+#include "ifb-memory-arena-block.cpp"
 
-inline IFBMemory*
+ifb_internal IFBMemory*
 ifb_memory::create(
     const IFBPlatformApi& platform_api_ref,
     const ifb_byte*       stack_memory,
@@ -57,7 +57,7 @@ ifb_memory::create(
     return(memory_ptr);
 }
 
-inline const ifb_b8
+ifb_internal const ifb_b8
 ifb_memory::destroy(
     IFBMemory* memory_ptr) {
 

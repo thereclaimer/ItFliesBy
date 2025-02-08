@@ -7,7 +7,7 @@
 /* PUSH ABSOLUTE                                                                  */
 /**********************************************************************************/
 
-inline const ifb_ptr
+ifb_internal const ifb_ptr
 ifb_memory::stack_push(
           IFBMemory* memory_ptr,
     const ifb_u32    size) {
@@ -34,7 +34,7 @@ ifb_memory::stack_push(
     return(pointer);
 }
 
-inline const ifb_ptr
+ifb_internal const ifb_ptr
 ifb_memory::stack_push_aligned(
           IFBMemory* memory_ptr,
     const ifb_u32    size,
@@ -56,7 +56,7 @@ ifb_memory::stack_push_aligned(
 /* PUSH OFFSET                                                                    */
 /**********************************************************************************/
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::stack_push_offset(
           IFBMemory* memory_ptr,
     const ifb_u32    size) {
@@ -82,7 +82,7 @@ ifb_memory::stack_push_offset(
     return(position);
 }
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::stack_push_offset_aligned(
           IFBMemory* memory_ptr,
     const ifb_u32    size,
@@ -100,7 +100,7 @@ ifb_memory::stack_push_offset_aligned(
 /* PUSH RELATIVE                                                                  */
 /**********************************************************************************/
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::stack_push_relative(
           IFBMemory* memory_ptr,
     const ifb_ptr    reference, 
@@ -137,7 +137,7 @@ ifb_memory::stack_push_relative(
     return(relative_position);
 }   
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::stack_push_relative_aligned(
           IFBMemory* memory_ptr,
     const ifb_ptr    reference, 
@@ -157,7 +157,7 @@ ifb_memory::stack_push_relative_aligned(
 /* POINTERS                                                                       */
 /**********************************************************************************/
 
-inline const ifb_ptr
+ifb_internal const ifb_ptr
 ifb_memory::stack_get_pointer(
     const IFBMemory* memory_ptr,
     const ifb_u32    offset) {
@@ -187,7 +187,7 @@ ifb_memory::stack_get_pointer(
     return(pointer);
 }
 
-inline const ifb_ptr 
+ifb_internal const ifb_ptr 
 ifb_memory::stack_get_pointer_relative(
     const IFBMemory* memory_ptr,
     const ifb_u32    reference,
@@ -205,7 +205,7 @@ ifb_memory::stack_get_pointer_relative(
 /* SIZE                                                                           */
 /**********************************************************************************/
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::stack_get_size_total(
     const IFBMemory* memory_ptr) {
        
@@ -217,7 +217,7 @@ ifb_memory::stack_get_size_total(
     return(size_total);
 }
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::stack_get_size_free(
     const IFBMemory* memory_ptr) {
   
@@ -233,7 +233,7 @@ ifb_memory::stack_get_size_free(
     return(size_free);
 }
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::stack_get_size_used(
     const IFBMemory* memory_ptr) {
   
@@ -249,7 +249,7 @@ ifb_memory::stack_get_size_used(
 /* INTERNAL                                                                       */
 /**********************************************************************************/
 
-inline IFBMemoryArena*
+IFBMemoryArena*
 ifb_memory::stack_push_arena_base(
     IFBMemory* memory_ptr) {
 
@@ -262,7 +262,7 @@ ifb_memory::stack_push_arena_base(
     return(arena_ptr);
 }
 
-inline IFBMemoryLinearArena*
+IFBMemoryLinearArena*
 ifb_memory::stack_push_arena_linear(
     IFBMemory* memory_ptr) {
 
@@ -276,7 +276,7 @@ ifb_memory::stack_push_arena_linear(
 }
 
 
-inline IFBMemoryBlockArena*
+IFBMemoryBlockArena*
 ifb_memory::stack_push_arena_block(
     IFBMemory* memory_ptr) {
 
@@ -290,7 +290,7 @@ ifb_memory::stack_push_arena_block(
     return(block_arena_ptr);
 }
 
-inline IFBMemoryBlock*
+IFBMemoryBlock*
 ifb_memory::stack_push_arena_block_array(
           IFBMemory* memory_ptr,
     const ifb_u32    block_count) {

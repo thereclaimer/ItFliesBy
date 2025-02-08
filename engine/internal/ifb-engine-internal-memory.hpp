@@ -11,6 +11,13 @@
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
+#define IFB_ENGINE_MEMORY_STACK_SIZE ifb_macro_size_kilobytes(IFB_ENGINE_CONFIG_MEMORY_STACK_SIZE_KB)
+
+struct IFBEngineMemory {
+    ifb_byte*  stack_buffer_ptr;
+    IFBMemory* base_memory_ptr;
+};
+
 namespace ifb_engine {
 
     const ifb_b8          memory_reserve                (ifb_void);

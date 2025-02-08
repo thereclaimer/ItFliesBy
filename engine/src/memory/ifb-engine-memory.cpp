@@ -4,16 +4,6 @@
 #include "ifb-engine-internal-config.hpp"
 #include "ifb-engine-internal-context.hpp"
 
-/**********************************************************************************/
-/* MEMORY                                                                         */
-/**********************************************************************************/
-
-#define IFB_ENGINE_MEMORY_STACK_SIZE ifb_macro_size_kilobytes(IFB_ENGINE_CONFIG_MEMORY_STACK_SIZE_KB)
-
-struct IFBEngineMemory {
-    ifb_byte*  stack_buffer_ptr;
-    IFBMemory* base_memory_ptr;
-};
 
 /**********************************************************************************/
 /* RESERVE / RELEASE                                                              */
@@ -22,7 +12,7 @@ struct IFBEngineMemory {
 inline const ifb_b8
 ifb_engine::memory_reserve(
     ifb_void) {
-    
+#if 0
     //get context info
     const IFBPlatformApi&  platform_api_ref  = ifb_engine::context_get_platform_api();
     const IFBEngineConfig& engine_config_ref = ifb_engine::context_get_config();
@@ -53,12 +43,15 @@ ifb_engine::memory_reserve(
 
     //we're done
     return(true);
+#else
+    return(true);
+#endif
 }
 
 inline const ifb_b8
 ifb_engine::memory_release(
     ifb_void) {
-
+#if 0
     //get the memory
     IFBEngineMemory& memory_ref = ifb_engine::context_get_memory();
 
@@ -67,11 +60,17 @@ ifb_engine::memory_release(
 
     //we're done
     return(result);
+#else
+    return(true);
+#endif
+
 }
 
 inline const ifb_b8 
 ifb_engine::memory_get_info(
     IFBEngineMemoryInfo* memory_info_ptr) {
+
+#if 0
 
     //get the memory
     IFBEngineMemory& memory_ref = ifb_engine::context_get_memory();
@@ -91,11 +90,19 @@ ifb_engine::memory_get_info(
 
     //we're done
     return(true);
+
+#else
+
+    return(true);
+#endif
+
 }
 
 inline IFBMemoryArena*
 ifb_engine::memory_commit_arena_unmanaged(
     const ifb_u32 size_minimum) {
+
+#if 0
 
     //get the memory
     IFBEngineMemory& memory_ref = ifb_engine::context_get_memory();
@@ -113,11 +120,18 @@ ifb_engine::memory_commit_arena_unmanaged(
     
     //we're done
     return(arena_ptr);
+
+#else
+
+    return(NULL);
+#endif
+
 }
 
 inline IFBMemoryLinearArena*
 ifb_engine::memory_commit_arena_linear(
     const ifb_u32 size_minimum) {
+#if 0
 
     //get the memory
     IFBEngineMemory& memory_ref = ifb_engine::context_get_memory();
@@ -135,13 +149,19 @@ ifb_engine::memory_commit_arena_linear(
     
     //we're done
     return(linear_arena_ptr);
+    
+#else
+
+    return(NULL);
+#endif
+
 }
 
 inline IFBMemoryBlockArena*
 ifb_engine::memory_commit_arena_block(
     const ifb_u32 block_size_minimum,
     const ifb_u32 block_count) {
-
+#if 0
     //get the memory
     IFBEngineMemory& memory_ref = ifb_engine::context_get_memory();
 
@@ -159,4 +179,7 @@ ifb_engine::memory_commit_arena_block(
 
     //we're done
     return(block_arena_ptr);
+#else
+    return(NULL);
+#endif
 }

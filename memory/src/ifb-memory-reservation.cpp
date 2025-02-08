@@ -7,7 +7,7 @@
 /* RESERVE/RELEASE                                                                */
 /**********************************************************************************/
 
-inline const ifb_b8
+ifb_internal const ifb_b8
 ifb_memory::reserve(
           IFBMemory* memory_ptr,
     const ifb_u64    reservation_size_minimum) {
@@ -39,7 +39,7 @@ ifb_memory::reserve(
     return(true);
 }
 
-inline const ifb_b8
+ifb_internal const ifb_b8
 ifb_memory::release(
     IFBMemory* memory_ptr) {
 
@@ -66,7 +66,7 @@ ifb_memory::release(
 /* ALIGNMENT                                                                      */
 /**********************************************************************************/
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::reservation_size_align_to_page(
     const IFBMemory* memory_ptr,
     const ifb_u32    size) {
@@ -83,7 +83,7 @@ ifb_memory::reservation_size_align_to_page(
     return(size_aligned);
 }
  
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::reservation_size_align_to_granularity(
     const IFBMemory* memory_ptr,
     const ifb_u32    size) {
@@ -103,7 +103,7 @@ ifb_memory::reservation_size_align_to_granularity(
 /* PAGES                                                                          */
 /**********************************************************************************/
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::reservation_get_page_size(
     const IFBMemory* memory_ptr) {
 
@@ -117,7 +117,7 @@ ifb_memory::reservation_get_page_size(
     return(page_size);
 }
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::reservation_get_page_count_total(
     const IFBMemory* memory_ptr) {
 
@@ -131,7 +131,7 @@ ifb_memory::reservation_get_page_count_total(
     return(page_count);
 }
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::reservation_get_page_count_committed(
     const IFBMemory* memory_ptr) {
 
@@ -149,7 +149,7 @@ ifb_memory::reservation_get_page_count_committed(
 /* SIZE                                                                           */
 /**********************************************************************************/
 
-inline const ifb_u64
+ifb_internal const ifb_u64
 ifb_memory::reservation_get_size_total(
     const IFBMemory* memory_ptr) {
 
@@ -163,7 +163,7 @@ ifb_memory::reservation_get_size_total(
     return(total_size);
 }  
 
-inline const ifb_u64
+ifb_internal const ifb_u64
 ifb_memory::reservation_get_size_committed(
     const IFBMemory* memory_ptr) {
 
@@ -183,7 +183,7 @@ ifb_memory::reservation_get_size_committed(
 /* INTERNAL                                                                       */
 /**********************************************************************************/
 
-inline const ifb_ptr
+const ifb_ptr
 ifb_memory::reservation_get_page_start_next(
     const IFBMemory* memory_ptr) {
 
@@ -200,7 +200,7 @@ ifb_memory::reservation_get_page_start_next(
     return(page_start);
 }
 
-inline const ifb_ptr 
+const ifb_ptr 
 ifb_memory::reservation_get_page_start(
     const IFBMemory* memory_ptr,
     const ifb_u32    page_number) {
@@ -223,7 +223,7 @@ ifb_memory::reservation_get_page_start(
     return(page_start_pointer);
 }
 
-inline const ifb_b8
+const ifb_b8
 ifb_memory::reservation_page_commit(
     IFBMemory*           memory_ptr,
     IFBMemoryPageCommit& page_commit_ref) {

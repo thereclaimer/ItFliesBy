@@ -43,13 +43,15 @@ if not exist %path_build%\lib mkdir %path_build%\lib
                       /I engine\src\context      ^
                       /I engine\src\memory       ^
                       /I memory\include          ^
+                      /I memory\internal         ^
+                      /I memory\src         ^
                       /I data-structures\include ^
                       /I common                  ^
                       /I external                ^
                       /I math                    ^
                       /I %path_vcpkg_include%
 
-@set cl_source=       engine\src\ifb-engine.cpp
+@set cl_source=       engine\src\ifb-engine.cpp build\debug\lib\ItFliesBy.Memory.lib
 
 @set cl_link=         /link                                    ^
                       /LIBPATH:vcpkg_installed\x64-windows\lib ^
@@ -58,9 +60,7 @@ if not exist %path_build%\lib mkdir %path_build%\lib
 
 @set cl_libs=         imgui.lib                    ^
                       opengl32.lib                 ^
-                      glew32.lib                   ^
-                      ItFliesBy.Memory.lib         ^
-                      ItFliesBy.DataStructures.lib
+                      glew32.lib
 
 ::----------------------------------------------------------------
 :: BUILD

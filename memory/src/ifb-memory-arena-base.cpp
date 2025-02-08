@@ -6,7 +6,7 @@
 /* COMMIT                                                                         */
 /**********************************************************************************/
 
-inline IFBMemoryArena*
+ifb_internal IFBMemoryArena*
 ifb_memory::arena_commit(
           IFBMemory* memory_ptr,
     const ifb_u32    arena_size_minimum) {
@@ -45,7 +45,7 @@ ifb_memory::arena_commit(
 /* RESET                                                                          */
 /**********************************************************************************/
 
-inline const ifb_b8
+ifb_internal const ifb_b8
 ifb_memory::arena_reset(
     IFBMemoryArena* arena_ptr) {
 
@@ -73,7 +73,7 @@ ifb_memory::arena_reset(
 /* POINTERS                                                                       */
 /**********************************************************************************/
 
-inline const ifb_ptr
+ifb_internal const ifb_ptr
 ifb_memory::arena_get_pointer(
     const IFBMemoryArena* arena_ptr,
     const ifb_u32         offset) {
@@ -102,7 +102,7 @@ ifb_memory::arena_get_pointer(
 /* SIZE                                                                           */
 /**********************************************************************************/
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::arena_get_page_count(
     const IFBMemoryArena* arena_ptr) {
 
@@ -114,7 +114,7 @@ ifb_memory::arena_get_page_count(
     return(page_count);
 }
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::arena_get_page_start(
     const IFBMemoryArena* arena_ptr) {
 
@@ -126,7 +126,7 @@ ifb_memory::arena_get_page_start(
     return(page_start);
 }   
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::arena_get_size_total(
     const IFBMemoryArena* arena_ptr) {
 
@@ -142,7 +142,7 @@ ifb_memory::arena_get_size_total(
 /* INTERNAL                                                                       */
 /**********************************************************************************/
 
-inline const ifb_b8
+ifb_internal const ifb_b8
 ifb_memory::arena_list_add(
     IFBMemoryArenaList& arena_list_ref,
     IFBMemoryArena*     arena_base_ptr) {

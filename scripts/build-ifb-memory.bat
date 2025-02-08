@@ -36,12 +36,10 @@ if not exist %path_build%\lib mkdir %path_build%\lib
 :: COMPILER ARGUMENTS
 ::----------------------------------------------------------------
 
-@set cl_flags=      /Zi ^
-                    /MD ^
-                    /c
+@set cl_flags=      /c    ^
+                    /EHsc
 
-@set cl_output=     /Fo:%path_build%\obj\ItFliesBy.Memory.obj ^
-                    /Fd:%path_build%\bin\ItFliesBy.Memory.pdb
+@set cl_output=     /Fo:%path_build%\obj\ItFliesBy.Memory.obj
 
 @set cl_includes=   /I %path_memory_include%  ^
                     /I %path_memory_internal% ^
@@ -59,7 +57,7 @@ call cl.exe       ^
     %cl_flags%    ^
     %cl_output%   ^
     %cl_includes% ^
-    %cl_source%   ^
+    %cl_source%
 
 ::----------------------------------------------------------------
 :: LIB

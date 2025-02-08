@@ -6,7 +6,7 @@
 /* COMMIT                                                                         */
 /**********************************************************************************/
 
-inline IFBMemoryBlockArena*
+ifb_internal IFBMemoryBlockArena*
 block_arena_commit(
           IFBMemory* memory_ptr,
     const ifb_u32    block_size_minimum,
@@ -67,7 +67,7 @@ block_arena_commit(
 /* RESET                                                                          */
 /**********************************************************************************/
 
-inline ifb_void
+ifb_internal ifb_void
 ifb_memory::block_arena_reset(
     IFBMemoryBlockArena* block_arena_ptr) {
 
@@ -93,7 +93,7 @@ ifb_memory::block_arena_reset(
 /* RESERVE/RELEASE                                                                */
 /**********************************************************************************/
 
-inline const ifb_b8
+ifb_internal const ifb_b8
 ifb_memory::block_arena_block_reserve(
     IFBMemoryBlockArena* block_arena_ptr,
     ifb_u32&             block_index_ref) {
@@ -131,7 +131,7 @@ ifb_memory::block_arena_block_reserve(
     return(false);
 }
 
-inline const ifb_b8
+ifb_internal const ifb_b8
 ifb_memory::block_arena_block_reserve_index(
           IFBMemoryBlockArena* block_arena_ptr,
     const ifb_u32              block_index) {
@@ -159,7 +159,7 @@ ifb_memory::block_arena_block_reserve_index(
     return(true);
 }
 
-inline const ifb_b8
+ifb_internal const ifb_b8
 ifb_memory::block_arena_block_release(
           IFBMemoryBlockArena* block_arena_ptr,
     const ifb_u32              block_index) {
@@ -180,7 +180,7 @@ ifb_memory::block_arena_block_release(
     return(true);
 }
 
-inline const ifb_b8
+ifb_internal const ifb_b8
 ifb_memory::block_arena_block_is_free(
           IFBMemoryBlockArena* block_arena_ptr,
     const ifb_u32              block_index) {
@@ -205,7 +205,7 @@ ifb_memory::block_arena_block_is_free(
 /* POINTERS                                                                       */
 /**********************************************************************************/
 
-inline const ifb_ptr 
+ifb_internal const ifb_ptr 
 ifb_memory::block_get_pointer(
     const IFBMemoryBlockArena* block_arena_ptr,
     const ifb_u32              block_index,
@@ -236,7 +236,7 @@ ifb_memory::block_get_pointer(
 /* SIZE / COUNT                                                                   */
 /**********************************************************************************/
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::block_arena_get_size_total(
     const IFBMemoryBlockArena* block_arena_ptr) {
 
@@ -247,7 +247,7 @@ ifb_memory::block_arena_get_size_total(
     return(block_arena_ptr->page_commit.size);
 }
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::block_arena_get_block_size(
     const IFBMemoryBlockArena* block_arena_ptr) {
 
@@ -258,7 +258,7 @@ ifb_memory::block_arena_get_block_size(
     return(block_arena_ptr->block_size);
 }
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::block_arena_get_block_count_total(
     const IFBMemoryBlockArena* block_arena_ptr) {
 
@@ -269,7 +269,7 @@ ifb_memory::block_arena_get_block_count_total(
     return(block_arena_ptr->block_count);
 }
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::block_arena_get_block_count_used(
     const IFBMemoryBlockArena* block_arena_ptr) {
 
@@ -294,7 +294,7 @@ ifb_memory::block_arena_get_block_count_used(
     return(block_count_used);
 }
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::block_arena_get_block_count_free(
     const IFBMemoryBlockArena* block_arena_ptr) {
 

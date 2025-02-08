@@ -6,7 +6,7 @@
 /* COMMIT                                                                         */
 /**********************************************************************************/
 
-IFBMemoryLinearArena*
+ifb_internal IFBMemoryLinearArena*
 ifb_memory::linear_arena_commit(
           IFBMemory* memory_ptr,
     const ifb_u32    arena_size_minimum) {
@@ -47,7 +47,7 @@ ifb_memory::linear_arena_commit(
 /* SAVE POINT                                                                     */
 /**********************************************************************************/
 
-inline const ifb_ptr
+ifb_internal const ifb_ptr
 ifb_memory::linear_arena_save_point_set(
     IFBMemoryLinearArena* linear_arena_ptr) {
 
@@ -66,7 +66,7 @@ ifb_memory::linear_arena_save_point_set(
     return(save_point_ptr);
 }
 
-inline const ifb_ptr
+ifb_internal const ifb_ptr
 ifb_memory::linear_arena_save_point_clear(
     IFBMemoryLinearArena* linear_arena_ptr) {
 
@@ -85,7 +85,7 @@ ifb_memory::linear_arena_save_point_clear(
     return(save_point_ptr);
 }
 
-inline const ifb_ptr
+ifb_internal const ifb_ptr
 ifb_memory::linear_arena_save_point_get(
     IFBMemoryLinearArena* linear_arena_ptr) {
 
@@ -106,7 +106,7 @@ ifb_memory::linear_arena_save_point_get(
 /* RESET                                                                          */
 /**********************************************************************************/
 
-inline const ifb_ptr
+ifb_internal const ifb_ptr
 ifb_memory::linear_arena_reset(
     IFBMemoryLinearArena* linear_arena_ptr) {
 
@@ -125,7 +125,7 @@ ifb_memory::linear_arena_reset(
     return(position);    
 }
 
-inline const ifb_ptr
+ifb_internal const ifb_ptr
 ifb_memory::linear_arena_reset_to_save_point(
     IFBMemoryLinearArena* linear_arena_ptr) {
 
@@ -148,7 +148,7 @@ ifb_memory::linear_arena_reset_to_save_point(
 /* RESERVE/RELEASE                                                                */
 /**********************************************************************************/
 
-inline const ifb_ptr
+ifb_internal const ifb_ptr
 ifb_memory::linear_arena_bytes_reserve(
           IFBMemoryLinearArena* linear_arena_ptr,
     const ifb_u32               size) {
@@ -176,7 +176,7 @@ ifb_memory::linear_arena_bytes_reserve(
     return(reservation_ptr);
 }
 
-inline const ifb_ptr
+ifb_internal const ifb_ptr
 ifb_memory::linear_arena_bytes_release(
           IFBMemoryLinearArena* linear_arena_ptr,
     const ifb_u32               size) {
@@ -199,7 +199,7 @@ ifb_memory::linear_arena_bytes_release(
     return(pointer);
 }
 
-inline const ifb_ptr
+ifb_internal const ifb_ptr
 ifb_memory::linear_arena_bytes_reserve_aligned(
           IFBMemoryLinearArena* linear_arena_ptr,
     const ifb_u32               size, 
@@ -220,7 +220,7 @@ ifb_memory::linear_arena_bytes_reserve_aligned(
     return(reservation_ptr);
 }
 
-inline const ifb_ptr
+ifb_internal const ifb_ptr
 ifb_memory::linear_arena_bytes_release_aligned(
           IFBMemoryLinearArena* linear_arena_ptr,
     const ifb_u32               size, 
@@ -245,7 +245,7 @@ ifb_memory::linear_arena_bytes_release_aligned(
 /* SIZE                                                                           */
 /**********************************************************************************/
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::linear_arena_get_size_total(
     const IFBMemoryLinearArena* linear_arena_ptr) {
 
@@ -257,7 +257,7 @@ ifb_memory::linear_arena_get_size_total(
     return(arena_size);
 }
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::linear_arena_get_size_used(
     const IFBMemoryLinearArena* linear_arena_ptr) {
 
@@ -269,7 +269,7 @@ ifb_memory::linear_arena_get_size_used(
     return(position);
 }
 
-inline const ifb_u32
+ifb_internal const ifb_u32
 ifb_memory::linear_arena_get_size_free(
     const IFBMemoryLinearArena* linear_arena_ptr) {
 
