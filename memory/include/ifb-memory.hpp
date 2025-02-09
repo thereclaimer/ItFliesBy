@@ -28,7 +28,7 @@ typedef ifb_u32 IFBMemoryArenaType;
 
 namespace ifb_memory {
 
-    ifb_internal IFBMemory*
+    IFBMemory*
     create(
         const IFBPlatformApi& platform_api_ref,
         const ifb_byte*       stack_memory,

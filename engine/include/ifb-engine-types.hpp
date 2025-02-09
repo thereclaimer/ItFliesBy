@@ -3,6 +3,12 @@
 
 #include <ifb.hpp>
 
+#ifdef IFB_ENGINE_INTERNAL
+    #define ifb_engine_api __declspec(dllexport)
+#else
+    #define ifb_engine_api __declspec(dllimport)
+#endif
+
 /**********************************************************************************/
 /* PUBLIC TYPES                                                                   */
 /**********************************************************************************/

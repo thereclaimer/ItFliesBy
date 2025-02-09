@@ -10,7 +10,7 @@ ifb_global IFBEngineContext _context;
 /* CREATE/DESTROY                                                                 */
 /**********************************************************************************/
 
-ifb_api const ifb_b8
+ifb_engine_api const ifb_b8
 ifb_engine::context_create(
     const IFBPlatformApi& platform_api_ref) {
 
@@ -33,7 +33,7 @@ ifb_engine::context_create(
     return(result);
 }
 
-ifb_api const ifb_b8
+ifb_engine_api const ifb_b8
 ifb_engine::context_destroy(
     ifb_void) {
 
@@ -48,14 +48,14 @@ ifb_engine::context_destroy(
 /* STARTUP/SHUTDOWN                                                               */
 /**********************************************************************************/
 
-ifb_api const ifb_b8
+ifb_engine_api const ifb_b8
 ifb_engine::context_startup(
     ifb_void) {
 
     return(false);
 }
 
-ifb_api const ifb_b8
+ifb_engine_api const ifb_b8
 ifb_engine::context_shutdown(
     ifb_void) {
 
@@ -66,7 +66,7 @@ ifb_engine::context_shutdown(
 /* RENDERING                                                                      */
 /**********************************************************************************/
 
-ifb_api const ifb_b8
+ifb_engine_api const ifb_b8
 ifb_engine::context_render_frame(
     ifb_void) {
 

@@ -8,7 +8,7 @@
 #include "ifb-memory-arena-base.cpp"
 #include "ifb-memory-arena-block.cpp"
 
-ifb_internal IFBMemory*
+IFBMemory*
 ifb_memory::create(
     const IFBPlatformApi& platform_api_ref,
     const ifb_byte*       stack_memory,
