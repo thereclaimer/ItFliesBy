@@ -7,7 +7,7 @@
 /* RESERVE/RELEASE                                                                */
 /**********************************************************************************/
 
-ifb_internal const ifb_b8
+ifb_internal inline const ifb_b8
 ifb_memory::reserve(
           IFBMemory* memory_ptr,
     const ifb_u64    reservation_size_minimum) {
@@ -19,10 +19,10 @@ ifb_memory::reserve(
     IFBMemoryReservation& reservation_ref = memory_ptr->reservation;
 
     //get platform memory reservation
-    const ifb_u32 page_size              = ifb_memory::platform_page_size();
-    const ifb_u32 allocation_granularity = ifb_memory::platform_allocation_granularity();
+    const ifb_u32 page_size              = ifb_platform::system_page_size();
+    const ifb_u32 allocation_granularity = ifb_platform::system_allocation_granularity();
     const ifb_u64 reservation_size       = ifb_macro_align_a_to_b(reservation_size_minimum,(ifb_u64)allocation_granularity);
-    const ifb_ptr reservation_ptr        = ifb_memory::platform_memory_reserve(reservation_size);
+    const ifb_ptr reservation_ptr        = ifb_platform::memory_reserve(reservation_size);
 
     //sanity check
     if (!reservation_ptr) return(false);
@@ -39,7 +39,7 @@ ifb_memory::reserve(
     return(true);
 }
 
-ifb_internal const ifb_b8
+ifb_internal inline const ifb_b8
 ifb_memory::release(
     IFBMemory* memory_ptr) {
 
@@ -54,7 +54,7 @@ ifb_memory::release(
     const ifb_u64 reservation_size  = reservation_ref.size;          
 
     //tell the platform to release the memory
-    const ifb_b8 result = ifb_memory::platform_memory_release(
+    const ifb_b8 result = ifb_platform::memory_release(
         reservation_start,
         reservation_size);
 
@@ -66,7 +66,7 @@ ifb_memory::release(
 /* ALIGNMENT                                                                      */
 /**********************************************************************************/
 
-ifb_internal const ifb_u32
+ifb_internal inline const ifb_u32
 ifb_memory::reservation_size_align_to_page(
     const IFBMemory* memory_ptr,
     const ifb_u32    size) {
@@ -83,7 +83,7 @@ ifb_memory::reservation_size_align_to_page(
     return(size_aligned);
 }
  
-ifb_internal const ifb_u32
+ifb_internal inline const ifb_u32
 ifb_memory::reservation_size_align_to_granularity(
     const IFBMemory* memory_ptr,
     const ifb_u32    size) {
@@ -103,7 +103,7 @@ ifb_memory::reservation_size_align_to_granularity(
 /* PAGES                                                                          */
 /**********************************************************************************/
 
-ifb_internal const ifb_u32
+ifb_internal inline const ifb_u32
 ifb_memory::reservation_get_page_size(
     const IFBMemory* memory_ptr) {
 
@@ -117,7 +117,7 @@ ifb_memory::reservation_get_page_size(
     return(page_size);
 }
 
-ifb_internal const ifb_u32
+ifb_internal inline const ifb_u32
 ifb_memory::reservation_get_page_count_total(
     const IFBMemory* memory_ptr) {
 
@@ -131,7 +131,7 @@ ifb_memory::reservation_get_page_count_total(
     return(page_count);
 }
 
-ifb_internal const ifb_u32
+ifb_internal inline const ifb_u32
 ifb_memory::reservation_get_page_count_committed(
     const IFBMemory* memory_ptr) {
 
@@ -149,7 +149,7 @@ ifb_memory::reservation_get_page_count_committed(
 /* SIZE                                                                           */
 /**********************************************************************************/
 
-ifb_internal const ifb_u64
+ifb_internal inline const ifb_u64
 ifb_memory::reservation_get_size_total(
     const IFBMemory* memory_ptr) {
 
@@ -163,7 +163,7 @@ ifb_memory::reservation_get_size_total(
     return(total_size);
 }  
 
-ifb_internal const ifb_u64
+ifb_internal inline const ifb_u64
 ifb_memory::reservation_get_size_committed(
     const IFBMemory* memory_ptr) {
 
@@ -252,7 +252,7 @@ ifb_memory::reservation_page_commit(
     const ifb_ptr page_commit_start = ifb_memory::reservation_get_page_start_next(memory_ptr);
 
     //do the commit
-    const ifb_ptr page_commit_result = ifb_memory::platform_memory_commit(
+    const ifb_ptr page_commit_result = ifb_platform::memory_commit(
         page_commit_start,
         page_commit_size);
 

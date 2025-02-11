@@ -26,6 +26,9 @@
 				"$msCompile"
 			],
 			"group": "build",
+			"dependsOn":[
+				"Build IFB Memory"
+			]
 		},
 		{
 			"label":   "Build IFB Memory",

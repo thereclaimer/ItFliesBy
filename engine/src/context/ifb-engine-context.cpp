@@ -17,19 +17,12 @@ ifb_engine::context_create(
     ifb_b8 result = true;
 
     //set the platform api
-    _context.platform_api = platform_api_ref;
+    ifb_platform::set_api(platform_api_ref);
 
-    // //get the config
-    // ifb_engine::config_get_values(_context.config);
+    //get the config
+    ifb_engine::config_get_values(_context.config);
 
-    // //reserve the memory
-    // result &= ifb_engine::memory_reserve();
-
-    const ifb_u32 stack_size = ifb_macro_size_kilobytes(64);
-    ifb_local ifb_byte stack_memory[stack_size];
-
-    IFBMemory* memory = ifb_memory::create(platform_api_ref,stack_memory,stack_size);
-
+    //we're done
     return(result);
 }
 

@@ -12,9 +12,8 @@
 inline const ifb_b8
 ifb_engine::memory_reserve(
     ifb_void) {
-#if 0
+
     //get context info
-    const IFBPlatformApi&  platform_api_ref  = ifb_engine::context_get_platform_api();
     const IFBEngineConfig& engine_config_ref = ifb_engine::context_get_config();
     IFBEngineMemory&       engine_memory_ref = ifb_engine::context_get_memory();
 
@@ -27,7 +26,6 @@ ifb_engine::memory_reserve(
 
     //create the memory
     IFBMemory* memory_ptr = ifb_memory::create(
-        platform_api_ref,
         memory_stack_buffer,
         memory_size_stack);
     if (!memory_ptr) return(false);
@@ -43,9 +41,6 @@ ifb_engine::memory_reserve(
 
     //we're done
     return(true);
-#else
-    return(true);
-#endif
 }
 
 inline const ifb_b8

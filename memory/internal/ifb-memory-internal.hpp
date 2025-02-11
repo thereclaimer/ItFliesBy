@@ -4,17 +4,17 @@
 #include "ifb-memory.hpp"
 
 /**********************************************************************************/
-/* PLATFORM                                                                       */
+/* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-namespace ifb_memory {
+struct IFBMemoryContext;
+struct IFBMemoryReservation;
+struct IFBMemoryArena;
+struct IFBMemoryStack;
+struct IFBMemoryLinearArena;
+struct IFBMemoryBlockArena;
+struct IFBMemoryBlock;
 
-    ifb_global funcptr_ifb_platform_memory_reserve                platform_memory_reserve;
-    ifb_global funcptr_ifb_platform_memory_release                platform_memory_release;
-    ifb_global funcptr_ifb_platform_memory_commit                 platform_memory_commit;
-    ifb_global funcptr_ifb_platform_system_page_size              platform_page_size;
-    ifb_global funcptr_ifb_platform_system_allocation_granularity platform_allocation_granularity;
-};
 
 /**********************************************************************************/
 /* STACK                                                                          */
@@ -28,10 +28,10 @@ struct IFBMemoryStack {
 
 namespace ifb_memory {
     
-    IFBMemoryArena*       stack_push_arena_base        (IFBMemory* memory_ptr);
-    IFBMemoryLinearArena* stack_push_arena_linear      (IFBMemory* memory_ptr);
-    IFBMemoryBlockArena*  stack_push_arena_block       (IFBMemory* memory_ptr);
-    IFBMemoryBlock*       stack_push_arena_block_array (IFBMemory* memory_ptr, const ifb_u32 block_count);
+    IFBMemoryArena*       stack_push_arena_base        (IFBMemoryContext* memory_ptr);
+    IFBMemoryLinearArena* stack_push_arena_linear      (IFBMemoryContext* memory_ptr);
+    IFBMemoryBlockArena*  stack_push_arena_block       (IFBMemoryContext* memory_ptr);
+    IFBMemoryBlock*       stack_push_arena_block_array (IFBMemoryContext* memory_ptr, const ifb_u32 block_count);
 };
 
 /**********************************************************************************/
@@ -39,19 +39,17 @@ namespace ifb_memory {
 /**********************************************************************************/
 
 struct IFBMemoryReservation {
-    ifb_address start;
-    ifb_u64     size;
-    ifb_u32     granularity;
-    ifb_u32     page_size;
-    ifb_u32     pages_total;
-    ifb_u32     pages_committed;
+    IFBMemoryReservation* next;
+    ifb_address           start;
+    ifb_u32               pages_total;
+    ifb_u32               pages_committed;
+    IFBMemoryArenaList    arena_list;
 };
 
-struct IFBMemoryPageCommit {
-    ifb_address   start;
-    ifb_u32       size;
-    ifb_u32       page_number;
-    ifb_u32       page_count;
+struct IFBMemoryReservationList {
+    IFBMemoryReservation* first;
+    IFBMemoryReservation* last;
+    ifb_u32               count;
 };
 
 namespace ifb_memory {
@@ -59,23 +57,20 @@ namespace ifb_memory {
     const ifb_ptr reservation_get_page_start_next (const IFBMemory* memory_ptr);
     const ifb_ptr reservation_get_page_start      (const IFBMemory* memory_ptr, const ifb_u32 page_number);
     
-    const ifb_b8  reservation_page_commit (IFBMemory* memory_ptr, IFBMemoryPageCommit& page_commit_ref);
+    const ifb_address 
+    reservation_commit_pages(
+        IFBMemoryReservation* reservation_ptr)
 };
 
 /**********************************************************************************/
 /* ARENA BASE                                                                     */
 /**********************************************************************************/
 
-enum IFBMemoryArenaType_ {
-    IFBMemoryArenaType_Base   = 0,
-    IFBMemoryArenaType_Linear = 1,
-    IFBMemoryArenaType_Block  = 2
-};
-
 struct IFBMemoryArena {
-    IFBMemoryArena*     next;
-    IFBMemoryPageCommit page_commit;
-    IFBMemoryArenaType  type;    
+    IFBMemoryArena*    next;
+    IFBMemoryArenaType type;    
+    ifb_u32            page_start;
+    ifb_u32            page_count;
 };
 
 struct IFBMemoryArenaList {
@@ -113,13 +108,25 @@ struct IFBMemoryBlockArena : IFBMemoryArena  {
 };
 
 /**********************************************************************************/
-/* MEMORY                                                                         */
+/* CONTEXT                                                                        */
 /**********************************************************************************/
 
-struct IFBMemory {
-    IFBMemoryStack       stack;
-    IFBMemoryReservation reservation;
-    IFBMemoryArenaList   arena_list;
+struct IFBMemoryContext {
+    IFBMemoryStack           stack;
+    IFBMemorySystemInfo      system_info;
+    IFBMemoryReservationList reservation_list;
 };
+
+namespace ifb_memory {
+
+    ifb_global IFBMemoryContext* _context_ptr;
+
+    inline IFBMemoryContext*         context();
+    inline IFBMemoryStack&           context_get_stack()            { return(_context_ptr->stack);       }
+    inline IFBMemorySystemInfo&      context_get_system_info()      { return(_context_ptr->system_info); }
+    inline IFBMemoryReservationList& context_get_reservation_list() { return(_context_ptr->reservation_list); } 
+};
+
+#define ifb_memory_macro_assert_context() ifb_macro_assert(ifb_memory::context())
 
 #endif //IFB_MEMORY_INTERNAL_HPP
