@@ -16,13 +16,14 @@ enum IFBMemoryArenaType_ {
 };
 typedef ifb_u32 IFBMemoryArenaType;
 
-
 //handles
 struct IFBMemoryHandle { ifb_u32 stack_position; };
 struct IFBMemoryReservationHandle : IFBMemoryHandle { };
 struct IFBMemoryArenaHandle       : IFBMemoryHandle { };
 struct IFBMemoryLinearArenaHandle : IFBMemoryHandle { };
 struct IFBMemoryBlockArenaHandle  : IFBMemoryHandle { };
+
+#define IFB_MEMORY_HANDLE_INVALID 0
 
 /**********************************************************************************/
 /* CONTEXT                                                                        */
@@ -50,7 +51,6 @@ namespace ifb_memory {
 struct IFBMemoryStackInfo {
     ifb_u32 size_total;
     ifb_u32 size_used;
-    ifb_u32 size_free;
 };
 
 namespace ifb_memory {
@@ -75,6 +75,7 @@ struct IFBMemoryReservationInfo {
     ifb_u32 page_count_used;
     ifb_u32 size_total;
     ifb_u32 size_used;
+    ifb_u32 arena_count;
 };
 
 namespace ifb_memory {
@@ -82,6 +83,11 @@ namespace ifb_memory {
     //reserve/release
     inline const IFBMemoryReservationHandle reserve_memory (const ifb_u64                    size_minimum);
     inline const ifb_b8                     release_memory (const IFBMemoryReservationHandle reservation_handle);
+
+    //arena commit
+    inline const IFBMemoryArenaHandle       reservation_commit_arena        (const IFBMemoryReservationHandle reservation_handle, const ifb_u32 arena_size_minimum);
+    inline const IFBMemoryLinearArenaHandle reservation_commit_linear_arena (const IFBMemoryReservationHandle reservation_handle, const ifb_u32 arena_size_minimum);
+    inline const IFBMemoryBlockArenaHandle  reservation_commit_block_arena  (const IFBMemoryReservationHandle reservation_handle, const ifb_u32 block_size_minimum, const ifb_u32 block_count);
 
     //info
     inline const ifb_b8
@@ -95,18 +101,14 @@ namespace ifb_memory {
 /**********************************************************************************/
 
 struct IFBMemoryArenaInfo {
-    ifb_u32 page_start;
-    ifb_u32 page_count;
-    ifb_u32 size_total;
+    IFBMemoryReservationHandle reservation_handle;
+    IFBMemoryArenaHandle       arena_handle;
+    ifb_u32                    page_start;
+    ifb_u32                    page_count;
+    ifb_u32                    size_total;
 };
 
 namespace ifb_memory {
-
-    //commit
-    inline const IFBMemoryArenaHandle
-    arena_commit(
-        const IFBMemoryReservationHandle reservation_handle,
-        const ifb_u32                    arena_size_minimum);
 
     //pointers
     inline const ifb_ptr arena_get_pointer (const IFBMemoryArenaHandle arena_handle, const ifb_u32 offset);
@@ -117,26 +119,25 @@ namespace ifb_memory {
 /* ARENA - LINEAR                                                                 */
 /**********************************************************************************/
 
-struct IFBMemoryLinearArenaInfo : IFBMemoryArenaInfo {
-    ifb_u32 position;
-    ifb_u32 save_point;
+struct IFBMemoryLinearArenaInfo {
+    IFBMemoryReservationHandle reservation_handle;
+    IFBMemoryLinearArenaHandle linear_arena_handle;
+    ifb_u32                    page_start;
+    ifb_u32                    page_count;
+    ifb_u32                    size_total;
+    ifb_u32                    position;
+    ifb_u32                    save_point;
 };
 
 namespace ifb_memory {
-
-    //commit
-    inline const IFBMemoryLinearArenaHandle
-    linear_arena_commit(
-        const IFBMemoryReservationHandle reservation_handle,
-        const ifb_u32                    arena_size_minimum);
 
     //save point
     inline const ifb_ptr linear_arena_set_save_point      (const IFBMemoryLinearArenaHandle linear_arena_handle);
     inline const ifb_ptr linear_arena_clear_save_point    (const IFBMemoryLinearArenaHandle linear_arena_handle);
     
     //reset
-    inline const ifb_ptr linear_arena_reset               (const IFBMemoryLinearArenaHandle linear_arena_handle);
-    inline const ifb_ptr linear_arena_reset_to_save_point (const IFBMemoryLinearArenaHandle linear_arena_handle);
+    inline const ifb_b8  linear_arena_reset               (const IFBMemoryLinearArenaHandle linear_arena_handle);
+    inline const ifb_b8  linear_arena_reset_to_save_point (const IFBMemoryLinearArenaHandle linear_arena_handle);
 
     //reserve/release    
     inline const ifb_ptr linear_arena_reserve_bytes       (const IFBMemoryLinearArenaHandle linear_arena_handle, const ifb_u32 size, const ifb_u32 alignment = 0);
@@ -150,20 +151,19 @@ namespace ifb_memory {
 /* ARENA - BLOCK                                                                  */
 /**********************************************************************************/
 
-struct IFBMemoryBlockArenaInfo : IFBMemoryArenaInfo {
-    ifb_u32 block_size;
-    ifb_u32 block_count_total;
-    ifb_u32 block_count_free;
+struct IFBMemoryBlockArenaInfo {
+    IFBMemoryReservationHandle reservation_handle;
+    IFBMemoryBlockArenaHandle  block_arena_handle;
+    ifb_u32                    page_start;
+    ifb_u32                    page_count;
+    ifb_u32                    size_total;
+    ifb_u32                    block_size;
+    ifb_u32                    block_count_total;
+    ifb_u32                    block_count_free;
 };
 
 namespace ifb_memory {
 
-    inline const IFBMemoryBlockArenaHandle
-    block_arena_commit(
-        const ifb_u32 block_size_minimum,
-        const ifb_u32 block_count);
-
-    //reset
     inline ifb_void      block_arena_reset               (const IFBMemoryBlockArenaHandle block_arena_handle);
 
     //reserve/release

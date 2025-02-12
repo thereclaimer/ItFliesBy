@@ -7,13 +7,12 @@
 /* RESERVE/RELEASE                                                                */
 /**********************************************************************************/
 
-ifb_internal inline const ifb_b8
-ifb_memory::reserve(
-          IFBMemory* memory_ptr,
-    const ifb_u64    reservation_size_minimum) {
+ifb_internal inline const IFBMemoryReservationHandle
+ifb_memory::reserve_memory(
+    const ifb_u64 size_minimum) {
 
-    //sanity check
-    ifb_macro_assert(memory_ptr);
+    //get the context
+    IFBMemoryContext* context_ptr = ifb_memory::context();
 
     //cache reservation
     IFBMemoryReservation& reservation_ref = memory_ptr->reservation;
