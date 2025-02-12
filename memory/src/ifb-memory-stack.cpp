@@ -4,17 +4,13 @@
 #include "ifb-memory-internal.hpp"
 
 /**********************************************************************************/
-/* PUSH ABSOLUTE                                                                  */
+/* PUSH                                                                           */
 /**********************************************************************************/
 
-ifb_internal inline const IFBMemoryHandle
+ifb_internal inline const ifb_u32
 ifb_memory::stack_push(
     const ifb_u32 size,
     const ifb_u32 alignment) {
-
-    //create the handle
-    IFBMemoryHandle handle;
-    handle.stack_position = IFB_MEMORY_HANDLE_INVALID;
 
     //cache the stack
     IFBMemoryStack& stack_ref = ifb_memory::context_get_stack();
@@ -24,16 +20,16 @@ ifb_memory::stack_push(
 
     //make sure we can fit the push
     const ifb_u32 new_position = stack_ref.position + size_aligned; 
-    if (new_position >= stack_ref.size) return(handle);
+    if (new_position >= stack_ref.size) return(0);
 
-    //update the handle
-    handle.stack_position = stack_ref.position;
+    //get the current position as the offset
+    const ifb_u32 offset = stack_ref.position;
 
     //update the stack position
     stack_ref.position = new_position;
 
     //we're done
-    return(handle);
+    return(offset);
 }
 
 /**********************************************************************************/
@@ -42,7 +38,7 @@ ifb_memory::stack_push(
 
 ifb_internal inline const ifb_ptr
 ifb_memory::stack_get_pointer(
-    const IFBMemoryHandle memory_handle) {
+    const ifb_u32 offset) {
 
     //cache the stack
     IFBMemoryStack& stack_ref = ifb_memory::context_get_stack();

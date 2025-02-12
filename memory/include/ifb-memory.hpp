@@ -17,7 +17,7 @@ enum IFBMemoryArenaType_ {
 typedef ifb_u32 IFBMemoryArenaType;
 
 //handles
-struct IFBMemoryHandle { ifb_u32 stack_position; };
+struct IFBMemoryHandle { ifb_u32 offset; };
 struct IFBMemoryReservationHandle : IFBMemoryHandle { };
 struct IFBMemoryArenaHandle       : IFBMemoryHandle { };
 struct IFBMemoryLinearArenaHandle : IFBMemoryHandle { };
@@ -28,7 +28,7 @@ struct IFBMemoryBlockArenaHandle  : IFBMemoryHandle { };
 /**********************************************************************************/
 /* CONTEXT                                                                        */
 /**********************************************************************************/
-
+ 
 struct IFBMemorySystemInfo {
     ifb_u32 page_size;
     ifb_u32 granularity;
@@ -42,6 +42,11 @@ namespace ifb_memory {
 
     //system info
     inline const ifb_b8 context_get_system_info (IFBMemorySystemInfo* system_info);
+
+    inline const ifb_u32 context_align_size_to_page        (const ifb_u32 size);
+    inline const ifb_u32 context_align_size_to_granularity (const ifb_u32 size);
+    inline const ifb_u64 context_get_size_from_page_count  (const ifb_u32 page_count);
+    inline const ifb_u32 context_get_page_count_from_size  (const ifb_u64 size);
 };
 
 /**********************************************************************************/
@@ -56,15 +61,16 @@ struct IFBMemoryStackInfo {
 namespace ifb_memory {
 
     //push
-    inline const IFBMemoryHandle stack_push (const ifb_u32 size, const ifb_u32 alignment = 0);
+    inline const ifb_u32 stack_push         (const ifb_u32 size, const ifb_u32 alignment = 0);
 
     //pointers/info
     inline const ifb_ptr stack_get_pointer  (const IFBMemoryHandle memory_handle);
     inline const ifb_b8  stack_get_info     (IFBMemoryStackInfo* stack_info_ptr);
 };
 
-#define ifb_memory_macro_stack_push_type(type)     ifb_memory::stack_push(sizeof(type))
-#define ifb_memory_macro_stack_push_struct(struct) ifb_memory::stack_push(sizeof(struct), alignof(struct))
+#define ifb_memory_macro_stack_push_type(type)                      ifb_memory::stack_push(sizeof(type))
+#define ifb_memory_macro_stack_push_struct(struct)                  ifb_memory::stack_push(sizeof(struct), alignof(struct))
+#define ifb_memory_macro_stack_get_type_pointer(offset,type) (type*)ifb_memory::stack_get_pointer(offset)      
 
 /**********************************************************************************/
 /* RESERVATION                                                                    */
