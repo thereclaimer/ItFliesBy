@@ -56,16 +56,12 @@ ifb_memory::arena_get_info(
     //sanity check
     if (!arena_info_ptr) return(false);
 
-    //calculate the size
-    const ifb_u32 page_count = arena_ptr->page_count; 
-    const ifb_u32 arena_size = ifb_memory::context_get_size_from_page_count(page_count);
-
     //set the info
     arena_info_ptr->reservation_handle.offset = arena_ptr->reservation->stack_offset;
     arena_info_ptr->arena_handle.offset       = arena_ptr->stack_position;
     arena_info_ptr->page_start                = arena_ptr->page_start;
     arena_info_ptr->page_count                = arena_ptr->page_count;
-    arena_info_ptr->size_total                = arena_size;
+    arena_info_ptr->size_total                = arena_ptr->size_total;
 
     //we're done
     return(true);

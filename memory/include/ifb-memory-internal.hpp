@@ -29,25 +29,6 @@ struct IFBMemoryStack {
 };
 
 /**********************************************************************************/
-/* RESERVATION                                                                    */
-/**********************************************************************************/
-
-struct IFBMemoryReservation {
-    IFBMemoryReservation* next;
-    ifb_address           start;
-    ifb_u32               stack_offset;
-    ifb_u32               page_count_total;
-    ifb_u32               page_count_committed;
-    IFBMemoryArenaList    arena_list;
-};
-
-struct IFBMemoryReservationList {
-    IFBMemoryReservation* first;
-    IFBMemoryReservation* last;
-    ifb_u32               count;
-};
-
-/**********************************************************************************/
 /* ARENA BASE                                                                     */
 /**********************************************************************************/
 
@@ -85,6 +66,25 @@ struct IFBMemoryBlockArena : IFBMemoryArena  {
     ifb_address* block_address_array;
     ifb_u32      block_count;
     ifb_u32      block_size;
+};
+
+/**********************************************************************************/
+/* RESERVATION                                                                    */
+/**********************************************************************************/
+
+struct IFBMemoryReservation {
+    IFBMemoryReservation* next;
+    ifb_address           start;
+    ifb_u32               stack_offset;
+    ifb_u32               page_count_total;
+    ifb_u32               page_count_committed;
+    IFBMemoryArenaList    arena_list;
+};
+
+struct IFBMemoryReservationList {
+    IFBMemoryReservation* first;
+    IFBMemoryReservation* last;
+    ifb_u32               count;
 };
 
 /**********************************************************************************/

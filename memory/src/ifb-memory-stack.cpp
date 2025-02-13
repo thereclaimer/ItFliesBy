@@ -50,7 +50,7 @@ ifb_memory::stack_get_pointer(
 
     //calculate the address
     const ifb_address address = offset_valid
-        ? stack_ref.start + memory_handle.stack_position;
+        ? stack_ref.start + offset
         : 0;
 
     //get the pointer

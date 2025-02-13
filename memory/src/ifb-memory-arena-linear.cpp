@@ -28,7 +28,7 @@ ifb_memory::linear_arena_save_point_set(
 
 ifb_internal inline ifb_void
 ifb_memory::linear_arena_save_point_clear(
-    IFBMemoryLinearArena* linear_arena_ptr) {
+    const IFBMemoryLinearArenaHandle linear_arena_handle) {
 
     //get the pointer
     IFBMemoryLinearArena* linear_arena_ptr = ifb_memory::linear_arena_handle_to_pointer(linear_arena_handle);
@@ -43,7 +43,7 @@ ifb_memory::linear_arena_save_point_clear(
 
 ifb_internal inline ifb_void
 ifb_memory::linear_arena_reset_to_start(
-    IFBMemoryLinearArena* linear_arena_ptr) {
+    const IFBMemoryLinearArenaHandle linear_arena_handle) {
 
     //get the pointer
     IFBMemoryLinearArena* linear_arena_ptr = ifb_memory::linear_arena_handle_to_pointer(linear_arena_handle);
@@ -54,7 +54,7 @@ ifb_memory::linear_arena_reset_to_start(
 
 ifb_internal inline ifb_void
 ifb_memory::linear_arena_reset_to_save_point(
-    IFBMemoryLinearArena* linear_arena_ptr) {
+    const IFBMemoryLinearArenaHandle linear_arena_handle) {
     
     //get the pointer
     IFBMemoryLinearArena* linear_arena_ptr = ifb_memory::linear_arena_handle_to_pointer(linear_arena_handle);
@@ -202,7 +202,7 @@ ifb_memory::linear_arena_get_pointer_at_offset(
 
     //get the pointer at the position, if its within the arena
     const ifb_ptr offset_pointer = offset_address < arena_end
-        ? (ifb_ptr)offset_address;
+        ? (ifb_ptr)offset_address
         : NULL;
 
     //we're done
@@ -252,7 +252,7 @@ ifb_memory::linear_arena_get_pointer_at_save_point(
     const ifb_ptr save_point_ptr = (ifb_ptr)save_point_address;
 
     //we're done
-    return(save_point_address);
+    return(save_point_ptr);
 }
 
 ifb_internal inline const ifb_ptr 
@@ -268,6 +268,34 @@ ifb_memory::linear_arena_get_pointer_at_start(
 
     //we're done
     return(pointer);
+}
+
+/**********************************************************************************/
+/* INFO                                                                           */
+/**********************************************************************************/
+
+ifb_internal inline const ifb_b8 
+ifb_memory::linear_arena_get_info(
+    const IFBMemoryLinearArenaHandle linear_arena_handle,
+          IFBMemoryLinearArenaInfo*  linear_arena_info_ptr) {
+
+    //get the arena pointer
+    IFBMemoryLinearArena* linear_arena_ptr = ifb_memory::linear_arena_handle_to_pointer(linear_arena_handle);
+
+    //sanity check
+    if (!linear_arena_info_ptr) return(false);
+
+    //set the arena info
+    linear_arena_info_ptr->reservation_handle.offset  = linear_arena_ptr->reservation->stack_offset;
+    linear_arena_info_ptr->linear_arena_handle.offset = linear_arena_ptr->stack_position;
+    linear_arena_info_ptr->page_start                 = linear_arena_ptr->page_start;
+    linear_arena_info_ptr->page_count                 = linear_arena_ptr->page_count;
+    linear_arena_info_ptr->size_total                 = linear_arena_ptr->size_total;
+    linear_arena_info_ptr->position                   = linear_arena_ptr->position;
+    linear_arena_info_ptr->save_point                 = linear_arena_ptr->save_point;
+
+    //we're done
+    return(true);
 }
 
 /**********************************************************************************/

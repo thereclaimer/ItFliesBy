@@ -64,13 +64,9 @@ namespace ifb_memory {
     inline const ifb_u32 stack_push        (const ifb_u32 size, const ifb_u32 alignment = 0);
 
     //pointers/info
-    inline const ifb_ptr stack_get_pointer (const IFBMemoryHandle memory_handle);
+    inline const ifb_ptr stack_get_pointer (const ifb_u32 offset);
     inline const ifb_b8  stack_get_info    (IFBMemoryStackInfo* stack_info_ptr);
 };
-
-#define ifb_memory_macro_stack_push_type(type)                      ifb_memory::stack_push(sizeof(type))
-#define ifb_memory_macro_stack_push_struct(struct)                  ifb_memory::stack_push(sizeof(struct), alignof(struct))
-#define ifb_memory_macro_stack_get_type_pointer(offset,type) (type*)ifb_memory::stack_get_pointer(offset)      
 
 /**********************************************************************************/
 /* RESERVATION                                                                    */
@@ -118,7 +114,7 @@ namespace ifb_memory {
 
     //pointers
     inline const ifb_ptr arena_get_pointer (const IFBMemoryArenaHandle arena_handle, const ifb_u32 offset);
-    inline const ifb_b8  arena_get_info    (const IFBMemoryArenaHandle arena_handle);
+    inline const ifb_b8  arena_get_info    (const IFBMemoryArenaHandle arena_handle, IFBMemoryArenaInfo* arena_info_ptr);
 };
 
 /**********************************************************************************/
@@ -192,5 +188,27 @@ namespace ifb_memory {
     inline const ifb_b8  block_arena_get_info            (const IFBMemoryBlockArenaHandle block_arena_handle, IFBMemoryBlockArenaInfo* block_arena_info);
 };
 
+/**********************************************************************************/
+/* MACROS                                                                         */
+/**********************************************************************************/
+
+#define ifb_memory_macro_stack_push_type(type)                                          ifb_memory::stack_push(sizeof(type))
+#define ifb_memory_macro_stack_push_array(type,count)                                   ifb_memory::stack_push(sizeof(type) * count)
+#define ifb_memory_macro_stack_push_struct(struct)                                      ifb_memory::stack_push(sizeof(struct), alignof(struct))
+#define ifb_memory_macro_stack_get_type_pointer(offset,type)                     (type*)ifb_memory::stack_get_pointer(offset)      
+
+#define ifb_memory_macro_linear_arena_reserve_type_absolute(arena,type)          (type*)ifb_memory::linear_arena_reserve_bytes_absolute(arena, sizeof(type))
+#define ifb_memory_macro_linear_arena_reserve_type_relative(arena,type)          (type*)ifb_memory::linear_arena_reserve_bytes_relative(arena, sizeof(type))
+#define ifb_memory_macro_linear_arena_reserve_array_absolute(arena,type,count)   (type*)ifb_memory::linear_arena_reserve_bytes_absolute(arena, sizeof(type) * count)
+#define ifb_memory_macro_linear_arena_reserve_array_relative(arena,type,count)   (type*)ifb_memory::linear_arena_reserve_bytes_relative(arena, sizeof(type) * count)
+#define ifb_memory_macro_linear_arena_reserve_struct_absolute(arena,struct)    (struct*)ifb_memory::linear_arena_reserve_bytes_absolute(arena, sizeof(struct), alignof(struct))
+#define ifb_memory_macro_linear_arena_reserve_struct_relative(arena,struct)    (struct*)ifb_memory::linear_arena_reserve_bytes_relative(arena, sizeof(struct), alignof(struct))
+
+#define ifb_memory_macro_linear_arena_release_type(arena,type)                          ifb_memory::linear_arena_release_bytes(arena, sizeof(type))
+#define ifb_memory_macro_linear_arena_release_type(arena,type)                          ifb_memory::linear_arena_release_bytes(arena, sizeof(type))
+#define ifb_memory_macro_linear_arena_release_array(arena,type,count)                   ifb_memory::linear_arena_release_bytes(arena, sizeof(type) * count)
+#define ifb_memory_macro_linear_arena_release_array(arena,type,count)                   ifb_memory::linear_arena_release_bytes(arena, sizeof(type) * count)
+#define ifb_memory_macro_linear_arena_release_struct(arena,struct)                      ifb_memory::linear_arena_release_bytes(arena, sizeof(struct), alignof(struct))
+#define ifb_memory_macro_linear_arena_release_struct(arena,struct)                      ifb_memory::linear_arena_release_bytes(arena, sizeof(struct), alignof(struct))
 
 #endif //IFB_MEMORY_HPP
