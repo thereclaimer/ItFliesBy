@@ -13,9 +13,14 @@
 
 #define IFB_ENGINE_MEMORY_STACK_SIZE ifb_macro_size_kilobytes(IFB_ENGINE_CONFIG_MEMORY_STACK_SIZE_KB)
 
+struct IFBEngineMemoryStack {
+    ifb_byte* data;
+    ifb_u32   size;
+};
+
 struct IFBEngineMemory {
-    ifb_byte*  stack_buffer_ptr;
-    IFBMemory* base_memory_ptr;
+    IFBEngineMemoryStack stack;
+    
 };
 
 namespace ifb_engine {

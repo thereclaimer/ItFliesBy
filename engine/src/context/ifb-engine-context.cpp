@@ -3,8 +3,12 @@
 #include "ifb-engine-internal-context.hpp"
 #include "ifb-engine-internal-config.hpp"
 
-ifb_global IFBEngineContext _context;
+/**********************************************************************************/
+/* FORWARD DECLARATIONS                                                                 */
+/**********************************************************************************/
 
+
+ifb_global IFBEngineContext _context;
 
 /**********************************************************************************/
 /* CREATE/DESTROY                                                                 */
