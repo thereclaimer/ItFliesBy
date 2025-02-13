@@ -47,16 +47,6 @@ struct IFBMemoryReservationList {
     ifb_u32               count;
 };
 
-namespace ifb_memory {
-
-    const ifb_ptr reservation_get_page_start_next (ifb_void);
-    const ifb_ptr reservation_get_page_start      (const ifb_u32 page_number);
-    
-    const ifb_address 
-    reservation_commit_pages(
-        IFBMemoryReservation* reservation_ptr);
-};
-
 /**********************************************************************************/
 /* ARENA BASE                                                                     */
 /**********************************************************************************/
@@ -89,14 +79,10 @@ struct IFBMemoryLinearArena : IFBMemoryArena {
 /* ARENA BLOCK                                                                    */
 /**********************************************************************************/
 
-struct IFBMemoryBlock {
-    ifb_address start;
-};
-
 struct IFBMemoryBlockArena : IFBMemoryArena  {
-    IFBMemoryBlock* block_array;
-    ifb_u32         block_count;
-    ifb_u32         block_size;
+    ifb_address* block_address_array;
+    ifb_u32      block_count;
+    ifb_u32      block_size;
 };
 
 /**********************************************************************************/
