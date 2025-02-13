@@ -3,71 +3,13 @@
 #include "ifb-memory-internal.hpp"
 
 /**********************************************************************************/
-/* COMMIT                                                                         */
+/* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-ifb_internal inline IFBMemoryArena*
-ifb_memory::arena_commit(
-          IFBMemory* memory_ptr,
-    const ifb_u32    arena_size_minimum) {
+namespace ifb_memory {
 
-    //sanity check
-    ifb_macro_assert(memory_ptr);
-    if (arena_size_minimum == 0) return(NULL);
-
-    //allocate the arena structure
-    IFBMemoryArena* arena_ptr = ifb_memory::stack_push_arena_base(memory_ptr);
-    if (!arena_ptr) return(NULL);
-
-    //commit the pages for the arena
-    arena_ptr->page_commit.size = arena_size_minimum;
-    const ifb_b8 commit_result = ifb_memory::reservation_page_commit(memory_ptr,arena_ptr->page_commit);
-
-    //this MUST work, or everything is fucked up
-    ifb_macro_assert(commit_result);
-
-    //set the arena type
-    arena_ptr->type = IFBMemoryArenaType_Base;
-
-    //add the arena to the list
-    const ifb_b8 arena_list_result = ifb_memory::arena_list_add(
-        memory_ptr->arena_list,
-        arena_ptr);
-
-    //again, MUST work
-    ifb_macro_assert(arena_list_result);
-
-    //we're done
-    return(arena_ptr);
-}
-
-/**********************************************************************************/
-/* RESET                                                                          */
-/**********************************************************************************/
-
-ifb_internal inline const ifb_b8
-ifb_memory::arena_reset(
-    IFBMemoryArena* arena_ptr) {
-
-    //sanity check
-    ifb_macro_assert(arena_ptr);
-
-    //cache the commit
-    IFBMemoryPageCommit& page_commit_ref = arena_ptr->page_commit;
-
-    //get the commit pointer and size 
-    const ifb_ptr commit_start = (ifb_ptr)page_commit_ref.start;
-    const ifb_u32 commit_size  = page_commit_ref.size; 
-    
-    //clear the memory
-    memset(
-        commit_start,
-        0,
-        commit_size);
-
-    //we're done
-    return(true);
-}
+    inline IFBMemoryArena* arena_handle_to_pointer(const IFBMemoryArenaHandle arena_handle);
+};
 
 /**********************************************************************************/
 /* POINTERS                                                                       */
@@ -75,97 +17,78 @@ ifb_memory::arena_reset(
 
 ifb_internal inline const ifb_ptr
 ifb_memory::arena_get_pointer(
-    const IFBMemoryArena* arena_ptr,
-    const ifb_u32         offset) {
+    const IFBMemoryArenaHandle arena_handle,
+    const ifb_u32              offset) {
+
+    //get the arena and reservation
+    IFBMemoryArena*       arena_ptr       = ifb_memory::arena_handle_to_pointer(arena_handle);
+    IFBMemoryReservation* reservation_ptr = arena_ptr->reservation; 
 
     //sanity check
-    ifb_macro_assert(arena_ptr);
+    ifb_macro_assert(reservation_ptr);
 
-    //we can get the pointer if...
-    ifb_b8 can_get_pointer = true;
-    can_get_pointer &= arena_ptr != NULL;                    // ...the arena is valid
-    can_get_pointer &= offset < arena_ptr->page_commit.size; // ...AND the offset is within the arena 
+    //calcualte the addresses
+    const ifb_u32     arena_offset      = ifb_memory::context_get_size_from_page_count(arena_ptr->page_start); 
+    const ifb_u32     arena_size        = ifb_memory::context_get_size_from_page_count(arena_ptr->page_count);
+    const ifb_address reservation_start = reservation_ptr->start;
+    const ifb_address arena_start       = reservation_start + arena_offset;
+    const ifb_address arena_end         = arena_start       + arena_size;
+    const ifb_address pointer_offset    = arena_start       + offset;  
 
-    //get the address
-    const ifb_address address = can_get_pointer 
-        ? arena_ptr->page_commit.start + offset
-        : 0;
-
-    //cast the pointer
-    const ifb_ptr pointer = (ifb_ptr)address; 
+    //cast the pointer if its within the arena
+    const ifb_b8  is_pointer_in_arena = pointer_offset < arena_end; 
+    const ifb_ptr pointer             = is_pointer_in_arena ? (ifb_ptr)pointer_offset : NULL;
 
     //we're done
     return(pointer);
 }
 
 /**********************************************************************************/
-/* SIZE                                                                           */
+/* INFO                                                                           */
 /**********************************************************************************/
 
-ifb_internal inline const ifb_u32
-ifb_memory::arena_get_page_count(
-    const IFBMemoryArena* arena_ptr) {
+ifb_internal inline const ifb_b8
+ifb_memory::arena_get_info(
+    const IFBMemoryArenaHandle arena_handle,
+          IFBMemoryArenaInfo*  arena_info_ptr) {
+
+    //get the arena
+    IFBMemoryArena* arena_ptr = ifb_memory::arena_handle_to_pointer(arena_handle);
 
     //sanity check
-    ifb_macro_assert(arena_ptr);
+    if (!arena_info_ptr) return(false);
 
-    //return the page count
-    const ifb_u32 page_count = arena_ptr->page_commit.page_count;
-    return(page_count);
-}
+    //calculate the size
+    const ifb_u32 page_count = arena_ptr->page_count; 
+    const ifb_u32 arena_size = ifb_memory::context_get_size_from_page_count(page_count);
 
-ifb_internal inline const ifb_u32
-ifb_memory::arena_get_page_start(
-    const IFBMemoryArena* arena_ptr) {
+    //set the info
+    arena_info_ptr->reservation_handle.offset = arena_ptr->reservation->stack_offset;
+    arena_info_ptr->arena_handle.offset       = arena_ptr->stack_position;
+    arena_info_ptr->page_start                = arena_ptr->page_start;
+    arena_info_ptr->page_count                = arena_ptr->page_count;
+    arena_info_ptr->size_total                = arena_size;
 
-    //sanity check
-    ifb_macro_assert(arena_ptr);;
-
-    //return the page start
-    const ifb_u32 page_start = arena_ptr->page_commit.page_number;
-    return(page_start);
-}   
-
-ifb_internal inline const ifb_u32
-ifb_memory::arena_get_size_total(
-    const IFBMemoryArena* arena_ptr) {
-
-    //sanity check
-    ifb_macro_assert(arena_ptr);
-
-    //return the size
-    const ifb_u32 arena_size = arena_ptr->page_commit.size;
-    return(arena_size);
+    //we're done
+    return(true);
 }
 
 /**********************************************************************************/
 /* INTERNAL                                                                       */
 /**********************************************************************************/
 
-ifb_internal inline const ifb_b8
-ifb_memory::arena_list_add(
-    IFBMemoryArenaList& arena_list_ref,
-    IFBMemoryArena*     arena_base_ptr) {
+ifb_internal inline IFBMemoryArena*
+ifb_memory::arena_handle_to_pointer(
+    const IFBMemoryArenaHandle arena_handle) {
 
-    //set the next arena to null
-    arena_base_ptr->next = NULL;
+    //get the pointer
+    IFBMemoryArena* arena_ptr = ifb_memory_macro_stack_get_type_pointer(
+        arena_handle.offset,
+        IFBMemoryArena);
 
-    //if this is the first arena, set it and we're done
-    //otherwise, we will proceed to add it to the tail
-    if (arena_list_ref.first == NULL) {
-        arena_list_ref.first = arena_base_ptr;
-        arena_list_ref.last  = arena_base_ptr;
-        arena_list_ref.count = 1;
-        return(true);
-    }
-
-    //make sure the tail is initialized
-    if (!arena_list_ref.last) return(false);
-
-    //add the arena to the tail and update the count
-    arena_list_ref.last->next = arena_base_ptr;
-    ++arena_list_ref.count;
+    //sanity check
+    ifb_macro_assert(arena_ptr);
 
     //we're done
-    return(true);
+    return(arena_ptr);
 }

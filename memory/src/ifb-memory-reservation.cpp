@@ -18,7 +18,7 @@ struct IFBMemoryReservationPageCommit {
 
 namespace ifb_memory {
 
-    inline IFBMemoryReservation* reservation_get_pointer_from_handle (const IFBMemoryReservationHandle reservation_handle);
+    inline IFBMemoryReservation* reservation_handle_to_pointer (const IFBMemoryReservationHandle reservation_handle);
     inline ifb_b8                reservation_commit_pages            (IFBMemoryReservation*            reservation_ptr,      IFBMemoryReservationPageCommit& page_commit_ref);
     inline ifb_void              reservation_arena_list_add          (IFBMemoryReservationList&        reservation_list_ref, IFBMemoryArena*                 arena_ptr);
 };
@@ -105,7 +105,7 @@ ifb_memory::release(
     const IFBMemoryReservationHandle reservation_handle) {
 
     //get the reservation
-    IFBMemoryReservation* reservation_ptr = ifb_memory::reservation_get_pointer_from_handle(reservation_handle);
+    IFBMemoryReservation* reservation_ptr = ifb_memory::reservation_handle_to_pointer(reservation_handle);
 
     //get reservation start and size if we have it
     const ifb_ptr reservation_start = (ifb_ptr)reservation_ptr->start;
@@ -130,7 +130,7 @@ ifb_memory::reservation_commit_arena(
     const ifb_u32                    arena_size_minimum) {
 
     //get the reservation
-    IFBMemoryReservation* reservation_ptr = ifb_memory::reservation_get_pointer_from_handle(reservation_handle);
+    IFBMemoryReservation* reservation_ptr = ifb_memory::reservation_handle_to_pointer(reservation_handle);
 
     //create the handle
     IFBMemoryArenaHandle arena_handle = {0};
@@ -169,7 +169,7 @@ ifb_memory::reservation_commit_linear_arena(
     const ifb_u32                    arena_size_minimum) {
 
     //get the reservation
-    IFBMemoryReservation* reservation_ptr = ifb_memory::reservation_get_pointer_from_handle(reservation_handle);
+    IFBMemoryReservation* reservation_ptr = ifb_memory::reservation_handle_to_pointer(reservation_handle);
 
     //create the handle
     IFBMemoryLinearArenaHandle linear_arena_handle = {0};
@@ -211,7 +211,7 @@ ifb_memory::reservation_commit_block_arena(
     const ifb_u32                    block_count) {
 
     //get the reservation
-    IFBMemoryReservation* reservation_ptr = ifb_memory::reservation_get_pointer_from_handle(reservation_handle);
+    IFBMemoryReservation* reservation_ptr = ifb_memory::reservation_handle_to_pointer(reservation_handle);
 
     //create the handle
     IFBMemoryBlockArenaHandle block_arena_handle = {0};
@@ -272,7 +272,7 @@ ifb_memory::reservation_get_info(
           IFBMemoryReservationInfo*  reservation_info_ptr) {
 
     //get the reservation
-    IFBMemoryReservation* reservation_ptr = ifb_memory::reservation_get_pointer_from_handle(reservation_handle);
+    IFBMemoryReservation* reservation_ptr = ifb_memory::reservation_handle_to_pointer(reservation_handle);
 
     //sanity check
     if (!reservation_info_ptr) return(false);
@@ -299,11 +299,8 @@ ifb_memory::reservation_get_info(
 /**********************************************************************************/
 
 ifb_internal inline IFBMemoryReservation* 
-ifb_memory::reservation_get_pointer_from_handle(
+ifb_memory::reservation_handle_to_pointer(
     const IFBMemoryReservationHandle reservation_handle) {
-
-    //get the stack
-    IFBMemoryStack& stack_ref = ifb_memory::context_get_stack();
 
     //get the pointer
     IFBMemoryReservation* reservation_ptr = ifb_memory_macro_stack_get_type_pointer(
