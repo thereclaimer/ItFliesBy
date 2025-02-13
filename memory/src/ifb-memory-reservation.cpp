@@ -263,6 +263,38 @@ ifb_memory::reservation_commit_block_arena(
 }
 
 /**********************************************************************************/
+/* INFO                                                                           */
+/**********************************************************************************/
+
+ifb_internal inline const ifb_b8
+ifb_memory::reservation_get_info(
+    const IFBMemoryReservationHandle reservation_handle,
+          IFBMemoryReservationInfo*  reservation_info_ptr) {
+
+    //get the reservation
+    IFBMemoryReservation* reservation_ptr = ifb_memory::reservation_get_pointer_from_handle(reservation_handle);
+
+    //sanity check
+    if (!reservation_info_ptr) return(false);
+
+    //calculate sizes
+    const ifb_u32 page_count_total     = reservation_ptr->page_count_total;
+    const ifb_u32 page_count_committed = reservation_ptr->page_count_committed;
+    const ifb_u32 size_total           = ifb_memory::context_get_size_from_page_count(page_count_total);
+    const ifb_u32 size_committed       = ifb_memory::context_get_size_from_page_count(page_count_committed);
+
+    //set reservation into
+    reservation_info_ptr->page_count_total     = page_count_total;
+    reservation_info_ptr->page_count_committed = page_count_committed;
+    reservation_info_ptr->size_total           = size_total;
+    reservation_info_ptr->size_committed       = size_committed;
+    reservation_info_ptr->arena_count          = reservation_ptr->arena_list.count;
+
+    //we're done
+    return(true);
+}
+
+/**********************************************************************************/
 /* INTERNAL                                                                       */
 /**********************************************************************************/
 

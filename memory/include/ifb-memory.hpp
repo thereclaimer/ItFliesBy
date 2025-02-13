@@ -37,11 +37,11 @@ struct IFBMemorySystemInfo {
 namespace ifb_memory {
 
     //create/destroy
-    inline const ifb_b8 context_create  (const ifb_byte* stack_memory, const ifb_u32 stack_size);
-    inline const ifb_b8 context_destroy (ifb_void);
+    inline const ifb_b8  context_create                    (const ifb_byte* stack_memory, const ifb_u32 stack_size);
+    inline const ifb_b8  context_destroy                   (ifb_void);
 
     //system info
-    inline const ifb_b8 context_get_system_info (IFBMemorySystemInfo* system_info);
+    inline const ifb_b8  context_get_system_info           (IFBMemorySystemInfo* system_info);
 
     inline const ifb_u32 context_align_size_to_page        (const ifb_u32 size);
     inline const ifb_u32 context_align_size_to_granularity (const ifb_u32 size);
@@ -61,11 +61,11 @@ struct IFBMemoryStackInfo {
 namespace ifb_memory {
 
     //push
-    inline const ifb_u32 stack_push         (const ifb_u32 size, const ifb_u32 alignment = 0);
+    inline const ifb_u32 stack_push        (const ifb_u32 size, const ifb_u32 alignment = 0);
 
     //pointers/info
-    inline const ifb_ptr stack_get_pointer  (const IFBMemoryHandle memory_handle);
-    inline const ifb_b8  stack_get_info     (IFBMemoryStackInfo* stack_info_ptr);
+    inline const ifb_ptr stack_get_pointer (const IFBMemoryHandle memory_handle);
+    inline const ifb_b8  stack_get_info    (IFBMemoryStackInfo* stack_info_ptr);
 };
 
 #define ifb_memory_macro_stack_push_type(type)                      ifb_memory::stack_push(sizeof(type))
@@ -78,9 +78,9 @@ namespace ifb_memory {
 
 struct IFBMemoryReservationInfo {
     ifb_u32 page_count_total;
-    ifb_u32 page_count_used;
+    ifb_u32 page_count_committed;
     ifb_u32 size_total;
-    ifb_u32 size_used;
+    ifb_u32 size_committed;
     ifb_u32 arena_count;
 };
 
