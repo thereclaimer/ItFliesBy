@@ -52,11 +52,13 @@ struct IFBMemoryReservationList {
 /**********************************************************************************/
 
 struct IFBMemoryArena {
+    ifb_address           start;
     IFBMemoryReservation* reservation;
     IFBMemoryArena*       next;
     IFBMemoryArenaType    type;    
     ifb_u32               page_start;
     ifb_u32               page_count;
+    ifb_u32               size_total;
     ifb_u32               stack_position;
 };
 

@@ -25,15 +25,13 @@ ifb_memory::arena_get_pointer(
     IFBMemoryReservation* reservation_ptr = arena_ptr->reservation; 
 
     //sanity check
-    ifb_macro_assert(reservation_ptr);
+    ifb_macro_assert(arena_ptr->reservation);
 
     //calcualte the addresses
-    const ifb_u32     arena_offset      = ifb_memory::context_get_size_from_page_count(arena_ptr->page_start); 
-    const ifb_u32     arena_size        = ifb_memory::context_get_size_from_page_count(arena_ptr->page_count);
-    const ifb_address reservation_start = reservation_ptr->start;
-    const ifb_address arena_start       = reservation_start + arena_offset;
-    const ifb_address arena_end         = arena_start       + arena_size;
-    const ifb_address pointer_offset    = arena_start       + offset;  
+    const ifb_u32     arena_size        = arena_ptr->size_total;
+    const ifb_address arena_start       = arena_ptr->start;
+    const ifb_address arena_end         = arena_start + arena_size;
+    const ifb_address pointer_offset    = arena_start + offset;  
 
     //cast the pointer if its within the arena
     const ifb_b8  is_pointer_in_arena = pointer_offset < arena_end; 

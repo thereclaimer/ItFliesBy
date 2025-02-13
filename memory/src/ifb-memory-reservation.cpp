@@ -149,11 +149,13 @@ ifb_memory::reservation_commit_arena(
     ifb_macro_assert(arena_ptr);
 
     //initialize the arena
+    arena_ptr->start          = page_commit.commit_start; 
     arena_ptr->reservation    = reservation_ptr; 
     arena_ptr->next           = NULL;
     arena_ptr->type           = IFBMemoryArenaType_Base;
     arena_ptr->page_start     = page_commit.page_start;
     arena_ptr->page_count     = page_commit.page_count;
+    arena_ptr->size_total     = page_commit.size_actual; 
     arena_ptr->stack_position = arena_handle.offset;
 
     //add the arena to the list
@@ -188,11 +190,13 @@ ifb_memory::reservation_commit_linear_arena(
     ifb_macro_assert(linear_arena_ptr);
 
     //initialize the arena
+    linear_arena_ptr->start          = page_commit.commit_start; 
     linear_arena_ptr->reservation    = reservation_ptr; 
     linear_arena_ptr->next           = NULL;
     linear_arena_ptr->type           = IFBMemoryArenaType_Linear;
     linear_arena_ptr->page_start     = page_commit.page_start;
     linear_arena_ptr->page_count     = page_commit.page_count;
+    linear_arena_ptr->size_total     = page_commit.size_actual; 
     linear_arena_ptr->stack_position = linear_arena_handle.offset;
     linear_arena_ptr->position       = 0;
     linear_arena_ptr->save_point     = 0;
@@ -245,11 +249,13 @@ ifb_memory::reservation_commit_block_arena(
     ifb_macro_assert(block_address_array);
 
     //initialize the arena
+    block_arena_ptr->start               = page_commit.commit_start; 
     block_arena_ptr->reservation         = reservation_ptr; 
     block_arena_ptr->next                = NULL;
     block_arena_ptr->type                = IFBMemoryArenaType_Block;
     block_arena_ptr->page_start          = page_commit.page_start;
     block_arena_ptr->page_count          = page_commit.page_count;
+    block_arena_ptr->size_total          = page_commit.size_actual; 
     block_arena_ptr->stack_position      = block_arena_handle.offset;
     block_arena_ptr->block_address_array = block_address_array;
     block_arena_ptr->block_count         = block_count;
