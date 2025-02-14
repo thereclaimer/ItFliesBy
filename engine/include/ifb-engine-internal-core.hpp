@@ -69,4 +69,11 @@ namespace ifb_engine {
         IFBEngineCore* core_ptr);
 };
 
+/**********************************************************************************/
+/* MACROS                                                                         */
+/**********************************************************************************/
+
+#define ifb_engine_macro_core_memory_singleton_commit_type(core_ptr,type)             ifb_engine::core_memory_singleton_commit (core_ptr, sizeof(type), alignof(type))
+#define ifb_engine_macro_core_memory_singleton_load_type(core_ptr,handle,type) (type*)ifb_engine::core_memory_singleton_load   (core_ptr, handle)
+
 #endif //IFB_ENGINE_INTERNAL_CORE_HPP

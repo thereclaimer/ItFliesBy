@@ -11,13 +11,15 @@
 /**********************************************************************************/
 
 struct IFBEngineContextSingletons {
+    IFBEngineSingletonHandle context;
+    IFBEngineSingletonHandle singletons;
     IFBEngineSingletonHandle config;
+    IFBEngineSingletonHandle input;
 };
 
 namespace ifb_engine {
 
     const IFBEngineConfig* context_singletons_load_config (ifb_void);
-
 };
 
 /**********************************************************************************/
@@ -25,8 +27,8 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineContext {
-    IFBEngineCore*              core_ptr;
-    IFBEngineContextSingletons* singletons_ptr;
+    IFBEngineCore*              ptr_core;
+    IFBEngineContextSingletons* ptr_singletons;
 };
 
 namespace ifb_engine {
