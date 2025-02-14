@@ -6,6 +6,15 @@
 
 #include "ifb-engine.hpp"
 
+/**********************************************************************************/
+/* ALLOCATOR BASE                                                                 */
+/**********************************************************************************/
+
+struct IFBEngineLinearAllocatorBase {
+    IFBEngineMemoryArenaLinear linear_arena;
+    ifb_u32                    size;
+};
+
 struct IFBEngineBlockAllocatorBase {
     IFBMemoryBlockArenaHandle block_arena;
     ifb_u32                   block_size;
