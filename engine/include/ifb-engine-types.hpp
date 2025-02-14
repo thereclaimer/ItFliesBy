@@ -20,6 +20,15 @@ struct IFBEngineMemoryInfo {
     ifb_u32 stack_size_used;
 };  
 
+struct IFBEngineSizeAndAlignment {
+    ifb_u32 size;
+    ifb_u32 alignment;
+};
+
+struct IFBEngineHandle {
+    ifb_u32 value;
+};
+
 /**********************************************************************************/
 /* INTERNAL TYPES                                                                 */
 /**********************************************************************************/

@@ -25,6 +25,8 @@ struct IFBMemoryBlockArenaHandle  : IFBMemoryHandle { };
 
 #define IFB_MEMORY_HANDLE_INVALID 0
 
+#define ifb_memory_macro_handle_valid(handle) handle.offset != 0
+
 /**********************************************************************************/
 /* CONTEXT                                                                        */
 /**********************************************************************************/

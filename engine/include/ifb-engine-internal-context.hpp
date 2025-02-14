@@ -24,15 +24,25 @@ struct IFBEngineContextMemory {
     IFBEngineContextMemoryReservation reservation; 
 };
 
+struct IFBEngineContextSingletonHandle : IFBEngineHandle { }
+
 namespace ifb_engine {
 
-    const ifb_b8 context_memory_create(
+    const ifb_b8
+    context_memory_reserve(
         const ifb_byte* stack_buffer,
         const ifb_u32   stack_size,
         const ifb_u64   reservation_size);
 
-    const ifb_u32 context_memory_singleton_commit (const ifb_u32 size, const ifb_u32 alignment);
-    const ifb_ptr context_memory_singleton_load   (const ifb_u32 offset);
+    const ifb_b8
+    context_memory_singleton_commit(
+        const ifb_u32                          count,                   
+        const IFBEngineSizeAndAlignment*       size_and_alignment_array,
+              IFBEngineContextSingletonHandle* singleton_handle_array);
+
+    const ifb_ptr 
+    context_memory_singleton_load(
+        const IFBEngineContextSingletonHandle* singleton_handle);
 };
 
 /**********************************************************************************/
@@ -40,7 +50,7 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineContextSingletons {
-    ifb_u32 config;
+    IFBEngineContextSingletonHandle config;
 };
 
 namespace ifb_engine {
@@ -64,7 +74,8 @@ struct IFBEngineContext {
 
 namespace ifb_engine {
     
-    IFBEngineMemory&            context_get_memory     (ifb_void); 
+    IFBEngineContext&           context                (ifb_void);
+    IFBEngineContextMemory&     context_get_memory     (ifb_void); 
     IFBEngineContextSingletons& context_get_singletons (ifb_void);
 };
 

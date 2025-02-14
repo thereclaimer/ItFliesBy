@@ -12,14 +12,13 @@
 #endif //IFB_ENGINE_CONFIG_MEMORY_RESERVATION_SIZE_GB
 
 struct IFBEngineConfig {
-    ifb_u32 memory_stack_size_kb;
-    ifb_u32 memory_reservation_size_gb;
+    ifb_u16 memory_stack_size_kb;
+    ifb_u16 memory_reservation_size_gb;
 };
 
 namespace ifb_engine {
 
     inline ifb_void config_load(IFBEngineConfig* config_ptr);
-
 };
 
 inline ifb_void 

@@ -4,11 +4,17 @@
 #include "ifb-engine-internal-config.hpp"
 
 /**********************************************************************************/
-/* FORWARD DECLARATIONS                                                                 */
+/* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
+#define IFB_ENGINE_CONTEXT_MEMORY_STACK_SIZE        ifb_macro_size_kilobytes(IFB_ENGINE_CONFIG_MEMORY_STACK_SIZE_KB)
+#define IFB_ENGINE_CONTEXT_MEMORY_RESERVATION_SIZE  ifb_macro_size_gigabytes(IFB_ENGINE_CONFIG_MEMORY_RESERVATION_SIZE_GB)
 
-ifb_global IFBEngineContext _context;
+namespace ifb_engine {
+
+    ifb_global ifb_byte         _context_stack_buffer[IFB_ENGINE_CONTEXT_MEMORY_STACK_SIZE];
+    ifb_global IFBEngineContext _context;
+};
 
 /**********************************************************************************/
 /* CREATE/DESTROY                                                                 */
@@ -23,8 +29,17 @@ ifb_engine::context_create(
     //set the platform api
     ifb_platform::set_api(platform_api_ref);
 
-    //get the config
-    ifb_engine::config_get_values(_context.config);
+    //reserve the memory
+    const ifb_u32   memory_size_stack       = IFB_ENGINE_CONTEXT_MEMORY_STACK_SIZE;
+    const ifb_u64   memory_size_reservation = IFB_ENGINE_CONTEXT_MEMORY_RESERVATION_SIZE;
+    const ifb_byte* memory_stack_buffer     = _context_stack_buffer;
+
+    result &= ifb_engine::context_memory_reserve(
+        memory_size_stack,
+        memory_size_reservation,
+        memory_stack_buffer);
+
+    //
 
     //we're done
     return(result);
@@ -74,23 +89,23 @@ ifb_engine::context_render_frame(
 /* INTERNAL                                                                       */
 /**********************************************************************************/
 
-inline const IFBPlatformApi&
-ifb_engine::context_get_platform_api(
+inline IFBEngineContext& 
+ifb_engine::context(
     ifb_void) {
 
-    return(_context.platform_api);
+    return(_context);
 }
 
-inline const IFBEngineConfig&
-ifb_engine::context_get_config(
-    ifb_void) {
-
-    return(_context.config);
-}
-
-inline IFBEngineMemory&
+inline IFBEngineContextMemory&
 ifb_engine::context_get_memory(
     ifb_void) {
 
     return(_context.memory);
-} 
+}
+
+inline IFBEngineContextSingletons&
+ifb_engine::context_get_singletons(
+    ifb_void) {
+
+    return(_context.singletons);
+}
