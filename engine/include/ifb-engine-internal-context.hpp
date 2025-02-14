@@ -4,6 +4,7 @@
 #include <ifb-memory.hpp>
 
 #include "ifb-engine.hpp"
+#include "ifb-engine-internal-allocators.hpp"
 
 /**********************************************************************************/
 /* MEMORY                                                                         */
@@ -28,7 +29,7 @@ struct IFBEngineContextSingletonHandle : IFBEngineHandle { };
 
 namespace ifb_engine {
 
-    //reserve/release
+    //reservation
 
     const ifb_b8
     context_memory_reserve(
@@ -38,6 +39,10 @@ namespace ifb_engine {
 
     const ifb_b8
     context_memory_release(
+        ifb_void);
+
+    const IFBMemoryReservationHandle 
+    context_memory_reservation_get_handle(
         ifb_void);
 
     //singletons
@@ -51,6 +56,12 @@ namespace ifb_engine {
     const ifb_ptr 
     context_memory_singleton_load(
         const IFBEngineContextSingletonHandle singleton_handle);
+
+    //allocators
+    IFBEngineDataStructureAllocator* 
+    context_memory_commit_data_structure_allocator(
+        const ifb_u32 data_structure_size,
+        const ifb_u32 data_structure_count);
 };
 
 /**********************************************************************************/
@@ -59,15 +70,19 @@ namespace ifb_engine {
 
 struct IFBEngineContextSingletons {
     IFBEngineContextSingletonHandle config;
+    IFBEngineContextSingletonHandle allocator_manager;
 };
 
 namespace ifb_engine {
 
     //commit
-    const ifb_b8           context_singletons_commit_all (ifb_void);
+    const ifb_b8               context_singletons_commit_all     (ifb_void);
     
+
+
     //instances
-    const IFBEngineConfig* context_singletons_get_config (ifb_void);
+    const IFBEngineConfig*     context_singletons_get_config           (ifb_void);
+    const IFBEngineAllocators* context_singletons_get_allocator_manager (ifb_void);
 
 };
 

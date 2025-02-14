@@ -18,6 +18,10 @@ struct IFBEngineMemoryInfo;
 struct IFBEngineSizeAndAlignment;
 struct IFBEngineHandle;
 
+struct IFBEngineMemoryArenaUnmanaged;
+struct IFBEngineMemoryArenaLinear;
+struct IFBEngineMemoryArenaBlock;
+
 /**********************************************************************************/
 /* PUBLIC TYPES                                                                   */
 /**********************************************************************************/
@@ -42,5 +46,11 @@ struct IFBEngineSizeAndAlignment {
 struct IFBEngineHandle {
     ifb_u32 value;
 };
+
+struct IFBEngineMemoryArenaUnmanaged : IFBEngineHandle { };
+struct IFBEngineMemoryArenaLinear    : IFBEngineHandle { };
+struct IFBEngineMemoryArenaBlock     : IFBEngineHandle { };
+
+
 
 #endif //IFB_ENGINE_TYPES_HPP
