@@ -61,10 +61,9 @@ if not exist %dir_vcpkg% call vcpkg install
                     /Fo:%file_path_obj%
 
 @set cl_includes=   /I engine\include          ^
-                    /I engine\internal         ^
                     /I engine\src              ^
+                    /I engine\src\config       ^
                     /I engine\src\context      ^
-                    /I engine\src\memory       ^
                     /I memory\include          ^
                     /I data-structures\include ^
                     /I common                  ^

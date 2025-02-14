@@ -1,9 +1,10 @@
 #ifndef IFB_ENGINE_INTERNAL_CONTEXT_HPP
 #define IFB_ENGINE_INTERNAL_CONTEXT_HPP
 
+#include <ifb-memory.hpp>
+
 #include "ifb-engine.hpp"
 #include "ifb-engine-internal-config.hpp"
-#include "ifb-engine-internal-memory.hpp"
 
 /**********************************************************************************/
 /* MEMORY                                                                         */
@@ -24,15 +25,23 @@ struct IFBEngineContextMemory {
     IFBEngineContextMemoryReservation reservation; 
 };
 
-struct IFBEngineContextSingletonHandle : IFBEngineHandle { }
+struct IFBEngineContextSingletonHandle : IFBEngineHandle { };
 
 namespace ifb_engine {
 
+    //reserve/release
+
     const ifb_b8
     context_memory_reserve(
-        const ifb_byte* stack_buffer,
+              ifb_byte* stack_buffer,
         const ifb_u32   stack_size,
         const ifb_u64   reservation_size);
+
+    const ifb_b8
+    context_memory_release(
+        ifb_void);
+
+    //singletons
 
     const ifb_b8
     context_memory_singleton_commit(
@@ -42,7 +51,7 @@ namespace ifb_engine {
 
     const ifb_ptr 
     context_memory_singleton_load(
-        const IFBEngineContextSingletonHandle* singleton_handle);
+        const IFBEngineContextSingletonHandle singleton_handle);
 };
 
 /**********************************************************************************/

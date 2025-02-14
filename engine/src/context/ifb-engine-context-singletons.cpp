@@ -45,10 +45,10 @@ ifb_engine::context_singletons_get_config(
     ifb_void) {
 
     //get the singletons
-    IFBEngineContextSingletons& singletons_ref = ifb_engine::context_get_singletons();
+    const IFBEngineContextSingletons& singletons_ref = ifb_engine::context_get_singletons();
 
     //load the config
-    IFBEngineConfig* config_ptr = ifb_engine::context_memory_singleton_load(singletons_ref.config);
+    IFBEngineConfig* config_ptr = (IFBEngineConfig*)ifb_engine::context_memory_singleton_load(singletons_ref.config);
 
     //we're done
     return(config_ptr);

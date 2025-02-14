@@ -2,10 +2,13 @@
 
 #include "ifb-engine-internal-context.hpp"
 
+/**********************************************************************************/
+/* RESERVE/RELEASE                                                                */
+/**********************************************************************************/
 
 inline const ifb_b8
 ifb_engine::context_memory_reserve(
-    const ifb_byte* stack_buffer,
+          ifb_byte* stack_buffer,
     const ifb_u32   stack_size,
     const ifb_u64   reservation_size) {
 
@@ -39,6 +42,32 @@ ifb_engine::context_memory_reserve(
 }
 
 inline const ifb_b8
+ifb_engine::context_memory_release(
+    ifb_void) {
+
+    //get the context memory
+    IFBEngineContextMemory& memory_ref = ifb_engine::context_get_memory(); 
+
+    //cache the properties
+    IFBEngineContextMemoryReservation& reservation_ref = memory_ref.reservation;
+    IFBEngineContextMemoryStack&       stack_ref       = memory_ref.stack;
+
+    //destroy the memory context
+    const ifb_b8 result = ifb_memory::context_destroy();
+
+    //null the pointers
+    reservation_ref = {0};
+    stack_ref       = {0};
+
+    //we're done
+    return(result);
+}   
+
+/**********************************************************************************/
+/* SINGLETONS                                                                     */
+/**********************************************************************************/
+
+inline const ifb_b8
 ifb_engine::context_memory_singleton_commit(
     const ifb_u32                          count,                   
     const IFBEngineSizeAndAlignment*       size_and_alignment_array,
@@ -66,7 +95,7 @@ ifb_engine::context_memory_singleton_commit(
             current_size_and_alignment.alignment);
 
         //validate the handle
-        result &= ifb_memory_macro_handle_valid(current_singleton_handle);
+        result &= current_singleton_handle.value != 0;
     }
 
     //we're done
@@ -75,9 +104,9 @@ ifb_engine::context_memory_singleton_commit(
 
 inline const ifb_ptr
 ifb_engine::context_memory_singleton_load(
-    const ifb_u32 offset) {
+    const IFBEngineContextSingletonHandle singleton_handle) {
 
     //get the singleton pointer from the stack
-    const ifb_ptr singleton_ptr = ifb_memory::stack_get_pointer(offset);
+    const ifb_ptr singleton_ptr = ifb_memory::stack_get_pointer(singleton_handle.value);
     return(singleton_ptr);
 }

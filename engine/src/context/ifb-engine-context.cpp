@@ -1,7 +1,9 @@
 #pragma once
 
 #include "ifb-engine-internal-context.hpp"
-#include "ifb-engine-internal-config.hpp"
+
+#include "ifb-engine-context-memory.cpp"
+#include "ifb-engine-context-singletons.cpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -29,17 +31,22 @@ ifb_engine::context_create(
     //set the platform api
     ifb_platform::set_api(platform_api_ref);
 
+    //calculate memory sizes
+    const ifb_u32 memory_size_stack       = IFB_ENGINE_CONTEXT_MEMORY_STACK_SIZE;
+    const ifb_u64 memory_size_reservation = IFB_ENGINE_CONTEXT_MEMORY_RESERVATION_SIZE;
+    ifb_byte*     memory_stack_buffer     = _context_stack_buffer;
+
     //reserve the memory
-    const ifb_u32   memory_size_stack       = IFB_ENGINE_CONTEXT_MEMORY_STACK_SIZE;
-    const ifb_u64   memory_size_reservation = IFB_ENGINE_CONTEXT_MEMORY_RESERVATION_SIZE;
-    const ifb_byte* memory_stack_buffer     = _context_stack_buffer;
-
     result &= ifb_engine::context_memory_reserve(
+        memory_stack_buffer,
         memory_size_stack,
-        memory_size_reservation,
-        memory_stack_buffer);
+        memory_size_reservation);
 
-    //
+    //commit singletons
+    result &= ifb_engine::context_singletons_commit_all();
+
+    //load the config
+    result &= ifb_engine::config_load();
 
     //we're done
     return(result);
@@ -51,7 +58,7 @@ ifb_engine::context_destroy(
 
     ifb_b8 result = true;
     
-    result &= ifb_engine::memory_release();
+    result &= ifb_engine::context_memory_release();
 
     return(result);
 }

@@ -10,8 +10,22 @@
 #endif
 
 /**********************************************************************************/
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
+
+struct IFBEngineConfig;
+struct IFBEngineMemoryInfo;
+struct IFBEngineSizeAndAlignment;
+struct IFBEngineHandle;
+
+/**********************************************************************************/
 /* PUBLIC TYPES                                                                   */
 /**********************************************************************************/
+
+struct IFBEngineConfig {
+    ifb_u16 memory_stack_size_kb;
+    ifb_u16 memory_reservation_size_gb;
+};
 
 struct IFBEngineMemoryInfo {
     ifb_u64 reservation_size_total;
@@ -28,13 +42,5 @@ struct IFBEngineSizeAndAlignment {
 struct IFBEngineHandle {
     ifb_u32 value;
 };
-
-/**********************************************************************************/
-/* INTERNAL TYPES                                                                 */
-/**********************************************************************************/
-
-struct IFBEngineContext;
-struct IFBEngineMemory;
-struct IFBEngineAllocators;
 
 #endif //IFB_ENGINE_TYPES_HPP
