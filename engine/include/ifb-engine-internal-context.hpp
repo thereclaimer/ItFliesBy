@@ -4,7 +4,6 @@
 #include <ifb-memory.hpp>
 
 #include "ifb-engine.hpp"
-#include "ifb-engine-internal-config.hpp"
 
 /**********************************************************************************/
 /* MEMORY                                                                         */

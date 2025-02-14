@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ifb-engine-internal-context.hpp"
+#include "ifb-engine-internal-config.hpp"
 
 inline const ifb_b8 
 ifb_engine::config_load(
