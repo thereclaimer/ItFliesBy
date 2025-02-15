@@ -1,5 +1,3 @@
-#pragma once
-
 #include "ifb-memory-internal.hpp"
 
 /**********************************************************************************/
@@ -15,7 +13,7 @@ namespace ifb_memory {
 /* RESET                                                                          */
 /**********************************************************************************/
 
-ifb_internal inline ifb_void
+ifb_void
 ifb_memory::block_arena_reset(
     const IFBMemoryBlockArenaHandle block_arena_handle) {
 
@@ -40,7 +38,7 @@ ifb_memory::block_arena_reset(
 /* RESERVE/RELEASE                                                                */
 /**********************************************************************************/
 
-ifb_internal inline const ifb_b8
+const ifb_b8
 ifb_memory::block_arena_block_reserve(
     const IFBMemoryBlockArenaHandle block_arena_handle,
           ifb_u32&                  block_index_ref) {
@@ -80,7 +78,7 @@ ifb_memory::block_arena_block_reserve(
     return(false);
 }
 
-ifb_internal inline const ifb_b8
+const ifb_b8
 ifb_memory::block_arena_block_reserve_index(
     const IFBMemoryBlockArenaHandle block_arena_handle,
     const ifb_u32                   block_index) {
@@ -111,7 +109,7 @@ ifb_memory::block_arena_block_reserve_index(
     return(true);
 }
 
-ifb_internal inline const ifb_b8
+const ifb_b8
 ifb_memory::block_arena_block_release(
     const IFBMemoryBlockArenaHandle block_arena_handle,
     const ifb_u32                   block_index) {
@@ -130,7 +128,7 @@ ifb_memory::block_arena_block_release(
     return(true);
 }
 
-ifb_internal inline const ifb_b8
+const ifb_b8
 ifb_memory::block_arena_block_is_free(
     const IFBMemoryBlockArenaHandle block_arena_handle,
     const ifb_u32                   block_index) {
@@ -153,7 +151,7 @@ ifb_memory::block_arena_block_is_free(
 /* POINTERS                                                                       */
 /**********************************************************************************/
 
-ifb_internal inline const ifb_ptr 
+const ifb_ptr 
 ifb_memory::block_get_pointer(
     const IFBMemoryBlockArenaHandle block_arena_handle,
     const ifb_u32                   block_index,
@@ -186,7 +184,7 @@ ifb_memory::block_get_pointer(
 /* INFO                                                                           */
 /**********************************************************************************/
 
-ifb_internal inline const ifb_b8 
+const ifb_b8 
 ifb_memory::block_arena_get_info(
     const IFBMemoryBlockArenaHandle block_arena_handle,
           IFBMemoryBlockArenaInfo*  block_arena_info) {
@@ -232,7 +230,7 @@ ifb_memory::block_arena_get_info(
 /* INTERNAL                                                                       */
 /**********************************************************************************/
 
-ifb_internal inline IFBMemoryBlockArena*
+IFBMemoryBlockArena*
 ifb_memory::block_arena_handle_to_pointer(
     const IFBMemoryBlockArenaHandle block_arena_handle) {
 

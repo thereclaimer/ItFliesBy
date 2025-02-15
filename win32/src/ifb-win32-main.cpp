@@ -23,9 +23,18 @@ wWinMain(
     IFBPlatformApi& platform_api_ref = ifb_win32::context_get_platform_api();
     ifb_win32::context_initialize_platform_api(platform_api_ref);
 
+    //engine memory stack
+    const ifb_u32            engine_memory_stack_size = ifb_macro_size_kilobytes(64);
+    ifb_local const ifb_byte engine_memory_stack_buffer[engine_memory_stack_size];
+
     //create the engine context and startup
     ifb_b8 running = true;
-    running &= ifb_engine::context_create(platform_api_ref);
+    running &= ifb_engine::context_create(
+        platform_api_ref,
+        engine_memory_stack_buffer,
+        engine_memory_stack_size);
+
+
     running &= ifb_engine::context_startup();
 
     //if we're running, so far so good

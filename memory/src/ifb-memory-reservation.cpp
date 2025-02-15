@@ -1,5 +1,3 @@
-#pragma once
-
 #include "ifb-memory.hpp"
 #include "ifb-memory-internal.hpp"
 
@@ -27,7 +25,7 @@ namespace ifb_memory {
 /* RESERVE/RELEASE                                                                */
 /**********************************************************************************/
 
-ifb_internal inline const IFBMemoryReservationHandle
+const IFBMemoryReservationHandle
 ifb_memory::reserve_memory(
     const ifb_u64 size_minimum) {
 
@@ -102,7 +100,7 @@ ifb_memory::reserve_memory(
     return(reservation_handle);
 }
 
-ifb_internal inline const ifb_b8
+const ifb_b8
 ifb_memory::release_memory(
     const IFBMemoryReservationHandle reservation_handle) {
 
@@ -127,7 +125,7 @@ ifb_memory::release_memory(
 /* ARENA COMMIT                                                                   */
 /**********************************************************************************/
 
-ifb_internal inline const IFBMemoryArenaHandle       
+const IFBMemoryArenaHandle       
 ifb_memory::reservation_commit_arena(
     const IFBMemoryReservationHandle reservation_handle,
     const ifb_u32                    arena_size_minimum) {
@@ -169,7 +167,7 @@ ifb_memory::reservation_commit_arena(
     return(arena_handle);
 }
 
-ifb_internal inline const IFBMemoryLinearArenaHandle 
+const IFBMemoryLinearArenaHandle 
 ifb_memory::reservation_commit_linear_arena(
     const IFBMemoryReservationHandle reservation_handle,
     const ifb_u32                    arena_size_minimum) {
@@ -213,7 +211,7 @@ ifb_memory::reservation_commit_linear_arena(
     return(linear_arena_handle);
 }
 
-ifb_internal inline const IFBMemoryBlockArenaHandle  
+const IFBMemoryBlockArenaHandle  
 ifb_memory::reservation_commit_block_arena(
     const IFBMemoryReservationHandle reservation_handle,
     const ifb_u32                    block_size_minimum,
@@ -278,7 +276,7 @@ ifb_memory::reservation_commit_block_arena(
 /* INFO                                                                           */
 /**********************************************************************************/
 
-ifb_internal inline const ifb_b8
+const ifb_b8
 ifb_memory::reservation_get_info(
     const IFBMemoryReservationHandle reservation_handle,
           IFBMemoryReservationInfo*  reservation_info_ptr) {
@@ -310,7 +308,7 @@ ifb_memory::reservation_get_info(
 /* INTERNAL                                                                       */
 /**********************************************************************************/
 
-ifb_internal inline IFBMemoryReservation* 
+IFBMemoryReservation* 
 ifb_memory::reservation_handle_to_pointer(
     const IFBMemoryReservationHandle reservation_handle) {
 
@@ -326,7 +324,7 @@ ifb_memory::reservation_handle_to_pointer(
     return(reservation_ptr);
 }
 
-ifb_internal inline ifb_b8
+ifb_b8
 ifb_memory::reservation_commit_pages(
     IFBMemoryReservation*           reservation_ptr,
     IFBMemoryReservationPageCommit& page_commit_ref) {
@@ -370,7 +368,7 @@ ifb_memory::reservation_commit_pages(
     return(true); 
 }
 
-ifb_internal inline ifb_void
+ifb_void
 ifb_memory::reservation_arena_list_add(
     IFBMemoryReservation* reservation_ptr,
     IFBMemoryArena*       arena_ptr) {

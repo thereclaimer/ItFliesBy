@@ -64,6 +64,7 @@ if not exist %dir_vcpkg% call vcpkg install
                     /I engine\src              ^
                     /I engine\src\config       ^
                     /I engine\src\context      ^
+                    /I engine\src\core         ^
                     /I memory\include          ^
                     /I data-structures\include ^
                     /I common                  ^
@@ -83,10 +84,7 @@ if not exist %dir_vcpkg% call vcpkg install
                     /LIBPATH:build\debug\lib                 ^
                     /LIBPATH:build\debug\obj
 
-@set link_libs=     imgui.lib    ^
-                    opengl32.lib ^
-                    glew32.lib   ^
-                    ItFliesBy.Memory.lib
+@set link_libs=     ItFliesBy.Memory.lib
 
 @set link_objs=     %build_file_obj%
 

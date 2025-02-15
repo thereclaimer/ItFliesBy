@@ -1,13 +1,13 @@
 #pragma once
 
-#include "ifb-engine-internal-context.hpp"
+#include "ifb-engine-internal-core.hpp"
 
 /**********************************************************************************/
 /* RESERVE/RELEASE                                                                */
 /**********************************************************************************/
 
 inline const ifb_b8
-ifb_engine::context_memory_reserve(
+ifb_engine::core_memory_reserve(
           IFBEngineCore* core_ptr,
     const ifb_u32        size) {
     
@@ -35,7 +35,7 @@ ifb_engine::context_memory_reserve(
 }
 
 inline const ifb_b8
-ifb_engine::context_memory_release(
+ifb_engine::core_memory_release(
     IFBEngineCore* core_ptr) {
 
     //sanity check
@@ -164,7 +164,7 @@ ifb_engine::core_memory_arena_commit_block(
     IFBEngineCoreMemoryReservation& reservation_ref = core_ptr->memory.reservation;
 
     //commit the arena
-    const IFBMemoryBlockArenaHandle block_arena_handle = ifb_memory::reservation_commit_linear_arena(
+    const IFBMemoryBlockArenaHandle block_arena_handle = ifb_memory::reservation_commit_block_arena(
         reservation_ref.handle,
         block_size,
         block_count);

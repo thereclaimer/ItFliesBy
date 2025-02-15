@@ -1,5 +1,3 @@
-#pragma once
-
 #include "ifb-memory-internal.hpp"
 
 /**********************************************************************************/
@@ -12,7 +10,7 @@ ifb_global IFBMemoryContext* _context_ptr;
 /* CREATE / DESTROY                                                               */
 /**********************************************************************************/
 
-ifb_internal inline const ifb_b8
+const ifb_b8
 ifb_memory::context_create(
     const ifb_byte* stack_memory,
     const ifb_u32   stack_size) {
@@ -53,7 +51,7 @@ ifb_memory::context_create(
     return(true);
 }
 
-ifb_internal inline const ifb_b8
+const ifb_b8
 ifb_memory::context_destroy(
     ifb_void) {
 
@@ -92,7 +90,7 @@ ifb_memory::context_destroy(
 /* SYSTEM INFO                                                                    */
 /**********************************************************************************/
 
-ifb_internal inline const ifb_b8 
+const ifb_b8 
 ifb_memory::context_get_system_info(
     IFBMemorySystemInfo* system_info) {
 
@@ -110,10 +108,59 @@ ifb_memory::context_get_system_info(
 }
 
 /**********************************************************************************/
+/* ALIGNMENT                                                                      */
+/**********************************************************************************/
+
+const ifb_u32 
+ifb_memory::context_align_size_to_page(
+    const ifb_u32 size) {
+
+    const ifb_u32 page_size    = _context_ptr->system_info.page_size;
+    const ifb_u32 size_aligned = ifb_macro_align_a_to_b(size,page_size); 
+    
+    return(size_aligned);
+}
+
+const ifb_u32 
+ifb_memory::context_align_size_to_granularity(
+    const ifb_u32 size) {
+
+    const ifb_u32 granularity  = _context_ptr->system_info.page_size;
+    const ifb_u32 size_aligned = ifb_macro_align_a_to_b(size,granularity); 
+    
+    return(size_aligned);
+}
+
+/**********************************************************************************/
 /* INTERNAL                                                                       */
 /**********************************************************************************/
 
-ifb_internal inline IFBMemoryContext*
+const ifb_u64
+ifb_memory::context_get_size_from_page_count(
+    const ifb_u32 page_count) {
+    
+    const ifb_u32 page_size = _context_ptr->system_info.page_size;
+    const ifb_u64 size      = page_count * page_size;
+
+    return(size);
+}
+
+const ifb_u32
+ifb_memory::context_get_page_count_from_size(
+    const ifb_u64 size) {
+
+    const ifb_u64 page_size = _context_ptr->system_info.page_size;
+    ifb_macro_assert(page_size);
+
+    const ifb_u32 page_count = (ifb_u32)(size / page_size);
+    return(page_count);  
+}
+
+/**********************************************************************************/
+/* INTERNAL                                                                       */
+/**********************************************************************************/
+
+IFBMemoryContext*
 ifb_memory::context(
     ifb_void) {
 
@@ -121,7 +168,7 @@ ifb_memory::context(
     return(_context_ptr);
 }
 
-ifb_internal inline IFBMemoryStack&
+IFBMemoryStack&
 ifb_memory::context_get_stack(
     ifb_void) {
 
@@ -129,7 +176,7 @@ ifb_memory::context_get_stack(
     return(_context_ptr->stack);
 }
 
-ifb_internal inline IFBMemorySystemInfo&
+IFBMemorySystemInfo&
 ifb_memory::context_get_system_info(
     ifb_void) {
     
@@ -137,7 +184,7 @@ ifb_memory::context_get_system_info(
     return(_context_ptr->system_info);
 }
 
-ifb_internal inline IFBMemoryReservationList&
+IFBMemoryReservationList&
 ifb_memory::context_get_reservation_list(
     ifb_void) {
     

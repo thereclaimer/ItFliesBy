@@ -6,7 +6,7 @@
 
 inline IFBEngineCore*
 ifb_engine::core_create(
-          ifb_byte* core_stack_memory_ptr,
+    const ifb_byte* core_stack_memory_ptr,
     const ifb_u32   core_stack_memory_size) {
 
     //sanity check
@@ -29,7 +29,7 @@ ifb_engine::core_create(
 
     //initialize the core structure
     core_ptr->stack_offset      = core_stack_offset;
-    core_ptr->memory.stack.data = core_stack_memory_ptr;
+    core_ptr->memory.stack.data = (ifb_byte*)core_stack_memory_ptr;
     core_ptr->memory.stack.size = core_stack_memory_size;
 
     //we're done

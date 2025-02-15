@@ -38,7 +38,7 @@ struct IFBEngineCoreMemory {
 namespace ifb_engine {
 
     const ifb_b8                     core_memory_reserve                 (IFBEngineCore* core_ptr, const ifb_u32 size);
-    const ifb_b8                     core_memory_release                 (IFBEngineCore* core_ptr, const ifb_u32 size);
+    const ifb_b8                     core_memory_release                 (IFBEngineCore* core_ptr);
 
     const IFBEngineSingletonHandle   core_memory_singleton_commit        (IFBEngineCore* core_ptr, const ifb_u32 size, const ifb_u32 alignment);
     const ifb_ptr                    core_memory_singleton_load          (IFBEngineCore* core_ptr, const IFBEngineSingletonHandle singleton_handle);
@@ -61,7 +61,7 @@ namespace ifb_engine {
 
     IFBEngineCore*
     core_create(
-              ifb_byte* core_stack_memory_ptr,
+        const ifb_byte* core_stack_memory_ptr,
         const ifb_u32   core_stack_memory_size);
     
     const ifb_b8

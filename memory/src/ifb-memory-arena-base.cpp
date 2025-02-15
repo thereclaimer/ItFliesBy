@@ -1,5 +1,3 @@
-#pragma once
-
 #include "ifb-memory-internal.hpp"
 
 /**********************************************************************************/
@@ -15,7 +13,7 @@ namespace ifb_memory {
 /* POINTERS                                                                       */
 /**********************************************************************************/
 
-ifb_internal inline const ifb_ptr
+const ifb_ptr
 ifb_memory::arena_get_pointer(
     const IFBMemoryArenaHandle arena_handle,
     const ifb_u32              offset) {
@@ -45,7 +43,7 @@ ifb_memory::arena_get_pointer(
 /* INFO                                                                           */
 /**********************************************************************************/
 
-ifb_internal inline const ifb_b8
+const ifb_b8
 ifb_memory::arena_get_info(
     const IFBMemoryArenaHandle arena_handle,
           IFBMemoryArenaInfo*  arena_info_ptr) {
@@ -71,7 +69,7 @@ ifb_memory::arena_get_info(
 /* INTERNAL                                                                       */
 /**********************************************************************************/
 
-ifb_internal inline IFBMemoryArena*
+IFBMemoryArena*
 ifb_memory::arena_handle_to_pointer(
     const IFBMemoryArenaHandle arena_handle) {
 

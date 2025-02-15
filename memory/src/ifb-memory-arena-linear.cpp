@@ -1,5 +1,3 @@
-#pragma once
-
 #include "ifb-memory-internal.hpp"
 
 /**********************************************************************************/
@@ -15,7 +13,7 @@ namespace ifb_memory {
 /* SAVE POINT                                                                     */
 /**********************************************************************************/
 
-ifb_internal inline ifb_void
+ifb_void
 ifb_memory::linear_arena_save_point_set(
     const IFBMemoryLinearArenaHandle linear_arena_handle) {
 
@@ -26,7 +24,7 @@ ifb_memory::linear_arena_save_point_set(
     linear_arena_ptr->save_point = linear_arena_ptr->position; 
 }
 
-ifb_internal inline ifb_void
+ifb_void
 ifb_memory::linear_arena_save_point_clear(
     const IFBMemoryLinearArenaHandle linear_arena_handle) {
 
@@ -41,7 +39,7 @@ ifb_memory::linear_arena_save_point_clear(
 /* RESET                                                                          */
 /**********************************************************************************/
 
-ifb_internal inline ifb_void
+ifb_void
 ifb_memory::linear_arena_reset_to_start(
     const IFBMemoryLinearArenaHandle linear_arena_handle) {
 
@@ -52,7 +50,7 @@ ifb_memory::linear_arena_reset_to_start(
     linear_arena_ptr->position = 0;
 }
 
-ifb_internal inline ifb_void
+ifb_void
 ifb_memory::linear_arena_reset_to_save_point(
     const IFBMemoryLinearArenaHandle linear_arena_handle) {
     
@@ -74,7 +72,7 @@ ifb_memory::linear_arena_reset_to_save_point(
 /* RESERVE/RELEASE                                                                */
 /**********************************************************************************/
 
-ifb_internal inline const ifb_ptr
+const ifb_ptr
 ifb_memory::linear_arena_reserve_bytes_absolute(
     const IFBMemoryLinearArenaHandle linear_arena_handle,
     const ifb_u32                    size,
@@ -114,7 +112,7 @@ ifb_memory::linear_arena_reserve_bytes_absolute(
     return(position_pointer);
 }
 
-ifb_internal inline const ifb_u32
+const ifb_u32
 ifb_memory::linear_arena_reserve_bytes_relative(
     const IFBMemoryLinearArenaHandle linear_arena_handle,
     const ifb_u32                    size, 
@@ -151,7 +149,7 @@ ifb_memory::linear_arena_reserve_bytes_relative(
 }
 
 
-ifb_internal inline const ifb_b8
+const ifb_b8
 ifb_memory::linear_arena_release_bytes(
     const IFBMemoryLinearArenaHandle linear_arena_handle,
     const ifb_u32                    size,
@@ -187,7 +185,7 @@ ifb_memory::linear_arena_release_bytes(
 /* POINTERS                                                                       */
 /**********************************************************************************/
 
-ifb_internal inline const ifb_ptr 
+const ifb_ptr 
 ifb_memory::linear_arena_get_pointer_at_offset(
     const IFBMemoryLinearArenaHandle linear_arena_handle,
     const ifb_u32                    offset) {
@@ -209,7 +207,7 @@ ifb_memory::linear_arena_get_pointer_at_offset(
     return(offset_pointer);
 }
 
-ifb_internal inline const ifb_ptr 
+const ifb_ptr 
 ifb_memory::linear_arena_get_pointer_at_position(
     const IFBMemoryLinearArenaHandle linear_arena_handle) {
 
@@ -231,7 +229,7 @@ ifb_memory::linear_arena_get_pointer_at_position(
     return(position_ptr);
 }
 
-ifb_internal inline const ifb_ptr 
+const ifb_ptr 
 ifb_memory::linear_arena_get_pointer_at_save_point(
     const IFBMemoryLinearArenaHandle linear_arena_handle) {
 
@@ -255,7 +253,7 @@ ifb_memory::linear_arena_get_pointer_at_save_point(
     return(save_point_ptr);
 }
 
-ifb_internal inline const ifb_ptr 
+const ifb_ptr 
 ifb_memory::linear_arena_get_pointer_at_start(
     const IFBMemoryLinearArenaHandle linear_arena_handle) {
 
@@ -274,7 +272,7 @@ ifb_memory::linear_arena_get_pointer_at_start(
 /* INFO                                                                           */
 /**********************************************************************************/
 
-ifb_internal inline const ifb_b8 
+const ifb_b8 
 ifb_memory::linear_arena_get_info(
     const IFBMemoryLinearArenaHandle linear_arena_handle,
           IFBMemoryLinearArenaInfo*  linear_arena_info_ptr) {
@@ -302,7 +300,7 @@ ifb_memory::linear_arena_get_info(
 /* INTERNAL                                                                       */
 /**********************************************************************************/
 
-ifb_internal inline IFBMemoryLinearArena* 
+IFBMemoryLinearArena* 
 ifb_memory::linear_arena_handle_to_pointer(
     const IFBMemoryLinearArenaHandle linear_arena_handle) {
 

@@ -2,6 +2,9 @@
 
 #define IFB_ENGINE_INTERNAL
 
+//core
+// #include "ifb-engine-core.cpp"
+
 //config
 #include "ifb-engine-config.cpp"
 

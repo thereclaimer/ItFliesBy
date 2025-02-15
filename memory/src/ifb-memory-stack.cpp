@@ -1,5 +1,3 @@
-#pragma once
-
 #include "ifb-memory.hpp"
 #include "ifb-memory-internal.hpp"
 
@@ -7,7 +5,7 @@
 /* PUSH                                                                           */
 /**********************************************************************************/
 
-ifb_internal inline const ifb_u32
+const ifb_u32
 ifb_memory::stack_push(
     const ifb_u32 size,
     const ifb_u32 alignment) {
@@ -36,7 +34,7 @@ ifb_memory::stack_push(
 /* POINTERS                                                                       */
 /**********************************************************************************/
 
-ifb_internal inline const ifb_ptr
+const ifb_ptr
 ifb_memory::stack_get_pointer(
     const ifb_u32 offset) {
 
@@ -64,7 +62,7 @@ ifb_memory::stack_get_pointer(
 /* INFO                                                                           */
 /**********************************************************************************/
 
-ifb_internal inline const ifb_b8
+const ifb_b8
 ifb_memory::stack_get_info(
     IFBMemoryStackInfo* stack_info_ptr) {
 
