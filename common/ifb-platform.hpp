@@ -98,7 +98,7 @@ namespace ifb_platform {
         result &= memory_reserve  != NULL;
         result &= memory_release  != NULL;
         result &= memory_commit   != NULL;
-        result &= memory_decommit != NULL;
+        // result &= memory_decommit != NULL;
 
         return(result);
     }
@@ -303,32 +303,32 @@ namespace ifb_platform {
 
     inline ifb_void 
     set_api(
-        const IFBPlatformApi& platform_api_ref) {
+        const IFBPlatformApi* ptr_platform_api) {
 
         //system
-        ifb_platform::system_page_size              = platform_api_ref.system.page_size;
-        ifb_platform::system_allocation_granularity = platform_api_ref.system.allocation_granularity;
-        ifb_platform::system_time_ms                = platform_api_ref.system.time_ms;
-        ifb_platform::system_sleep                  = platform_api_ref.system.sleep;
+        ifb_platform::system_page_size              = ptr_platform_api->system.page_size;
+        ifb_platform::system_allocation_granularity = ptr_platform_api->system.allocation_granularity;
+        ifb_platform::system_time_ms                = ptr_platform_api->system.time_ms;
+        ifb_platform::system_sleep                  = ptr_platform_api->system.sleep;
 
         //memory
-        ifb_platform::memory_reserve                = platform_api_ref.memory.reserve;
-        ifb_platform::memory_release                = platform_api_ref.memory.release;
-        ifb_platform::memory_commit                 = platform_api_ref.memory.commit;
-        ifb_platform::memory_decommit               = platform_api_ref.memory.decommit;
+        ifb_platform::memory_reserve                = ptr_platform_api->memory.reserve;
+        ifb_platform::memory_release                = ptr_platform_api->memory.release;
+        ifb_platform::memory_commit                 = ptr_platform_api->memory.commit;
+        ifb_platform::memory_decommit               = ptr_platform_api->memory.decommit;
 
         //window
-        ifb_platform::window_create                 = platform_api_ref.window.create;
-        ifb_platform::window_destroy                = platform_api_ref.window.destroy;
-        ifb_platform::window_frame_start            = platform_api_ref.window.frame_start;
-        ifb_platform::window_frame_render           = platform_api_ref.window.frame_render;
-        ifb_platform::window_show                   = platform_api_ref.window.show;
-        ifb_platform::window_opengl_init            = platform_api_ref.window.opengl_init;
-        ifb_platform::window_imgui_init             = platform_api_ref.window.imgui_init;
+        ifb_platform::window_create                 = ptr_platform_api->window.create;
+        ifb_platform::window_destroy                = ptr_platform_api->window.destroy;
+        ifb_platform::window_frame_start            = ptr_platform_api->window.frame_start;
+        ifb_platform::window_frame_render           = ptr_platform_api->window.frame_render;
+        ifb_platform::window_show                   = ptr_platform_api->window.show;
+        ifb_platform::window_opengl_init            = ptr_platform_api->window.opengl_init;
+        ifb_platform::window_imgui_init             = ptr_platform_api->window.imgui_init;
 
         //monitory
-        ifb_platform::monitor_count                 = platform_api_ref.monitor.count; 
-        ifb_platform::monitor_info                  = platform_api_ref.monitor.info; 
+        ifb_platform::monitor_count                 = ptr_platform_api->monitor.count; 
+        ifb_platform::monitor_info                  = ptr_platform_api->monitor.info; 
     }
 };
 

@@ -12,8 +12,9 @@ ifb_global IFBMemoryContext* _context_ptr;
 
 const ifb_b8
 ifb_memory::context_create(
-    const ifb_byte* stack_memory,
-    const ifb_u32   stack_size) {
+    const IFBPlatformApi* ptr_platform_api,
+    const ifb_byte*       stack_memory,
+    const ifb_u32         stack_size) {
 
     //calculate the size of the memory struct
     const ifb_u32 memory_struct_size = ifb_macro_align_size_struct(IFBMemoryContext);
@@ -21,6 +22,7 @@ ifb_memory::context_create(
     // make sure the platform api methods are defined 
     // and the stack is valid and large enough
     ifb_b8 result = true;
+    ifb_platform::set_api(ptr_platform_api);
     result &= ifb_platform::system_api_valid();
     result &= ifb_platform::memory_api_valid();
     result &= stack_memory != NULL;
@@ -33,11 +35,16 @@ ifb_memory::context_create(
     _context_ptr = (IFBMemoryContext*)stack_memory;
 
     //cache the properties
+    IFBMemorySystemInfo&      system_info_ref      = _context_ptr->system_info;
     IFBMemoryStack&           stack_ref            = _context_ptr->stack;
     IFBMemoryReservationList& reservation_list_ref = _context_ptr->reservation_list;
 
-    //initialize the stac
-    stack_ref.start    = (ifb_address)stack_memory;
+    //get the platform info
+    system_info_ref.page_size   = ifb_platform::system_page_size();
+    system_info_ref.granularity = ifb_platform::system_allocation_granularity();
+
+    //initialize the stack
+    stack_ref.start    = (ifb_address)_context_ptr;
     stack_ref.end      = stack_ref.start + stack_size;
     stack_ref.position = memory_struct_size;
     stack_ref.size     = stack_size;

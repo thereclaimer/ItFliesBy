@@ -14,7 +14,9 @@ ifb_memory::stack_push(
     IFBMemoryStack& stack_ref = ifb_memory::context_get_stack();
 
     //align the size
-    const ifb_u32 size_aligned = ifb_macro_align_a_to_b(size,alignment);
+    const ifb_u32 size_aligned = (alignment == 0) 
+        ? size 
+        : ifb_macro_align_a_to_b(size,alignment);
 
     //make sure we can fit the push
     const ifb_u32 new_position = stack_ref.position + size_aligned; 

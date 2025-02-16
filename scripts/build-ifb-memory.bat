@@ -38,6 +38,7 @@ if not exist %path_build%\lib mkdir %path_build%\lib
 
 @set cl_flags=      /c    ^
                     /MD   ^
+                    /Z7   ^
                     /EHsc
 
 @set cl_output=     /Fo:%path_build%\obj\ItFliesBy.Memory.obj

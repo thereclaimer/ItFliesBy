@@ -39,7 +39,12 @@ struct IFBMemorySystemInfo {
 namespace ifb_memory {
 
     //create/destroy
-    const ifb_b8 context_create                    (const ifb_byte* stack_memory, const ifb_u32 stack_size);
+    const ifb_b8
+    context_create(
+        const IFBPlatformApi* platform_api,
+        const ifb_byte*       stack_memory,
+        const ifb_u32         stack_size);
+    
     const ifb_b8 context_destroy                   (ifb_void);
 
     //system info

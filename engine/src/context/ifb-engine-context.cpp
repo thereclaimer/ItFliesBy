@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <ifb.hpp>
 #include "ifb-engine-internal-context.hpp"
 
@@ -16,14 +15,13 @@ ifb_global IFBEngineContext* _ptr_context;
 
 ifb_engine_api const ifb_b8
 ifb_engine::context_create(
-    const IFBPlatformApi& platform_api_ref,
+    const IFBPlatformApi* ptr_platform_api,
     const ifb_byte*       stack_memory_ptr,
     const ifb_u32         stack_memory_size) {
 
-#if 0
-
     //set the platform api
-    ifb_platform::set_api(platform_api_ref);
+    ifb_macro_assert(ptr_platform_api);
+    _ptr_platform_api = (IFBPlatformApi*)ptr_platform_api;
 
     //create the core
     IFBEngineCore* ptr_core = ifb_engine::core_create(
@@ -68,14 +66,6 @@ ifb_engine::context_create(
     //set the global context
     _ptr_context = ptr_context;
 
-#else
-
-    const ifb_b8 result = ifb_memory::context_create(
-        stack_memory_ptr,
-        stack_memory_size);
-
-#endif
-
     //we're done
     return(true);
 }
@@ -85,16 +75,10 @@ ifb_engine::context_destroy(
     ifb_void) {
 
     ifb_b8 result = true;
-#if 0
 
     ifb_macro_assert(_ptr_context);
 
-
     result &= ifb_engine::core_destroy(_ptr_context->ptr_core);
-
-#else
-
-#endif
 
     return(result);
 }

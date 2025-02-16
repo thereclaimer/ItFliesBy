@@ -42,7 +42,7 @@ pushd ..
 if not exist %dir_build_bin% mkdir %dir_build_bin%
 if not exist %dir_build_obj% mkdir %dir_build_obj%
 if not exist %dir_build_lib% mkdir %dir_build_lib%
-
+  
 ::vcpkg
 if not exist %dir_vcpkg% call vcpkg install
 
@@ -78,7 +78,8 @@ if not exist %dir_vcpkg% call vcpkg install
 :: LINKER ARGUMENTS
 ::----------------------------------------------------------------
 
-@set link_flags=    /DLL
+@set link_flags=    /DLL   ^
+                    /DEBUG
 
 @set link_paths=    /LIBPATH:vcpkg_installed\x64-windows\lib ^
                     /LIBPATH:build\debug\lib                 ^

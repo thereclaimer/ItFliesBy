@@ -13,14 +13,17 @@ ifb_engine::core_create(
     ifb_macro_assert(core_stack_memory_ptr);
     ifb_macro_assert(core_stack_memory_size);
 
+    const IFBPlatformApi* ptr_platform_api = ifb_engine::platform_api();
+
     //create the memory context
     const ifb_b8 memory_context_created = ifb_memory::context_create(
+        ptr_platform_api,
         core_stack_memory_ptr,
         core_stack_memory_size);
     if (!memory_context_created) return(NULL);
 
     //allocate the core
-    const ifb_u32 core_stack_offset = ifb_memory_macro_stack_push_type(IFBEngineCore);
+    const ifb_u32 core_stack_offset = ifb_memory_macro_stack_push_struct(IFBEngineCore);
     if (core_stack_offset == 0) return(NULL);
 
     //get the pointer

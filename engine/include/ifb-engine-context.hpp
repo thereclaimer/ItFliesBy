@@ -8,8 +8,8 @@ namespace ifb_engine {
     // create/destroy
     ifb_engine_api const ifb_b8 
     context_create(
-        const IFBPlatformApi& platform_api_ref,
-        const ifb_byte*       stack_memory_ptr,
+        const IFBPlatformApi* ptr_platform_api,
+        const ifb_byte*       ptr_stack_memory,
         const ifb_u32         stack_memory_size);
     
     
