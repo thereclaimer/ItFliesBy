@@ -13,6 +13,7 @@
 struct IFBEngineCore;
 
 struct IFBEngineCoreMemoryStack;
+struct IFBEngineCoreMemorySubStack;
 struct IFBEngineCoreMemoryReservation;
 struct IFBEngineCoreMemory;
 
@@ -37,16 +38,20 @@ struct IFBEngineCoreMemory {
 
 namespace ifb_engine {
 
+    //reservation
     const ifb_b8                     core_memory_reserve                 (IFBEngineCore* core_ptr, const ifb_u32 size);
     const ifb_b8                     core_memory_release                 (IFBEngineCore* core_ptr);
 
-    const IFBEngineSingletonHandle   core_memory_singleton_commit        (IFBEngineCore* core_ptr, const ifb_u32 size, const ifb_u32 alignment);
-    const ifb_ptr                    core_memory_singleton_load          (IFBEngineCore* core_ptr, const IFBEngineSingletonHandle singleton_handle);
+    //stack
+    const ifb_ptr                    core_memory_stack_commit_absolute   (IFBEngineCore* core_ptr, const ifb_u32 size, const ifb_u32 alignment = 0);
+    const ifb_u32                    core_memory_stack_commit_relative   (IFBEngineCore* core_ptr, const ifb_u32 size, const ifb_u32 alignment = 0);
 
+    //arenas
     const IFBMemoryArenaHandle       core_memory_arena_commit_unmanaged  (IFBEngineCore* core_ptr, const ifb_u32 size);
     const IFBMemoryLinearArenaHandle core_memory_arena_commit_linear     (IFBEngineCore* core_ptr, const ifb_u32 size);
     const IFBMemoryBlockArenaHandle  core_memory_arena_commit_block      (IFBEngineCore* core_ptr, const ifb_u32 block_size, const ifb_u32 block_count);
 };
+
 
 /**********************************************************************************/
 /* CORE                                                                           */
@@ -73,7 +78,6 @@ namespace ifb_engine {
 /* MACROS                                                                         */
 /**********************************************************************************/
 
-#define ifb_engine_macro_core_memory_singleton_commit_type(core_ptr,type)             ifb_engine::core_memory_singleton_commit (core_ptr, sizeof(type), alignof(type))
-#define ifb_engine_macro_core_memory_singleton_load_type(core_ptr,handle,type) (type*)ifb_engine::core_memory_singleton_load   (core_ptr, handle)
+#define ifb_engine_macro_core_memory_commit_struct(ptr_core,struct) (struct*)ifb_engine::core_memory_stack_commit_absolute(ptr_core,sizeof(struct),alignof(struct))
 
 #endif //IFB_ENGINE_INTERNAL_CORE_HPP

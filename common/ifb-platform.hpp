@@ -301,9 +301,18 @@ struct IFBPlatformApi {
 
 namespace ifb_platform {
 
+    ifb_global IFBPlatformApi* _ptr_platform_api;
+
+    inline const IFBPlatformApi*
+    get_api(ifb_void) {
+        return(_ptr_platform_api);
+    }
+
     inline ifb_void 
     set_api(
         const IFBPlatformApi* ptr_platform_api) {
+
+        _ptr_platform_api = (IFBPlatformApi*)ptr_platform_api;
 
         //system
         ifb_platform::system_page_size              = ptr_platform_api->system.page_size;

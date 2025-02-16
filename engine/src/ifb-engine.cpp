@@ -10,3 +10,6 @@
 
 //context
 #include "ifb-engine-context.cpp"
+
+//singletons
+#include "ifb-engine-singletons.cpp"

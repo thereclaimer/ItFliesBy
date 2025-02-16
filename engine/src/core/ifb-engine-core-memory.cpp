@@ -3,7 +3,7 @@
 #include "ifb-engine-internal-core.hpp"
 
 /**********************************************************************************/
-/* RESERVE/RELEASE                                                                */
+/* RESERVATION                                                                    */
 /**********************************************************************************/
 
 inline const ifb_b8
@@ -56,43 +56,49 @@ ifb_engine::core_memory_release(
 }   
 
 /**********************************************************************************/
-/* SINGLETONS                                                                     */
+/* STACK                                                                          */
 /**********************************************************************************/
 
-inline const IFBEngineSingletonHandle
-ifb_engine::core_memory_singleton_commit(
+inline const ifb_ptr
+ifb_engine::core_memory_stack_commit_absolute(
           IFBEngineCore* core_ptr,
     const ifb_u32        size,
     const ifb_u32        alignment) {
-
-    ifb_b8 result = true;
 
     //sanity check
     ifb_macro_assert(core_ptr);
     ifb_macro_assert(size);
 
-    //create the handle
-    IFBEngineSingletonHandle singleton_handle;
-    singleton_handle.value = ifb_memory::stack_push(size, alignment);
+    //do the push and get the pointer
+    const ifb_u32 stack_position = ifb_memory::stack_push(size,alignment);
+    const ifb_ptr pointer        = ifb_memory::stack_get_pointer(stack_position);
+
+    //sanity check again
+    ifb_macro_assert(stack_position);
+    ifb_macro_assert(pointer);
 
     //we're done
-    return(singleton_handle);
+    return(pointer);
 }
 
-inline const ifb_ptr
-ifb_engine::core_memory_singleton_load(
-          IFBEngineCore*           core_ptr,
-    const IFBEngineSingletonHandle singleton_handle) {
-
+inline const ifb_u32
+ifb_engine::core_memory_stack_commit_relative(
+          IFBEngineCore* core_ptr,
+    const ifb_u32        size,
+    const ifb_u32        alignment) {
+    
     //sanity check
     ifb_macro_assert(core_ptr);
-    ifb_macro_assert(singleton_handle.value);
+    ifb_macro_assert(size);
 
-    //get the singleton pointer from the stack
-    const ifb_ptr singleton_ptr = ifb_memory::stack_get_pointer(singleton_handle.value);
+    //do the push and get the pointer
+    const ifb_u32 stack_position = ifb_memory::stack_push(size,alignment);
 
-    //we're done    
-    return(singleton_ptr);
+    //sanity check again
+    ifb_macro_assert(stack_position);
+
+    //we're done
+    return(stack_position);
 }
 
 /**********************************************************************************/

@@ -7,7 +7,7 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-ifb_global IFBEngineContext* _ptr_context;
+ifb_global IFBEngineContext _context;
 
 /**********************************************************************************/
 /* CREATE/DESTROY                                                                 */
@@ -19,52 +19,28 @@ ifb_engine::context_create(
     const ifb_byte*       stack_memory_ptr,
     const ifb_u32         stack_memory_size) {
 
-    //set the platform api
+    //sanity check
     ifb_macro_assert(ptr_platform_api);
-    _ptr_platform_api = (IFBPlatformApi*)ptr_platform_api;
+    ifb_macro_assert(stack_memory_ptr);
+    ifb_macro_assert(stack_memory_size);
+
+    //set the platform api
+    ifb_platform::set_api(ptr_platform_api);
 
     //create the core
     IFBEngineCore* ptr_core = ifb_engine::core_create(
         stack_memory_ptr,
         stack_memory_size);
-
-    //ensure core is valid
     if (!ptr_core) return(false);
 
     //commit singletons
-    const IFBEngineSingletonHandle singleton_context = ifb_engine_macro_core_memory_singleton_commit_type(ptr_core, IFBEngineContext);
-    const IFBEngineSingletonHandle singleton_struct  = ifb_engine_macro_core_memory_singleton_commit_type(ptr_core, IFBEngineContextSingletons);
-    const IFBEngineSingletonHandle singleton_config  = ifb_engine_macro_core_memory_singleton_commit_type(ptr_core, IFBEngineConfig);
-    const IFBEngineSingletonHandle singleton_input   = ifb_engine_macro_core_memory_singleton_commit_type(ptr_core, IFBInput);
-
-    //ensure singletons are committed
-    ifb_b8 all_singletons_committed = true;
-    all_singletons_committed &= (singleton_context.value != NULL);
-    all_singletons_committed &= (singleton_struct.value  != NULL);
-    all_singletons_committed &= (singleton_config.value  != NULL);
-    all_singletons_committed &= (singleton_input.value   != NULL);
-    if (!all_singletons_committed) return(false);
-
-    //load the context pointers
-    IFBEngineContext*           ptr_context    = ifb_engine_macro_core_memory_singleton_load_type(ptr_core, singleton_context, IFBEngineContext); 
-    IFBEngineContextSingletons* ptr_singletons = ifb_engine_macro_core_memory_singleton_load_type(ptr_core, singleton_struct,  IFBEngineContextSingletons); 
-
-    //sanity check, nothing should be null at this point
-    ifb_macro_assert(ptr_context);
-    ifb_macro_assert(ptr_singletons);
-
-    //initialize the singleton struct
-    ptr_singletons->context    = singleton_context;
-    ptr_singletons->singletons = singleton_struct;
-    ptr_singletons->config     = singleton_config;
-    ptr_singletons->input      = singleton_input;
+    IFBEngineSingletons* ptr_singletons = ifb_engine_macro_core_memory_commit_struct(ptr_core,IFBEngineSingletons);
+    ifb_engine::singletons_commit_all(ptr_singletons);
 
     //initialize the context
-    ptr_context->ptr_core       = ptr_core;
-    ptr_context->ptr_singletons = ptr_singletons;
-
-    //set the global context
-    _ptr_context = ptr_context;
+    IFBEngineContext& context_ref = ifb_engine::context_ref();
+    context_ref.ptr_core         = ptr_core;
+    context_ref.ptr_singletons   = ptr_singletons;
 
     //we're done
     return(true);
@@ -76,9 +52,9 @@ ifb_engine::context_destroy(
 
     ifb_b8 result = true;
 
-    ifb_macro_assert(_ptr_context);
+    IFBEngineContext& context_ref = ifb_engine::context_ref();
 
-    result &= ifb_engine::core_destroy(_ptr_context->ptr_core);
+    result &= ifb_engine::core_destroy(context_ref.ptr_core);
 
     return(result);
 }
@@ -116,20 +92,29 @@ ifb_engine::context_render_frame(
 /* INTERNAL                                                                       */
 /**********************************************************************************/
 
-inline IFBEngineCore*
-ifb_engine::context_get_core(
+inline IFBEngineContext&
+ifb_engine::context_ref(
     ifb_void) {
 
-    ifb_macro_assert(_ptr_context);
-
-    return(_ptr_context->ptr_core);
+    return(_context);
 }
 
-inline IFBEngineContextSingletons*
-ifb_engine::context_get_singletons(
+inline IFBEngineCore*
+ifb_engine::context_get_ptr_core(
     ifb_void) {
 
-    ifb_macro_assert(_ptr_context);
+    IFBEngineCore* ptr_core = _context.ptr_core;
+    ifb_macro_assert(ptr_core);
 
-    return(_ptr_context->ptr_singletons);
+    return(ptr_core);
+}
+
+inline IFBEngineSingletons* 
+ifb_engine::context_get_ptr_singletons(
+    ifb_void) {
+
+    IFBEngineSingletons* ptr_singletons = _context.ptr_singletons;
+    ifb_macro_assert(ptr_singletons);
+
+    return(ptr_singletons);
 }

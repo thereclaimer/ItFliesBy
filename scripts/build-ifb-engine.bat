@@ -65,6 +65,7 @@ if not exist %dir_vcpkg% call vcpkg install
                     /I engine\src\config       ^
                     /I engine\src\context      ^
                     /I engine\src\core         ^
+                    /I engine\src\singletons   ^
                     /I memory\include          ^
                     /I data-structures\include ^
                     /I common                  ^

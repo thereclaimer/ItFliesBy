@@ -13,7 +13,8 @@ ifb_engine::core_create(
     ifb_macro_assert(core_stack_memory_ptr);
     ifb_macro_assert(core_stack_memory_size);
 
-    const IFBPlatformApi* ptr_platform_api = ifb_engine::platform_api();
+    //get the platform api
+    const IFBPlatformApi* ptr_platform_api = ifb_platform::get_api();
 
     //create the memory context
     const ifb_b8 memory_context_created = ifb_memory::context_create(

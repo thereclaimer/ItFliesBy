@@ -24,7 +24,7 @@ wWinMain(
     ifb_win32::context_initialize_platform_api(platform_api_ref);
 
     //engine memory stack
-    const ifb_u32      engine_memory_stack_size = ifb_macro_size_kilobytes(64);
+    const ifb_u32      engine_memory_stack_size = ifb_macro_size_kilobytes(512);
     ifb_local ifb_byte engine_memory_stack_buffer[engine_memory_stack_size];
 
     //create the engine context and startup

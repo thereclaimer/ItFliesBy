@@ -6,41 +6,43 @@
 /* COMMIT                                                                         */
 /**********************************************************************************/
 
-inline const ifb_b8
+inline IFBEngineContextSingletons*
 ifb_engine::context_singletons_commit_all(
     ifb_void) {
 
-    //get the singletons
-    IFBEngineContextSingletons& singletons_ref = ifb_engine::context_get_singletons();
+    //get the core
+    IFBEngineCore* ptr_core = ifb_engine::context_get_core();
 
-    //assemble the size and alignment array
-    const IFBEngineSizeAndAlignment singleton_size_and_alignment_array[] = {
-        { sizeof(IFBEngineConfig), alignof(IFBEngineConfig) }
-    };
+    //commit all singletons
+    const IFBEngineSingletonHandle singleton_struct  = ifb_engine_macro_core_memory_singleton_commit_type(ptr_core, IFBEngineContextSingletons);
+    const IFBEngineSingletonHandle singleton_config  = ifb_engine_macro_core_memory_singleton_commit_type(ptr_core, IFBEngineConfig);
+    const IFBEngineSingletonHandle singleton_input   = ifb_engine_macro_core_memory_singleton_commit_type(ptr_core, IFBInput);
 
-    //get the count
-    const ifb_u32 singleton_count = 
-        sizeof(singleton_size_and_alignment_array) / 
-        sizeof(IFBEngineSizeAndAlignment);
+    //ensure singletons are committed
+    ifb_b8 all_singletons_committed = true;
+    all_singletons_committed &= (singleton_struct.value != NULL);
+    all_singletons_committed &= (singleton_config.value != NULL);
+    all_singletons_committed &= (singleton_input.value  != NULL);
+    if (!all_singletons_committed) return(NULL);
 
-    //assemble the handle array
-    IFBEngineContextSingletonHandle singleton_handle_array[singleton_count];
+    //get the singletons pointer
+    IFBEngineContextSingletons* ptr_singletons = ifb_engine_macro_core_memory_singleton_load_type(ptr_core,singleton_struct,IFBEngineContextSingletons);
+    ifb_macro_assert(ptr_singletons);
 
-    //commit the singletons
-    const ifb_b8 result = ifb_engine::context_memory_singleton_commit(
-        singleton_count,
-        singleton_size_and_alignment_array,
-        singleton_handle_array);
+    //initialize the singletons struct
+    ptr_singletons->singletons = singleton_struct;
+    ptr_singletons->config     = singleton_config;
+    ptr_singletons->input      = singleton_input;
 
     //we're done
-    return(result);
+    return(ptr_singletons);
 }
 
 /**********************************************************************************/
-/* INSTANCES                                                                      */
+/* LOAD                                                                           */
 /**********************************************************************************/
 
-inline const IFBEngineConfig*
+inline IFBEngineConfig*
 ifb_engine::context_singletons_get_config(
     ifb_void) {
 
@@ -52,4 +54,15 @@ ifb_engine::context_singletons_get_config(
 
     //we're done
     return(config_ptr);
+}
+
+inline IFBInput*
+ifb_engine::context_singletons_load_input(
+    ifb_void) {
+
+    //get the singletons
+    const IFBEngineContextSingletons& singletons_ref = ifb_engine::context_get_singletons();
+
+    //load the input
+    IFBInput* ptr_input = 
 }
