@@ -12,11 +12,19 @@ struct IFBArray : IFBDataStructure {
 };
 
 /**********************************************************************************/
-/* CREATE / ALLOCATE                                                               */
+/* ALLOCATE                                                                       */
 /**********************************************************************************/
 
 inline const ifb_u32
-ifb_array::allocation_size(
+ifb_array::allocation_size_structure(
+    ifb_void) {
+
+    const ifb_u32 struct_size = ifb_macro_align_size_struct(IFBArray);
+    return(struct_size);
+}
+
+inline const ifb_u32
+ifb_array::allocation_size_total(
     const ifb_u32 element_size,
     const ifb_u32 element_count) {
 
@@ -28,6 +36,22 @@ ifb_array::allocation_size(
     //we're done
     return(allocation_size);
 }
+
+inline const ifb_u32
+ifb_array::allocation_size_data(
+    const ifb_u32 element_size,
+    const ifb_u32 element_count) {
+
+    //calculate the allocation size
+    const ifb_u32 data_size = element_size * element_count;
+
+    //we're done
+    return(data_size);
+}
+
+/**********************************************************************************/
+/* CREATE/INITIALIZE                                                              */
+/**********************************************************************************/
 
 inline IFBArray*
 ifb_array::create(
@@ -57,6 +81,31 @@ ifb_array::create(
 
     //we're done
     return(array_ptr);
+}
+
+inline const ifb_b8
+ifb_array::initialize(
+          IFBArray* array_ptr,
+    const ifb_ptr   data,
+    const ifb_u32   element_size,
+    const ifb_u32   element_count) {
+
+    //sanity check
+    ifb_b8 valid = true;
+    valid &= array_ptr     != NULL;
+    valid &= data          != NULL;
+    valid &= element_size   > 0;
+    valid &= element_count  > 0;
+    if (!valid) return(false);
+
+    //initialize the array
+    array_ptr->start         = (ifb_address)data;
+    array_ptr->size          = element_size * element_count;
+    array_ptr->element_size  = element_size;
+    array_ptr->element_count = element_count;
+
+    //we're done
+    return(true);
 }
 
 /**********************************************************************************/

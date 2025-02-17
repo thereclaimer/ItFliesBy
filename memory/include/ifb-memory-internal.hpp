@@ -105,4 +105,50 @@ namespace ifb_memory {
     inline IFBMemoryReservationList& context_get_reservation_list    (ifb_void); 
 };
 
+/**********************************************************************************/
+/* PLATFORM                                                                       */
+/**********************************************************************************/
+
+namespace ifb_memory {
+
+    //system
+    ifb_global funcptr_ifb_platform_system_page_size              platform_system_page_size;
+    ifb_global funcptr_ifb_platform_system_allocation_granularity platform_system_allocation_granularity;
+
+    //memory
+    ifb_global funcptr_ifb_platform_memory_reserve                platform_memory_reserve;
+    ifb_global funcptr_ifb_platform_memory_release                platform_memory_release;
+    ifb_global funcptr_ifb_platform_memory_commit                 platform_memory_commit;
+
+    inline ifb_b8
+    platform_set_api(
+        const IFBPlatformApi* ptr_platform_api) {
+
+        //sanity check
+        if (!ptr_platform_api) return(false);
+
+        //system
+        const IFBPlatformSystemApi& system_api_ref   = ptr_platform_api->system; 
+        platform_system_page_size              = system_api_ref.page_size; 
+        platform_system_allocation_granularity = system_api_ref.allocation_granularity; 
+
+        //memory
+        const IFBPlatformMemoryApi& memory_api_ref = ptr_platform_api->memory;
+        platform_memory_reserve = memory_api_ref.reserve;
+        platform_memory_release = memory_api_ref.release;
+        platform_memory_commit  = memory_api_ref.commit;
+
+        //make sure the methods are defined
+        ifb_b8 result = true;
+        result &= (platform_system_page_size              != NULL); 
+        result &= (platform_system_allocation_granularity != NULL); 
+        result &= (platform_memory_reserve                != NULL); 
+        result &= (platform_memory_release                != NULL); 
+        result &= (platform_memory_commit                 != NULL); 
+
+        //we're done
+        return(result);
+    }
+};
+
 #endif //IFB_MEMORY_INTERNAL_HPP

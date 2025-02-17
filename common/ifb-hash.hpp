@@ -225,12 +225,14 @@ inline const ifb_b8
 ifb_hash::hash_is_clear(
     const IFBHash& hash_value) {
 
-    return (
-        hash_value.h1 == 0 &&
-        hash_value.h2 == 0 &&
-        hash_value.h3 == 0 &&
-        hash_value.h4 == 0);
+    ifb_b8 is_clear = true;
 
+    is_clear &= (hash_value.h1 == 0);
+    is_clear &= (hash_value.h2 == 0);
+    is_clear &= (hash_value.h3 == 0);
+    is_clear &= (hash_value.h4 == 0);
+
+    return(is_clear);
 }
 
 #endif //IFB_HASH_HPP

@@ -24,11 +24,9 @@ ifb_engine::context_create(
     ifb_macro_assert(stack_memory_ptr);
     ifb_macro_assert(stack_memory_size);
 
-    //set the platform api
-    ifb_platform::set_api(ptr_platform_api);
-
     //create the core
     IFBEngineCore* ptr_core = ifb_engine::core_create(
+        ptr_platform_api,
         stack_memory_ptr,
         stack_memory_size);
     if (!ptr_core) return(false);

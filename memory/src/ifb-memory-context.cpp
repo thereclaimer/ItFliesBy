@@ -22,9 +22,7 @@ ifb_memory::context_create(
     // make sure the platform api methods are defined 
     // and the stack is valid and large enough
     ifb_b8 result = true;
-    ifb_platform::set_api(ptr_platform_api);
-    result &= ifb_platform::system_api_valid();
-    result &= ifb_platform::memory_api_valid();
+    result &= ifb_memory::platform_set_api(ptr_platform_api);
     result &= stack_memory != NULL;
     result &= stack_size   >= memory_struct_size;
 
@@ -40,8 +38,8 @@ ifb_memory::context_create(
     IFBMemoryReservationList& reservation_list_ref = _context_ptr->reservation_list;
 
     //get the platform info
-    system_info_ref.page_size   = ifb_platform::system_page_size();
-    system_info_ref.granularity = ifb_platform::system_allocation_granularity();
+    system_info_ref.page_size   = ifb_memory::platform_system_page_size();
+    system_info_ref.granularity = ifb_memory::platform_system_allocation_granularity();
 
     //initialize the stack
     stack_ref.start    = (ifb_address)_context_ptr;
@@ -79,7 +77,7 @@ ifb_memory::context_destroy(
         const ifb_ptr current_reservation_start = (ifb_ptr)current_reservation_ptr->start;
 
         //release it
-        result &= ifb_platform::memory_release(
+        result &= ifb_memory::platform_memory_release(
             current_reservation_start,
             current_reservation_size);
     }

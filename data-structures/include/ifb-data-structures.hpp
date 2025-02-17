@@ -25,17 +25,25 @@ struct IFBArrayList; //TODO
 
 namespace ifb_array {
 
-    //create / allocate
-    const ifb_u32
-    allocation_size(
-        const ifb_u32 element_size,
-        const ifb_u32 element_count);
+    //allocate
+    const ifb_u32 allocation_size_structure (ifb_void);
+    const ifb_u32 allocation_size_data      (const ifb_u32 element_size,const ifb_u32 element_count);
+    const ifb_u32 allocation_size_total     (const ifb_u32 element_size,const ifb_u32 element_count);
+
+    //create/initialize
 
     IFBArray*
     create(
         const ifb_ptr memory,
         const ifb_u32 element_size,
         const ifb_u32 element_count);
+
+    const ifb_b8
+    initialize(
+              IFBArray* array_ptr,
+        const ifb_ptr   data,
+        const ifb_u32   element_size,
+        const ifb_u32   element_count);
 
     //pointers
     const ifb_ptr get_pointer_indexed (const IFBArray* array_ptr, const ifb_u32 index);
@@ -45,6 +53,33 @@ namespace ifb_array {
     const ifb_u32 get_element_size    (const IFBArray* array_ptr);
     const ifb_u32 get_element_count   (const IFBArray* array_ptr);
     const ifb_u32 get_array_size      (const IFBArray* array_ptr);
+};
+
+
+/**********************************************************************************/
+/* ARRAY LIST                                                                      */
+/**********************************************************************************/
+
+namespace ifb_array_list {
+
+    //create/reset
+    const ifb_b8  reset                (IFBArrayList* array_list_ptr);
+
+    //add/remove
+    const ifb_b8  remove               (IFBArrayList* array_list_ptr, const ifb_u32   index);
+    const ifb_u32 add                  (IFBArrayList* array_list_ptr, const ifb_byte* element_ptr);
+    const ifb_u32 insert               (IFBArrayList* array_list_ptr, const ifb_byte* element_ptr, const ifb_u32 index);
+
+    //size/count    
+    const ifb_u32 get_size_total       (const IFBArrayList* array_list_ptr);
+    const ifb_u32 get_size_used        (const IFBArrayList* array_list_ptr);
+    const ifb_u32 get_element_size     (const IFBArrayList* array_list_ptr);
+    const ifb_u32 get_element_count    (const IFBArrayList* array_list_ptr);
+    
+    //pointers
+    const ifb_ptr get_element_first    (const IFBArrayList* array_list_ptr);
+    const ifb_ptr get_element_last     (const IFBArrayList* array_list_ptr);
+    const ifb_ptr get_element_at_index (const IFBArrayList* array_list_ptr, const ifb_u32 index);
 };
 
 /**********************************************************************************/
@@ -79,53 +114,21 @@ namespace ifb_stack {
     const ifb_u32 get_size_used  (const IFBStack* stack_ptr);
 };
 
-
 /**********************************************************************************/
 /* QUEUE                                                                          */
 /**********************************************************************************/
 
-struct IFBQueue : IFBDataStructure {
-    ifb_u32 position;
-    ifb_u32 element_size;
-    ifb_u32 element_count;
-};
+namespace ifb_queue {
 
-namespace ifb_data {
-
-    const ifb_ptr queue_pointer    (const IFBQueue& queue_ref);
-    const ifb_b8  queue_reset      (const IFBQueue& queue_ref);
-    const ifb_u32 queue_size_total (const IFBQueue& queue_ref);
-    const ifb_u32 queue_size_used  (const IFBQueue& queue_ref);
-    const ifb_u32 queue_peek       (const IFBQueue& queue_ref, const ifb_u32 index);
+    const ifb_b8  reset          (const IFBQueue* queue_ptr);
     
-    const ifb_ptr queue_push       (IFBQueue& queue_ref);
-    const ifb_ptr queue_pop        (IFBQueue& queue_ref);
-};
-
-/**********************************************************************************/
-/* ARRAY LIST                                                                      */
-/**********************************************************************************/
-
-struct IFBArrayList : IFBDataStructure {
-    ifb_u32 element_size;
-    ifb_u32 element_count_total;
-    ifb_u32 element_count_current;
-};
-
-namespace ifb_data {
-
-    const ifb_u32 array_list_size_total              (const IFBArrayList& array_list_ref);
-    const ifb_u32 array_list_size_used               (const IFBArrayList& array_list_ref);
-    const ifb_u32 array_list_element_size            (const IFBArrayList& array_list_ref);
-    const ifb_u32 array_list_element_count           (const IFBArrayList& array_list_ref);
-    const ifb_ptr array_list_element_first           (const IFBArrayList& array_list_ref);
-    const ifb_ptr array_list_element_last            (const IFBArrayList& array_list_ref);
-    const ifb_ptr array_list_element_at_index        (const IFBArrayList& array_list_ref, const ifb_u32 index);
-
-    const ifb_b8  array_list_reset                   (IFBArrayList& array_list_ref);
-    const ifb_b8  array_list_element_remove_at_index (IFBArrayList& array_list_ref, const ifb_u32   index);
-    const ifb_u32 array_list_element_add             (IFBArrayList& array_list_ref, const ifb_byte* element_ptr);
-    const ifb_u32 array_list_element_add_at_index    (IFBArrayList& array_list_ref, const ifb_byte* element_ptr, const ifb_u32 index);
+    const ifb_u32 peek           (const IFBQueue* queue_ptr, const ifb_u32 size);
+    const ifb_ptr enqueue        (IFBQueue*       queue_ptr, const ifb_u32 size);
+    const ifb_ptr dequeue        (IFBQueue*       queue_ptr, const ifb_u32 size);
+    
+    const ifb_u32 get_size_total (const IFBQueue* queue_ptr);
+    const ifb_u32 get_size_free  (const IFBQueue* queue_ptr);
+    const ifb_u32 get_size_used  (const IFBQueue* queue_ptr);
 };
 
 #endif //IFB_DATA_STRUCTURES_HPP

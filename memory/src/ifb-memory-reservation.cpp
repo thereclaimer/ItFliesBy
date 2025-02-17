@@ -42,7 +42,7 @@ ifb_memory::reserve_memory(
     const ifb_u64 allocation_granularity = system_info_ref.granularity;
     const ifb_u64 reservation_size       = ifb_macro_align_a_to_b(size_minimum,allocation_granularity);
     const ifb_u32 reservation_page_count = (ifb_u32)(reservation_size / page_size);
-    const ifb_ptr reservation_start_ptr  = ifb_platform::memory_reserve(reservation_size);
+    const ifb_ptr reservation_start_ptr  = ifb_memory::platform_memory_reserve(reservation_size);
 
     //sanity check
     if (!reservation_start_ptr) return(reservation_handle);
@@ -113,7 +113,7 @@ ifb_memory::release_memory(
     const ifb_u64 reservation_size       = ifb_memory::context_get_size_from_page_count(reservation_page_count); 
 
     //tell the platform to release the memory
-    const ifb_b8 result = ifb_platform::memory_release(
+    const ifb_b8 result = ifb_memory::platform_memory_release(
         reservation_start,
         reservation_size);
 
@@ -347,7 +347,7 @@ ifb_memory::reservation_commit_pages(
     if (new_page_commit_count > reservation_ptr->page_count_total) return(false);
 
     //commit the arena size at the starting page
-    const ifb_ptr commit_result_pointer = ifb_platform::memory_commit(
+    const ifb_ptr commit_result_pointer = ifb_memory::platform_memory_commit(
         commit_request_pointer,
         commit_size_actual);
 

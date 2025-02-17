@@ -6,19 +6,18 @@
 
 inline IFBEngineCore*
 ifb_engine::core_create(
-    const ifb_byte* core_stack_memory_ptr,
-    const ifb_u32   core_stack_memory_size) {
+    const IFBPlatformApi* platform_api_ptr,
+    const ifb_byte*       core_stack_memory_ptr,
+    const ifb_u32         core_stack_memory_size) {
 
     //sanity check
+    ifb_macro_assert(platform_api_ptr);
     ifb_macro_assert(core_stack_memory_ptr);
     ifb_macro_assert(core_stack_memory_size);
 
-    //get the platform api
-    const IFBPlatformApi* ptr_platform_api = ifb_platform::get_api();
-
     //create the memory context
     const ifb_b8 memory_context_created = ifb_memory::context_create(
-        ptr_platform_api,
+        platform_api_ptr,
         core_stack_memory_ptr,
         core_stack_memory_size);
     if (!memory_context_created) return(NULL);

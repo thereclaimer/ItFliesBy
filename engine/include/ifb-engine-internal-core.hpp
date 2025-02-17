@@ -66,8 +66,9 @@ namespace ifb_engine {
 
     IFBEngineCore*
     core_create(
-        const ifb_byte* core_stack_memory_ptr,
-        const ifb_u32   core_stack_memory_size);
+        const IFBPlatformApi* platform_api_ptr,
+        const ifb_byte*       core_stack_memory_ptr,
+        const ifb_u32         core_stack_memory_size);
     
     const ifb_b8
     core_destroy(
