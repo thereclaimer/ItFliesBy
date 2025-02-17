@@ -1,75 +1,27 @@
-#pragma once
-
 #include "ifb-memory-internal.hpp"
 
 /**********************************************************************************/
-/* COMMIT                                                                         */
+/* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-inline const IFBMemoryBlockArena*
-block_arena_commit(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u32         block_size_minimum,
-    const ifb_u32         block_count) {
+namespace ifb_memory {
 
-    //sanity check
-    ifb_macro_assert(memory_handle && block_count > 1);        
-
-    //calculate the flag group array size
-    const ifb_u32 block_size  = ifb_memory::reservation_size_align_to_page(memory_handle,block_size_minimum);
-    const ifb_u32 commit_size = block_size * block_count; 
-
-    //allocate a block arena and flags
-    IFBMemoryBlockArena* block_arena_ptr = ifb_memory::stack_push_arena_block       (memory_handle);
-    IFBMemoryBlock*      block_array     = ifb_memory::stack_push_arena_block_array (memory_handle,block_count); 
-
-    //commit the pages
-    block_arena_ptr->page_commit.size = commit_size;
-    const ifb_b8 commit_result = ifb_memory::reservation_page_commit(
-        memory_handle,
-        block_arena_ptr->page_commit);
-
-    //sanity check
-    ifb_macro_assert(block_arena_ptr);
-    ifb_macro_assert(block_array);
-    ifb_macro_assert(commit_result);
-
-    //initialize the blocks
-    for (
-        ifb_u32 block_index = 0;
-        block_index < block_count;
-        ++block_index) {
-
-        //a block address of 0 means its unreserved
-        IFBMemoryBlock& block_ref = block_array[block_index];
-        block_ref.start = 0;
-    }
-
-    //set the arena properties
-    block_arena_ptr->next        = NULL;
-    block_arena_ptr->type        = IFBMemoryArenaType_Block;
-    block_arena_ptr->block_size  = block_size;
-    block_arena_ptr->block_count = block_count;
-    block_arena_ptr->block_array = block_array; 
-
-    //we're done
-    return(block_arena_ptr);
-}
+    inline IFBMemoryBlockArena* block_arena_handle_to_pointer(const IFBMemoryBlockArenaHandle block_arena_handle);
+};
 
 /**********************************************************************************/
 /* RESET                                                                          */
 /**********************************************************************************/
 
-inline ifb_void
+ifb_void
 ifb_memory::block_arena_reset(
     const IFBMemoryBlockArenaHandle block_arena_handle) {
 
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
+    //get the arena pointer
+    IFBMemoryBlockArena* block_arena_ptr = ifb_memory::block_arena_handle_to_pointer(block_arena_handle);
 
-    //cache the blocks
-    IFBMemoryBlock* block_array = block_arena_ptr->block_array;
+    //cache the addresses
+    ifb_address* address_array = block_arena_ptr->block_address_array;
     
     //set all the block start addresses to zero, and we're done
     for (
@@ -78,8 +30,7 @@ ifb_memory::block_arena_reset(
         ++block_index) {
 
         //a block address of 0 means its unreserved
-        IFBMemoryBlock& block_ref = block_array[block_index];
-        block_ref.start = 0;
+        address_array[block_index] = 0;
     }
 }
 
@@ -87,17 +38,19 @@ ifb_memory::block_arena_reset(
 /* RESERVE/RELEASE                                                                */
 /**********************************************************************************/
 
-inline const ifb_b8
+const ifb_b8
 ifb_memory::block_arena_block_reserve(
     const IFBMemoryBlockArenaHandle block_arena_handle,
           ifb_u32&                  block_index_ref) {
 
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
+    //get the arena pointer
+    IFBMemoryBlockArena* block_arena_ptr = ifb_memory::block_arena_handle_to_pointer(block_arena_handle);
 
-    //cache the blocks
-    IFBMemoryBlock* block_array = block_arena_ptr->block_array;
+    //cache the properties
+    ifb_address*      address_array     = block_arena_ptr->block_address_array;
+    const ifb_u32     block_count       = block_arena_ptr->block_count;
+    const ifb_u32     block_size        = block_arena_ptr->block_size;
+    const ifb_address block_arena_start = block_arena_ptr->start;     
 
     //find the next available block
     for (
@@ -106,15 +59,14 @@ ifb_memory::block_arena_block_reserve(
         ++block_index_ref) {
 
         //a block address of 0 means its unreserved
-        IFBMemoryBlock& block_ref = block_array[block_index_ref];
-        if (block_ref.start == 0) {
+        if (address_array[block_index_ref] == 0) {
 
             //calculate the starting address
-            const ifb_u32     block_offset = block_index_ref * block_arena_ptr->block_size;
-            const ifb_address block_start  = block_arena_ptr->page_commit.start + block_offset;
+            const ifb_u32     block_offset = block_index_ref   * block_size;
+            const ifb_address block_start  = block_arena_start + block_offset;
 
             //update the block
-            block_ref.start = block_start;
+            address_array[block_index_ref] = block_start;
 
             //we're done
             return(true); 
@@ -126,74 +78,70 @@ ifb_memory::block_arena_block_reserve(
     return(false);
 }
 
-inline const ifb_b8
+const ifb_b8
 ifb_memory::block_arena_block_reserve_index(
     const IFBMemoryBlockArenaHandle block_arena_handle,
     const ifb_u32                   block_index) {
     
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
+    //get the arena pointer
+    IFBMemoryBlockArena* block_arena_ptr = ifb_memory::block_arena_handle_to_pointer(block_arena_handle);
 
     //if the index isn't valid, we're done
     if (block_index < block_arena_ptr->block_count) return(false);
 
-    //get the block
-    IFBMemoryBlock& block_ref = block_arena_ptr->block_array[block_index];
+    //cache the properties
+    ifb_address*      address_array     = block_arena_ptr->block_address_array;
+    const ifb_u32     block_count       = block_arena_ptr->block_count;
+    const ifb_u32     block_size        = block_arena_ptr->block_size;
+    const ifb_address block_arena_start = block_arena_ptr->start;     
 
     //if its already reserved, we're done
-    if (block_ref.start > 0) return(false);
+    if (address_array[block_index] != 0) return(false);
 
     //calculate the starting address
-    const ifb_u32     block_offset = block_index * block_arena_ptr->block_size;
-    const ifb_address block_start  = block_arena_ptr->page_commit.start + block_offset;
+    const ifb_u32     block_offset = block_index       * block_size; 
+    const ifb_address block_start  = block_arena_start + block_offset; 
 
     //update the block
-    block_ref.start = block_start;
-
+    address_array[block_index] = block_start;
+    
     //we're done
     return(true);
 }
 
-inline const ifb_b8
+const ifb_b8
 ifb_memory::block_arena_block_release(
     const IFBMemoryBlockArenaHandle block_arena_handle,
     const ifb_u32                   block_index) {
     
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
+    //get the arena pointer
+    IFBMemoryBlockArena* block_arena_ptr = ifb_memory::block_arena_handle_to_pointer(block_arena_handle);
 
     //if the index isn't valid, we're done
     if (block_index < block_arena_ptr->block_count) return(false);
 
-    //get the block
-    IFBMemoryBlock& block_ref = block_arena_ptr->block_array[block_index];
-
-    //set the start to 0
-    block_ref.start = 0;
+    //set the block address to 0
+    ifb_address* block_address_array = block_arena_ptr->block_address_array;
+    block_address_array[block_index] = 0;
 
     //we're done
     return(true);
 }
 
-inline const ifb_b8
+const ifb_b8
 ifb_memory::block_arena_block_is_free(
     const IFBMemoryBlockArenaHandle block_arena_handle,
     const ifb_u32                   block_index) {
     
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
+    //get the arena pointer
+    IFBMemoryBlockArena* block_arena_ptr = ifb_memory::block_arena_handle_to_pointer(block_arena_handle);
 
     //if the index isn't valid, we're done
     if (block_index < block_arena_ptr->block_count) return(false);
 
-    //get the block
-    IFBMemoryBlock& block_ref = block_arena_ptr->block_array[block_index];
-
     //if the start is 0, the block is free
-    const ifb_b8 block_free = block_ref.start == 0;  
+    const ifb_address* block_address_array = block_arena_ptr->block_address_array;
+    const ifb_b8       block_free          = block_address_array[block_index] == 0;  
 
     //we're done
     return(block_free);
@@ -203,25 +151,26 @@ ifb_memory::block_arena_block_is_free(
 /* POINTERS                                                                       */
 /**********************************************************************************/
 
-inline const ifb_ptr 
+const ifb_ptr 
 ifb_memory::block_get_pointer(
     const IFBMemoryBlockArenaHandle block_arena_handle,
     const ifb_u32                   block_index,
     const ifb_u32                   offset) {
 
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
+    //get the arena pointer
+    IFBMemoryBlockArena* block_arena_ptr = ifb_memory::block_arena_handle_to_pointer(block_arena_handle);
 
     //if the index isn't valid, we're done
     if (block_index < block_arena_ptr->block_count) return(false);
 
-    //get the block
-    IFBMemoryBlock& block_ref = block_arena_ptr->block_array[block_index];
+    //get the start of the block
+    const ifb_address* block_address_array  = block_arena_ptr->block_address_array;
+    const ifb_address  block_address_start  = block_address_array[block_index]; 
+    const ifb_address  block_address_offset = block_address_start + offset;
 
     //if the block isn't reserved, the address will just be 0
-    const ifb_address block_offset_address = block_ref.start > 0
-        ? block_ref.start + offset
+    const ifb_address block_offset_address = block_address_start > 0
+        ? block_address_offset
         : 0;
 
     //cast the address to a pointer
@@ -232,93 +181,67 @@ ifb_memory::block_get_pointer(
 }
 
 /**********************************************************************************/
-/* SIZE/COUNT                                                                     */
+/* INFO                                                                           */
 /**********************************************************************************/
 
-inline const ifb_u32
-ifb_memory::block_arena_get_size_total(
-    const IFBMemoryBlockArenaHandle block_arena_handle) {
+const ifb_b8 
+ifb_memory::block_arena_get_info(
+    const IFBMemoryBlockArenaHandle block_arena_handle,
+          IFBMemoryBlockArenaInfo*  block_arena_info) {
 
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
+    //get the arena pointer
+    IFBMemoryBlockArena* block_arena_ptr = ifb_memory::block_arena_handle_to_pointer(block_arena_handle);
 
-    //return the commit size
-    return(block_arena_ptr->page_commit.size);
-}
+    //sanity check
+    if (!block_arena_info) return(false);
 
-inline const ifb_u32
-ifb_memory::block_arena_get_block_size(
-    const IFBMemoryBlockArenaHandle block_arena_handle) {
+    //calculate the free blocks
+    const ifb_address* block_address_array = block_arena_ptr->block_address_array; 
+    const ifb_u32      block_count         = block_arena_ptr->block_count; 
+    ifb_u32            block_count_free    = 0;
 
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
-
-    //return the block size
-    return(block_arena_ptr->block_size);
-}
-
-inline const ifb_u32
-ifb_memory::block_arena_get_block_count_total(
-    const IFBMemoryBlockArenaHandle block_arena_handle) {
-
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
-
-    //return the block count
-    return(block_arena_ptr->block_count);
-}
-
-inline const ifb_u32
-ifb_memory::block_arena_get_block_count_used(
-    const IFBMemoryBlockArenaHandle block_arena_handle) {
-
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
-
-    //cache the array
-    IFBMemoryBlock* block_array = block_arena_ptr->block_array;
-
-    //loop through the blocks and count the ones with addresses
-    ifb_u32 block_count_used = 0;
     for (
         ifb_u32 block_index = 0;
-        block_index < block_arena_ptr->block_count;
+        block_index < block_count;
         ++block_index) {
 
-        //if the block has a starting address, its used
-        if (block_array[block_index].start > 0) ++block_count_used;
+        const ifb_address block_address_current = block_address_array[block_index]; 
+
+        if (block_address_current == 0) {
+            ++block_count_free;
+        } 
     }
 
+    //set the block arena info properties
+    block_arena_info->reservation_handle.offset = block_arena_ptr->reservation->stack_offset;
+    block_arena_info->block_arena_handle.offset = block_arena_ptr->stack_position;
+    block_arena_info->page_start                = block_arena_ptr->page_start;
+    block_arena_info->page_count                = block_arena_ptr->page_count;
+    block_arena_info->size_total                = block_arena_ptr->size_total;
+    block_arena_info->block_size                = block_arena_ptr->block_size;
+    block_arena_info->block_count_total         = block_count; 
+    block_arena_info->block_count_free          = block_count_free;
+
     //we're done
-    return(block_count_used);
+    return(true);
 }
 
-inline const ifb_u32
-ifb_memory::block_arena_get_block_count_free(
+/**********************************************************************************/
+/* INTERNAL                                                                       */
+/**********************************************************************************/
+
+IFBMemoryBlockArena*
+ifb_memory::block_arena_handle_to_pointer(
     const IFBMemoryBlockArenaHandle block_arena_handle) {
 
-    //cast the pointer
-    IFBMemoryBlockArena* block_arena_ptr = (IFBMemoryBlockArena*)block_arena_handle;
-    ifb_macro_assert(block_arena_handle);
+    //get the pointer
+    IFBMemoryBlockArena* block_arena_ptr = ifb_memory_macro_stack_get_type_pointer(
+        block_arena_handle.offset,
+        IFBMemoryBlockArena);
 
-    //cache the array
-    IFBMemoryBlock* block_array = block_arena_ptr->block_array;
-
-    //loop through the blocks and count the ones without addresses
-    ifb_u32 block_count_free = 0;
-    for (
-        ifb_u32 block_index = 0;
-        block_index < block_arena_ptr->block_count;
-        ++block_index) {
-
-        //if the block has a starting address, its used
-        if (block_array[block_index].start == 0) ++block_count_free;
-    }
+    //sanity check
+    ifb_macro_assert(block_arena_ptr);
 
     //we're done
-    return(block_count_free);
+    return(block_arena_ptr);
 }

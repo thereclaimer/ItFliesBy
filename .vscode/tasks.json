@@ -13,6 +13,9 @@
 				"$msCompile"
 			],
 			"group": "build",
+			"dependsOn":[
+				"Build IFB Engine"
+			]
 		},
 		{
 			"label":   "Build IFB Engine",
@@ -26,10 +29,26 @@
 				"$msCompile"
 			],
 			"group": "build",
+			"dependsOn":[
+				"Build IFB Memory"
+			]
 		},
 		{
 			"label":   "Build IFB Memory",
 			"command": "build-ifb-memory.bat",
+			"args":[
+            ],
+			"options": {
+				"cwd": "${workspaceFolder}/scripts"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build",
+		},
+		{
+			"label":   "Build IFB Data Structures",
+			"command": "build-ifb-data-structures.bat",
 			"args":[
             ],
 			"options": {

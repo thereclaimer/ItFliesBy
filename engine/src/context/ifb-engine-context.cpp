@@ -1,78 +1,118 @@
 #pragma once
 
-#include "ifb-engine.hpp"
+#include <ifb.hpp>
 #include "ifb-engine-internal-context.hpp"
-#include "ifb-engine-internal-memory.hpp"
 
-inline IFBEngineMemory*
-ifb_engine::context_get_memory(
-    ifb_void) {
+/**********************************************************************************/
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
 
-    IFBEngineContext& context_ref = ifb_engine::context();
+ifb_global IFBEngineContext _context;
 
-    return(&context_ref.memory);
-}
+/**********************************************************************************/
+/* CREATE/DESTROY                                                                 */
+/**********************************************************************************/
 
-inline IFBEngineContextCore*
-ifb_engine::context_get_core(
-    ifb_void) {
+ifb_engine_api const ifb_b8
+ifb_engine::context_create(
+    const IFBPlatformApi* ptr_platform_api,
+    const ifb_byte*       stack_memory_ptr,
+    const ifb_u32         stack_memory_size) {
 
-    IFBEngineContext& context_ref = ifb_engine::context();
+    //sanity check
+    ifb_macro_assert(ptr_platform_api);
+    ifb_macro_assert(stack_memory_ptr);
+    ifb_macro_assert(stack_memory_size);
 
-    IFBEngineContextCore* core_ptr = (IFBEngineContextCore*)ifb_engine::memory_get_pointer(
-        &context_ref.memory,
-        context_ref.handles.core);
+    //create the core
+    IFBEngineCore* ptr_core = ifb_engine::core_create(
+        ptr_platform_api,
+        stack_memory_ptr,
+        stack_memory_size);
+    if (!ptr_core) return(false);
 
-    return(core_ptr);
-}
+    //commit singletons
+    IFBEngineSingletons* ptr_singletons = ifb_engine_macro_core_memory_commit_struct(ptr_core,IFBEngineSingletons);
+    ifb_engine::singletons_commit_all(ptr_singletons);
 
-inline IFBEngineDevTools*
-ifb_engine::context_get_devtools(
-    ifb_void) {
+    //initialize the context
+    IFBEngineContext& context_ref = ifb_engine::context_ref();
+    context_ref.ptr_core         = ptr_core;
+    context_ref.ptr_singletons   = ptr_singletons;
 
-    IFBEngineContext& context_ref = ifb_engine::context();
-
-    IFBEngineDevTools* devtools_ptr = (IFBEngineDevTools*)ifb_engine::memory_get_pointer(
-        &context_ref.memory,
-        context_ref.handles.devtools);
-
-    return(devtools_ptr);
-}
-
-inline const ifb_ptr 
-ifb_engine::context_get_pointer(
-    const IFBHND& handle) {
-
-    //get memory
-    IFBEngineMemory* engine_memory_ptr = ifb_engine::context_get_memory();
-
-    //get the pointer
-    const ifb_ptr pointer = ifb_engine::memory_get_pointer(
-        engine_memory_ptr,
-        handle);
-    
     //we're done
-    return(pointer);
+    return(true);
 }
 
-inline const ifb_ptr 
-ifb_engine::context_get_pointer(
-    const IFBGHND& global_handle) {
+ifb_engine_api const ifb_b8
+ifb_engine::context_destroy(
+    ifb_void) {
 
-    //get memory
-    IFBEngineMemory* engine_memory_ptr = ifb_engine::context_get_memory();
+    ifb_b8 result = true;
 
-    //get the pointer
-    const ifb_ptr pointer = ifb_engine::memory_get_pointer(
-        engine_memory_ptr,
-        global_handle);
-    
-    //we're done
-    return(pointer);
+    IFBEngineContext& context_ref = ifb_engine::context_ref();
+
+    result &= ifb_engine::core_destroy(context_ref.ptr_core);
+
+    return(result);
 }
 
-inline ifb_void 
-ifb_engine::context_process_input(
-    IFBInput& input_ref) {
+/**********************************************************************************/
+/* STARTUP/SHUTDOWN                                                               */
+/**********************************************************************************/
 
+ifb_engine_api const ifb_b8
+ifb_engine::context_startup(
+    ifb_void) {
+
+    return(false);
+}
+
+ifb_engine_api const ifb_b8
+ifb_engine::context_shutdown(
+    ifb_void) {
+
+    return(false);
+}
+
+/**********************************************************************************/
+/* RENDERING                                                                      */
+/**********************************************************************************/
+
+ifb_engine_api const ifb_b8
+ifb_engine::context_render_frame(
+    ifb_void) {
+
+    return(false);
+}
+
+/**********************************************************************************/
+/* INTERNAL                                                                       */
+/**********************************************************************************/
+
+inline IFBEngineContext&
+ifb_engine::context_ref(
+    ifb_void) {
+
+    return(_context);
+}
+
+inline IFBEngineCore*
+ifb_engine::context_get_ptr_core(
+    ifb_void) {
+
+    IFBEngineCore* ptr_core = _context.ptr_core;
+    ifb_macro_assert(ptr_core);
+
+    return(ptr_core);
+}
+
+inline IFBEngineSingletons* 
+ifb_engine::context_get_ptr_singletons(
+    ifb_void) {
+
+    IFBEngineSingletons* ptr_singletons = _context.ptr_singletons;
+    ifb_macro_assert(ptr_singletons);
+
+    return(ptr_singletons);
 }

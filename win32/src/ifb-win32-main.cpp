@@ -14,46 +14,44 @@ wWinMain(
 
     //set the args
     IFBWin32Args& args_ref = ifb_win32::context_get_args();
-    ifb_win32::context_args_set_values(
-        args_ref,
-        h_instance,
-        h_prev_instance,
-        p_cmd_line,
-        n_cmd_show);
+    args_ref.h_instance      = h_instance; 
+    args_ref.h_prev_instance = h_prev_instance; 
+    args_ref.p_cmd_line      = p_cmd_line; 
+    args_ref.n_cmd_show      = n_cmd_show; 
 
     //initialize the platform api
     IFBPlatformApi& platform_api_ref = ifb_win32::context_get_platform_api();
     ifb_win32::context_initialize_platform_api(platform_api_ref);
 
+    //engine memory stack
+    const ifb_u32      engine_memory_stack_size = ifb_macro_size_kilobytes(512);
+    ifb_local ifb_byte engine_memory_stack_buffer[engine_memory_stack_size];
+
     //create the engine context and startup
-    if (!ifb_engine::context_create(platform_api_ref)) return(S_FALSE);
-    if (!ifb_engine::context_startup())                return(S_FALSE);
+    ifb_b8 running = true;
+    running &= ifb_engine::context_create(
+        &platform_api_ref,
+        engine_memory_stack_buffer,
+        engine_memory_stack_size);
+
+    running &= ifb_engine::context_startup();
+
+    //if we're running, so far so good
+    ifb_b8 result = running;
 
     //main loop
-    ifb_b8 running = true;
     while(running) {
 
-        IFBEngineUpdate& engine_update = ifb_win32::context_get_engine_update();
-
-        running = ifb_engine::context_update_and_render(engine_update);
+        //render the next frame
+        running = ifb_engine::context_render_frame();
     }
 
+    //shutdown and destroy the engine context
+    result &= ifb_engine::context_shutdown();
+    result &= ifb_engine::context_destroy();
+
     //done
-    return(S_OK);
-}
-
-inline ifb_void 
-ifb_win32::context_args_set_values(
-          IFBWin32Args& args_ref,
-    const HINSTANCE     h_instance,
-    const HINSTANCE     h_prev_instance,
-    const PWSTR         p_cmd_line,
-    const int           n_cmd_show) {
-
-    args_ref.h_instance      = h_instance; 
-    args_ref.h_prev_instance = h_prev_instance; 
-    args_ref.p_cmd_line      = p_cmd_line; 
-    args_ref.n_cmd_show      = n_cmd_show; 
+    return(result ? S_OK : S_FALSE);
 }
 
 inline ifb_void 

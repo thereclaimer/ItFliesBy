@@ -9,9 +9,10 @@
 #define ifb_macro_size_megabytes(mb) (1024 * 1024 * mb) 
 #define ifb_macro_size_gigabytes(gb) (1024UL * 1024UL * 1024UL * gb)
 
-#define ifb_macro_size_array(type,count) (sizeof(type) * count)
+#define ifb_macro_array_size(type,count)  (sizeof(type)  * count)
+#define ifb_macro_array_count(type,array) (sizeof(array) / sizeof(type))
 
-#define ifb_macro_align_a_to_b(a,b)             (a + b - 1) & ~(b - 1)
+#define ifb_macro_align_a_to_b(a,b)             b > 0 ? (a + b - 1) & ~(b - 1) : a
 #define ifb_macro_align_size_struct(struct)     ifb_macro_align_a_to_b(sizeof(struct),alignof(struct))
 #define ifb_macro_align_a_to_multiple_of_b(x,y) (((x + (y / 2)) / y) * y)
 

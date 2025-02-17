@@ -1,189 +1,56 @@
-#pragma once
-
+#include "ifb-memory.hpp"
 #include "ifb-memory-internal.hpp"
 
 /**********************************************************************************/
-/* PUSH ABSOLUTE                                                                  */
+/* PUSH                                                                           */
 /**********************************************************************************/
 
-inline const ifb_ptr
+const ifb_u32
 ifb_memory::stack_push(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u32         size) {
-
-    //cast the memory
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
-    if (!memory_ptr || size == 0) return(NULL);
+    const ifb_u32 size,
+    const ifb_u32 alignment) {
 
     //cache the stack
-    IFBMemoryStack& stack_ref = memory_ptr->stack;
-
-    //make sure we can fit the push
-    const ifb_u32 new_size = stack_ref.position + size; 
-    if (new_size >= stack_ref.size) return(NULL);
-
-    //get the pointer at the current position
-    const ifb_address stack_address = (ifb_address)memory_ptr;
-    const ifb_ptr     pointer       = (ifb_ptr)(stack_address + stack_ref.position); 
-
-    //update the stack position
-    stack_ref.position += new_size;
-
-    //we're done
-    return(pointer);
-}
-
-inline const ifb_ptr
-ifb_memory::stack_push_aligned(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u32         size,
-    const ifb_u32         alignment) {
+    IFBMemoryStack& stack_ref = ifb_memory::context_get_stack();
 
     //align the size
-    const ifb_u32 size_aligned = ifb_macro_align_a_to_b(size,alignment);
-
-    //do the push
-    const ifb_ptr pointer = ifb_memory::stack_push(
-        memory_handle,
-        size_aligned);
-
-    //we're done
-    return(pointer);
-}
-
-/**********************************************************************************/
-/* PUSH OFFSET                                                                    */
-/**********************************************************************************/
-
-inline const ifb_u32
-ifb_memory::stack_push_offset(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u32         size) {
-
-    //cast the memory
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
-    if (!memory_ptr || size == 0) return(NULL);
-
-    //cache the stack
-    IFBMemoryStack& stack_ref = memory_ptr->stack;
+    const ifb_u32 size_aligned = (alignment == 0) 
+        ? size 
+        : ifb_macro_align_a_to_b(size,alignment);
 
     //make sure we can fit the push
-    const ifb_u32 new_position = stack_ref.position + size; 
-    if (new_position >= stack_ref.size) return(NULL);
+    const ifb_u32 new_position = stack_ref.position + size_aligned; 
+    if (new_position >= stack_ref.size) return(0);
 
-    //get the position
-    const ifb_u32 position = stack_ref.position; 
+    //get the current position as the offset
+    const ifb_u32 offset = stack_ref.position;
 
-    //update the stack
-    stack_ref.position += new_position;
+    //update the stack position
+    stack_ref.position = new_position;
 
     //we're done
-    return(position);
-}
-
-inline const ifb_u32
-ifb_memory::stack_push_offset_aligned(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u32         size,
-    const ifb_u32         alignment) {
-
-    const ifb_u32 size_aligned = ifb_macro_align_a_to_b(size,alignment);
-    const ifb_u32 offset       = ifb_memory::stack_push_offset(
-        memory_handle,
-        size_aligned);
-
     return(offset);
-}
-
-/**********************************************************************************/
-/* PUSH RELATIVE                                                                  */
-/**********************************************************************************/
-
-inline const ifb_u32
-ifb_memory::stack_push_relative(
-    const IFBMemoryHandle memory_handle,
-    const ifb_ptr         reference, 
-    const ifb_u32         size) {
-
-    //sanity check
-    if (
-        memory_handle == NULL ||
-        reference     == NULL ||
-        size          == 0) {
-
-        return(0);
-    }
-
-    //cast the handle and cache the stack
-    IFBMemory*      memory_ptr = (IFBMemory*)memory_handle;
-    IFBMemoryStack& stack_ref  = memory_ptr->stack;
-
-    //calculate the addresses
-    const ifb_address address_stack             = (ifb_address)memory_ptr; 
-    const ifb_address address_reference         = (ifb_address)reference;
-    const ifb_address address_reference_minimum = address_stack     + sizeof(IFBMemory);
-    const ifb_address address_relative          = address_reference + stack_ref.position;
-
-    //calculate the new stack position
-    const ifb_u32 new_position = stack_ref.position + size; 
-
-    //sanity check everything
-    ifb_b8 result = true;                                     // this is a valid push                                   IF...
-    result &= address_reference >= address_reference_minimum; // the reference is ahead of the memory structure         AND...
-    result &= address_relative  <  stack_ref.end;             // the result address is before the end of the stack      AND... 
-    result &= address_relative  >  address_reference;         // the relative address is ahead of the reference address AND...
-    result &= new_position      <  stack_ref.size;            // the new stack position is within the stack size
-    if (!result) return(0);
-
-    //get the relative position
-    const ifb_u32 relative_position = (ifb_u32)(address_relative - address_reference);
-
-    //we're done
-    return(relative_position);
-}   
-
-inline const ifb_u32
-ifb_memory::stack_push_relative_aligned(
-    const IFBMemoryHandle memory_handle,
-    const ifb_ptr         reference, 
-    const ifb_u32         size,
-    const ifb_u32         alignment) {
-
-    const ifb_u32 size_aligned      = ifb_macro_align_a_to_b(size,alignment);
-    const ifb_u32 relative_position = ifb_memory::stack_push_relative(
-        memory_handle,
-        reference,
-        size_aligned);
-
-    return(relative_position);
 }
 
 /**********************************************************************************/
 /* POINTERS                                                                       */
 /**********************************************************************************/
 
-inline const ifb_ptr
+const ifb_ptr
 ifb_memory::stack_get_pointer(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u32         offset) {
-    
-    //cast the handle
-    IFBMemory* memory_ptr = (IFBMemory*)memory_handle;
-    if (!memory_ptr) return(NULL);
+    const ifb_u32 offset) {
 
-    //cache the stack properties
-    IFBMemoryStack&   stack_ref          = memory_ptr->stack;
-    const ifb_u32     memory_struct_size = sizeof(IFBMemory); 
-    const ifb_address stack_start        = (ifb_address)memory_ptr;
+    //cache the stack
+    IFBMemoryStack& stack_ref = ifb_memory::context_get_stack();
 
     //make sure the offset is valid
-    ifb_b8 offset_valid = true;                   // the offset is valid                      IF...
-    offset_valid &= offset >= memory_struct_size; // the offset is ahead of the memory struct AND...
-    offset_valid &= offset <  stack_ref.position; // the offset is before the current stack position
+    ifb_b8 offset_valid = true;                          // the offset is valid                      IF...
+    offset_valid &= offset >= IFB_MEMORY_HANDLE_MINIMUM; // the offset is ahead of the memory struct AND...
+    offset_valid &= offset <  stack_ref.position;        // the offset is before the current stack position
 
     //calculate the address
     const ifb_address address = offset_valid
-        ? stack_start + offset
+        ? stack_ref.start + offset
         : 0;
 
     //get the pointer
@@ -193,83 +60,24 @@ ifb_memory::stack_get_pointer(
     return(pointer);
 }
 
-inline const ifb_ptr 
-ifb_memory::stack_get_pointer_relative(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u32         reference,
-    const ifb_u32         offset) {
-
-    const ifb_u32 offset_absolute = reference + offset;
-    const ifb_ptr pointer         = ifb_memory::stack_get_pointer(
-        memory_handle,
-        offset_absolute);
-
-    return(pointer);
-}
-
-
 /**********************************************************************************/
-/* INTERNAL                                                                       */
+/* INFO                                                                           */
 /**********************************************************************************/
 
-inline IFBMemoryArena*
-ifb_memory::stack_push_arena_base(
-    const IFBMemoryHandle memory_handle) {
+const ifb_b8
+ifb_memory::stack_get_info(
+    IFBMemoryStackInfo* stack_info_ptr) {
 
-    //allocate base arena struct
-    IFBMemoryArena* arena_ptr = ifb_memory_macro_stack_push_struct(
-        memory_handle,
-        IFBMemoryArena);
-    
-    //we're done
-    return(arena_ptr);
-}
-
-inline IFBMemoryLinearArena*
-ifb_memory::stack_push_arena_linear(
-    const IFBMemoryHandle memory_handle) {
-
-    //allocate linear arena struct
-    IFBMemoryLinearArena* linear_arena_ptr = ifb_memory_macro_stack_push_struct(
-        memory_handle,
-        IFBMemoryLinearArena);
-
-    //we're done
-    return(linear_arena_ptr);
-}
-
-
-inline IFBMemoryBlockArena*
-ifb_memory::stack_push_arena_block(
-    const IFBMemoryHandle memory_handle) {
-
-    //calculate the push size
-    const ifb_u32 block_arena_size = ifb_macro_align_size_struct(IFBMemoryBlockArena);
-
-    //do the push
-    IFBMemoryBlockArena* block_arena_ptr  = (IFBMemoryBlockArena*)ifb_memory::stack_push(memory_handle,block_arena_size);
-
-    //we're done
-    return(block_arena_ptr);
-}
-
-inline IFBMemoryBlock*
-ifb_memory::stack_push_arena_block_array(
-    const IFBMemoryHandle memory_handle,
-    const ifb_u32         block_count) {
+    //get the stack
+    IFBMemoryStack& stack_ref = ifb_memory::context_get_stack();
 
     //sanity check
-    ifb_macro_assert(memory_handle);
-    ifb_macro_assert(block_count > 0);
+    if (!stack_info_ptr) return(false);
 
-    //calculate the push size
-    const ifb_u32 push_size = ifb_macro_size_array(IFBMemoryBlock,block_count); 
-
-    //do the push
-    IFBMemoryBlock* block_array = (IFBMemoryBlock*)ifb_memory::stack_push(
-        memory_handle,
-        push_size);
+    //set the stack info
+    stack_info_ptr->size_total = stack_ref.size;
+    stack_info_ptr->size_used  = stack_ref.position;
 
     //we're done
-    return(block_array);
+    return(true);
 }

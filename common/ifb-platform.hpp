@@ -50,10 +50,16 @@ typedef const ifb_ptr
     const ifb_ptr commit_start,
     const ifb_u32 commit_size);
 
+typedef const ifb_b8
+(*funcptr_ifb_platform_memory_decommit)(
+    const ifb_ptr commit_start,
+    const ifb_u32 commit_size);
+
 struct IFBPlatformMemoryApi {
-    funcptr_ifb_platform_memory_reserve reserve;
-    funcptr_ifb_platform_memory_release release;
-    funcptr_ifb_platform_memory_commit  commit;
+    funcptr_ifb_platform_memory_reserve  reserve;
+    funcptr_ifb_platform_memory_release  release;
+    funcptr_ifb_platform_memory_commit   commit;
+    funcptr_ifb_platform_memory_decommit decommit;
 };
 
 /**********************************************************************************/

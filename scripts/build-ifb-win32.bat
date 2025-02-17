@@ -30,31 +30,32 @@ if not exist %path_build%\obj mkdir %path_build%\obj
 :: COMPILER ARGUMENTS
 ::----------------------------------------------------------------
 
-@set cl_flags=        /Zi ^
-                      /MD
+@set cl_flags=      /Zi ^
+                    /MD ^
+                    /EHsc
 
-@set cl_output=       /Fe:%path_build%\bin\ItFliesBy.exe ^
-                      /Fo:%path_build%\obj\ItFliesBy.obj ^
-                      /Fd:%path_build%\bin\ItFliesBy.pdb
+@set cl_output=     /Fe:%path_build%\bin\ItFliesBy.exe ^
+                    /Fo:%path_build%\obj\ItFliesBy.obj ^
+                    /Fd:%path_build%\bin\ItFliesBy.pdb
 
-@set cl_includes=     /I win32\include         ^
-                      /I common                ^
-                      /I external              ^
-                      /I %path_engine_include% ^
-                      /I %path_vcpkg_include%
+@set cl_includes=   /I win32\include         ^
+                    /I common                ^
+                    /I external              ^
+                    /I %path_engine_include% ^
+                    /I %path_vcpkg_include%
 
 
-@set cl_source=       win32\src\ifb-win32.cpp
+@set cl_source=     win32\src\ifb-win32.cpp
 
-@set cl_link=         /link                                    ^
-                      /LIBPATH:vcpkg_installed\x64-windows\lib ^
-                      /LIBPATH:build\debug\lib ^
-                      /SUBSYSTEM:WINDOWS
+@set cl_link=       /link                                    ^
+                    /LIBPATH:vcpkg_installed\x64-windows\lib ^
+                    /LIBPATH:build\debug\lib                 ^
+                    /SUBSYSTEM:WINDOWS
 
-@set cl_libs=         ItFliesBy.Engine.lib ^
-                      user32.lib           ^
-                      imgui.lib            ^
-                      opengl32.lib
+@set cl_libs=       ItFliesBy.Engine.lib ^
+                    user32.lib           ^
+                    imgui.lib            ^
+                    opengl32.lib
 
 ::----------------------------------------------------------------
 :: BUILD
