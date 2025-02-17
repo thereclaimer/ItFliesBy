@@ -238,7 +238,7 @@ ifb_memory::reservation_commit_block_arena(
 
     //calculate the allocation size
     const ifb_u32 block_arena_struct_size  = ifb_macro_align_size_struct(IFBMemoryBlockArena);
-    const ifb_u32 block_address_array_size = ifb_macro_size_array(ifb_address,block_count); 
+    const ifb_u32 block_address_array_size = ifb_macro_array_size(ifb_address,block_count); 
     const ifb_u32 push_size_total          = block_arena_struct_size + block_address_array_size;
 
     //allocate a base arena on the stack

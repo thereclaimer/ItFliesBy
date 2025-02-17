@@ -1,4 +1,5 @@
 #include "ifb-engine-internal-singletons.hpp"
+#include "ifb-engine-internal-graphics.hpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -26,12 +27,13 @@ ifb_engine::singletons_commit_all(
     //calculate all the singleton sizes
     const ifb_u32 size_array[] = {
         ifb_macro_align_size_struct(IFBEngineConfig),
-        ifb_macro_align_size_struct(IFBInput)
+        ifb_macro_align_size_struct(IFBInput),
+        ifb_macro_align_size_struct(IFBEngineDevTools),
+        ifb_macro_align_size_struct(IFBEngineGraphicsManager)
     };
     
     //calculate the singleton count
-    const ifb_u32 singletons_count = 
-        sizeof(size_array) / sizeof(ifb_u32);
+    const ifb_u32 singletons_count = ifb_macro_array_count(ifb_u32,size_array); 
 
     //cast the singleton handles to an array
     ifb_u16* singlegon_handles_array = (ifb_u16*)&ptr_singletons->handles;
@@ -95,6 +97,39 @@ ifb_engine::singletons_load_input(
     //we're done
     return(ptr_input);
 }
+
+inline IFBEngineDevTools*
+ifb_engine::singletons_load_devtools(
+    const IFBEngineSingletons* ptr_singletons) {
+
+    //sanity check
+    ifb_macro_assert(ptr_singletons);
+    
+    //get the pointer
+    IFBEngineDevTools* ptr_devtools = (IFBEngineDevTools*)ifb_engine::singletons_buffer_get_pointer(
+            ptr_singletons->buffer,
+            ptr_singletons->handles.dev_tools);
+
+    //we're done
+    return(ptr_devtools);
+}
+
+inline IFBEngineGraphicsManager*
+ifb_engine::singletons_load_graphics_manager(
+    const IFBEngineSingletons* ptr_singletons) {
+
+    //sanity check
+    ifb_macro_assert(ptr_singletons);
+    
+    //get the pointer
+    IFBEngineGraphicsManager* ptr_graphics_manager = (IFBEngineGraphicsManager*)ifb_engine::singletons_buffer_get_pointer(
+            ptr_singletons->buffer,
+            ptr_singletons->handles.graphics_manager);
+
+    //we're done
+    return(ptr_graphics_manager);
+}
+
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */

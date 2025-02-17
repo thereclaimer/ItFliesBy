@@ -130,7 +130,6 @@ ifb_memory::linear_arena_reserve_bytes_relative(
     //calculate the new position
     const ifb_u32 position_current = linear_arena_ptr->position;
     const ifb_u32 position_new     = position_current + size_aligned;
-    
 
     //if the position overflows the arena, we're done
     if (position_new >= linear_arena_ptr->size_total) {
@@ -179,6 +178,139 @@ ifb_memory::linear_arena_release_bytes(
 
     //we're done
     return(true);
+}
+
+const ifb_u32
+ifb_memory::linear_arena_reserve_bytes_absolute(
+    const IFBMemoryLinearArenaHandle linear_arena_handle,
+    const ifb_u32                    count,
+    const ifb_u32*                   size_array,
+          ifb_ptr*                   pointer_array) {
+
+    //get the pointer
+    IFBMemoryLinearArena* linear_arena_ptr = ifb_memory::linear_arena_handle_to_pointer(linear_arena_handle);
+
+    //sanity check
+    if (count == 0 || !size_array || !pointer_array) return(false);
+
+    //cache arena constants
+    const ifb_address arena_start = linear_arena_ptr->start;
+    const ifb_address arena_end   = arena_start + linear_arena_ptr->size_total;
+
+    //keep track of how many bytes we reseved
+    //if something goes wrong, we can release what we reserved
+    ifb_u32 total_bytes_reserved = 0;
+
+    for (
+        ifb_u32 index = 0;
+        index < count;
+        ++index) {
+
+        //get the current size
+        const ifb_u32 size = size_array[index];
+
+        //calculate the new position
+        const ifb_u32 position_current = linear_arena_ptr->position;
+        const ifb_u32 position_new     = position_current + size;
+
+        //if the position overflows the arena, we're done
+        if (position_new >= linear_arena_ptr->size_total) {
+
+            //if we reserved bytes, we need to release them
+            if (total_bytes_reserved > 0) {
+                
+                //release the bytes
+                const ifb_b8 released = ifb_memory::linear_arena_release_bytes(linear_arena_handle,total_bytes_reserved);
+                
+                //sanity check, we should always be able to release what was just reserved
+                ifb_macro_assert(released);
+            }
+
+            //return 0 bytes reserved
+            return(0);
+        } 
+
+        //otherwise, get the pointer
+        const ifb_address position_address = arena_start + position_new;
+
+        //sanity check, this should never happen
+        ifb_macro_assert(position_address < arena_end);
+
+        //update the position
+        linear_arena_ptr->position = position_new;
+
+        //cast the pointer
+        const ifb_ptr position_pointer = (ifb_ptr)position_address;
+
+        //update the array
+        pointer_array[index] = position_pointer;
+
+        //update the bytes reserved
+        total_bytes_reserved += size;
+    }
+
+    //we're done
+    return(total_bytes_reserved);
+}
+
+const ifb_u32
+ifb_memory::linear_arena_reserve_bytes_relative(
+    const IFBMemoryLinearArenaHandle linear_arena_handle,
+    const ifb_u32                    count,
+    const ifb_u32*                   size_array,
+          ifb_u32*                   offset_array) {
+
+    //get the pointer
+    IFBMemoryLinearArena* linear_arena_ptr = ifb_memory::linear_arena_handle_to_pointer(linear_arena_handle);
+
+    //sanity check
+    if (count == 0 || !size_array || !offset_array) return(false);
+
+    //keep track of how many bytes we reseved
+    //if something goes wrong, we can release what we reserved
+    ifb_u32 total_bytes_reserved = 0;
+
+    for (
+        ifb_u32 index = 0;
+        index < count;
+        ++index) {
+
+        //get the current size
+        const ifb_u32 size = size_array[index];
+
+        //calculate the new position
+        const ifb_u32 position_current = linear_arena_ptr->position;
+        const ifb_u32 position_new     = size;
+
+        //if the position overflows the arena, we're done
+        if (position_new >= linear_arena_ptr->size_total) {
+
+            //if we reserved bytes, we need to release them
+            if (total_bytes_reserved > 0) {
+                
+                //release the bytes
+                const ifb_b8 released = ifb_memory::linear_arena_release_bytes(linear_arena_handle,total_bytes_reserved);
+                
+                //sanity check, we should always be able to release what was just reserved
+                ifb_macro_assert(released);
+            }
+
+            //return 0 bytes reserved
+            return(0);
+        }
+
+        //update the array
+        offset_array[index] = position_current;
+
+        //otherwise, update the position
+        linear_arena_ptr->position = position_new;
+
+        //update the total bytes reserved
+        total_bytes_reserved += size;        
+    }
+
+    //we're done
+    return(total_bytes_reserved);
 }
 
 /**********************************************************************************/

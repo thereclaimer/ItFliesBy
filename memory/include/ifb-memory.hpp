@@ -152,9 +152,11 @@ namespace ifb_memory {
     ifb_void      linear_arena_reset_to_save_point       (const IFBMemoryLinearArenaHandle linear_arena_handle);
 
     //reserve/release    
-    const ifb_ptr linear_arena_reserve_bytes_absolute    (const IFBMemoryLinearArenaHandle linear_arena_handle, const ifb_u32 size, const ifb_u32 alignment = 0);
-    const ifb_u32 linear_arena_reserve_bytes_relative    (const IFBMemoryLinearArenaHandle linear_arena_handle, const ifb_u32 size, const ifb_u32 alignment = 0);
-    const ifb_b8  linear_arena_release_bytes             (const IFBMemoryLinearArenaHandle linear_arena_handle, const ifb_u32 size, const ifb_u32 alignment = 0);
+    const ifb_ptr linear_arena_reserve_bytes_absolute    (const IFBMemoryLinearArenaHandle linear_arena_handle, const ifb_u32 size,  const ifb_u32  alignment = 0);
+    const ifb_u32 linear_arena_reserve_bytes_relative    (const IFBMemoryLinearArenaHandle linear_arena_handle, const ifb_u32 size,  const ifb_u32  alignment = 0);
+    const ifb_u32 linear_arena_reserve_bytes_absolute    (const IFBMemoryLinearArenaHandle linear_arena_handle, const ifb_u32 count, const ifb_u32* size_array, ifb_ptr* pointer_array);
+    const ifb_u32 linear_arena_reserve_bytes_relative    (const IFBMemoryLinearArenaHandle linear_arena_handle, const ifb_u32 count, const ifb_u32* size_array, ifb_u32* offset_array);
+    const ifb_b8  linear_arena_release_bytes             (const IFBMemoryLinearArenaHandle linear_arena_handle, const ifb_u32 size,  const ifb_u32  alignment = 0);
 
     //pointers
     const ifb_ptr linear_arena_get_pointer_at_offset     (const IFBMemoryLinearArenaHandle linear_arena_handle, const ifb_u32 offset);
@@ -164,6 +166,7 @@ namespace ifb_memory {
 
     //info
     const ifb_b8  linear_arena_get_info                  (const IFBMemoryLinearArenaHandle linear_arena_handle, IFBMemoryLinearArenaInfo* linear_arena_info_ptr);
+    const ifb_b8  linear_arena_offset_valid              (const IFBMemoryLinearArenaHandle linear_arena_handle, const ifb_u32 offset);
 };
 
 /**********************************************************************************/
