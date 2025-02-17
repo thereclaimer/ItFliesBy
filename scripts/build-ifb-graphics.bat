@@ -14,9 +14,10 @@ pushd ..
 @set path_build=          build\debug
 
 ::include paths 
-@set path_data_structures_include=  data-structures\include
-@set path_common=                   common
-@set path_external=                 external
+@set path_graphics_include=  graphics\include
+@set path_common=            common
+@set path_external=          external
+@set path_datastructures=    data-structures\include
 
 ::vcpkg install directories
 @set path_vcpkg=              vcpkg_installed
@@ -40,14 +41,15 @@ if not exist %path_build%\lib mkdir %path_build%\lib
                     /Z7   ^
                     /EHsc
 
-@set cl_output=     /Fo:%path_build%\obj\ItFliesBy.DataStructures.obj
+@set cl_output=     /Fo:%path_build%\obj\ItFliesBy.Graphics.obj
 
-@set cl_includes=   /I %path_data_structures_include%  ^
-                    /I %path_common%                   ^
-                    /I %path_external%                 ^
+@set cl_includes=   /I %path_graphics_include% ^
+                    /I %path_datastructures%   ^
+                    /I %path_common%           ^
+                    /I %path_external%         ^
                     /I %path_vcpkg_include%
 
-@set cl_source=     data-structures\src\ifb-data-structures.cpp
+@set cl_source=     graphics\src\ifb-graphics.cpp
 
 ::----------------------------------------------------------------
 :: BUILD
@@ -63,9 +65,9 @@ call cl.exe       ^
 :: LIB
 ::----------------------------------------------------------------
 
-call lib.exe                                          ^
-    /OUT:build\debug\lib\ItFliesBy.DataStructures.lib ^
-    %path_build%\obj\ItFliesBy.DataStructures.obj
+call lib.exe                                  ^
+    /OUT:build\debug\lib\ItFliesBy.Graphics.lib ^
+    %path_build%\obj\ItFliesBy.Graphics.obj
 
 ::----------------------------------------------------------------
 :: END

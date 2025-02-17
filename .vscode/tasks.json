@@ -58,6 +58,36 @@
 				"$msCompile"
 			],
 			"group": "build",
-		}
+		},
+		{
+			"label":   "Build IFB Graphics",
+			"command": "build-ifb-graphics.bat",
+			"args":[
+            ],
+			"options": {
+				"cwd": "${workspaceFolder}/scripts"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build",
+		},
+		{
+			"label":   "Build IFB Libs",
+			"args":[
+            ],
+			"options": {
+				"cwd": "${workspaceFolder}/scripts"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build",
+			"dependsOn":[
+				"Build IFB Memory",
+				"Build IFB Graphics",
+				"Build IFB Data Structures",
+			]
+		},
 	]
 }

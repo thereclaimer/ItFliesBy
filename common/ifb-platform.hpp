@@ -3,7 +3,7 @@
 
 #include "ifb-types.hpp"
 #include "ifb-scopes.hpp"
-#include "ifb-graphics.hpp"
+#include "_ifb-graphics.hpp"
 
 /**********************************************************************************/
 /* SYSTEM                                                                         */
@@ -118,8 +118,8 @@ typedef const ifb_u32
 
 typedef ifb_void
 (*funcptr_ifb_platform_monitor_info)(
-    const ifb_u32     monitor_array_count,
-          IFBMonitor* monitor_array_ptr);
+    const ifb_u32  monitor_array_count,
+          ifb_ptr* monitor_array_ptr);
 
 struct IFBPlatformMonitorApi {
     funcptr_ifb_platform_monitor_count count;
