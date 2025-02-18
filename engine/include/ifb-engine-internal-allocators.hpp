@@ -12,15 +12,15 @@
 
 struct IFBEngineLinearAllocatorBase {
     IFBEngineMemoryArenaLinear linear_arena;
-    ifb_u32                    size;
+    IFBU32                    size;
 };
 
 struct IFBEngineBlockAllocatorBase {
-    IFBMemoryBlockArenaHandle block_arena;
-    ifb_u32                   block_size;
-    ifb_u32                   block_count;
-    ifb_u32*                  block_index_array;
-    ifb_ptr*                  block_pointer_array;
+    IFBHNDMemoryArenaBlock block_arena;
+    IFBU32                   block_size;
+    IFBU32                   block_count;
+    IFBU32*                  block_index_array;
+    IFBPtr*                  block_pointer_array;
 };
 
 /**********************************************************************************/
@@ -31,9 +31,9 @@ struct IFBEngineDataStructureAllocator : IFBEngineBlockAllocatorBase { };
 
 namespace ifb_engine {
 
-    IFBArray*     data_structures_reserve_array      (IFBEngineDataStructureAllocator* allocator_ptr, const ifb_u32 size);
-    IFBArrayList* data_structures_reserve_array_list (IFBEngineDataStructureAllocator* allocator_ptr, const ifb_u32 element_size, const ifb_u32 element_count);
-    IFBStack*     data_structures_reserve_stack      (IFBEngineDataStructureAllocator* allocator_ptr, const ifb_u32 size);
+    IFBArray*     data_structures_reserve_array      (IFBEngineDataStructureAllocator* allocator_ptr, const IFBU32 size);
+    IFBArrayList* data_structures_reserve_array_list (IFBEngineDataStructureAllocator* allocator_ptr, const IFBU32 element_size, const IFBU32 element_count);
+    IFBStack*     data_structures_reserve_stack      (IFBEngineDataStructureAllocator* allocator_ptr, const IFBU32 size);
 
     IFBArray*     data_structures_release_array      (IFBEngineDataStructureAllocator* allocator_ptr, IFBArray*     array_ptr);
     IFBArrayList* data_structures_release_array_list (IFBEngineDataStructureAllocator* allocator_ptr, IFBArrayList* array_list_ptr);

@@ -4,41 +4,78 @@
 #include "ifb-graphics.hpp"
 
 /**********************************************************************************/
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
+
+struct IFBGraphicsContext;
+
+struct IFBGraphicsMemory;
+struct IFBGraphicsMemoryOffsets;
+
+struct IFBGraphicsWindow;
+struct IFBGraphicsWindowList;
+
+/**********************************************************************************/
+/* MEMORY                                                                         */
+/**********************************************************************************/
+
+struct IFBGraphicsMemoryOffsets {
+    IFBU32 window_list_active;
+    IFBU32 window_list_inactive;
+};
+
+struct IFBGraphicsMemory {
+    IFBHNDMemoryArenaLinear  linear_arena_handle;
+    IFBGraphicsMemoryOffsets offsets;
+};
+
+namespace ifb_graphics {
+
+    const IFBHNDMemoryArenaLinear
+    memory_get_linear_arena(IFBVoid);
+
+    IFBGraphicsWindow*     memory_commit_window            (IFBVoid);
+    const IFBB8            memory_commit_window_lists      (IFBVoid);
+
+    IFBGraphicsWindow*     memory_get_window               (const IFBHNDGraphicsWindow window_handle);
+    IFBGraphicsWindowList* memory_get_window_list_active   (IFBVoid);
+    IFBGraphicsWindowList* memory_get_window_list_inactive (IFBVoid);
+
+};
+
+/**********************************************************************************/
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
 struct IFBGraphicsWindow {
     IFBGraphicsWindow*      next;
-    IFBGraphicsWindowHandle handle;
+    IFBHNDGraphicsWindow    handle;
     IFBDimensions           dimensions;
     IFBPosition             position;
-    ifb_ptr                 platform_handle;
 };
 
 struct IFBGraphicsWindowList {
     IFBGraphicsWindow* first;
     IFBGraphicsWindow* last;
-    ifb_u32            count;
+    IFBU32             count;
 };
 
 /**********************************************************************************/
 /* CONTEXT                                                                        */
 /**********************************************************************************/
 
-struct IFBGraphicsContext {
-    IFBStack*                     ptr_stack;                      
-    IFBPlatformApi*               ptr_platform_api;
-    IFBGraphicsContextColorFormat color_format;
-    IFBGraphicsWindowList         window_list;
-};
 
+struct IFBGraphicsContext {
+    IFBGraphicsMemory memory;
+    IFBPlatformApi*   ptr_platform_api;
+    IFBColorFormat    color_format;
+};
 
 namespace ifb_graphics {
     
-    IFBStack*                           context_get_stack        (ifb_void);
-    const IFBPlatformApi*               context_get_platform_api (ifb_void);
-    const IFBGraphicsContextColorFormat context_get_color_format (ifb_void);    
-    IFBGraphicsWindowList&              context_get_window_list  (ifb_void);
+    IFBGraphicsMemory&    context_get_memory       (IFBVoid);
+    const IFBPlatformApi* context_get_platform_api (IFBVoid);
+    const IFBColorFormat  context_get_color_format (IFBVoid);
 };
 
 #endif //IFB_GRAPHICS_INTERNAL_HPP

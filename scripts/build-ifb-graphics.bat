@@ -18,6 +18,7 @@ pushd ..
 @set path_common=            common
 @set path_external=          external
 @set path_datastructures=    data-structures\include
+@set path_memory=            memory\include
 
 ::vcpkg install directories
 @set path_vcpkg=              vcpkg_installed
@@ -45,6 +46,7 @@ if not exist %path_build%\lib mkdir %path_build%\lib
 
 @set cl_includes=   /I %path_graphics_include% ^
                     /I %path_datastructures%   ^
+                    /I %path_memory%           ^
                     /I %path_common%           ^
                     /I %path_external%         ^
                     /I %path_vcpkg_include%

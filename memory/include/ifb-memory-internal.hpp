@@ -9,10 +9,10 @@
 
 struct IFBMemoryContext;
 struct IFBMemoryReservation;
-struct IFBMemoryArena;
 struct IFBMemoryStack;
-struct IFBMemoryLinearArena;
-struct IFBMemoryBlockArena;
+struct IFBMemoryArena;
+struct IFBMemoryArenaLinear;
+struct IFBMemoryArenaBlock;
 struct IFBMemoryBlock;
 
 /**********************************************************************************/
@@ -22,10 +22,10 @@ struct IFBMemoryBlock;
 #define IFB_MEMORY_HANDLE_MINIMUM sizeof(IFBMemoryContext)
 
 struct IFBMemoryStack {
-    ifb_address start;
-    ifb_address end;
-    ifb_u32     size;
-    ifb_u32     position;
+    IFBAddr start;
+    IFBAddr end;
+    IFBU32     size;
+    IFBU32     position;
 };
 
 /**********************************************************************************/
@@ -33,39 +33,39 @@ struct IFBMemoryStack {
 /**********************************************************************************/
 
 struct IFBMemoryArena {
-    ifb_address           start;
+    IFBAddr           start;
     IFBMemoryReservation* reservation;
     IFBMemoryArena*       next;
     IFBMemoryArenaType    type;    
-    ifb_u32               page_start;
-    ifb_u32               page_count;
-    ifb_u32               size_total;
-    ifb_u32               stack_position;
+    IFBU32               page_start;
+    IFBU32               page_count;
+    IFBU32               size_total;
+    IFBU32               stack_position;
 };
 
 struct IFBMemoryArenaList {
     IFBMemoryArena* first;    
     IFBMemoryArena* last;    
-    ifb_u32         count;
+    IFBU32         count;
 };
 
 /**********************************************************************************/
 /* ARENA LINEAR                                                                   */
 /**********************************************************************************/
 
-struct IFBMemoryLinearArena : IFBMemoryArena {
-    ifb_u32 position;
-    ifb_u32 save_point;
+struct IFBMemoryArenaLinear : IFBMemoryArena {
+    IFBU32 position;
+    IFBU32 save_point;
 };
 
 /**********************************************************************************/
 /* ARENA BLOCK                                                                    */
 /**********************************************************************************/
 
-struct IFBMemoryBlockArena : IFBMemoryArena  {
-    ifb_address* block_address_array;
-    ifb_u32      block_count;
-    ifb_u32      block_size;
+struct IFBMemoryArenaBlock : IFBMemoryArena  {
+    IFBAddr* block_address_array;
+    IFBU32      block_count;
+    IFBU32      block_size;
 };
 
 /**********************************************************************************/
@@ -74,17 +74,17 @@ struct IFBMemoryBlockArena : IFBMemoryArena  {
 
 struct IFBMemoryReservation {
     IFBMemoryReservation* next;
-    ifb_address           start;
-    ifb_u32               stack_offset;
-    ifb_u32               page_count_total;
-    ifb_u32               page_count_committed;
+    IFBAddr           start;
+    IFBU32               stack_offset;
+    IFBU32               page_count_total;
+    IFBU32               page_count_committed;
     IFBMemoryArenaList    arena_list;
 };
 
 struct IFBMemoryReservationList {
     IFBMemoryReservation* first;
     IFBMemoryReservation* last;
-    ifb_u32               count;
+    IFBU32               count;
 };
 
 /**********************************************************************************/
@@ -99,10 +99,10 @@ struct IFBMemoryContext {
 
 namespace ifb_memory {
 
-    inline IFBMemoryContext*         context                         (ifb_void);
-    inline IFBMemoryStack&           context_get_stack               (ifb_void);            
-    inline IFBMemorySystemInfo&      context_get_system_info         (ifb_void);      
-    inline IFBMemoryReservationList& context_get_reservation_list    (ifb_void); 
+    inline IFBMemoryContext*         context                         (IFBVoid);
+    inline IFBMemoryStack&           context_get_stack               (IFBVoid);            
+    inline IFBMemorySystemInfo&      context_get_system_info         (IFBVoid);      
+    inline IFBMemoryReservationList& context_get_reservation_list    (IFBVoid); 
 };
 
 /**********************************************************************************/
@@ -120,7 +120,7 @@ namespace ifb_memory {
     ifb_global funcptr_ifb_platform_memory_release                platform_memory_release;
     ifb_global funcptr_ifb_platform_memory_commit                 platform_memory_commit;
 
-    inline ifb_b8
+    inline IFBB8
     platform_set_api(
         const IFBPlatformApi* ptr_platform_api) {
 
@@ -139,7 +139,7 @@ namespace ifb_memory {
         platform_memory_commit  = memory_api_ref.commit;
 
         //make sure the methods are defined
-        ifb_b8 result = true;
+        IFBB8 result = true;
         result &= (platform_system_page_size              != NULL); 
         result &= (platform_system_allocation_granularity != NULL); 
         result &= (platform_memory_reserve                != NULL); 

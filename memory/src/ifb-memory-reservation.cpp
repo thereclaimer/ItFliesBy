@@ -6,43 +6,43 @@
 /**********************************************************************************/
 
 struct IFBMemoryReservationPageCommit {
-    ifb_address commit_start;
-    ifb_u32     size_requested;
-    ifb_u32     size_actual;
-    ifb_u32     page_start;
-    ifb_u32     page_count;
-    ifb_u32     page_offset;
+    IFBAddr commit_start;
+    IFBU32     size_requested;
+    IFBU32     size_actual;
+    IFBU32     page_start;
+    IFBU32     page_count;
+    IFBU32     page_offset;
 };
 
 namespace ifb_memory {
 
-    inline IFBMemoryReservation* reservation_handle_to_pointer       (const IFBMemoryReservationHandle reservation_handle);
-    inline ifb_b8                reservation_commit_pages            (IFBMemoryReservation*            reservation_ptr, IFBMemoryReservationPageCommit& page_commit_ref);
-    inline ifb_void              reservation_arena_list_add          (IFBMemoryReservation*            reservation_ptr, IFBMemoryArena*                 arena_ptr);
+    inline IFBMemoryReservation* reservation_handle_to_pointer       (const IFBHNDMemoryReservation reservation_handle);
+    inline IFBB8                reservation_commit_pages            (IFBMemoryReservation*            reservation_ptr, IFBMemoryReservationPageCommit& page_commit_ref);
+    inline IFBVoid              reservation_arena_list_add          (IFBMemoryReservation*            reservation_ptr, IFBMemoryArena*                 arena_ptr);
 };
 
 /**********************************************************************************/
 /* RESERVE/RELEASE                                                                */
 /**********************************************************************************/
 
-const IFBMemoryReservationHandle
+const IFBHNDMemoryReservation
 ifb_memory::reserve_memory(
-    const ifb_u64 size_minimum) {
+    const IFBU64 size_minimum) {
 
     //get the reservation list and system info
     IFBMemoryReservationList& reservation_list_ref = ifb_memory::context_get_reservation_list();
     IFBMemorySystemInfo&      system_info_ref      = ifb_memory::context_get_system_info(); 
 
     //create the handle
-    IFBMemoryReservationHandle reservation_handle;
+    IFBHNDMemoryReservation reservation_handle;
     reservation_handle.offset = 0;
 
     //get platform memory reservation
-    const ifb_u32 page_size              = system_info_ref.page_size;
-    const ifb_u64 allocation_granularity = system_info_ref.granularity;
-    const ifb_u64 reservation_size       = ifb_macro_align_a_to_b(size_minimum,allocation_granularity);
-    const ifb_u32 reservation_page_count = (ifb_u32)(reservation_size / page_size);
-    const ifb_ptr reservation_start_ptr  = ifb_memory::platform_memory_reserve(reservation_size);
+    const IFBU32 page_size              = system_info_ref.page_size;
+    const IFBU64 allocation_granularity = system_info_ref.granularity;
+    const IFBU64 reservation_size       = ifb_macro_align_a_to_b(size_minimum,allocation_granularity);
+    const IFBU32 reservation_page_count = (IFBU32)(reservation_size / page_size);
+    const IFBPtr reservation_start_ptr  = ifb_memory::platform_memory_reserve(reservation_size);
 
     //sanity check
     if (!reservation_start_ptr) return(reservation_handle);
@@ -61,12 +61,12 @@ ifb_memory::reserve_memory(
     //initialize the reservation
     reservation_ptr->stack_offset         = reservation_handle.offset;
     reservation_ptr->next                 = NULL;
-    reservation_ptr->start                = (ifb_address)reservation_start_ptr;
+    reservation_ptr->start                = (IFBAddr)reservation_start_ptr;
     reservation_ptr->page_count_total     = reservation_page_count;
     reservation_ptr->page_count_committed = 0;
 
     //get reservation list status
-    const ifb_b8 is_first_reservation = reservation_list_ref.count == 0; 
+    const IFBB8 is_first_reservation = reservation_list_ref.count == 0; 
 
     //if this is the first reservation, initialize the list
     if (is_first_reservation) {
@@ -100,20 +100,20 @@ ifb_memory::reserve_memory(
     return(reservation_handle);
 }
 
-const ifb_b8
+const IFBB8
 ifb_memory::release_memory(
-    const IFBMemoryReservationHandle reservation_handle) {
+    const IFBHNDMemoryReservation reservation_handle) {
 
     //get the reservation
     IFBMemoryReservation* reservation_ptr = ifb_memory::reservation_handle_to_pointer(reservation_handle);
 
     //get reservation start and size if we have it
-    const ifb_ptr reservation_start      = (ifb_ptr)reservation_ptr->start;
-    const ifb_u32 reservation_page_count = reservation_ptr->page_count_total; 
-    const ifb_u64 reservation_size       = ifb_memory::context_get_size_from_page_count(reservation_page_count); 
+    const IFBPtr reservation_start      = (IFBPtr)reservation_ptr->start;
+    const IFBU32 reservation_page_count = reservation_ptr->page_count_total; 
+    const IFBU64 reservation_size       = ifb_memory::context_get_size_from_page_count(reservation_page_count); 
 
     //tell the platform to release the memory
-    const ifb_b8 result = ifb_memory::platform_memory_release(
+    const IFBB8 result = ifb_memory::platform_memory_release(
         reservation_start,
         reservation_size);
 
@@ -125,22 +125,22 @@ ifb_memory::release_memory(
 /* ARENA COMMIT                                                                   */
 /**********************************************************************************/
 
-const IFBMemoryArenaHandle       
-ifb_memory::reservation_commit_arena(
-    const IFBMemoryReservationHandle reservation_handle,
-    const ifb_u32                    arena_size_minimum) {
+const IFBHNDMemoryArena       
+ifb_memory::reservation_commit_arena_unmanaged(
+    const IFBHNDMemoryReservation reservation_handle,
+    const IFBU32                    arena_size_minimum) {
 
     //get the reservation
     IFBMemoryReservation* reservation_ptr = ifb_memory::reservation_handle_to_pointer(reservation_handle);
 
     //create the handle
-    IFBMemoryArenaHandle arena_handle;
+    IFBHNDMemoryArena arena_handle;
     arena_handle.offset = 0;
 
     //commit the pages
     IFBMemoryReservationPageCommit page_commit;
     page_commit.size_requested = arena_size_minimum;
-    const ifb_b8 commit_result = ifb_memory::reservation_commit_pages(reservation_ptr,page_commit);
+    const IFBB8 commit_result = ifb_memory::reservation_commit_pages(reservation_ptr,page_commit);
 
     //if that failed, we're done
     if (!commit_result) return(arena_handle);
@@ -167,29 +167,29 @@ ifb_memory::reservation_commit_arena(
     return(arena_handle);
 }
 
-const IFBMemoryLinearArenaHandle 
-ifb_memory::reservation_commit_linear_arena(
-    const IFBMemoryReservationHandle reservation_handle,
-    const ifb_u32                    arena_size_minimum) {
+const IFBHNDMemoryArenaLinear 
+ifb_memory::reservation_commit_arena_linear(
+    const IFBHNDMemoryReservation reservation_handle,
+    const IFBU32                    arena_size_minimum) {
 
     //get the reservation
     IFBMemoryReservation* reservation_ptr = ifb_memory::reservation_handle_to_pointer(reservation_handle);
 
     //create the handle
-    IFBMemoryLinearArenaHandle linear_arena_handle;
+    IFBHNDMemoryArenaLinear linear_arena_handle;
     linear_arena_handle.offset = 0;
 
     //commit the pages
     IFBMemoryReservationPageCommit page_commit;
     page_commit.size_requested = arena_size_minimum;
-    const ifb_b8 commit_result = ifb_memory::reservation_commit_pages(reservation_ptr,page_commit);
+    const IFBB8 commit_result = ifb_memory::reservation_commit_pages(reservation_ptr,page_commit);
 
     //if that failed, we're done
     if (!commit_result) return(linear_arena_handle);
 
     //allocate a base arena on the stack
-    linear_arena_handle.offset             = ifb_memory_macro_stack_push_struct      (IFBMemoryLinearArena);
-    IFBMemoryLinearArena* linear_arena_ptr = ifb_memory_macro_stack_get_type_pointer (linear_arena_handle.offset,IFBMemoryLinearArena);
+    linear_arena_handle.offset             = ifb_memory_macro_stack_push_struct      (IFBMemoryArenaLinear);
+    IFBMemoryArenaLinear* linear_arena_ptr = ifb_memory_macro_stack_get_type_pointer (linear_arena_handle.offset,IFBMemoryArenaLinear);
     ifb_macro_assert(linear_arena_ptr);
 
     //initialize the arena
@@ -211,42 +211,42 @@ ifb_memory::reservation_commit_linear_arena(
     return(linear_arena_handle);
 }
 
-const IFBMemoryBlockArenaHandle  
-ifb_memory::reservation_commit_block_arena(
-    const IFBMemoryReservationHandle reservation_handle,
-    const ifb_u32                    block_size_minimum,
-    const ifb_u32                    block_count) {
+const IFBHNDMemoryArenaBlock  
+ifb_memory::reservation_commit_arena_block(
+    const IFBHNDMemoryReservation reservation_handle,
+    const IFBU32                    block_size_minimum,
+    const IFBU32                    block_count) {
 
     //get the reservation
     IFBMemoryReservation* reservation_ptr = ifb_memory::reservation_handle_to_pointer(reservation_handle);
 
     //create the handle
-    IFBMemoryBlockArenaHandle block_arena_handle;
+    IFBHNDMemoryArenaBlock block_arena_handle;
     block_arena_handle.offset = 0;
 
     //get the actual size of the arena
-    const ifb_u32 block_size_actual = ifb_memory::context_align_size_to_page(block_size_minimum);
-    const ifb_u32 size_requested    = block_count * block_size_actual;   
+    const IFBU32 block_size_actual = ifb_memory::context_align_size_to_page(block_size_minimum);
+    const IFBU32 size_requested    = block_count * block_size_actual;   
     
     //commit the pages
     IFBMemoryReservationPageCommit page_commit;
     page_commit.size_requested = size_requested;
-    const ifb_b8 commit_result = ifb_memory::reservation_commit_pages(reservation_ptr,page_commit);
+    const IFBB8 commit_result = ifb_memory::reservation_commit_pages(reservation_ptr,page_commit);
 
     //if that failed, we're done
     if (!commit_result) return(block_arena_handle);
 
     //calculate the allocation size
-    const ifb_u32 block_arena_struct_size  = ifb_macro_align_size_struct(IFBMemoryBlockArena);
-    const ifb_u32 block_address_array_size = ifb_macro_array_size(ifb_address,block_count); 
-    const ifb_u32 push_size_total          = block_arena_struct_size + block_address_array_size;
+    const IFBU32 block_arena_struct_size  = ifb_macro_align_size_struct(IFBMemoryArenaBlock);
+    const IFBU32 block_address_array_size = ifb_macro_array_size(IFBAddr,block_count); 
+    const IFBU32 push_size_total          = block_arena_struct_size + block_address_array_size;
 
     //allocate a base arena on the stack
     block_arena_handle.offset = ifb_memory::stack_push(push_size_total);
 
     //get the pointers
-    IFBMemoryBlockArena* block_arena_ptr     = ifb_memory_macro_stack_get_type_pointer(block_arena_handle.offset,                           IFBMemoryBlockArena);
-    ifb_address*         block_address_array = ifb_memory_macro_stack_get_type_pointer(block_arena_handle.offset + block_arena_struct_size, ifb_address);
+    IFBMemoryArenaBlock* block_arena_ptr     = ifb_memory_macro_stack_get_type_pointer(block_arena_handle.offset,                           IFBMemoryArenaBlock);
+    IFBAddr*         block_address_array = ifb_memory_macro_stack_get_type_pointer(block_arena_handle.offset + block_arena_struct_size, IFBAddr);
 
     //sanity check
     ifb_macro_assert(block_arena_ptr);
@@ -276,9 +276,9 @@ ifb_memory::reservation_commit_block_arena(
 /* INFO                                                                           */
 /**********************************************************************************/
 
-const ifb_b8
+const IFBB8
 ifb_memory::reservation_get_info(
-    const IFBMemoryReservationHandle reservation_handle,
+    const IFBHNDMemoryReservation reservation_handle,
           IFBMemoryReservationInfo*  reservation_info_ptr) {
 
     //get the reservation
@@ -288,10 +288,10 @@ ifb_memory::reservation_get_info(
     if (!reservation_info_ptr) return(false);
 
     //calculate sizes
-    const ifb_u32 page_count_total     = reservation_ptr->page_count_total;
-    const ifb_u32 page_count_committed = reservation_ptr->page_count_committed;
-    const ifb_u32 size_total           = ifb_memory::context_get_size_from_page_count(page_count_total);
-    const ifb_u32 size_committed       = ifb_memory::context_get_size_from_page_count(page_count_committed);
+    const IFBU32 page_count_total     = reservation_ptr->page_count_total;
+    const IFBU32 page_count_committed = reservation_ptr->page_count_committed;
+    const IFBU32 size_total           = ifb_memory::context_get_size_from_page_count(page_count_total);
+    const IFBU32 size_committed       = ifb_memory::context_get_size_from_page_count(page_count_committed);
 
     //set reservation into
     reservation_info_ptr->page_count_total     = page_count_total;
@@ -310,7 +310,7 @@ ifb_memory::reservation_get_info(
 
 IFBMemoryReservation* 
 ifb_memory::reservation_handle_to_pointer(
-    const IFBMemoryReservationHandle reservation_handle) {
+    const IFBHNDMemoryReservation reservation_handle) {
 
     //get the pointer
     IFBMemoryReservation* reservation_ptr = ifb_memory_macro_stack_get_type_pointer(
@@ -324,7 +324,7 @@ ifb_memory::reservation_handle_to_pointer(
     return(reservation_ptr);
 }
 
-ifb_b8
+IFBB8
 ifb_memory::reservation_commit_pages(
     IFBMemoryReservation*           reservation_ptr,
     IFBMemoryReservationPageCommit& page_commit_ref) {
@@ -332,22 +332,22 @@ ifb_memory::reservation_commit_pages(
     ifb_macro_assert(reservation_ptr);
 
     //get the start of the commit
-    const ifb_u32     commit_size_requested  = page_commit_ref.size_requested;
-    const ifb_u32     commit_size_actual     = ifb_memory::context_align_size_to_page(commit_size_requested);
-    const ifb_u32     page_number            = reservation_ptr->page_count_committed;
-    const ifb_u32     page_count             = ifb_memory::context_get_page_count_from_size(commit_size_actual); 
-    const ifb_u32     page_offset            = ifb_memory::context_get_size_from_page_count(page_number); 
-    const ifb_address commit_start           = reservation_ptr->start + page_offset;
-    const ifb_ptr     commit_request_pointer = (ifb_ptr)commit_start; 
+    const IFBU32     commit_size_requested  = page_commit_ref.size_requested;
+    const IFBU32     commit_size_actual     = ifb_memory::context_align_size_to_page(commit_size_requested);
+    const IFBU32     page_number            = reservation_ptr->page_count_committed;
+    const IFBU32     page_count             = ifb_memory::context_get_page_count_from_size(commit_size_actual); 
+    const IFBU32     page_offset            = ifb_memory::context_get_size_from_page_count(page_number); 
+    const IFBAddr commit_start           = reservation_ptr->start + page_offset;
+    const IFBPtr     commit_request_pointer = (IFBPtr)commit_start; 
 
     //make sure the reservation can fit this commit
-    const ifb_u32 new_page_commit_count = reservation_ptr->page_count_committed + page_count;
+    const IFBU32 new_page_commit_count = reservation_ptr->page_count_committed + page_count;
     
     //if we can't, we're done
     if (new_page_commit_count > reservation_ptr->page_count_total) return(false);
 
     //commit the arena size at the starting page
-    const ifb_ptr commit_result_pointer = ifb_memory::platform_memory_commit(
+    const IFBPtr commit_result_pointer = ifb_memory::platform_memory_commit(
         commit_request_pointer,
         commit_size_actual);
 
@@ -368,7 +368,7 @@ ifb_memory::reservation_commit_pages(
     return(true); 
 }
 
-ifb_void
+IFBVoid
 ifb_memory::reservation_arena_list_add(
     IFBMemoryReservation* reservation_ptr,
     IFBMemoryArena*       arena_ptr) {
@@ -380,8 +380,8 @@ ifb_memory::reservation_arena_list_add(
     IFBMemoryArenaList& arena_list_ref = reservation_ptr->arena_list;
 
     //get the arena status
-    const ifb_b8 is_first_arena  = arena_list_ref.count == 0;
-    const ifb_b8 is_second_arena = arena_list_ref.count == 1;
+    const IFBB8 is_first_arena  = arena_list_ref.count == 0;
+    const IFBB8 is_second_arena = arena_list_ref.count == 1;
 
     //if this is the first arena, we need to initialize the list 
     if (is_first_arena) {

@@ -6,15 +6,15 @@
 /* WINDOW API                                                                     */
 /**********************************************************************************/
 
-ifb_internal const ifb_b8
+ifb_internal const IFBB8
 ifb_win32::window_create(
-    const ifb_cstr title,
-    const ifb_u32  width,
-    const ifb_u32  height,
-    const ifb_u32  position_x,
-    const ifb_u32  position_y) {
+    const IFBCStr title,
+    const IFBU32  width,
+    const IFBU32  height,
+    const IFBU32  position_x,
+    const IFBU32  position_y) {
 
-    ifb_b8 result = true;
+    IFBB8 result = true;
 
     //get the window
     IFBWin32Window& window_ref = ifb_win32::context_get_window();
@@ -57,9 +57,9 @@ ifb_win32::window_create(
     return(result);    
 }
 
-ifb_internal const ifb_b8 
+ifb_internal const IFBB8 
 ifb_win32::window_destroy(
-    ifb_void) {
+    IFBVoid) {
 
     PostQuitMessage(0);
 
@@ -69,9 +69,9 @@ ifb_win32::window_destroy(
     return(true);
 }
 
-ifb_internal const ifb_b8 
+ifb_internal const IFBB8 
 ifb_win32::window_frame_start(
-    ifb_void) {
+    IFBVoid) {
 
     //get the window
     IFBWin32Window& window_ref = ifb_win32::context_get_window();
@@ -93,7 +93,7 @@ ifb_win32::window_frame_start(
             case WM_KEYDOWN:
             case WM_SYSKEYDOWN: {
 
-                const IFBKeyCode keycode = ifb_win32::user_input_keycode((ifb_u32)window_message.wParam);
+                const IFBKeyCode keycode = ifb_win32::user_input_keycode((IFBU32)window_message.wParam);
 
                 // IFBEngineUpdate& update = ifb_win32::context_get_engine_update();
 
@@ -105,7 +105,7 @@ ifb_win32::window_frame_start(
             case WM_KEYUP:
             case WM_SYSKEYUP: {
 
-                const IFBKeyCode keycode = ifb_win32::user_input_keycode((ifb_u32)window_message.wParam);
+                const IFBKeyCode keycode = ifb_win32::user_input_keycode((IFBU32)window_message.wParam);
 
                 // IFBEngineUpdate& update = ifb_win32::context_get_engine_update();
 
@@ -126,9 +126,9 @@ ifb_win32::window_frame_start(
     return(true);
 }
 
-ifb_internal const ifb_b8 
+ifb_internal const IFBB8 
 ifb_win32::window_frame_render(
-    ifb_void) {
+    IFBVoid) {
 
     //get the window
     IFBWin32Window& window_ref = ifb_win32::context_get_window();
@@ -146,24 +146,24 @@ ifb_win32::window_frame_render(
     return(true);
 }
 
-ifb_internal const ifb_b8 
+ifb_internal const IFBB8 
 ifb_win32::window_show(
-    ifb_void) {
+    IFBVoid) {
 
     //get the window
     IFBWin32Window& window_ref = ifb_win32::context_get_window();
 
     //show the window
-    const ifb_b8  result = (ifb_b8)ShowWindow(window_ref.window_handle,1);
-    const ifb_u32 error  = GetLastError();
+    const IFBB8  result = (IFBB8)ShowWindow(window_ref.window_handle,1);
+    const IFBU32 error  = GetLastError();
 
     //we're done
     return(true);
 }
 
-ifb_internal const ifb_b8 
+ifb_internal const IFBB8 
 ifb_win32::window_opengl_init(
-    ifb_void) {
+    IFBVoid) {
 
     //set our preferred format descriptor
     PIXELFORMATDESCRIPTOR preferred_format_descriptor = {0};
@@ -177,13 +177,13 @@ ifb_win32::window_opengl_init(
     IFBWin32Window& window_ref = ifb_win32::context_get_window();
 
     //query for the closest format descriptor
-    const ifb_s32 chosen_format_descriptor = 
+    const IFBS32 chosen_format_descriptor = 
         ChoosePixelFormat(
             window_ref.device_context,
             &preferred_format_descriptor);
 
     //set the chosen pixel format
-    const ifb_b8 pixel_format_is_set = 
+    const IFBB8 pixel_format_is_set = 
         SetPixelFormat(
             window_ref.device_context,
             chosen_format_descriptor,
@@ -193,12 +193,12 @@ ifb_win32::window_opengl_init(
     window_ref.opengl_context = wglCreateContext(window_ref.device_context);
 
     //make the context current
-    const ifb_b8 context_active = wglMakeCurrent(
+    const IFBB8 context_active = wglMakeCurrent(
         window_ref.device_context,
         window_ref.opengl_context);
 
     //sanity check
-    const ifb_b8 result = (
+    const IFBB8 result = (
         chosen_format_descriptor  &&
         pixel_format_is_set       &&
         window_ref.opengl_context &&
@@ -210,10 +210,10 @@ ifb_win32::window_opengl_init(
 
 ifb_internal ImGuiContext*
 ifb_win32::window_imgui_init(
-    ifb_void) {
+    IFBVoid) {
 
     //sanity check
-    ifb_b8 result = IMGUI_CHECKVERSION();
+    IFBB8 result = IMGUI_CHECKVERSION();
 
     //get the window
     IFBWin32Window& window_ref = ifb_win32::context_get_window();
@@ -221,8 +221,8 @@ ifb_win32::window_imgui_init(
     //create the imgui context for win32 opengl
     window_ref.imgui_context = ImGui::CreateContext();
     result &= window_ref.imgui_context != NULL;
-    result &= (ifb_b8)ImGui_ImplWin32_Init(window_ref.window_handle);
-    result &= (ifb_b8)ImGui_ImplOpenGL3_Init("#version 330");
+    result &= (IFBB8)ImGui_ImplWin32_Init(window_ref.window_handle);
+    result &= (IFBB8)ImGui_ImplOpenGL3_Init("#version 330");
 
     //we're done
     return(result ? window_ref.imgui_context : NULL);

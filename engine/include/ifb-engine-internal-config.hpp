@@ -15,7 +15,7 @@
 
 namespace ifb_engine {
 
-    inline const ifb_b8 config_load();
+    inline const IFBB8 config_load();
 };
 
 #endif //IFB_ENGINE_INTERNAL_CONFIG_HPP

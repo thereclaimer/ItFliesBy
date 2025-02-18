@@ -10,7 +10,7 @@ ifb_global IFBPlatformApi* _ptr_platform_api;
 
 namespace ifb_engine {
 
-    inline const IFBPlatformApi* platform_api(ifb_void) { 
+    inline const IFBPlatformApi* platform_api(IFBVoid) { 
         ifb_macro_assert(_ptr_platform_api);
         return(_ptr_platform_api); 
     }

@@ -34,8 +34,8 @@
 #define ifb_macro_xmm_f128_sqrt(xmm)               _mm_sqrt_ps(xmm)
 #define ifb_macro_xmm_f128_store(f32_ptr, xmm)     _mm_store_ps(f32_ptr, xmm)
 
-#define ifb_macro_color_normalize_byte(byte) (ifb_f32)(((ifb_f32)byte) / ((ifb_f32)0xFF))
+#define ifb_macro_color_normalize_byte(byte) (IFBF32)(((IFBF32)byte) / ((IFBF32)0xFF))
 
-#define ifb_macro_pointer_from_offset(start,offset,type) (type*)((ifb_address)start + (ifb_address)offset)
+#define ifb_macro_pointer_from_offset(start,offset,type) (type*)((IFBAddr)start + (IFBAddr)offset)
 
 #endif //IFB_MACROS_HPP

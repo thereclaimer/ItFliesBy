@@ -9,11 +9,11 @@
 #define IFB_ENGINE_GRAPHICS_MEMORY_SIZE_KB 4
 
 struct IFBEngineGraphicsMemory {
-    IFBMemoryLinearArenaHandle linear_arena;
+    IFBHNDMemoryArenaLinear linear_arena;
 };
 
 struct IFBEngineGraphicsHandles {
-    ifb_u32 window;
+    IFBU32 window;
 };
 
 struct IFBEngineGraphicsManager {
@@ -24,11 +24,10 @@ struct IFBEngineGraphicsManager {
 namespace ifb_engine {
 
     //initialize
-    const ifb_b8 graphics_manager_initialize   (IFBEngineGraphicsManager* ptr_graphics_manager);
+    const IFBB8 graphics_manager_initialize   (IFBEngineGraphicsManager* ptr_graphics_manager);
     
 
     //pointers
-    IFBWindow* graphics_manager_get_ptr_window (IFBEngineGraphicsManager* ptr_graphics_manager);
 };
 
 

@@ -22,13 +22,13 @@ struct IFBEngineCoreMemory;
 /**********************************************************************************/
 
 struct IFBEngineCoreMemoryStack {
-    ifb_byte* data;
-    ifb_u32   size;
+    IFBByte* data;
+    IFBU32   size;
 };
 
 struct IFBEngineCoreMemoryReservation {
-    ifb_u64                     size;
-    IFBMemoryReservationHandle  handle; 
+    IFBU64                     size;
+    IFBHNDMemoryReservation  handle; 
 };
 
 struct IFBEngineCoreMemory {
@@ -39,17 +39,17 @@ struct IFBEngineCoreMemory {
 namespace ifb_engine {
 
     //reservation
-    const ifb_b8                     core_memory_reserve                 (IFBEngineCore* core_ptr, const ifb_u32 size);
-    const ifb_b8                     core_memory_release                 (IFBEngineCore* core_ptr);
+    const IFBB8                     core_memory_reserve                 (IFBEngineCore* core_ptr, const IFBU32 size);
+    const IFBB8                     core_memory_release                 (IFBEngineCore* core_ptr);
 
     //stack
-    const ifb_ptr                    core_memory_stack_commit_absolute   (IFBEngineCore* core_ptr, const ifb_u32 size, const ifb_u32 alignment = 0);
-    const ifb_u32                    core_memory_stack_commit_relative   (IFBEngineCore* core_ptr, const ifb_u32 size, const ifb_u32 alignment = 0);
+    const IFBPtr                    core_memory_stack_commit_absolute   (IFBEngineCore* core_ptr, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBU32                    core_memory_stack_commit_relative   (IFBEngineCore* core_ptr, const IFBU32 size, const IFBU32 alignment = 0);
 
     //arenas
-    const IFBMemoryArenaHandle       core_memory_arena_commit_unmanaged  (IFBEngineCore* core_ptr, const ifb_u32 size);
-    const IFBMemoryLinearArenaHandle core_memory_arena_commit_linear     (IFBEngineCore* core_ptr, const ifb_u32 size);
-    const IFBMemoryBlockArenaHandle  core_memory_arena_commit_block      (IFBEngineCore* core_ptr, const ifb_u32 block_size, const ifb_u32 block_count);
+    const IFBHNDMemoryArena       core_memory_arena_commit_unmanaged  (IFBEngineCore* core_ptr, const IFBU32 size);
+    const IFBHNDMemoryArenaLinear core_memory_arena_commit_linear     (IFBEngineCore* core_ptr, const IFBU32 size);
+    const IFBHNDMemoryArenaBlock  core_memory_arena_commit_block      (IFBEngineCore* core_ptr, const IFBU32 block_size, const IFBU32 block_count);
 };
 
 
@@ -58,7 +58,7 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineCore {
-    ifb_u32             stack_offset;
+    IFBU32             stack_offset;
     IFBEngineCoreMemory memory; 
 };
 
@@ -67,10 +67,10 @@ namespace ifb_engine {
     IFBEngineCore*
     core_create(
         const IFBPlatformApi* platform_api_ptr,
-        const ifb_byte*       core_stack_memory_ptr,
-        const ifb_u32         core_stack_memory_size);
+        const IFBByte*       core_stack_memory_ptr,
+        const IFBU32         core_stack_memory_size);
     
-    const ifb_b8
+    const IFBB8
     core_destroy(
         IFBEngineCore* core_ptr);
 };

@@ -6,21 +6,21 @@
 namespace ifb_engine {
 
     // create/destroy
-    ifb_engine_api const ifb_b8 
+    ifb_engine_api const IFBB8 
     context_create(
         const IFBPlatformApi* ptr_platform_api,
-        const ifb_byte*       ptr_stack_memory,
-        const ifb_u32         stack_memory_size);
+        const IFBByte*       ptr_stack_memory,
+        const IFBU32         stack_memory_size);
     
     
-    ifb_engine_api const ifb_b8 context_destroy      (ifb_void);
+    ifb_engine_api const IFBB8 context_destroy      (IFBVoid);
     
     // startup/shutdown
-    ifb_engine_api const ifb_b8 context_startup      (ifb_void);
-    ifb_engine_api const ifb_b8 context_shutdown     (ifb_void);
+    ifb_engine_api const IFBB8 context_startup      (IFBVoid);
+    ifb_engine_api const IFBB8 context_shutdown     (IFBVoid);
     
     // rendering
-    ifb_engine_api const ifb_b8 context_render_frame (ifb_void);
+    ifb_engine_api const IFBB8 context_render_frame (IFBVoid);
 };
 
 #endif //IFB_ENGINE_CONTEXT_HPP

@@ -10,18 +10,18 @@ ifb_global IFBMemoryContext* _context_ptr;
 /* CREATE / DESTROY                                                               */
 /**********************************************************************************/
 
-const ifb_b8
+const IFBB8
 ifb_memory::context_create(
     const IFBPlatformApi* ptr_platform_api,
-    const ifb_byte*       stack_memory,
-    const ifb_u32         stack_size) {
+    const IFBByte*       stack_memory,
+    const IFBU32         stack_size) {
 
     //calculate the size of the memory struct
-    const ifb_u32 memory_struct_size = ifb_macro_align_size_struct(IFBMemoryContext);
+    const IFBU32 memory_struct_size = ifb_macro_align_size_struct(IFBMemoryContext);
 
     // make sure the platform api methods are defined 
     // and the stack is valid and large enough
-    ifb_b8 result = true;
+    IFBB8 result = true;
     result &= ifb_memory::platform_set_api(ptr_platform_api);
     result &= stack_memory != NULL;
     result &= stack_size   >= memory_struct_size;
@@ -42,7 +42,7 @@ ifb_memory::context_create(
     system_info_ref.granularity = ifb_memory::platform_system_allocation_granularity();
 
     //initialize the stack
-    stack_ref.start    = (ifb_address)_context_ptr;
+    stack_ref.start    = (IFBAddr)_context_ptr;
     stack_ref.end      = stack_ref.start + stack_size;
     stack_ref.position = memory_struct_size;
     stack_ref.size     = stack_size;
@@ -56,25 +56,25 @@ ifb_memory::context_create(
     return(true);
 }
 
-const ifb_b8
+const IFBB8
 ifb_memory::context_destroy(
-    ifb_void) {
+    IFBVoid) {
 
     //sanity check
     ifb_macro_assert(_context_ptr);
 
-    const ifb_u32 page_size = _context_ptr->system_info.page_size;
+    const IFBU32 page_size = _context_ptr->system_info.page_size;
 
     //release the reservations
-    ifb_b8 result = true;
+    IFBB8 result = true;
     for (
         IFBMemoryReservation* current_reservation_ptr = _context_ptr->reservation_list.first;
         current_reservation_ptr != NULL;
         current_reservation_ptr = current_reservation_ptr->next) {
 
         //get the current reservation info
-        const ifb_u32 current_reservation_size  = current_reservation_ptr->page_count_total * page_size;  
-        const ifb_ptr current_reservation_start = (ifb_ptr)current_reservation_ptr->start;
+        const IFBU32 current_reservation_size  = current_reservation_ptr->page_count_total * page_size;  
+        const IFBPtr current_reservation_start = (IFBPtr)current_reservation_ptr->start;
 
         //release it
         result &= ifb_memory::platform_memory_release(
@@ -83,8 +83,8 @@ ifb_memory::context_destroy(
     }
 
     //clear the stack
-    const ifb_u32 stack_size  = _context_ptr->stack.size;
-    const ifb_ptr stack_start = (ifb_ptr)_context_ptr; 
+    const IFBU32 stack_size  = _context_ptr->stack.size;
+    const IFBPtr stack_start = (IFBPtr)_context_ptr; 
     memset(stack_start,0,stack_size);
 
     //we're done
@@ -95,7 +95,7 @@ ifb_memory::context_destroy(
 /* SYSTEM INFO                                                                    */
 /**********************************************************************************/
 
-const ifb_b8 
+const IFBB8 
 ifb_memory::context_get_system_info(
     IFBMemorySystemInfo* system_info) {
 
@@ -116,22 +116,22 @@ ifb_memory::context_get_system_info(
 /* ALIGNMENT                                                                      */
 /**********************************************************************************/
 
-const ifb_u32 
+const IFBU32 
 ifb_memory::context_align_size_to_page(
-    const ifb_u32 size) {
+    const IFBU32 size) {
 
-    const ifb_u32 page_size    = _context_ptr->system_info.page_size;
-    const ifb_u32 size_aligned = ifb_macro_align_a_to_b(size,page_size); 
+    const IFBU32 page_size    = _context_ptr->system_info.page_size;
+    const IFBU32 size_aligned = ifb_macro_align_a_to_b(size,page_size); 
     
     return(size_aligned);
 }
 
-const ifb_u32 
+const IFBU32 
 ifb_memory::context_align_size_to_granularity(
-    const ifb_u32 size) {
+    const IFBU32 size) {
 
-    const ifb_u32 granularity  = _context_ptr->system_info.page_size;
-    const ifb_u32 size_aligned = ifb_macro_align_a_to_b(size,granularity); 
+    const IFBU32 granularity  = _context_ptr->system_info.page_size;
+    const IFBU32 size_aligned = ifb_macro_align_a_to_b(size,granularity); 
     
     return(size_aligned);
 }
@@ -140,24 +140,24 @@ ifb_memory::context_align_size_to_granularity(
 /* INTERNAL                                                                       */
 /**********************************************************************************/
 
-const ifb_u64
+const IFBU64
 ifb_memory::context_get_size_from_page_count(
-    const ifb_u32 page_count) {
+    const IFBU32 page_count) {
     
-    const ifb_u32 page_size = _context_ptr->system_info.page_size;
-    const ifb_u64 size      = page_count * page_size;
+    const IFBU32 page_size = _context_ptr->system_info.page_size;
+    const IFBU64 size      = page_count * page_size;
 
     return(size);
 }
 
-const ifb_u32
+const IFBU32
 ifb_memory::context_get_page_count_from_size(
-    const ifb_u64 size) {
+    const IFBU64 size) {
 
-    const ifb_u64 page_size = _context_ptr->system_info.page_size;
+    const IFBU64 page_size = _context_ptr->system_info.page_size;
     ifb_macro_assert(page_size);
 
-    const ifb_u32 page_count = (ifb_u32)(size / page_size);
+    const IFBU32 page_count = (IFBU32)(size / page_size);
     return(page_count);  
 }
 
@@ -167,7 +167,7 @@ ifb_memory::context_get_page_count_from_size(
 
 IFBMemoryContext*
 ifb_memory::context(
-    ifb_void) {
+    IFBVoid) {
 
     ifb_macro_assert(_context_ptr);
     return(_context_ptr);
@@ -175,7 +175,7 @@ ifb_memory::context(
 
 IFBMemoryStack&
 ifb_memory::context_get_stack(
-    ifb_void) {
+    IFBVoid) {
 
     ifb_macro_assert(_context_ptr);
     return(_context_ptr->stack);
@@ -183,7 +183,7 @@ ifb_memory::context_get_stack(
 
 IFBMemorySystemInfo&
 ifb_memory::context_get_system_info(
-    ifb_void) {
+    IFBVoid) {
     
     ifb_macro_assert(_context_ptr);
     return(_context_ptr->system_info);
@@ -191,7 +191,7 @@ ifb_memory::context_get_system_info(
 
 IFBMemoryReservationList&
 ifb_memory::context_get_reservation_list(
-    ifb_void) {
+    IFBVoid) {
     
     ifb_macro_assert(_context_ptr);
     return(_context_ptr->reservation_list);

@@ -20,62 +20,65 @@ struct IFBMat3;
 struct IFBPoint;
 struct IFBLine;
 struct IFBTransform;
+struct IFBDimensions;
+struct IFBPosition;
+
+struct IFBColorNormalized;
+struct IFBColorHex;
+struct IFBColor32;
+
 
 /**********************************************************************************/
 /* PRIMITIVES                                                                     */
 /**********************************************************************************/
 
 //signed integers
-typedef int8_t     ifb_s8;
-typedef int16_t    ifb_s16;
-typedef int32_t    ifb_s32;
-typedef int64_t    ifb_s64;
+typedef int8_t   IFBS8;
+typedef int16_t  IFBS16;
+typedef int32_t  IFBS32;
+typedef int64_t  IFBS64;
 
-//unsigned integers
-typedef uint8_t    ifb_u8;
-typedef uint16_t   ifb_u16;
-typedef uint32_t   ifb_u32;
-typedef uint64_t   ifb_u64;
-
-//enum
-typedef uint32_t   ifb_enum;
+//unsigned integ 
+typedef uint8_t  IFBU8;
+typedef uint16_t IFBU16;
+typedef uint32_t IFBU32;
+typedef uint64_t IFBU64;
 
 //floats
-typedef float      ifb_f32;
-typedef double     ifb_f64;
+typedef float    IFBF32;
+typedef double   IFBF64;
 
 //booleans
-typedef int8_t     ifb_b8;
-typedef int16_t    ifb_b16;
-typedef int32_t    ifb_b32;
-typedef int64_t    ifb_b64;
+typedef int8_t   IFBB8;
+typedef int16_t  IFBB16;
+typedef int32_t  IFBB32;
+typedef int64_t  IFBB64;
 
 //strings
-typedef char       ifb_char;
-typedef wchar_t    ifb_wchar;
-typedef char*      ifb_cstr;
-typedef wchar_t*   ifb_wstr;
+typedef char     IFBChar;
+typedef char*    IFBCStr;
+typedef wchar_t  IFBWChar;
+typedef wchar_t* IFBWStr;
 
 //memory
-typedef void       ifb_void;
-typedef void*      ifb_ptr;
-typedef uint8_t    ifb_byte;
-typedef size_t     ifb_size;
-typedef ifb_u32    ifb_index;
-typedef ifb_ptr    ifb_handle;
-typedef intptr_t   ifb_address;
-typedef uint32_t   ifb_page;
+typedef void     IFBVoid;
+typedef void*    IFBPtr;
+typedef uint8_t  IFBByte;
+typedef size_t   IFBSize;
+typedef IFBU32   IFBIndex;
+typedef IFBPtr   IFBHandle;
+typedef intptr_t IFBAddr;
 
 //time
-typedef uint64_t ifb_timems;
+typedef uint64_t IFBTimems;
 
 /**********************************************************************************/
 /* IDENTIFIERS                                                                    */
 /**********************************************************************************/
 
-struct IFBID   { ifb_index index;  }; // id            | unique index in a collection
-struct IFBHND  { ifb_u32   offset; }; // handle        | offset from engine memory reservation
-struct IFBGHND { ifb_u32   offset; }; // global handle | offset from engine global stack
+struct IFBID   { IFBIndex index;  }; // id            | unique index in a collection
+struct IFBHND  { IFBU32   offset; }; // handle        | offset from engine memory reservation
+struct IFBGHND { IFBU32   offset; }; // global handle | offset from engine global stack
 
 /**********************************************************************************/
 /* SIMD                                                                           */
@@ -99,43 +102,43 @@ typedef __m128 ifb_xmm_f128;
 struct IFBVec2 {
     union {
         struct {
-            ifb_f32 x;
-            ifb_f32 y;
+            IFBF32 x;
+            IFBF32 y;
         };
-        ifb_f32 xy[2];
+        IFBF32 xy[2];
     };
 };
 
 struct IFBVec3 {
     union {
         struct {
-            ifb_f32 x;
-            ifb_f32 y;
-            ifb_f32 z;
+            IFBF32 x;
+            IFBF32 y;
+            IFBF32 z;
         };
-        ifb_f32 xyz[3];
+        IFBF32 xyz[3];
     };
 };
 
 struct IFBMat3 {
     union {
         struct {
-            ifb_f32 r0c0;
-            ifb_f32 r0c1;
-            ifb_f32 r0c2;
-            ifb_f32 r1c0;
-            ifb_f32 r1c1;
-            ifb_f32 r1c2;
-            ifb_f32 r2c0;
-            ifb_f32 r2c1;
-            ifb_f32 r2c2;
+            IFBF32 r0c0;
+            IFBF32 r0c1;
+            IFBF32 r0c2;
+            IFBF32 r1c0;
+            IFBF32 r1c1;
+            IFBF32 r1c2;
+            IFBF32 r2c0;
+            IFBF32 r2c1;
+            IFBF32 r2c2;
         };
         struct {
             IFBVec3 row_vec_0;
             IFBVec3 row_vec_1;
             IFBVec3 row_vec_2;
         };
-        ifb_f32 array[9];        
+        IFBF32 array[9];        
     };
 };
 
@@ -145,17 +148,60 @@ struct IFBIDTransform : IFBID { };
 struct IFBTransform : IFBIDTransform {
     IFBVec2 translation;
     IFBVec2 scale;
-    ifb_f32 rotation_radians;
+    IFBF32 rotation_radians;
 };
 
 struct IFBPoint {
-    ifb_f32 x;
-    ifb_f32 y;
+    IFBF32 x;
+    IFBF32 y;
 };
 
 struct IFBLine {
     IFBPoint point_a;
     IFBPoint point_b;
+};
+
+/**********************************************************************************/
+/* COLORS                                                                         */
+/**********************************************************************************/
+
+struct IFBColorNormalized {
+    IFBF32 red;
+    IFBF32 blue;
+    IFBF32 green;
+    IFBF32 alpha;
+};
+
+struct IFBColorHex {
+    IFBU8 red;
+    IFBU8 blue;
+    IFBU8 green;
+    IFBU8 alpha;
+};
+
+struct IFBColor32 {
+    IFBF32 value;
+};
+
+enum IFBColorFormat : IFBU32 {
+     IFBColorFormat_RGBA = 0,
+     IFBColorFormat_ARGB = 1,
+     IFBColorFormat_ABGR = 2,
+     IFBColorFormat_BGRA = 3
+};
+
+/**********************************************************************************/
+/* SIZES AND COORDINATES                                                          */
+/**********************************************************************************/
+
+struct IFBDimensions {
+    IFBU32 width;
+    IFBU32 height;
+};
+
+struct IFBPosition {
+    IFBU32 x;
+    IFBU32 y;
 };
 
 #endif //IFB_TYPES_HPP

@@ -25,8 +25,8 @@ struct IFBSprite;
 
 struct IFBSpriteAtlas : IFBIDSpriteAtlas {
     IFBDimensions unit_sprite_dimensions;
-    ifb_u32       count_rows;
-    ifb_u32       count_columns;
+    IFBU32       count_rows;
+    IFBU32       count_columns;
 };
 
 /**********************************************************************************/

@@ -10,14 +10,14 @@
 #define IFB_ENGINE_SINGLETON_STACK_SIZE 0xFFFF
 
 struct IFBEngineSingletonBuffer {
-    ifb_byte memory[IFB_ENGINE_SINGLETON_STACK_SIZE];
+    IFBByte memory[IFB_ENGINE_SINGLETON_STACK_SIZE];
 };
 
 struct IFBEngineSingletonHandles {
-    ifb_u16 config;
-    ifb_u16 input;
-    ifb_u16 dev_tools;
-    ifb_u16 graphics_manager;
+    IFBU16 config;
+    IFBU16 input;
+    IFBU16 dev_tools;
+    IFBU16 graphics_manager;
 };
 
 struct IFBEngineSingletons {
@@ -27,7 +27,7 @@ struct IFBEngineSingletons {
 
 namespace ifb_engine {
 
-    ifb_void                  singletons_commit_all            (IFBEngineSingletons* ptr_singletons);
+    IFBVoid                  singletons_commit_all            (IFBEngineSingletons* ptr_singletons);
 
     IFBEngineConfig*          singletons_load_config           (const IFBEngineSingletons* ptr_singletons);
     IFBInput*                 singletons_load_input            (const IFBEngineSingletons* ptr_singletons);

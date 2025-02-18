@@ -11,5 +11,4 @@
 #include "ifb-platform.hpp"
 #include "ifb-tag.hpp"
 
-
 #endif //IFB_HPP

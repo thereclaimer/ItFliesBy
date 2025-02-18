@@ -18,9 +18,9 @@ struct IFBEngineContext {
 
 namespace ifb_engine {
     
-    IFBEngineContext&    context_ref                  (ifb_void);
-    IFBEngineCore*       context_get_ptr_core         (ifb_void); 
-    IFBEngineSingletons* context_get_ptr_singletons   (ifb_void);
+    IFBEngineContext&    context_ref                  (IFBVoid);
+    IFBEngineCore*       context_get_ptr_core         (IFBVoid); 
+    IFBEngineSingletons* context_get_ptr_singletons   (IFBVoid);
 };
 
 #endif //IFB_ENGINE_INTERNAL_CONTEXT_HPP

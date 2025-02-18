@@ -13,11 +13,11 @@ ifb_global IFBEngineContext _context;
 /* CREATE/DESTROY                                                                 */
 /**********************************************************************************/
 
-ifb_engine_api const ifb_b8
+ifb_engine_api const IFBB8
 ifb_engine::context_create(
     const IFBPlatformApi* ptr_platform_api,
-    const ifb_byte*       stack_memory_ptr,
-    const ifb_u32         stack_memory_size) {
+    const IFBByte*       stack_memory_ptr,
+    const IFBU32         stack_memory_size) {
 
     //sanity check
     ifb_macro_assert(ptr_platform_api);
@@ -44,11 +44,11 @@ ifb_engine::context_create(
     return(true);
 }
 
-ifb_engine_api const ifb_b8
+ifb_engine_api const IFBB8
 ifb_engine::context_destroy(
-    ifb_void) {
+    IFBVoid) {
 
-    ifb_b8 result = true;
+    IFBB8 result = true;
 
     IFBEngineContext& context_ref = ifb_engine::context_ref();
 
@@ -61,16 +61,16 @@ ifb_engine::context_destroy(
 /* STARTUP/SHUTDOWN                                                               */
 /**********************************************************************************/
 
-ifb_engine_api const ifb_b8
+ifb_engine_api const IFBB8
 ifb_engine::context_startup(
-    ifb_void) {
+    IFBVoid) {
 
     return(false);
 }
 
-ifb_engine_api const ifb_b8
+ifb_engine_api const IFBB8
 ifb_engine::context_shutdown(
-    ifb_void) {
+    IFBVoid) {
 
     return(false);
 }
@@ -79,9 +79,9 @@ ifb_engine::context_shutdown(
 /* RENDERING                                                                      */
 /**********************************************************************************/
 
-ifb_engine_api const ifb_b8
+ifb_engine_api const IFBB8
 ifb_engine::context_render_frame(
-    ifb_void) {
+    IFBVoid) {
 
     return(false);
 }
@@ -92,14 +92,14 @@ ifb_engine::context_render_frame(
 
 inline IFBEngineContext&
 ifb_engine::context_ref(
-    ifb_void) {
+    IFBVoid) {
 
     return(_context);
 }
 
 inline IFBEngineCore*
 ifb_engine::context_get_ptr_core(
-    ifb_void) {
+    IFBVoid) {
 
     IFBEngineCore* ptr_core = _context.ptr_core;
     ifb_macro_assert(ptr_core);
@@ -109,7 +109,7 @@ ifb_engine::context_get_ptr_core(
 
 inline IFBEngineSingletons* 
 ifb_engine::context_get_ptr_singletons(
-    ifb_void) {
+    IFBVoid) {
 
     IFBEngineSingletons* ptr_singletons = _context.ptr_singletons;
     ifb_macro_assert(ptr_singletons);

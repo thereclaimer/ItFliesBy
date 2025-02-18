@@ -4,13 +4,13 @@
 
 
 
-ifb_internal const ifb_u32
+ifb_internal const IFBU32
 ifb_win32::monitor_count(
-    ifb_void) {
+    IFBVoid) {
 
-    ifb_u32 monitor_count = 0;
+    IFBU32 monitor_count = 0;
 
-    const ifb_b8 result = EnumDisplayMonitors(
+    const IFBB8 result = EnumDisplayMonitors(
         NULL,
         NULL,
         ifb_win32::monitor_enum_callback_count,
@@ -19,16 +19,16 @@ ifb_win32::monitor_count(
     return(result ? monitor_count : 0);
 }
 
-ifb_global ifb_u32 current_monitor_index;
+ifb_global IFBU32 current_monitor_index;
 
-ifb_internal ifb_void
+ifb_internal IFBVoid
 ifb_win32::monitor_info(
-    const ifb_u32     monitor_array_count,
+    const IFBU32     monitor_array_count,
           IFBMonitor* monitor_array_ptr) {
 
     current_monitor_index = 0;
 
-    const ifb_b8 result = EnumDisplayMonitors(
+    const IFBB8 result = EnumDisplayMonitors(
         NULL,
         NULL,
         ifb_win32::monitor_enum_callback_info,
@@ -45,7 +45,7 @@ ifb_win32::monitor_enum_callback_count(
     LPARAM   data_ptr) {
 
     //incriment the monitor count
-    ifb_u32* count_ptr = (ifb_u32*)data_ptr;
+    IFBU32* count_ptr = (IFBU32*)data_ptr;
     ++(*count_ptr);
 
     return(true);
@@ -63,12 +63,12 @@ ifb_win32::monitor_enum_callback_info(
     IFBMonitor& current_monitor_ref = monitor_ptr[current_monitor_index];
 
     //get the information available to us
-    const ifb_handle monitor_handle    = (ifb_handle)handle;
-    const ifb_u32    monitor_index     = current_monitor_index;
-    const ifb_u32    monitor_width     = rect_ptr->right - rect_ptr->left;
-    const ifb_u32    monitor_height    = rect_ptr->bottom - rect_ptr->top;
-    const ifb_u32    monitor_origin_x  = rect_ptr->left; 
-    const ifb_u32    monitor_origin_y  = rect_ptr->top; 
+    const IFBHandle monitor_handle    = (IFBHandle)handle;
+    const IFBU32    monitor_index     = current_monitor_index;
+    const IFBU32    monitor_width     = rect_ptr->right - rect_ptr->left;
+    const IFBU32    monitor_height    = rect_ptr->bottom - rect_ptr->top;
+    const IFBU32    monitor_origin_x  = rect_ptr->left; 
+    const IFBU32    monitor_origin_y  = rect_ptr->top; 
 
     //calculate the aspect ratio
     const IFBAspectRatioType monitor_aspect_ratio_type = ifb_graphics::aspect_ratio_lookup(

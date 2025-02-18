@@ -19,61 +19,61 @@ struct IFBTag;
 #define IFB_TAG_LENGTH 32
 
 struct IFBTag : IFBIDTag {
-    ifb_char value[IFB_TAG_LENGTH];
+    IFBChar value[IFB_TAG_LENGTH];
     IFBHash  hash;
 };
 
 namespace ifb_tag {
 
-    const IFBHash tag_hash                     (const ifb_char* tag_value);
-    const ifb_u32 tag_value_offset             (const IFBIDTag& tag_id_ref);
+    const IFBHash tag_hash                     (const IFBChar* tag_value);
+    const IFBU32 tag_value_offset             (const IFBIDTag& tag_id_ref);
 
-    const ifb_b8  tag_copy_value               (const ifb_char* tag_value_source, ifb_char*       tag_value_destination);
+    const IFBB8  tag_copy_value               (const IFBChar* tag_value_source, IFBChar*       tag_value_destination);
     
-    const ifb_b8  tag_copy_from_indexed_buffer (IFBTag& tag_ref, const ifb_char* tag_value_buffer);
-    const ifb_b8  tag_copy_to_indexed_buffer   (const IFBTag& tag_ref, ifb_char* tag_value_buffer);
+    const IFBB8  tag_copy_from_indexed_buffer (IFBTag& tag_ref, const IFBChar* tag_value_buffer);
+    const IFBB8  tag_copy_to_indexed_buffer   (const IFBTag& tag_ref, IFBChar* tag_value_buffer);
 
-    const ifb_b8  tag_update_value(
+    const IFBB8  tag_update_value(
               IFBTag&   tag_ref,
-        const ifb_char* tag_value_new);
+        const IFBChar* tag_value_new);
 
-    const ifb_b8  tag_update_value(
-              ifb_char* tag_value,
+    const IFBB8  tag_update_value(
+              IFBChar* tag_value,
               IFBHash&  tag_hash_ref,
-        const ifb_char* tag_value_new);
+        const IFBChar* tag_value_new);
 };
 
-inline const ifb_u32
+inline const IFBU32
 ifb_tag::tag_value_offset(
     const IFBIDTag& tag_id_ref) {
     
-    const ifb_u32 offset = IFB_TAG_LENGTH * tag_id_ref.index;
+    const IFBU32 offset = IFB_TAG_LENGTH * tag_id_ref.index;
 
     return(offset);
 }
 
 inline const IFBHash
 ifb_tag::tag_hash(
-    const ifb_char* tag_value) {
+    const IFBChar* tag_value) {
 
     const IFBHash tag_hash = tag_value != NULL 
-        ? ifb_hash::get_hash((ifb_cstr)tag_value,IFB_TAG_LENGTH)
+        ? ifb_hash::get_hash((IFBCStr)tag_value,IFB_TAG_LENGTH)
         : IFBHash{0};
 
     return(tag_hash);
 }
 
-inline const ifb_b8
+inline const IFBB8
 ifb_tag::tag_copy_value(
-    const ifb_char* tag_value_source,
-          ifb_char* tag_value_destination) {
+    const IFBChar* tag_value_source,
+          IFBChar* tag_value_destination) {
 
     //sanity check
-    const ifb_b8 result = tag_value_source && tag_value_destination;
+    const IFBB8 result = tag_value_source && tag_value_destination;
 
     //copy the tag value, if we can
     for (
-        ifb_u32 char_index = 0;
+        IFBU32 char_index = 0;
         result && char_index < IFB_TAG_LENGTH;
         ++char_index) {
 
@@ -84,22 +84,22 @@ ifb_tag::tag_copy_value(
     return(result);
 }
 
-inline const ifb_b8 
+inline const IFBB8 
 ifb_tag::tag_copy_from_indexed_buffer(
           IFBTag&   tag_ref,
-    const ifb_char* tag_value_buffer) {
+    const IFBChar* tag_value_buffer) {
 
     //sanity check
     if (tag_value_buffer == NULL) return(false);
 
     //get the value offset
-    ifb_u32 offset = ifb_tag::tag_value_offset(tag_ref);
+    IFBU32 offset = ifb_tag::tag_value_offset(tag_ref);
 
     //get the start of the tag value
-    const ifb_char* tag_value_buffer_start = tag_value_buffer + offset;
+    const IFBChar* tag_value_buffer_start = tag_value_buffer + offset;
 
     //copy the tag
-    const ifb_b8 result = ifb_tag::tag_copy_value(
+    const IFBB8 result = ifb_tag::tag_copy_value(
         tag_value_buffer_start,
         tag_ref.value);
 
@@ -110,22 +110,22 @@ ifb_tag::tag_copy_from_indexed_buffer(
     return(result);
 }
 
-inline const ifb_b8
+inline const IFBB8
 ifb_tag::tag_copy_to_indexed_buffer(
     const IFBTag&   tag_ref,
-          ifb_char* tag_value_buffer) {
+          IFBChar* tag_value_buffer) {
 
     //sanity check
     if (tag_value_buffer == NULL) return(false);
 
     //get the value offset
-    ifb_u32 offset = ifb_tag::tag_value_offset(tag_ref);
+    IFBU32 offset = ifb_tag::tag_value_offset(tag_ref);
 
     //get the start of the tag value
-    ifb_char* tag_value_buffer_start = tag_value_buffer + offset;
+    IFBChar* tag_value_buffer_start = tag_value_buffer + offset;
 
     //copy the tag
-    const ifb_b8 result = ifb_tag::tag_copy_value(
+    const IFBB8 result = ifb_tag::tag_copy_value(
         tag_ref.value,
         tag_value_buffer_start);
 
@@ -133,10 +133,10 @@ ifb_tag::tag_copy_to_indexed_buffer(
     return(result);
 }
 
-inline const ifb_b8 
+inline const IFBB8 
 ifb_tag::tag_update_value(
           IFBTag&   tag_ref,
-    const ifb_char* tag_value_new) {
+    const IFBChar* tag_value_new) {
 
     //sanity check
     if (!tag_value_new) return(false);
@@ -145,7 +145,7 @@ ifb_tag::tag_update_value(
     tag_ref.hash = ifb_tag::tag_hash(tag_value_new);
 
     //copy the value
-    const ifb_b8 result = ifb_tag::tag_copy_value(
+    const IFBB8 result = ifb_tag::tag_copy_value(
         tag_value_new,
         tag_ref.value);
 
@@ -153,11 +153,11 @@ ifb_tag::tag_update_value(
     return(result);
 }
 
-inline const ifb_b8
+inline const IFBB8
 ifb_tag::tag_update_value(
-          ifb_char* tag_value,
+          IFBChar* tag_value,
           IFBHash&  tag_hash_ref,
-    const ifb_char* tag_value_new) {
+    const IFBChar* tag_value_new) {
 
     //sanity check
     if (!tag_value || !tag_value_new) {
@@ -168,7 +168,7 @@ ifb_tag::tag_update_value(
     tag_hash_ref = ifb_tag::tag_hash(tag_value_new);
 
     //copy the value
-    const ifb_b8 result = ifb_tag::tag_copy_value(
+    const IFBB8 result = ifb_tag::tag_copy_value(
         tag_value_new,
         tag_value);
 
