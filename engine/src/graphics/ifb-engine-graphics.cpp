@@ -94,7 +94,7 @@ ifb_engine::graphics_manager_reserve_handles(
     IFBEngineGraphicsHandles& ref_handles = ptr_graphics_manager->handles;
 
     //get the arena handle
-    const IFBHNDMemoryArenaLinear linear_arena_handle = ref_memory.linear_arena;
+    const IFBHNDLinearAllocator linear_arena_handle = ref_memory.linear_arena;
     if (!ifb_memory_macro_handle_valid(linear_arena_handle)) return(false);
 
     //size array

@@ -25,13 +25,13 @@ struct IFBGraphicsMemoryOffsets {
 };
 
 struct IFBGraphicsMemory {
-    IFBHNDMemoryArenaLinear  linear_arena_handle;
+    IFBHNDLinearAllocator  linear_arena_handle;
     IFBGraphicsMemoryOffsets offsets;
 };
 
 namespace ifb_graphics {
 
-    const IFBHNDMemoryArenaLinear
+    const IFBHNDLinearAllocator
     memory_get_linear_arena(IFBVoid);
 
     IFBGraphicsWindow*     memory_commit_window            (IFBVoid);

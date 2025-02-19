@@ -9,7 +9,7 @@
 #define IFB_ENGINE_GRAPHICS_MEMORY_SIZE_KB 4
 
 struct IFBEngineGraphicsMemory {
-    IFBHNDMemoryArenaLinear linear_arena;
+    IFBHNDLinearAllocator linear_arena;
 };
 
 struct IFBEngineGraphicsHandles {

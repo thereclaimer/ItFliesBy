@@ -14,7 +14,7 @@ ifb_global IFBGraphicsContext* _ptr_context;
 
 const IFBB8
 ifb_graphics::context_reserve_and_initialize(
-    const IFBHNDMemoryArenaLinear linear_arena_handle,
+    const IFBHNDLinearAllocator linear_arena_handle,
     const IFBPlatformApi*         ptr_platform_api,
     const IFBColorFormat          color_format) {
 

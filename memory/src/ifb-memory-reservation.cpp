@@ -125,7 +125,7 @@ ifb_memory::release_memory(
 /* ARENA COMMIT                                                                   */
 /**********************************************************************************/
 
-const IFBHNDMemoryArena       
+const IFBHNDArena       
 ifb_memory::reservation_commit_arena_unmanaged(
     const IFBHNDMemoryReservation reservation_handle,
     const IFBU32                    arena_size_minimum) {
@@ -134,7 +134,7 @@ ifb_memory::reservation_commit_arena_unmanaged(
     IFBMemoryReservation* reservation_ptr = ifb_memory::reservation_handle_to_pointer(reservation_handle);
 
     //create the handle
-    IFBHNDMemoryArena arena_handle;
+    IFBHNDArena arena_handle;
     arena_handle.offset = 0;
 
     //commit the pages
@@ -167,7 +167,7 @@ ifb_memory::reservation_commit_arena_unmanaged(
     return(arena_handle);
 }
 
-const IFBHNDMemoryArenaLinear 
+const IFBHNDLinearAllocator 
 ifb_memory::reservation_commit_arena_linear(
     const IFBHNDMemoryReservation reservation_handle,
     const IFBU32                    arena_size_minimum) {
@@ -176,7 +176,7 @@ ifb_memory::reservation_commit_arena_linear(
     IFBMemoryReservation* reservation_ptr = ifb_memory::reservation_handle_to_pointer(reservation_handle);
 
     //create the handle
-    IFBHNDMemoryArenaLinear linear_arena_handle;
+    IFBHNDLinearAllocator linear_arena_handle;
     linear_arena_handle.offset = 0;
 
     //commit the pages
@@ -211,7 +211,7 @@ ifb_memory::reservation_commit_arena_linear(
     return(linear_arena_handle);
 }
 
-const IFBHNDMemoryArenaBlock  
+const IFBHNDArenaBlock  
 ifb_memory::reservation_commit_arena_block(
     const IFBHNDMemoryReservation reservation_handle,
     const IFBU32                    block_size_minimum,
@@ -221,7 +221,7 @@ ifb_memory::reservation_commit_arena_block(
     IFBMemoryReservation* reservation_ptr = ifb_memory::reservation_handle_to_pointer(reservation_handle);
 
     //create the handle
-    IFBHNDMemoryArenaBlock block_arena_handle;
+    IFBHNDArenaBlock block_arena_handle;
     block_arena_handle.offset = 0;
 
     //get the actual size of the arena

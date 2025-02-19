@@ -105,7 +105,7 @@ ifb_engine::core_memory_stack_commit_relative(
 /* ARENAS                                                                         */
 /**********************************************************************************/
 
-inline const IFBHNDMemoryArena
+inline const IFBHNDArena
 ifb_engine::core_memory_arena_commit_unmanaged(
           IFBEngineCore* core_ptr,
     const IFBU32        size) {
@@ -118,7 +118,7 @@ ifb_engine::core_memory_arena_commit_unmanaged(
     IFBEngineCoreMemoryReservation& reservation_ref = core_ptr->memory.reservation;
 
     //commit the arena
-    const IFBHNDMemoryArena arena_handle = ifb_memory::reservation_commit_arena_unmanaged(
+    const IFBHNDArena arena_handle = ifb_memory::reservation_commit_arena_unmanaged(
         reservation_ref.handle,
         size);
 
@@ -130,7 +130,7 @@ ifb_engine::core_memory_arena_commit_unmanaged(
     return(arena_handle);
 }
 
-inline const IFBHNDMemoryArenaLinear
+inline const IFBHNDLinearAllocator
 ifb_engine::core_memory_arena_commit_linear(
           IFBEngineCore* core_ptr,
     const IFBU32        size) {
@@ -143,7 +143,7 @@ ifb_engine::core_memory_arena_commit_linear(
     IFBEngineCoreMemoryReservation& reservation_ref = core_ptr->memory.reservation;
 
     //commit the arena
-    const IFBHNDMemoryArenaLinear linear_arena_handle = ifb_memory::reservation_commit_arena_linear(
+    const IFBHNDLinearAllocator linear_arena_handle = ifb_memory::reservation_commit_arena_linear(
         reservation_ref.handle,
         size);
 
@@ -155,7 +155,7 @@ ifb_engine::core_memory_arena_commit_linear(
     return(linear_arena_handle);
 }
 
-inline const IFBHNDMemoryArenaBlock
+inline const IFBHNDArenaBlock
 ifb_engine::core_memory_arena_commit_block(
           IFBEngineCore* core_ptr,
     const IFBU32        block_size,
@@ -170,7 +170,7 @@ ifb_engine::core_memory_arena_commit_block(
     IFBEngineCoreMemoryReservation& reservation_ref = core_ptr->memory.reservation;
 
     //commit the arena
-    const IFBHNDMemoryArenaBlock block_arena_handle = ifb_memory::reservation_commit_arena_block(
+    const IFBHNDArenaBlock block_arena_handle = ifb_memory::reservation_commit_arena_block(
         reservation_ref.handle,
         block_size,
         block_count);

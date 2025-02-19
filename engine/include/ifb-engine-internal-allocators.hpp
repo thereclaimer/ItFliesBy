@@ -16,7 +16,7 @@ struct IFBEngineLinearAllocatorBase {
 };
 
 struct IFBEngineBlockAllocatorBase {
-    IFBHNDMemoryArenaBlock block_arena;
+    IFBHNDArenaBlock block_arena;
     IFBU32                   block_size;
     IFBU32                   block_count;
     IFBU32*                  block_index_array;

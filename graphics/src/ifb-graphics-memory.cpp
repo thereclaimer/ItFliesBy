@@ -2,7 +2,7 @@
 
 #include "ifb-graphics-internal.hpp"
 
-const IFBHNDMemoryArenaLinear
+const IFBHNDLinearAllocator
 ifb_graphics::memory_get_linear_arena(IFBVoid) {
 
     IFBGraphicsMemory& ref_memory = ifb_graphics::context_get_memory();

@@ -17,7 +17,7 @@ struct IFBHNDGraphicsWindow  : IFBHNDGraphics { };
 struct IFBHNDGraphicsMonitor : IFBHNDGraphics { };
 
 struct IFBGraphicsContextInfo {
-    IFBHNDMemoryArenaLinear  linear_arena_handle;
+    IFBHNDLinearAllocator  linear_arena_handle;
     IFBColorFormat           color_format;
     IFBU32                   monitor_count;
     IFBHNDGraphicsWindow     primary_window_handle;
@@ -32,7 +32,7 @@ namespace ifb_graphics {
 
     const IFBB8 
     context_reserve_and_initialize(
-        const IFBHNDMemoryArenaLinear linear_arena_handle,
+        const IFBHNDLinearAllocator linear_arena_handle,
         const IFBPlatformApi*         ptr_platform_api,
         const IFBColorFormat          color_format);
     

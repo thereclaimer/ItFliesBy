@@ -55,7 +55,7 @@ ifb_array::allocation_size_data(
 
 inline IFBArray*
 ifb_array::reserve_from_arena(
-    const IFBHNDMemoryArenaLinear linear_arena_handle,
+    const IFBHNDLinearAllocator linear_arena_handle,
     const IFBU32                    element_size,
     const IFBU32                    element_count) {
 
@@ -96,7 +96,7 @@ ifb_array::reserve_from_arena(
 
 inline IFBArray*
 ifb_array::reserve_from_arena(
-    const IFBHNDMemoryArenaBlock  block_arena_handle,
+    const IFBHNDArenaBlock  block_arena_handle,
     const IFBU32                    element_size,
     const IFBU32                    element_count) {
 

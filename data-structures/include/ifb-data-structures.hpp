@@ -32,8 +32,8 @@ namespace ifb_array {
     const IFBU32 allocation_size_total     (const IFBU32 element_size,const IFBU32 element_count);
     
     //arena reserve
-    IFBArray* reserve_from_arena (const IFBHNDMemoryArenaLinear linear_arena_handle, const IFBU32 element_size, const IFBU32 element_count);
-    IFBArray* reserve_from_arena (const IFBHNDMemoryArenaBlock  block_arena_handle,  const IFBU32 element_size, const IFBU32 element_count);
+    IFBArray* reserve_from_arena (const IFBHNDLinearAllocator linear_arena_handle, const IFBU32 element_size, const IFBU32 element_count);
+    IFBArray* reserve_from_arena (const IFBHNDArenaBlock  block_arena_handle,  const IFBU32 element_size, const IFBU32 element_count);
     
     //create/initialize
     IFBArray*

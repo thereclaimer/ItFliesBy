@@ -6,7 +6,7 @@
 
 namespace ifb_memory {
 
-    inline IFBMemoryArena* arena_handle_to_pointer(const IFBHNDMemoryArena arena_handle);
+    inline IFBMemoryArena* arena_handle_to_pointer(const IFBHNDArena arena_handle);
 };
 
 /**********************************************************************************/
@@ -15,7 +15,7 @@ namespace ifb_memory {
 
 const IFBPtr
 ifb_memory::arena_get_pointer(
-    const IFBHNDMemoryArena arena_handle,
+    const IFBHNDArena arena_handle,
     const IFBU32              offset) {
 
     //get the arena and reservation
@@ -45,7 +45,7 @@ ifb_memory::arena_get_pointer(
 
 const IFBB8
 ifb_memory::arena_get_info(
-    const IFBHNDMemoryArena arena_handle,
+    const IFBHNDArena arena_handle,
           IFBMemoryArenaInfo*  arena_info_ptr) {
 
     //get the arena
@@ -71,7 +71,7 @@ ifb_memory::arena_get_info(
 
 IFBMemoryArena*
 ifb_memory::arena_handle_to_pointer(
-    const IFBHNDMemoryArena arena_handle) {
+    const IFBHNDArena arena_handle) {
 
     //get the pointer
     IFBMemoryArena* arena_ptr = ifb_memory_macro_stack_get_type_pointer(

@@ -6,7 +6,7 @@
 
 namespace ifb_memory {
 
-    inline IFBMemoryArenaLinear* linear_arena_handle_to_pointer(const IFBHNDMemoryArenaLinear linear_arena_handle);
+    inline IFBMemoryArenaLinear* linear_arena_handle_to_pointer(const IFBHNDLinearAllocator linear_arena_handle);
 };
 
 /**********************************************************************************/
@@ -15,7 +15,7 @@ namespace ifb_memory {
 
 IFBVoid
 ifb_memory::linear_arena_save_point_set(
-    const IFBHNDMemoryArenaLinear linear_arena_handle) {
+    const IFBHNDLinearAllocator linear_arena_handle) {
 
     //get the pointer
     IFBMemoryArenaLinear* linear_arena_ptr = ifb_memory::linear_arena_handle_to_pointer(linear_arena_handle);
@@ -26,7 +26,7 @@ ifb_memory::linear_arena_save_point_set(
 
 IFBVoid
 ifb_memory::linear_arena_save_point_clear(
-    const IFBHNDMemoryArenaLinear linear_arena_handle) {
+    const IFBHNDLinearAllocator linear_arena_handle) {
 
     //get the pointer
     IFBMemoryArenaLinear* linear_arena_ptr = ifb_memory::linear_arena_handle_to_pointer(linear_arena_handle);
@@ -41,7 +41,7 @@ ifb_memory::linear_arena_save_point_clear(
 
 IFBVoid
 ifb_memory::linear_arena_reset_to_start(
-    const IFBHNDMemoryArenaLinear linear_arena_handle) {
+    const IFBHNDLinearAllocator linear_arena_handle) {
 
     //get the pointer
     IFBMemoryArenaLinear* linear_arena_ptr = ifb_memory::linear_arena_handle_to_pointer(linear_arena_handle);
@@ -52,7 +52,7 @@ ifb_memory::linear_arena_reset_to_start(
 
 IFBVoid
 ifb_memory::linear_arena_reset_to_save_point(
-    const IFBHNDMemoryArenaLinear linear_arena_handle) {
+    const IFBHNDLinearAllocator linear_arena_handle) {
     
     //get the pointer
     IFBMemoryArenaLinear* linear_arena_ptr = ifb_memory::linear_arena_handle_to_pointer(linear_arena_handle);
@@ -74,7 +74,7 @@ ifb_memory::linear_arena_reset_to_save_point(
 
 const IFBPtr
 ifb_memory::linear_arena_reserve_bytes_absolute(
-    const IFBHNDMemoryArenaLinear linear_arena_handle,
+    const IFBHNDLinearAllocator linear_arena_handle,
     const IFBU32                    size,
     const IFBU32                    alignment) {
 
@@ -114,7 +114,7 @@ ifb_memory::linear_arena_reserve_bytes_absolute(
 
 const IFBU32
 ifb_memory::linear_arena_reserve_bytes_relative(
-    const IFBHNDMemoryArenaLinear linear_arena_handle,
+    const IFBHNDLinearAllocator linear_arena_handle,
     const IFBU32                    size, 
     const IFBU32                    alignment) {
     
@@ -150,7 +150,7 @@ ifb_memory::linear_arena_reserve_bytes_relative(
 
 const IFBB8
 ifb_memory::linear_arena_release_bytes(
-    const IFBHNDMemoryArenaLinear linear_arena_handle,
+    const IFBHNDLinearAllocator linear_arena_handle,
     const IFBU32                    size,
     const IFBU32                    alignment) {
 
@@ -182,7 +182,7 @@ ifb_memory::linear_arena_release_bytes(
 
 const IFBU32
 ifb_memory::linear_arena_reserve_bytes_absolute(
-    const IFBHNDMemoryArenaLinear linear_arena_handle,
+    const IFBHNDLinearAllocator linear_arena_handle,
     const IFBU32                    count,
     const IFBU32*                   size_array,
           IFBPtr*                   pointer_array) {
@@ -255,7 +255,7 @@ ifb_memory::linear_arena_reserve_bytes_absolute(
 
 const IFBU32
 ifb_memory::linear_arena_reserve_bytes_relative(
-    const IFBHNDMemoryArenaLinear linear_arena_handle,
+    const IFBHNDLinearAllocator linear_arena_handle,
     const IFBU32                    count,
     const IFBU32*                   size_array,
           IFBU32*                   offset_array) {
@@ -319,7 +319,7 @@ ifb_memory::linear_arena_reserve_bytes_relative(
 
 const IFBPtr 
 ifb_memory::linear_arena_get_pointer_at_offset(
-    const IFBHNDMemoryArenaLinear linear_arena_handle,
+    const IFBHNDLinearAllocator linear_arena_handle,
     const IFBU32                    offset) {
 
     //get the arena pointer
@@ -341,7 +341,7 @@ ifb_memory::linear_arena_get_pointer_at_offset(
 
 const IFBPtr 
 ifb_memory::linear_arena_get_pointer_at_position(
-    const IFBHNDMemoryArenaLinear linear_arena_handle) {
+    const IFBHNDLinearAllocator linear_arena_handle) {
 
     //get the arena pointer
     IFBMemoryArenaLinear* linear_arena_ptr = ifb_memory::linear_arena_handle_to_pointer(linear_arena_handle);
@@ -363,7 +363,7 @@ ifb_memory::linear_arena_get_pointer_at_position(
 
 const IFBPtr 
 ifb_memory::linear_arena_get_pointer_at_save_point(
-    const IFBHNDMemoryArenaLinear linear_arena_handle) {
+    const IFBHNDLinearAllocator linear_arena_handle) {
 
     //get the arena pointer
     IFBMemoryArenaLinear* linear_arena_ptr = ifb_memory::linear_arena_handle_to_pointer(linear_arena_handle);
@@ -387,7 +387,7 @@ ifb_memory::linear_arena_get_pointer_at_save_point(
 
 const IFBPtr 
 ifb_memory::linear_arena_get_pointer_at_start(
-    const IFBHNDMemoryArenaLinear linear_arena_handle) {
+    const IFBHNDLinearAllocator linear_arena_handle) {
 
     //get the arena pointer
     IFBMemoryArenaLinear* linear_arena_ptr = ifb_memory::linear_arena_handle_to_pointer(linear_arena_handle);
@@ -406,7 +406,7 @@ ifb_memory::linear_arena_get_pointer_at_start(
 
 const IFBB8 
 ifb_memory::linear_arena_get_info(
-    const IFBHNDMemoryArenaLinear linear_arena_handle,
+    const IFBHNDLinearAllocator linear_arena_handle,
           IFBMemoryArenaLinearInfo*  linear_arena_info_ptr) {
 
     //get the arena pointer
@@ -434,7 +434,7 @@ ifb_memory::linear_arena_get_info(
 
 IFBMemoryArenaLinear* 
 ifb_memory::linear_arena_handle_to_pointer(
-    const IFBHNDMemoryArenaLinear linear_arena_handle) {
+    const IFBHNDLinearAllocator linear_arena_handle) {
 
     //get the pointer
     IFBMemoryArenaLinear* linear_arena_ptr = ifb_memory_macro_stack_get_type_pointer(

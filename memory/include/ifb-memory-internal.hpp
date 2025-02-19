@@ -8,12 +8,13 @@
 /**********************************************************************************/
 
 struct IFBMemoryContext;
-struct IFBMemoryReservation;
 struct IFBMemoryStack;
-struct IFBMemoryArena;
-struct IFBMemoryArenaLinear;
-struct IFBMemoryArenaBlock;
 struct IFBMemoryBlock;
+
+struct IFBReservation;
+struct IFBArena;
+struct IFBLinearAllocator;
+struct IFBBlockAllocator;
 
 /**********************************************************************************/
 /* STACK                                                                          */
@@ -24,38 +25,39 @@ struct IFBMemoryBlock;
 struct IFBMemoryStack {
     IFBAddr start;
     IFBAddr end;
-    IFBU32     size;
-    IFBU32     position;
+    IFBU32  size;
+    IFBU32  position;
 };
 
 /**********************************************************************************/
 /* ARENA BASE                                                                     */
 /**********************************************************************************/
 
-struct IFBMemoryArena {
-    IFBAddr           start;
-    IFBMemoryReservation* reservation;
-    IFBMemoryArena*       next;
-    IFBMemoryArenaType    type;    
-    IFBU32               page_start;
-    IFBU32               page_count;
-    IFBU32               size_total;
-    IFBU32               stack_position;
+struct IFBArena {
+    IFBReservation* ptr_reservation;
+    IFBArena*       ptr_next;
+    IFBAddr         start;
+    IFBU32          page_start;
+    IFBU32          page_count;
+    IFBU32          size_total;
+    IFBU32          stack_position;
 };
 
 struct IFBMemoryArenaList {
-    IFBMemoryArena* first;    
-    IFBMemoryArena* last;    
-    IFBU32         count;
+    IFBArena* ptr_first;    
+    IFBArena* ptr_last;    
+    IFBU32    count;
 };
 
 /**********************************************************************************/
 /* ARENA LINEAR                                                                   */
 /**********************************************************************************/
 
-struct IFBMemoryArenaLinear : IFBMemoryArena {
-    IFBU32 position;
-    IFBU32 save_point;
+struct IFBLinearAllocator {
+    IFBAddr start;
+    IFBU32  size;
+    IFBU32  position;
+    IFBU32  save_point;
 };
 
 /**********************************************************************************/

@@ -47,9 +47,9 @@ namespace ifb_engine {
     const IFBU32                    core_memory_stack_commit_relative   (IFBEngineCore* core_ptr, const IFBU32 size, const IFBU32 alignment = 0);
 
     //arenas
-    const IFBHNDMemoryArena       core_memory_arena_commit_unmanaged  (IFBEngineCore* core_ptr, const IFBU32 size);
-    const IFBHNDMemoryArenaLinear core_memory_arena_commit_linear     (IFBEngineCore* core_ptr, const IFBU32 size);
-    const IFBHNDMemoryArenaBlock  core_memory_arena_commit_block      (IFBEngineCore* core_ptr, const IFBU32 block_size, const IFBU32 block_count);
+    const IFBHNDArena       core_memory_arena_commit_unmanaged  (IFBEngineCore* core_ptr, const IFBU32 size);
+    const IFBHNDLinearAllocator core_memory_arena_commit_linear     (IFBEngineCore* core_ptr, const IFBU32 size);
+    const IFBHNDArenaBlock  core_memory_arena_commit_block      (IFBEngineCore* core_ptr, const IFBU32 block_size, const IFBU32 block_count);
 };
 
 
