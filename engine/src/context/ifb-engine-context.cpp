@@ -16,13 +16,16 @@ ifb_global IFBEngineContext _context;
 ifb_engine_api const IFBB8
 ifb_engine::context_create(
     const IFBPlatformApi* ptr_platform_api,
-    const IFBByte*       stack_memory_ptr,
-    const IFBU32         stack_memory_size) {
+    const IFBByte*        stack_memory_ptr,
+    const IFBU32          stack_memory_size) {
 
     //sanity check
     ifb_macro_assert(ptr_platform_api);
     ifb_macro_assert(stack_memory_ptr);
     ifb_macro_assert(stack_memory_size);
+
+    //set the api
+    (IFBVoid)ifb_platform::set_api(ptr_platform_api);
 
     //create the core
     IFBEngineCore* ptr_core = ifb_engine::core_create(

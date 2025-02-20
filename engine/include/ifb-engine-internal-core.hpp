@@ -21,14 +21,16 @@ struct IFBEngineCoreMemory;
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
+#define IFB_ENGINE_CORE_MEMORY_ARENA_SIZE ifb_macro_size_kilobytes(64) 
+
 struct IFBEngineCoreMemoryStack {
     IFBByte* data;
     IFBU32   size;
 };
 
 struct IFBEngineCoreMemoryReservation {
-    IFBU64                     size;
-    IFBHNDMemoryReservation  handle; 
+    IFBU64            size;
+    IFBHNDReservation handle; 
 };
 
 struct IFBEngineCoreMemory {
@@ -39,17 +41,15 @@ struct IFBEngineCoreMemory {
 namespace ifb_engine {
 
     //reservation
-    const IFBB8                     core_memory_reserve                 (IFBEngineCore* core_ptr, const IFBU32 size);
-    const IFBB8                     core_memory_release                 (IFBEngineCore* core_ptr);
+    const IFBB8       core_memory_reserve               (IFBEngineCore* core_ptr, const IFBU32 size);
+    const IFBB8       core_memory_release               (IFBEngineCore* core_ptr);
 
     //stack
-    const IFBPtr                    core_memory_stack_commit_absolute   (IFBEngineCore* core_ptr, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBU32                    core_memory_stack_commit_relative   (IFBEngineCore* core_ptr, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBPtr      core_memory_stack_commit_absolute (IFBEngineCore* core_ptr, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBU32      core_memory_stack_commit_relative (IFBEngineCore* core_ptr, const IFBU32 size, const IFBU32 alignment = 0);
 
     //arenas
-    const IFBHNDArena       core_memory_arena_commit_unmanaged  (IFBEngineCore* core_ptr, const IFBU32 size);
-    const IFBHNDLinearAllocator core_memory_arena_commit_linear     (IFBEngineCore* core_ptr, const IFBU32 size);
-    const IFBHNDArenaBlock  core_memory_arena_commit_block      (IFBEngineCore* core_ptr, const IFBU32 block_size, const IFBU32 block_count);
+    const IFBHNDArena core_memory_commit_arena     (IFBVoid);           
 };
 
 

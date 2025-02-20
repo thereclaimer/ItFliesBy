@@ -18,6 +18,7 @@ struct IFBEngineSingletonHandles {
     IFBU16 input;
     IFBU16 dev_tools;
     IFBU16 graphics_manager;
+    IFBU16 rendering_system;
 };
 
 struct IFBEngineSingletons {
