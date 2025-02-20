@@ -13,12 +13,16 @@ struct IFBEngineSingletonBuffer {
     IFBByte memory[IFB_ENGINE_SINGLETON_STACK_SIZE];
 };
 
+struct IFBHNDSingleton {
+    IFBU16 offset;    
+};
+
 struct IFBEngineSingletonHandles {
-    IFBU16 config;
-    IFBU16 input;
-    IFBU16 dev_tools;
-    IFBU16 graphics_manager;
-    IFBU16 rendering_system;
+    IFBHNDSingleton config;
+    IFBHNDSingleton input;
+    IFBHNDSingleton dev_tools;
+    IFBHNDSingleton graphics_manager;
+    IFBHNDSingleton rendering_system;
 };
 
 struct IFBEngineSingletons {
