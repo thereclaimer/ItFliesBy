@@ -24,51 +24,44 @@ struct IFBHNDLinearAllocator : IFBHNDAllocator { };
 /* CONTEXT                                                                        */
 /**********************************************************************************/
  
-struct IFBMemorySystemInfo {
-    IFBU32 page_size;
-    IFBU32 granularity;
+struct IFBMemoryContextInfo {
+    IFBU64 size_platform_memory_reserved;
+    IFBU64 size_platform_memory_committed;
+    IFBU32 size_stack_total;
+    IFBU32 size_stack_used;
+    IFBU32 system_page_size;
+    IFBU32 system_granularity;
+    IFBU32 count_reservations;
+    IFBU32 count_arenas;
 };
 
 namespace ifb_memory {
 
     //create/destroy
-    const IFBB8
-    context_create(
-        const IFBPlatformApi* platform_api,
-        const IFBByte*        stack_memory,
-        const IFBU32          stack_size);
-    
-    const IFBB8  context_destroy                   (IFBVoid);
+    const IFBB8 context_create  (const IFBByte* stack_memory, const IFBU32 stack_size);
+    const IFBB8 context_destroy (IFBVoid);
 
-    //system info
-    const IFBB8  context_get_system_info           (IFBMemorySystemInfo* system_info);
+    //info
+    const IFBB8  context_get_info (IFBMemoryContextInfo* system_info);
 
     //alignment
     const IFBU32 context_align_size_to_page        (const IFBU32 size);
     const IFBU32 context_align_size_to_granularity (const IFBU32 size);
     
     //size
-    const IFBU64 context_get_size_from_page_count  (const IFBU32 page_count);
-    const IFBU32 context_get_page_count_from_size  (const IFBU64 size);
-};
+    const IFBU64 context_get_size_from_page_count (const IFBU32 page_count);
+    const IFBU32 context_get_page_count_from_size (const IFBU64 size);
 
-/**********************************************************************************/
-/* STACK                                                                          */
-/**********************************************************************************/
+    //stack
+    const IFBU32 context_stack_commit_relative (const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBPtr context_stack_commit_absolute (const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBPtr context_stack_get_pointer     (const IFBU32 offset);
 
-struct IFBMemoryStackInfo {
-    IFBU32 size_total;
-    IFBU32 size_used;
-};
+    //reservations
+    const IFBHNDReservation context_reserve_platform_memory (const IFBU32            size_minimum);
+    const IFBB8             context_release_platform_memory (const IFBHNDReservation reservation_handle);
 
-namespace ifb_memory {
-
-    //push
-    const IFBU32 stack_push        (const IFBU32 size, const IFBU32 alignment = 0);
-
-    //pointers/info
-    const IFBPtr stack_get_pointer (const IFBU32 offset);
-    const IFBB8  stack_get_info    (IFBMemoryStackInfo* stack_info_ptr);
+    //pointers
 };
 
 /**********************************************************************************/
@@ -85,9 +78,6 @@ struct IFBReservationInfo {
 
 namespace ifb_memory {
 
-    //reserve/release
-    const IFBHNDReservation reserve_memory (const IFBU64            size_minimum);
-    const IFBB8             release_memory (const IFBHNDReservation reservation_handle);
 
     //arena commit
     const IFBHNDArena reservation_commit_arena(const IFBU32 size_minimum);
@@ -178,9 +168,6 @@ namespace ifb_memory {
 struct IFBMemoryArenaBlockInfo {
     IFBHNDReservation    handle_reservation;
     IFBHNDBlockAllocator handle_allocator;
-    IFBU32               page_start;
-    IFBU32               page_count;
-    IFBU32               size_total;
     IFBU32               block_size;
     IFBU32               block_count_total;
     IFBU32               block_count_free;
@@ -192,8 +179,10 @@ namespace ifb_memory {
     IFBVoid      block_allocator_reset          (const IFBHNDBlockAllocator block_allocator_handle);
 
     //reserve/release
-    const IFBPtr block_allocator_reserve_memory  (const IFBHNDBlockAllocator block_allocator_handle);
-    const IFBB8  block_allocator_release_memory  (const IFBHNDBlockAllocator block_allocator_handle, const IFBPtr ptr_memory);
+    const IFBU32 block_allocator_reserve_block_relative  (const IFBHNDBlockAllocator block_allocator_handle);
+    const IFBPtr block_allocator_reserve_block_absolute  (const IFBHNDBlockAllocator block_allocator_handle);
+    const IFBB8  block_allocator_release_block_relative  (const IFBHNDBlockAllocator block_allocator_handle, const IFBPtr block_memory);
+    const IFBB8  block_allocator_release_block_absolute  (const IFBHNDBlockAllocator block_allocator_handle, const IFBPtr block_offset);
 
     //info
     const IFBB8  block_allocator_get_info       (const IFBHNDBlockAllocator block_allocator_handle, IFBMemoryArenaBlockInfo* block_allocator_info);

@@ -64,7 +64,6 @@ struct IFBGraphicsWindowList {
 /* CONTEXT                                                                        */
 /**********************************************************************************/
 
-
 struct IFBGraphicsContext {
     IFBGraphicsMemory memory;
     IFBPlatformApi*   ptr_platform_api;
