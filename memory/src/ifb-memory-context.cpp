@@ -45,7 +45,8 @@ ifb_memory::context_create(
     //calculate the sizes of the context properties 
     const IFBU32 size_array[] = {
         ifb_macro_align_size_struct(IFBMemoryContextInfo),
-        ifb_macro_align_size_struct(IFBReservationList)
+        ifb_macro_align_size_struct(IFBReservationList),
+        ifb_macro_align_size_struct(IFBArenaList)
     };
     
     //calculate the count of the size array
@@ -226,9 +227,9 @@ ifb_memory::context_stack_commit_absolute(
     ref_stack.position = position_new;
     
     //calculate the pointer
-    const IFBAddress stack_start  = ref_stack.start;
-    const IFBAddress stack_offset = stack_start + offset;
-    const IFBPtr     pointer      = (IFBPtr)stack_offset;
+    const IFBAddr stack_start  = ref_stack.start;
+    const IFBAddr stack_offset = stack_start + offset;
+    const IFBPtr  pointer      = (IFBPtr)stack_offset;
 
     //we're done
     return(pointer);
@@ -262,10 +263,6 @@ const IFBHNDReservation
 ifb_memory::context_reserve_platform_memory(
     const IFBU32 size_minimum) {
 
-    // TODO(SAM):
-    // make sure we search the list for released
-    // reservations to recycle
-
     IFBHNDReservation reservation_handle;
     reservation_handle.offset = 0;
 
@@ -286,12 +283,37 @@ ifb_memory::context_reserve_platform_memory(
     const IFBPtr ptr_platform_memory = ifb_platform::memory_reserve(size_aligned);
     if (!ptr_reservation) return(reservation_handle);
 
-    //commit reservation structure
-    const IFBU32 reservation_struct_size = ifb_macro_align_size_struct(IFBReservation); 
-    reservation_handle.offset            = ifb_memory::context_stack_commit_relative(reservation_struct_size);
-     
-    //get the struct pointer
-    IFBReservation* ptr_reservation = ifb_memory::context_stack_get_pointer(reservation_handle.offset);
+    //search the list for reservations to recycle
+    IFBReservationList* ptr_reservation_list = ifb_memory::context_get_reservation_list();
+    IFBReservation*     ptr_reservation      = NULL;
+    for (
+        IFBReservation* ptr_reservation_current = ptr_reservation_list->first;
+        ptr_reservation_current != NULL;
+        ptr_reservation_current = ptr_reservation_current->next) {
+            
+            //if the reservation has no pages and no start address
+            //it is free to use
+            IFBB8 reservation_is_free = true;
+            reservation_is_free &= ptr_reservation_current->page_count_total == 0;
+            reservation_is_free &= ptr_reservation_current->start            == 0;
+            if (reservation_is_free) {
+                ptr_reservation = ptr_reservation_current;
+                break;
+            }
+    }
+    
+    //if we didn't find a reservation struct, we need to commit a new one
+    if (!ptr_reservation) {
+
+        //commit reservation structure
+        const IFBU32 reservation_struct_size = ifb_macro_align_size_struct(IFBReservation); 
+        reservation_handle.offset            = ifb_memory::context_stack_commit_relative(reservation_struct_size);
+         
+        //get the pointer
+        ptr_reservation = ifb_memory::context_get_reservation(reservation_handle);
+    }
+    
+    //we should always have a reservation at this point
     ifb_macro_assert(ptr_reservation);
 
     //calculate page count
@@ -301,12 +323,10 @@ ifb_memory::context_reserve_platform_memory(
     ptr_reservation->next                 = NULL;
     ptr_reservation->start                = (IFBAddr)ptr_platform_memory;
     ptr_reservation->handle               = reservation_handle;
+    ptr_reservation->page_size            = page_size;
     ptr_reservation->page_count_total     = page_count;
     ptr_reservation->page_count_committed = 0;
 
-    //add reservation to list
-    IFBReservationList* ptr_reservation_list = ifb_memory::context_get_reservation_list();
-    
     //if this is the first one, we need to initialize the list
     if (ptr_reservation_list->count == 0) {
 
@@ -315,8 +335,8 @@ ifb_memory::context_reserve_platform_memory(
         ifb_macro_assert(ptr_reservation_list->last  == NULL);
 
         //initialize the list
-        ptr_reservation_list->first = ptr_reservation_list;
-        ptr_reservation_list->last  = ptr_reservation_list;
+        ptr_reservation_list->first = ptr_reservation;
+        ptr_reservation_list->last  = ptr_reservation;
         ptr_reservation_list->count = 1;
     }
     else {
@@ -356,27 +376,25 @@ ifb_memory::context_release_platform_memory(
     //get the reservation
     IFBReservation* ptr_reservation = ifb_memory::context_get_reservation(reservation_handle);
 
-    //get the granularity and page size 
-    const IFBMemoryContextInfo* ptr_info = ifb_memory::context_get_local_info();
-    const IFBU32 page_size = ptr_info->system_page_size;
-    ifb_macro_assert(page_size);
-
     //calculate reservation size
     const IFBPtr reservation_start = (IFBPtr)ptr_reservation->start;
-    const IFBU64 reservation_size  = ptr_reservation->page_count_total * page_size; 
+    const IFBU64 reservation_size  = ptr_reservation->page_count_total * ptr_reservation->page_size; 
 
     //release memory
     const IFBB8 result = ifb_platform::memory_release(
         reservation_start,
         reservation_size);
 
+    //if that failed, we're done
+    if (!result) return(false);
+        
     //update the reservation
     ptr_reservation->start                = 0;
     ptr_reservation->page_count_total     = 0;
     ptr_reservation->page_count_committed = 0;
 
     //we're done
-    return(result);
+    return(true);
 }
 
 /**********************************************************************************/
@@ -442,4 +460,16 @@ ifb_memory::context_get_reservation(
 
     //we're done
     return(ptr_reservation);
+}
+
+IFBArena*
+ifb_memory::context_get_arena(
+    const IFBHNDArena arena_handle) {
+        
+    //get the pointer
+    IFBArena* ptr_arena = (IFBArena*)ifb_memory::context_stack_get_pointer(arena_handle.offset);
+    ifb_macro_assert(ptr_arena);
+
+    //we're done
+    return(ptr_arena);
 }

@@ -16,7 +16,6 @@ struct IFBArena;
 struct IFBLinearAllocator;
 struct IFBBlockAllocator;
 
-
 /**********************************************************************************/
 /* ARENA                                                                          */
 /**********************************************************************************/
@@ -27,10 +26,11 @@ struct IFBArena {
     IFBArena*         ptr_next;
     IFBAddr           start;
     IFBU32            size;
-    IFBU32            position;
+    IFBU32            position_committed;
+    IFBU32            position_reserved;
 };
 
-struct IFBMemoryArenaList {
+struct IFBArenaList {
     IFBArena* ptr_first;    
     IFBArena* ptr_last;    
     IFBU32    count;
@@ -68,14 +68,15 @@ struct IFBReservation {
     IFBReservation*    next;
     IFBAddr            start;
     IFBHNDReservation  handle;
+    IFBU32             page_size;
     IFBU32             page_count_total;
     IFBU32             page_count_committed;
 };
 
 struct IFBReservationList {
-    IFBMemoryReservation* first;
-    IFBMemoryReservation* last;
-    IFBU32                count;
+    IFBReservation* first;
+    IFBReservation* last;
+    IFBU32          count;
 };
 
 /**********************************************************************************/
@@ -93,6 +94,7 @@ struct IFBMemoryContextStack {
 struct IFBMemoryContextOffsets {
     IFBU32 info;
     IFBU32 reservation_list;
+    IFBU32 arena_list;
 };
 
 struct IFBMemoryContext {
@@ -107,8 +109,10 @@ namespace ifb_memory {
     IFBMemoryContextOffsets& context_get_offsets          (IFBVoid);
     IFBMemoryContextInfo*    context_get_local_info       (IFBVoid);      
     IFBReservationList*      context_get_reservation_list (IFBVoid); 
+    IFBArenaList*            context_get_arena_list       (IFBVoid); 
 
     IFBReservation*          context_get_reservation      (const IFBHNDReservation reservation_handle);
+    IFBArena*                context_get_arena            (const IFBHNDArena       arena_handle);
 };
 
 

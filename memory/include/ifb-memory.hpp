@@ -38,8 +38,8 @@ struct IFBMemoryContextInfo {
 namespace ifb_memory {
 
     //create/destroy
-    const IFBB8 context_create  (const IFBByte* stack_memory, const IFBU32 stack_size);
-    const IFBB8 context_destroy (IFBVoid);
+    const IFBB8  context_create  (const IFBByte* stack_memory, const IFBU32 stack_size);
+    const IFBB8  context_destroy (IFBVoid);
 
     //info
     const IFBB8  context_get_info (IFBMemoryContextInfo* system_info);
@@ -73,14 +73,15 @@ struct IFBReservationInfo {
     IFBU32 page_count_committed;
     IFBU32 size_total;
     IFBU32 size_committed;
-    IFBU32 arena_count;
 };
 
 namespace ifb_memory {
 
-
     //arena commit
-    const IFBHNDArena reservation_commit_arena(const IFBU32 size_minimum);
+    const IFBHNDArena
+    reservation_commit_arena(
+        const IFBHNDReservation reservation_handle,
+        const IFBU32            size_minimum);
 
     //info
     const IFBB8
