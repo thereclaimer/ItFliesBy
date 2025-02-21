@@ -30,8 +30,8 @@ ifb_memory::context_create(
     _ptr_context = (IFBMemoryContext*)stack_memory;
 
     //cache the properties
-    IFBMemoryContextStack&   ref_stack   = _ptr_context->system_info;
-    IFBMemoryContextOffsets& ref_offsets = _ptr_context->stack;
+    IFBMemoryContextStack&   ref_stack   = _ptr_context->stack;
+    IFBMemoryContextOffsets& ref_offsets = _ptr_context->offsets;
 
     //calculate stack addresses
     const IFBAddr stack_start = (IFBAddr)stack_memory;
@@ -81,14 +81,14 @@ ifb_memory::context_create(
     //get the system information
     const IFBU32 system_page_size   = ifb_platform::system_page_size();
     const IFBU32 system_granularity = ifb_platform::system_allocation_granularity();
-    ifb_macro_assert(system_page_size)
-    ifb_macro_assert(system_granularity)
+    ifb_macro_assert(system_page_size);
+    ifb_macro_assert(system_granularity);
 
     //update the context info
     IFBMemoryContextInfo* ptr_context_info = ifb_memory::context_get_local_info();
     ifb_macro_assert(ptr_context_info);
-    ptr_context_info->page_size   = system_page_size; 
-    ptr_context_info->granularity = system_granularity; 
+    ptr_context_info->system_page_size   = system_page_size; 
+    ptr_context_info->system_granularity = system_granularity; 
 
     //we're done
     return(true);
@@ -246,9 +246,9 @@ ifb_memory::context_stack_get_pointer(
     ifb_macro_assert(offset < ref_stack.size);
         
     //calculate the pointer
-    const IFBAddress stack_start  = ref_stack.start;
-    const IFBAddress stack_offset = stack_start + offset;
-    const IFBPtr     pointer      = (IFBPtr)stack_offset;
+    const IFBAddr stack_start  = ref_stack.start;
+    const IFBAddr stack_offset = stack_start + offset;
+    const IFBPtr  pointer      = (IFBPtr)stack_offset;
 
     //we're done
     return(pointer);
@@ -281,7 +281,7 @@ ifb_memory::context_reserve_platform_memory(
 
     //make the reservation
     const IFBPtr ptr_platform_memory = ifb_platform::memory_reserve(size_aligned);
-    if (!ptr_reservation) return(reservation_handle);
+    if (!ptr_platform_memory) return(reservation_handle);
 
     //search the list for reservations to recycle
     IFBReservationList* ptr_reservation_list = ifb_memory::context_get_reservation_list();

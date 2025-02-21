@@ -98,7 +98,7 @@ ifb_stack::push_relative(
 inline const IFBPtr
 ifb_stack::push_absolute(
           IFBStack* stack_ptr,
-    const IFBU32   size) {
+    const IFBU32    size) {
 
     //do the relative push
     const IFBU32 position = ifb_stack::push_relative(

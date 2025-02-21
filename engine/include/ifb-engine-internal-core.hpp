@@ -29,7 +29,8 @@ struct IFBEngineCoreMemoryStack {
 };
 
 struct IFBEngineCoreMemoryReservation {
-    IFBU64            size;
+    IFBU64            size_reserved;
+    IFBU32            size_arena;
     IFBHNDReservation handle; 
 };
 
@@ -41,15 +42,15 @@ struct IFBEngineCoreMemory {
 namespace ifb_engine {
 
     //reservation
-    const IFBB8       core_memory_reserve               (IFBEngineCore* core_ptr, const IFBU32 size);
-    const IFBB8       core_memory_release               (IFBEngineCore* core_ptr);
+    const IFBB8       core_memory_reserve_platform_memory (IFBEngineCore* core_ptr, const IFBU32 size);
+    const IFBB8       core_memory_release_platform_memory (IFBEngineCore* core_ptr);
 
     //stack
-    const IFBPtr      core_memory_stack_commit_absolute (IFBEngineCore* core_ptr, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBU32      core_memory_stack_commit_relative (IFBEngineCore* core_ptr, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBPtr      core_memory_commit_bytes_absolute   (IFBEngineCore* core_ptr, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBU32      core_memory_commit_bytes_relative   (IFBEngineCore* core_ptr, const IFBU32 size, const IFBU32 alignment = 0);
 
     //arenas
-    const IFBHNDArena core_memory_commit_arena     (IFBVoid);           
+    const IFBHNDArena core_memory_commit_arena            (IFBEngineCore* core_ptr);           
 };
 
 
@@ -58,7 +59,6 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineCore {
-    IFBU32             stack_offset;
     IFBEngineCoreMemory memory; 
 };
 
@@ -66,9 +66,8 @@ namespace ifb_engine {
 
     IFBEngineCore*
     core_create(
-        const IFBPlatformApi* platform_api_ptr,
-        const IFBByte*       core_stack_memory_ptr,
-        const IFBU32         core_stack_memory_size);
+        const IFBByte* core_stack_memory_ptr,
+        const IFBU32   core_stack_memory_size);
     
     const IFBB8
     core_destroy(
@@ -79,6 +78,5 @@ namespace ifb_engine {
 /* MACROS                                                                         */
 /**********************************************************************************/
 
-#define ifb_engine_macro_core_memory_commit_struct(ptr_core,struct) (struct*)ifb_engine::core_memory_stack_commit_absolute(ptr_core,sizeof(struct),alignof(struct))
 
 #endif //IFB_ENGINE_INTERNAL_CORE_HPP

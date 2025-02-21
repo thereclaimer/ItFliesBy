@@ -9,19 +9,13 @@
 /**********************************************************************************/
 
 //handles
-struct IFBHNDGraphics {
-    IFBU32 offset;
-};
-
-struct IFBHNDGraphicsWindow  : IFBHNDGraphics { };
-struct IFBHNDGraphicsMonitor : IFBHNDGraphics { };
+struct IFBHNDWindow  : IFBHND32 { };
+struct IFBHNDMonitor : IFBHND32 { };
 
 struct IFBGraphicsContextInfo {
-    IFBHNDLinearAllocator  linear_arena_handle;
-    IFBColorFormat           color_format;
-    IFBU32                   monitor_count;
-    IFBHNDGraphicsWindow     primary_window_handle;
-    IFBHNDGraphicsMonitor    primary_monitor_handle;
+    IFBHNDArena    arena;
+    IFBColorFormat color_format;
+    IFBU32         monitor_count;
 };
 
 /**********************************************************************************/
@@ -32,9 +26,8 @@ namespace ifb_graphics {
 
     const IFBB8 
     context_reserve_and_initialize(
-        const IFBHNDLinearAllocator linear_arena_handle,
-        const IFBPlatformApi*         ptr_platform_api,
-        const IFBColorFormat          color_format);
+        const IFBHNDArena    arena_handle,
+        const IFBColorFormat color_format);
     
     const IFBB8 
     context_get_info(
@@ -60,7 +53,7 @@ namespace ifb_graphics {
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
-struct IFBGraphicsWindowArgs {
+struct IFBWindowArgs {
     IFBChar*      title;
     IFBDimensions dimensions;
     IFBPosition   position;
@@ -68,13 +61,13 @@ struct IFBGraphicsWindowArgs {
 
 namespace ifb_graphics {
 
-    const IFBHNDGraphicsWindow 
+    const IFBHNDWindow 
     window_commit(
-        IFBGraphicsWindowArgs* ptr_window_args);
+        IFBWindowArgs* ptr_window_args);
 
-    const IFBB8 window_show         (const IFBHNDGraphicsWindow window_handle);
-    const IFBB8 window_frame_start  (const IFBHNDGraphicsWindow window_handle);
-    const IFBB8 window_frame_render (const IFBHNDGraphicsWindow window_handle);
+    const IFBB8 window_show         (const IFBHNDWindow window_handle);
+    const IFBB8 window_frame_start  (const IFBHNDWindow window_handle);
+    const IFBB8 window_frame_render (const IFBHNDWindow window_handle);
 };
 
 /**********************************************************************************/

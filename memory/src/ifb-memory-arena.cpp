@@ -2,149 +2,241 @@
 
 #include "ifb-memory-internal.hpp"
 
-//arena commit
-const IFBHNDArena
-ifb_memory::reservation_commit_arena(
-    const IFBHNDReservation reservation_handle,
-    const IFBU32            size_minimum) {
+/**********************************************************************************/
+/* RESET                                                                          */
+/**********************************************************************************/
 
-    IFBHNDArena arena_handle;
-    arena_handle.offset = 0;
+IFBVoid
+ifb_memory::arena_reset_all(
+    const IFBHNDArena arena_handle) {
 
-    //sanity check
-    IFBB8 result = true;
-    result &= reservation_handle.offset != 0;
-    result &= size_minimum              != 0;
-    if (!result) return(arena_handle);
+    IFBArena* ptr_arena = ifb_memory::context_get_arena(arena_handle);
 
-    //get the reservation
-    IFBReservation* ptr_reservation = ifb_memory::context_get_reservation(reservation_handle); 
-    ifb_macro_assert(ptr_reservation);
-
-    //align the size
-    const IFBU32 page_size   = ptr_reservation->page_size;
-    const IFBU32 commit_size = ifb_macro_align_a_to_b(size_minimum,page_size);
-    const IFBU32 page_count  = size_aligned / page_size;
-    
-    //calculate the commit start
-    const IFBU32  commit_offset     = ptr_reservation->page_count_committed * page_size; 
-    const IFBAddr commit_start_addr = ptr_reservation->start                + commit_offset;
-    const IFBPtr  commit_start_ptr  = (IFBPtr)commit_address;
-
-    //do the commit
-    const IFBPtr commit_result = ifb_platform::memory_commit(
-        commit_start_ptr,
-        commit_size);
-    
-    //make sure we got the expected result
-    if (commit_result != commit_start) return(arena_handle);
-
-    //search the list for arenas to recycle
-    IFBArenaList* ptr_arena_list = ifb_memory::context_get_arena_list();
-    IFBArena*     ptr_arena      = NULL;
-    for (
-        IFBArena* ptr_arena_current = ptr_arena_list->first;
-        ptr_arena_current != NULL;
-        ptr_arena_current = ptr_arena_current->next) {
-            
-        //if the arena has no reservation and no start address
-        //it is free to use
-        IFBB8 arena_is_free = true;
-        arena_is_free &= (ptr_arena_current->handle_reservation.offset == 0);
-        arena_is_free &= (ptr_arena_current->start                     == 0);
-        if (arena_is_free) {
-            ptr_arena = ptr_arena_current;
-            break;
-        }
-    }
-    
-    //if we didn't find an arena struct, we need to commit a new one
-    if (!ptr_arena) {
-
-        //commit reservation structure
-        const IFBU32 arena_struct_size = ifb_macro_align_size_struct(IFBArena); 
-        arena_handle.offset            = ifb_memory::context_stack_commit_relative(arena_struct_size);
-        
-        //get the pointer
-        ptr_arena = ifb_memory::context_get_arena(arena_handle);
-    }
-     
-    //we should always have an arena at this point
-    ifb_macro_assert(ptr_arena);
-
-    //initialize the arena
-    ptr_arena->handle_reservation = reservation_handle;
-    ptr_arena->handle_arena       = arena_handle;
-    ptr_arena->ptr_next           = NULL;
-    ptr_arena->start              = (IFBAddr)commit_result;
-    ptr_arena->size               = commit_size;
-    ptr_arena->position           = 0;
-    
-    //if this is the first one, we need to initialize the list
-    if (ptr_arena_list->count == 0) {
-
-        //pointers should be null
-        ifb_macro_assert(ptr_arena_list->first == NULL);
-        ifb_macro_assert(ptr_arena_list->last  == NULL);
-
-        //initialize the list
-        ptr_arena_list->first = ptr_arena;
-        ptr_arena_list->last  = ptr_arena;
-        ptr_arena_list->count = 1;
-    }
-    else {
-
-        //first and last elements should NOT be null
-        ifb_macro_assert(ptr_arena_list->first);
-        ifb_macro_assert(ptr_arena_list->last);
-        
-        //cache first and last elements
-        IFBArena* first_element = ptr_arena_list->first; 
-        IFBArena* last_element  = ptr_arena_list->last; 
-        
-        //if we are adding a second element, make sure
-        //we update the next pointer for the first element
-        if (ptr_arena_list->count == 1) {
-            ifb_macro_assert(first_element->next == NULL);
-            first_element->next = ptr_arena;
-        }
-        
-        //update the end of the list
-        ifb_macro_assert(first_element->next);
-        last_element->next   = ptr_arena;
-        ptr_arena_list->last = ptr_arena;
-
-        //update the count
-        ++ptr_arena_list->count;                        
-    }
-
-    //update the reservation
-    ptr_reservation->page_count_committed + page_count;
-
-    //we're done
-    return(arena_handle);
+    ptr_arena->position_committed = 0;
+    ptr_arena->position_reserved  = 0;
 }
 
-//info
-const IFBB8
-ifb_memory::reservation_get_info(
-    const IFBHNDReservation   reservation_handle,
-          IFBReservationInfo* reservation_info_ptr) {
+IFBVoid
+ifb_memory::arena_reset_committed_space(
+    const IFBHNDArena arena_handle) {
 
-    //sanity check
-    if (!reservation_info_ptr) return(false);
+    IFBArena* ptr_arena = ifb_memory::context_get_arena(arena_handle);
 
-    //get the reservation
-    IFBReservation* ptr_reservation = ifb_memory::context_get_reservation(reservation_handle); 
-    ifb_macro_assert(ptr_reservation);    
+    ptr_arena->position_committed = 0;
+}
 
-    //set the info
-    const IFBU32 page_size = ptr_reservation->page_size;
-    reservation_info_ptr->page_count_total     = ptr_reservation->page_count_total;
-    reservation_info_ptr->page_count_committed = ptr_reservation->page_count_committed;
-    reservation_info_ptr->size_total           = ptr_reservation->page_count_total     * page_size;
-    reservation_info_ptr->size_committed       = ptr_reservation->page_count_committed * page_size;
+IFBVoid
+ifb_memory::arena_reset_reserved_space(
+    const IFBHNDArena arena_handle) {
+
+    IFBArena* ptr_arena = ifb_memory::context_get_arena(arena_handle);
+
+    ptr_arena->position_reserved = 0;
+}
+
+/**********************************************************************************/
+/* POINTERS                                                                       */
+/**********************************************************************************/
+
+const IFBPtr
+ifb_memory::arena_get_pointer(
+    const IFBHNDArena arena_handle,
+    const IFBU32      offset) {
+
+    //get the arena
+    IFBArena* ptr_arena = ifb_memory::context_get_arena(arena_handle);
+    
+    //calculate the pointer, if its valid
+    const IFBAddr address = ptr_arena->start + offset;
+    const IFBPtr  pointer = offset < ptr_arena->size
+        ? (IFBPtr)address
+        : NULL;
 
     //we're done
-    return(true);
+    return(pointer);
+}
+
+const IFBB8
+ifb_memory::arena_get_info(
+    const IFBHNDArena   arena_handle,
+          IFBArenaInfo* arena_info_ptr) {
+
+    return(false);
+}
+
+/**********************************************************************************/
+/* RESERVE/RELEASE (BOTTOM -> TOP)                                                */
+/**********************************************************************************/
+
+const IFBPtr
+ifb_memory::arena_reserve_bytes_absolute(
+    const IFBHNDArena arena_handle,
+    const IFBU32      size,
+    const IFBU32      alignment) {
+
+    IFBPtr ptr_result = NULL;
+    
+    //get the arena
+    IFBArena* ptr_arena = ifb_memory::context_get_arena(arena_handle);
+    
+    //sanity check
+    if (size == 0) return(NULL);
+
+    //calculate the new reserved position
+    const IFBU32 reservation_size_aligned     = ifb_macro_align_a_to_b(size,alignment);
+    const IFBU32 reservation_position_current = ptr_arena->position_reserved;
+    const IFBU32 reservation_position_new     = reservation_position_current + reservation_size_aligned;
+        
+    //calculate the address
+    const IFBAddr reservation_address = ptr_arena->start + reservation_position_current;
+    
+    //this reservation is valid IF...
+    IFBB8 is_valid = true;
+    is_valid &= (reservation_position_new < ptr_arena->size);               // it doesn't overflow the arena
+    is_valid &= (reservation_position_new < ptr_arena->position_committed); // it doesn't overflow into commit space
+
+    //if its valid, update the position and calculate the pointer
+    if (is_valid) {
+        ptr_arena->position_reserved = reservation_position_new;
+        ptr_result = (IFBPtr)reservation_address;
+    }
+
+    //we're done
+    return(ptr_result);
+}
+
+const IFBU32
+ifb_memory::arena_reserve_bytes_relative(
+    const IFBHNDArena arena_handle,
+    const IFBU32      size,
+    const IFBU32      alignment) {
+        
+    //get the arena
+    IFBArena* ptr_arena = ifb_memory::context_get_arena(arena_handle);
+    
+    //we use the arena size as an invalid offset since using it will return null
+    IFBU32 offset_result = ptr_arena->size;
+    
+    //sanity check
+    if (size == 0) return(offset_result);
+    
+    //calculate the new reserved position
+    const IFBU32 reservation_size_aligned     = ifb_macro_align_a_to_b(size,alignment);
+    const IFBU32 reservation_position_current = ptr_arena->position_reserved;
+    const IFBU32 reservation_position_new     = reservation_position_current + reservation_size_aligned;
+    
+    //this reservation is valid IF...
+    IFBB8 is_valid = true;
+    is_valid &= (reservation_position_new < ptr_arena->size);               // it doesn't overflow the arena
+    is_valid &= (reservation_position_new < ptr_arena->position_committed); // it doesn't overflow into commit space
+
+    //if its valid, update the position and offset
+    //the offset is the position prior to the update
+    if (is_valid) {
+        ptr_arena->position_reserved = reservation_position_new;
+        offset_result = reservation_position_current; 
+    }
+
+    //we're done
+    return(offset_result);
+}
+
+const IFBB8
+ifb_memory::arena_release_bytes(
+    const IFBHNDArena arena_handle,
+    const IFBU32      size,
+    const IFBU32      alignment) {
+
+    //get the arena
+    IFBArena* ptr_arena = ifb_memory::context_get_arena(arena_handle);
+    
+    //determine if we can release the bytes
+    //we can release if we aren't releasing more than we have reserved
+    const IFBU32 release_size_aligned = ifb_macro_align_a_to_b(size,alignment);
+    IFBB8        release_is_valid     = release_size_aligned < ptr_arena->position_reserved;
+
+    //if we can release, update the arena
+    if (release_is_valid) {
+        ptr_arena->position_reserved -= release_size_aligned;
+    }
+
+    //we're done
+    return(release_is_valid);
+}
+
+/**********************************************************************************/
+/* COMMIT (BOTTOM <- TOP)                                                         */
+/**********************************************************************************/
+
+const IFBPtr 
+ifb_memory::arena_commit_bytes_absolute(
+    const IFBHNDArena arena_handle,
+    const IFBU32      size,
+    const IFBU32      alignment) {
+
+    IFBPtr ptr_commit_result = NULL;
+
+    //get the arena
+    IFBArena* ptr_arena = ifb_memory::context_get_arena(arena_handle);
+
+    //determine if we can commit
+    //we can commit if the commit size is smaller than the difference
+    //between the committed and reserved space
+    const IFBU32 commit_size_aligned      = ifb_macro_align_a_to_b(size,alignment);
+    const IFBU32 commit_position_current  = ptr_arena->position_committed;
+    const IFBU32 reserve_position_current = ptr_arena->position_reserved;
+    const IFBU32 position_difference      = commit_position_current - reserve_position_current; 
+    const IFBU32 commit_is_valid          = commit_size_aligned < position_difference;
+
+    //if we can do the commit, 
+    //update the position and pointer
+    if (commit_is_valid) {
+
+        //calculate the address
+        const IFBU32  commit_position_new = commit_position_current - commit_size_aligned; 
+        const IFBAddr commit_address      = commit_position_new     + ptr_arena->start; 
+        ptr_commit_result = (IFBPtr)commit_address;
+
+        //update the arena
+        ptr_arena->position_committed = commit_position_new;
+    }
+
+    //we're done
+    return(ptr_commit_result);
+}
+
+const IFBU32 
+ifb_memory::arena_commit_bytes_relative(
+    const IFBHNDArena arena_handle,
+    const IFBU32      size,
+    const IFBU32      alignment) {
+        
+    //get the arena
+    IFBArena* ptr_arena = ifb_memory::context_get_arena(arena_handle);
+    
+    //we use the arena size as an invalid offset since using it will return null
+    IFBU32 offset_result = ptr_arena->size;
+
+    //determine if we can commit
+    //we can commit if the commit size is smaller than the difference
+    //between the committed and reserved space
+    const IFBU32 commit_size_aligned      = ifb_macro_align_a_to_b(size,alignment);
+    const IFBU32 commit_position_current  = ptr_arena->position_committed;
+    const IFBU32 reserve_position_current = ptr_arena->position_reserved;
+    const IFBU32 position_difference      = commit_position_current - reserve_position_current; 
+    const IFBU32 commit_is_valid          = commit_size_aligned < position_difference;
+
+    //if we can do the commit, 
+    //update the position and pointer
+    if (commit_is_valid) {
+
+        //calculate the offset
+        offset_result = commit_position_current - commit_size_aligned; 
+
+        //update the arena
+        ptr_arena->position_committed = offset_result;
+    }
+
+    //we're done
+    return(offset_result);
 }

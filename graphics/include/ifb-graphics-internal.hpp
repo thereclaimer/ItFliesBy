@@ -37,7 +37,7 @@ namespace ifb_graphics {
     IFBGraphicsWindow*     memory_commit_window            (IFBVoid);
     const IFBB8            memory_commit_window_lists      (IFBVoid);
 
-    IFBGraphicsWindow*     memory_get_window               (const IFBHNDGraphicsWindow window_handle);
+    // IFBGraphicsWindow*     memory_get_window               (const IFBHNDGraphicsWindow window_handle);
     IFBGraphicsWindowList* memory_get_window_list_active   (IFBVoid);
     IFBGraphicsWindowList* memory_get_window_list_inactive (IFBVoid);
 
@@ -49,7 +49,7 @@ namespace ifb_graphics {
 
 struct IFBGraphicsWindow {
     IFBGraphicsWindow*      next;
-    IFBHNDGraphicsWindow    handle;
+    // IFBHNDGraphicsWindow    handle;
     IFBDimensions           dimensions;
     IFBPosition             position;
 };

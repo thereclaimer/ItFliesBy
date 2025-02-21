@@ -6,30 +6,38 @@
 #include "ifb-engine.hpp"
 #include "ifb-engine-internal-core.hpp"
 
-#define IFB_ENGINE_GRAPHICS_MEMORY_SIZE_KB 4
+struct IFBHNDEngineWindow : IFBHND32 { };
 
-struct IFBEngineGraphicsMemory {
-    IFBHNDLinearAllocator linear_arena;
+/**********************************************************************************/
+/* WINDOW                                                                         */
+/**********************************************************************************/
+
+struct IFBEngineWindow {
+    IFBHNDEngineWindow handle;
+    IFBDimensions      dimensions;
+    IFBPosition        position;
 };
 
-struct IFBEngineGraphicsHandles {
-    IFBU32 window;
-};
+/**********************************************************************************/
+/* GRAPHICS MANAGER                                                               */
+/**********************************************************************************/
 
 struct IFBEngineGraphicsManager {
-    IFBEngineGraphicsMemory  memory;    
-    IFBEngineGraphicsHandles handles;
+    IFBHNDArena        arena;
+    IFBHNDEngineWindow window;
 };
 
 namespace ifb_engine {
 
     //initialize
-    const IFBB8 graphics_manager_initialize   (IFBEngineGraphicsManager* ptr_graphics_manager);
-    
+    const IFBB8 
+    graphics_manager_initialize(
+        IFBEngineGraphicsManager* ptr_graphics_manager,
+        IFBEngineCore*            ptr_core);
 
-    //pointers
+
+    IFBEngineWindow* graphics_manager_get_window (IFBEngineGraphicsManager* ptr_graphics_manager);
 };
-
 
 
 #endif //IFB_ENGINE_INTERNAL_GRAPHICS_HPP

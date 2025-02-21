@@ -76,9 +76,10 @@ typedef uint64_t IFBTimems;
 /* IDENTIFIERS                                                                    */
 /**********************************************************************************/
 
-struct IFBID   { IFBIndex index;  }; // id            | unique index in a collection
-struct IFBHND  { IFBU32   offset; }; // handle        | offset from engine memory reservation
-struct IFBGHND { IFBU32   offset; }; // global handle | offset from engine global stack
+struct IFBHND8  { IFBU8  offset; };
+struct IFBHND16 { IFBU16 offset; };
+struct IFBHND32 { IFBU32 offset; };
+struct IFBHND64 { IFBU64 offset; };
 
 /**********************************************************************************/
 /* SIMD                                                                           */
@@ -142,10 +143,7 @@ struct IFBMat3 {
     };
 };
 
-struct IFBIDTransform : IFBID { }; 
-
-
-struct IFBTransform : IFBIDTransform {
+struct IFBTransform {
     IFBVec2 translation;
     IFBVec2 scale;
     IFBF32 rotation_radians;

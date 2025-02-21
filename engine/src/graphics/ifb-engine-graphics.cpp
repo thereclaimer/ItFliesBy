@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ifb-engine-internal-graphics.hpp"
-#include "ifb-engine-internal-context.hpp"
+#include "ifb-engine-graphics-manager.cpp"
+#include "ifb-engine-graphics-window.cpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */

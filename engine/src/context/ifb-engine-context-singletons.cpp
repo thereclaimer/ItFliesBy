@@ -1,5 +1,4 @@
-#include "ifb-engine-internal-singletons.hpp"
-#include "ifb-engine-internal-graphics.hpp"
+#include "ifb-engine-internal-context.hpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -10,7 +9,7 @@ namespace ifb_engine {
     const IFBByte* 
     singletons_buffer_get_pointer(
         const IFBEngineSingletonBuffer& singleton_buffer,
-        const IFBU16                   singleton_handle);
+        const IFBHNDSingleton           singleton_handle);
 };
 
 /**********************************************************************************/
@@ -138,8 +137,8 @@ ifb_engine::singletons_load_graphics_manager(
 inline const IFBByte* 
 ifb_engine::singletons_buffer_get_pointer(
     const IFBEngineSingletonBuffer& singleton_buffer,
-    const IFBU16                   singleton_handle) {
+    const IFBHNDSingleton           singleton_handle) {
 
-    const IFBByte* pointer = &singleton_buffer.memory[singleton_handle];
+    const IFBByte* pointer = &singleton_buffer.memory[singleton_handle.offset];
     return(pointer);
 }
