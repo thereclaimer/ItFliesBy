@@ -42,7 +42,7 @@ struct IFBEngineCoreMemory {
 namespace ifb_engine {
 
     //reservation
-    const IFBB8       core_memory_reserve_platform_memory (IFBEngineCore* core_ptr, const IFBU32 size);
+    const IFBB8       core_memory_reserve_platform_memory (IFBEngineCore* core_ptr, const IFBU64 size);
     const IFBB8       core_memory_release_platform_memory (IFBEngineCore* core_ptr);
 
     //stack

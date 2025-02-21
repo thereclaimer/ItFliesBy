@@ -102,10 +102,10 @@ namespace ifb_win32 {
 
     const IFBU32 monitor_count (IFBVoid);
     
-    IFBVoid
-    monitor_info(
-        const IFBU32     monitor_array_count,
-              IFBMonitor* monitor_array_ptr);
+    // IFBVoid
+    // monitor_info(
+    //     const IFBU32     monitor_array_count,
+    //           IFBMonitor* monitor_array_ptr);
 
     ifb_internal BOOL CALLBACK monitor_enum_callback_count (HMONITOR handle,HDC device_context, LPRECT rect_ptr, LPARAM data_ptr);
     ifb_internal BOOL CALLBACK monitor_enum_callback_info  (HMONITOR handle,HDC device_context, LPRECT rect_ptr, LPARAM data_ptr);

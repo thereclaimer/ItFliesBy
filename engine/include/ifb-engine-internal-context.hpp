@@ -25,13 +25,20 @@ struct IFBEngineArenas;
 struct IFBHNDSingleton : IFBHND16 { };
 
 /**********************************************************************************/
-/* ARENAS                                                                         */
+/* CONFIG                                                                         */
 /**********************************************************************************/
 
-struct IFBEngineArenas {
-    IFBHNDArena graphics_manager;
-    IFBHNDArena renderer;
-    IFBHNDArena dev_tools;
+#ifndef  IFB_ENGINE_CONFIG_MEMORY_STACK_SIZE_KB
+#define  IFB_ENGINE_CONFIG_MEMORY_STACK_SIZE_KB 64
+#endif //IFB_ENGINE_CONFIG_MEMORY_STACK_SIZE_KB
+
+#ifndef  IFB_ENGINE_CONFIG_MEMORY_RESERVATION_SIZE_GB
+#define  IFB_ENGINE_CONFIG_MEMORY_RESERVATION_SIZE_GB 4
+#endif //IFB_ENGINE_CONFIG_MEMORY_RESERVATION_SIZE_GB
+
+namespace ifb_engine {
+
+    inline const IFBB8 config_initialize (IFBEngineConfig* ptr_config);
 };
 
 /**********************************************************************************/
@@ -59,7 +66,7 @@ struct IFBEngineSingletons {
 
 namespace ifb_engine {
 
-    IFBVoid                   singletons_commit_all            (IFBEngineSingletons* ptr_singletons);
+    IFBEngineSingletons*      singletons_create                (IFBEngineCore* ptr_core);
 
     IFBEngineConfig*          singletons_load_config           (const IFBEngineSingletons* ptr_singletons);
     IFBInput*                 singletons_load_input            (const IFBEngineSingletons* ptr_singletons);
@@ -68,13 +75,23 @@ namespace ifb_engine {
 };
 
 /**********************************************************************************/
+/* PLATFORM                                                                        */
+/**********************************************************************************/
+
+namespace ifb_engine {
+
+    const IFBB8
+    platform_api_initialize(
+        const IFBPlatformApi* ptr_platform_api);
+};
+
+/**********************************************************************************/
 /* CONTEXT                                                                        */
 /**********************************************************************************/
 
 struct IFBEngineContext {
-    IFBEngineCore*              ptr_core;
-    IFBEngineSingletons*        ptr_singletons;
-    IFBEngineArenas*            ptr_arenas;
+    IFBEngineCore*       ptr_core;
+    IFBEngineSingletons* ptr_singletons;
 };
 
 namespace ifb_engine {

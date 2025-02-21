@@ -16,13 +16,21 @@ namespace ifb_engine {
 /* COMMIT                                                                         */
 /**********************************************************************************/
 
-inline IFBVoid
-ifb_engine::singletons_commit_all(
-    IFBEngineSingletons* ptr_singletons) {
+inline IFBEngineSingletons*
+ifb_engine::singletons_create(
+    IFBEngineCore* ptr_core) {
 
     //sanity check
-    ifb_macro_assert(ptr_singletons);
+    ifb_macro_assert(ptr_core);
     
+    //commmit the singletons structure
+    IFBEngineSingletons* ptr_singletons = (IFBEngineSingletons*)ifb_engine::core_memory_commit_bytes_absolute(
+        ptr_core,
+        sizeof(IFBEngineSingletons),
+        alignof(IFBEngineSingletons));
+
+    ifb_macro_assert(ptr_singletons);
+
     //calculate all the singleton sizes
     const IFBU32 size_array[] = {
         ifb_macro_align_size_struct(IFBEngineConfig),
@@ -59,6 +67,8 @@ ifb_engine::singletons_commit_all(
         singlegon_handles_array[singleton_index] = buffer_position_u16;
         buffer_position_u16                      = (IFBU16)new_buffer_position_u32;
     }
+
+    return(ptr_singletons);
 }
 
 /**********************************************************************************/

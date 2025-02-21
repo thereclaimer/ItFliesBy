@@ -3,5 +3,5 @@
 #define IFB_ENGINE_INTERNAL
 
 #include "ifb-engine-core.cpp"
-#include "ifb-engine-config.cpp"
 #include "ifb-engine-context.cpp"
+#include "ifb-engine-graphics.cpp"

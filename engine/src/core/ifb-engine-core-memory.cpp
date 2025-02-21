@@ -18,7 +18,7 @@ namespace ifb_engine {
 inline const IFBB8
 ifb_engine::core_memory_reserve_platform_memory(
           IFBEngineCore* core_ptr,
-    const IFBU32         size) {
+    const IFBU64         size) {
     
     //sanity check
     ifb_macro_assert(core_ptr);

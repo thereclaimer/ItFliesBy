@@ -6,25 +6,13 @@
 #include "ifb-engine.hpp"
 #include "ifb-engine-internal-core.hpp"
 
-struct IFBHNDEngineWindow : IFBHND32 { };
-
-/**********************************************************************************/
-/* WINDOW                                                                         */
-/**********************************************************************************/
-
-struct IFBEngineWindow {
-    IFBHNDEngineWindow handle;
-    IFBDimensions      dimensions;
-    IFBPosition        position;
-};
-
 /**********************************************************************************/
 /* GRAPHICS MANAGER                                                               */
 /**********************************************************************************/
 
 struct IFBEngineGraphicsManager {
-    IFBHNDArena        arena;
-    IFBHNDEngineWindow window;
+    IFBEngineCore* ptr_core;
+    IFBHNDArena    arena;
 };
 
 namespace ifb_engine {
@@ -35,8 +23,6 @@ namespace ifb_engine {
         IFBEngineGraphicsManager* ptr_graphics_manager,
         IFBEngineCore*            ptr_core);
 
-
-    IFBEngineWindow* graphics_manager_get_window (IFBEngineGraphicsManager* ptr_graphics_manager);
 };
 
 

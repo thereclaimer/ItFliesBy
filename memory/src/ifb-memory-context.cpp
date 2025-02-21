@@ -450,6 +450,21 @@ ifb_memory::context_get_reservation_list(
     return(ptr_list);
 }
 
+IFBArenaList*
+ifb_memory::context_get_arena_list(
+    IFBVoid) {
+
+    //get the offsets
+    IFBMemoryContextOffsets& ref_offsets = ifb_memory::context_get_offsets();
+
+    //get the pointer
+    IFBArenaList* ptr_list = (IFBArenaList*)ifb_memory::context_stack_get_pointer(ref_offsets.arena_list);
+    ifb_macro_assert(ptr_list);
+    
+    //we're done
+    return(ptr_list);
+}
+
 IFBReservation*
 ifb_memory::context_get_reservation(
     const IFBHNDReservation reservation_handle) {

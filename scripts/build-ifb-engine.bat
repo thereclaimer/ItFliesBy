@@ -62,9 +62,9 @@ if not exist %dir_vcpkg% call vcpkg install
 
 @set cl_includes=   /I engine\include          ^
                     /I engine\src              ^
-                    /I engine\src\config       ^
                     /I engine\src\context      ^
                     /I engine\src\core         ^
+                    /I engine\src\graphics     ^
                     /I memory\include          ^
                     /I data-structures\include ^
                     /I common                  ^
