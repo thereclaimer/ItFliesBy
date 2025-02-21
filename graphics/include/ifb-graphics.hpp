@@ -22,16 +22,21 @@ struct IFBGraphicsContextInfo {
 /* CONTEXT                                                                        */
 /**********************************************************************************/
 
+struct IFBWindowArgs {
+    IFBChar*      title;
+    IFBDimensions dimensions;
+    IFBPosition   position;
+};
+
 namespace ifb_graphics {
 
     const IFBB8 
-    context_reserve_and_initialize(
+    context_create(
         const IFBHNDArena    arena_handle,
         const IFBColorFormat color_format);
     
-    const IFBB8 
-    context_get_info(
-        IFBGraphicsContextInfo* graphics_context_info);
+    const IFBB8        context_get_info      (IFBGraphicsContextInfo* ptr_graphics_context_info);
+    const IFBHNDWindow context_commit_window (IFBWindowArgs*          ptr_window_args);
 };
 
 /**********************************************************************************/
@@ -53,11 +58,6 @@ namespace ifb_graphics {
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
-struct IFBWindowArgs {
-    IFBChar*      title;
-    IFBDimensions dimensions;
-    IFBPosition   position;
-};
 
 namespace ifb_graphics {
 

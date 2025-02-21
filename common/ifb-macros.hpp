@@ -38,4 +38,11 @@
 
 #define ifb_macro_pointer_from_offset(start,offset,type) (type*)((IFBAddr)start + (IFBAddr)offset)
 
+#define ifb_macro_arena_commit_struct_absolute(arena,type)  (type*)ifb_memory::arena_commit_bytes_absolute (arena,sizeof(type),alignof(type))
+#define ifb_macro_arena_commit_struct_relative(arena,type)         ifb_memory::arena_commit_bytes_relative (arena,sizeof(type),alignof(type))
+#define ifb_macro_arena_reserve_struct_absolute(arena,type) (type*)ifb_memory::arena_reserve_bytes_absolute(arena,sizeof(type),alignof(type))
+#define ifb_macro_arena_reserve_struct_relative(arena,type)        ifb_memory::arena_reserve_bytes_relative(arena,sizeof(type),alignof(type))
+#define ifb_macro_arena_release_struct_absolute(arena,type)        ifb_memory::arena_release_bytes_absolute(arena,sizeof(type),alignof(type))
+#define ifb_macro_arena_release_struct_relative(arena,type)        ifb_memory::arena_release_bytes_relative(arena,sizeof(type),alignof(type))
+
 #endif //IFB_MACROS_HPP

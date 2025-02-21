@@ -17,6 +17,7 @@ struct IFBArray;
 struct IFBStack;
 struct IFBQueue;     //TODO
 struct IFBArrayList; //TODO
+struct IFBLinkedList;
 
 /**********************************************************************************/
 /* ARRAY                                                                          */
@@ -30,7 +31,6 @@ namespace ifb_array {
     const IFBU32 allocation_size_structure (IFBVoid);
     const IFBU32 allocation_size_data      (const IFBU32 element_size,const IFBU32 element_count);
     const IFBU32 allocation_size_total     (const IFBU32 element_size,const IFBU32 element_count);
-    
     
     //create/initialize
     IFBArray*
@@ -130,6 +130,15 @@ namespace ifb_queue {
     const IFBU32 get_size_total (const IFBQueue* queue_ptr);
     const IFBU32 get_size_free  (const IFBQueue* queue_ptr);
     const IFBU32 get_size_used  (const IFBQueue* queue_ptr);
+};
+
+/**********************************************************************************/
+/* LINKED LIST                                                                    */
+/**********************************************************************************/
+
+namespace ifb_linked_list {
+
+
 };
 
 #endif //IFB_DATA_STRUCTURES_HPP

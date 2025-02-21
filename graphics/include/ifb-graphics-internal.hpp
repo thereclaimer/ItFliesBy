@@ -47,11 +47,10 @@ namespace ifb_graphics {
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
-struct IFBGraphicsWindow {
-    IFBGraphicsWindow*      next;
-    // IFBHNDGraphicsWindow    handle;
-    IFBDimensions           dimensions;
-    IFBPosition             position;
+struct IFBWindow {
+    IFBWindow*    next;
+    IFBDimensions dimensions;
+    IFBPosition   position;
 };
 
 struct IFBGraphicsWindowList {
@@ -65,15 +64,16 @@ struct IFBGraphicsWindowList {
 /**********************************************************************************/
 
 struct IFBGraphicsContext {
-    IFBGraphicsMemory memory;
-    IFBPlatformApi*   ptr_platform_api;
-    IFBColorFormat    color_format;
+    IFBHNDArena            arena_handle;
+    IFBColorFormat         color_format;
+    IFBGraphicsWindowList* window_list;
 };
+
+
 
 namespace ifb_graphics {
     
-    IFBGraphicsMemory&    context_get_memory       (IFBVoid);
-    const IFBPlatformApi* context_get_platform_api (IFBVoid);
+    const IFBHNDArena     context_get_arena        (IFBVoid);
     const IFBColorFormat  context_get_color_format (IFBVoid);
 };
 

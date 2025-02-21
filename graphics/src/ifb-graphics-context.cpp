@@ -13,64 +13,67 @@ ifb_global IFBGraphicsContext* _ptr_context;
 /**********************************************************************************/
 
 const IFBB8
-ifb_graphics::context_reserve_and_initialize(
-    const IFBHNDLinearAllocator linear_arena_handle,
-    const IFBPlatformApi*         ptr_platform_api,
-    const IFBColorFormat          color_format) {
+ifb_graphics::context_create(
+    const IFBHNDArena    arena_handle,
+    const IFBColorFormat color_format) {
 
     //sanity check
-    ifb_macro_assert(_ptr_context == NULL);
-    ifb_macro_assert(ptr_platform_api);
-    ifb_macro_assert(linear_arena_handle.offset);
-
-    //allocate the context
-    const IFBU32 context_size = ifb_macro_align_size_struct(IFBGraphicsContext);
-    _ptr_context = (IFBGraphicsContext*)ifb_memory::linear_arena_reserve_bytes_absolute(
-        linear_arena_handle,
-        context_size);
-
-    //if that failed, we're done
-    if (!_ptr_context) return(false);
+    if (!ifb_memory_macro_handle_valid(arena_handle)) return(false);
+    
+    //allocate the struct 
+    IFBGraphicsContext*    ptr_context     = ifb_macro_arena_commit_struct_absolute(arena_handle,IFBGraphicsContext);
+    IFBGraphicsWindowList* ptr_window_list = ifb_macro_arena_commit_struct_absolute(arena_handle,IFBGraphicsWindowList);
+    
+    IFBB8 result = true;
+    result &= (ptr_context     != NULL);
+    result &= (ptr_window_list != NULL);
+    if (!result) return(false);
 
     //initialize the context
-    _ptr_context->memory.linear_arena_handle = linear_arena_handle;
-    _ptr_context->memory.offsets             = {0};
-    _ptr_context->ptr_platform_api           = (IFBPlatformApi*)ptr_platform_api;
-    _ptr_context->color_format               = color_format;
+    ptr_context->arena_handle = arena_handle;
+    ptr_context->color_format = color_format;
+    ptr_context->window_list  = ptr_window_list; 
 
-    //commit the window lists
-    if (!ifb_graphics::memory_commit_window_lists()) {
-        ifb_macro_panic();
-    }
-
+    //set the context pointer
+    _ptr_context = ptr_context;
+    
     //we're done
     return(true);
 }
 
 /**********************************************************************************/
+/* WINDOW                                                                         */
+/**********************************************************************************/
+
+const IFBHNDWindow
+ifb_graphics::context_commit_window(
+    IFBWindowArgs* ptr_window_args) {
+
+    //sanity check
+    ifb_macro_assert(ptr_window_args);
+
+    const IFBHNDArena arena = ifb_graphics::context_get_arena();
+
+    ifb_macro_arena_commit_struct_absolute(arena,IFBWindow)
+}
+
+
+/**********************************************************************************/
 /* INTERNAL                                                                       */
 /**********************************************************************************/
 
-IFBGraphicsMemory&
-ifb_graphics::context_get_memory(
+const IFBHNDArena
+ifb_graphics::context_get_arena(
     IFBVoid) {
 
     ifb_macro_assert(_ptr_context);
-    return(_ptr_context->memory);
-}
-
-const IFBPlatformApi*
-ifb_graphics::context_get_platform_api(
-    IFBVoid) {
-        
-    ifb_macro_assert(_ptr_context);
-    return(_ptr_context->ptr_platform_api);
+    return(_ptr_context->arena_handle);
 }
 
 const IFBColorFormat
 ifb_graphics::context_get_color_format(
     IFBVoid) {
-    
+        
     ifb_macro_assert(_ptr_context);
     return(_ptr_context->color_format);
 }
