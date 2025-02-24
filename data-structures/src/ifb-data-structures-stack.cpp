@@ -51,6 +51,79 @@ ifb_stack::create(
     return(stack_ptr);
 }
 
+inline IFBStack* 
+ifb_stack::arena_commit(
+    const IFBHNDArena arena_handle,
+    const IFBU32      size) {
+
+    //calculate sizes
+    const IFBU32 size_struct = ifb_macro_align_size_struct(IFBStack);
+    const IFBU32 size_total  = size_struct + size;
+    
+    //commit the stack
+    IFBStack* ptr_stack = (IFBStack*)ifb_memory::arena_commit_bytes_absolute(
+        arena_handle,
+        size_total);
+
+    //initialize the stack if its valid
+    if (ptr_stack) {
+        ptr_stack->start    = ((IFBAddr)ptr_stack) + size_struct;
+        ptr_stack->size     = size;
+        ptr_stack->position = 0;
+    }
+
+    //we're done
+    return(ptr_stack);
+}
+
+inline IFBStack* 
+ifb_stack::arena_reserve(
+    const IFBHNDArena arena_handle,
+    const IFBU32      size) {
+
+    //calculate sizes
+    const IFBU32 size_struct = ifb_macro_align_size_struct(IFBStack);
+    const IFBU32 size_total  = size_struct + size;
+    
+    //commit the stack
+    IFBStack* ptr_stack = (IFBStack*)ifb_memory::arena_reserve_bytes_absolute(
+        arena_handle,
+        size_total);
+
+    //initialize the stack if its valid
+    if (ptr_stack) {
+        ptr_stack->start    = ((IFBAddr)ptr_stack) + size_struct;
+        ptr_stack->size     = size;
+        ptr_stack->position = 0;
+    }
+
+    //we're done
+    return(ptr_stack);
+}
+
+inline const IFBB8
+ifb_stack::arena_release(
+    const IFBHNDArena arena_handle,
+          IFBStack*   ptr_stack) {
+
+    //sanity check
+    if (!ptr_stack || !ifb_memory_macro_handle_valid(arena_handle)) {
+        return(false);
+    }
+
+    //calculate the total size
+    const IFBU32 size_struct = ifb_macro_align_size_struct(IFBStack);
+    const IFBU32 size_total  = size_struct + ptr_stack->size;
+    
+    //release the bytes
+    const IFBB8 result = ifb_memory::arena_release_bytes(
+        arena_handle,
+        size_total);
+
+    //we're done
+    return(result);
+}
+
 /**********************************************************************************/
 /* RESET                                                                          */
 /**********************************************************************************/

@@ -82,6 +82,8 @@ namespace ifb_platform {
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
+typedef IFBPtr IFBGLContext;
+
 typedef const IFBB8
 (*ifb_platform_funcptr_window_create) (
     const IFBCStr title,
@@ -90,7 +92,7 @@ typedef const IFBB8
     const IFBU32  position_x,
     const IFBU32  position_y);
 
-typedef const IFBB8
+typedef IFBGLContext
 (*ifb_platform_funcptr_window_opengl_init) (
     IFBVoid);
 
@@ -245,52 +247,5 @@ struct IFBPlatformApi {
     IFBPlatformWindowApi  window;
     IFBPlatformMonitorApi monitor;
 };
-
-// namespace ifb_platform {
-
-//     const IFBB8 set_api(const IFBPlatformApi* ptr_platform_api);
-// };
-
-// inline const IFBB8
-// ifb_platform::set_api(
-//     const IFBPlatformApi* ptr_platform_api) {
-
-//     //sanity check
-//     if (!ptr_platform_api) return(false);
-
-//     //cache the api
-//     const IFBPlatformSystemApi&  ref_api_system  = ptr_platform_api->system;
-//     const IFBPlatformMemoryApi&  ref_api_memory  = ptr_platform_api->memory;
-//     const IFBPlatformWindowApi&  ref_api_window  = ptr_platform_api->window;
-//     const IFBPlatformMonitorApi& ref_api_monitor = ptr_platform_api->monitor;
-
-//     //system
-//     ifb_platform::system_page_size              = ref_api_system.page_size;
-//     ifb_platform::system_allocation_granularity = ref_api_system.allocation_granularity;
-//     ifb_platform::system_time_ms                = ref_api_system.time_ms;
-//     ifb_platform::system_sleep                  = ref_api_system.sleep;
-    
-//     //memory
-//     ifb_platform::memory_reserve                = ref_api_memory.reserve;
-//     ifb_platform::memory_release                = ref_api_memory.release;
-//     ifb_platform::memory_commit                 = ref_api_memory.commit;
-//     ifb_platform::memory_decommit               = ref_api_memory.decommit;
-
-//     //window
-//     ifb_platform::window_create                 = ref_api_window.create;
-//     ifb_platform::window_destroy                = ref_api_window.destroy;
-//     ifb_platform::window_frame_start            = ref_api_window.frame_start;
-//     ifb_platform::window_frame_render           = ref_api_window.frame_render;
-//     ifb_platform::window_show                   = ref_api_window.show;
-//     ifb_platform::window_opengl_init            = ref_api_window.opengl_init;
-//     ifb_platform::window_imgui_init             = ref_api_window.imgui_init;
-
-//     //monitor
-//     ifb_platform::monitor_count                 = ref_api_monitor.count;
-//     ifb_platform::monitor_info                  = ref_api_monitor.info;
-
-//     //we're done
-//     return(true);
-// }
 
 #endif //IFB_ENGINE_PLATFORM_HPP

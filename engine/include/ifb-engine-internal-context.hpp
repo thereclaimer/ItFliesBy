@@ -18,9 +18,6 @@ struct IFBEngineSingletons;
 struct IFBEngineSingletonBuffer;
 struct IFBEngineSingletonHandles;
 
-//arenas
-struct IFBEngineArenas;
-
 //handles
 struct IFBHNDSingleton : IFBHND16 { };
 
@@ -78,10 +75,17 @@ namespace ifb_engine {
 /* PLATFORM                                                                        */
 /**********************************************************************************/
 
+struct IFBEnginePlatform {
+    IFBHNDArena     arena_handle;
+    IFBPlatformApi* ptr_platform_api
+    IFBStack*       ptr_stack;
+};
+
 namespace ifb_engine {
 
     const IFBB8
-    platform_api_initialize(
+    platform_create(
+              IFBEngineCore*  ptr_core,
         const IFBPlatformApi* ptr_platform_api);
 };
 
@@ -92,14 +96,15 @@ namespace ifb_engine {
 struct IFBEngineContext {
     IFBEngineCore*       ptr_core;
     IFBEngineSingletons* ptr_singletons;
+    IFBEnginePlatform*   ptr_platform;
 };
 
 namespace ifb_engine {
     
-    IFBEngineContext&    context_ref                  (IFBVoid);
-    IFBEngineCore*       context_get_ptr_core         (IFBVoid); 
-    IFBEngineSingletons* context_get_ptr_singletons   (IFBVoid);
-    IFBEngineSingletons* context_get_ptr_arenas       (IFBVoid);
+    IFBEngineContext&    context_ref                (IFBVoid);
+    IFBEngineCore*       context_get_ptr_core       (IFBVoid); 
+    IFBEngineSingletons* context_get_ptr_singletons (IFBVoid);
+    IFBEnginePlatform*   context_get_ptr_platform   (IFBVoid);
 };
 
 #endif //IFB_ENGINE_INTERNAL_CONTEXT_HPP

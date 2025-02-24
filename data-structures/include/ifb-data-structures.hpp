@@ -98,6 +98,10 @@ namespace ifb_stack {
         const IFBPtr memory,
         const IFBU32 size);
 
+    IFBStack*   arena_commit  (const IFBHNDArena arena_handle, const IFBU32 size);
+    IFBStack*   arena_reserve (const IFBHNDArena arena_handle, const IFBU32 size);
+    const IFBB8 arena_release (const IFBHNDArena arena_handle, IFBStack* ptr_stack);
+
     //reset
     const IFBB8  reset          (IFBStack* stack_ptr);
 

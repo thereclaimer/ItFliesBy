@@ -40,6 +40,7 @@ if not exist %path_build%\obj mkdir %path_build%\obj
 
 @set cl_includes=   /I win32\include         ^
                     /I common                ^
+                    /I memory\include        ^
                     /I external              ^
                     /I %path_engine_include% ^
                     /I %path_vcpkg_include%

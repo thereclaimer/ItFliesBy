@@ -2,6 +2,15 @@
 
 #include "ifb-engine-internal-context.hpp"
 
+/**********************************************************************************/
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
+
+namespace ifb_engine {
+
+    const IFBB8 platform_api_initialize(const IFBPlatformApi* ptr_platform_api);
+};
+
 namespace ifb_platform {
 
     ifb_platform_funcptr_system_page_size              system_page_size;
@@ -31,7 +40,35 @@ namespace ifb_platform {
     ifb_platform_funcptr_file_size                     file_size;
     ifb_platform_funcptr_file_read                     file_read;
     ifb_platform_funcptr_file_write                    file_write;
+
 };
+
+/**********************************************************************************/
+/* PLATFORM                                                                       */
+/**********************************************************************************/
+
+const IFBB8
+ifb_engine::platform_create(
+          IFBEngineCore*  ptr_core,
+    const IFBPlatformApi* ptr_platform_api) {
+
+    //sanity check
+    ifb_macro_assert(ptr_core);
+    ifb_macro_assert(ptr_platform_api);
+
+    //set the api
+    if (!ifb_engine::platform_api_initialize(ptr_platform_api)) return(false);
+
+    //commit the arena
+    const IFBHNDArena platform_arena = ifb_engine::core_memory_commit_arena(ptr_core);
+    if (!ifb_memory_macro_handle_valid(platform_arena)) return(false);
+
+    
+}
+
+/**********************************************************************************/
+/* INTERNAL                                                                       */
+/**********************************************************************************/
 
 const IFBB8
 ifb_engine::platform_api_initialize(

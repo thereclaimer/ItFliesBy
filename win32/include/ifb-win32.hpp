@@ -72,12 +72,12 @@ namespace ifb_win32 {
         const IFBU32  position_x,
         const IFBU32  position_y);
 
-    ifb_internal const IFBB8        window_destroy      (IFBVoid);
-    ifb_internal const IFBB8        window_frame_start  (IFBVoid);
-    ifb_internal const IFBB8        window_frame_render (IFBVoid);
-    ifb_internal const IFBB8        window_show         (IFBVoid);
-    ifb_internal const IFBB8        window_opengl_init  (IFBVoid);
-    ifb_internal       ImGuiContext* window_imgui_init   (IFBVoid);
+    ifb_internal const IFBB8   window_destroy      (IFBVoid);
+    ifb_internal const IFBB8   window_frame_start  (IFBVoid);
+    ifb_internal const IFBB8   window_frame_render (IFBVoid);
+    ifb_internal const IFBB8   window_show         (IFBVoid);
+    ifb_internal IFBGLContext  window_opengl_init  (IFBVoid);
+    ifb_internal ImGuiContext* window_imgui_init   (IFBVoid);
 
     ifb_internal LRESULT CALLBACK
     window_callback(
@@ -212,39 +212,28 @@ struct IFBWin32Args {
     int       n_cmd_show;
 };
 
+struct IFBWin32Memory {
+    IFBHNDArena arena_handle;
+    IFBAddr     arena_start;
+};
+
+struct IFBWin32Handles {
+    IFBU32 args;
+    IFBU32 window;
+};
+
 struct IFBWin32Context {
-    IFBWin32Window  window;
-    IFBWin32Args    args;
-    IFBPlatformApi  platform_api;
-    // IFBEngineUpdate engine_update;
+    IFBWin32Memory          memory;
+    IFBWin32Handles*        ptr_handles;
+    IFBEngineContextUpdate* ptr_engine_update;
 };
 
 namespace ifb_win32 {
-    
 
-    ifb_global IFBWin32Context _context;
+    const IFBWin32Memory&   context_get_memory        (IFBVoid);
+    const IFBWin32Handles*  context_get_handles       (IFBVoid);
+    IFBEngineContextUpdate* context_get_engine_update (IFBVoid);    
 
-    inline void context_reset(IFBVoid) { _context = {0}; }
-
-    inline IFBVoid
-    context_args_set_values(
-              IFBWin32Args& args_ref,
-        const HINSTANCE     h_instance,
-        const HINSTANCE     h_prev_instance,
-        const PWSTR         p_cmd_line,
-        const int           n_cmd_show);
-
-    inline IFBVoid context_initialize_platform_api(IFBPlatformApi& platform_api_ref);
-
-    inline const HINSTANCE context_args_get_h_instance      (IFBVoid) { return(_context.args.h_instance);      }
-    inline const HINSTANCE context_args_get_h_prev_instance (IFBVoid) { return(_context.args.h_prev_instance); }
-    inline const PWSTR     context_args_get_p_cmd_line      (IFBVoid) { return(_context.args.p_cmd_line);      }
-    inline const int       context_args_get_n_cmd_show      (IFBVoid) { return(_context.args.n_cmd_show);      }
-
-    inline IFBWin32Args     context_get_args           (IFBVoid) { return(_context.args);          }
-    inline IFBWin32Window&  context_get_window         (IFBVoid) { return(_context.window);        }
-    inline IFBPlatformApi&  context_get_platform_api   (IFBVoid) { return(_context.platform_api);  }
-    // inline IFBEngineUpdate& context_get_engine_update  (IFBVoid) { return(_context.engine_update); }
 };
 
 

@@ -161,7 +161,7 @@ ifb_win32::window_show(
     return(true);
 }
 
-ifb_internal const IFBB8 
+ifb_internal IFBGLContext 
 ifb_win32::window_opengl_init(
     IFBVoid) {
 
@@ -205,7 +205,7 @@ ifb_win32::window_opengl_init(
         context_active);
 
     //we're done
-    return(result);
+    return((IFBGLContext)window_ref.opengl_context);
 }
 
 ifb_internal ImGuiContext*

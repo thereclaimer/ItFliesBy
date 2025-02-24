@@ -64,6 +64,20 @@ ifb_memory::arena_get_info(
     return(false);
 }
 
+const IFBAddr
+ifb_memory::arena_get_start(
+    const IFBHNDArena arena_handle) {
+
+    //get the arena
+    IFBArena* ptr_arena = ifb_memory::context_get_arena(arena_handle);
+
+    //get the start address
+    const IFBAddr start = ptr_arena->start;
+
+    //we're done
+    return(start);
+}
+
 /**********************************************************************************/
 /* RESERVE/RELEASE (BOTTOM -> TOP)                                                */
 /**********************************************************************************/

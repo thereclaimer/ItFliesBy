@@ -2,37 +2,43 @@
 
 #include "ifb-win32.hpp"
 
+/**********************************************************************************/
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
+
+ifb_global IFBWin32Context* _ptr_context; 
+
+namespace ifb_win32 {
+
+    const IFBHNDArena context_create_engine (IFBVoid);
+
+    IFBWin32Context*
+    context_create_win32(
+        const IFBHNDArena win32_arena,
+        const HINSTANCE   h_instance,
+        const HINSTANCE   h_prev_instance,
+        const PWSTR       p_cmd_line,
+        const int         n_cmd_show);
+};
+
+/**********************************************************************************/
+/* WIN32 MAIN                                                                     */
+/**********************************************************************************/
+
 int WINAPI 
 wWinMain(
     HINSTANCE h_instance,
     HINSTANCE h_prev_instance,
     PWSTR     p_cmd_line,
     int       n_cmd_show) {
- 
-    //reset the win32 context
-    ifb_win32::context_reset();
 
-    //set the args
-    IFBWin32Args& args_ref = ifb_win32::context_get_args();
-    args_ref.h_instance      = h_instance; 
-    args_ref.h_prev_instance = h_prev_instance; 
-    args_ref.p_cmd_line      = p_cmd_line; 
-    args_ref.n_cmd_show      = n_cmd_show; 
+    //create the engine context
+    const IFBHNDArena win32_arena = ifb_win32::context_engine_create();
 
-    //initialize the platform api
-    IFBPlatformApi& platform_api_ref = ifb_win32::context_get_platform_api();
-    ifb_win32::context_initialize_platform_api(platform_api_ref);
+    //create the win32 context
+    _ptr_context = ifb_win32::context_create_win32(win32_arena);
 
-    //engine memory stack
-    const IFBU32      engine_memory_stack_size = ifb_macro_size_kilobytes(512);
-    ifb_local IFBByte engine_memory_stack_buffer[engine_memory_stack_size];
 
-    //create the engine context and startup
-    IFBB8 running = true;
-    running &= ifb_engine::context_create(
-        &platform_api_ref,
-        engine_memory_stack_buffer,
-        engine_memory_stack_size);
 
     running &= ifb_engine::context_startup();
 
@@ -52,6 +58,67 @@ wWinMain(
 
     //done
     return(result ? S_OK : S_FALSE);
+}
+
+/**********************************************************************************/
+/* WIN32 CONTEXT                                                                  */
+/**********************************************************************************/
+
+inline const IFBHNDArena
+ifb_win32::context_create_engine(
+    IFBVoid) {
+
+    //initialize the platform api
+    IFBPlatformApi& platform_api_ref = ifb_win32::context_get_platform_api();
+    ifb_win32::context_initialize_platform_api(platform_api_ref);
+
+    //engine memory
+    const IFBU64      engine_memory_reserved_size = ifb_macro_size_gigabytes(4);
+    const IFBU32      engine_memory_stack_size    = ifb_macro_size_kilobytes(512);
+    ifb_local IFBByte engine_memory_stack_buffer[engine_memory_stack_size];
+
+    //create the engine context
+    const IFBHNDArena win32_arena = ifb_engine::context_create(
+        &platform_api_ref,
+        engine_memory_stack_buffer,
+        engine_memory_stack_size,
+        engine_memory_reserved_size);
+
+    //sanity check
+    ifb_macro_assert(ifb_memory_macro_handle_valid(win32_arena));
+
+    //we're done
+    return(win32_arena);
+}
+
+inline IFBWin32Context*
+ifb_win32::context_create_win32(
+    const IFBHNDArena win32_arena,
+    const HINSTANCE   h_instance,
+    const HINSTANCE   h_prev_instance,
+    const PWSTR       p_cmd_line,
+    const int         n_cmd_show) {
+    
+    //calculate sizes
+    const IFBU32     win32_context_size = ifb_macro_align_size_struct(IFBWin32Context);
+    const IFBU32     win32_handles_size = ifb_macro_align_size_struct(IFBWin32Handles);
+    
+    //commit context structures
+    IFBWin32Context* win32_context_ptr  = (IFBWin32Context*)ifb_memory::arena_commit_bytes_absolute(win32_arena, win32_context_size);
+    IFBWin32Handles* win32_handles_ptr  = (IFBWin32Handles*)ifb_memory::arena_commit_bytes_absolute(win32_arena, win32_handles_size);
+
+    //intialize memory
+    IFBWin32Memory& memory_ref = win32_context_ptr->memory;
+    memory_ref.arena_handle = win32_arena;
+    memory_ref.arena_start = ifb_memory::
+
+    //sanity check
+    ifb_macro_assert(win32_context_ptr);
+    ifb_macro_assert(win32_handles_ptr);
+    
+
+    
+    win32_context_ptr->ptr_handles = win32_handles_ptr;
 }
 
 inline IFBVoid 

@@ -8,55 +8,33 @@
 /**********************************************************************************/
 
 struct IFBGraphicsContext;
+struct IFBWindow;
 
-struct IFBGraphicsMemory;
-struct IFBGraphicsMemoryOffsets;
-
-struct IFBGraphicsWindow;
-struct IFBGraphicsWindowList;
-
-/**********************************************************************************/
-/* MEMORY                                                                         */
-/**********************************************************************************/
-
-struct IFBGraphicsMemoryOffsets {
-    IFBU32 window_list_active;
-    IFBU32 window_list_inactive;
-};
-
-struct IFBGraphicsMemory {
-    IFBHNDLinearAllocator  linear_arena_handle;
-    IFBGraphicsMemoryOffsets offsets;
-};
-
-namespace ifb_graphics {
-
-    const IFBHNDLinearAllocator
-    memory_get_linear_arena(IFBVoid);
-
-    IFBGraphicsWindow*     memory_commit_window            (IFBVoid);
-    const IFBB8            memory_commit_window_lists      (IFBVoid);
-
-    // IFBGraphicsWindow*     memory_get_window               (const IFBHNDGraphicsWindow window_handle);
-    IFBGraphicsWindowList* memory_get_window_list_active   (IFBVoid);
-    IFBGraphicsWindowList* memory_get_window_list_inactive (IFBVoid);
-
+struct IFBGraphicsHandles {
+    IFBU32 parent_window;
 };
 
 /**********************************************************************************/
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
-struct IFBWindow {
-    IFBWindow*    next;
-    IFBDimensions dimensions;
-    IFBPosition   position;
+#define IFB_WINDOW_TITLE_LENGTH_MAX 255
+
+struct IFBWindowPlatformContexts {
+    IFBGLContext  opengl;
+    ImGuiContext* imgui;
 };
 
-struct IFBGraphicsWindowList {
-    IFBGraphicsWindow* first;
-    IFBGraphicsWindow* last;
-    IFBU32             count;
+struct IFBWindowTitle {
+    IFBChar c_str[IFB_WINDOW_TITLE_LENGTH_MAX];
+};
+
+struct IFBWindow {
+    IFBHNDWindow              handle;
+    IFBPosition               position;
+    IFBDimensions             dimensions;
+    IFBWindowPlatformContexts platform_contexts;
+    IFBWindowTitle            title;
 };
 
 /**********************************************************************************/
@@ -64,17 +42,15 @@ struct IFBGraphicsWindowList {
 /**********************************************************************************/
 
 struct IFBGraphicsContext {
-    IFBHNDArena            arena_handle;
-    IFBColorFormat         color_format;
-    IFBGraphicsWindowList* window_list;
+    IFBHNDArena    arena_handle;
+    IFBColorFormat color_format;
+    IFBWindow*     window;
 };
 
-
-
 namespace ifb_graphics {
-    
-    const IFBHNDArena     context_get_arena        (IFBVoid);
-    const IFBColorFormat  context_get_color_format (IFBVoid);
+    const IFBHNDArena    context_get_arena_handle (IFBVoid);
+    const IFBColorFormat context_get_color_format (IFBVoid);
+    IFBWindow*           context_get_window       (IFBVoid);
 };
 
 #endif //IFB_GRAPHICS_INTERNAL_HPP

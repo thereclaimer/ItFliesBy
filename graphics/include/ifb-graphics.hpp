@@ -35,8 +35,9 @@ namespace ifb_graphics {
         const IFBHNDArena    arena_handle,
         const IFBColorFormat color_format);
     
-    const IFBB8        context_get_info      (IFBGraphicsContextInfo* ptr_graphics_context_info);
-    const IFBHNDWindow context_commit_window (IFBWindowArgs*          ptr_window_args);
+    const IFBB8        context_get_info            (IFBGraphicsContextInfo* ptr_graphics_context_info);
+
+    const IFBHNDWindow context_commit_window       (const IFBWindowArgs* ptr_window_args);
 };
 
 /**********************************************************************************/
@@ -61,17 +62,34 @@ namespace ifb_graphics {
 
 namespace ifb_graphics {
 
-    const IFBHNDWindow 
-    window_commit(
-        IFBWindowArgs* ptr_window_args);
-
-    const IFBB8 window_show         (const IFBHNDWindow window_handle);
-    const IFBB8 window_frame_start  (const IFBHNDWindow window_handle);
-    const IFBB8 window_frame_render (const IFBHNDWindow window_handle);
+    const IFBB8        window_show         (const IFBHNDWindow   window_handle);
+    const IFBB8        window_frame_start  (const IFBHNDWindow   window_handle);
+    const IFBB8        window_frame_render (const IFBHNDWindow   window_handle);
 };
 
 /**********************************************************************************/
 /* MONITOR                                                                        */
 /**********************************************************************************/
+
+struct IFBMonitorInfo {
+    IFBU32        index;
+    IFBU32        refresh_hz;
+    IFBDimensions dimensions;
+    IFBPosition   position;
+};
+
+namespace ifb_graphics {
+
+    const IFBB8
+    monitor_get_info(
+        const IFBU32          monitor_index,
+              IFBMonitorInfo* ptr_monitor_info);
+    
+    const IFBB8
+    monitor_center_window(
+        const IFBU32         monitor_index,
+        const IFBDimensions* ptr_window_dimensions,
+              IFBPosition*   ptr_window_center);
+};
 
 #endif //IFB_GRAPHICS_HPP

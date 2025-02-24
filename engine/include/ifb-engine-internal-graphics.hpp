@@ -1,6 +1,7 @@
 #ifndef IFB_ENGINE_INTERNAL_GRAPHICS_HPP
 #define IFB_ENGINE_INTERNAL_GRAPHICS_HPP
 
+#include <ifb-graphics.hpp>
 #include <ifb-data-structures.hpp>
 
 #include "ifb-engine.hpp"
@@ -12,7 +13,9 @@
 
 struct IFBEngineGraphicsManager {
     IFBEngineCore* ptr_core;
+    IFBWindowArgs* ptr_default_window_args;
     IFBHNDArena    arena;
+    IFBHNDWindow   window;
 };
 
 namespace ifb_engine {
