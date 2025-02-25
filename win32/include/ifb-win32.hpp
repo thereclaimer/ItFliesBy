@@ -27,9 +27,9 @@ namespace ifb_win32 {
 
     IFBVoid memory_api_initialize(IFBPlatformMemoryApi& platform_memory_api_ref);
 
-    ifb_internal const IFBPtr memory_reserve (const IFBU32 reservation_size);
-    ifb_internal const IFBB8  memory_release (const IFBPtr reservation_start, const IFBU32 reservation_size);
-    ifb_internal const IFBPtr memory_commit  (const IFBPtr commit_start,      const IFBU32 commit_size);
+    ifb_internal const IFBPtr memory_reserve (const IFBU64 reservation_size);
+    ifb_internal const IFBB8  memory_release (const IFBPtr reservation_start, const IFBU64 reservation_size);
+    ifb_internal const IFBPtr memory_commit  (const IFBPtr commit_start,      const IFBU64 commit_size);
 };
 
 /**********************************************************************************/
@@ -202,6 +202,42 @@ namespace ifb_win32 {
 };
 
 /**********************************************************************************/
+/* WIN32 PLATFORM                                                                 */
+/**********************************************************************************/
+
+namespace ifb_win32 {
+
+    inline IFBVoid
+    platform_api_initialize(
+        IFBPlatformApi& platform_api_ref) {
+
+        //system
+        platform_api_ref.system.page_size              = ifb_win32::system_page_size;
+        platform_api_ref.system.allocation_granularity = ifb_win32::system_allocation_granularity;
+        platform_api_ref.system.time_ms                = ifb_win32::system_time_ms;
+        platform_api_ref.system.sleep                  = ifb_win32::system_sleep;
+
+        //memory    
+        platform_api_ref.memory.reserve                = ifb_win32::memory_reserve;
+        platform_api_ref.memory.release                = ifb_win32::memory_release;
+        platform_api_ref.memory.commit                 = ifb_win32::memory_commit;
+
+        //window    
+        platform_api_ref.window.create                 = ifb_win32::window_create;
+        platform_api_ref.window.destroy                = ifb_win32::window_destroy;
+        platform_api_ref.window.frame_start            = ifb_win32::window_frame_start;
+        platform_api_ref.window.frame_render           = ifb_win32::window_frame_render;
+        platform_api_ref.window.show                   = ifb_win32::window_show;
+        platform_api_ref.window.opengl_init            = ifb_win32::window_opengl_init;
+        platform_api_ref.window.imgui_init             = ifb_win32::window_imgui_init;
+
+        //monitor
+        platform_api_ref.monitor.count                 = ifb_win32::monitor_count;
+    }
+
+};
+
+/**********************************************************************************/
 /* WIN32 CONTEXT                                                                  */
 /**********************************************************************************/
 
@@ -212,28 +248,41 @@ struct IFBWin32Args {
     int       n_cmd_show;
 };
 
-struct IFBWin32Memory {
-    IFBHNDArena arena_handle;
-    IFBAddr     arena_start;
-};
-
 struct IFBWin32Handles {
     IFBU32 args;
     IFBU32 window;
 };
 
+struct IFBWin32Memory {
+    IFBHNDArena     arena_handle;
+    IFBWin32Handles win32_handles;
+};
+
+
+
 struct IFBWin32Context {
-    IFBWin32Memory          memory;
-    IFBWin32Handles*        ptr_handles;
+    IFBWin32Memory*         ptr_memory;
     IFBEngineContextUpdate* ptr_engine_update;
 };
 
 namespace ifb_win32 {
 
-    const IFBWin32Memory&   context_get_memory        (IFBVoid);
-    const IFBWin32Handles*  context_get_handles       (IFBVoid);
-    IFBEngineContextUpdate* context_get_engine_update (IFBVoid);    
+    const IFBB8
+    context_create(
+        const IFBPlatformApi& platform_api_ref,
+        const IFBWin32Args&   win32_args_ref);
+        
+    const IFBB8
+    context_main_loop(IFBVoid);
+    
+    const IFBB8
+    context_destroy(IFBVoid);
 
+    IFBWin32Memory*         context_get_memory        (IFBVoid);
+    IFBEngineContextUpdate* context_get_engine_update (IFBVoid);
+
+    IFBWin32Args*   context_get_args   (IFBVoid);
+    IFBWin32Window* context_get_window (IFBVoid);
 };
 
 

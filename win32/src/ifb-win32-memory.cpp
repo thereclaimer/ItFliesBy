@@ -5,7 +5,7 @@
 
 ifb_internal const IFBPtr 
 ifb_win32::memory_reserve(
-    const IFBU32 reservation_size) {
+    const IFBU64 reservation_size) {
 
     const IFBPtr reservation_start = VirtualAlloc(
             NULL,
@@ -19,7 +19,7 @@ ifb_win32::memory_reserve(
 ifb_internal const IFBB8 
 ifb_win32::memory_release(
     const IFBPtr reservation_start, 
-    const IFBU32 reservation_size) {
+    const IFBU64 reservation_size) {
 
     const IFBB8 result = VirtualFree(
         reservation_start,
@@ -32,7 +32,7 @@ ifb_win32::memory_release(
 ifb_internal const IFBPtr 
 ifb_win32::memory_commit(
     const IFBPtr commit_start,
-    const IFBU32 commit_size) {
+    const IFBU64 commit_size) {
 
     //do the commit
     const IFBPtr commit_result = VirtualAlloc(

@@ -8,8 +8,8 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-struct IFBHNDReservation     : IFBHND32 { };
-struct IFBHNDArena           : IFBHND32 { };
+struct IFBHNDReservation : IFBHNDPTR { };
+struct IFBHNDArena       : IFBHNDPTR { };
 
 struct IFBHNDAllocator : IFBHND32 {
     IFBHNDArena arena;
@@ -18,7 +18,7 @@ struct IFBHNDAllocator : IFBHND32 {
 struct IFBHNDBlockAllocator  : IFBHNDAllocator { };
 struct IFBHNDLinearAllocator : IFBHNDAllocator { };
 
-#define ifb_memory_macro_handle_valid(handle) handle.offset != 0
+#define ifb_memory_macro_handle_valid(handle) handle.pointer != 0
 
 /**********************************************************************************/
 /* CONTEXT                                                                        */
@@ -58,7 +58,7 @@ namespace ifb_memory {
     const IFBPtr context_stack_get_pointer     (const IFBU32 offset);
 
     //reservations
-    const IFBHNDReservation context_reserve_platform_memory (const IFBU32            size_minimum);
+    const IFBHNDReservation context_reserve_platform_memory (const IFBU64            size_minimum);
     const IFBB8             context_release_platform_memory (const IFBHNDReservation reservation_handle);
 };
 
@@ -69,8 +69,8 @@ namespace ifb_memory {
 struct IFBReservationInfo {
     IFBU32 page_count_total;
     IFBU32 page_count_committed;
-    IFBU32 size_total;
-    IFBU32 size_committed;
+    IFBU64 size_total;
+    IFBU64 size_committed;
 };
 
 namespace ifb_memory {

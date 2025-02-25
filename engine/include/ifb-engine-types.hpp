@@ -3,11 +3,6 @@
 
 #include <ifb.hpp>
 
-#ifdef IFB_ENGINE_INTERNAL
-    #define ifb_engine_api __declspec(dllexport)
-#else
-    #define ifb_engine_api __declspec(dllimport)
-#endif
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -52,5 +47,14 @@ struct IFBEngineSizeAndAlignment {
     IFBU32 size;
     IFBU32 alignment;
 };
+
+struct IFBEngineContextUpdate {
+    IFBPosition   window_position;
+    IFBDimensions window_dimensions;
+    IFBInput      user_input;
+};
+
+typedef IFBHNDArena  IFBHNDEngineArena;
+typedef IFBArenaInfo IFBEngineArenaInfo;
 
 #endif //IFB_ENGINE_TYPES_HPP

@@ -76,10 +76,11 @@ typedef uint64_t IFBTimems;
 /* IDENTIFIERS                                                                    */
 /**********************************************************************************/
 
-struct IFBHND8  { IFBU8  offset; };
-struct IFBHND16 { IFBU16 offset; };
-struct IFBHND32 { IFBU32 offset; };
-struct IFBHND64 { IFBU64 offset; };
+struct IFBHND8   { IFBU8  offset;  };
+struct IFBHND16  { IFBU16 offset;  };
+struct IFBHND32  { IFBU32 offset;  };
+struct IFBHND64  { IFBU64 offset;  };
+struct IFBHNDPTR { IFBPtr pointer; };
 
 /**********************************************************************************/
 /* SIMD                                                                           */

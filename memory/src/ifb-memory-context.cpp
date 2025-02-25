@@ -27,7 +27,8 @@ ifb_memory::context_create(
     if (!result) return(false);
 
     //cast the stack memory to the memory struct
-    _ptr_context = (IFBMemoryContext*)stack_memory;
+    IFBByte* local_stack_memory = (IFBByte*)stack_memory;
+    _ptr_context = (IFBMemoryContext*)local_stack_memory;
 
     //cache the properties
     IFBMemoryContextStack&   ref_stack   = _ptr_context->stack;
@@ -261,10 +262,10 @@ ifb_memory::context_stack_get_pointer(
 //reservations
 const IFBHNDReservation
 ifb_memory::context_reserve_platform_memory(
-    const IFBU32 size_minimum) {
+    const IFBU64 size_minimum) {
 
     IFBHNDReservation reservation_handle;
-    reservation_handle.offset = 0;
+    reservation_handle.pointer = NULL;
 
     //sanity check
     if (size_minimum == 0) return(reservation_handle);
@@ -277,7 +278,7 @@ ifb_memory::context_reserve_platform_memory(
     ifb_macro_assert(page_size);
     
     //align the size
-    const IFBU32 size_aligned = ifb_macro_align_a_to_b(size_minimum,granularity);
+    const IFBU64 size_aligned = ifb_macro_align_a_to_b(size_minimum,(IFBU64)granularity);
 
     //make the reservation
     const IFBPtr ptr_platform_memory = ifb_platform::memory_reserve(size_aligned);
@@ -307,7 +308,7 @@ ifb_memory::context_reserve_platform_memory(
 
         //commit reservation structure
         const IFBU32 reservation_struct_size = ifb_macro_align_size_struct(IFBReservation); 
-        reservation_handle.offset            = ifb_memory::context_stack_commit_relative(reservation_struct_size);
+        reservation_handle.pointer           = ifb_memory::context_stack_commit_absolute(reservation_struct_size);
          
         //get the pointer
         ptr_reservation = ifb_memory::context_get_reservation(reservation_handle);
@@ -470,7 +471,7 @@ ifb_memory::context_get_reservation(
     const IFBHNDReservation reservation_handle) {
 
     //get the pointer
-    IFBReservation* ptr_reservation = (IFBReservation*)ifb_memory::context_stack_get_pointer(reservation_handle.offset);
+    IFBReservation* ptr_reservation = (IFBReservation*)reservation_handle.pointer;
     ifb_macro_assert(ptr_reservation);
 
     //we're done
@@ -482,7 +483,7 @@ ifb_memory::context_get_arena(
     const IFBHNDArena arena_handle) {
         
     //get the pointer
-    IFBArena* ptr_arena = (IFBArena*)ifb_memory::context_stack_get_pointer(arena_handle.offset);
+    IFBArena* ptr_arena = (IFBArena*)arena_handle.pointer;
     ifb_macro_assert(ptr_arena);
 
     //we're done

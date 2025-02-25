@@ -46,22 +46,22 @@ namespace ifb_platform {
 
 typedef const IFBPtr
 (*ifb_platform_funcptr_memory_reserve)(
-    const IFBU32 reservation_size);
+    const IFBU64 reservation_size);
 
 typedef const IFBB8
 (*ifb_platform_funcptr_memory_release)(
     const IFBPtr reservation_start,
-    const IFBU32 reservation_size);
+    const IFBU64 reservation_size);
 
 typedef const IFBPtr
 (*ifb_platform_funcptr_memory_commit)(
     const IFBPtr commit_start,
-    const IFBU32 commit_size);
+    const IFBU64 commit_size);
 
 typedef const IFBB8
 (*ifb_platform_funcptr_memory_decommit)(
     const IFBPtr commit_start,
-    const IFBU32 commit_size);
+    const IFBU64 commit_size);
 
 struct IFBPlatformMemoryApi {
     ifb_platform_funcptr_memory_reserve  reserve;

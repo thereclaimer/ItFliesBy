@@ -38,11 +38,12 @@ if not exist %path_build%\obj mkdir %path_build%\obj
                     /Fo:%path_build%\obj\ItFliesBy.obj ^
                     /Fd:%path_build%\bin\ItFliesBy.pdb
 
-@set cl_includes=   /I win32\include         ^
-                    /I common                ^
-                    /I memory\include        ^
-                    /I external              ^
-                    /I %path_engine_include% ^
+@set cl_includes=   /I win32\include           ^
+                    /I common                  ^
+                    /I memory\include          ^
+                    /I data-structures\include ^
+                    /I external                ^
+                    /I %path_engine_include%   ^
                     /I %path_vcpkg_include%
 
 

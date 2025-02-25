@@ -1,6 +1,5 @@
 #include "ifb-memory-internal.hpp"
 
-
 //arena commit
 const IFBHNDArena
 ifb_memory::reservation_commit_arena(
@@ -8,12 +7,12 @@ ifb_memory::reservation_commit_arena(
     const IFBU32            size_minimum) {
 
     IFBHNDArena arena_handle;
-    arena_handle.offset = 0;
+    arena_handle.pointer = NULL;
 
     //sanity check
     IFBB8 result = true;
-    result &= reservation_handle.offset != 0;
-    result &= size_minimum              != 0;
+    result &= reservation_handle.pointer != NULL;
+    result &= size_minimum               != 0;
     if (!result) return(arena_handle);
 
     //get the reservation
@@ -49,8 +48,8 @@ ifb_memory::reservation_commit_arena(
         //if the arena has no reservation and no start address
         //it is free to use
         IFBB8 arena_is_free = true;
-        arena_is_free &= (ptr_arena_current->handle_reservation.offset == 0);
-        arena_is_free &= (ptr_arena_current->start                     == 0);
+        arena_is_free &= (ptr_arena_current->handle_reservation.pointer == NULL);
+        arena_is_free &= (ptr_arena_current->start                      == 0);
         if (arena_is_free) {
             ptr_arena = ptr_arena_current;
             break;
@@ -62,7 +61,7 @@ ifb_memory::reservation_commit_arena(
 
         //commit reservation structure
         const IFBU32 arena_struct_size = ifb_macro_align_size_struct(IFBArena); 
-        arena_handle.offset            = ifb_memory::context_stack_commit_relative(arena_struct_size);
+        arena_handle.pointer           = ifb_memory::context_stack_commit_absolute(arena_struct_size);
         
         //get the pointer
         ptr_arena = ifb_memory::context_get_arena(arena_handle);
@@ -142,8 +141,8 @@ ifb_memory::reservation_get_info(
     const IFBU32 page_size = ptr_reservation->page_size;
     reservation_info_ptr->page_count_total     = ptr_reservation->page_count_total;
     reservation_info_ptr->page_count_committed = ptr_reservation->page_count_committed;
-    reservation_info_ptr->size_total           = ptr_reservation->page_count_total     * page_size;
-    reservation_info_ptr->size_committed       = ptr_reservation->page_count_committed * page_size;
+    reservation_info_ptr->size_total           = (IFBU64)ptr_reservation->page_count_total     * (IFBU64)page_size;
+    reservation_info_ptr->size_committed       = (IFBU64)ptr_reservation->page_count_committed * (IFBU64)page_size;
 
     //we're done
     return(true);

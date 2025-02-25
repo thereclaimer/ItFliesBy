@@ -5,6 +5,6 @@
 #include <ifb-memory.hpp>
 
 #include "ifb-engine-types.hpp"
-#include "ifb-engine-context.hpp"
+#include "ifb-engine-api.hpp"
 
 #endif //IFB_ENGINE_HPP

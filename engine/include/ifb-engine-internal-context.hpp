@@ -77,15 +77,13 @@ namespace ifb_engine {
 
 struct IFBEnginePlatform {
     IFBHNDArena     arena_handle;
-    IFBPlatformApi* ptr_platform_api
-    IFBStack*       ptr_stack;
+    IFBPlatformApi* ptr_platform_api;
 };
 
 namespace ifb_engine {
 
     const IFBB8
-    platform_create(
-              IFBEngineCore*  ptr_core,
+    platform_api_initialize(
         const IFBPlatformApi* ptr_platform_api);
 };
 
