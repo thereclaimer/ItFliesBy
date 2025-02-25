@@ -34,6 +34,7 @@ struct IFBWindow {
     IFBPosition               position;
     IFBDimensions             dimensions;
     IFBWindowPlatformContexts platform_contexts;
+    IFBB32                    visible;
     IFBWindowTitle            title;
 };
 
@@ -50,7 +51,7 @@ struct IFBGraphicsContext {
 namespace ifb_graphics {
     const IFBHNDArena    context_get_arena_handle (IFBVoid);
     const IFBColorFormat context_get_color_format (IFBVoid);
-    IFBWindow*           context_get_window       (IFBVoid);
+    IFBWindow*           context_get_window       (const IFBHNDWindow window_handle);
 };
 
 #endif //IFB_GRAPHICS_INTERNAL_HPP

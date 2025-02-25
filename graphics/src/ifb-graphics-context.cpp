@@ -47,7 +47,7 @@ ifb_graphics::context_commit_window(
     const IFBWindowArgs* ptr_window_args) {
 
     IFBHNDWindow window_handle;
-    window_handle.offset = 0;
+    window_handle.pointer = 0;
 
     //sanity check
     ifb_macro_assert(ptr_window_args);
@@ -110,7 +110,7 @@ ifb_graphics::context_commit_window(
     _ptr_context->window = ptr_window;
 
     //return the handle
-    window_handle.offset = offset;
+    window_handle.pointer = (IFBPtr)ptr_window;
     return(window_handle);
 }
 
@@ -136,10 +136,10 @@ ifb_graphics::context_get_color_format(
 
 IFBWindow*
 ifb_graphics::context_get_window(
-    IFBVoid) {
+    const IFBHNDWindow window_handle) {
 
     ifb_macro_assert(_ptr_context);
-    IFBWindow* ptr_window = _ptr_context->window;
-    ifb_macro_assert(_ptr_context);
+    IFBWindow* ptr_window = (IFBWindow*)window_handle.pointer;
+    ifb_macro_assert(ptr_window);
     return(ptr_window);
 }

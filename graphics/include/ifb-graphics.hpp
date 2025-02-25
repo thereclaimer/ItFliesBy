@@ -9,8 +9,8 @@
 /**********************************************************************************/
 
 //handles
-struct IFBHNDWindow  : IFBHND32 { };
-struct IFBHNDMonitor : IFBHND32 { };
+struct IFBHNDWindow  : IFBHNDPTR { };
+struct IFBHNDMonitor : IFBHND32  { };
 
 struct IFBGraphicsContextInfo {
     IFBHNDArena    arena;

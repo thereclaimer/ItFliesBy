@@ -19,7 +19,6 @@ ifb_engine::graphics_manager_initialize(
         arena_handle,
         IFBColorFormat_RGBA);
 
-
     // allocate window args
     // we keep them in case we want to reset the window
     const IFBU32   size_title       = ifb_macro_array_size(IFBChar, 255); 
@@ -55,8 +54,10 @@ ifb_engine::graphics_manager_initialize(
     ptr_graphics_manager->ptr_core = ptr_core;
     ptr_graphics_manager->arena    = arena_handle;
     ptr_graphics_manager->window   = window_handle;
-    
+
+    //show the window
+    const IFBB8 result = ifb_graphics::window_show(window_handle);
 
     //we're done
-    return(true);
+    return(result);
 }

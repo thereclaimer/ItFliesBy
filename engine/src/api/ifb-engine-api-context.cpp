@@ -106,7 +106,20 @@ ifb_engine_api const IFBB8
 ifb_engine::context_render_frame(
     IFBEngineContextUpdate* ptr_update) {
 
+    //result
+    IFBB8 result = true;
     ifb_macro_assert(ptr_update);
 
-    return(false);
+    //get the singletons
+    IFBEngineSingletons*      ptr_singletons       = ifb_engine::context_get_ptr_singletons();
+    IFBEngineGraphicsManager* ptr_graphics_manager = ifb_engine::singletons_load_graphics_manager(ptr_singletons);
+
+    //start a new window frame
+    result &= ifb_engine::graphics_window_start_new_frame(ptr_graphics_manager);
+    
+    //render the window frame
+    result &= ifb_engine::graphics_window_render_frame(ptr_graphics_manager);
+
+    //we're done
+    return(result);
 }

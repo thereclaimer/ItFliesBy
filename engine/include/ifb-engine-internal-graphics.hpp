@@ -25,8 +25,17 @@ namespace ifb_engine {
     graphics_manager_initialize(
         IFBEngineGraphicsManager* ptr_graphics_manager,
         IFBEngineCore*            ptr_core);
-
 };
 
+
+/**********************************************************************************/
+/* WINDOW                                                                         */
+/**********************************************************************************/
+
+namespace ifb_engine {
+
+    const IFBB8 graphics_window_start_new_frame (IFBEngineGraphicsManager* ptr_graphics_manager);
+    const IFBB8 graphics_window_render_frame    (IFBEngineGraphicsManager* ptr_graphics_manager);
+};
 
 #endif //IFB_ENGINE_INTERNAL_GRAPHICS_HPP
