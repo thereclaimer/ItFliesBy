@@ -92,10 +92,6 @@ ifb_win32::window_frame_start(
 
                 const IFBKeyCode keycode = ifb_win32::user_input_keycode((IFBU32)window_message.wParam);
 
-                // IFBEngineUpdate& update = ifb_win32::context_get_engine_update();
-
-                // ifb_input::keyboard_key_down(update.input.keyboard,keycode);
-
             } break;
 
             //key up
@@ -103,10 +99,6 @@ ifb_win32::window_frame_start(
             case WM_SYSKEYUP: {
 
                 const IFBKeyCode keycode = ifb_win32::user_input_keycode((IFBU32)window_message.wParam);
-
-                // IFBEngineUpdate& update = ifb_win32::context_get_engine_update();
-
-                // ifb_input::keyboard_key_up(update.input.keyboard,keycode);
 
             } break;
 
