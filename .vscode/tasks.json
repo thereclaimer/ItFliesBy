@@ -73,6 +73,19 @@
 			"group": "build",
 		},
 		{
+			"label":   "Build IFB Rendering",
+			"command": "build-ifb-rendering.bat",
+			"args":[
+            ],
+			"options": {
+				"cwd": "${workspaceFolder}/scripts"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build",
+		},
+		{
 			"label":   "Build IFB Libs",
 			"args":[
             ],
@@ -87,6 +100,7 @@
 				"Build IFB Memory",
 				"Build IFB Graphics",
 				"Build IFB Data Structures",
+				"Build IFB Rendering",
 			]
 		},
 	]

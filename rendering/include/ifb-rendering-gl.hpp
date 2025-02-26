@@ -3,6 +3,7 @@
 
 #include "ifb-dependencies.hpp"
 #include "ifb-types.hpp"
+#include "ifb-graphics.hpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -45,9 +46,9 @@ struct IFBGLShaderContext {
 /**********************************************************************************/
 
 struct IFBGLViewport {
-    IFBPosition   position;
-    IFBDimensions dimensions;
-    IFBColor      clear_color;
+    IFBPosition        position;
+    IFBDimensions      dimensions;
+    IFBColorNormalized clear_color;
 };
 
 namespace ifb_gl {
@@ -152,7 +153,7 @@ namespace ifb_gl {
 /* VERTEX                                                                         */
 /**********************************************************************************/
 
-enum IFBGLVertexAttributeType_ {
+enum IFBGLVertexAttributeType : IFBU32 {
     IFBGLVertexAttributeType_S8  = 0,
     IFBGLVertexAttributeType_U8  = 1,
     IFBGLVertexAttributeType_S16 = 2,
