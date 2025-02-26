@@ -2,7 +2,7 @@
 #define IFB_ENGINE_TYPES_HPP
 
 #include <ifb.hpp>
-
+#include <ifb-graphics.hpp>
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -49,9 +49,8 @@ struct IFBEngineSizeAndAlignment {
 };
 
 struct IFBEngineContextUpdate {
-    IFBPosition   window_position;
-    IFBDimensions window_dimensions;
-    IFBInput      user_input;
+    IFBWindowUpdate window_update;
+    IFBInput        user_input;
 };
 
 typedef IFBHNDArena  IFBHNDEngineArena;

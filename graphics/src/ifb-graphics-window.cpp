@@ -53,6 +53,28 @@ ifb_graphics::window_frame_render(
     return(result);
 }
 
+const IFBB8 
+ifb_graphics::window_update(
+    const IFBHNDWindow     window_handle,
+    const IFBWindowUpdate* ptr_window_update) {
+        
+    //get the window
+    IFBWindow* ptr_window = ifb_graphics::context_get_window(window_handle);
+    if (!ptr_window_update) return(false);
+
+    //dimensions
+    IFBDimensions& window_dimensions_ref = ptr_window->dimensions;
+    window_dimensions_ref.width  = ptr_window_update->dimensions.width;
+    window_dimensions_ref.height = ptr_window_update->dimensions.height;
+
+    //position
+    IFBPosition& window_position_ref = ptr_window->position;
+    window_position_ref.x = ptr_window_update->position.x;
+    window_position_ref.y = ptr_window_update->position.y;
+
+    return(true);
+}
+
 /**********************************************************************************/
 /* INTERNAL                                                                       */
 /**********************************************************************************/

@@ -34,8 +34,8 @@ namespace ifb_engine {
 
 namespace ifb_engine {
 
-    const IFBB8 graphics_window_start_new_frame (IFBEngineGraphicsManager* ptr_graphics_manager);
-    const IFBB8 graphics_window_render_frame    (IFBEngineGraphicsManager* ptr_graphics_manager);
+    const IFBB8 graphics_window_frame_start  (IFBEngineGraphicsManager* ptr_graphics_manager, IFBWindowUpdate* ptr_window_update);
+    const IFBB8 graphics_window_frame_render (IFBEngineGraphicsManager* ptr_graphics_manager);
 };
 
 #endif //IFB_ENGINE_INTERNAL_GRAPHICS_HPP

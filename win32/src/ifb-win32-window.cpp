@@ -284,11 +284,22 @@ ifb_win32::window_on_wm_size(
     const LPARAM l_param) {
 
     //get the window
-    IFBWin32Window* window_ptr = ifb_win32::context_get_window();
-    
+    IFBWin32Window*         window_ptr        = ifb_win32::context_get_window();
+    IFBEngineContextUpdate* engine_update_ptr = ifb_win32::context_get_engine_update(); 
+
     //update width and height
-    window_ptr->width  = LOWORD(l_param);
-    window_ptr->height = HIWORD(l_param);
+    const IFBU32 window_width  = LOWORD(l_param); 
+    const IFBU32 window_height = HIWORD(l_param); 
+    
+    window_ptr->width  = window_width;
+    window_ptr->height = window_height;
+
+    //update engine window dimensions
+    if (engine_update_ptr) {
+        IFBDimensions& window_dimensions_ref = engine_update_ptr->window_update.dimensions;
+        window_dimensions_ref.width  = window_width;
+        window_dimensions_ref.height = window_height;
+    }
 
     //we're done
     return(S_OK);   
@@ -300,12 +311,23 @@ ifb_win32::window_on_wm_move(
     const LPARAM l_param) {
 
     //get the window
-    IFBWin32Window* window_ptr = ifb_win32::context_get_window();
+    IFBWin32Window*         window_ptr        = ifb_win32::context_get_window();
+    IFBEngineContextUpdate* engine_update_ptr = ifb_win32::context_get_engine_update(); 
     
-    //update the position
-    window_ptr->position_x = LOWORD(l_param);
-    window_ptr->position_y = HIWORD(l_param);
+    const IFBU32 window_position_x = LOWORD(l_param); 
+    const IFBU32 window_position_y = HIWORD(l_param); 
 
+    //update the position
+    window_ptr->position_x = window_position_x;
+    window_ptr->position_y = window_position_y;
+
+    //update the engine if we have a context
+    if (engine_update_ptr) {
+        IFBPosition& window_position_ref = engine_update_ptr->window_update.position;
+        window_position_ref.x = window_position_x;
+        window_position_ref.y = window_position_y;
+    }
+    
     //we're done
     return(S_OK);
 }

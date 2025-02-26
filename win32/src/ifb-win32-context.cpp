@@ -80,10 +80,9 @@ ifb_win32::context_main_loop(
     IFBB8 running = true;
     while(running) {
 
-        ifb_local IFBEngineContextUpdate* engine_update_ptr = _ptr_context->ptr_engine_update;
-
         //render the next frame
-        running = ifb_engine::context_render_frame(engine_update_ptr);
+        running = ifb_engine::context_render_frame(
+            _ptr_context->ptr_engine_update);
     }
 
     return(true);
