@@ -6,17 +6,17 @@
 
 namespace ifb_memory {
 
-    inline IFBMemoryArena* arena_handle_to_pointer(const IFBMemoryArenaHandle arena_handle);
+    inline IFBMemoryArena* arena_handle_to_pointer(const IFBHNDArena arena_handle);
 };
 
 /**********************************************************************************/
 /* POINTERS                                                                       */
 /**********************************************************************************/
 
-const ifb_ptr
+const IFBPtr
 ifb_memory::arena_get_pointer(
-    const IFBMemoryArenaHandle arena_handle,
-    const ifb_u32              offset) {
+    const IFBHNDArena arena_handle,
+    const IFBU32              offset) {
 
     //get the arena and reservation
     IFBMemoryArena*       arena_ptr       = ifb_memory::arena_handle_to_pointer(arena_handle);
@@ -26,14 +26,14 @@ ifb_memory::arena_get_pointer(
     ifb_macro_assert(arena_ptr->reservation);
 
     //calcualte the addresses
-    const ifb_u32     arena_size        = arena_ptr->size_total;
-    const ifb_address arena_start       = arena_ptr->start;
-    const ifb_address arena_end         = arena_start + arena_size;
-    const ifb_address pointer_offset    = arena_start + offset;  
+    const IFBU32     arena_size        = arena_ptr->size_total;
+    const IFBAddr arena_start       = arena_ptr->start;
+    const IFBAddr arena_end         = arena_start + arena_size;
+    const IFBAddr pointer_offset    = arena_start + offset;  
 
     //cast the pointer if its within the arena
-    const ifb_b8  is_pointer_in_arena = pointer_offset < arena_end; 
-    const ifb_ptr pointer             = is_pointer_in_arena ? (ifb_ptr)pointer_offset : NULL;
+    const IFBB8  is_pointer_in_arena = pointer_offset < arena_end; 
+    const IFBPtr pointer             = is_pointer_in_arena ? (IFBPtr)pointer_offset : NULL;
 
     //we're done
     return(pointer);
@@ -43,9 +43,9 @@ ifb_memory::arena_get_pointer(
 /* INFO                                                                           */
 /**********************************************************************************/
 
-const ifb_b8
+const IFBB8
 ifb_memory::arena_get_info(
-    const IFBMemoryArenaHandle arena_handle,
+    const IFBHNDArena arena_handle,
           IFBMemoryArenaInfo*  arena_info_ptr) {
 
     //get the arena
@@ -71,7 +71,7 @@ ifb_memory::arena_get_info(
 
 IFBMemoryArena*
 ifb_memory::arena_handle_to_pointer(
-    const IFBMemoryArenaHandle arena_handle) {
+    const IFBHNDArena arena_handle) {
 
     //get the pointer
     IFBMemoryArena* arena_ptr = ifb_memory_macro_stack_get_type_pointer(

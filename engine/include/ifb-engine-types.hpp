@@ -2,12 +2,7 @@
 #define IFB_ENGINE_TYPES_HPP
 
 #include <ifb.hpp>
-
-#ifdef IFB_ENGINE_INTERNAL
-    #define ifb_engine_api __declspec(dllexport)
-#else
-    #define ifb_engine_api __declspec(dllimport)
-#endif
+#include <ifb-graphics.hpp>
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -27,7 +22,7 @@ struct IFBEngineMemoryArenaBlock;
 /**********************************************************************************/
 
 struct IFBEngineHandle {
-    ifb_u32 value;
+    IFBU32 value;
 };
 
 struct IFBEngineSingletonHandle : IFBEngineHandle { };
@@ -37,20 +32,28 @@ struct IFBEngineSingletonHandle : IFBEngineHandle { };
 /**********************************************************************************/
 
 struct IFBEngineConfig {
-    ifb_u16 memory_stack_size_kb;
-    ifb_u16 memory_reservation_size_gb;
+    IFBU16 memory_stack_size_kb;
+    IFBU16 memory_reservation_size_gb;
 };
 
 struct IFBEngineMemoryInfo {
-    ifb_u64 reservation_size_total;
-    ifb_u64 reservation_size_used;
-    ifb_u32 stack_size_total;
-    ifb_u32 stack_size_used;
+    IFBU64 reservation_size_total;
+    IFBU64 reservation_size_used;
+    IFBU32 stack_size_total;
+    IFBU32 stack_size_used;
 };  
 
 struct IFBEngineSizeAndAlignment {
-    ifb_u32 size;
-    ifb_u32 alignment;
+    IFBU32 size;
+    IFBU32 alignment;
 };
+
+struct IFBEngineContextUpdate {
+    IFBWindowUpdate window_update;
+    IFBInput        user_input;
+};
+
+typedef IFBHNDArena  IFBHNDEngineArena;
+typedef IFBArenaInfo IFBEngineArenaInfo;
 
 #endif //IFB_ENGINE_TYPES_HPP

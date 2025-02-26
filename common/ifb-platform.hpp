@@ -3,193 +3,237 @@
 
 #include "ifb-types.hpp"
 #include "ifb-scopes.hpp"
-#include "ifb-graphics.hpp"
 
 /**********************************************************************************/
 /* SYSTEM                                                                         */
 /**********************************************************************************/
 
-typedef const ifb_u32
-(*funcptr_ifb_platform_system_page_size)(
-    ifb_void);
+typedef const IFBU32
+(*ifb_platform_funcptr_system_page_size)(
+    IFBVoid);
 
-typedef const ifb_u32
-(*funcptr_ifb_platform_system_allocation_granularity)(
-    ifb_void);
+typedef const IFBU32
+(*ifb_platform_funcptr_system_allocation_granularity)(
+    IFBVoid);
 
-typedef const ifb_timems
-(*funcptr_ifb_platform_system_time_ms)(
-    ifb_void);
+typedef const IFBTimems
+(*ifb_platform_funcptr_system_time_ms)(
+    IFBVoid);
 
-typedef ifb_void
-(*funcptr_ifb_platform_system_sleep)(
-    const ifb_u32 ms);
+typedef IFBVoid
+(*ifb_platform_funcptr_system_sleep)(
+    const IFBU32 ms);
 
 struct IFBPlatformSystemApi {
-    funcptr_ifb_platform_system_page_size              page_size;
-    funcptr_ifb_platform_system_allocation_granularity allocation_granularity;
-    funcptr_ifb_platform_system_time_ms                time_ms;
-    funcptr_ifb_platform_system_sleep                  sleep;
+    ifb_platform_funcptr_system_page_size              page_size;
+    ifb_platform_funcptr_system_allocation_granularity allocation_granularity;
+    ifb_platform_funcptr_system_time_ms                time_ms;
+    ifb_platform_funcptr_system_sleep                  sleep;
+};
+
+namespace ifb_platform {
+
+    extern ifb_platform_funcptr_system_page_size              system_page_size;
+    extern ifb_platform_funcptr_system_allocation_granularity system_allocation_granularity;
+    extern ifb_platform_funcptr_system_time_ms                system_time_ms;
+    extern ifb_platform_funcptr_system_sleep                  system_sleep;
 };
 
 /**********************************************************************************/
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
-typedef const ifb_ptr
-(*funcptr_ifb_platform_memory_reserve)(
-    const ifb_u32 reservation_size);
+typedef const IFBPtr
+(*ifb_platform_funcptr_memory_reserve)(
+    const IFBU64 reservation_size);
 
-typedef const ifb_b8
-(*funcptr_ifb_platform_memory_release)(
-    const ifb_ptr reservation_start,
-    const ifb_u32 reservation_size);
+typedef const IFBB8
+(*ifb_platform_funcptr_memory_release)(
+    const IFBPtr reservation_start,
+    const IFBU64 reservation_size);
 
-typedef const ifb_ptr
-(*funcptr_ifb_platform_memory_commit)(
-    const ifb_ptr commit_start,
-    const ifb_u32 commit_size);
+typedef const IFBPtr
+(*ifb_platform_funcptr_memory_commit)(
+    const IFBPtr commit_start,
+    const IFBU64 commit_size);
 
-typedef const ifb_b8
-(*funcptr_ifb_platform_memory_decommit)(
-    const ifb_ptr commit_start,
-    const ifb_u32 commit_size);
+typedef const IFBB8
+(*ifb_platform_funcptr_memory_decommit)(
+    const IFBPtr commit_start,
+    const IFBU64 commit_size);
 
 struct IFBPlatformMemoryApi {
-    funcptr_ifb_platform_memory_reserve  reserve;
-    funcptr_ifb_platform_memory_release  release;
-    funcptr_ifb_platform_memory_commit   commit;
-    funcptr_ifb_platform_memory_decommit decommit;
+    ifb_platform_funcptr_memory_reserve  reserve;
+    ifb_platform_funcptr_memory_release  release;
+    ifb_platform_funcptr_memory_commit   commit;
+    ifb_platform_funcptr_memory_decommit decommit;
+};
+
+namespace ifb_platform {
+
+    extern ifb_platform_funcptr_memory_reserve  memory_reserve;
+    extern ifb_platform_funcptr_memory_release  memory_release;
+    extern ifb_platform_funcptr_memory_commit   memory_commit;
+    extern ifb_platform_funcptr_memory_decommit memory_decommit;
 };
 
 /**********************************************************************************/
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
-typedef const ifb_b8
-(*funcptr_ifb_platform_window_create) (
-    const ifb_cstr title,
-    const ifb_u32  width,
-    const ifb_u32  height,
-    const ifb_u32  position_x,
-    const ifb_u32  position_y);
+typedef IFBPtr IFBGLContext;
 
-typedef const ifb_b8
-(*funcptr_ifb_platform_window_opengl_init) (
-    ifb_void);
+typedef const IFBB8
+(*ifb_platform_funcptr_window_create) (
+    const IFBCStr title,
+    const IFBU32  width,
+    const IFBU32  height,
+    const IFBU32  position_x,
+    const IFBU32  position_y);
+
+typedef IFBGLContext
+(*ifb_platform_funcptr_window_opengl_init) (
+    IFBVoid);
 
 typedef ImGuiContext*
-(*funcptr_ifb_platform_window_imgui_init) (
-    ifb_void);
+(*ifb_platform_funcptr_window_imgui_init) (
+    IFBVoid);
 
-typedef const ifb_b8
-(*funcptr_ifb_platform_window_show)(
-    ifb_void);
+typedef const IFBB8
+(*ifb_platform_funcptr_window_show)(
+    IFBVoid);
 
-typedef const ifb_b8
-(*funcptr_ifb_platform_window_destroy)(
-    ifb_void);
+typedef const IFBB8
+(*ifb_platform_funcptr_window_destroy)(
+    IFBVoid);
 
-typedef const ifb_b8
-(*funcptr_ifb_platform_window_frame_start)(
-    ifb_void);
+typedef const IFBB8
+(*ifb_platform_funcptr_window_frame_start)(
+    IFBVoid);
 
-typedef const ifb_b8
-(*funcptr_ifb_platform_window_frame_render)(
-    ifb_void);
+typedef const IFBB8
+(*ifb_platform_funcptr_window_frame_render)(
+    IFBVoid);
 
 struct IFBPlatformWindowApi {
-    funcptr_ifb_platform_window_create       create;
-    funcptr_ifb_platform_window_destroy      destroy;
-    funcptr_ifb_platform_window_frame_start  frame_start;
-    funcptr_ifb_platform_window_frame_render frame_render;
-    funcptr_ifb_platform_window_show         show;
-    funcptr_ifb_platform_window_opengl_init  opengl_init;
-    funcptr_ifb_platform_window_imgui_init   imgui_init;
+    ifb_platform_funcptr_window_create       create;
+    ifb_platform_funcptr_window_destroy      destroy;
+    ifb_platform_funcptr_window_frame_start  frame_start;
+    ifb_platform_funcptr_window_frame_render frame_render;
+    ifb_platform_funcptr_window_show         show;
+    ifb_platform_funcptr_window_opengl_init  opengl_init;
+    ifb_platform_funcptr_window_imgui_init   imgui_init;
+};
+
+namespace ifb_platform {
+
+    extern ifb_platform_funcptr_window_create       window_create;
+    extern ifb_platform_funcptr_window_destroy      window_destroy;
+    extern ifb_platform_funcptr_window_frame_start  window_frame_start;
+    extern ifb_platform_funcptr_window_frame_render window_frame_render;
+    extern ifb_platform_funcptr_window_show         window_show;
+    extern ifb_platform_funcptr_window_opengl_init  window_opengl_init;
+    extern ifb_platform_funcptr_window_imgui_init   window_imgui_init;
 };
 
 /**********************************************************************************/
 /* MONITOR                                                                        */
 /**********************************************************************************/
 
-typedef const ifb_u32
-(*funcptr_ifb_platform_monitor_count) (
-    ifb_void);
+typedef const IFBU32
+(*ifb_platform_funcptr_monitor_count) (
+    IFBVoid);
 
-typedef ifb_void
-(*funcptr_ifb_platform_monitor_info)(
-    const ifb_u32     monitor_array_count,
-          IFBMonitor* monitor_array_ptr);
+typedef IFBVoid
+(*ifb_platform_funcptr_monitor_info)(
+    const IFBU32  monitor_array_count,
+          IFBPtr* monitor_array_ptr);
 
 struct IFBPlatformMonitorApi {
-    funcptr_ifb_platform_monitor_count count;
-    funcptr_ifb_platform_monitor_info  info;
+    ifb_platform_funcptr_monitor_count count;
+    ifb_platform_funcptr_monitor_info  info;
+};
+
+namespace ifb_platform {
+
+    extern ifb_platform_funcptr_monitor_count monitor_count;
+    extern ifb_platform_funcptr_monitor_info  monitor_info;
 };
 
 /**********************************************************************************/
 /* FILES                                                                          */                            
 /**********************************************************************************/
 
-typedef const ifb_b8
-(*funcptr_ifb_platform_file_open_read_only) (
-    const ifb_cstr    in_file_path,
-          ifb_index& out_file_index_ref);
+typedef const IFBB8
+(*ifb_platform_funcptr_file_open_read_only) (
+    const IFBCStr    in_file_path,
+          IFBIndex& out_file_index_ref);
 
-typedef const ifb_b8
-(*funcptr_ifb_platform_file_open_read_write) (
-    const ifb_cstr    in_file_path,
-          ifb_index& out_file_index_ref);
+typedef const IFBB8
+(*ifb_platform_funcptr_file_open_read_write) (
+    const IFBCStr    in_file_path,
+          IFBIndex& out_file_index_ref);
 
-typedef const ifb_b8
-(*funcptr_ifb_platform_file_open_read_write) (
-    const ifb_cstr    in_file_path,
-          ifb_index& out_file_index_ref);
+typedef const IFBB8
+(*ifb_platform_funcptr_file_open_read_write) (
+    const IFBCStr    in_file_path,
+          IFBIndex& out_file_index_ref);
 
-typedef const ifb_b8
-(*funcptr_ifb_platform_file_close) (
-    const ifb_index file_index);
+typedef const IFBB8
+(*ifb_platform_funcptr_file_close) (
+    const IFBIndex file_index);
 
-typedef const ifb_size
-(*funcptr_ifb_platform_file_size) (
-    const ifb_index file_index);
+typedef const IFBSize
+(*ifb_platform_funcptr_file_size) (
+    const IFBIndex file_index);
 
-typedef const ifb_b8
-(*funcptr_ifb_platform_file_read)(
-    const ifb_index  in_file_index,
-    const ifb_size   in_file_read_start,
-    const ifb_size   in_file_read_size,
-          ifb_byte* out_file_read_buffer);
+typedef const IFBB8
+(*ifb_platform_funcptr_file_read)(
+    const IFBIndex  in_file_index,
+    const IFBSize   in_file_read_start,
+    const IFBSize   in_file_read_size,
+          IFBByte* out_file_read_buffer);
 
-typedef const ifb_b8
-(*funcptr_ifb_platform_file_write)(
-    const ifb_index file_index,
-    const ifb_size  file_write_start,
-    const ifb_size  file_write_size,
-          ifb_byte* file_write_buffer);
+typedef const IFBB8
+(*ifb_platform_funcptr_file_write)(
+    const IFBIndex file_index,
+    const IFBSize  file_write_start,
+    const IFBSize  file_write_size,
+          IFBByte* file_write_buffer);
 
 struct IFBPlatformFileApi {
-    funcptr_ifb_platform_file_open_read_only  open_read_only;
-    funcptr_ifb_platform_file_open_read_write open_read_write;
-    funcptr_ifb_platform_file_close           close;
-    funcptr_ifb_platform_file_size            size;
-    funcptr_ifb_platform_file_read            read;
-    funcptr_ifb_platform_file_write           write;
+    ifb_platform_funcptr_file_open_read_only  open_read_only;
+    ifb_platform_funcptr_file_open_read_write open_read_write;
+    ifb_platform_funcptr_file_close           close;
+    ifb_platform_funcptr_file_size            size;
+    ifb_platform_funcptr_file_read            read;
+    ifb_platform_funcptr_file_write           write;
+};
+
+namespace ifb_platform {
+
+    extern ifb_platform_funcptr_file_open_read_only  open_read_only;
+    extern ifb_platform_funcptr_file_open_read_write open_read_write;
+    extern ifb_platform_funcptr_file_close           close;
+    extern ifb_platform_funcptr_file_size            size;
+    extern ifb_platform_funcptr_file_read            read;
+    extern ifb_platform_funcptr_file_write           write;
 };
 
 /**********************************************************************************/
 /* FILE DIALOG                                                                    */
 /**********************************************************************************/
 
-typedef const ifb_b8
-(*funcptr_ifb_platform_file_dialog_select_file) (
-    const ifb_cstr  in_file_dialog_starting_directory,
-    const ifb_size  in_file_type_count,
-    const ifb_cstr* in_file_type_name_cstr_ptr,
-    const ifb_cstr* in_file_type_spec_cstr_ptr,
-          ifb_cstr out_file_selection_buffer);
+typedef const IFBB8
+(*ifb_platform_funcptr_file_dialog_select_file) (
+    const IFBCStr  in_file_dialog_starting_directory,
+    const IFBSize  in_file_type_count,
+    const IFBCStr* in_file_type_name_cstr_ptr,
+    const IFBCStr* in_file_type_spec_cstr_ptr,
+          IFBCStr out_file_selection_buffer);
 
 struct IFBPlatformFileDialogApi {
-    funcptr_ifb_platform_file_dialog_select_file select_file;
+    ifb_platform_funcptr_file_dialog_select_file select_file;
 };
 
 /**********************************************************************************/

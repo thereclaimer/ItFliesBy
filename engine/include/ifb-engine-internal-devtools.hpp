@@ -4,7 +4,7 @@
 #include "ifb-engine.hpp"
 
 struct IFBEngineDevTools {
-    ifb_u32 x;
+    IFBU32 x;
 };
 
 #endif //IFB_ENGINE_INTERNAL_DEVTOOLS_HPP

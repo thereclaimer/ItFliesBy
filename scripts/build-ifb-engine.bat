@@ -62,12 +62,13 @@ if not exist %dir_vcpkg% call vcpkg install
 
 @set cl_includes=   /I engine\include          ^
                     /I engine\src              ^
-                    /I engine\src\config       ^
+                    /I engine\src\api          ^
                     /I engine\src\context      ^
                     /I engine\src\core         ^
-                    /I engine\src\singletons   ^
+                    /I engine\src\graphics     ^
                     /I memory\include          ^
                     /I data-structures\include ^
+                    /I graphics\include        ^
                     /I common                  ^
                     /I external                ^
                     /I math                    ^
@@ -86,7 +87,7 @@ if not exist %dir_vcpkg% call vcpkg install
                     /LIBPATH:build\debug\lib                 ^
                     /LIBPATH:build\debug\obj
 
-@set link_libs=     ItFliesBy.Memory.lib
+@set link_libs=     ItFliesBy.Memory.lib ItFliesBy.Graphics.lib
 
 @set link_objs=     %build_file_obj%
 

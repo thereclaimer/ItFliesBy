@@ -15,6 +15,7 @@ pushd ..
 
 ::include paths 
 @set path_data_structures_include=  data-structures\include
+@set path_memory_include=           memory\include
 @set path_common=                   common
 @set path_external=                 external
 
@@ -35,14 +36,15 @@ if not exist %path_build%\lib mkdir %path_build%\lib
 :: COMPILER ARGUMENTS
 ::----------------------------------------------------------------
 
-@set cl_flags=      /Zi ^
-                    /MD ^
-                    /c
+@set cl_flags=      /c    ^
+                    /MD   ^
+                    /Z7   ^
+                    /EHsc
 
-@set cl_output=     /Fo:%path_build%\obj\ItFliesBy.DataStructures.obj ^
-                    /Fd:%path_build%\bin\ItFliesBy.DataStructures.pdb
+@set cl_output=     /Fo:%path_build%\obj\ItFliesBy.DataStructures.obj
 
 @set cl_includes=   /I %path_data_structures_include%  ^
+                    /I %path_memory_include%           ^
                     /I %path_common%                   ^
                     /I %path_external%                 ^
                     /I %path_vcpkg_include%

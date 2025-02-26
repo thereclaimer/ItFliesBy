@@ -1,5 +1,4 @@
-#include "ifb-engine-internal-singletons.hpp"
-#include "ifb-engine-internal-graphics.hpp"
+#include "ifb-engine-internal-context.hpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -7,25 +6,33 @@
 
 namespace ifb_engine {
 
-    const ifb_byte* 
+    const IFBByte* 
     singletons_buffer_get_pointer(
         const IFBEngineSingletonBuffer& singleton_buffer,
-        const ifb_u16                   singleton_handle);
+        const IFBHNDSingleton           singleton_handle);
 };
 
 /**********************************************************************************/
 /* COMMIT                                                                         */
 /**********************************************************************************/
 
-inline ifb_void
-ifb_engine::singletons_commit_all(
-    IFBEngineSingletons* ptr_singletons) {
+inline IFBEngineSingletons*
+ifb_engine::singletons_create(
+    IFBEngineCore* ptr_core) {
 
     //sanity check
-    ifb_macro_assert(ptr_singletons);
+    ifb_macro_assert(ptr_core);
     
+    //commmit the singletons structure
+    IFBEngineSingletons* ptr_singletons = (IFBEngineSingletons*)ifb_engine::core_memory_commit_bytes_absolute(
+        ptr_core,
+        sizeof(IFBEngineSingletons),
+        alignof(IFBEngineSingletons));
+
+    ifb_macro_assert(ptr_singletons);
+
     //calculate all the singleton sizes
-    const ifb_u32 size_array[] = {
+    const IFBU32 size_array[] = {
         ifb_macro_align_size_struct(IFBEngineConfig),
         ifb_macro_align_size_struct(IFBInput),
         ifb_macro_align_size_struct(IFBEngineDevTools),
@@ -33,23 +40,23 @@ ifb_engine::singletons_commit_all(
     };
     
     //calculate the singleton count
-    const ifb_u32 singletons_count = ifb_macro_array_count(ifb_u32,size_array); 
+    const IFBU32 singletons_count = ifb_macro_array_count(IFBU32,size_array); 
 
     //cast the singleton handles to an array
-    ifb_u16* singlegon_handles_array = (ifb_u16*)&ptr_singletons->handles;
-    ifb_u16  buffer_position_u16 = 0;
+    IFBU16* singlegon_handles_array = (IFBU16*)&ptr_singletons->handles;
+    IFBU16  buffer_position_u16 = 0;
 
     //calculate all the handles
     for (
-        ifb_u32 singleton_index = 0;
+        IFBU32 singleton_index = 0;
         singleton_index < singletons_count;
         ++singleton_index) {
 
         //get the current singleton size
-        const ifb_u32 singleton_size_u32 = size_array[singleton_index];
+        const IFBU32 singleton_size_u32 = size_array[singleton_index];
 
         //calculate the new buffer position
-        const ifb_u32 new_buffer_position_u32 = 
+        const IFBU32 new_buffer_position_u32 = 
             singleton_size_u32 + buffer_position_u16;
     
         //sanity check
@@ -58,8 +65,10 @@ ifb_engine::singletons_commit_all(
 
         //set the handle of the current singleton to the buffer position
         singlegon_handles_array[singleton_index] = buffer_position_u16;
-        buffer_position_u16                      = (ifb_u16)new_buffer_position_u32;
+        buffer_position_u16                      = (IFBU16)new_buffer_position_u32;
     }
+
+    return(ptr_singletons);
 }
 
 /**********************************************************************************/
@@ -135,11 +144,11 @@ ifb_engine::singletons_load_graphics_manager(
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-inline const ifb_byte* 
+inline const IFBByte* 
 ifb_engine::singletons_buffer_get_pointer(
     const IFBEngineSingletonBuffer& singleton_buffer,
-    const ifb_u16                   singleton_handle) {
+    const IFBHNDSingleton           singleton_handle) {
 
-    const ifb_byte* pointer = &singleton_buffer.memory[singleton_handle];
+    const IFBByte* pointer = &singleton_buffer.memory[singleton_handle.offset];
     return(pointer);
 }
