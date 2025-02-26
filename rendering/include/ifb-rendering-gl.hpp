@@ -53,10 +53,13 @@ struct IFBGLViewport {
 
 namespace ifb_gl {
 
-    IFBVoid viewport_initialize                  (IFBGLViewport* viewport);
-    IFBVoid viewport_clear                       (IFBGLViewport* viewport);
-    IFBVoid viewport_set_clear_color             (IFBGLViewport* viewport);
-    IFBVoid viewport_set_position_and_dimensions (IFBGLViewport* viewport);
+    IFBGLViewport* viewport_commit_to_arena_absolute    (const IFBHNDArena arena_handle);
+    const IFBU32   viewport_commit_to_arena_relative    (const IFBHNDArena arena_handle);
+    
+    IFBVoid        viewport_initialize                  (IFBGLViewport* viewport);
+    IFBVoid        viewport_clear                       (IFBGLViewport* viewport);
+    IFBVoid        viewport_set_clear_color             (IFBGLViewport* viewport);
+    IFBVoid        viewport_set_position_and_dimensions (IFBGLViewport* viewport);
 };
 
 /**********************************************************************************/

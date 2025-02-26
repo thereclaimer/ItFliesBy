@@ -2,6 +2,25 @@
 
 #include "ifb-rendering-gl.hpp"
 
+inline IFBGLViewport*
+ifb_gl::viewport_commit_to_arena_absolute(
+    const IFBHNDArena arena_handle) {
+    
+    const IFBU32   viewport_size = ifb_macro_align_size_struct(IFBGLViewport);
+    IFBGLViewport* viewport_ptr  = ifb_memory::arena_commit_bytes_absolute(arena_handle,viewport_size);
+    return(viewport_ptr);
+}
+
+inline const IFBU32
+ifb_gl::viewport_commit_to_arena_relative(
+    const IFBHNDArena arena_handle) {
+
+    const IFBU32 viewport_size   = ifb_macro_align_size_struct(IFBGLViewport);
+    const IFBU32 viewport_offset = ifb_memory::arena_commit_bytes_relative(arena_handle,viewport_size);
+    
+    return(viewport_offset);
+}
+
 inline IFBVoid 
 ifb_gl::viewport_initialize(
     IFBGLViewport* viewport) {
