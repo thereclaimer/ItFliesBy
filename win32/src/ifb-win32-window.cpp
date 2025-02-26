@@ -334,6 +334,8 @@ ifb_win32::window_on_wm_quit(
     const WPARAM w_param, 
     const LPARAM l_param) {
 
+    //TODO(SAM): this event isn't being received for some reason
+
     //get the window
     IFBWin32Window*         window_ptr        = ifb_win32::context_get_window();
     IFBEngineContextUpdate* engine_update_ptr = ifb_win32::context_get_engine_update(); 
