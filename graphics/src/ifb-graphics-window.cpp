@@ -3,10 +3,6 @@
 #include "ifb-graphics-internal.hpp"
 
 /**********************************************************************************/
-/* FORWARD DECLARATIONS                                                           */
-/**********************************************************************************/
-
-/**********************************************************************************/
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
@@ -53,6 +49,16 @@ ifb_graphics::window_frame_render(
     return(result);
 }
 
+const IFBB8
+ifb_graphics::window_quit_received(
+    const IFBHNDWindow window_handle) {
+
+    //get the window
+    IFBWindow* ptr_window = ifb_graphics::context_get_window(window_handle);
+
+    return(ptr_window->quit_received);
+}
+
 const IFBB8 
 ifb_graphics::window_update(
     const IFBHNDWindow     window_handle,
@@ -72,9 +78,9 @@ ifb_graphics::window_update(
     window_position_ref.x = ptr_window_update->position.x;
     window_position_ref.y = ptr_window_update->position.y;
 
+    //set quit status
+    ptr_window->quit_received = ptr_window_update->quit_received;
+
     return(true);
 }
 
-/**********************************************************************************/
-/* INTERNAL                                                                       */
-/**********************************************************************************/

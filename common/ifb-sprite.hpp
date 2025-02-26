@@ -36,7 +36,6 @@ struct IFBSpriteAtlas : IFBIDSpriteAtlas {
 struct IFBSprite : IFBIDSprite {
     IFBIDTag           tag_id;
     IFBIDTransform     transform_id;
-    IFBColorTableIndex color_table_index;
 };
 
 #endif //IFB_SPRITE_HPP

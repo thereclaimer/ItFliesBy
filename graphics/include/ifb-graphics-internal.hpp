@@ -35,6 +35,7 @@ struct IFBWindow {
     IFBDimensions             dimensions;
     IFBWindowPlatformContexts platform_contexts;
     IFBB32                    visible;
+    IFBB32                    quit_received;
     IFBWindowTitle            title;
 };
 

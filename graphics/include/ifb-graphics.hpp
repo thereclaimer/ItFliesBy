@@ -62,14 +62,17 @@ namespace ifb_graphics {
 struct IFBWindowUpdate {
     IFBDimensions dimensions;
     IFBPosition   position;
+    IFBB32        quit_received;
 };
 
 namespace ifb_graphics {
 
-    const IFBB8 window_show         (const IFBHNDWindow window_handle);
-    const IFBB8 window_frame_start  (const IFBHNDWindow window_handle);
-    const IFBB8 window_frame_render (const IFBHNDWindow window_handle);
-    const IFBB8 window_update       (const IFBHNDWindow window_handle, const IFBWindowUpdate* window_update_ptr);
+    const IFBB8 window_show          (const IFBHNDWindow window_handle);
+    const IFBB8 window_frame_start   (const IFBHNDWindow window_handle);
+    const IFBB8 window_frame_render  (const IFBHNDWindow window_handle);
+    const IFBB8 window_quit_received (const IFBHNDWindow window_handle);
+    
+    const IFBB8 window_update        (const IFBHNDWindow window_handle, const IFBWindowUpdate* window_update_ptr);
 };
 
 /**********************************************************************************/

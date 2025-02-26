@@ -115,10 +115,13 @@ ifb_engine::context_render_frame(
     IFBEngineGraphicsManager* ptr_graphics_manager = ifb_engine::singletons_load_graphics_manager(ptr_singletons);
 
     //start a new window frame
-    result &= ifb_engine::graphics_window_frame_start(ptr_graphics_manager,&ptr_update->window_update);
+    result &= ifb_engine::graphics_manager_frame_start(ptr_graphics_manager,&ptr_update->window_update);
     
     //render the window frame
-    result &= ifb_engine::graphics_window_frame_render(ptr_graphics_manager);
+    result &= ifb_engine::graphics_manager_frame_render(ptr_graphics_manager);
+
+    //check for any quit events
+    result &= !ptr_graphics_manager->quit_received;
 
     //we're done
     return(result);

@@ -16,6 +16,7 @@ struct IFBEngineGraphicsManager {
     IFBWindowArgs* ptr_default_window_args;
     IFBHNDArena    arena;
     IFBHNDWindow   window;
+    IFBB32         quit_received;
 };
 
 namespace ifb_engine {
@@ -25,17 +26,10 @@ namespace ifb_engine {
     graphics_manager_initialize(
         IFBEngineGraphicsManager* ptr_graphics_manager,
         IFBEngineCore*            ptr_core);
-};
 
-
-/**********************************************************************************/
-/* WINDOW                                                                         */
-/**********************************************************************************/
-
-namespace ifb_engine {
-
-    const IFBB8 graphics_window_frame_start  (IFBEngineGraphicsManager* ptr_graphics_manager, IFBWindowUpdate* ptr_window_update);
-    const IFBB8 graphics_window_frame_render (IFBEngineGraphicsManager* ptr_graphics_manager);
+    //frame start/render
+    const IFBB8 graphics_manager_frame_start   (IFBEngineGraphicsManager* ptr_graphics_manager, IFBWindowUpdate* ptr_window_update);
+    const IFBB8 graphics_manager_frame_render  (IFBEngineGraphicsManager* ptr_graphics_manager);
 };
 
 #endif //IFB_ENGINE_INTERNAL_GRAPHICS_HPP

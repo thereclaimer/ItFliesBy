@@ -63,9 +63,6 @@ ifb_win32::window_destroy(
 
     PostQuitMessage(0);
 
-    // IFBEngineUpdate& update_ref = ifb_win32::context_get_engine_update();
-    // ifb_engine::context_update_window_flags_set_close(update_ref);
-
     return(true);
 }
 
@@ -338,14 +335,12 @@ ifb_win32::window_on_wm_quit(
     const LPARAM l_param) {
 
     //get the window
-    IFBWin32Window* window_ptr = ifb_win32::context_get_window();
-    
-    //set the close flag
-    // IFBEngineUpdate& update_ref = ifb_win32::context_get_engine_update();
-    // ifb_engine::context_update_window_flags_set_close(update_ref);
+    IFBWin32Window*         window_ptr        = ifb_win32::context_get_window();
+    IFBEngineContextUpdate* engine_update_ptr = ifb_win32::context_get_engine_update(); 
 
     //set quit received
-    window_ptr->quit_received = true;
+    window_ptr->quit_received                      = true;
+    engine_update_ptr->window_update.quit_received = true;
 
     //we're done
     return(S_OK);
@@ -356,11 +351,16 @@ ifb_win32::window_on_wm_destroy(
     const WPARAM w_param, 
     const LPARAM l_param) {
 
+    //get the window
+    IFBWin32Window*         window_ptr        = ifb_win32::context_get_window();
+    IFBEngineContextUpdate* engine_update_ptr = ifb_win32::context_get_engine_update(); 
+
+    //set quit received
+    window_ptr->quit_received                      = true;
+    engine_update_ptr->window_update.quit_received = true;
+
     //post the quit message
     PostQuitMessage(0);
-
-    // IFBEngineUpdate& update_ref = ifb_win32::context_get_engine_update();
-    // ifb_engine::context_update_window_flags_set_close(update_ref);
 
     //we're done
     return(S_OK);
