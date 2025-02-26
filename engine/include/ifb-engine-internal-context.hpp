@@ -8,6 +8,7 @@
 #include "ifb-engine-internal-core.hpp"
 #include "ifb-engine-internal-devtools.hpp"
 #include "ifb-engine-internal-graphics.hpp"
+#include "ifb-engine-internal-renderer.hpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -69,6 +70,7 @@ namespace ifb_engine {
     IFBInput*                 singletons_load_input            (const IFBEngineSingletons* ptr_singletons);
     IFBEngineDevTools*        singletons_load_devtools         (const IFBEngineSingletons* ptr_singletons);
     IFBEngineGraphicsManager* singletons_load_graphics_manager (const IFBEngineSingletons* ptr_singletons);
+    IFBEngineRenderer*        singletons_load_renderer         (const IFBEngineSingletons* ptr_singletons);
 };
 
 /**********************************************************************************/

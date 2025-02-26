@@ -48,8 +48,14 @@ struct IFBEngineSizeAndAlignment {
     IFBU32 alignment;
 };
 
+struct IFBEngineContextUpdateWindow {
+    IFBDimensions dimensions;
+    IFBPosition   position;
+    IFBB32        quit_received;
+};
+
 struct IFBEngineContextUpdate {
-    IFBWindowUpdate window_update;
+    IFBEngineContextUpdateWindow window;
     IFBInput        user_input;
 };
 

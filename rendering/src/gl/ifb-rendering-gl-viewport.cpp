@@ -2,16 +2,16 @@
 
 #include "ifb-rendering-gl.hpp"
 
-inline IFBGLViewport*
+IFBGLViewport*
 ifb_gl::viewport_commit_to_arena_absolute(
     const IFBHNDArena arena_handle) {
     
     const IFBU32   viewport_size = ifb_macro_align_size_struct(IFBGLViewport);
-    IFBGLViewport* viewport_ptr  = ifb_memory::arena_commit_bytes_absolute(arena_handle,viewport_size);
+    IFBGLViewport* viewport_ptr  = (IFBGLViewport*)ifb_memory::arena_commit_bytes_absolute(arena_handle,viewport_size);
     return(viewport_ptr);
 }
 
-inline const IFBU32
+const IFBU32
 ifb_gl::viewport_commit_to_arena_relative(
     const IFBHNDArena arena_handle) {
 
@@ -21,7 +21,7 @@ ifb_gl::viewport_commit_to_arena_relative(
     return(viewport_offset);
 }
 
-inline IFBVoid 
+IFBVoid 
 ifb_gl::viewport_initialize(
     IFBGLViewport* viewport) {
 
@@ -40,14 +40,14 @@ ifb_gl::viewport_initialize(
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-inline IFBVoid 
+IFBVoid 
 ifb_gl::viewport_clear(
     IFBGLViewport* viewport) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-inline IFBVoid 
+IFBVoid 
 ifb_gl::viewport_set_clear_color(
     IFBGLViewport* viewport) {
 
@@ -59,7 +59,7 @@ ifb_gl::viewport_set_clear_color(
         viewport->clear_color.alpha);
 }
 
-inline IFBVoid 
+IFBVoid 
 ifb_gl::viewport_set_position_and_dimensions(
     IFBGLViewport* viewport) {
 

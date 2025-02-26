@@ -83,6 +83,23 @@ ifb_engine::context_startup(
     IFBEngineGraphicsManager* ptr_graphics_manager = ifb_engine::singletons_load_graphics_manager(ptr_singletons);
     result &= ifb_engine::graphics_manager_initialize(ptr_graphics_manager,ptr_core);
 
+    //create the clear color
+    IFBColorHex clear_color_hex;
+    clear_color_hex.red   =  80;
+    clear_color_hex.blue  =  80;
+    clear_color_hex.green =  80;
+    clear_color_hex.alpha = 255;
+
+    IFBColorNormalized clear_color_normalized;
+    ifb_engine::graphics_get_color_normalized(
+        &clear_color_hex,
+        &clear_color_normalized);
+
+    // IFBEngineRenderer* ptr_renderer = ifb_engine::renderer_initialize(
+    //     ptr_renderer,
+    //     ptr_core,
+    // )
+
     //allocate an update structure
     const IFBU32 update_size = ifb_macro_align_size_struct(IFBEngineContextUpdate);
     IFBEngineContextUpdate* update_ptr = (IFBEngineContextUpdate*)ifb_engine::core_memory_commit_bytes_absolute(ptr_core,update_size);

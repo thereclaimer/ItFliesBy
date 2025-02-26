@@ -10,29 +10,14 @@ ifb_engine::graphics_manager_initialize(
     //sanity check
     ifb_macro_assert(ptr_graphics_manager);
     ifb_macro_assert(ptr_core);
-
-    //commit arena
-    const IFBHNDArena arena_handle = ifb_engine::core_memory_commit_arena(ptr_core);
     
-    //initialize a graphics context
-    const IFBB8 context_created = ifb_graphics::context_create(
-        arena_handle,
-        IFBColorFormat_RGBA);
+    //commit memory
+    ptr_graphics_manager->ptr_memory = ifb_engine::graphics_memory_commit(ptr_core);
+    ifb_macro_assert(ptr_graphics_manager->ptr_memory);
 
     // allocate window args
     // we keep them in case we want to reset the window
-    const IFBU32   size_title       = ifb_macro_array_size(IFBChar, 255); 
-    const IFBU32   size_window_args = ifb_macro_align_size_struct(IFBWindowArgs); 
-    const IFBChar* title_str        = "It Flies By (DEBUG)"; 
 
-    IFBWindowArgs* ptr_window_args  = (IFBWindowArgs*)ifb_memory::arena_commit_bytes_absolute(arena_handle,size_window_args);  
-    IFBChar*       ptr_window_title =       (IFBChar*)ifb_memory::arena_commit_bytes_absolute(arena_handle,size_title); 
-
-    const IFBB8 window_args_valid = 
-        ptr_window_args  != NULL && 
-        ptr_window_title != NULL;
-
-    if (!window_args_valid) return(false);
 
     //copy the window title 
     memcpy_s(
