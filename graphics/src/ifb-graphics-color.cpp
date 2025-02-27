@@ -12,7 +12,7 @@ ifb_graphics::color_normalize(
     result &= (ptr_color_normalized != NULL);    
     if (!result) return(false);
 
-    const IFBF32 color_const = (1 / 0xFF);
+    const IFBF32 color_const = (1.0f / 0xFF);
 
     ptr_color_normalized->red   = color_const * ((IFBF32)ptr_color_hex->red);
     ptr_color_normalized->blue  = color_const * ((IFBF32)ptr_color_hex->blue);

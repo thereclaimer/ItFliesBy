@@ -111,7 +111,8 @@ ifb_engine::context_render_frame(
 
     //get the singletons
     IFBEngineSingletons*      ptr_singletons       = ifb_engine::context_get_ptr_singletons();
-    IFBEngineGraphicsManager* ptr_graphics_manager = ifb_engine::singletons_load_graphics_manager(ptr_singletons);
+    IFBEngineGraphicsManager* ptr_graphics_manager = ifb_engine::singletons_load_graphics_manager (ptr_singletons);
+    IFBEngineRenderer*        ptr_renderer         = ifb_engine::singletons_load_renderer         (ptr_singletons);
 
     //update the graphics window
     ifb_engine::graphics_window_update(
@@ -122,6 +123,19 @@ ifb_engine::context_render_frame(
     //start a new window frame
     result &= ifb_engine::graphics_manager_frame_start(ptr_graphics_manager);
     
+    //get the window dimensions
+    IFBDimensions window_dimensions;
+    ifb_engine::graphics_window_get_dimensions(ptr_graphics_manager,&window_dimensions);
+
+    //update the renderer viewport
+    ifb_engine::renderer_update_viewport(
+        ptr_renderer,
+        &window_dimensions,
+        NULL);
+
+    //clear the viewport
+    ifb_engine::renderer_clear_viewport(ptr_renderer);
+
     //render the window frame
     result &= ifb_engine::graphics_manager_frame_render(ptr_graphics_manager);
 
