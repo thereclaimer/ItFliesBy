@@ -63,7 +63,7 @@ ifb_engine::graphics_window_get_position(
     //load the window
     IFBWindow* window_ptr = ifb_engine::graphics_memory_load_window(ptr_graphics_manager->ptr_memory);
 
-    //set the dimensions
+    //set the position
     ptr_window_position->x = window_ptr->position.x;
     ptr_window_position->y = window_ptr->position.y;
 }
@@ -99,4 +99,30 @@ ifb_engine::graphics_window_frame_render(
 
     //we're done
     return(result);
+}
+
+inline IFBVoid
+ifb_engine::graphics_window_update(
+    IFBEngineGraphicsManager* ptr_graphics_manager,        
+    IFBDimensions*            ptr_window_dimensions,
+    IFBPosition*              ptr_window_position) {
+
+    ifb_macro_assert(ptr_graphics_manager);
+
+    //load the window
+    IFBWindow* window_ptr = ifb_engine::graphics_memory_load_window(ptr_graphics_manager->ptr_memory);
+
+    //update dimensions, if necessary
+    if (ptr_window_dimensions) {
+        IFBDimensions& dimensions_ref = window_ptr->dimensions;
+        dimensions_ref.width  = ptr_window_dimensions->width;
+        dimensions_ref.height = ptr_window_dimensions->height;
+    }
+    
+    //update position, if necessary
+    if (ptr_window_position) {
+        IFBPosition& posisition_ref = window_ptr->position;
+        posisition_ref.x = ptr_window_position->x;
+        posisition_ref.y = ptr_window_position->y;
+    }
 }

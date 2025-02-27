@@ -113,11 +113,20 @@ ifb_engine::context_render_frame(
     IFBEngineSingletons*      ptr_singletons       = ifb_engine::context_get_ptr_singletons();
     IFBEngineGraphicsManager* ptr_graphics_manager = ifb_engine::singletons_load_graphics_manager(ptr_singletons);
 
+    //update the graphics window
+    ifb_engine::graphics_window_update(
+        ptr_graphics_manager,
+        &ptr_update->window.dimensions,
+        &ptr_update->window.position);
+
     //start a new window frame
     result &= ifb_engine::graphics_manager_frame_start(ptr_graphics_manager);
     
     //render the window frame
     result &= ifb_engine::graphics_manager_frame_render(ptr_graphics_manager);
+
+    //check for quit event
+    result &= !ptr_update->window.quit_received;
 
     //we're done
     return(result);
