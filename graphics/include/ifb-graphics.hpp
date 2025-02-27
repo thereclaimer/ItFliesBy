@@ -38,17 +38,13 @@ struct IFBWindowPlatformContexts {
     ImGuiContext* imgui;
 };
 
-struct IFBWindowTitle {
-    IFBChar c_str[IFB_WINDOW_TITLE_LENGTH_MAX];
-};
-
 struct IFBWindow {
     IFBPosition               position;
     IFBDimensions             dimensions;
     IFBWindowPlatformContexts platform_contexts;
     IFBB32                    visible;
     IFBB32                    quit_received;
-    IFBWindowTitle            title;
+    IFBChar*                  title;
 };
 
 namespace ifb_graphics {
@@ -59,6 +55,8 @@ namespace ifb_graphics {
     const IFBB8  window_show                     (IFBWindow* ptr_window);
     const IFBB8  window_frame_start              (IFBWindow* ptr_window);
     const IFBB8  window_frame_render             (IFBWindow* ptr_window);
+
+    const IFBB8  window_context_gl_create        (IFBWindow* ptr_window);
 };
 
 /**********************************************************************************/

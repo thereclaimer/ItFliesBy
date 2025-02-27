@@ -254,3 +254,33 @@ ifb_memory::arena_commit_bytes_relative(
     //we're done
     return(offset_result);
 }
+
+const IFBChar*
+ifb_memory::arena_commit_string(
+    const IFBHNDArena arena_handle,
+    const IFBChar*    c_string,
+    const IFBU32      max_length) {
+
+    //get the actual length of the string
+    const IFBU32 length_actual = strnlen_s(
+        c_string,
+        max_length
+    );
+
+    //commit the bytes
+    IFBChar* result_c_str = (IFBChar*)ifb_memory::arena_commit_bytes_absolute(
+        arena_handle,
+        length_actual);
+
+    //copy the string
+    for (
+        IFBU32 char_index = 0;
+        char_index < length_actual;
+        ++char_index) {
+
+        result_c_str[char_index] = c_string[char_index];
+    }
+
+    //we're done
+    return(result_c_str);
+}

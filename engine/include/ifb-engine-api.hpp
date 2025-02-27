@@ -23,7 +23,7 @@ namespace ifb_engine {
         const IFBPlatformApi* ptr_platform_api,
         const IFBByte*        ptr_stack_memory,
         const IFBU32          size_stack_memory,
-        const IFBU64          reservation_size );
+        const IFBU64          reservation_size);
     
     
     ifb_engine_api const IFBB8 context_destroy      (IFBVoid);

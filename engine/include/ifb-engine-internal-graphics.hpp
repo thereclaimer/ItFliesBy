@@ -66,9 +66,11 @@ namespace ifb_engine {
 namespace ifb_engine {
 
     const IFBB8 graphics_window_initialize     (IFBEngineGraphicsManager* ptr_graphics_manager);
+    const IFBB8 graphics_window_frame_start    (IFBEngineGraphicsManager* ptr_graphics_manager);
+    const IFBB8 graphics_window_frame_render   (IFBEngineGraphicsManager* ptr_graphics_manager);
 
-    const IFBB8 graphics_window_get_dimensions (IFBEngineGraphicsManager* ptr_graphics_manager, IFBDimensions* ptr_window_dimensions);
-    const IFBB8 graphics_window_get_position   (IFBEngineGraphicsManager* ptr_graphics_manager, IFBPosition*   ptr_window_position);
+    IFBVoid graphics_window_get_dimensions (IFBEngineGraphicsManager* ptr_graphics_manager, IFBDimensions* ptr_window_dimensions);
+    IFBVoid graphics_window_get_position   (IFBEngineGraphicsManager* ptr_graphics_manager, IFBPosition*   ptr_window_position);
 };
 
 #endif //IFB_ENGINE_INTERNAL_GRAPHICS_HPP
