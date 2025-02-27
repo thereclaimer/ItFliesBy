@@ -101,10 +101,23 @@ struct IFBEngineContext {
 
 namespace ifb_engine {
     
+    const IFBB8
+    context_initialize_config(
+        IFBEngineCore*       core_ptr,
+        IFBEngineSingletons* singletons_ptr);
+
+    const IFBB8
+    context_initialize_graphics_and_rendering(
+        IFBEngineCore*            core_ptr,
+        IFBEngineSingletons*      singletons_ptr);
+
     IFBEngineContext&    context_ref                (IFBVoid);
     IFBEngineCore*       context_get_ptr_core       (IFBVoid); 
     IFBEngineSingletons* context_get_ptr_singletons (IFBVoid);
     IFBEnginePlatform*   context_get_ptr_platform   (IFBVoid);
+
+
+    IFBEngineContextUpdate* context_commit_update   (IFBEngineCore* core_ptr);
 };
 
 #endif //IFB_ENGINE_INTERNAL_CONTEXT_HPP
