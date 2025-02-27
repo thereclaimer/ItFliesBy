@@ -8,37 +8,9 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-//handles
-struct IFBHNDWindow  : IFBHNDPTR { };
-struct IFBHNDMonitor : IFBHND32  { };
-
-struct IFBGraphicsContextInfo {
-    IFBHNDArena    arena;
-    IFBColorFormat color_format;
-    IFBU32         monitor_count;
-};
-
-/**********************************************************************************/
-/* CONTEXT                                                                        */
-/**********************************************************************************/
-
-struct IFBWindowArgs {
-    IFBChar*      title;
-    IFBDimensions dimensions;
-    IFBPosition   position;
-};
-
-namespace ifb_graphics {
-
-    const IFBB8 
-    context_create(
-        const IFBHNDArena    arena_handle,
-        const IFBColorFormat color_format);
-    
-    const IFBB8        context_get_info            (IFBGraphicsContextInfo* ptr_graphics_context_info);
-
-    const IFBHNDWindow context_commit_window       (const IFBWindowArgs* ptr_window_args);
-};
+struct IFBWindow;
+struct IFBWindowTitle;
+struct IFBWindowPlatformContexts;
 
 /**********************************************************************************/
 /* COLORS                                                                         */
@@ -59,27 +31,39 @@ namespace ifb_graphics {
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
-struct IFBWindowUpdate {
-    IFBDimensions dimensions;
-    IFBPosition   position;
-    IFBB32        quit_received;
+#define IFB_WINDOW_TITLE_LENGTH_MAX 255
+
+struct IFBWindowPlatformContexts {
+    IFBGLContext  opengl;
+    ImGuiContext* imgui;
+};
+
+struct IFBWindow {
+    IFBPosition               position;
+    IFBDimensions             dimensions;
+    IFBWindowPlatformContexts platform_contexts;
+    IFBB32                    visible;
+    IFBB32                    quit_received;
+    IFBChar*                  title;
 };
 
 namespace ifb_graphics {
 
-    const IFBB8 window_show          (const IFBHNDWindow window_handle);
-    const IFBB8 window_frame_start   (const IFBHNDWindow window_handle);
-    const IFBB8 window_frame_render  (const IFBHNDWindow window_handle);
-    const IFBB8 window_quit_received (const IFBHNDWindow window_handle);
-    
-    const IFBB8 window_update        (const IFBHNDWindow window_handle, const IFBWindowUpdate* window_update_ptr);
+    IFBWindow*   window_commit_to_arena_absolute (const IFBHNDArena arena_handle);
+    const IFBU32 window_commit_to_arena_relative (const IFBHNDArena arena_handle);
+
+    const IFBB8  window_show                     (IFBWindow* ptr_window);
+    const IFBB8  window_frame_start              (IFBWindow* ptr_window);
+    const IFBB8  window_frame_render             (IFBWindow* ptr_window);
+
+    const IFBB8  window_context_gl_create        (IFBWindow* ptr_window);
 };
 
 /**********************************************************************************/
 /* MONITOR                                                                        */
 /**********************************************************************************/
 
-struct IFBMonitorInfo {
+struct IFBMonitor {
     IFBU32        index;
     IFBU32        refresh_hz;
     IFBDimensions dimensions;
@@ -88,16 +72,10 @@ struct IFBMonitorInfo {
 
 namespace ifb_graphics {
 
-    const IFBB8
-    monitor_get_info(
-        const IFBU32          monitor_index,
-              IFBMonitorInfo* ptr_monitor_info);
-    
-    const IFBB8
-    monitor_center_window(
-        const IFBU32         monitor_index,
-        const IFBDimensions* ptr_window_dimensions,
-              IFBPosition*   ptr_window_center);
+    IFBMonitor*  monitor_commit_to_arena_absolute (const IFBHNDArena arena_handle);
+    const IFBU32 monitor_commit_to_arena_relative (const IFBHNDArena arena_handle);
+    const IFBU32 monitor_get_system_count         (IFBVoid);
+    const IFBB8  monitor_initialize               (IFBMonitor* ptr_monitor);
 };
 
 #endif //IFB_GRAPHICS_HPP

@@ -69,23 +69,22 @@ ifb_engine_api IFBEngineContextUpdate*
 ifb_engine::context_startup(
     IFBVoid) {
 
-    IFBB8 result = true;
-
     //get the context structures
     IFBEngineCore*       ptr_core       = ifb_engine::context_get_ptr_core();
     IFBEngineSingletons* ptr_singletons = ifb_engine::context_get_ptr_singletons();
     
-    //load the config
-    IFBEngineConfig* ptr_config = ifb_engine::singletons_load_config(ptr_singletons);
-    result &= ifb_engine::config_initialize(ptr_config);
-
     //initialize engine systems
-    IFBEngineGraphicsManager* ptr_graphics_manager = ifb_engine::singletons_load_graphics_manager(ptr_singletons);
-    result &= ifb_engine::graphics_manager_initialize(ptr_graphics_manager,ptr_core);
+    IFBB8 startup_result = true;
+    startup_result &= ifb_engine::context_initialize_config                 (ptr_core, ptr_singletons);
+    startup_result &= ifb_engine::context_initialize_graphics_and_rendering (ptr_core, ptr_singletons);
 
-    //allocate an update structure
-    const IFBU32 update_size = ifb_macro_align_size_struct(IFBEngineContextUpdate);
-    IFBEngineContextUpdate* update_ptr = (IFBEngineContextUpdate*)ifb_engine::core_memory_commit_bytes_absolute(ptr_core,update_size);
+    // allocate an update structure if startup was successful
+    // this part should ALWAYS work, so an assertion is built in
+    // if we did not succeed, we will return NULL to the platform
+    // to let them know shit's fucked up
+    IFBEngineContextUpdate* update_ptr = startup_result
+        ? ifb_engine::context_commit_update(ptr_core)
+        : NULL;
 
     //we're done
     return(update_ptr);
@@ -112,16 +111,36 @@ ifb_engine::context_render_frame(
 
     //get the singletons
     IFBEngineSingletons*      ptr_singletons       = ifb_engine::context_get_ptr_singletons();
-    IFBEngineGraphicsManager* ptr_graphics_manager = ifb_engine::singletons_load_graphics_manager(ptr_singletons);
+    IFBEngineGraphicsManager* ptr_graphics_manager = ifb_engine::singletons_load_graphics_manager (ptr_singletons);
+    IFBEngineRenderer*        ptr_renderer         = ifb_engine::singletons_load_renderer         (ptr_singletons);
+
+    //update the graphics window
+    ifb_engine::graphics_window_update(
+        ptr_graphics_manager,
+        &ptr_update->window.dimensions,
+        &ptr_update->window.position);
 
     //start a new window frame
-    result &= ifb_engine::graphics_manager_frame_start(ptr_graphics_manager,&ptr_update->window_update);
+    result &= ifb_engine::graphics_manager_frame_start(ptr_graphics_manager);
     
+    //get the window dimensions
+    IFBDimensions window_dimensions;
+    ifb_engine::graphics_window_get_dimensions(ptr_graphics_manager,&window_dimensions);
+
+    //update the renderer viewport
+    ifb_engine::renderer_update_viewport(
+        ptr_renderer,
+        &window_dimensions,
+        NULL);
+
+    //clear the viewport
+    ifb_engine::renderer_clear_viewport(ptr_renderer);
+
     //render the window frame
     result &= ifb_engine::graphics_manager_frame_render(ptr_graphics_manager);
 
-    //check for any quit events
-    result &= !ptr_graphics_manager->quit_received;
+    //check for quit event
+    result &= !ptr_update->window.quit_received;
 
     //we're done
     return(result);

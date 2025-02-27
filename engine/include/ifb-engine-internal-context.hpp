@@ -8,6 +8,7 @@
 #include "ifb-engine-internal-core.hpp"
 #include "ifb-engine-internal-devtools.hpp"
 #include "ifb-engine-internal-graphics.hpp"
+#include "ifb-engine-internal-renderer.hpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -69,6 +70,7 @@ namespace ifb_engine {
     IFBInput*                 singletons_load_input            (const IFBEngineSingletons* ptr_singletons);
     IFBEngineDevTools*        singletons_load_devtools         (const IFBEngineSingletons* ptr_singletons);
     IFBEngineGraphicsManager* singletons_load_graphics_manager (const IFBEngineSingletons* ptr_singletons);
+    IFBEngineRenderer*        singletons_load_renderer         (const IFBEngineSingletons* ptr_singletons);
 };
 
 /**********************************************************************************/
@@ -99,10 +101,23 @@ struct IFBEngineContext {
 
 namespace ifb_engine {
     
+    const IFBB8
+    context_initialize_config(
+        IFBEngineCore*       core_ptr,
+        IFBEngineSingletons* singletons_ptr);
+
+    const IFBB8
+    context_initialize_graphics_and_rendering(
+        IFBEngineCore*            core_ptr,
+        IFBEngineSingletons*      singletons_ptr);
+
     IFBEngineContext&    context_ref                (IFBVoid);
     IFBEngineCore*       context_get_ptr_core       (IFBVoid); 
     IFBEngineSingletons* context_get_ptr_singletons (IFBVoid);
     IFBEnginePlatform*   context_get_ptr_platform   (IFBVoid);
+
+
+    IFBEngineContextUpdate* context_commit_update   (IFBEngineCore* core_ptr);
 };
 
 #endif //IFB_ENGINE_INTERNAL_CONTEXT_HPP

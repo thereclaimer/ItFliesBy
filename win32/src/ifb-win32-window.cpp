@@ -285,7 +285,7 @@ ifb_win32::window_on_wm_size(
 
     //update engine window dimensions
     if (engine_update_ptr) {
-        IFBDimensions& window_dimensions_ref = engine_update_ptr->window_update.dimensions;
+        IFBDimensions& window_dimensions_ref = engine_update_ptr->window.dimensions;
         window_dimensions_ref.width  = window_width;
         window_dimensions_ref.height = window_height;
     }
@@ -312,7 +312,7 @@ ifb_win32::window_on_wm_move(
 
     //update the engine if we have a context
     if (engine_update_ptr) {
-        IFBPosition& window_position_ref = engine_update_ptr->window_update.position;
+        IFBPosition& window_position_ref = engine_update_ptr->window.position;
         window_position_ref.x = window_position_x;
         window_position_ref.y = window_position_y;
     }
@@ -333,8 +333,8 @@ ifb_win32::window_on_wm_quit(
     IFBEngineContextUpdate* engine_update_ptr = ifb_win32::context_get_engine_update(); 
 
     //set quit received
-    window_ptr->quit_received                      = true;
-    engine_update_ptr->window_update.quit_received = true;
+    window_ptr->quit_received               = true;
+    engine_update_ptr->window.quit_received = true;
 
     //we're done
     return(S_OK);
@@ -350,8 +350,8 @@ ifb_win32::window_on_wm_destroy(
     IFBEngineContextUpdate* engine_update_ptr = ifb_win32::context_get_engine_update(); 
 
     //set quit received
-    window_ptr->quit_received                      = true;
-    engine_update_ptr->window_update.quit_received = true;
+    window_ptr->quit_received               = true;
+    engine_update_ptr->window.quit_received = true;
 
     //post the quit message
     PostQuitMessage(0);

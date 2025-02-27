@@ -36,7 +36,8 @@ ifb_engine::singletons_create(
         ifb_macro_align_size_struct(IFBEngineConfig),
         ifb_macro_align_size_struct(IFBInput),
         ifb_macro_align_size_struct(IFBEngineDevTools),
-        ifb_macro_align_size_struct(IFBEngineGraphicsManager)
+        ifb_macro_align_size_struct(IFBEngineGraphicsManager),
+        ifb_macro_align_size_struct(IFBEngineRenderer)
     };
     
     //calculate the singleton count
@@ -137,6 +138,22 @@ ifb_engine::singletons_load_graphics_manager(
 
     //we're done
     return(ptr_graphics_manager);
+}
+
+inline IFBEngineRenderer*
+ifb_engine::singletons_load_renderer(
+    const IFBEngineSingletons* ptr_singletons) {
+
+    //sanity check
+    ifb_macro_assert(ptr_singletons);
+    
+    //get the pointer
+    IFBEngineRenderer* ptr_renderer = (IFBEngineRenderer*)ifb_engine::singletons_buffer_get_pointer(
+            ptr_singletons->buffer,
+            ptr_singletons->handles.renderer);
+
+    //we're done
+    return(ptr_renderer);
 }
 
 

@@ -103,23 +103,26 @@ struct IFBArenaInfo {
 namespace ifb_memory {
 
     //reset
-    IFBVoid      arena_reset_all              (const IFBHNDArena arena_handle);
-    IFBVoid      arena_reset_committed_space  (const IFBHNDArena arena_handle);
-    IFBVoid      arena_reset_reserved_space   (const IFBHNDArena arena_handle);
+    IFBVoid      arena_reset_all                (const IFBHNDArena arena_handle);
+    IFBVoid      arena_reset_committed_space    (const IFBHNDArena arena_handle);
+    IFBVoid      arena_reset_reserved_space     (const IFBHNDArena arena_handle);
     
     //pointers
-    const IFBPtr  arena_get_pointer            (const IFBHNDArena arena_handle, const IFBU32  offset);
-    const IFBB8   arena_get_info               (const IFBHNDArena arena_handle, IFBArenaInfo* arena_info_ptr);
-    const IFBAddr arena_get_start              (const IFBHNDArena arena_handle);
+    const IFBPtr  arena_get_pointer             (const IFBHNDArena arena_handle, const IFBU32  offset);
+    const IFBB8   arena_get_info                (const IFBHNDArena arena_handle, IFBArenaInfo* arena_info_ptr);
+    const IFBAddr arena_get_start               (const IFBHNDArena arena_handle);
 
     //reserve/release    
-    const IFBPtr  arena_reserve_bytes_absolute (const IFBHNDArena arena_handle, const IFBU32 size, const IFBU32  alignment = 0);
-    const IFBU32  arena_reserve_bytes_relative (const IFBHNDArena arena_handle, const IFBU32 size, const IFBU32  alignment = 0);
-    const IFBB8   arena_release_bytes          (const IFBHNDArena arena_handle, const IFBU32 size, const IFBU32  alignment = 0);
+    const IFBPtr   arena_reserve_bytes_absolute (const IFBHNDArena arena_handle, const IFBU32 size, const IFBU32  alignment = 0);
+    const IFBU32   arena_reserve_bytes_relative (const IFBHNDArena arena_handle, const IFBU32 size, const IFBU32  alignment = 0);
+    const IFBB8    arena_release_bytes          (const IFBHNDArena arena_handle, const IFBU32 size, const IFBU32  alignment = 0);
     
     //commit
-    const IFBPtr  arena_commit_bytes_absolute  (const IFBHNDArena arena_handle, const IFBU32 size, const IFBU32  alignment = 0);
-    const IFBU32  arena_commit_bytes_relative  (const IFBHNDArena arena_handle, const IFBU32 size, const IFBU32  alignment = 0);
+    const IFBPtr   arena_commit_bytes_absolute  (const IFBHNDArena arena_handle, const IFBU32 size, const IFBU32  alignment = 0);
+    const IFBU32   arena_commit_bytes_relative  (const IFBHNDArena arena_handle, const IFBU32 size, const IFBU32  alignment = 0);
+
+    //strings
+    const IFBChar* arena_commit_string          (const IFBHNDArena arena_handle, const IFBChar* c_string, const IFBU32 max_length);
 };
 
 /**********************************************************************************/

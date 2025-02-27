@@ -43,6 +43,7 @@ if not exist %path_build%\obj mkdir %path_build%\obj
                     /I memory\include          ^
                     /I data-structures\include ^
                     /I graphics\include        ^
+                    /I rendering\include       ^
                     /I external                ^
                     /I %path_engine_include%   ^
                     /I %path_vcpkg_include%
