@@ -45,10 +45,39 @@ ifb_graphics::monitor_table_update(
     ifb_macro_assert(monitor_table_ptr->monitor_count);
     ifb_macro_assert(monitor_table_ptr->monitor_array);
 
+    //cache properties
+    const IFBU32 monitor_count = monitor_table_ptr->monitor_count;
+    IFBMonitor*  monitor_array = monitor_table_ptr->monitor_array;
+
     //get the monitor info from the platform
     const IFBB8 result = ifb_platform::monitor_info(
-        monitor_table_ptr->monitor_count,
-        monitor_table_ptr->monitor_array);
+        monitor_count,
+        monitor_array);
+
+    //if that failed, we're done
+    if (!result) return(false);
+
+    //check for the primary monitor
+    //the primary monitor will have a position of (0,0)
+    IFBB8 primary_monitor_found = false;
+    for (
+        IFBU32 monitor_index = 0;
+               monitor_index < monitor_count;
+             ++monitor_index) {
+
+        //check for primary monitor
+        IFBPosition monitor_position_ref = monitor_array[monitor_index].position;
+        primary_monitor_found = (monitor_position_ref.x == 0 && monitor_position_ref.y == 0);
+        
+        //if we found the primary monitor, set the index and break
+        if (primary_monitor_found) {
+            monitor_table_ptr->monitor_primary = monitor_index;
+            break;
+        }
+    }
+
+    //we should ALWAYS have a primary monitor
+    ifb_macro_assert(primary_monitor_found);
 
     //we're done
     return(result);
