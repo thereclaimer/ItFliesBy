@@ -15,13 +15,17 @@ struct IFBEngineGraphicsMemory {
     IFBHNDArena arena;
     struct {
         IFBU32 window;
+        IFBU32 monitor_table;
+        IFBU32 monitor_primary;
     } handles;
 };
 
 namespace ifb_engine {
 
-    IFBEngineGraphicsMemory* graphics_memory_commit       (IFBEngineCore* core_ptr);
-    IFBWindow*               graphics_memory_load_window  (IFBEngineGraphicsMemory* graphics_memory_ptr);
+    IFBEngineGraphicsMemory* graphics_memory_commit               (IFBEngineCore* core_ptr);
+    IFBWindow*               graphics_memory_load_window          (IFBEngineGraphicsMemory* graphics_memory_ptr);
+    IFBMonitorTable*         graphics_memory_load_monitor_table   (IFBEngineGraphicsMemory* graphics_memory_ptr);
+    IFBMonitor*              graphics_memory_load_monitor_primary (IFBEngineGraphicsMemory* graphics_memory_ptr);
 };
 
 /**********************************************************************************/
@@ -77,6 +81,17 @@ namespace ifb_engine {
         IFBEngineGraphicsManager* ptr_graphics_manager,        
         IFBDimensions*            ptr_window_dimensions,
         IFBPosition*              ptr_window_position);
+};
+
+/**********************************************************************************/
+/* MONITORS                                                                       */
+/**********************************************************************************/
+
+namespace ifb_engine {
+
+    const IFBB8 graphics_monitors_update_all                          (IFBEngineGraphicsManager* ptr_graphics_manager);
+    const IFBB8 graphics_monitors_get_primary_dimensions_and_position (IFBEngineGraphicsManager* ptr_graphics_manager, IFBDimensionsAndPosition* ptr_monitor_position_and_dimensions);
+    const IFBB8 graphics_monitors_get_primary_refresh_rate            (IFBEngineGraphicsManager* ptr_graphics_manager, IFBU32*                   ptr_refresh_hz);
 };
 
 #endif //IFB_ENGINE_INTERNAL_GRAPHICS_HPP

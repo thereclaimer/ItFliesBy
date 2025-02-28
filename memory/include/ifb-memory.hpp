@@ -191,4 +191,13 @@ namespace ifb_memory {
     const IFBB8  block_allocator_get_info                (const IFBHNDBlockAllocator block_allocator_handle, IFBBlockAllocatorInfo* block_allocator_info);
 };
 
+/**********************************************************************************/
+/* MACROS                                                                         */
+/**********************************************************************************/
+
+#define ifb_memory_macro_commit_struct_to_arena_absolute(arena_handle,struct_type) (struct_type*)ifb_memory::arena_commit_bytes_absolute(arena_handle,sizeof(struct_type),alignof(struct_type))
+#define ifb_memory_macro_commit_struct_to_arena_relative(arena_handle,struct_type)               ifb_memory::arena_commit_bytes_relative(arena_handle,sizeof(struct_type),alignof(struct_type))
+
+#define ifb_memory_macro_get_pointer_from_arena(arena_handle,offset,type)                 (type*)ifb_memory::arena_get_pointer(arena_handle,offset)
+
 #endif //IFB_MEMORY_HPP

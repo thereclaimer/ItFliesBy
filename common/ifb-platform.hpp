@@ -81,8 +81,6 @@ namespace ifb_platform {
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
-typedef IFBPtr IFBGLContext;
-
 typedef const IFBB8
 (*ifb_platform_funcptr_window_create) (
     const IFBCStr title,
@@ -144,10 +142,10 @@ typedef const IFBU32
 (*ifb_platform_funcptr_monitor_count) (
     IFBVoid);
 
-typedef IFBVoid
+typedef const IFBB8
 (*ifb_platform_funcptr_monitor_info)(
-    const IFBU32  monitor_array_count,
-          IFBPtr* monitor_array_ptr);
+    const IFBU32      monitor_count,
+          IFBMonitor* monitor_array);
 
 struct IFBPlatformMonitorApi {
     ifb_platform_funcptr_monitor_count count;

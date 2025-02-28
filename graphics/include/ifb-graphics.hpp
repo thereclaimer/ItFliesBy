@@ -31,22 +31,6 @@ namespace ifb_graphics {
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
-#define IFB_WINDOW_TITLE_LENGTH_MAX 255
-
-struct IFBWindowPlatformContexts {
-    IFBGLContext  opengl;
-    ImGuiContext* imgui;
-};
-
-struct IFBWindow {
-    IFBPosition               position;
-    IFBDimensions             dimensions;
-    IFBWindowPlatformContexts platform_contexts;
-    IFBB32                    visible;
-    IFBB32                    quit_received;
-    IFBChar*                  title;
-};
-
 namespace ifb_graphics {
 
     IFBWindow*   window_commit_to_arena_absolute (const IFBHNDArena arena_handle);
@@ -63,19 +47,34 @@ namespace ifb_graphics {
 /* MONITOR                                                                        */
 /**********************************************************************************/
 
-struct IFBMonitor {
-    IFBU32        index;
-    IFBU32        refresh_hz;
-    IFBDimensions dimensions;
-    IFBPosition   position;
+struct IFBMonitorTable {
+    IFBU32      monitor_primary;
+    IFBU32      monitor_count;
+    IFBMonitor* monitor_array;
 };
 
 namespace ifb_graphics {
 
-    IFBMonitor*  monitor_commit_to_arena_absolute (const IFBHNDArena arena_handle);
-    const IFBU32 monitor_commit_to_arena_relative (const IFBHNDArena arena_handle);
-    const IFBU32 monitor_get_system_count         (IFBVoid);
-    const IFBB8  monitor_initialize               (IFBMonitor* ptr_monitor);
+    const IFBB8 monitor_table_initialize          (IFBMonitorTable* monitor_table_ptr, const IFBHNDArena arena_handle);
+    const IFBB8 monitor_table_update              (IFBMonitorTable* monitor_table_ptr);
+    const IFBB8 monitor_table_get_monitor         (const IFBMonitorTable* monitor_table_ptr, IFBMonitor* monitor_ptr);
+    const IFBB8 monitor_table_get_monitor_primary (const IFBMonitorTable* monitor_table_ptr, IFBMonitor* monitor_ptr);
 };
+
+/**********************************************************************************/
+/* MACROS                                                                         */
+/**********************************************************************************/
+
+#define ifb_graphics_macro_commit_absolute_window(arena_handle)              ifb_memory_macro_commit_struct_to_arena_absolute(arena_handle,IFBWindow)
+#define ifb_graphics_macro_commit_absolute_monitor_table(arena_handle)       ifb_memory_macro_commit_struct_to_arena_absolute(arena_handle,IFBMonitorTable)
+#define ifb_graphics_macro_commit_absolute_monitor(arena_handle)             ifb_memory_macro_commit_struct_to_arena_absolute(arena_handle,IFBMonitor)
+
+#define ifb_graphics_macro_commit_relative_window(arena_handle)              ifb_memory_macro_commit_struct_to_arena_relative(arena_handle,IFBWindow)
+#define ifb_graphics_macro_commit_relative_monitor(arena_handle)             ifb_memory_macro_commit_struct_to_arena_relative(arena_handle,IFBMonitor)
+#define ifb_graphics_macro_commit_relative_monitor_table(arena_handle)       ifb_memory_macro_commit_struct_to_arena_relative(arena_handle,IFBMonitorTable)
+
+#define ifb_grahpics_macro_get_pointer_to_window(arena_handle,offset)        ifb_memory_macro_get_pointer_from_arena(arena_handle,offset,IFBWindow)
+#define ifb_grahpics_macro_get_pointer_to_monitor(arena_handle,offset)       ifb_memory_macro_get_pointer_from_arena(arena_handle,offset,IFBMonitor)
+#define ifb_grahpics_macro_get_pointer_to_monitor_table(arena_handle,offset) ifb_memory_macro_get_pointer_from_arena(arena_handle,offset,IFBMonitorTable)
 
 #endif //IFB_GRAPHICS_HPP

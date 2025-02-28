@@ -161,7 +161,26 @@ struct IFBLine {
 };
 
 /**********************************************************************************/
-/* COLORS                                                                         */
+/* SIZES AND COORDINATES                                                          */
+/**********************************************************************************/
+
+struct IFBDimensions {
+    IFBU32 width;
+    IFBU32 height;
+};
+
+struct IFBPosition {
+    IFBU32 x;
+    IFBU32 y;
+};
+
+struct IFBDimensionsAndPosition {
+    IFBDimensions dimensions;
+    IFBPosition   position;    
+};
+
+/**********************************************************************************/
+/* GRAPHICS                                                                       */
 /**********************************************************************************/
 
 struct IFBColorNormalized {
@@ -189,18 +208,30 @@ enum IFBColorFormat : IFBU32 {
      IFBColorFormat_BGRA = 3
 };
 
-/**********************************************************************************/
-/* SIZES AND COORDINATES                                                          */
-/**********************************************************************************/
+#define IFB_WINDOW_TITLE_LENGTH_MAX 255
 
-struct IFBDimensions {
-    IFBU32 width;
-    IFBU32 height;
+typedef IFBPtr IFBGLContext;
+typedef IFBPtr IFBImGuiContext;
+
+struct IFBWindowPlatformContexts {
+    IFBGLContext    opengl;
+    IFBImGuiContext imgui;
 };
 
-struct IFBPosition {
-    IFBU32 x;
-    IFBU32 y;
+struct IFBWindow {
+    IFBPosition               position;
+    IFBDimensions             dimensions;
+    IFBWindowPlatformContexts platform_contexts;
+    IFBB32                    visible;
+    IFBB32                    quit_received;
+    IFBChar*                  title;
+};
+
+struct IFBMonitor {
+    IFBDimensions dimensions;
+    IFBPosition   position;
+    IFBU32        refresh_hz;
+    IFBU32        index;
 };
 
 #endif //IFB_TYPES_HPP
