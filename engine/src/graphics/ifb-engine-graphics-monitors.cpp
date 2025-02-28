@@ -16,7 +16,7 @@ ifb_engine::graphics_monitors_update_all(
     IFBMonitorTable*         ptr_monitor_table   = ifb_engine::graphics_memory_load_monitor_table   (ptr_graphics_memory);
     IFBMonitor*              ptr_monitor_primary = ifb_engine::graphics_memory_load_monitor_primary (ptr_graphics_memory);
 
-    //reload the monitor table and get primary monitor info
+    //reload the monitor table and  get primary monitor info
     result &= ifb_graphics::monitor_table_update              (ptr_monitor_table);
     result &= ifb_graphics::monitor_table_get_monitor_primary (ptr_monitor_table,ptr_monitor_primary);
 
@@ -64,7 +64,7 @@ ifb_engine::graphics_monitors_get_primary_refresh_rate(
 
     //sanity check
     ifb_macro_assert(ptr_graphics_manager);
-    if (!ptr_monitor_position_and_dimensions) return(false);
+    if (!ptr_refresh_hz) return(false);
 
     //load pointers
     IFBEngineGraphicsMemory* ptr_graphics_memory = ptr_graphics_manager->ptr_memory;
