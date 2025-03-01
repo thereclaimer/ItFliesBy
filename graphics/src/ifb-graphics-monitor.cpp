@@ -115,10 +115,28 @@ ifb_graphics::monitor_table_get_monitor(
 const IFBB8
 ifb_graphics::monitor_table_get_monitor_primary(
     const IFBMonitorTable* monitor_table_ptr,
-    IFBMonitor*      monitor_ptr) {
+          IFBMonitor*      monitor_ptr) {
         
     //sanity check
     ifb_macro_assert(monitor_table_ptr);
+    if (!monitor_ptr) return(false);
+
+    //make sure the primary monitor is valid
+    //it should NEVER be greater than the monitor count
+    const IFBU32 monitor_index = monitor_table_ptr->monitor_primary;
+    const IFBU32 monitor_count = monitor_table_ptr->monitor_count;
+    ifb_macro_assert(monitor_index < monitor_count);
     
-    return(false);
+    //get the monitor info
+    *monitor_ptr = monitor_table_ptr->monitor_array[monitor_index];
+
+    //this is valid if the dimensions and
+    //refresh rate are non-zero
+    IFBB8 result = true;
+    result &= (monitor_ptr->refresh_hz        != 0);
+    result &= (monitor_ptr->dimensions.width  != 0);
+    result &= (monitor_ptr->dimensions.height != 0);
+
+    //we're done
+    return(result);
 }

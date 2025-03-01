@@ -20,9 +20,8 @@ ifb_engine::graphics_manager_initialize(
     // TODO(SAM): for some reason, calling this causes the renderer to
     // fail initialization, causing premature termination
 
-    // result &= ifb_engine::graphics_monitors_update_all(ptr_graphics_manager);
-    
-    result &= ifb_engine::graphics_window_initialize  (ptr_graphics_manager);
+    result &= ifb_engine::graphics_monitors_update_all (ptr_graphics_manager);
+    result &= ifb_engine::graphics_window_initialize   (ptr_graphics_manager);
 
     //we're done
     return(result);
