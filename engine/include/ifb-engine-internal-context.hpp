@@ -52,8 +52,9 @@ struct IFBEngineSingletonBuffer {
 struct IFBEngineSingletonHandles {
     IFBHNDSingleton config;
     IFBHNDSingleton input;
+    IFBHNDSingleton arenas;
     IFBHNDSingleton dev_tools;
-    IFBHNDSingleton graphics_manager;
+    IFBHNDSingleton graphics;
     IFBHNDSingleton renderer;
 };
 
@@ -64,29 +65,33 @@ struct IFBEngineSingletons {
 
 namespace ifb_engine {
 
-    IFBEngineSingletons*      singletons_create                (IFBEngineCore* ptr_core);
+    IFBEngineSingletons* singletons_create        (IFBEngineCore* ptr_core);
 
-    IFBEngineConfig*          singletons_load_config           (const IFBEngineSingletons* ptr_singletons);
-    IFBInput*                 singletons_load_input            (const IFBEngineSingletons* ptr_singletons);
-    IFBEngineDevTools*        singletons_load_devtools         (const IFBEngineSingletons* ptr_singletons);
-    IFBEngineGraphicsManager* singletons_load_graphics_manager (const IFBEngineSingletons* ptr_singletons);
-    IFBEngineRenderer*        singletons_load_renderer         (const IFBEngineSingletons* ptr_singletons);
+    IFBEngineConfig*     singletons_load_config   (const IFBEngineSingletons* ptr_singletons);
+    IFBInput*            singletons_load_input    (const IFBEngineSingletons* ptr_singletons);
+    IFBEngineDevTools*   singletons_load_devtools (const IFBEngineSingletons* ptr_singletons);
+    IFBEngineGraphics*   singletons_load_graphics (const IFBEngineSingletons* ptr_singletons);
+    IFBEngineRenderer*   singletons_load_renderer (const IFBEngineSingletons* ptr_singletons);
 };
 
 /**********************************************************************************/
 /* PLATFORM                                                                        */
 /**********************************************************************************/
 
-struct IFBEnginePlatform {
-    IFBHNDArena     arena_handle;
-    IFBPlatformApi* ptr_platform_api;
-};
-
 namespace ifb_engine {
 
     const IFBB8
     platform_api_initialize(
         const IFBPlatformApi* ptr_platform_api);
+};
+
+/**********************************************************************************/
+/* ARENAS                                                                         */
+/**********************************************************************************/
+
+struct IFBEngineArenaHandles {
+    IFBHNDArena graphics;
+    IFBHNDArena rendering;
 };
 
 /**********************************************************************************/

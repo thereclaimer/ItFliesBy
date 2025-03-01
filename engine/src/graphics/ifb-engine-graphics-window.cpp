@@ -6,8 +6,9 @@ inline const IFBB8
 ifb_engine::graphics_window_initialize(
     IFBEngineGraphicsManager* ptr_graphics_manager) {
 
-    //get the window and arena
-    IFBWindow* window_ptr = ifb_engine::graphics_memory_load_window(ptr_graphics_manager->ptr_memory);
+    //load pointers
+    IFBWindow*  window_ptr  = ifb_engine::graphics_memory_load_window(ptr_graphics_manager->ptr_memory);
+    IFBMonitor* monitor_ptr = ifb_engine::graphics_memory_load_monitor_primary()
     const IFBHNDArena arena_handle = ptr_graphics_manager->ptr_memory->arena;
 
     //title
@@ -19,10 +20,10 @@ ifb_engine::graphics_window_initialize(
     dimensions_ref.width  = 800;
     dimensions_ref.height = 600;
 
-    //initial position
+    //position the window in the monitor center
     IFBPosition& position_ref = window_ptr->position;
-    position_ref.x = 0;
-    position_ref.y = 0;
+    ifb_graphics::monitor_get_center()
+
 
     //create the platform contexts and show the window
     IFBB8 result = true; 

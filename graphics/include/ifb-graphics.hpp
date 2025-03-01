@@ -59,6 +59,8 @@ namespace ifb_graphics {
     const IFBB8 monitor_table_update              (IFBMonitorTable* monitor_table_ptr);
     const IFBB8 monitor_table_get_monitor         (const IFBMonitorTable* monitor_table_ptr, IFBMonitor* monitor_ptr);
     const IFBB8 monitor_table_get_monitor_primary (const IFBMonitorTable* monitor_table_ptr, IFBMonitor* monitor_ptr);
+
+    const IFBB8 monitor_get_center                (const IFBMonitor* monitor_ptr, IFBPosition* center_position_ptr);
 };
 
 /**********************************************************************************/

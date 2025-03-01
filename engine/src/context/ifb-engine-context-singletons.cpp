@@ -36,7 +36,7 @@ ifb_engine::singletons_create(
         ifb_macro_align_size_struct(IFBEngineConfig),
         ifb_macro_align_size_struct(IFBInput),
         ifb_macro_align_size_struct(IFBEngineDevTools),
-        ifb_macro_align_size_struct(IFBEngineGraphicsManager),
+        ifb_macro_align_size_struct(IFBEngineGraphics),
         ifb_macro_align_size_struct(IFBEngineRenderer)
     };
     
@@ -124,20 +124,20 @@ ifb_engine::singletons_load_devtools(
     return(ptr_devtools);
 }
 
-inline IFBEngineGraphicsManager*
-ifb_engine::singletons_load_graphics_manager(
+inline IFBEngineGraphics*
+ifb_engine::singletons_load_graphics(
     const IFBEngineSingletons* ptr_singletons) {
 
     //sanity check
     ifb_macro_assert(ptr_singletons);
     
     //get the pointer
-    IFBEngineGraphicsManager* ptr_graphics_manager = (IFBEngineGraphicsManager*)ifb_engine::singletons_buffer_get_pointer(
+    IFBEngineGraphics* ptr_graphics = (IFBEngineGraphics*)ifb_engine::singletons_buffer_get_pointer(
             ptr_singletons->buffer,
-            ptr_singletons->handles.graphics_manager);
+            ptr_singletons->handles.graphics);
 
     //we're done
-    return(ptr_graphics_manager);
+    return(ptr_graphics);
 }
 
 inline IFBEngineRenderer*

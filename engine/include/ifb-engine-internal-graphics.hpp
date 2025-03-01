@@ -8,47 +8,45 @@
 #include "ifb-engine-internal-core.hpp"
 
 /**********************************************************************************/
-/* GRAPHICS MEMORY                                                                */
+/* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-struct IFBEngineGraphicsMemory {
-    IFBHNDArena arena;
-    struct {
-        IFBU32 window;
-        IFBU32 monitor_table;
-        IFBU32 monitor_primary;
-    } handles;
+struct IFBEngineGraphics;
+struct IFBEngineGraphicsHandles;
+
+/**********************************************************************************/
+/* GRAPHICS                                                                       */
+/**********************************************************************************/
+
+struct IFBEngineGraphicsHandles {
+    IFBU32 window;
+    IFBU32 monitor_table;
+    IFBU32 monitor_primary;
+};
+
+struct IFBEngineGraphics {
+    IFBHNDArena              arena;
+    IFBEngineGraphicsHandles handles;
+    IFBColorFormat           color_format;
 };
 
 namespace ifb_engine {
 
-    IFBEngineGraphicsMemory* graphics_memory_commit               (IFBEngineCore* core_ptr);
-    IFBWindow*               graphics_memory_load_window          (IFBEngineGraphicsMemory* graphics_memory_ptr);
-    IFBMonitorTable*         graphics_memory_load_monitor_table   (IFBEngineGraphicsMemory* graphics_memory_ptr);
-    IFBMonitor*              graphics_memory_load_monitor_primary (IFBEngineGraphicsMemory* graphics_memory_ptr);
-};
-
-/**********************************************************************************/
-/* GRAPHICS MANAGER                                                               */
-/**********************************************************************************/
-
-struct IFBEngineGraphicsManager {
-    IFBEngineCore*           ptr_core;
-    IFBEngineGraphicsMemory* ptr_memory;
-};
-
-namespace ifb_engine {
-
-    //initialize
+    //initialization
     const IFBB8 
-    graphics_manager_initialize(
-        IFBEngineGraphicsManager* ptr_graphics_manager,
-        IFBEngineCore*            ptr_core);
+    graphics_initialize(
+              IFBEngineGraphics* ptr_graphics,
+        const IFBHNDArena        arena_handle,
+        const IFBColorFormat     color_format);
 
     //frame start/render
-    const IFBB8 graphics_manager_frame_start   (IFBEngineGraphicsManager* ptr_graphics_manager);
-    const IFBB8 graphics_manager_frame_render  (IFBEngineGraphicsManager* ptr_graphics_manager);
-    
+    const IFBB8      graphics_frame_start          (IFBEngineGraphics* ptr_graphics);
+    const IFBB8      graphics_frame_render         (IFBEngineGraphics* ptr_graphics);
+
+    //pointers
+    IFBWindow*       graphics_load_pointer_to_window          (const IFBEngineGraphics* ptr_graphics);
+    IFBMonitorTable* graphics_load_pointer_to_monitor_table   (const IFBEngineGraphics* ptr_graphics);
+    IFBMonitor*      graphics_load_pointer_to_monitor_primary (const IFBEngineGraphics* ptr_graphics);
 };
 
 /**********************************************************************************/
@@ -69,18 +67,18 @@ namespace ifb_engine {
 
 namespace ifb_engine {
 
-    const IFBB8 graphics_window_initialize     (IFBEngineGraphicsManager* ptr_graphics_manager);
-    const IFBB8 graphics_window_frame_start    (IFBEngineGraphicsManager* ptr_graphics_manager);
-    const IFBB8 graphics_window_frame_render   (IFBEngineGraphicsManager* ptr_graphics_manager);
+    const IFBB8 graphics_window_initialize     (IFBEngineGraphics* ptr_graphics);
+    const IFBB8 graphics_window_frame_start    (IFBEngineGraphics* ptr_graphics);
+    const IFBB8 graphics_window_frame_render   (IFBEngineGraphics* ptr_graphics);
 
-    IFBVoid graphics_window_get_dimensions     (IFBEngineGraphicsManager* ptr_graphics_manager, IFBDimensions* ptr_window_dimensions);
-    IFBVoid graphics_window_get_position       (IFBEngineGraphicsManager* ptr_graphics_manager, IFBPosition*   ptr_window_position);
+    IFBVoid graphics_window_get_dimensions     (const IFBEngineGraphics* ptr_graphics, IFBDimensions* ptr_window_dimensions);
+    IFBVoid graphics_window_get_position       (const IFBEngineGraphics* ptr_graphics, IFBPosition*   ptr_window_position);
 
     IFBVoid
     graphics_window_update(
-        IFBEngineGraphicsManager* ptr_graphics_manager,        
-        IFBDimensions*            ptr_window_dimensions,
-        IFBPosition*              ptr_window_position);
+        IFBEngineGraphics* ptr_graphics,        
+        IFBDimensions*     ptr_window_dimensions,
+        IFBPosition*       ptr_window_position);
 };
 
 /**********************************************************************************/
@@ -89,9 +87,9 @@ namespace ifb_engine {
 
 namespace ifb_engine {
 
-    const IFBB8 graphics_monitors_update_all                          (IFBEngineGraphicsManager* ptr_graphics_manager);
-    const IFBB8 graphics_monitors_get_primary_dimensions_and_position (IFBEngineGraphicsManager* ptr_graphics_manager, IFBDimensionsAndPosition* ptr_monitor_position_and_dimensions);
-    const IFBB8 graphics_monitors_get_primary_refresh_rate            (IFBEngineGraphicsManager* ptr_graphics_manager, IFBU32*                   ptr_refresh_hz);
+    const IFBB8 graphics_monitors_update_all                          (IFBEngineGraphics* ptr_graphics);
+    const IFBB8 graphics_monitors_get_primary_dimensions_and_position (IFBEngineGraphics* ptr_graphics, IFBDimensionsAndPosition* ptr_monitor_position_and_dimensions);
+    const IFBB8 graphics_monitors_get_primary_refresh_rate            (IFBEngineGraphics* ptr_graphics, IFBU32*                   ptr_refresh_hz);
 };
 
 #endif //IFB_ENGINE_INTERNAL_GRAPHICS_HPP

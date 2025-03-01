@@ -44,12 +44,13 @@ ifb_engine::context_initialize_graphics_and_rendering(
     ifb_macro_assert(core_ptr);
     ifb_macro_assert(singletons_ptr);
 
+
     //load graphics manager and renderer
-    IFBEngineGraphicsManager* graphics_manager_ptr = ifb_engine::singletons_load_graphics_manager (singletons_ptr);
-    IFBEngineRenderer*        renderer_ptr         = ifb_engine::singletons_load_renderer         (singletons_ptr);
+    IFBEngineGraphics* graphics_ptr = ifb_engine::singletons_load_graphics (singletons_ptr);
+    IFBEngineRenderer* renderer_ptr = ifb_engine::singletons_load_renderer (singletons_ptr);
 
     //initialize graphics manager
-    result &= ifb_engine::graphics_manager_initialize(graphics_manager_ptr,core_ptr);
+    result &= ifb_engine::graphics_initialize(graphics_ptr,core_ptr);
 
     //create the clear color
     IFBColorHex clear_color_hex;

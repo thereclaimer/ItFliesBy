@@ -140,3 +140,25 @@ ifb_graphics::monitor_table_get_monitor_primary(
     //we're done
     return(result);
 }
+
+const IFBB8
+ifb_graphics::monitor_get_center(
+    const IFBMonitor*  monitor_ptr,
+          IFBPosition* center_position_ptr) {
+
+    //sanity check
+    ifb_macro_assert(monitor_ptr);
+    if (!center_position_ptr) return(false);
+
+    //a valid monitor should always have non-zero dimensions
+    IFBB8 result = true;
+    result &= monitor_ptr->dimensions.width  != 0;
+    result &= monitor_ptr->dimensions.height != 0;
+
+    //calculate center position
+    center_position_ptr->x = monitor_ptr->dimensions.width  / 2;
+    center_position_ptr->y = monitor_ptr->dimensions.height / 2;
+
+    //we're done
+    return(result);
+}

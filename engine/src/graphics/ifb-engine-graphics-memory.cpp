@@ -36,9 +36,9 @@ ifb_engine::graphics_memory_commit(
 
 inline IFBWindow*
 ifb_engine::graphics_memory_load_window(
-    IFBEngineGraphicsMemory* graphics_memory_ptr) {
+    IFBEngineGraphicsManager* graphics_manager_ptr) {
         
-    ifb_macro_assert(graphics_memory_ptr);
+    ifb_macro_assert(graphics_manager_ptr);
     
     IFBWindow* ptr_window = ifb_grahpics_macro_get_pointer_to_window(
         graphics_memory_ptr->arena,
@@ -52,7 +52,7 @@ ifb_engine::graphics_memory_load_window(
 
 inline IFBMonitorTable* 
 ifb_engine::graphics_memory_load_monitor_table(
-    IFBEngineGraphicsMemory* graphics_memory_ptr) {
+    IFBEngineGraphicsManager* graphics_manager_ptr) {
         
     ifb_macro_assert(graphics_memory_ptr);
     
@@ -67,7 +67,7 @@ ifb_engine::graphics_memory_load_monitor_table(
 
 inline IFBMonitor*      
 ifb_engine::graphics_memory_load_monitor_primary(
-    IFBEngineGraphicsMemory* graphics_memory_ptr) {
+    IFBEngineGraphicsManager* graphics_manager_ptr) {
         
     ifb_macro_assert(graphics_memory_ptr);
     
