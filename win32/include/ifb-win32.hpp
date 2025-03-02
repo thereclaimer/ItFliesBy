@@ -40,11 +40,11 @@ struct IFBWin32Window {
     HWND          window_handle;
     HDC           device_context;
     HGLRC         opengl_context;
-    IFBU32       width;
-    IFBU32       height;
-    IFBU32       position_x;
-    IFBU32       position_y;
-    IFBB8        quit_received;
+    IFBU32        width;
+    IFBU32        height;
+    IFBU32        position_x;
+    IFBU32        position_y;
+    IFBB8         quit_received;
     ImGuiContext* imgui_context;
 };
 
@@ -102,10 +102,10 @@ namespace ifb_win32 {
 
     const IFBU32 monitor_count (IFBVoid);
     
-    // IFBVoid
-    // monitor_info(
-    //     const IFBU32     monitor_array_count,
-    //           IFBMonitor* monitor_array_ptr);
+    const IFBB8
+    monitor_info(
+        const IFBU32      monitor_count,
+              IFBMonitor* monitor_array);
 
     ifb_internal BOOL CALLBACK monitor_enum_callback_count (HMONITOR handle,HDC device_context, LPRECT rect_ptr, LPARAM data_ptr);
     ifb_internal BOOL CALLBACK monitor_enum_callback_info  (HMONITOR handle,HDC device_context, LPRECT rect_ptr, LPARAM data_ptr);
@@ -233,8 +233,8 @@ namespace ifb_win32 {
 
         //monitor
         platform_api_ref.monitor.count                 = ifb_win32::monitor_count;
+        platform_api_ref.monitor.info                  = ifb_win32::monitor_info;
     }
-
 };
 
 /**********************************************************************************/

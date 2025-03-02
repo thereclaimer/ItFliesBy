@@ -51,12 +51,33 @@ struct IFBEngineSizeAndAlignment {
 struct IFBEngineContextUpdateWindow {
     IFBDimensions dimensions;
     IFBPosition   position;
-    IFBB32        quit_received;
 };
 
+enum IFBEngineContextUpdateFlags_ {
+    IFBEngineContextUpdateFlags_None             = IFB_BIT_FLAG_0,
+    IFBEngineContextUpdateFlags_Quit             = IFB_BIT_FLAG_1,
+    IFBEngineContextUpdateFlags_WindowDimensions = IFB_BIT_FLAG_2,
+    IFBEngineContextUpdateFlags_WindowPosition   = IFB_BIT_FLAG_3
+};
+
+typedef IFBU32 IFBEngineContextUpdateFlags;
+
 struct IFBEngineContextUpdate {
+    IFBEngineContextUpdateFlags  flags;    
     IFBEngineContextUpdateWindow window;
-    IFBInput        user_input;
+    IFBInput                     user_input;
+};
+
+
+namespace ifb_engine {
+
+    inline IFBVoid     update_flags_set_quit              (IFBEngineContextUpdateFlags& flags_ref)       { ifb_macro_bit_set(IFBEngineContextUpdateFlags_Quit,             flags_ref); }
+    inline IFBVoid     update_flags_set_window_dimensions (IFBEngineContextUpdateFlags& flags_ref)       { ifb_macro_bit_set(IFBEngineContextUpdateFlags_WindowDimensions, flags_ref); }
+    inline IFBVoid     update_flags_set_window_position   (IFBEngineContextUpdateFlags& flags_ref)       { ifb_macro_bit_set(IFBEngineContextUpdateFlags_WindowPosition,   flags_ref); }
+
+    inline const IFBB8 update_flags_get_quit              (const IFBEngineContextUpdateFlags& flags_ref) { return(ifb_macro_flags_test(IFBEngineContextUpdateFlags_Quit,             flags_ref)); }
+    inline const IFBB8 update_flags_get_window_dimensions (const IFBEngineContextUpdateFlags& flags_ref) { return(ifb_macro_flags_test(IFBEngineContextUpdateFlags_WindowDimensions, flags_ref)); }
+    inline const IFBB8 update_flags_get_window_position   (const IFBEngineContextUpdateFlags& flags_ref) { return(ifb_macro_flags_test(IFBEngineContextUpdateFlags_WindowPosition,   flags_ref)); }
 };
 
 typedef IFBHNDArena  IFBHNDEngineArena;

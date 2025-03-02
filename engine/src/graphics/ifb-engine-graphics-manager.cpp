@@ -2,7 +2,7 @@
 
 #include "ifb-engine-internal-graphics.hpp"
 
-inline const IFBB8 
+inline const IFBB8
 ifb_engine::graphics_manager_initialize(
     IFBEngineGraphicsManager* ptr_graphics_manager,
     IFBEngineCore*            ptr_core) {
@@ -10,18 +10,20 @@ ifb_engine::graphics_manager_initialize(
     //sanity check
     ifb_macro_assert(ptr_graphics_manager);
     ifb_macro_assert(ptr_core);
-    
+
     //commit memory
     ptr_graphics_manager->ptr_memory = ifb_engine::graphics_memory_commit(ptr_core);
 
-    //load the window
-    const IFBB8 result = ifb_engine::graphics_window_initialize(ptr_graphics_manager);
+    //load the window and monitors
+    IFBB8 result = true;
+    result &= ifb_engine::graphics_monitors_update_all (ptr_graphics_manager);
+    result &= ifb_engine::graphics_window_initialize   (ptr_graphics_manager);
 
     //we're done
     return(result);
 }
 
-inline const IFBB8 
+inline const IFBB8
 ifb_engine::graphics_manager_frame_start(
     IFBEngineGraphicsManager* ptr_graphics_manager) {
 
@@ -30,7 +32,7 @@ ifb_engine::graphics_manager_frame_start(
     return(result);
 }
 
-inline const IFBB8 
+inline const IFBB8
 ifb_engine::graphics_manager_frame_render(
     IFBEngineGraphicsManager* ptr_graphics_manager) {
 
