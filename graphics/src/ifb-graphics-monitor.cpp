@@ -159,6 +159,10 @@ ifb_graphics::monitor_get_center(
     center_position_ptr->x = monitor_ptr->dimensions.width  / 2;
     center_position_ptr->y = monitor_ptr->dimensions.height / 2;
 
+    //the center of a monitor should never be zero
+    result &= center_position_ptr->x != 0;
+    result &= center_position_ptr->y != 0;
+
     //we're done
     return(result);
 }

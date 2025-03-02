@@ -2,19 +2,31 @@
 
 #include "ifb-engine-internal-graphics.hpp"
 
+/**********************************************************************************/
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
+
+namespace ifb_engine {
+    
+    const IFBB8 graphics_monitors_initialize(IFBEngineGraphics* ptr_graphics);
+};
+
+/**********************************************************************************/
+/* MONITORS                                                                       */
+/**********************************************************************************/
+
 inline const IFBB8
 ifb_engine::graphics_monitors_update_all(
-    IFBEngineGraphicsManager* ptr_graphics_manager) {
+    const IFBEngineGraphics* ptr_graphics) {
 
     IFBB8 result = true;
 
     //sanity check
-    ifb_macro_assert(ptr_graphics_manager);
+    ifb_macro_assert(ptr_graphics);
 
     //load pointers
-    IFBEngineGraphicsMemory* ptr_graphics_memory = ptr_graphics_manager->ptr_memory;
-    IFBMonitorTable*         ptr_monitor_table   = ifb_engine::graphics_memory_load_monitor_table   (ptr_graphics_memory);
-    IFBMonitor*              ptr_monitor_primary = ifb_engine::graphics_memory_load_monitor_primary (ptr_graphics_memory);
+    IFBMonitorTable* ptr_monitor_table   = ifb_engine::graphics_load_pointer_to_monitor_table   (ptr_graphics);
+    IFBMonitor*      ptr_monitor_primary = ifb_engine::graphics_load_pointer_to_monitor_primary (ptr_graphics);
 
     //reload the monitor table and  get primary monitor info
     result &= ifb_graphics::monitor_table_update              (ptr_monitor_table);
@@ -23,59 +35,88 @@ ifb_engine::graphics_monitors_update_all(
     //we're done
     return(result);
 }
-    
+
 inline const IFBB8
-ifb_engine::graphics_monitors_get_primary_dimensions_and_position(
-    IFBEngineGraphicsManager* ptr_graphics_manager,
-    IFBDimensionsAndPosition* ptr_monitor_position_and_dimensions) {
+ifb_engine::graphics_monitors_get_active_dimensions(
+    const IFBEngineGraphics* ptr_graphics,
+          IFBDimensions*     ptr_dimensions) {
+
+    IFBB8 result = true;
 
     //sanity check
-    ifb_macro_assert(ptr_graphics_manager);
-    if (!ptr_monitor_position_and_dimensions) return(false);
+    ifb_macro_assert(ptr_graphics);
+    if (!ptr_dimensions) return(false);
 
-    //load pointers
-    IFBEngineGraphicsMemory* ptr_graphics_memory = ptr_graphics_manager->ptr_memory;
-    IFBMonitor*              ptr_monitor_primary = ifb_engine::graphics_memory_load_monitor_primary(ptr_graphics_memory);
+    //get the dimensions
+    IFBMonitor* ptr_monitor = ifb_engine::graphics_load_pointer_to_monitor_primary (ptr_graphics);
+    *ptr_dimensions = ptr_monitor->dimensions;
 
-    //cache properties
-    IFBDimensions& ref_monitor_dimensions = ptr_monitor_position_and_dimensions->dimensions; 
-    IFBPosition&   ref_monitor_position   = ptr_monitor_position_and_dimensions->position;
+    //the dimensions should never be zero
+    result &= ptr_dimensions->height != 0;
+    result &= ptr_dimensions->width  != 0;
 
-    //set values
-    ref_monitor_dimensions.width  = ptr_monitor_primary->dimensions.width; 
-    ref_monitor_dimensions.height = ptr_monitor_primary->dimensions.height; 
-    ref_monitor_position.x        = ptr_monitor_primary->position.x; 
-    ref_monitor_position.y        = ptr_monitor_primary->position.y; 
-
-    //everything is good as long as the dimensions are non-zero
-    //but a position can be zero
-    IFBB8 result = true;
-    result &= ref_monitor_dimensions.width  != 0; 
-    result &= ref_monitor_dimensions.height != 0;
-    
     //we're done
     return(result);
 }
-    
+
 inline const IFBB8
-ifb_engine::graphics_monitors_get_primary_refresh_rate(
-    IFBEngineGraphicsManager* ptr_graphics_manager,
-    IFBU32*                   ptr_refresh_hz) {
+ifb_engine::graphics_monitors_get_active_position(
+    const IFBEngineGraphics* ptr_graphics,
+          IFBPosition*       ptr_position) {
+        
+    IFBB8 result = true;
+    
+    //sanity check
+    ifb_macro_assert(ptr_graphics);
+    if (!ptr_position) return(false);
+
+    //get the position
+    IFBMonitor* ptr_monitor = ifb_engine::graphics_load_pointer_to_monitor_primary (ptr_graphics);
+    *ptr_position = ptr_monitor->position;
+
+    //we're done
+    return(result);
+    
+}
+
+inline const IFBB8
+ifb_engine::graphics_monitors_get_active_refresh_rate_hz(
+    const IFBEngineGraphics* ptr_graphics,
+          IFBU32*            ptr_refresh_hz) {
+
+    IFBB8 result = true;
 
     //sanity check
-    ifb_macro_assert(ptr_graphics_manager);
+    ifb_macro_assert(ptr_graphics);
     if (!ptr_refresh_hz) return(false);
 
-    //load pointers
-    IFBEngineGraphicsMemory* ptr_graphics_memory = ptr_graphics_manager->ptr_memory;
-    IFBMonitor*              ptr_monitor_primary = ifb_engine::graphics_memory_load_monitor_primary(ptr_graphics_memory);
-
     //get the refresh rate
-    *ptr_refresh_hz = ptr_monitor_primary->refresh_hz;
+    IFBMonitor* ptr_monitor = ifb_engine::graphics_load_pointer_to_monitor_primary (ptr_graphics);
+    *ptr_refresh_hz = ptr_monitor->refresh_hz;
 
-    //we're good as long as the refresh rate is non-zero
-    const IFBB8 result = *ptr_refresh_hz != 0;
-    
+    //the refresh rate should never be zero
+    result &= *ptr_refresh_hz != 0;
+
+    //we're done
+    return(result);
+}
+
+/**********************************************************************************/
+/* INTERNAL                                                                       */
+/**********************************************************************************/
+
+inline const IFBB8
+ifb_engine::graphics_monitors_initialize(
+    IFBEngineGraphics* ptr_graphics) {
+
+    //sanity check
+    ifb_macro_assert(ptr_graphics);
+
+    //intialize the table and get the primary monitor
+    IFBB8 result = true;
+    result &= ifb_graphics::monitor_table_initialize          (ptr_monitor_table, graphics_arena);
+    result &= ifb_graphics::monitor_table_get_monitor_primary (ptr_monitor_table, ptr_monitor_primary);
+
     //we're done
     return(result);
 }

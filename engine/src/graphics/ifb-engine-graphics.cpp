@@ -1,10 +1,7 @@
 #pragma once
 
 #include "ifb-engine-graphics-monitors.cpp"
-#include "ifb-engine-graphics-memory.cpp"
-#include "ifb-engine-graphics-color.cpp"
 #include "ifb-engine-graphics-window.cpp"
-
 
 /**********************************************************************************/
 /* INITIALIZATION                                                                 */
@@ -15,7 +12,9 @@ ifb_engine::graphics_initialize(
           IFBEngineGraphics* ptr_graphics,
     const IFBHNDArena        arena_handle,
     const IFBColorFormat     color_format) {
-
+    
+    IFBB8 result = true;
+    
     //sanity check
     ifb_macro_assert(ptr_graphics);
 
@@ -26,30 +25,15 @@ ifb_engine::graphics_initialize(
     ptr_graphics->handles.monitor_primary = ifb_graphics_macro_commit_relative_monitor_table (arena_handle); 
     ptr_graphics->color_format            = color_format; 
 
-    //make sure our pointers are valid
-    IFBB8 result = true;
-    result &= (ifb_engine::graphics_load_pointer_to_window          (ptr_graphics) != NULL);
-    result &= (ifb_engine::graphics_load_pointer_to_monitor_table   (ptr_graphics) != NULL);
-    result &= (ifb_engine::graphics_load_pointer_to_monitor_primary (ptr_graphics) != NULL);
+    //load monitor pointers
+    IFBMonitorTable* ptr_monitor_table = ifb_engine::graphics_load_pointer_to_monitor_table   (ptr_graphics);
+    IFBMonitor*      ptr_monitor       = ifb_engine::graphics_load_pointer_to_monitor_primary (ptr_graphics);
+
+    //initialize the monitors
+    result &= ifb_engine::graphics_monitors_initialize(ptr_graphics);
 
     //we're done
     return(result);
-}
-
-/**********************************************************************************/
-/* FRAME RENDERING                                                                       */
-/**********************************************************************************/
-
-inline const IFBB8
-ifb_engine::graphics_frame_start(
-    IFBEngineGraphics* ptr_graphics) {
-
-}
-
-inline const IFBB8
-ifb_engine::graphics_frame_render(
-    IFBEngineGraphics* ptr_graphics) {
-
 }
 
 /**********************************************************************************/
@@ -68,7 +52,8 @@ ifb_engine::graphics_load_pointer_to_window(
     const IFBU32      offset = ptr_graphics->handles.window;
 
     //load the pointer
-    IFBWindow* pointer = ifb_grahpics_macro_get_pointer_to_window(arena,offset);
+    IFBWindow* pointer = ifb_graphics_macro_get_pointer_to_window(arena,offset);
+    ifb_macro_assert(pointer);
 
     //we're done
     return(pointer);
@@ -80,13 +65,14 @@ ifb_engine::graphics_load_pointer_to_monitor_table(
 
     //sanity check
     ifb_macro_assert(ptr_graphics);
-
+    
     //get the arena and offset
     const IFBHNDArena arena  = ptr_graphics->arena;
     const IFBU32      offset = ptr_graphics->handles.monitor_table;
-
+    
     //load the pointer
-    IFBMonitorTable* pointer = ifb_grahpics_macro_get_pointer_to_monitor(arena,offset);
+    IFBMonitorTable* pointer = ifb_graphics_macro_get_pointer_to_monitor_table(arena,offset);
+    ifb_macro_assert(pointer);
 
     //we're done
     return(pointer);
@@ -104,7 +90,8 @@ ifb_engine::graphics_load_pointer_to_monitor_primary(
     const IFBU32      offset = ptr_graphics->handles.monitor_primary;
 
     //load the pointer
-    IFBMonitor* pointer = ifb_grahpics_macro_get_pointer_to_monitor_table(arena,offset);
+    IFBMonitor* pointer = ifb_graphics_macro_get_pointer_to_monitor(arena,offset);
+    ifb_macro_assert(pointer);
 
     //we're done
     return(pointer);

@@ -75,8 +75,8 @@ namespace ifb_graphics {
 #define ifb_graphics_macro_commit_relative_monitor(arena_handle)             ifb_memory_macro_commit_struct_to_arena_relative(arena_handle,IFBMonitor)
 #define ifb_graphics_macro_commit_relative_monitor_table(arena_handle)       ifb_memory_macro_commit_struct_to_arena_relative(arena_handle,IFBMonitorTable)
 
-#define ifb_grahpics_macro_get_pointer_to_window(arena_handle,offset)        ifb_memory_macro_get_pointer_from_arena(arena_handle,offset,IFBWindow)
-#define ifb_grahpics_macro_get_pointer_to_monitor(arena_handle,offset)       ifb_memory_macro_get_pointer_from_arena(arena_handle,offset,IFBMonitor)
-#define ifb_grahpics_macro_get_pointer_to_monitor_table(arena_handle,offset) ifb_memory_macro_get_pointer_from_arena(arena_handle,offset,IFBMonitorTable)
+#define ifb_graphics_macro_get_pointer_to_window(arena_handle,offset)        ifb_memory_macro_get_pointer_from_arena(arena_handle,offset,IFBWindow)
+#define ifb_graphics_macro_get_pointer_to_monitor(arena_handle,offset)       ifb_memory_macro_get_pointer_from_arena(arena_handle,offset,IFBMonitor)
+#define ifb_graphics_macro_get_pointer_to_monitor_table(arena_handle,offset) ifb_memory_macro_get_pointer_from_arena(arena_handle,offset,IFBMonitorTable)
 
 #endif //IFB_GRAPHICS_HPP

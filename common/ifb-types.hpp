@@ -198,7 +198,7 @@ struct IFBColorHex {
 };
 
 struct IFBColor32 {
-    IFBF32 value;
+    IFBU32 value;
 };
 
 enum IFBColorFormat : IFBU32 {
@@ -207,6 +207,29 @@ enum IFBColorFormat : IFBU32 {
      IFBColorFormat_ABGR = 2,
      IFBColorFormat_BGRA = 3
 };
+
+//TODO(SAM): still a work on progress
+//dont know if I want this hardcoded or hash based
+struct IFBColorTable {
+    IFBColorHex black;
+    IFBColorHex white;
+    IFBColorHex light_gray;
+    IFBColorHex light_red;
+    IFBColorHex light_green;
+    IFBColorHex light_yellow;
+    IFBColorHex light_blue;
+    IFBColorHex light_purple;
+    IFBColorHex light_orange;
+    IFBColorHex dark_gray;
+    IFBColorHex dark_red;
+    IFBColorHex dark_green;
+    IFBColorHex dark_yellow;
+    IFBColorHex dark_blue;
+    IFBColorHex dark_purple;
+    IFBColorHex dark_orange;
+
+};
+
 
 #define IFB_WINDOW_TITLE_LENGTH_MAX 255
 
