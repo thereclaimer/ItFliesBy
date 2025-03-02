@@ -9,8 +9,8 @@
 /**********************************************************************************/
 
 struct IFBDataStructure {
-    IFBAddr start;
-    IFBU32     size;
+    IFBAddr data_start;
+    IFBU32  data_size;
 };
 
 struct IFBArray;
@@ -18,6 +18,8 @@ struct IFBStack;
 struct IFBQueue;     //TODO
 struct IFBArrayList; //TODO
 struct IFBLinkedList;
+struct IFBHash;
+struct IFBHashTable;
 
 /**********************************************************************************/
 /* ARRAY                                                                          */
@@ -143,6 +145,36 @@ namespace ifb_queue {
 namespace ifb_linked_list {
 
 
+};
+
+/**********************************************************************************/
+/* HASH TABLE                                                                     */
+/**********************************************************************************/
+
+struct IFBHashTable : IFBDataStructure {
+    IFBU32 element_array_start;
+    IFBU32 element_size;
+    IFBU32 element_count_max;
+    IFBU32 element_count_current;
+    IFBU32 key_length_max;
+};
+
+namespace ifb_hash_table {
+
+    //memory
+    const IFBU32   memory_size              (const IFBU32 element_count,const IFBU32 element_size);
+    const IFBU32   commit_to_arena_relative (const IFBHNDArena arena_handle, const IFBU32 element_count, const IFBU32 element_size, const IFBU32 key_length_max);
+    IFBHashTable*  commit_to_arena_absolute (const IFBHNDArena arena_handle, const IFBU32 element_count, const IFBU32 element_size, const IFBU32 key_length_max);
+    IFBHashTable*  load_from_arena          (const IFBHNDArena arena_handle, const IFBU32 offset);
+
+    //operations
+    const IFBB8    insert                   (IFBHashTable*       ptr_hash_table, const IFBChar* key, const IFBByte* element);
+    const IFBByte* lookup                   (const IFBHashTable* ptr_hash_table, const IFBChar* key);
+
+    //count
+    const IFBU32   get_element_count_total  (const IFBHashTable* ptr_hash_table);
+    const IFBU32   get_element_count_free   (const IFBHashTable* ptr_hash_table);
+    const IFBU32   get_element_count_used   (const IFBHashTable* ptr_hash_table);
 };
 
 #endif //IFB_DATA_STRUCTURES_HPP

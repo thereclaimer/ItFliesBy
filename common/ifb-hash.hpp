@@ -22,26 +22,26 @@ namespace ifb_hash {
     const IFBB8
     collision_check(
         const IFBHash* hash_value_array_ptr,
-        const IFBU32  hash_value_array_count,
+        const IFBU32   hash_value_array_count,
         const IFBHash  hash_value);
     
     const IFBB8
     find_next_clear_value(
         const IFBHash*  in_hash_value_array_ptr,
-        const IFBU32   in_hash_value_array_count,
-              IFBU32& out_hash_index_ref);
+        const IFBU32    in_hash_value_array_count,
+              IFBU32&  out_hash_index_ref);
 
     const IFBB8
     search(
-        const IFBHash*  in_hash_value_array_ptr,
+        const IFBHash* in_hash_value_array_ptr,
         const IFBU32   in_hash_value_array_count,
-        const IFBHash   in_hash_value,
+        const IFBHash  in_hash_value,
               IFBU32& out_hash_index_ref);
     
     const IFBB8
     search(
         const IFBHash* hash_value_array_ptr,
-        const IFBU32  hash_value_array_count,
+        const IFBU32   hash_value_array_count,
         const IFBHash  hash_value);
 
     const IFBB8
@@ -151,9 +151,9 @@ ifb_hash::find_next_clear_value(
 
 inline const IFBB8
 ifb_hash::search(
-    const IFBHash*  in_hash_value_array_ptr,
+    const IFBHash* in_hash_value_array_ptr,
     const IFBU32   in_hash_value_array_count,
-    const IFBHash   in_hash_value,
+    const IFBHash  in_hash_value,
           IFBU32& out_hash_index_ref) {
 
     if (
@@ -188,7 +188,7 @@ ifb_hash::search(
 inline const IFBB8
 ifb_hash::search(
     const IFBHash* hash_value_array_ptr,
-    const IFBU32  hash_value_array_count,
+    const IFBU32   hash_value_array_count,
     const IFBHash  hash_value) {
 
     if (
