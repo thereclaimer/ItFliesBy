@@ -108,6 +108,22 @@ ifb_engine::singletons_load_input(
     return(ptr_input);
 }
 
+inline IFBEngineArenas*
+ifb_engine::singletons_load_arenas(
+    const IFBEngineSingletons* ptr_singletons) {
+
+    //sanity check
+    ifb_macro_assert(ptr_singletons);
+    
+    //get the pointer
+    IFBEngineArenas* ptr_arenas = (IFBEngineArenas*)ifb_engine::singletons_buffer_get_pointer(
+            ptr_singletons->buffer,
+            ptr_singletons->handles.arenas);
+
+    //we're done
+    return(ptr_arenas);
+}
+
 inline IFBEngineDevTools*
 ifb_engine::singletons_load_devtools(
     const IFBEngineSingletons* ptr_singletons) {

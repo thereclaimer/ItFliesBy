@@ -44,13 +44,16 @@ ifb_engine::context_initialize_graphics_and_rendering(
     ifb_macro_assert(core_ptr);
     ifb_macro_assert(singletons_ptr);
 
-
-    //load graphics manager and renderer
-    IFBEngineGraphics* graphics_ptr = ifb_engine::singletons_load_graphics (singletons_ptr);
-    IFBEngineRenderer* renderer_ptr = ifb_engine::singletons_load_renderer (singletons_ptr);
+    //load pointers
+    IFBEngineArenas*   ptr_arenas   = ifb_engine::singletons_load_arenas   (singletons_ptr);
+    IFBEngineGraphics* ptr_graphics = ifb_engine::singletons_load_graphics (singletons_ptr);
+    IFBEngineRenderer* ptr_renderer = ifb_engine::singletons_load_renderer (singletons_ptr);
 
     //initialize graphics manager
-    result &= ifb_engine::graphics_initialize(graphics_ptr,core_ptr);
+    result &= ifb_engine::graphics_initialize(
+        ptr_graphics,
+        ptr_arenas->graphics,
+        IFBColorFormat_RGBA);
 
     //create the clear color
     IFBColorHex clear_color_hex;
@@ -67,11 +70,11 @@ ifb_engine::context_initialize_graphics_and_rendering(
 
     //the window dimensions will be the renderer viewport dimensions
     IFBDimensions renderer_viewport_dimensions;
-    ifb_engine::graphics_window_get_dimensions(graphics_manager_ptr,&renderer_viewport_dimensions);
+    result &= ifb_engine::graphics_window_get_dimensions(ptr_graphics,&renderer_viewport_dimensions);
 
     //initalize the renderer
     result &= ifb_engine::renderer_initialize(
-        renderer_ptr,
+        ptr_renderer,
         core_ptr,
         &renderer_viewport_dimensions,
         &clear_color_normalized);

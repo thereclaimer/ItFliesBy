@@ -14,7 +14,10 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-//singletons
+struct IFBEngineContext;
+
+struct IFBEngineArenas;
+
 struct IFBEngineSingletons;
 struct IFBEngineSingletonBuffer;
 struct IFBEngineSingletonHandles;
@@ -69,6 +72,7 @@ namespace ifb_engine {
 
     IFBEngineConfig*     singletons_load_config   (const IFBEngineSingletons* ptr_singletons);
     IFBInput*            singletons_load_input    (const IFBEngineSingletons* ptr_singletons);
+    IFBEngineArenas*     singletons_load_arenas   (const IFBEngineSingletons* ptr_singletons);
     IFBEngineDevTools*   singletons_load_devtools (const IFBEngineSingletons* ptr_singletons);
     IFBEngineGraphics*   singletons_load_graphics (const IFBEngineSingletons* ptr_singletons);
     IFBEngineRenderer*   singletons_load_renderer (const IFBEngineSingletons* ptr_singletons);
@@ -89,7 +93,8 @@ namespace ifb_engine {
 /* ARENAS                                                                         */
 /**********************************************************************************/
 
-struct IFBEngineArenaHandles {
+struct IFBEngineArenas {
+    IFBHNDArena platform;
     IFBHNDArena graphics;
     IFBHNDArena rendering;
 };
@@ -101,7 +106,6 @@ struct IFBEngineArenaHandles {
 struct IFBEngineContext {
     IFBEngineCore*       ptr_core;
     IFBEngineSingletons* ptr_singletons;
-    IFBEnginePlatform*   ptr_platform;
 };
 
 namespace ifb_engine {
@@ -119,8 +123,6 @@ namespace ifb_engine {
     IFBEngineContext&    context_ref                (IFBVoid);
     IFBEngineCore*       context_get_ptr_core       (IFBVoid); 
     IFBEngineSingletons* context_get_ptr_singletons (IFBVoid);
-    IFBEnginePlatform*   context_get_ptr_platform   (IFBVoid);
-
 
     IFBEngineContextUpdate* context_commit_update   (IFBEngineCore* core_ptr);
 };

@@ -18,13 +18,10 @@ struct IFBWindowPlatformContexts;
 
 namespace ifb_graphics {
 
-    const IFBB8
-    color_normalize(
-        const IFBColorHex*        ptr_color_hex,
-              IFBColorNormalized* ptr_color_normalized);
-
-    const IFBColor32 color32 (const IFBColorHex*        ptr_color_hex); 
-    const IFBColor32 color32 (const IFBColorNormalized* ptr_color_normalized); 
+    const IFBB8      color_normalize             (const IFBColorHex*        ptr_color_hex,        IFBColorNormalized*       ptr_color_normalized);
+    const IFBB8      color_denormalize           (const IFBColorNormalized* ptr_color_normalized, IFBColorHex*              ptr_color_hex); 
+    const IFBColor32 color_pack_hex_to_32        (const IFBColorFormat      color_format,         const IFBColorHex*        ptr_color_hex); 
+    const IFBColor32 color_pack_normalized_to_32 (const IFBColorFormat      color_format,         const IFBColorNormalized* ptr_color_normalized); 
 };
 
 /**********************************************************************************/
@@ -39,7 +36,6 @@ namespace ifb_graphics {
     const IFBB8  window_show                     (IFBWindow* ptr_window);
     const IFBB8  window_frame_start              (IFBWindow* ptr_window);
     const IFBB8  window_frame_render             (IFBWindow* ptr_window);
-
     const IFBB8  window_context_gl_create        (IFBWindow* ptr_window);
 };
 
@@ -78,5 +74,6 @@ namespace ifb_graphics {
 #define ifb_graphics_macro_get_pointer_to_window(arena_handle,offset)        ifb_memory_macro_get_pointer_from_arena(arena_handle,offset,IFBWindow)
 #define ifb_graphics_macro_get_pointer_to_monitor(arena_handle,offset)       ifb_memory_macro_get_pointer_from_arena(arena_handle,offset,IFBMonitor)
 #define ifb_graphics_macro_get_pointer_to_monitor_table(arena_handle,offset) ifb_memory_macro_get_pointer_from_arena(arena_handle,offset,IFBMonitorTable)
+
 
 #endif //IFB_GRAPHICS_HPP

@@ -41,8 +41,14 @@ ifb_engine::context_create(
     context_ref.ptr_singletons = ifb_engine::singletons_create(context_ref.ptr_core);
     if (!context_ref.ptr_singletons) return(platform_arena_handle);
 
-    //get an arena for the platform
-    platform_arena_handle = ifb_engine::core_memory_commit_arena(context_ref.ptr_core);
+    //commit the arenas
+    IFBEngineArenas* ptr_arenas = ifb_engine::singletons_load_arenas(context_ref.ptr_singletons);
+    ptr_arenas->platform  = ifb_engine::core_memory_commit_arena(context_ref.ptr_core);
+    ptr_arenas->graphics  = ifb_engine::core_memory_commit_arena(context_ref.ptr_core);
+    ptr_arenas->rendering = ifb_engine::core_memory_commit_arena(context_ref.ptr_core);
+
+    //set the platform arena
+    platform_arena_handle = ptr_arenas->platform; 
 
     //we're done
     return(platform_arena_handle);
@@ -110,37 +116,39 @@ ifb_engine::context_render_frame(
     ifb_macro_assert(ptr_update);
 
     //get the singletons
-    IFBEngineSingletons*      ptr_singletons       = ifb_engine::context_get_ptr_singletons();
-    IFBEngineGraphicsManager* ptr_graphics_manager = ifb_engine::singletons_load_graphics_manager (ptr_singletons);
-    IFBEngineRenderer*        ptr_renderer         = ifb_engine::singletons_load_renderer         (ptr_singletons);
+    IFBEngineSingletons* ptr_singletons = ifb_engine::context_get_ptr_singletons();
+    IFBEngineGraphics*   ptr_graphics   = ifb_engine::singletons_load_graphics (ptr_singletons);
+    IFBEngineRenderer*   ptr_renderer   = ifb_engine::singletons_load_renderer (ptr_singletons);
 
-    //update the graphics window
-    ifb_engine::graphics_window_update(
-        ptr_graphics_manager,
-        &ptr_update->window.dimensions,
-        &ptr_update->window.position);
+    //cache window flags
+    const IFBB8 update_window_dimensions = ifb_engine::update_flags_get_window_dimensions(ptr_update->flags);
+    const IFBB8 update_window_position   = ifb_engine::update_flags_get_window_position  (ptr_update->flags);
 
-    //start a new window frame
-    result &= ifb_engine::graphics_manager_frame_start(ptr_graphics_manager);
+    //handle window updates
+    if (update_window_dimensions) result &= ifb_engine::graphics_window_update_dimensions (ptr_graphics, &ptr_update->window.dimensions);
+    if (update_window_position)   result &= ifb_engine::graphics_window_update_position   (ptr_graphics, &ptr_update->window.position);
     
-    //get the window dimensions
-    IFBDimensions window_dimensions;
-    ifb_engine::graphics_window_get_dimensions(ptr_graphics_manager,&window_dimensions);
+    //start a new window frame
+    result &= ifb_engine::graphics_window_frame_start(ptr_graphics);
 
-    //update the renderer viewport
-    ifb_engine::renderer_update_viewport(
+    //update the renderer viewport if the window was updated
+    IFBDimensions* ptr_renderer_viewport_dimensions = update_window_dimensions ? &ptr_update->window.dimensions : NULL;
+    result &= ifb_engine::renderer_update_viewport(
         ptr_renderer,
-        &window_dimensions,
+        ptr_renderer_viewport_dimensions,
         NULL);
 
     //clear the viewport
     ifb_engine::renderer_clear_viewport(ptr_renderer);
 
     //render the window frame
-    result &= ifb_engine::graphics_manager_frame_render(ptr_graphics_manager);
+    result &= ifb_engine::graphics_window_frame_render(ptr_graphics);
 
     //check for quit event
-    result &= !ptr_update->window.quit_received;
+    result &= !ifb_engine::update_flags_get_quit(ptr_update->flags);
+
+    //clear the flags
+    ptr_update->flags = IFBEngineContextUpdateFlags_None;
 
     //we're done
     return(result);

@@ -112,9 +112,13 @@ ifb_engine::graphics_monitors_initialize(
     //sanity check
     ifb_macro_assert(ptr_graphics);
 
+    //load pointers
+    IFBMonitorTable* ptr_monitor_table   = ifb_engine::graphics_load_pointer_to_monitor_table   (ptr_graphics);
+    IFBMonitor*      ptr_monitor_primary = ifb_engine::graphics_load_pointer_to_monitor_primary (ptr_graphics);
+
     //intialize the table and get the primary monitor
     IFBB8 result = true;
-    result &= ifb_graphics::monitor_table_initialize          (ptr_monitor_table, graphics_arena);
+    result &= ifb_graphics::monitor_table_initialize          (ptr_monitor_table, ptr_graphics->arena);
     result &= ifb_graphics::monitor_table_get_monitor_primary (ptr_monitor_table, ptr_monitor_primary);
 
     //we're done

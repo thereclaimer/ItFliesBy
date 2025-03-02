@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ifb-engine-graphics-color.cpp"
 #include "ifb-engine-graphics-monitors.cpp"
 #include "ifb-engine-graphics-window.cpp"
 
@@ -30,7 +31,8 @@ ifb_engine::graphics_initialize(
     IFBMonitor*      ptr_monitor       = ifb_engine::graphics_load_pointer_to_monitor_primary (ptr_graphics);
 
     //initialize the monitors
-    result &= ifb_engine::graphics_monitors_initialize(ptr_graphics);
+    result &= ifb_engine::graphics_monitors_initialize (ptr_graphics);
+    result &= ifb_engine::graphics_window_initialize   (ptr_graphics);
 
     //we're done
     return(result);
