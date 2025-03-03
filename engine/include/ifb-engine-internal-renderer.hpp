@@ -7,7 +7,6 @@
 
 struct IFBEngineRenderer {
     IFBHNDArena    arena_handle;
-    IFBEngineCore* ptr_core;
     IFBGLViewport  viewport;
 };
 
@@ -16,7 +15,7 @@ namespace ifb_engine {
     const IFBB8
     renderer_initialize(
               IFBEngineRenderer*  ptr_renderer,
-              IFBEngineCore*      ptr_core,
+        const IFBHNDArena         arena_handle,
         const IFBDimensions*      ptr_viewport_dimensions,
         const IFBColorNormalized* ptr_viewport_color);
 

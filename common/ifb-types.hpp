@@ -219,12 +219,12 @@ struct IFBGraphicsContexts {
 };
 
 struct IFBWindow {
-    IFBPosition               position;
-    IFBDimensions             dimensions;
-    IFBGraphicsContexts       graphics_contexts;
-    IFBB32                    visible;
-    IFBB32                    quit_received;
-    IFBChar*                  title;
+    IFBPosition         position;
+    IFBDimensions       dimensions;
+    IFBGraphicsContexts graphics_contexts;
+    IFBB32              visible;
+    IFBB32              quit_received;
+    IFBChar*            title;
 };
 
 struct IFBMonitor {
