@@ -145,7 +145,10 @@ ifb_engine::context_render_frame(
     result &= ifb_engine::graphics_window_frame_render(ptr_graphics);
 
     //check for quit event
-    result &= !ifb_engine::update_flags_get_quit(ptr_update->flags);
+    const IFBB8 quit_event = ifb_engine::update_flags_get_quit(ptr_update->flags);
+    if (quit_event) {
+        result &= false;
+    }
 
     //clear the flags
     ptr_update->flags = IFBEngineContextUpdateFlags_None;
