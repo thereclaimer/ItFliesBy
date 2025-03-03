@@ -179,8 +179,8 @@ ifb_engine::graphics_window_initialize(
     //position the window in the center of the monitor
     const IFBU32 offset_x  = ref_window_dimensions.width  / 2;
     const IFBU32 offset_y  = ref_window_dimensions.height / 2;
-    ref_window_position.x += offset_x;
-    ref_window_position.y += offset_y;
+    ref_window_position.x -= offset_x;
+    ref_window_position.y -= offset_y;
 
     //commit the window title
     ptr_window->title = (IFBChar*)ifb_memory::arena_commit_string(
