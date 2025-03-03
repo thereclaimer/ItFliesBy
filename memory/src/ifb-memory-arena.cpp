@@ -267,6 +267,7 @@ ifb_memory::arena_commit_string(
         max_length);
 
     //commit the bytes
+    //add one to account for a null terminator
     IFBChar* result_c_str = (IFBChar*)ifb_memory::arena_commit_bytes_absolute(
         arena_handle,
         length_actual + 1);
