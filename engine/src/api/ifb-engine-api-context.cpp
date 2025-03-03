@@ -124,30 +124,22 @@ ifb_engine::context_render_frame(
     const IFBB8 update_window_dimensions = ifb_engine::update_flags_get_window_dimensions(ptr_update->flags);
     const IFBB8 update_window_position   = ifb_engine::update_flags_get_window_position  (ptr_update->flags);
 
-    //handle window updates
-    if (update_window_dimensions) result &= ifb_engine::graphics_window_update_dimensions (ptr_graphics, &ptr_update->window.dimensions);
-    if (update_window_position)   result &= ifb_engine::graphics_window_update_position   (ptr_graphics, &ptr_update->window.position);
+    //handle window and viewport updates
+    if (update_window_dimensions) {
+        result &= ifb_engine::graphics_window_update_dimensions   (ptr_graphics, &ptr_update->window.dimensions);
+        result &= ifb_engine::renderer_viewport_update_dimensions (ptr_renderer, &ptr_update->window.dimensions);
+    }
+    if (update_window_position) {
+        result &= ifb_engine::graphics_window_update_position(ptr_graphics, &ptr_update->window.position);
+    }   
     
     //start a new window frame
-    result &= ifb_engine::graphics_window_frame_start(ptr_graphics);
-
-    //update the renderer viewport if the window was updated
-    IFBDimensions* ptr_renderer_viewport_dimensions = update_window_dimensions ? &ptr_update->window.dimensions : NULL;
-    result &= ifb_engine::renderer_viewport_update_dimensions(
-        ptr_renderer,
-        ptr_renderer_viewport_dimensions);
-
-    //clear the viewport
-    result &= ifb_engine::renderer_viewport_clear(ptr_renderer);
+    result &= ifb_engine::graphics_window_frame_start (ptr_graphics);
+    result &= ifb_engine::renderer_viewport_clear     (ptr_renderer);
 
     //render the window frame
-    result &= ifb_engine::graphics_window_frame_render(ptr_graphics);
-
-    //check for quit event
-    const IFBB8 quit_event = ifb_engine::update_flags_get_quit(ptr_update->flags);
-    if (quit_event) {
-        result &= false;
-    }
+    result &=  ifb_engine::graphics_window_frame_render (ptr_graphics);
+    result &= !ifb_engine::update_flags_get_quit        (ptr_update->flags);
 
     //clear the flags
     ptr_update->flags = IFBEngineContextUpdateFlags_None;
