@@ -75,7 +75,7 @@ ifb_engine::context_initialize_graphics_and_rendering(
     //initalize the renderer
     result &= ifb_engine::renderer_initialize(
         ptr_renderer,
-        core_ptr,
+        ptr_arenas->rendering,
         &renderer_viewport_dimensions,
         &clear_color_normalized);
 
