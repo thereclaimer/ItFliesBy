@@ -104,3 +104,67 @@ ifb_graphics::color_pack_normalized_to_32(
     //we're done
     return(color);
 }
+
+
+const IFBColorTable*
+ifb_graphics::color_table_commit_to_arena_absolute(
+    const IFBHNDArena    arena_handle,
+    const IFBColorFormat color_format,
+    const IFBU32         color_count,
+    const IFBChar**      color_key_array,
+    const IFBColorHex*   color_hex_array) {
+
+    //sanity check
+    IFBB8 result = true;
+    result &= ifb_memory_macro_handle_valid(arena_handle);
+    result &= (color_count     != 0);
+    result &= (color_key_array != NULL);
+    result &= (color_hex_array != NULL);
+    if (!result) return(false);
+
+    //commit the color table
+    const IFBU32         color_table_size = ifb_macro_align_size_struct(IFBColorTable); 
+    const IFBColorTable* color_table_ptr  = ifb_memory::arena_commit_bytes_absolute(
+        arena_handle,
+        color_table_size);
+
+    //commit the hash table
+    const IFBU32        color_hex_size   = sizeof(IFBColorHex);
+    const IFBU32        color_key_length = 32;
+    const IFBHashTable* hash_table_ptr   = ifb_hash_table::commit_to_arena_absolute(
+        arena_handle,
+        color_count,
+        color_hex_size,
+        color_key_length);
+
+    //make sure we have the pointers
+    ifb_macro_assert(color_table_ptr);
+    ifb_macro_assert(hash_table_ptr);
+
+    //add the values
+    for (
+        IFBU32 color_index = 0;
+               color_index < color_count;
+             ++color_index) {
+
+        //get the key and the color as a pointer to a byte
+        const IFBChar* ptr_color_key     = color_key_array[color_index];
+        const IFBByte* ptr_color_element = (IFBByte*)(&color_hex_array[color_index]);
+    
+        //add the color to the table
+        result &= ifb_hash_table::insert(
+            hash_table_ptr,
+            ptr_color_key
+            ptr_color_element);
+    }
+
+    //we're done
+    return(result);
+}
+
+const IFBColorHex*
+ifb_graphics::color_table_lookup(
+    const IFBColorTable* ptr_color_table,
+    const IFBChar*       ptr_color_key) {
+
+}
