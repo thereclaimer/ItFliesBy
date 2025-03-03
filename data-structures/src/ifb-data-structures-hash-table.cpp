@@ -124,7 +124,8 @@ const IFBB8
 ifb_hash_table::insert(
           IFBHashTable* ptr_hash_table,
     const IFBChar*      key,
-    const IFBByte*      element) {
+    const IFBByte*      element,
+          IFBU32*       ptr_element_index) {
 
     //sanity check
     ifb_macro_assert(ptr_hash_table);
@@ -182,6 +183,11 @@ ifb_hash_table::insert(
              ++byte_index) {
     
         element_destination[byte_index] = element[byte_index];
+    }
+
+    //set the hash index if the pointer is valid
+    if (ptr_element_index) {
+        *ptr_element_index = hash_index;
     }
 
     //we're done
@@ -273,6 +279,78 @@ ifb_hash_table::lookup(
 
     //we're done
     return(element_data); 
+}
+
+/**********************************************************************************/
+/* INDEXING                                                                       */
+/**********************************************************************************/
+
+const IFBU32
+ifb_hash_table::index_of(
+    const IFBHashTable* ptr_hash_table,
+    const IFBChar*      key) {
+
+    IFBB8 result = true;
+
+    //sanity check
+    ifb_macro_assert(ptr_hash_table);
+    
+    //cache hash array properties
+    const IFBHash* hash_array          = ifb_hash_table::get_hash_array(ptr_hash_table);
+    const IFBU32   hash_array_count    = ptr_hash_table->element_count_max;
+    const IFBU32   hash_key_length_max = ptr_hash_table->key_length_max;
+    
+    //the invalid index is the array count, since using that will return NULL
+    const IFBU32 hash_index_invalid = hash_array_count;
+
+    //hash the key
+    const IFBHash hash_key = ifb_hash::get_hash(key,hash_key_length_max);
+
+    //if the hash doesn't have a value, we're done
+    result &= !ifb_hash::hash_is_clear(hash_key);
+    if (!result) return(hash_index_invalid);
+
+    //search for the key
+    IFBU32 hash_index = 0;
+    result &= ifb_hash::search(
+        hash_array,
+        hash_array_count,
+        hash_key,
+        hash_index);
+
+    //if we have a valid result, set the index
+    //if not, return the invalid index
+    const IFBU32 hash_index_result = result 
+        ? hash_index
+        : hash_index_invalid;
+
+    //we're done
+    return(hash_index_result);
+}
+
+const IFBByte*
+ifb_hash_table::get_element_at_index(
+    const IFBHashTable* ptr_hash_table,
+    const IFBU32        index) {
+
+    //sanity check
+    ifb_macro_assert(ptr_hash_table);
+
+    //table properties
+    const IFBU32  element_count      = ptr_hash_table->element_count_max;
+    const IFBU32  element_size       = ptr_hash_table->element_size;
+    const IFBAddr element_data_start = ptr_hash_table->element_array_start;
+
+    //if the index is invalid, we're done
+    if (index >= element_count) return(NULL);
+ 
+    //calculate the pointer
+    const IFBU32   element_offset  = index * element_size;
+    const IFBAddr  element_address = element_data_start + element_offset;
+    const IFBByte* element_pointer = (IFBByte*)element_address;
+
+    //we're done
+    return(element_pointer);
 }
 
 /**********************************************************************************/

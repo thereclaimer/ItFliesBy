@@ -208,35 +208,12 @@ enum IFBColorFormat : IFBU32 {
      IFBColorFormat_BGRA = 3
 };
 
-//TODO(SAM): still a work on progress
-//dont know if I want this hardcoded or hash based
-struct IFBColorTable {
-    IFBColorHex black;
-    IFBColorHex white;
-    IFBColorHex light_gray;
-    IFBColorHex light_red;
-    IFBColorHex light_green;
-    IFBColorHex light_yellow;
-    IFBColorHex light_blue;
-    IFBColorHex light_purple;
-    IFBColorHex light_orange;
-    IFBColorHex dark_gray;
-    IFBColorHex dark_red;
-    IFBColorHex dark_green;
-    IFBColorHex dark_yellow;
-    IFBColorHex dark_blue;
-    IFBColorHex dark_purple;
-    IFBColorHex dark_orange;
-
-};
-
-
 #define IFB_WINDOW_TITLE_LENGTH_MAX 255
 
 typedef IFBPtr IFBGLContext;
 typedef IFBPtr IFBImGuiContext;
 
-struct IFBWindowPlatformContexts {
+struct IFBGraphicsContexts {
     IFBGLContext    opengl;
     IFBImGuiContext imgui;
 };
@@ -244,7 +221,7 @@ struct IFBWindowPlatformContexts {
 struct IFBWindow {
     IFBPosition               position;
     IFBDimensions             dimensions;
-    IFBWindowPlatformContexts platform_contexts;
+    IFBGraphicsContexts       graphics_contexts;
     IFBB32                    visible;
     IFBB32                    quit_received;
     IFBChar*                  title;

@@ -167,9 +167,13 @@ namespace ifb_hash_table {
     IFBHashTable*  load_from_arena          (const IFBHNDArena arena_handle, const IFBU32 offset);
 
     //operations
-    const IFBB8    insert                   (IFBHashTable*       ptr_hash_table, const IFBChar* key, const IFBByte* element);
+    const IFBB8    insert                   (IFBHashTable*       ptr_hash_table, const IFBChar* key, const IFBByte* element, IFBU32* ptr_element_index = NULL);
     const IFBB8    remove                   (const IFBHashTable* ptr_hash_table, const IFBChar* key);
     const IFBByte* lookup                   (const IFBHashTable* ptr_hash_table, const IFBChar* key);
+
+    //indexing
+    const IFBU32   index_of                 (const IFBHashTable* ptr_hash_table, const IFBChar* key);
+    const IFBByte* get_element_at_index     (const IFBHashTable* ptr_hash_table, const IFBU32   index);
 
     //count
     const IFBU32   get_element_count_total  (const IFBHashTable* ptr_hash_table);

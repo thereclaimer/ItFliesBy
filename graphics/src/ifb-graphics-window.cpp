@@ -81,7 +81,7 @@ ifb_graphics::window_context_gl_create(
 
 
     //create opengl and imgui contexts
-    IFBWindowPlatformContexts& contexts_ref = ptr_window->platform_contexts; 
+    IFBGraphicsContexts& contexts_ref = ptr_window->graphics_contexts; 
     contexts_ref.opengl = ifb_platform::window_opengl_init();
     contexts_ref.imgui  = ifb_platform::window_imgui_init();
 

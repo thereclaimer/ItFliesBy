@@ -10,7 +10,7 @@
 
 struct IFBWindow;
 struct IFBWindowTitle;
-struct IFBWindowPlatformContexts;
+struct IFBGraphicsContexts;
 
 /**********************************************************************************/
 /* COLORS                                                                         */
@@ -19,14 +19,12 @@ struct IFBWindowPlatformContexts;
 struct IFBColorTable {
     IFBHashTable*  ptr_hash_table;
     IFBColorFormat color_format;
-};  
+};
 
 namespace ifb_graphics {
-
     
     const IFBB8      color_normalize             (const IFBColorHex*        ptr_color_hex,        IFBColorNormalized*       ptr_color_normalized);
     const IFBB8      color_denormalize           (const IFBColorNormalized* ptr_color_normalized, IFBColorHex*              ptr_color_hex); 
-    
     
     const IFBColor32 color_pack_hex_to_32        (const IFBColorFormat      color_format,         const IFBColorHex*        ptr_color_hex); 
     const IFBColor32 color_pack_normalized_to_32 (const IFBColorFormat      color_format,         const IFBColorNormalized* ptr_color_normalized); 
@@ -40,9 +38,28 @@ namespace ifb_graphics {
         const IFBChar**      color_key_array,
         const IFBColorHex*   color_hex_array);
 
+    const IFBU32
+    color_table_commit_to_arena_relative(
+        const IFBHNDArena    arena_handle,
+        const IFBColorFormat color_format,
+        const IFBU32         color_count,
+        const IFBChar**      color_key_array,
+        const IFBColorHex*   color_hex_array);
+
+    const IFBColorTable*
+    color_table_load_from_arena(
+        const IFBHNDArena arena_handle,
+        const IFBU32      color_table_offset);
+
+    //lookup
     const IFBB8 color_table_lookup_hex        (const IFBColorTable* ptr_color_table, const IFBChar* ptr_color_key, IFBColorHex*        ptr_color_hex);
     const IFBB8 color_table_lookup_normalized (const IFBColorTable* ptr_color_table, const IFBChar* ptr_color_key, IFBColorNormalized* ptr_color_normalized);
     const IFBB8 color_table_lookup_packed_32  (const IFBColorTable* ptr_color_table, const IFBChar* ptr_color_key, IFBColor32*         ptr_color_32);
+
+    //indexing
+    const IFBB8 color_table_get_hex           (const IFBColorTable* ptr_color_table, const IFBU32   color_index,   IFBColorHex*        ptr_color_hex);
+    const IFBB8 color_table_get_normalized    (const IFBColorTable* ptr_color_table, const IFBU32   color_index,   IFBColorNormalized* ptr_color_normalized);
+    const IFBB8 color_table_get_packed_32     (const IFBColorTable* ptr_color_table, const IFBU32   color_index,   IFBColor32*         ptr_color_32);
 };
 
 /**********************************************************************************/
