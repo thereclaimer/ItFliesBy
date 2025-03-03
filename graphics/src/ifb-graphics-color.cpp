@@ -129,9 +129,9 @@ ifb_graphics::color_table_commit_to_arena_absolute(
         color_table_size);
 
     //commit the hash table
-    const IFBU32        color_hex_size   = sizeof(IFBColorHex);
-    const IFBU32        color_key_length = 32;
-    const IFBHashTable* hash_table_ptr   = ifb_hash_table::commit_to_arena_absolute(
+    const IFBU32  color_hex_size   = sizeof(IFBColorHex);
+    const IFBU32  color_key_length = 32;
+    IFBHashTable* hash_table_ptr   = ifb_hash_table::commit_to_arena_absolute(
         arena_handle,
         color_count,
         color_hex_size,
