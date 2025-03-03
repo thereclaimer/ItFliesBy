@@ -48,7 +48,6 @@ ifb_hash_table::commit_to_arena_relative(
 
     //do the commit, if it fails we're done
     const IFBU32 offset = ifb_memory::arena_commit_bytes_relative(arena_handle, size_total);  
-    if (!ifb_memory_macro_handle_valid(offset)) return(0);
 
     //get the pointer, we should ALWAYS be able
     //to get a pointer to a commit we just made
@@ -60,13 +59,12 @@ ifb_hash_table::commit_to_arena_relative(
     const IFBAddr start_address_elements = start_address_data + size_array_hash; 
 
     //initialize the table
-    ptr_hash_table->start                 = data_start;
-    ptr_hash_table->size                  = size_data;
-    ptr_hash_table->element_array_start   = start_address_elements;
-    ptr_hash_table->element_size          = element_size;
-    ptr_hash_table->element_count_max     = element_count;
-    ptr_hash_table->element_count_current = 0;
-    ptr_hash_table->key_length_max        = key_length_max;
+    ptr_hash_table->data_start          = start_address_data;
+    ptr_hash_table->data_size           = size_data;
+    ptr_hash_table->element_array_start = start_address_elements;
+    ptr_hash_table->element_size        = element_size;
+    ptr_hash_table->element_count_max   = element_count;
+    ptr_hash_table->key_length_max      = key_length_max;
 
     //we're done
     return(offset);
@@ -98,13 +96,12 @@ ifb_hash_table::commit_to_arena_absolute(
     const IFBAddr start_address_elements = start_address_data + size_array_hash; 
 
     //initialize the table
-    ptr_hash_table->start                 = data_start;
-    ptr_hash_table->size                  = size_data;
-    ptr_hash_table->element_array_start   = start_address_elements;
-    ptr_hash_table->element_size          = element_size;
-    ptr_hash_table->element_count_max     = element_count;
-    ptr_hash_table->element_count_current = 0;
-    ptr_hash_table->key_length_max        = key_length_max;
+    ptr_hash_table->data_start          = start_address_data;
+    ptr_hash_table->data_size           = size_data;
+    ptr_hash_table->element_array_start = start_address_elements;
+    ptr_hash_table->element_size        = element_size;
+    ptr_hash_table->element_count_max   = element_count;
+    ptr_hash_table->key_length_max      = key_length_max;
 
     //we're done
     return(ptr_hash_table);
@@ -119,7 +116,10 @@ ifb_hash_table::load_from_arena(
     return(ptr_hash_table);
 }
 
-//operations
+/**********************************************************************************/
+/* OPERATIONS                                                                     */
+/**********************************************************************************/
+
 const IFBB8
 ifb_hash_table::insert(
           IFBHashTable* ptr_hash_table,
@@ -172,12 +172,64 @@ ifb_hash_table::insert(
     //get the element destination
     const IFBU32  element_size   = ptr_hash_table->element_size;
     const IFBU32  element_offset = element_size * hash_index;
-    const IFBAddr element_start  =  ptr_hash_table->element_array_start + element_offset;
+    const IFBAddr element_start  = ptr_hash_table->element_array_start + element_offset;
     IFBByte* element_destination = (IFBByte*)element_start; 
 
+    //copy the element data
+    for (
+        IFBU32 byte_index = 0;
+               byte_index < element_size;
+             ++byte_index) {
+    
+        element_destination[byte_index] = element[byte_index];
+    }
 
     //we're done
     return(result);
+}
+
+const IFBB8
+ifb_hash_table::remove(
+    const IFBHashTable* ptr_hash_table,
+    const IFBChar*      key) {
+
+    //sanity check
+    ifb_macro_assert(ptr_hash_table);
+    IFBB8 result = (key != NULL);
+    if (!result) return(NULL);
+    
+    //cache hash array properties
+    IFBHash*       hash_array          = ifb_hash_table::get_hash_array(ptr_hash_table);
+    const IFBU32   hash_array_count     = ptr_hash_table->element_count_max;
+    const IFBU32   hash_key_length_max = ptr_hash_table->key_length_max;
+
+    //hash the key
+    const IFBHash hash_key = ifb_hash::get_hash(key,hash_key_length_max);
+
+    //if the hash doesn't have a value, we're done
+    result &= !ifb_hash::hash_is_clear(hash_key);
+    if (!result) return(NULL);
+
+    //search for the key
+    IFBU32 hash_index = 0;
+    result &= ifb_hash::search(
+        hash_array,
+        hash_array_count,
+        hash_key,
+        hash_index);
+
+    //if we don't have a match, we're done
+    if (!result) return(NULL);
+
+    //clear the hash
+    IFBHash& hash_to_clear_ref = hash_array[hash_index];
+    hash_to_clear_ref.h1 = 0;    
+    hash_to_clear_ref.h2 = 0;    
+    hash_to_clear_ref.h3 = 0;    
+    hash_to_clear_ref.h4 = 0;    
+
+    //we're done
+    return(true);
 }
 
 const IFBByte*
@@ -185,20 +237,124 @@ ifb_hash_table::lookup(
     const IFBHashTable* ptr_hash_table,
     const IFBChar*      key) {
 
+    //sanity check
+    ifb_macro_assert(ptr_hash_table);
+    IFBB8 result = (key != NULL);
+    if (!result) return(NULL);
+    
+    //cache hash array properties
+    const IFBHash* hash_array          = ifb_hash_table::get_hash_array(ptr_hash_table);
+    const IFBU32   hash_array_count     = ptr_hash_table->element_count_max;
+    const IFBU32   hash_key_length_max = ptr_hash_table->key_length_max;
+
+    //hash the key
+    const IFBHash hash_key = ifb_hash::get_hash(key,hash_key_length_max);
+
+    //if the hash doesn't have a value, we're done
+    result &= !ifb_hash::hash_is_clear(hash_key);
+    if (!result) return(NULL);
+
+    //search for the key
+    IFBU32 hash_index = 0;
+    result &= ifb_hash::search(
+        hash_array,
+        hash_array_count,
+        hash_key,
+        hash_index);
+
+    //if we don't have a match, we're done
+    if (!result) return(NULL);
+
+    //get the element at the index
+    const IFBU32   element_size   = ptr_hash_table->element_size;
+    const IFBU32   element_offset = hash_index * element_size;  
+    const IFBAddr  element_start  = ptr_hash_table->element_array_start + element_offset;
+    const IFBByte* element_data   = (IFBByte*)element_start;
+
+    //we're done
+    return(element_data); 
 }
 
-//count
-const IFBU32   ifb_hash_table::get_count_total          (const IFBHashTable* ptr_hash_table);
-const IFBU32   ifb_hash_table::get_count_free           (const IFBHashTable* ptr_hash_table);
-const IFBU32   ifb_hash_table::get_count_used           (const IFBHashTable* ptr_hash_table);
+/**********************************************************************************/
+/* COUNT                                                                          */
+/**********************************************************************************/
 
+const IFBU32
+ifb_hash_table::get_element_count_total(
+    const IFBHashTable* ptr_hash_table) {
+
+    //sanity check
+    ifb_macro_assert(ptr_hash_table);
+
+    //get the count
+    const IFBU32 count_total = ptr_hash_table->element_count_max;
+
+    //we're done
+    return(count_total);
+}
+
+const IFBU32
+ifb_hash_table::get_element_count_free(
+    const IFBHashTable* ptr_hash_table) {
+
+    //sanity check
+    ifb_macro_assert(ptr_hash_table);
+
+    //hash array properties
+    const IFBU32   hash_count = ptr_hash_table->element_count_max;
+    const IFBHash* hash_array = ifb_hash_table::get_hash_array(ptr_hash_table); 
+
+    //get the count free
+    IFBU32 count_free = 0;
+    for (
+        IFBU32 hash_index = 0;
+               hash_index < hash_count;
+             ++hash_index) {
+
+        //update the count if the hash is clear
+        const IFBHash& hash_ref = hash_array[hash_index];
+        if (ifb_hash::hash_is_clear(hash_ref)) {
+            ++count_free;
+        }
+    }
+
+    return(count_free);
+}
+
+const IFBU32
+ifb_hash_table::get_element_count_used(
+    const IFBHashTable* ptr_hash_table) {
+
+    //sanity check
+    ifb_macro_assert(ptr_hash_table);
+
+    //hash array properties
+    const IFBU32   hash_count = ptr_hash_table->element_count_max;
+    const IFBHash* hash_array = ifb_hash_table::get_hash_array(ptr_hash_table); 
+
+    //get the count used
+    IFBU32 count_used = 0;
+    for (
+        IFBU32 hash_index = 0;
+               hash_index < hash_count;
+             ++hash_index) {
+
+        //update the count if the hash is not clear
+        const IFBHash& hash_ref = hash_array[hash_index];
+        if (!ifb_hash::hash_is_clear(hash_ref)) {
+            ++count_used;
+        }
+    }
+
+    return(count_used);
+}
 
 /**********************************************************************************/
 /* INTERNAL                                                                       */
 /**********************************************************************************/
 
 inline IFBHash*
-ifb_hash::get_hash_array(
+ifb_hash_table::get_hash_array(
     const IFBHashTable* ptr_hash_table) {
 
     IFBHash* hash_array = (IFBHash*)ptr_hash_table->data_start;

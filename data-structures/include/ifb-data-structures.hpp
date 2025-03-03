@@ -155,7 +155,6 @@ struct IFBHashTable : IFBDataStructure {
     IFBU32 element_array_start;
     IFBU32 element_size;
     IFBU32 element_count_max;
-    IFBU32 element_count_current;
     IFBU32 key_length_max;
 };
 
@@ -169,6 +168,7 @@ namespace ifb_hash_table {
 
     //operations
     const IFBB8    insert                   (IFBHashTable*       ptr_hash_table, const IFBChar* key, const IFBByte* element);
+    const IFBB8    remove                   (const IFBHashTable* ptr_hash_table, const IFBChar* key);
     const IFBByte* lookup                   (const IFBHashTable* ptr_hash_table, const IFBChar* key);
 
     //count
