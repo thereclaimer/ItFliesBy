@@ -2,8 +2,40 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "Build IFB Win32",
+			"label":   "Build IFB Win32",
 			"command": "build-ifb-win32.bat",
+			"args":[
+            ],
+			"options": {
+				"cwd": "${workspaceFolder}/scripts"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build",
+			"dependsOn":[
+				"Build IFB Engine"
+			]
+		},
+		{
+			"label":   "Build IFB Engine",
+			"command": "build-ifb-engine.bat",
+			"args":[
+            ],
+			"options": {
+				"cwd": "${workspaceFolder}/scripts"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build",
+			"dependsOn":[
+				"Build IFB Libs"
+			]
+		},
+		{
+			"label":   "Build IFB Memory",
+			"command": "build-ifb-memory.bat",
 			"args":[
             ],
 			"options": {
@@ -15,8 +47,8 @@
 			"group": "build",
 		},
 		{
-			"label": "Build IFB Engine",
-			"command": "build-ifb-engine.bat",
+			"label":   "Build IFB Data Structures",
+			"command": "build-ifb-data-structures.bat",
 			"args":[
             ],
 			"options": {
@@ -26,6 +58,50 @@
 				"$msCompile"
 			],
 			"group": "build",
-		}
+		},
+		{
+			"label":   "Build IFB Graphics",
+			"command": "build-ifb-graphics.bat",
+			"args":[
+            ],
+			"options": {
+				"cwd": "${workspaceFolder}/scripts"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build",
+		},
+		{
+			"label":   "Build IFB Rendering",
+			"command": "build-ifb-rendering.bat",
+			"args":[
+            ],
+			"options": {
+				"cwd": "${workspaceFolder}/scripts"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build",
+		},
+		{
+			"label":   "Build IFB Libs",
+			"args":[
+            ],
+			"options": {
+				"cwd": "${workspaceFolder}/scripts"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build",
+			"dependsOn":[
+				"Build IFB Memory",
+				"Build IFB Graphics",
+				"Build IFB Data Structures",
+				"Build IFB Rendering",
+			]
+		},
 	]
 }

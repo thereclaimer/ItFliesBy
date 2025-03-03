@@ -6,26 +6,26 @@
 /* WINDOW API                                                                     */
 /**********************************************************************************/
 
-ifb_internal const ifb_b8
+ifb_internal const IFBB8
 ifb_win32::window_create(
-    const ifb_cstr title,
-    const ifb_u32  width,
-    const ifb_u32  height,
-    const ifb_u32  position_x,
-    const ifb_u32  position_y) {
+    const IFBCStr title,
+    const IFBU32  width,
+    const IFBU32  height,
+    const IFBU32  position_x,
+    const IFBU32  position_y) {
 
-    ifb_b8 result = true;
+    IFBB8 result = true;
 
-    //get the window
-    IFBWin32Window& window_ref = ifb_win32::context_get_window();
+    //get the window and args
+    IFBWin32Window* window_ptr = ifb_win32::context_get_window();
+    IFBWin32Args*   args_ptr   = ifb_win32::context_get_args();
 
-    //get context info
-    const HINSTANCE h_instance = ifb_win32::context_args_get_h_instance();
+    const HINSTANCE h_instance = args_ptr->h_instance; 
 
     //register class
     WNDCLASSA window_class = {0};
     window_class.lpfnWndProc   = (WNDPROC)ifb_win32::window_callback;
-    window_class.hInstance     = h_instance; 
+    window_class.hInstance     = h_instance;  
     window_class.lpszClassName = "IFBWin32Window";
     window_class.style         = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
 
@@ -34,7 +34,7 @@ ifb_win32::window_create(
     }
 
     //create the window handle
-    window_ref.window_handle = CreateWindowA(
+    window_ptr->window_handle = CreateWindowA(
         window_class.lpszClassName,
         title,
         WS_OVERLAPPEDWINDOW,
@@ -47,37 +47,34 @@ ifb_win32::window_create(
         h_instance,
         NULL);
 
-    result &= window_ref.window_handle != NULL;
+    result &= window_ptr->window_handle != NULL;
 
     //get the device context
-    window_ref.device_context = GetDC(window_ref.window_handle);
-    result &= window_ref.device_context != NULL;
+    window_ptr->device_context = GetDC(window_ptr->window_handle);
+    result &= window_ptr->device_context != NULL;
 
     //we're done
     return(result);    
 }
 
-ifb_internal const ifb_b8 
+ifb_internal const IFBB8 
 ifb_win32::window_destroy(
-    ifb_void) {
+    IFBVoid) {
 
     PostQuitMessage(0);
-
-    IFBEngineUpdate& update_ref = ifb_win32::context_get_engine_update();
-    ifb_engine::context_update_window_flags_set_close(update_ref);
 
     return(true);
 }
 
-ifb_internal const ifb_b8 
+ifb_internal const IFBB8 
 ifb_win32::window_frame_start(
-    ifb_void) {
+    IFBVoid) {
 
     //get the window
-    IFBWin32Window& window_ref = ifb_win32::context_get_window();
+    IFBWin32Window* window_ptr = ifb_win32::context_get_window();
 
     //start a new imgui frame if we have a context
-    if (window_ref.imgui_context) {
+    if (window_ptr->imgui_context) {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
@@ -85,7 +82,7 @@ ifb_win32::window_frame_start(
 
     //go through the messages for the window 
     MSG window_message;
-    while(PeekMessage(&window_message,window_ref.window_handle,0,0,PM_REMOVE)) {
+    while(PeekMessage(&window_message,window_ptr->window_handle,0,0,PM_REMOVE)) {
 
         switch(window_message.message) {
 
@@ -93,11 +90,7 @@ ifb_win32::window_frame_start(
             case WM_KEYDOWN:
             case WM_SYSKEYDOWN: {
 
-                const IFBKeyCode keycode = ifb_win32::user_input_keycode((ifb_u32)window_message.wParam);
-
-                IFBEngineUpdate& update = ifb_win32::context_get_engine_update();
-
-                ifb_input::keyboard_key_down(update.input.keyboard,keycode);
+                const IFBKeyCode keycode = ifb_win32::user_input_keycode((IFBU32)window_message.wParam);
 
             } break;
 
@@ -105,16 +98,12 @@ ifb_win32::window_frame_start(
             case WM_KEYUP:
             case WM_SYSKEYUP: {
 
-                const IFBKeyCode keycode = ifb_win32::user_input_keycode((ifb_u32)window_message.wParam);
-
-                IFBEngineUpdate& update = ifb_win32::context_get_engine_update();
-
-                ifb_input::keyboard_key_up(update.input.keyboard,keycode);
+                const IFBKeyCode keycode = ifb_win32::user_input_keycode((IFBU32)window_message.wParam);
 
             } break;
 
             case WM_QUIT: {
-                window_ref.quit_received = true;
+                window_ptr->quit_received = true;
             } break;
         }
 
@@ -126,44 +115,44 @@ ifb_win32::window_frame_start(
     return(true);
 }
 
-ifb_internal const ifb_b8 
+ifb_internal const IFBB8 
 ifb_win32::window_frame_render(
-    ifb_void) {
+    IFBVoid) {
 
     //get the window
-    IFBWin32Window& window_ref = ifb_win32::context_get_window();
+    IFBWin32Window* window_ptr = ifb_win32::context_get_window();
 
     //if we have an imgui context, render the draw data
-    if (window_ref.imgui_context) {
+    if (window_ptr->imgui_context) {
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
 
     //swap the buffers
-    SwapBuffers(window_ref.device_context);
+    SwapBuffers(window_ptr->device_context);
 
     //we're done
     return(true);
 }
 
-ifb_internal const ifb_b8 
+ifb_internal const IFBB8 
 ifb_win32::window_show(
-    ifb_void) {
+    IFBVoid) {
 
     //get the window
-    IFBWin32Window& window_ref = ifb_win32::context_get_window();
-
+    IFBWin32Window* window_ptr = ifb_win32::context_get_window();
+    
     //show the window
-    const ifb_b8  result = (ifb_b8)ShowWindow(window_ref.window_handle,1);
-    const ifb_u32 error  = GetLastError();
+    const IFBB8  result = (IFBB8)ShowWindow(window_ptr->window_handle,1);
+    const IFBU32 error  = GetLastError();
 
     //we're done
     return(true);
 }
 
-ifb_internal const ifb_b8 
+ifb_internal IFBGLContext 
 ifb_win32::window_opengl_init(
-    ifb_void) {
+    IFBVoid) {
 
     //set our preferred format descriptor
     PIXELFORMATDESCRIPTOR preferred_format_descriptor = {0};
@@ -174,58 +163,58 @@ ifb_win32::window_opengl_init(
     preferred_format_descriptor.cColorBits = 32;
 
     //get the window
-    IFBWin32Window& window_ref = ifb_win32::context_get_window();
-
+    IFBWin32Window* window_ptr = ifb_win32::context_get_window();
+    
     //query for the closest format descriptor
-    const ifb_s32 chosen_format_descriptor = 
+    const IFBS32 chosen_format_descriptor = 
         ChoosePixelFormat(
-            window_ref.device_context,
+            window_ptr->device_context,
             &preferred_format_descriptor);
 
     //set the chosen pixel format
-    const ifb_b8 pixel_format_is_set = 
+    const IFBB8 pixel_format_is_set = 
         SetPixelFormat(
-            window_ref.device_context,
+            window_ptr->device_context,
             chosen_format_descriptor,
             &preferred_format_descriptor);
 
     //create the opengl context
-    window_ref.opengl_context = wglCreateContext(window_ref.device_context);
+    window_ptr->opengl_context = wglCreateContext(window_ptr->device_context);
 
     //make the context current
-    const ifb_b8 context_active = wglMakeCurrent(
-        window_ref.device_context,
-        window_ref.opengl_context);
+    const IFBB8 context_active = wglMakeCurrent(
+        window_ptr->device_context,
+        window_ptr->opengl_context);
 
     //sanity check
-    const ifb_b8 result = (
+    const IFBB8 result = (
         chosen_format_descriptor  &&
         pixel_format_is_set       &&
-        window_ref.opengl_context &&
+        window_ptr->opengl_context &&
         context_active);
 
     //we're done
-    return(result);
+    return((IFBGLContext)window_ptr->opengl_context);
 }
 
 ifb_internal ImGuiContext*
 ifb_win32::window_imgui_init(
-    ifb_void) {
+    IFBVoid) {
 
     //sanity check
-    ifb_b8 result = IMGUI_CHECKVERSION();
+    IFBB8 result = IMGUI_CHECKVERSION();
 
     //get the window
-    IFBWin32Window& window_ref = ifb_win32::context_get_window();
-    
+    IFBWin32Window* window_ptr = ifb_win32::context_get_window();
+        
     //create the imgui context for win32 opengl
-    window_ref.imgui_context = ImGui::CreateContext();
-    result &= window_ref.imgui_context != NULL;
-    result &= (ifb_b8)ImGui_ImplWin32_Init(window_ref.window_handle);
-    result &= (ifb_b8)ImGui_ImplOpenGL3_Init("#version 330");
+    window_ptr->imgui_context = ImGui::CreateContext();
+    result &= window_ptr->imgui_context != NULL;
+    result &= (IFBB8)ImGui_ImplWin32_Init(window_ptr->window_handle);
+    result &= (IFBB8)ImGui_ImplOpenGL3_Init("#version 330");
 
     //we're done
-    return(result ? window_ref.imgui_context : NULL);
+    return(result ? window_ptr->imgui_context : NULL);
 }
 
 /**********************************************************************************/
@@ -242,9 +231,9 @@ ifb_win32::window_callback(
     ifb_win32_funcptr_on_wm_message_t wm_message_handler = NULL;
 
     //get the window
-    IFBWin32Window& window_ref = ifb_win32::context_get_window();
-
-    if (window_ref.imgui_context) {
+    IFBWin32Window* window_ptr = ifb_win32::context_get_window();
+    
+    if (window_ptr->imgui_context) {
         
         const LRESULT imgui_result =
             ImGui_ImplWin32_WndProcHandler(
@@ -284,11 +273,23 @@ ifb_win32::window_on_wm_size(
     const LPARAM l_param) {
 
     //get the window
-    IFBWin32Window& window_ref = ifb_win32::context_get_window();
+    IFBWin32Window*         window_ptr        = ifb_win32::context_get_window();
+    IFBEngineContextUpdate* engine_update_ptr = ifb_win32::context_get_engine_update(); 
 
     //update width and height
-    window_ref.width  = LOWORD(l_param);
-    window_ref.height = HIWORD(l_param);
+    const IFBU32 window_width  = LOWORD(l_param); 
+    const IFBU32 window_height = HIWORD(l_param); 
+    
+    window_ptr->width  = window_width;
+    window_ptr->height = window_height;
+
+    //update engine window dimensions
+    if (engine_update_ptr) {
+        IFBDimensions& window_dimensions_ref = engine_update_ptr->window.dimensions;
+        window_dimensions_ref.width  = window_width;
+        window_dimensions_ref.height = window_height;
+        ifb_engine::update_flags_set_window_dimensions(engine_update_ptr->flags);
+    }
 
     //we're done
     return(S_OK);   
@@ -300,11 +301,23 @@ ifb_win32::window_on_wm_move(
     const LPARAM l_param) {
 
     //get the window
-    IFBWin32Window& window_ref = ifb_win32::context_get_window();
+    IFBWin32Window*         window_ptr        = ifb_win32::context_get_window();
+    IFBEngineContextUpdate* engine_update_ptr = ifb_win32::context_get_engine_update(); 
+    
+    const IFBU32 window_position_x = LOWORD(l_param); 
+    const IFBU32 window_position_y = HIWORD(l_param); 
 
     //update the position
-    window_ref.position_x = LOWORD(l_param);
-    window_ref.position_y = HIWORD(l_param);
+    window_ptr->position_x = window_position_x;
+    window_ptr->position_y = window_position_y;
+
+    //update the engine if we have a context
+    if (engine_update_ptr) {
+        IFBPosition& window_position_ref = engine_update_ptr->window.position;
+        window_position_ref.x = window_position_x;
+        window_position_ref.y = window_position_y;
+        ifb_engine::update_flags_set_window_position(engine_update_ptr->flags);
+    }
 
     //we're done
     return(S_OK);
@@ -315,15 +328,15 @@ ifb_win32::window_on_wm_quit(
     const WPARAM w_param, 
     const LPARAM l_param) {
 
-    //get the window
-    IFBWin32Window& window_ref = ifb_win32::context_get_window();
+    //TODO(SAM): this event isn't being received for some reason
 
-    //set the close flag
-    IFBEngineUpdate& update_ref = ifb_win32::context_get_engine_update();
-    ifb_engine::context_update_window_flags_set_close(update_ref);
+    //get the window
+    IFBWin32Window*         window_ptr        = ifb_win32::context_get_window();
+    IFBEngineContextUpdate* engine_update_ptr = ifb_win32::context_get_engine_update(); 
 
     //set quit received
-    window_ref.quit_received = true;
+    window_ptr->quit_received  = true;
+    ifb_engine::update_flags_set_quit(engine_update_ptr->flags);
 
     //we're done
     return(S_OK);
@@ -334,11 +347,16 @@ ifb_win32::window_on_wm_destroy(
     const WPARAM w_param, 
     const LPARAM l_param) {
 
+    //get the window
+    IFBWin32Window*         window_ptr        = ifb_win32::context_get_window();
+    IFBEngineContextUpdate* engine_update_ptr = ifb_win32::context_get_engine_update(); 
+
+    //set quit received
+    window_ptr->quit_received = true;
+    ifb_engine::update_flags_set_quit(engine_update_ptr->flags);
+
     //post the quit message
     PostQuitMessage(0);
-
-    IFBEngineUpdate& update_ref = ifb_win32::context_get_engine_update();
-    ifb_engine::context_update_window_flags_set_close(update_ref);
 
     //we're done
     return(S_OK);

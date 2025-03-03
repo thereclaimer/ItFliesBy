@@ -1,111 +1,149 @@
 #pragma once
 
-#include "ifb-engine.hpp"
+#include "ifb-engine-api.hpp"
 #include "ifb-engine-internal-context.hpp"
-#include "ifb-engine-internal-memory.hpp"
-#include "ifb-engine-internal-devtools.hpp"
 
-ifb_api const ifb_b8
+/**********************************************************************************/
+/* CREATE/DESTROY                                                                 */
+/**********************************************************************************/
+
+ifb_engine_api const IFBHNDArena
 ifb_engine::context_create(
-    IFBPlatformApi& platform_api_ref) {
+    const IFBPlatformApi* ptr_platform_api,
+    const IFBByte*        stack_memory_ptr,
+    const IFBU32          stack_memory_size,
+    const IFBU64          reservation_size) {
 
-    //initialize the api
-    ifb_engine::platform_initialize(platform_api_ref);
+    //platform arena
+    IFBHNDArena platform_arena_handle;
+    platform_arena_handle.pointer = NULL;
 
     //get the context
-    IFBEngineContext& context_ref = ifb_engine::context();
+    IFBEngineContext& context_ref = ifb_engine::context_ref();
 
-    //get the config values
-    ifb_engine::config_get_values(&context_ref.config);
+    //sanity check
+    ifb_macro_assert(ptr_platform_api);
+    ifb_macro_assert(stack_memory_ptr);
+    ifb_macro_assert(stack_memory_size);
+    ifb_macro_assert(reservation_size);
 
-    //reserve memory
-    const ifb_u64 memory_reservation_size = ifb_macro_size_gigabytes(context_ref.config.memory_minimum_gb);
-    const ifb_u32 memory_commit_count_max = context_ref.config.memory_commit_count_max;
-    ifb_engine::memory_reserve(
-        &context_ref.memory,
-        memory_reservation_size,
-        memory_commit_count_max);
+    //set the api
+    (IFBVoid)ifb_engine::platform_api_initialize(ptr_platform_api);
+        
+    //create the core
+    context_ref.ptr_core = ifb_engine::core_create(
+        stack_memory_ptr,
+        stack_memory_size,
+        reservation_size);
+    if (!context_ref.ptr_core) return(platform_arena_handle);
+    
+    //commit the singletons
+    context_ref.ptr_singletons = ifb_engine::singletons_create(context_ref.ptr_core);
+    if (!context_ref.ptr_singletons) return(platform_arena_handle);
 
-    //allocate context structures
-    ifb_engine_macro_memory_global_push_struct(&context_ref.memory, context_ref.handles.managers,   IFBEngineContextManagers);
-    ifb_engine_macro_memory_global_push_struct(&context_ref.memory, context_ref.handles.core,       IFBEngineContextCore);
-    ifb_engine_macro_memory_global_push_struct(&context_ref.memory, context_ref.handles.devtools,   IFBEngineDevTools);
+    //commit the arenas
+    IFBEngineArenas* ptr_arenas = ifb_engine::singletons_load_arenas(context_ref.ptr_singletons);
+    ptr_arenas->platform  = ifb_engine::core_memory_commit_arena(context_ref.ptr_core);
+    ptr_arenas->graphics  = ifb_engine::core_memory_commit_arena(context_ref.ptr_core);
+    ptr_arenas->rendering = ifb_engine::core_memory_commit_arena(context_ref.ptr_core);
 
-    //create the managers
-    IFBEngineContextManagers* managers_ptr = ifb_engine::context_get_managers();
-    ifb_engine::context_managers_create_all(
-        managers_ptr,
-        &context_ref.memory,
-        &context_ref.config);
+    //set the platform arena
+    platform_arena_handle = ptr_arenas->platform; 
 
     //we're done
-    return(true);
+    return(platform_arena_handle);
 }
 
-ifb_api const ifb_b8 
+ifb_engine_api const IFBB8
 ifb_engine::context_destroy(
-    ifb_void) {
+    IFBVoid) {
 
-    //TODO
-    ifb_macro_panic();
-    return(true);
+    IFBB8 result = true;
+
+    IFBEngineContext& context_ref = ifb_engine::context_ref();
+
+    result &= ifb_engine::core_destroy(context_ref.ptr_core);
+
+    return(result);
 }
 
-ifb_api const ifb_b8 
+/**********************************************************************************/
+/* STARTUP/SHUTDOWN                                                               */
+/**********************************************************************************/
+
+ifb_engine_api IFBEngineContextUpdate*
 ifb_engine::context_startup(
-    ifb_void) {
+    IFBVoid) {
 
-    IFBEngineContext& context_ref = ifb_engine::context();
+    //get the context structures
+    IFBEngineCore*       ptr_core       = ifb_engine::context_get_ptr_core();
+    IFBEngineSingletons* ptr_singletons = ifb_engine::context_get_ptr_singletons();
+    
+    //initialize engine systems
+    IFBB8 startup_result = true;
+    startup_result &= ifb_engine::context_initialize_config                 (ptr_core, ptr_singletons);
+    startup_result &= ifb_engine::context_initialize_graphics_and_rendering (ptr_core, ptr_singletons);
 
-    //get the pointers
-    IFBEngineContextManagers* managers_ptr         = ifb_engine::context_get_managers();
-    IFBEngineManagerGraphics* graphics_manager_ptr = ifb_engine::context_managers_get_graphics_manager(managers_ptr);
-
-    //set the window flags
-    const IFBWindowFlags window_flags = 
-        IFBWindowFlags_Visible | 
-        IFBWindowFlags_ImGui   | 
-        IFBWindowFlags_OpenGL;
-
-    //create the window
-    ifb_engine::graphics_manager_create_window(
-        graphics_manager_ptr,
-        context_ref.config.window_title_cstr,
-        window_flags);
-
-    //create the viewport
-    ifb_engine::graphics_manager_create_viewport(graphics_manager_ptr);
-
-    //style imgui
-    ifb_engine::graphics_manager_style_imgui(graphics_manager_ptr);
+    // allocate an update structure if startup was successful
+    // this part should ALWAYS work, so an assertion is built in
+    // if we did not succeed, we will return NULL to the platform
+    // to let them know shit's fucked up
+    IFBEngineContextUpdate* update_ptr = startup_result
+        ? ifb_engine::context_commit_update(ptr_core)
+        : NULL;
 
     //we're done
-    return(true);
+    return(update_ptr);
 }
 
-ifb_api const ifb_b8 
-ifb_engine::context_update_and_render(
-    IFBEngineUpdate& update) {
+ifb_engine_api const IFBB8
+ifb_engine::context_shutdown(
+    IFBVoid) {
 
-    //get the pointers
-    IFBEngineContextManagers* managers_ptr         = ifb_engine::context_get_managers();
-    IFBEngineManagerGraphics* graphics_manager_ptr = ifb_engine::context_managers_get_graphics_manager(managers_ptr);
+    return(false);
+}
 
-    //start a new frame
-    ifb_engine::graphics_manager_frame_start(graphics_manager_ptr);
+/**********************************************************************************/
+/* RENDERING                                                                      */
+/**********************************************************************************/
 
-    //devtools
-    IFBEngineDevTools* devtools_ptr = ifb_engine::context_get_devtools();
-    ifb_engine::devtools_render(devtools_ptr,update.input);
+ifb_engine_api const IFBB8
+ifb_engine::context_render_frame(
+    IFBEngineContextUpdate* ptr_update) {
 
-    //render the frame
-    ifb_engine::graphics_manager_frame_render(graphics_manager_ptr);
+    //result
+    IFBB8 result = true;
+    ifb_macro_assert(ptr_update);
 
-    //determine if we should close
-    ifb_b8 close = false;
-    close |= ifb_engine::context_update_window_flags_get_close(update); 
-    close |= ifb_engine::devtools_context_flags_get_exit(devtools_ptr->flags.context); 
+    //get the singletons
+    IFBEngineSingletons* ptr_singletons = ifb_engine::context_get_ptr_singletons();
+    IFBEngineGraphics*   ptr_graphics   = ifb_engine::singletons_load_graphics (ptr_singletons);
+    IFBEngineRenderer*   ptr_renderer   = ifb_engine::singletons_load_renderer (ptr_singletons);
+
+    //cache window flags
+    const IFBB8 update_window_dimensions = ifb_engine::update_flags_get_window_dimensions(ptr_update->flags);
+    const IFBB8 update_window_position   = ifb_engine::update_flags_get_window_position  (ptr_update->flags);
+
+    //handle window and viewport updates
+    if (update_window_dimensions) {
+        result &= ifb_engine::graphics_window_update_dimensions   (ptr_graphics, &ptr_update->window.dimensions);
+        result &= ifb_engine::renderer_viewport_update_dimensions (ptr_renderer, &ptr_update->window.dimensions);
+    }
+    if (update_window_position) {
+        result &= ifb_engine::graphics_window_update_position(ptr_graphics, &ptr_update->window.position);
+    }   
+    
+    //start a new window frame
+    result &= ifb_engine::graphics_window_frame_start (ptr_graphics);
+    result &= ifb_engine::renderer_viewport_clear     (ptr_renderer);
+
+    //render the window frame
+    result &=  ifb_engine::graphics_window_frame_render (ptr_graphics);
+    result &= !ifb_engine::update_flags_get_quit        (ptr_update->flags);
+
+    //clear the flags
+    ptr_update->flags = IFBEngineContextUpdateFlags_None;
 
     //we're done
-    return(!close);
+    return(result);
 }

@@ -2,20 +2,20 @@
 
 #include "ifb-win32.hpp"
 
-ifb_internal ifb_void 
+ifb_internal IFBVoid 
 ifb_win32::file_dialog_api_initialize(
     IFBEnginePlatformFileDialog& platform_api_file_dialog_ref) {
 
     platform_api_file_dialog_ref.select_file = ifb_win32::file_dialog_select_file;
 }
 
-ifb_internal const ifb_b8
+ifb_internal const IFBB8
 ifb_win32::file_dialog_select_file(
-    const ifb_cstr  in_file_dialog_starting_directory,
-    const ifb_size  in_file_type_count,
-    const ifb_cstr* in_file_type_name_cstr_ptr,
-    const ifb_cstr* in_file_type_spec_cstr_ptr,
-          ifb_cstr out_file_selection_buffer) {
+    const IFBCStr  in_file_dialog_starting_directory,
+    const IFBSize  in_file_type_count,
+    const IFBCStr* in_file_type_name_cstr_ptr,
+    const IFBCStr* in_file_type_spec_cstr_ptr,
+          IFBCStr out_file_selection_buffer) {
 
     //sanity check
     if (
@@ -38,34 +38,34 @@ ifb_win32::file_dialog_select_file(
     }
 
     //allocate the wide string arrays 
-    ifb_wstr* file_type_name_wstr_ptr = ifb_engine_memory_arena_push_array_immediate(tmp_arena_handle,in_file_type_count,ifb_wstr);
-    ifb_wstr* file_type_spec_wstr_ptr = ifb_engine_memory_arena_push_array_immediate(tmp_arena_handle,in_file_type_count,ifb_wstr);
+    IFBWStr* file_type_name_wstr_ptr = ifb_engine_memory_arena_push_array_immediate(tmp_arena_handle,in_file_type_count,IFBWStr);
+    IFBWStr* file_type_spec_wstr_ptr = ifb_engine_memory_arena_push_array_immediate(tmp_arena_handle,in_file_type_count,IFBWStr);
 
     //cache the size of a wchar
-    const ifb_size w_char_size = sizeof(ifb_wchar);
+    const IFBSize w_char_size = sizeof(IFBWChar);
 
     //convert cstr to wstr
     for (
-        ifb_index file_type_index = 0;
+        IFBIndex file_type_index = 0;
         file_type_index < in_file_type_count;
         ++file_type_index) {
 
         //cache the current c-strings
-        const ifb_cstr file_type_name_cstr = in_file_type_name_cstr_ptr[file_type_index];
-        const ifb_cstr file_type_spec_cstr = in_file_type_spec_cstr_ptr[file_type_index];
+        const IFBCStr file_type_name_cstr = in_file_type_name_cstr_ptr[file_type_index];
+        const IFBCStr file_type_spec_cstr = in_file_type_spec_cstr_ptr[file_type_index];
 
         //get the c-string lengths, including the null terminator
-        const ifb_size file_type_name_cstr_length = strnlen_s(file_type_name_cstr, IFB_WIN32_DIALOG_CSTR_LENGTH_MAX) + 1;
-        const ifb_size file_type_spec_cstr_length = strnlen_s(file_type_spec_cstr, IFB_WIN32_DIALOG_CSTR_LENGTH_MAX) + 1;
+        const IFBSize file_type_name_cstr_length = strnlen_s(file_type_name_cstr, IFB_WIN32_DIALOG_CSTR_LENGTH_MAX) + 1;
+        const IFBSize file_type_spec_cstr_length = strnlen_s(file_type_spec_cstr, IFB_WIN32_DIALOG_CSTR_LENGTH_MAX) + 1;
 
         //determine the byte length of the equivalient w-string
         //wstr_byte_len = w_char_size * cstr_len
-        const ifb_size file_type_name_wstr_length_bytes = w_char_size * file_type_name_cstr_length; 
-        const ifb_size file_type_spec_wstr_length_bytes = w_char_size * file_type_spec_cstr_length; 
+        const IFBSize file_type_name_wstr_length_bytes = w_char_size * file_type_name_cstr_length; 
+        const IFBSize file_type_spec_wstr_length_bytes = w_char_size * file_type_spec_cstr_length; 
     
         //get the memory for the w-strings
-        const ifb_wstr file_type_name_wstr = ifb_engine_memory_arena_push_array_immediate(tmp_arena_handle, file_type_name_wstr_length_bytes, ifb_wchar);
-        const ifb_wstr file_type_spec_wstr = ifb_engine_memory_arena_push_array_immediate(tmp_arena_handle, file_type_spec_wstr_length_bytes, ifb_wchar);
+        const IFBWStr file_type_name_wstr = ifb_engine_memory_arena_push_array_immediate(tmp_arena_handle, file_type_name_wstr_length_bytes, IFBWChar);
+        const IFBWStr file_type_spec_wstr = ifb_engine_memory_arena_push_array_immediate(tmp_arena_handle, file_type_spec_wstr_length_bytes, IFBWChar);
     
         //clear the memory
         memset(file_type_name_wstr,0,file_type_name_wstr_length_bytes);        
@@ -82,7 +82,7 @@ ifb_win32::file_dialog_select_file(
     }
 
     //now, we can open the dialog
-    ifb_b8 result = r_win32::file_dialog_select_file(
+    IFBB8 result = r_win32::file_dialog_select_file(
         _ifb_win32.file_dialog_handle,
         in_file_dialog_starting_directory,
         in_file_type_count,

@@ -1,78 +1,126 @@
 #pragma once
 
-#include "ifb-engine.hpp"
+#include <ifb.hpp>
 #include "ifb-engine-internal-context.hpp"
-#include "ifb-engine-internal-memory.hpp"
 
-inline IFBEngineMemory*
-ifb_engine::context_get_memory(
-    ifb_void) {
+#include "ifb-engine-context-singletons.cpp"
+#include "ifb-engine-context-platform.cpp"
+#include "ifb-engine-context-config.cpp"
 
-    IFBEngineContext& context_ref = ifb_engine::context();
+/**********************************************************************************/
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
 
-    return(&context_ref.memory);
-}
+ifb_global IFBEngineContext _context;
 
-inline IFBEngineContextCore*
-ifb_engine::context_get_core(
-    ifb_void) {
 
-    IFBEngineContext& context_ref = ifb_engine::context();
+inline const IFBB8
+ifb_engine::context_initialize_config(
+    IFBEngineCore*       core_ptr,
+    IFBEngineSingletons* singletons_ptr) {
 
-    IFBEngineContextCore* core_ptr = (IFBEngineContextCore*)ifb_engine::memory_get_pointer(
-        &context_ref.memory,
-        context_ref.handles.core);
+    IFBB8 result = true;
 
-    return(core_ptr);
-}
+    //sanity check
+    ifb_macro_assert(core_ptr);
+    ifb_macro_assert(singletons_ptr);
 
-inline IFBEngineDevTools*
-ifb_engine::context_get_devtools(
-    ifb_void) {
+    //load the config
+    IFBEngineConfig* ptr_config = ifb_engine::singletons_load_config(singletons_ptr);
+    const IFBB8 config_initialized = ifb_engine::config_initialize(ptr_config);
 
-    IFBEngineContext& context_ref = ifb_engine::context();
-
-    IFBEngineDevTools* devtools_ptr = (IFBEngineDevTools*)ifb_engine::memory_get_pointer(
-        &context_ref.memory,
-        context_ref.handles.devtools);
-
-    return(devtools_ptr);
-}
-
-inline const ifb_ptr 
-ifb_engine::context_get_pointer(
-    const IFBHND& handle) {
-
-    //get memory
-    IFBEngineMemory* engine_memory_ptr = ifb_engine::context_get_memory();
-
-    //get the pointer
-    const ifb_ptr pointer = ifb_engine::memory_get_pointer(
-        engine_memory_ptr,
-        handle);
-    
     //we're done
-    return(pointer);
+    return(config_initialized);
 }
 
-inline const ifb_ptr 
-ifb_engine::context_get_pointer(
-    const IFBGHND& global_handle) {
+inline const IFBB8
+ifb_engine::context_initialize_graphics_and_rendering(
+    IFBEngineCore*       core_ptr,
+    IFBEngineSingletons* singletons_ptr) {
 
-    //get memory
-    IFBEngineMemory* engine_memory_ptr = ifb_engine::context_get_memory();
+    IFBB8 result = true;
 
-    //get the pointer
-    const ifb_ptr pointer = ifb_engine::memory_get_pointer(
-        engine_memory_ptr,
-        global_handle);
-    
+    //sanity check
+    ifb_macro_assert(core_ptr);
+    ifb_macro_assert(singletons_ptr);
+
+    //load pointers
+    IFBEngineArenas*   ptr_arenas   = ifb_engine::singletons_load_arenas   (singletons_ptr);
+    IFBEngineGraphics* ptr_graphics = ifb_engine::singletons_load_graphics (singletons_ptr);
+    IFBEngineRenderer* ptr_renderer = ifb_engine::singletons_load_renderer (singletons_ptr);
+
+    //initialize graphics manager
+    result &= ifb_engine::graphics_initialize(
+        ptr_graphics,
+        ptr_arenas->graphics,
+        IFBColorFormat_RGBA);
+
+    //create the clear color
+    IFBColorHex clear_color_hex;
+    clear_color_hex.red   =  80;
+    clear_color_hex.blue  =  80;
+    clear_color_hex.green =  80;
+    clear_color_hex.alpha = 255;
+
+    //normalize the clear color
+    IFBColorNormalized clear_color_normalized;
+    ifb_engine::graphics_get_color_normalized(
+        &clear_color_hex,
+        &clear_color_normalized);
+
+    //the window dimensions will be the renderer viewport dimensions
+    IFBDimensions renderer_viewport_dimensions;
+    result &= ifb_engine::graphics_window_get_dimensions(ptr_graphics,&renderer_viewport_dimensions);
+
+    //initalize the renderer
+    result &= ifb_engine::renderer_initialize(
+        ptr_renderer,
+        ptr_arenas->rendering,
+        &renderer_viewport_dimensions,
+        &clear_color_normalized);
+
     //we're done
-    return(pointer);
+    return(result);
 }
 
-inline ifb_void 
-ifb_engine::context_process_input(
-    IFBInput& input_ref) {
+inline IFBEngineContext&
+ifb_engine::context_ref(
+    IFBVoid) {
 
+    return(_context);
+}
+
+inline IFBEngineCore*
+ifb_engine::context_get_ptr_core(
+    IFBVoid) {
+
+    IFBEngineCore* ptr_core = _context.ptr_core;
+    ifb_macro_assert(ptr_core);
+
+    return(ptr_core);
+}
+
+inline IFBEngineSingletons* 
+ifb_engine::context_get_ptr_singletons(
+    IFBVoid) {
+
+    IFBEngineSingletons* ptr_singletons = _context.ptr_singletons;
+    ifb_macro_assert(ptr_singletons);
+
+    return(ptr_singletons);
+}
+
+inline IFBEngineContextUpdate*
+ifb_engine::context_commit_update(
+    IFBEngineCore* core_ptr) {
+
+    const IFBU32 update_size = ifb_macro_align_size_struct(IFBEngineContextUpdate);
+
+    IFBEngineContextUpdate* update_ptr = (IFBEngineContextUpdate*)ifb_engine::core_memory_commit_bytes_absolute(
+        core_ptr,
+        update_size);
+    
+    ifb_macro_assert(update_ptr);
+
+    return(update_ptr);
 }

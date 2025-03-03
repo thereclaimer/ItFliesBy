@@ -46,12 +46,12 @@ enum IFBAssetType_ {
 struct IFBAsset78  {
     IFBHash      hash;
     IFBAssetType type;
-    ifb_u32      size;
+    IFBU32      size;
 };
 
 struct IFBAssetTable {
     IFBAssetType type;
-    ifb_u32      count;
+    IFBU32      count;
 };
 
 struct IFBAssetTableText : IFBAssetTable {

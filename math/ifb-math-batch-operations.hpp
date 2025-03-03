@@ -7,22 +7,22 @@
 
 namespace ifb_math {
 
-    ifb_void batch_a_add_b  (const ifb_u32 count, const ifb_f32* a, const ifb_f32* b, ifb_f32* c);
-    ifb_void batch_a_sub_b  (const ifb_u32 count, const ifb_f32* a, const ifb_f32* b, ifb_f32* c);
-    ifb_void batch_a_mul_b  (const ifb_u32 count, const ifb_f32* a, const ifb_f32* b, ifb_f32* c);
-    ifb_void batch_a_div_b  (const ifb_u32 count, const ifb_f32* a, const ifb_f32* b, ifb_f32* c);
+    IFBVoid batch_a_add_b  (const IFBU32 count, const IFBF32* a, const IFBF32* b, IFBF32* c);
+    IFBVoid batch_a_sub_b  (const IFBU32 count, const IFBF32* a, const IFBF32* b, IFBF32* c);
+    IFBVoid batch_a_mul_b  (const IFBU32 count, const IFBF32* a, const IFBF32* b, IFBF32* c);
+    IFBVoid batch_a_div_b  (const IFBU32 count, const IFBF32* a, const IFBF32* b, IFBF32* c);
 
-    ifb_void batch_sqrt     (const ifb_u32 count, const ifb_f32* val, ifb_f32* val_sqrt);
-    ifb_void batch_trig_sin (const ifb_u32 count, const ifb_f32* val, ifb_f32* val_trig_sin);
-    ifb_void batch_trig_cos (const ifb_u32 count, const ifb_f32* val, ifb_f32* val_trig_cos);
+    IFBVoid batch_sqrt     (const IFBU32 count, const IFBF32* val, IFBF32* val_sqrt);
+    IFBVoid batch_trig_sin (const IFBU32 count, const IFBF32* val, IFBF32* val_trig_sin);
+    IFBVoid batch_trig_cos (const IFBU32 count, const IFBF32* val, IFBF32* val_trig_cos);
 };
 
-inline ifb_void 
+inline IFBVoid 
 ifb_math::batch_a_add_b(
-    const ifb_u32  count,
-    const ifb_f32* a,
-    const ifb_f32* b,
-          ifb_f32* c) {
+    const IFBU32  count,
+    const IFBF32* a,
+    const IFBF32* b,
+          IFBF32* c) {
 
     ifb_xmm_f128 xmm_a;
     ifb_xmm_f128 xmm_b;
@@ -31,7 +31,7 @@ ifb_math::batch_a_add_b(
     ifb_macro_assert(count % 4 == 0);
 
     for (
-        ifb_u32 index = 0;
+        IFBU32 index = 0;
         index < count;
         index += 4) {
 
@@ -47,12 +47,12 @@ ifb_math::batch_a_add_b(
     }
 }
 
-inline ifb_void 
+inline IFBVoid 
 ifb_math::batch_a_sub_b(
-    const ifb_u32  count,
-    const ifb_f32* a,
-    const ifb_f32* b,
-          ifb_f32* c) {
+    const IFBU32  count,
+    const IFBF32* a,
+    const IFBF32* b,
+          IFBF32* c) {
 
     ifb_xmm_f128 xmm_a;
     ifb_xmm_f128 xmm_b;
@@ -61,7 +61,7 @@ ifb_math::batch_a_sub_b(
     ifb_macro_assert(count % 4 == 0);
 
     for (
-        ifb_u32 index = 0;
+        IFBU32 index = 0;
         index < count;
         index += 4) {
 
@@ -77,12 +77,12 @@ ifb_math::batch_a_sub_b(
     }
 }
 
-inline ifb_void 
+inline IFBVoid 
 ifb_math::batch_a_mul_b(
-    const ifb_u32  count,
-    const ifb_f32* a,
-    const ifb_f32* b,
-          ifb_f32* c) {
+    const IFBU32  count,
+    const IFBF32* a,
+    const IFBF32* b,
+          IFBF32* c) {
 
     ifb_xmm_f128 xmm_a;
     ifb_xmm_f128 xmm_b;
@@ -91,7 +91,7 @@ ifb_math::batch_a_mul_b(
     ifb_macro_assert(count % 4 == 0);
 
     for (
-        ifb_u32 index = 0;
+        IFBU32 index = 0;
         index < count;
         index += 4) {
 
@@ -107,12 +107,12 @@ ifb_math::batch_a_mul_b(
     }
 }
 
-inline ifb_void 
+inline IFBVoid 
 ifb_math::batch_a_div_b(
-    const ifb_u32  count,
-    const ifb_f32* a,
-    const ifb_f32* b,
-          ifb_f32* c) {
+    const IFBU32  count,
+    const IFBF32* a,
+    const IFBF32* b,
+          IFBF32* c) {
 
     ifb_xmm_f128 xmm_a;
     ifb_xmm_f128 xmm_b;
@@ -121,7 +121,7 @@ ifb_math::batch_a_div_b(
     ifb_macro_assert(count % 4 == 0);
 
     for (
-        ifb_u32 index = 0;
+        IFBU32 index = 0;
         index < count;
         index += 4) {
 
@@ -137,11 +137,11 @@ ifb_math::batch_a_div_b(
     }
 }
 
-inline ifb_void
+inline IFBVoid
 ifb_math::batch_sqrt(
-    const ifb_u32  count,
-    const ifb_f32* val,
-          ifb_f32* val_sqrt) {
+    const IFBU32  count,
+    const IFBF32* val,
+          IFBF32* val_sqrt) {
 
     ifb_xmm_f128 xmm_a;
     ifb_xmm_f128 xmm_b;
@@ -149,7 +149,7 @@ ifb_math::batch_sqrt(
     ifb_macro_assert(count % 4 == 0);
 
     for (
-        ifb_u32 index = 0;
+        IFBU32 index = 0;
         index < count;
         index += 4) {
 
@@ -164,16 +164,16 @@ ifb_math::batch_sqrt(
     }
 }
 
-inline ifb_void
+inline IFBVoid
 ifb_math::batch_trig_sin(
-    const ifb_u32  count,
-    const ifb_f32* val,
-          ifb_f32* val_trig_sin) {
+    const IFBU32  count,
+    const IFBF32* val,
+          IFBF32* val_trig_sin) {
 
     ifb_macro_assert(count % 4 == 0);
 
     for (
-        ifb_u32 index = 0;
+        IFBU32 index = 0;
         index < count;
         index += 4) {
             
@@ -184,16 +184,16 @@ ifb_math::batch_trig_sin(
     }
 }
 
-inline ifb_void
+inline IFBVoid
 ifb_math::batch_trig_cos(
-    const ifb_u32  count,
-    const ifb_f32* val,
-          ifb_f32* val_trig_cos) {
+    const IFBU32  count,
+    const IFBF32* val,
+          IFBF32* val_trig_cos) {
 
     ifb_macro_assert(count % 4 == 0);
 
     for (
-        ifb_u32 index = 0;
+        IFBU32 index = 0;
         index < count;
         index += 4) {
             
