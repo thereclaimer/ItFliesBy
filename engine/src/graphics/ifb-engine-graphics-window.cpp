@@ -6,6 +6,7 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
+#define IFB_ENGINE_GRAPHICS_WINDOW_TITLE            "It Flies By (Debug)"
 #define IFB_ENGINE_GRAPHICS_WINDOW_TITLE_MAX_LENGTH 32
 #define IFB_ENGINE_GRAPHICS_WINDOW_INITIAL_WIDTH    1920
 #define IFB_ENGINE_GRAPHICS_WINDOW_INITIAL_HEIGHT   1080
@@ -169,9 +170,15 @@ ifb_engine::graphics_window_initialize(
     IFBDimensions& ref_window_dimensions = ptr_window->dimensions;
     IFBPosition&   ref_window_position   = ptr_window->position;
 
+    //default window properties
+    const IFBU32   window_width            = IFB_ENGINE_GRAPHICS_WINDOW_INITIAL_WIDTH;
+    const IFBU32   window_height           = IFB_ENGINE_GRAPHICS_WINDOW_INITIAL_HEIGHT;
+    const IFBU32   window_title_max_length = IFB_ENGINE_GRAPHICS_WINDOW_TITLE_MAX_LENGTH; 
+    const IFBChar* window_title_cstr       = IFB_ENGINE_GRAPHICS_WINDOW_TITLE;
+
     //initial dimensions
-    ref_window_dimensions.width  = IFB_ENGINE_GRAPHICS_WINDOW_INITIAL_WIDTH;
-    ref_window_dimensions.height = IFB_ENGINE_GRAPHICS_WINDOW_INITIAL_HEIGHT;
+    ref_window_dimensions.width  = window_width;
+    ref_window_dimensions.height = window_height;
     
     //get the center of the monitor
     result &= ifb_graphics::monitor_get_center(ptr_monitor,&ref_window_position);
@@ -185,8 +192,8 @@ ifb_engine::graphics_window_initialize(
     //commit the window title
     ptr_window->title = (IFBChar*)ifb_memory::arena_commit_string(
         ptr_graphics->arena,
-        "It Flies By (DEBUG)",
-        IFB_ENGINE_GRAPHICS_WINDOW_TITLE_MAX_LENGTH);
+        window_title_cstr,
+        window_title_max_length);
     result &= (ptr_window->title != NULL);
 
     //create  the window
