@@ -264,13 +264,13 @@ ifb_memory::arena_commit_string(
     //get the actual length of the string
     const IFBU32 length_actual = strnlen_s(
         c_string,
-        max_length
-    );
+        max_length);
 
     //commit the bytes
+    //add one to account for a null terminator
     IFBChar* result_c_str = (IFBChar*)ifb_memory::arena_commit_bytes_absolute(
         arena_handle,
-        length_actual);
+        length_actual + 1);
 
     //copy the string
     for (
@@ -280,6 +280,9 @@ ifb_memory::arena_commit_string(
 
         result_c_str[char_index] = c_string[char_index];
     }
+
+    //terminate the string
+    result_c_str[length_actual] = '\0';
 
     //we're done
     return(result_c_str);

@@ -25,12 +25,13 @@
 #define ifb_macro_bit_is_set(bit,val)                    ifb_macro_bit_test(bit,val)
 #define ifb_macro_bit_is_clear(bit,val)                  !ifb_macro_bit_test(bit,val)
 
-#define ifb_macro_flags_set(flags,val)                   (val |=  (flags))  
-#define ifb_macro_flags_clear(flags,val)                 (val &= ~(flags))  
-#define ifb_macro_flags_toggle(flags,val)                (val ^=  (flags))
-#define ifb_macro_flags_test(flags,val)                  (val & flags)
-#define ifb_macro_flags_is_set(flags,val)                ifb_macro_flags_test(flags,val)
-#define ifb_macro_flags_is_clear(flags,val)              !ifb_macro_flags_test(flags,val)
+// TODO(SAM): these don't work
+// #define ifb_macro_flags_set(flags,val)                   (val |=  (flags))  
+// #define ifb_macro_flags_clear(flags,val)                 (val &= ~(flags))  
+// #define ifb_macro_flags_toggle(flags,val)                (val ^=  (flags))
+// #define ifb_macro_flags_test(flags,val)                  (val & flags)
+// #define ifb_macro_flags_is_set(flags,val)                ifb_macro_flags_test(flags,val)
+// #define ifb_macro_flags_is_clear(flags,val)              !ifb_macro_flags_test(flags,val)
 
 #define ifb_macro_xmm_f128_load_aligned(f32_ptr)         _mm_load_ps(f32_ptr)
 #define ifb_macro_xmm_f128_load_unaligned(f32_ptr)       _mm_loadu_ps(f32_ptr)
