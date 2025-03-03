@@ -133,13 +133,12 @@ ifb_engine::context_render_frame(
 
     //update the renderer viewport if the window was updated
     IFBDimensions* ptr_renderer_viewport_dimensions = update_window_dimensions ? &ptr_update->window.dimensions : NULL;
-    result &= ifb_engine::renderer_update_viewport(
+    result &= ifb_engine::renderer_viewport_update_dimensions(
         ptr_renderer,
-        ptr_renderer_viewport_dimensions,
-        NULL);
+        ptr_renderer_viewport_dimensions);
 
     //clear the viewport
-    ifb_engine::renderer_clear_viewport(ptr_renderer);
+    result &= ifb_engine::renderer_viewport_clear(ptr_renderer);
 
     //render the window frame
     result &= ifb_engine::graphics_window_frame_render(ptr_graphics);

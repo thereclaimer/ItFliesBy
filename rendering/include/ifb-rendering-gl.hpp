@@ -45,21 +45,36 @@ struct IFBGLShaderContext {
 /* VIEWPORT                                                                       */
 /**********************************************************************************/
 
+enum IFBGLViewportUpdateFlags_ {
+    IFBGLViewportUpdateFlags_None                  = IFB_BIT_FLAG_0,
+    IFBGLViewportUpdateFlags_PositionAndDimensions = IFB_BIT_FLAG_1,
+    IFBGLViewportUpdateFlags_ClearColor            = IFB_BIT_FLAG_2
+};
+
+typedef IFBU32 IFBGLViewportUpdateFlags;
+
 struct IFBGLViewport {
-    IFBPosition        position;
-    IFBDimensions      dimensions;
-    IFBColorNormalized clear_color;
+    IFBGLViewportUpdateFlags flags;
+    IFBPosition              position;
+    IFBDimensions            dimensions;
+    IFBColorNormalized       clear_color;
 };
 
 namespace ifb_gl {
 
-    IFBGLViewport* viewport_commit_to_arena_absolute    (const IFBHNDArena arena_handle);
-    const IFBU32   viewport_commit_to_arena_relative    (const IFBHNDArena arena_handle);
-    
-    IFBVoid        viewport_initialize                  (IFBGLViewport* viewport);
-    IFBVoid        viewport_clear                       (IFBGLViewport* viewport);
-    IFBVoid        viewport_set_clear_color             (IFBGLViewport* viewport);
-    IFBVoid        viewport_set_position_and_dimensions (IFBGLViewport* viewport);
+    IFBGLViewport*     viewport_load_from_arena                          (const IFBHNDArena arena_handle, const IFBU32 offset);
+    IFBGLViewport*     viewport_commit_to_arena_absolute                 (const IFBHNDArena arena_handle);
+    const IFBU32       viewport_commit_to_arena_relative                 (const IFBHNDArena arena_handle);
+
+    IFBVoid            viewport_initialize                               (IFBGLViewport* viewport);
+    IFBVoid            viewport_clear                                    (IFBGLViewport* viewport);
+    IFBVoid            viewport_update                                   (IFBGLViewport* viewport);
+
+    inline IFBVoid     viewport_update_flags_set_position_and_dimensions (IFBGLViewportUpdateFlags& flags)       { ifb_macro_bit_set(IFBGLViewportUpdateFlags_PositionAndDimensions, flags); }
+    inline IFBVoid     viewport_update_flags_set_clear_color             (IFBGLViewportUpdateFlags& flags)       { ifb_macro_bit_set(IFBGLViewportUpdateFlags_ClearColor,            flags); }
+
+    inline const IFBB8 viewport_update_flags_get_position_and_dimensions (const IFBGLViewportUpdateFlags& flags) { return(ifb_macro_bit_test(IFBGLViewportUpdateFlags_PositionAndDimensions, flags)); }
+    inline const IFBB8 viewport_update_flags_get_clear_color             (const IFBGLViewportUpdateFlags& flags) { return(ifb_macro_bit_test(IFBGLViewportUpdateFlags_ClearColor,            flags)); }
 };
 
 /**********************************************************************************/

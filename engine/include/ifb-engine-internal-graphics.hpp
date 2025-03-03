@@ -22,6 +22,7 @@ struct IFBEngineGraphicsHandles {
     IFBU32 window;
     IFBU32 monitor_table;
     IFBU32 monitor_primary;
+    IFBU32 color_table_allocator;
 };
 
 struct IFBEngineGraphics {
@@ -68,6 +69,18 @@ namespace ifb_engine {
     graphics_get_color_normalized(
         const IFBColorHex*        ptr_color_hex,
               IFBColorNormalized* ptr_color_normalized);
+              
+    const IFBColorTable*
+    graphics_reserve_color_table(
+        const IFBEngineGraphics* ptr_graphics,
+        const IFBColorHex*       ptr_color_hex_array,
+        const IFBChar**          ptr_color_key_array,
+        const IFBU32             color_count);
+
+    const IFBB8
+    graphics_release_color_table(
+        const IFBEngineGraphics* ptr_graphics,
+        const IFBColorTable*     ptr_color_table);
 };
 
 /**********************************************************************************/
