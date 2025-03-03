@@ -7,8 +7,8 @@
 /**********************************************************************************/
 
 #define IFB_ENGINE_GRAPHICS_WINDOW_TITLE_MAX_LENGTH 32
-#define IFB_ENGINE_GRAPHICS_WINDOW_INITIAL_WIDTH    800
-#define IFB_ENGINE_GRAPHICS_WINDOW_INITIAL_HEIGHT   600
+#define IFB_ENGINE_GRAPHICS_WINDOW_INITIAL_WIDTH    1920
+#define IFB_ENGINE_GRAPHICS_WINDOW_INITIAL_HEIGHT   1080
 
 namespace ifb_engine {
 
