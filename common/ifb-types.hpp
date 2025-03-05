@@ -5,29 +5,6 @@
 #include <xmmintrin.h>
 
 /**********************************************************************************/
-/* FORWARD DECLARATIONS                                                           */
-/**********************************************************************************/
-
-struct IFBID;
-struct IFBHND;
-struct IFBGHND;
-
-struct IFBIDTransform; 
-
-struct IFBVec2;
-struct IFBVec3;
-struct IFBMat3;
-struct IFBPoint;
-struct IFBLine;
-struct IFBTransform;
-struct IFBDimensions;
-struct IFBPosition;
-
-struct IFBColorNormalized;
-struct IFBColorHex;
-struct IFBColor32;
-
-/**********************************************************************************/
 /* PRIMITIVES                                                                     */
 /**********************************************************************************/
 
@@ -53,11 +30,9 @@ typedef int16_t  IFBB16;
 typedef int32_t  IFBB32;
 typedef int64_t  IFBB64;
 
-//strings
+//characters
 typedef char     IFBChar;
-typedef char*    IFBCStr;
 typedef wchar_t  IFBWChar;
-typedef wchar_t* IFBWStr;
 
 //memory
 typedef void     IFBVoid;
@@ -72,7 +47,52 @@ typedef intptr_t IFBAddr;
 typedef uint64_t IFBTimems;
 
 /**********************************************************************************/
-/* IDENTIFIERS                                                                    */
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
+
+//handles
+struct IFBHND8;
+struct IFBHND16;
+struct IFBHND32;
+struct IFBHND64;
+struct IFBHNDPTR;
+
+//math
+struct IFBVec2;
+struct IFBVec3;
+struct IFBMat3;
+struct IFBPoint;
+struct IFBLine;
+struct IFBTransform;
+
+//data structures
+struct IFBDataStructure;
+struct IFBArray;
+struct IFBStack;
+struct IFBQueue;
+struct IFBArrayList;
+struct IFBLinkedList;
+struct IFBHash;
+struct IFBHashTable;
+
+//graphics
+struct IFBColorNormalized;
+struct IFBColorHex;
+struct IFBColor32;
+struct IFBDimensions;
+struct IFBPosition;
+struct IFBDimensionsAndPosition;
+struct IFBGraphicsContexts;
+struct IFBWindow;
+struct IFBMonitor;
+
+//files
+struct IFBHNDPlatformFile;
+struct IFBFileReadOnly;
+struct IFBFileReadWrite;
+
+/**********************************************************************************/
+/* HANDLES                                                                        */
 /**********************************************************************************/
 
 struct IFBHND8   { IFBU8  offset;  };
@@ -80,6 +100,11 @@ struct IFBHND16  { IFBU16 offset;  };
 struct IFBHND32  { IFBU32 offset;  };
 struct IFBHND64  { IFBU64 offset;  };
 struct IFBHNDPTR { IFBPtr pointer; };
+
+#define IFB_HANDLE_INVALID_U8  0xFF
+#define IFB_HANDLE_INVALID_U16 0xFFFF 
+#define IFB_HANDLE_INVALID_U32 0xFFFFFFFF 
+#define IFB_HANDLE_INVALID_U64 0xFFFFFFFFFFFFFFFF 
 
 /**********************************************************************************/
 /* SIMD                                                                           */
@@ -160,7 +185,21 @@ struct IFBLine {
 };
 
 /**********************************************************************************/
-/* SIZES AND COORDINATES                                                          */
+/* DATA STRUCTURES                                                                */
+/**********************************************************************************/
+
+struct IFBDataStructure {
+    IFBAddr             data_start;
+    IFBU32              data_size;
+};
+
+struct IFBStack : IFBDataStructure {
+    IFBU32 position;
+};
+
+
+/**********************************************************************************/
+/* GRAPHICS                                                                       */
 /**********************************************************************************/
 
 struct IFBDimensions {
@@ -177,10 +216,6 @@ struct IFBDimensionsAndPosition {
     IFBDimensions dimensions;
     IFBPosition   position;    
 };
-
-/**********************************************************************************/
-/* GRAPHICS                                                                       */
-/**********************************************************************************/
 
 struct IFBColorNormalized {
     IFBF32 red;
@@ -231,6 +266,25 @@ struct IFBMonitor {
     IFBPosition   position;
     IFBU32        refresh_hz;
     IFBU32        index;
+};
+
+/**********************************************************************************/
+/* FILES                                                                          */
+/**********************************************************************************/
+
+struct IFBFileReadOnly {
+    IFBStack* platform_context_stack;
+    IFBB32    platform_lock;
+    IFBU32    size;
+    IFBU32    bytes_read;
+};
+
+struct IFBFileReadWrite {
+    IFBStack* platform_context_stack;
+    IFBB32    platform_lock;
+    IFBU32    size;
+    IFBU32    bytes_read;
+    IFBU32    bytes_written;
 };
 
 #endif //IFB_TYPES_HPP

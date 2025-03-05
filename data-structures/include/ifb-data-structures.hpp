@@ -5,27 +5,8 @@
 #include <ifb-memory.hpp>
 
 /**********************************************************************************/
-/* FORWARD DECLARATIONS                                                           */
-/**********************************************************************************/
-
-struct IFBDataStructure {
-    IFBAddr data_start;
-    IFBU32  data_size;
-};
-
-struct IFBArray;
-struct IFBStack;
-struct IFBQueue;     //TODO
-struct IFBArrayList; //TODO
-struct IFBLinkedList;
-struct IFBHash;
-struct IFBHashTable;
-
-/**********************************************************************************/
 /* ARRAY                                                                          */
 /**********************************************************************************/
-
-#define IFB_STACK_INVALID_POSITION 0xFFFFFFFF
 
 namespace ifb_array {
 
@@ -91,34 +72,24 @@ namespace ifb_array_list {
 
 namespace ifb_stack {
 
-    //create / allocate
+    //memory
+    IFBStack*    arena_load_pointer    (const IFBHNDArena arena_handle, const IFBU32 arena_offset);
+    IFBStack*    arena_commit_absolute (const IFBHNDArena arena_handle, const IFBU32 stack_size);
+    const IFBU32 arena_commit_relative (const IFBHNDArena arena_handle, const IFBU32 stack_size);
 
-    const IFBU32 allocation_size(const IFBU32 stack_size);
-
-    IFBStack*
-    create(
-        const IFBPtr memory,
-        const IFBU32 size);
-
-    IFBStack*   arena_commit  (const IFBHNDArena arena_handle, const IFBU32 size);
-    IFBStack*   arena_reserve (const IFBHNDArena arena_handle, const IFBU32 size);
-    const IFBB8 arena_release (const IFBHNDArena arena_handle, IFBStack* ptr_stack);
-
-    //reset
-    const IFBB8  reset          (IFBStack* stack_ptr);
-
-    //push / pull
-    const IFBU32 push_relative  (IFBStack* stack_ptr, const IFBU32 size);
-    const IFBPtr push_absolute  (IFBStack* stack_ptr, const IFBU32 size);
-    const IFBB8  pull           (IFBStack* stack_ptr, const IFBU32 size);
+    //operations
+    const IFBU32 push_relative         (IFBStack* stack, const IFBU32 size);
+    const IFBPtr push_absolute         (IFBStack* stack, const IFBU32 size);
+    const IFBB8  pull                  (IFBStack* stack, const IFBU32 size);
+    const IFBB8  reset                 (IFBStack* stack);
     
     //pointers
-    const IFBPtr get_pointer    (const IFBStack* stack_ptr, const IFBU32 position);
+    const IFBPtr get_pointer           (const IFBStack* stack, const IFBU32 position);
     
     //size
-    const IFBU32 get_size_total (const IFBStack* stack_ptr);
-    const IFBU32 get_size_free  (const IFBStack* stack_ptr);
-    const IFBU32 get_size_used  (const IFBStack* stack_ptr);
+    const IFBU32 get_size_total        (const IFBStack* stack);
+    const IFBU32 get_size_free         (const IFBStack* stack);
+    const IFBU32 get_size_used         (const IFBStack* stack);
 };
 
 /**********************************************************************************/

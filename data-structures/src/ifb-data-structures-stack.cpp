@@ -3,132 +3,64 @@
 #include "ifb-data-structures.hpp"
 
 /**********************************************************************************/
-/* STACK                                                                          */
+/* MEMORY                                                                         */
 /**********************************************************************************/
 
-struct IFBStack : IFBDataStructure {
-    IFBU32 position;
-};
+IFBStack*    
+ifb_stack::arena_load_pointer(
+    const IFBHNDArena arena_handle,
+    const IFBU32      arena_offset) {
 
-/**********************************************************************************/
-/* CREATE / ALLOCATE                                                              */
-/**********************************************************************************/
+    IFBStack* pointer = (IFBStack*)ifb_memory::arena_get_pointer(
+        arena_handle,
+        arena_offset);
 
-inline const IFBU32
-ifb_stack::allocation_size(
-    const IFBU32 stack_size) {
+    ifb_macro_assert(pointer);
 
-    const IFBU32 size_struct     = ifb_macro_align_size_struct(IFBStack);
-    const IFBU32 size_allocation = size_struct + size_allocation;
-
-    return(size_allocation);
+    return(pointer);
 }
 
-inline IFBStack*
-ifb_stack::create(
-    const IFBPtr memory,
-    const IFBU32 size) {
+IFBStack*    
+ifb_stack::arena_commit_absolute(
+    const IFBHNDArena arena_handle,
+    const IFBU32      stack_size) {
 
-    //calculate the struct size
+    //calculate the commit size
     const IFBU32 struct_size = ifb_macro_align_size_struct(IFBStack);
-    
-    //sanity check
-    if (!memory || size == 0 || struct_size <= size) return(NULL);
+    const IFBU32 commit_size = struct_size + stack_size;
 
-    //cast the stack
-    IFBStack* stack_ptr = (IFBStack*)memory;
-
-    //calculate the start and size of the stack memory
-    const IFBAddr stack_memory_start = (IFBAddr)memory + struct_size;
-    const IFBU32     stack_memory_size  = size - struct_size; 
-
-    //initialize the stack
-    stack_ptr->start    = stack_memory_start;
-    stack_ptr->size     = stack_memory_size;
-    stack_ptr->position = 0;
+    //do the commit
+    IFBStack* pointer = (IFBStack*)ifb_memory::arena_commit_bytes_absolute(
+        arena_handle,
+        commit_size);
 
     //we're done
-    return(stack_ptr);
+    return(pointer);
 }
 
-inline IFBStack* 
-ifb_stack::arena_commit(
+const IFBU32 
+ifb_stack::arena_commit_relative(
     const IFBHNDArena arena_handle,
-    const IFBU32      size) {
+    const IFBU32      stack_size) {
 
-    //calculate sizes
-    const IFBU32 size_struct = ifb_macro_align_size_struct(IFBStack);
-    const IFBU32 size_total  = size_struct + size;
-    
-    //commit the stack
-    IFBStack* ptr_stack = (IFBStack*)ifb_memory::arena_commit_bytes_absolute(
+    //calculate the commit size
+    const IFBU32 struct_size = ifb_macro_align_size_struct(IFBStack);
+    const IFBU32 commit_size = struct_size + stack_size;
+
+    //do the commit
+    IFBU32 offset = ifb_memory::arena_commit_bytes_relative(
         arena_handle,
-        size_total);
-
-    //initialize the stack if its valid
-    if (ptr_stack) {
-        ptr_stack->start    = ((IFBAddr)ptr_stack) + size_struct;
-        ptr_stack->size     = size;
-        ptr_stack->position = 0;
-    }
+        commit_size);
 
     //we're done
-    return(ptr_stack);
-}
-
-inline IFBStack* 
-ifb_stack::arena_reserve(
-    const IFBHNDArena arena_handle,
-    const IFBU32      size) {
-
-    //calculate sizes
-    const IFBU32 size_struct = ifb_macro_align_size_struct(IFBStack);
-    const IFBU32 size_total  = size_struct + size;
-    
-    //commit the stack
-    IFBStack* ptr_stack = (IFBStack*)ifb_memory::arena_reserve_bytes_absolute(
-        arena_handle,
-        size_total);
-
-    //initialize the stack if its valid
-    if (ptr_stack) {
-        ptr_stack->start    = ((IFBAddr)ptr_stack) + size_struct;
-        ptr_stack->size     = size;
-        ptr_stack->position = 0;
-    }
-
-    //we're done
-    return(ptr_stack);
-}
-
-inline const IFBB8
-ifb_stack::arena_release(
-    const IFBHNDArena arena_handle,
-          IFBStack*   ptr_stack) {
-
-    //sanity check
-    if (!ptr_stack || !ifb_memory_macro_handle_valid(arena_handle)) {
-        return(false);
-    }
-
-    //calculate the total size
-    const IFBU32 size_struct = ifb_macro_align_size_struct(IFBStack);
-    const IFBU32 size_total  = size_struct + ptr_stack->size;
-    
-    //release the bytes
-    const IFBB8 result = ifb_memory::arena_release_bytes(
-        arena_handle,
-        size_total);
-
-    //we're done
-    return(result);
+    return(offset);
 }
 
 /**********************************************************************************/
-/* RESET                                                                          */
+/* OPERATIONS                                                                     */
 /**********************************************************************************/
 
-inline const IFBB8
+const IFBB8
 ifb_stack::reset(
     IFBStack* stack_ptr) {
     
@@ -142,24 +74,20 @@ ifb_stack::reset(
     return(true);
 }
 
-/**********************************************************************************/
-/* PUSH / PULL                                                                    */
-/**********************************************************************************/
-
-inline const IFBU32
+const IFBU32
 ifb_stack::push_relative(
           IFBStack* stack_ptr,
-    const IFBU32   size) {
+    const IFBU32    size) {
 
     //sanity check
-    if (!stack_ptr || size == 0) return(IFB_STACK_INVALID_POSITION);
+    if (!stack_ptr || size == 0) return(IFB_HANDLE_INVALID_U32);
 
     //calculate the new position
     const IFBU32 starting_position = stack_ptr->position;
     const IFBU32 new_position      = starting_position + size; 
 
     //sanity check
-    if (new_position > stack_ptr->size) return(IFB_STACK_INVALID_POSITION);
+    if (new_position > stack_ptr->data_size) return(IFB_HANDLE_INVALID_U32);
 
     //update the position
     stack_ptr->position = new_position;
@@ -168,7 +96,7 @@ ifb_stack::push_relative(
     return(starting_position);
 }
 
-inline const IFBPtr
+const IFBPtr
 ifb_stack::push_absolute(
           IFBStack* stack_ptr,
     const IFBU32    size) {
@@ -179,8 +107,8 @@ ifb_stack::push_absolute(
         size);
 
     //calculate the address, if the position is valid
-    const IFBAddr push_address = (position != IFB_STACK_INVALID_POSITION)  
-        ? stack_ptr->start + position
+    const IFBAddr push_address = (position != IFB_HANDLE_INVALID_U32)  
+        ? stack_ptr->data_start + position
         : 0;
 
     //cast the pointer
@@ -190,7 +118,7 @@ ifb_stack::push_absolute(
     return(push_pointer);
 }
 
-inline const IFBB8
+const IFBB8
 ifb_stack::pull(
           IFBStack* stack_ptr,
     const IFBU32   size) {
@@ -209,17 +137,17 @@ ifb_stack::pull(
 /* POINTERS                                                                       */
 /**********************************************************************************/
 
-inline const IFBPtr
+const IFBPtr
 ifb_stack::get_pointer(
     const IFBStack* stack_ptr,
-    const IFBU32   position) {
+    const IFBU32    position) {
 
     //sanity check
     if (!stack_ptr || position > stack_ptr->position) return(NULL);
 
     //calculate the pointer
-    const IFBAddr address = stack_ptr->start + position;
-    const IFBPtr     pointer = (IFBPtr)address;
+    const IFBAddr address = stack_ptr->data_start + position;
+    const IFBPtr  pointer = (IFBPtr)address;
 
     //we're done
     return(pointer);
@@ -229,29 +157,29 @@ ifb_stack::get_pointer(
 /* SIZE                                                                           */
 /**********************************************************************************/
 
-inline const IFBU32
+const IFBU32
 ifb_stack::get_size_total(
     const IFBStack* stack_ptr) {
 
     const IFBU32 size_total = stack_ptr
-        ? stack_ptr->size
+        ? stack_ptr->data_size
         : 0;
 
     return(size_total);
 }
 
-inline const IFBU32
+const IFBU32
 ifb_stack::get_size_free(
     const IFBStack* stack_ptr) {
 
     const IFBU32 size_free = stack_ptr
-        ? stack_ptr->size - stack_ptr->position 
+        ? stack_ptr->data_size - stack_ptr->position 
         : 0;
 
     return(size_free);
 }
 
-inline const IFBU32
+const IFBU32
 ifb_stack::get_size_used(
     const IFBStack* stack_ptr) {
 

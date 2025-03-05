@@ -5,6 +5,11 @@
 #define ifb_macro_nop()                                  ifb_macro_assert(true) 
 #define ifb_macro_panic()                                ifb_macro_assert(false)
 
+#define ifb_macro_hnd8_is_valid (hnd8)                   (hnd8.offset  != IFB_HANDLE_INVALID_U8)  
+#define ifb_macro_hnd16_is_valid(hnd16)                  (hnd16.offset != IFB_HANDLE_INVALID_U16) 
+#define ifb_macro_hnd32_is_valid(hnd32)                  (hnd32.offset != IFB_HANDLE_INVALID_U32) 
+#define ifb_macro_hnd64_is_valid(hnd64)                  (hnd64.offset != IFB_HANDLE_INVALID_U64) 
+
 #define ifb_macro_size_kilobytes(kb)                     (1024 * kb) 
 #define ifb_macro_size_megabytes(mb)                     (1024 * 1024 * mb) 
 #define ifb_macro_size_gigabytes(gb)                     (1024UL * 1024UL * 1024UL * gb)

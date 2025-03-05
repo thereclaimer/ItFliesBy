@@ -6,25 +6,30 @@
 /* READ ONLY                                                                      */
 /**********************************************************************************/
 
+IFBFileReadOnly* ifb_file_ro::arena_load_pointer    (const IFBHNDArena arena_handle, const IFBU32 arena_offset);
+IFBFileReadOnly* ifb_file_ro::arena_commit_absolute (const IFBHNDArena arena_handle);
+const IFBU32     ifb_file_ro::arena_commit_relative (const IFBHNDArena arena_handle);
+
+
 const IFBB8
-ifb_file::open(
+ifb_file_ro::open(
           IFBFileReadOnly* file_read_only,
     const IFBChar*         file_path_cstr) {
 
 }
 const IFBB8
-ifb_file::read(
+ifb_file_ro::read(
           IFBFileReadOnly* file_read_only,
     const IFBHNDArena      arena_handle,
-    const IFBU32           offset) {
+    const IFBU32           read_offset) {
 
 }
 
 const IFBB8
-ifb_file::close(
+ifb_file_ro::close(
           IFBFileReadOnly* file_read_only,
     const IFBHNDArena       arena_handle,
-    const IFBU32            offset) {
+    const IFBU32            read_offset) {
 
 }
 
