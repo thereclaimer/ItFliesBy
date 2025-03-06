@@ -130,23 +130,23 @@ struct IFBWin32FileInfoReadWrite {
 namespace ifb_win32 {
 
     //read only
-    ifb_internal const IFBB8 file_ro_open            (IFBFileReadOnly*  file_read_only,  const IFBChar* file_path);
-    ifb_internal const IFBB8 file_ro_close           (IFBFileReadOnly*  file_read_only,  const IFBU32   read_buffer_size,  IFBByte* read_buffer_ptr, const IFBU32 file_offset);
-    ifb_internal const IFBB8 file_ro_read_immediate  (IFBFileReadOnly*  file_read_only,  const IFBU32   read_buffer_size,  IFBByte* read_buffer_ptr, const IFBU32 file_offset);
-    ifb_internal const IFBB8 file_ro_read_async      (IFBFileReadOnly*  file_read_only);
+    ifb_internal const IFBB8 file_ro_open             (IFBFileReadOnly*  file_read_only,  const IFBChar* file_path);
+    ifb_internal const IFBB8 file_ro_read_async       (IFBFileReadOnly*  file_read_only,  const IFBU32   read_buffer_size,  IFBByte* read_buffer_ptr, const IFBU32 file_offset);
+    ifb_internal const IFBB8 file_ro_read_immediate   (IFBFileReadOnly*  file_read_only,  const IFBU32   read_buffer_size,  IFBByte* read_buffer_ptr, const IFBU32 file_offset);
+    ifb_internal const IFBB8 file_ro_close            (IFBFileReadOnly*  file_read_only);
     
     //read write
-    ifb_internal const IFBB8 file_rw_open            (IFBFileReadWrite* file_read_write, const IFBChar* file_path);
-    ifb_internal const IFBB8 file_rw_close           (IFBFileReadWrite* file_read_write, const IFBU32   read_buffer_size,  IFBByte*       read_buffer_ptr);
-    ifb_internal const IFBB8 file_rw_read_immediate  (IFBFileReadWrite* file_read_write, const IFBU32   read_buffer_size,  IFBByte*       read_buffer_ptr);
-    ifb_internal const IFBB8 file_rw_read_async      (IFBFileReadWrite* file_read_write, const IFBU32   write_buffer_size, const IFBByte* write_buffer_ptr);
-    ifb_internal const IFBB8 file_rw_write_immediate (IFBFileReadWrite* file_read_write, const IFBU32   write_buffer_size, const IFBByte* write_buffer_ptr);
-    ifb_internal const IFBB8 file_rw_write_async     (IFBFileReadWrite* file_read_write);
+    ifb_internal const IFBB8 file_rw_open             (IFBFileReadWrite* file_read_write, const IFBChar* file_path);
+    ifb_internal const IFBB8 file_rw_read_immediate   (IFBFileReadWrite* file_read_write, const IFBU32   read_buffer_size,  IFBByte*       read_buffer_ptr,  const IFBU32 file_offset);
+    ifb_internal const IFBB8 file_rw_read_async       (IFBFileReadWrite* file_read_write, const IFBU32   read_buffer_size,  IFBByte*       read_buffer_ptr,  const IFBU32 file_offset);
+    ifb_internal const IFBB8 file_rw_write_immediate  (IFBFileReadWrite* file_read_write, const IFBU32   write_buffer_size, const IFBByte* write_buffer_ptr, const IFBU32 file_offset);
+    ifb_internal const IFBB8 file_rw_write_async      (IFBFileReadWrite* file_read_write, const IFBU32   write_buffer_size, const IFBByte* write_buffer_ptr, const IFBU32 file_offset);
+    ifb_internal const IFBB8 file_rw_close            (IFBFileReadWrite* file_read_write);
 
     //completion routines
-    ifb_internal void file_async_completion_routine_ro_read  (DWORD error_code, DWORD bytes_transfered, LPOVERLAPPED overlapped_ptr);
-    ifb_internal void file_async_completion_routine_rw_read  (DWORD error_code, DWORD bytes_transfered, LPOVERLAPPED overlapped_ptr);
-    ifb_internal void file_async_completion_routine_rw_write (DWORD error_code, DWORD bytes_transfered, LPOVERLAPPED overlapped_ptr);
+    ifb_internal void        file_ro_async_callback_read  (DWORD error_code, DWORD bytes_transfered, LPOVERLAPPED overlapped_ptr);
+    ifb_internal void        file_rw_async_callback_read  (DWORD error_code, DWORD bytes_transfered, LPOVERLAPPED overlapped_ptr);
+    ifb_internal void        file_rw_async_callback_write (DWORD error_code, DWORD bytes_transfered, LPOVERLAPPED overlapped_ptr);
 };
 
 /**********************************************************************************/
