@@ -6,14 +6,47 @@
 #include <ifb-engine.hpp>
 
 /**********************************************************************************/
+/* REGISTRY                                                                       */
+/**********************************************************************************/
+
+struct IFBWin32RegKeyU32 {
+    HKEY   key;
+    IFBU32 value;
+};
+
+namespace ifb_win32 {
+
+    //read only
+    const IFBB8 registry_key_open_read_only_classes_root   (const LPCSTR key_path, HKEY& key_ref);
+    const IFBB8 registry_key_open_read_only_current_user   (const LPCSTR key_path, HKEY& key_ref);
+    const IFBB8 registry_key_open_read_only_local_machine  (const LPCSTR key_path, HKEY& key_ref);
+    const IFBB8 registry_key_open_read_only_users          (const LPCSTR key_path, HKEY& key_ref);
+    const IFBB8 registry_key_open_read_only_current_config (const LPCSTR key_path, HKEY& key_ref);
+
+    //close
+    const IFBB8 registry_key_close(const HKEY key);
+
+    //values
+    const IFBB8 registry_key_read_value_u32           (const HKEY key, const LPCSTR value_name, IFBU32& value_ref);
+    const IFBB8 registry_key_read_value_cpu_speed_mhz (IFBWin32RegKeyU32& key_u32);
+};
+
+#define IFB_WIN32_SYSTEM_REGKEY_PROCESSOR_0     R"(HARDWARE\DESCRIPTION\System\CentralProcessor\0)" 
+#define IFB_WIN32_SYSTEM_REGKEY_PROCESSOR_0_MHZ "~MHz"
+
+
+#define ifb_win32_macro_registry_key_cpu_0(key_ref)                         ifb_win32::registry_key_open_read_only_local_machine(IFB_WIN32_SYSTEM_REGKEY_PROCESSOR_0, key_ref)
+#define ifb_win32_macro_registry_key_cpu_0_value_u32_mhz(key,value_u32_ref) ifb_win32::registry_key_read_value_u32(key,IFB_WIN32_SYSTEM_REGKEY_PROCESSOR_0_MHZ,value_u32_ref)
+
+/**********************************************************************************/
 /* SYSTEM                                                                         */
 /**********************************************************************************/
 
 namespace ifb_win32 {
 
-    ifb_internal const IFBB8   system_get_info               (IFBSystemInfo* system_info);
-    ifb_internal const IFBU64  system_time_ms                (IFBVoid);
-    ifb_internal       IFBVoid system_sleep                  (const IFBU32 ms);
+    ifb_internal const IFBB8   system_get_info (IFBSystemInfo* system_info);
+    ifb_internal const IFBU64  system_time_ms  (IFBVoid);
+    ifb_internal       IFBVoid system_sleep    (const IFBU32 ms);
 };
 
 /**********************************************************************************/
