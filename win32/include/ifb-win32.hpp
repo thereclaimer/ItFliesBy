@@ -11,10 +11,7 @@
 
 namespace ifb_win32 {
 
-    IFBVoid system_api_initialize(IFBPlatformSystemApi& platform_system_api_ref);
-
-    ifb_internal const IFBU32  system_page_size              (IFBVoid);
-    ifb_internal const IFBU32  system_allocation_granularity (IFBVoid);
+    ifb_internal const IFBB8   system_get_info               (IFBSystemInfo* system_info);
     ifb_internal const IFBU64  system_time_ms                (IFBVoid);
     ifb_internal       IFBVoid system_sleep                  (const IFBU32 ms);
 };
@@ -24,8 +21,6 @@ namespace ifb_win32 {
 /**********************************************************************************/
 
 namespace ifb_win32 {
-
-    IFBVoid memory_api_initialize(IFBPlatformMemoryApi& platform_memory_api_ref);
 
     ifb_internal const IFBPtr memory_reserve (const IFBU64 reservation_size);
     ifb_internal const IFBB8  memory_release (const IFBPtr reservation_start, const IFBU64 reservation_size);
@@ -62,8 +57,6 @@ typedef const LRESULT
  
 namespace ifb_win32 {
 
-    IFBVoid window_api_initialize(IFBPlatformWindowApi& window_api_ref);
-
     ifb_internal const IFBB8 
     window_create(
         const IFBCStr title,
@@ -97,8 +90,6 @@ namespace ifb_win32 {
 /**********************************************************************************/
 
 namespace ifb_win32 {
-
-    IFBVoid monitor_api_initialize(IFBPlatformMonitorApi& monitor_api_ref);
 
     const IFBU32 monitor_count (IFBVoid);
     
@@ -134,8 +125,6 @@ struct IFBWin32FileTable {
 };
 
 namespace ifb_win32 {
-
-    ifb_internal IFBVoid file_api_initialize(IFBPlatformFileApi& platform_file_api_ref);
 
     ifb_internal const IFBB8 file_open_read_only  (const IFBCStr in_file_path, IFBIndex& out_file_index_ref);
     ifb_internal const IFBB8 file_open_read_write (const IFBCStr in_file_path, IFBIndex& out_file_index_ref);
@@ -179,10 +168,6 @@ namespace ifb_win32 {
 
 namespace ifb_win32 {
 
-    ifb_internal IFBVoid 
-    file_dialog_api_initialize(
-        IFBPlatformFileDialogApi& platform_api_file_dialog_ref);
-
     ifb_internal const IFBB8
     file_dialog_select_file(
         const IFBCStr  in_file_dialog_starting_directory,
@@ -212,28 +197,27 @@ namespace ifb_win32 {
         IFBPlatformApi& platform_api_ref) {
 
         //system
-        platform_api_ref.system.page_size              = ifb_win32::system_page_size;
-        platform_api_ref.system.allocation_granularity = ifb_win32::system_allocation_granularity;
-        platform_api_ref.system.time_ms                = ifb_win32::system_time_ms;
-        platform_api_ref.system.sleep                  = ifb_win32::system_sleep;
+        platform_api_ref.system.get_info     = ifb_win32::system_get_info;
+        platform_api_ref.system.time_ms      = ifb_win32::system_time_ms;
+        platform_api_ref.system.sleep        = ifb_win32::system_sleep;
 
         //memory    
-        platform_api_ref.memory.reserve                = ifb_win32::memory_reserve;
-        platform_api_ref.memory.release                = ifb_win32::memory_release;
-        platform_api_ref.memory.commit                 = ifb_win32::memory_commit;
+        platform_api_ref.memory.reserve      = ifb_win32::memory_reserve;
+        platform_api_ref.memory.release      = ifb_win32::memory_release;
+        platform_api_ref.memory.commit       = ifb_win32::memory_commit;
 
         //window    
-        platform_api_ref.window.create                 = ifb_win32::window_create;
-        platform_api_ref.window.destroy                = ifb_win32::window_destroy;
-        platform_api_ref.window.frame_start            = ifb_win32::window_frame_start;
-        platform_api_ref.window.frame_render           = ifb_win32::window_frame_render;
-        platform_api_ref.window.show                   = ifb_win32::window_show;
-        platform_api_ref.window.opengl_init            = ifb_win32::window_opengl_init;
-        platform_api_ref.window.imgui_init             = ifb_win32::window_imgui_init;
+        platform_api_ref.window.create       = ifb_win32::window_create;
+        platform_api_ref.window.destroy      = ifb_win32::window_destroy;
+        platform_api_ref.window.frame_start  = ifb_win32::window_frame_start;
+        platform_api_ref.window.frame_render = ifb_win32::window_frame_render;
+        platform_api_ref.window.show         = ifb_win32::window_show;
+        platform_api_ref.window.opengl_init  = ifb_win32::window_opengl_init;
+        platform_api_ref.window.imgui_init   = ifb_win32::window_imgui_init;
 
         //monitor
-        platform_api_ref.monitor.count                 = ifb_win32::monitor_count;
-        platform_api_ref.monitor.info                  = ifb_win32::monitor_info;
+        platform_api_ref.monitor.count       = ifb_win32::monitor_count;
+        platform_api_ref.monitor.info        = ifb_win32::monitor_info;
     }
 };
 
