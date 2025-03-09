@@ -29,6 +29,7 @@ ifb_win32::system_get_info(
     GetSystemInfo(&win32_sys_info);
     const IFBU32 memory_page_size              = win32_sys_info.dwPageSize;
     const IFBU32 memory_allocation_granularity = win32_sys_info.dwAllocationGranularity;
+    const IFBU32 parent_core_number            = GetCurrentProcessorNumber();
 
     //get the cpu speed from the registry
     IFBWin32RegKeyU32 reg_key_cpu_mhz;
@@ -132,6 +133,7 @@ ifb_win32::system_get_info(
     //update system info
     system_info->memory.page_size              = memory_page_size;
     system_info->memory.allocation_granularity = memory_allocation_granularity;
+    system_info->cpu.parent_core_number        = parent_core_number;
     system_info->cpu.core_count_logical        = count_cores_logical;
     system_info->cpu.core_count_physical       = count_cores_physical;
     system_info->cpu.cache_l1.size_total       = l1_cache_size;

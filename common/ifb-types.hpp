@@ -104,6 +104,7 @@ struct IFBSystemCPUCacheInfo {
 };
 
 struct IFBSystemCPUInfo {
+    IFBU32                parent_core_number;
     IFBU32                speed_mhz;
     IFBU32                core_count_physical;
     IFBU32                core_count_logical;
