@@ -59,7 +59,9 @@ if not exist %path_build%\obj mkdir %path_build%\obj
 @set cl_libs=       ItFliesBy.Engine.lib ^
                     user32.lib           ^
                     imgui.lib            ^
-                    opengl32.lib
+                    opengl32.lib         ^
+                    Advapi32.lib
+
 
 ::----------------------------------------------------------------
 :: BUILD
