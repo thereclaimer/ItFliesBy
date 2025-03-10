@@ -53,12 +53,12 @@ namespace ifb_engine {
     const IFBHNDArena core_memory_commit_arena            (IFBEngineCore* core_ptr);           
 };
 
-
 /**********************************************************************************/
 /* CORE                                                                           */
 /**********************************************************************************/
 
 struct IFBEngineCore {
+    IFBSystemInfo       system_info;
     IFBEngineCoreMemory memory; 
 };
 

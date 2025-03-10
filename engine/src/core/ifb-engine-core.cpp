@@ -38,6 +38,7 @@ ifb_engine::core_create(
         core_reserved_memory_size);
 
     //initialize the core structure
+    core_ptr->system_info        = system_info;
     core_ptr->memory.stack.data  = (IFBByte*)core_stack_memory_ptr;
     core_ptr->memory.stack.size  = core_stack_memory_size;
 
