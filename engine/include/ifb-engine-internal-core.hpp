@@ -21,9 +21,9 @@ struct IFBEngineCoreThreads;
 #define IFB_ENGINE_CORE_MEMORY_ARENA_SIZE ifb_macro_size_kilobytes(64) 
 
 struct IFBEngineCoreMemory {
-    IFBMemoryContext*              ptr_memory_context;
-    IFBMemoryReservation*          ptr_memory_reservation;
-    IFBU32                         arena_size;
+    IFBMemoryContext*     ptr_context;
+    IFBMemoryReservation* ptr_reservation;
+    IFBU32                arena_size;
 };
 
 namespace ifb_engine {
