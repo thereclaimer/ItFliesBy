@@ -100,9 +100,9 @@ namespace ifb_stack {
         const IFBPtr memory,
         const IFBU32 size);
 
-    IFBStack*   arena_commit  (const IFBHNDArena arena_handle, const IFBU32 size);
-    IFBStack*   arena_reserve (const IFBHNDArena arena_handle, const IFBU32 size);
-    const IFBB8 arena_release (const IFBHNDArena arena_handle, IFBStack* ptr_stack);
+    IFBStack*   arena_commit    (IFBMemoryArena* ptr_arena, const IFBU32 size);
+    IFBStack*   arena_reserve   (IFBMemoryArena* ptr_arena, const IFBU32 size);
+    const IFBB8 arena_release   (IFBMemoryArena* ptr_arena, IFBStack* ptr_stack);
 
     //reset
     const IFBB8  reset          (IFBStack* stack_ptr);
@@ -162,9 +162,9 @@ namespace ifb_hash_table {
 
     //memory
     const IFBU32   memory_size              (const IFBU32 element_count,const IFBU32 element_size);
-    const IFBU32   commit_to_arena_relative (const IFBHNDArena arena_handle, const IFBU32 element_count, const IFBU32 element_size, const IFBU32 key_length_max);
-    IFBHashTable*  commit_to_arena_absolute (const IFBHNDArena arena_handle, const IFBU32 element_count, const IFBU32 element_size, const IFBU32 key_length_max);
-    IFBHashTable*  load_from_arena          (const IFBHNDArena arena_handle, const IFBU32 offset);
+    const IFBU32   commit_to_arena_relative (IFBMemoryArena* ptr_arena, const IFBU32 element_count, const IFBU32 element_size, const IFBU32 key_length_max);
+    IFBHashTable*  commit_to_arena_absolute (IFBMemoryArena* ptr_arena, const IFBU32 element_count, const IFBU32 element_size, const IFBU32 key_length_max);
+    IFBHashTable*  load_from_arena          (IFBMemoryArena* ptr_arena, const IFBU32 offset);
 
     //operations
     const IFBB8    insert                   (IFBHashTable*       ptr_hash_table, const IFBChar* key, const IFBByte* element, IFBU32* ptr_element_index = NULL);

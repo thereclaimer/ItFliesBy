@@ -49,7 +49,6 @@ namespace ifb_engine {
       
     //pointers
     ifb_engine_api const IFBPtr  arena_get_pointer            (const IFBHNDEngineArena arena_handle, const IFBU32  offset);
-    ifb_engine_api const IFBB8   arena_get_info               (const IFBHNDEngineArena arena_handle, IFBArenaInfo* arena_info_ptr);
     ifb_engine_api const IFBAddr arena_get_start              (const IFBHNDEngineArena arena_handle);
   
     //reserve/release    

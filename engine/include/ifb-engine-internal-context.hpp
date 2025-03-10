@@ -20,7 +20,7 @@ struct IFBEngineArenas;
 
 struct IFBEngineSingletons;
 struct IFBEngineSingletonBuffer;
-struct IFBEngineSingletonHandles;
+struct IFBHNDEngineSingletons;
 
 //handles
 struct IFBHNDSingleton : IFBHND16 { };
@@ -52,7 +52,7 @@ struct IFBEngineSingletonBuffer {
     IFBByte memory[IFB_ENGINE_SINGLETON_STACK_SIZE];
 };
 
-struct IFBEngineSingletonHandles {
+struct IFBHNDEngineSingletons {
     IFBHNDSingleton config;
     IFBHNDSingleton input;
     IFBHNDSingleton arenas;
@@ -63,7 +63,7 @@ struct IFBEngineSingletonHandles {
 
 struct IFBEngineSingletons {
     IFBEngineSingletonBuffer  buffer;
-    IFBEngineSingletonHandles handles;
+    IFBHNDEngineSingletons handles;
 };
 
 namespace ifb_engine {
@@ -94,9 +94,9 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineArenas {
-    IFBHNDArena platform;
-    IFBHNDArena graphics;
-    IFBHNDArena rendering;
+    IFBMemoryArena* platform;
+    IFBMemoryArena* graphics;
+    IFBMemoryArena* rendering;
 };
 
 /**********************************************************************************/

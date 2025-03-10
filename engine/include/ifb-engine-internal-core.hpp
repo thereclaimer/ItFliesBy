@@ -29,12 +29,12 @@ struct IFBEngineCoreMemoryStack {
 };
 
 struct IFBEngineCoreMemoryReservation {
-    IFBU64            size_reserved;
-    IFBU32            size_arena;
-    IFBHNDReservation handle; 
+    IFBMemoryReservation* ptr_reservation; 
+    IFBU32                size_arena;
 };
 
 struct IFBEngineCoreMemory {
+    IFBMemoryContext*              ptr_memory_context;
     IFBEngineCoreMemoryStack       stack;
     IFBEngineCoreMemoryReservation reservation; 
 };
@@ -50,7 +50,7 @@ namespace ifb_engine {
     const IFBU32      core_memory_commit_bytes_relative   (IFBEngineCore* core_ptr, const IFBU32 size, const IFBU32 alignment = 0);
 
     //arenas
-    const IFBHNDArena core_memory_commit_arena            (IFBEngineCore* core_ptr);           
+    IFBMemoryArena*   core_memory_commit_arena            (IFBEngineCore* core_ptr);           
 };
 
 /**********************************************************************************/

@@ -21,6 +21,9 @@ struct IFBSystemMemory;
 struct IFBSystemCPU;
 
 //memory
+struct IFBHNDMemoryContext;
+struct IFBHNDMemoryReservation;
+struct IFBHNDMemoryArena;
 struct IFBMemoryContext;
 struct IFBMemoryArena;
 struct IFBMemoryReservation;
@@ -130,13 +133,20 @@ struct IFBSystemInfo {
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
+struct IFBHNDMemoryContext     : IFBHNDPTR { };
+struct IFBHNDMemoryReservation : IFBHNDPTR { };
+struct IFBHNDMemoryArena       : IFBHNDPTR { };
+
 struct IFBMemoryContext {
     IFBMemoryReservation* ptr_reservation_first;
     IFBMemoryReservation* ptr_reservation_last;
+    IFBMemoryArena*       ptr_arena_first;
+    IFBMemoryArena*       ptr_arena_last;
     IFBAddr               stack_start;
     IFBU32                stack_size;
     IFBU32                stack_position;
-    IFBU32                reservation_count;
+    IFBU32                count_reservations;
+    IFBU32                count_arenas;
     IFBU32                system_page_size;
     IFBU32                system_granularity;
 };
@@ -144,10 +154,7 @@ struct IFBMemoryContext {
 struct IFBMemoryReservation {
     IFBMemoryContext*     ptr_context;
     IFBMemoryReservation* ptr_next;
-    IFBMemoryArena*       ptr_arena_first;
-    IFBMemoryArena*       ptr_arena_last;
     IFBAddr               start;
-    IFBU32                arena_count;
     IFBU32                page_count_total;
     IFBU32                page_count_committed;
 };
@@ -171,7 +178,7 @@ struct IFBThread {
     IFBU32    logical_core_id_parent;
     IFBU32    logical_core_id_current;
 };
-0-----------65
+
 /**********************************************************************************/
 /* SIMD                                                                           */
 /**********************************************************************************/

@@ -7,7 +7,7 @@
 const IFBB8
 ifb_engine::renderer_initialize(
           IFBEngineRenderer*  ptr_renderer,
-    const IFBHNDArena         arena_handle,
+          IFBMemoryArena*     ptr_arena,
     const IFBDimensions*      ptr_viewport_dimensions,
     const IFBColorNormalized* ptr_viewport_clear_color) {
 
@@ -15,16 +15,16 @@ ifb_engine::renderer_initialize(
 
     //sanity check
     ifb_macro_assert(ptr_renderer);
+    ifb_macro_assert(ptr_arena);
     ifb_macro_assert(ptr_viewport_dimensions);
     ifb_macro_assert(ptr_viewport_clear_color);
-    if (!ifb_memory_macro_handle_valid(arena_handle)) return(false);
 
     //commit handles
     IFBEngineRendererHandles& handles_ref = ptr_renderer->handles;
-    handles_ref.viewport = ifb_gl::viewport_commit_to_arena_relative(arena_handle);
+    handles_ref.viewport = ifb_gl::viewport_commit_to_arena_relative(ptr_arena);
     
     //load the viewport
-    IFBGLViewport* ptr_viewport  = ifb_gl::viewport_load_from_arena(arena_handle,handles_ref.viewport);
+    IFBGLViewport* ptr_viewport  = ifb_gl::viewport_load_from_arena(ptr_arena,handles_ref.viewport);
     ifb_macro_assert(ptr_viewport);
     
     //set the viewport properties
@@ -36,7 +36,7 @@ ifb_engine::renderer_initialize(
     ifb_gl::viewport_initialize(ptr_viewport);
 
     //set the arena
-    ptr_renderer->arena = arena_handle;
+    ptr_renderer->arena = ptr_arena;
 
     //we're done
     return(result);

@@ -4,8 +4,8 @@
 
 const IFBB8
 ifb_graphics::monitor_table_initialize(
-          IFBMonitorTable* monitor_table_ptr,
-    const IFBHNDArena      arena_handle) {
+    IFBMonitorTable* monitor_table_ptr,
+    IFBMemoryArena*  ptr_arena) {
 
     //sanity check
     ifb_macro_assert(monitor_table_ptr);
@@ -18,7 +18,7 @@ ifb_graphics::monitor_table_initialize(
     
     //commit monitor array
     const IFBU32 monitor_array_size = ifb_macro_array_size(IFBMonitor, monitor_count);
-    IFBMonitor*  monitor_array_ptr  = (IFBMonitor*)ifb_memory::arena_commit_bytes_absolute(arena_handle, monitor_array_size);
+    IFBMonitor*  monitor_array_ptr  = (IFBMonitor*)ifb_memory::arena_commit_bytes_absolute(ptr_arena, monitor_array_size);
 
     //sanity check
     IFBB8 result = (monitor_array_ptr != NULL);

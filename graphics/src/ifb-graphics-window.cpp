@@ -8,11 +8,11 @@
 
 IFBWindow*
 ifb_graphics::window_commit_to_arena_absolute(
-    const IFBHNDArena arena_handle) {
+    IFBMemoryArena* ptr_arena) {
 
     const IFBU32 window_size = ifb_macro_align_size_struct(IFBWindow); 
     IFBWindow*   window_ptr  = (IFBWindow*)ifb_memory::arena_commit_bytes_absolute(
-        arena_handle,
+        ptr_arena,
         window_size);
 
     return(window_ptr);
@@ -20,11 +20,11 @@ ifb_graphics::window_commit_to_arena_absolute(
 
 const IFBU32
 ifb_graphics::window_commit_to_arena_relative(
-    const IFBHNDArena arena_handle) {
+    IFBMemoryArena* ptr_arena) {
 
     const IFBU32 window_size   = ifb_macro_align_size_struct(IFBWindow); 
     const IFBU32 window_offset = ifb_memory::arena_commit_bytes_relative(
-        arena_handle,
+        ptr_arena,
         window_size);
 
     return(window_offset);

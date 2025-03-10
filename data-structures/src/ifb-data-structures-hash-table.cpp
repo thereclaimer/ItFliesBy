@@ -31,10 +31,10 @@ ifb_hash_table::memory_size(
 
 const IFBU32
 ifb_hash_table::commit_to_arena_relative(
-    const IFBHNDArena arena_handle,
-    const IFBU32      element_count,
-    const IFBU32      element_size,
-    const IFBU32      key_length_max) {
+          IFBMemoryArena* ptr_arena,
+    const IFBU32          element_count,
+    const IFBU32          element_size,
+    const IFBU32          key_length_max) {
 
     //sanity check
     if (element_count == 0 || element_size == 0) return(0);
@@ -47,11 +47,11 @@ ifb_hash_table::commit_to_arena_relative(
     const IFBU32 size_total         = size_data       + size_table;
 
     //do the commit, if it fails we're done
-    const IFBU32 offset = ifb_memory::arena_commit_bytes_relative(arena_handle, size_total);  
+    const IFBU32 offset = ifb_memory::arena_commit_bytes_relative(ptr_arena, size_total);  
 
     //get the pointer, we should ALWAYS be able
     //to get a pointer to a commit we just made
-    IFBHashTable* ptr_hash_table = (IFBHashTable*)ifb_memory::arena_get_pointer(arena_handle,offset);
+    IFBHashTable* ptr_hash_table = (IFBHashTable*)ifb_memory::arena_get_pointer(ptr_arena,offset);
     ifb_macro_assert(ptr_hash_table);
 
     //calculate starting addresses
@@ -72,10 +72,10 @@ ifb_hash_table::commit_to_arena_relative(
 
 IFBHashTable*
 ifb_hash_table::commit_to_arena_absolute(
-    const IFBHNDArena arena_handle,
-    const IFBU32      element_count,
-    const IFBU32      element_size,
-    const IFBU32      key_length_max) {
+          IFBMemoryArena* ptr_arena,
+    const IFBU32          element_count,
+    const IFBU32          element_size,
+    const IFBU32          key_length_max) {
 
     //sanity check
     if (element_count == 0 || element_size == 0) return(0);
@@ -88,7 +88,7 @@ ifb_hash_table::commit_to_arena_absolute(
     const IFBU32 size_total         = size_data       + size_table;
 
     //do the commit, if it fails we're done
-    IFBHashTable* ptr_hash_table = (IFBHashTable*)ifb_memory::arena_commit_bytes_absolute(arena_handle, size_total);  
+    IFBHashTable* ptr_hash_table = (IFBHashTable*)ifb_memory::arena_commit_bytes_absolute(ptr_arena, size_total);  
     if (!ptr_hash_table) return(NULL);
 
     //calculate starting addresses
@@ -109,10 +109,10 @@ ifb_hash_table::commit_to_arena_absolute(
 
 IFBHashTable*
 ifb_hash_table::load_from_arena(
-    const IFBHNDArena arena_handle,
-    const IFBU32      offset) {
+          IFBMemoryArena* ptr_arena,
+    const IFBU32          offset) {
 
-    IFBHashTable* ptr_hash_table = (IFBHashTable*)ifb_memory::arena_get_pointer(arena_handle,offset);
+    IFBHashTable* ptr_hash_table = (IFBHashTable*)ifb_memory::arena_get_pointer(ptr_arena,offset);
     return(ptr_hash_table);
 }
 

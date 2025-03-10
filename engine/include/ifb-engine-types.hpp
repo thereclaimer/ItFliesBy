@@ -21,11 +21,8 @@ struct IFBEngineMemoryArenaBlock;
 /* HANDLES                                                                        */
 /**********************************************************************************/
 
-struct IFBEngineHandle {
-    IFBU32 value;
-};
-
-struct IFBEngineSingletonHandle : IFBEngineHandle { };
+struct IFBHNDEngineSingleton : IFBHND32  { };
+struct IFBHNDEngineArena     : IFBHNDPTR { };
 
 /**********************************************************************************/
 /* PUBLIC TYPES                                                                   */
@@ -79,8 +76,5 @@ namespace ifb_engine {
     inline const IFBB8 update_flags_get_window_dimensions (const IFBEngineContextUpdateFlags& flags_ref) { return(ifb_macro_bit_test(IFBEngineContextUpdateFlags_WindowDimensions, flags_ref)); }
     inline const IFBB8 update_flags_get_window_position   (const IFBEngineContextUpdateFlags& flags_ref) { return(ifb_macro_bit_test(IFBEngineContextUpdateFlags_WindowPosition,   flags_ref)); }
 };
-
-typedef IFBHNDArena  IFBHNDEngineArena;
-typedef IFBArenaInfo IFBEngineArenaInfo;
 
 #endif //IFB_ENGINE_TYPES_HPP

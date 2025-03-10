@@ -20,10 +20,10 @@ ifb_memory::context_create(
     result &= stack_size         >= memory_struct_size;
 
     //if everything isn't valid, we're done
-    if (!result) return(false);
+    if (!result) return(NULL);
 
     //cast the stack memory to the memory struct
-    IFBMemoryContext* ptr_context = (IFBMemoryContext*)local_stack_memory;
+    IFBMemoryContext* ptr_context = (IFBMemoryContext*)stack_memory;
 
     //calculate stack addresses
     const IFBAddr stack_start = (IFBAddr)stack_memory;
@@ -34,17 +34,16 @@ ifb_memory::context_create(
     ptr_context->stack_start           = stack_start;
     ptr_context->stack_size            = stack_size;
     ptr_context->stack_position        = memory_struct_size;
-    ptr_context->reservation_count     = 0;
     ptr_context->system_page_size      = system_memory_info->page_size;
     ptr_context->system_granularity    = system_memory_info->allocation_granularity;
 
     //we're done
-    return(true);
+    return(ptr_context);
 }
 
 const IFBB8
 ifb_memory::context_destroy(
-    IFBVoid) {
+    IFBMemoryContext* ptr_context) {
 
     //TODO
     ifb_macro_panic();
@@ -60,7 +59,6 @@ ifb_memory::context_align_size_to_page(
     const IFBMemoryContext* ptr_context, 
     const IFBU32            size) {
 
-    //sanity check
     ifb_macro_assert(ptr_context);
 
     //get the page size
@@ -79,7 +77,6 @@ ifb_memory::context_align_size_to_granularity(
     const IFBMemoryContext* ptr_context, 
     const IFBU32            size) {
 
-    //sanity check
     ifb_macro_assert(ptr_context);
 
     //get the granularity
@@ -99,10 +96,9 @@ ifb_memory::context_align_size_to_granularity(
 
 const IFBU64
 ifb_memory::context_get_size_from_page_count(
-    const IFBMemoryContext* ptr_context,
+    const IFBMemoryContext* ptr_context, 
     const IFBU32            page_count) {
 
-    //sanity check
     ifb_macro_assert(ptr_context);
 
     //get the page size
@@ -118,10 +114,9 @@ ifb_memory::context_get_size_from_page_count(
 
 const IFBU32
 ifb_memory::context_get_page_count_from_size(
-    const IFBMemoryContext* ptr_context,
+    const IFBMemoryContext* ptr_context, 
     const IFBU64            size) {
 
-    //sanity check
     ifb_macro_assert(ptr_context);
 
     //get the page size
@@ -141,25 +136,24 @@ ifb_memory::context_get_page_count_from_size(
 
 const IFBU32
 ifb_memory::context_stack_commit_relative(
-          IFBMemoryContext* ptr_context,
+          IFBMemoryContext* ptr_context, 
     const IFBU32            size,
     const IFBU32            alignment) {
 
-    //sanity check
     ifb_macro_assert(ptr_context);
 
     //calculate the aligned size
     const IFBU32 size_aligned = ifb_macro_align_a_to_b(size,alignment);
 
     //calculate the new position
-    const IFBU32 offset       = ref_stack.position;
+    const IFBU32 offset       = ptr_context->stack_position;
     const IFBU32 position_new = offset + size_aligned;
 
     //make sure we can fit the commit
-    ifb_macro_assert(position_new < ref_stack.size);
+    ifb_macro_assert(position_new < ptr_context->stack_size);
 
     //update the position
-    ref_stack.position = position_new;
+    ptr_context->stack_position = position_new;
     
     //we're done
     return(offset);
@@ -167,11 +161,10 @@ ifb_memory::context_stack_commit_relative(
 
 const IFBPtr
 ifb_memory::context_stack_commit_absolute(
-          IFBMemoryContext* ptr_context,
+          IFBMemoryContext* ptr_context, 
     const IFBU32            size,
     const IFBU32            alignment) {
 
-    //sanity check
     ifb_macro_assert(ptr_context);
 
     //calculate the aligned size
@@ -199,10 +192,9 @@ ifb_memory::context_stack_commit_absolute(
 
 const IFBPtr
 ifb_memory::context_stack_get_pointer(
-          IFBMemoryContext* ptr_context,
+    const IFBMemoryContext* ptr_context, 
     const IFBU32            offset) {
 
-    //sanity check
     ifb_macro_assert(ptr_context);
 
     //calculate the pointer
@@ -221,16 +213,12 @@ ifb_memory::context_stack_get_pointer(
 //reservations
 IFBMemoryReservation*
 ifb_memory::context_reserve_platform_memory(
-          IFBMemoryContext* ptr_context,
+          IFBMemoryContext* ptr_context, 
     const IFBU64            size_minimum) {
-
-    IFBMemoryReservation* ptr_reservation = NULL;
 
     //sanity check
     ifb_macro_assert(ptr_context);
-
-    //sanity check
-    if (size_minimum == 0) return(ptr_reservation);
+    ifb_macro_assert(size_minimum);
 
     //get the granularity and page size 
     const IFBU32 granularity = ptr_context->system_granularity;
@@ -243,13 +231,14 @@ ifb_memory::context_reserve_platform_memory(
 
     //make the reservation
     const IFBPtr ptr_platform_memory = ifb_platform::memory_reserve(size_aligned);
-    if (!ptr_platform_memory) return(reservation_handle);
+    if (!ptr_platform_memory) return(NULL);
 
     //search the list for reservations to recycle
+    IFBMemoryReservation* ptr_reservation = NULL;
     for (
         IFBMemoryReservation* ptr_reservation_current = ptr_context->ptr_reservation_first;
         ptr_reservation_current != NULL;
-        ptr_reservation_current = ptr_reservation_current->next) {
+        ptr_reservation_current = ptr_reservation_current->ptr_next) {
             
             //if the reservation has no pages and no start address
             //it is free to use
@@ -269,7 +258,9 @@ ifb_memory::context_reserve_platform_memory(
         const IFBU32 reservation_struct_size = ifb_macro_align_size_struct(IFBMemoryReservation); 
 
         //stack commit
-        ptr_reservation = (IFBMemoryReservation*)ifb_memory::context_stack_commit_absolute(reservation_struct_size);
+        ptr_reservation = (IFBMemoryReservation*)ifb_memory::context_stack_commit_absolute(
+            ptr_context,
+            reservation_struct_size);
     }
     
     //we should always have a reservation at this point
@@ -281,15 +272,12 @@ ifb_memory::context_reserve_platform_memory(
     //initialize the reservation
     ptr_reservation->ptr_context          = ptr_context;
     ptr_reservation->ptr_next             = NULL;
-    ptr_reservation->ptr_arena_first      = NULL;
-    ptr_reservation->ptr_arena_last       = NULL;
     ptr_reservation->start                = (IFBAddr)ptr_platform_memory;
-    ptr_reservation->arena_count          = 0;
     ptr_reservation->page_count_total     = page_count;
     ptr_reservation->page_count_committed = 0;
 
     //if this is the first one, we need to initialize the list
-    if (ptr_context->reservation_count == 0) {
+    if (ptr_context->count_reservations == 0) {
 
         //pointers should be null
         ifb_macro_assert(ptr_context->ptr_reservation_first == NULL);
@@ -298,7 +286,7 @@ ifb_memory::context_reserve_platform_memory(
         //initialize the list
         ptr_context->ptr_reservation_first = ptr_reservation;
         ptr_context->ptr_reservation_last  = ptr_reservation;
-        ptr_reservation_list->count = 1;
+        ptr_context->count_reservations    = 1;
     }
     else {
 
@@ -312,7 +300,7 @@ ifb_memory::context_reserve_platform_memory(
         
         //if we are adding a second element, make sure
         //we update the next pointer for the first element
-        if (ptr_context->reservation_count == 1) {
+        if (ptr_context->count_reservations == 1) {
             ifb_macro_assert(ptr_element_first->ptr_next == NULL);
             ptr_element_first->ptr_next = ptr_reservation;
         }
@@ -323,7 +311,7 @@ ifb_memory::context_reserve_platform_memory(
         ptr_context->ptr_reservation_last = ptr_reservation; 
 
         //update the count
-        ++ptr_context->reservation_count;
+        ++ptr_context->count_reservations;
     }
     
     //we're done
@@ -336,8 +324,6 @@ ifb_memory::context_release_platform_memory(
 
     //sanity check
     ifb_macro_assert(ptr_reservation);
-
-    //get the context
     IFBMemoryContext* ptr_context = ptr_reservation->ptr_context;
     ifb_macro_assert(ptr_context);
 
