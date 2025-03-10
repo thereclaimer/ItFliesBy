@@ -31,17 +31,17 @@ ifb_engine::core_create(
     const IFBU32 core_size  = ifb_macro_align_size_struct(IFBEngineCore);
     IFBEngineCore* core_ptr = (IFBEngineCore*)ifb_memory::context_stack_commit_absolute(ptr_memory_context,core_size);
     ifb_macro_assert(core_ptr);
-    
-    //reserve the platform memory
-    ifb_engine::core_memory_reserve_platform_memory(
-        core_ptr,
-        core_reserved_memory_size);
 
     //initialize the core structure
     core_ptr->system_info               = system_info;
     core_ptr->memory.ptr_memory_context = ptr_memory_context; 
     core_ptr->memory.stack.data         = (IFBByte*)core_stack_memory_ptr;
     core_ptr->memory.stack.size         = core_stack_memory_size;
+
+    //reserve the platform memory
+    ifb_engine::core_memory_reserve_platform_memory(
+        core_ptr,
+        core_reserved_memory_size);
 
     //we're done
     return(core_ptr);
