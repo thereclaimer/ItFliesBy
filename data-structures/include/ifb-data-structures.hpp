@@ -72,21 +72,9 @@ namespace ifb_array_list {
 
 namespace ifb_stack {
 
-    //create / allocate
-
-    const IFBU32 allocation_size(const IFBU32 stack_size);
-
-    IFBStack*
-    create(
-        const IFBPtr memory,
-        const IFBU32 size);
-
-    IFBStack*   arena_commit    (IFBMemoryArena* ptr_arena, const IFBU32 size);
-    IFBStack*   arena_reserve   (IFBMemoryArena* ptr_arena, const IFBU32 size);
-    const IFBB8 arena_release   (IFBMemoryArena* ptr_arena, IFBStack* ptr_stack);
-
-    //reset
-    const IFBB8  reset          (IFBStack* stack_ptr);
+    IFBStack*    arena_load_pointer    (IFBMemoryArena* ptr_arena, const IFBU32 arena_offset);
+    IFBStack*    arena_commit_absolute (IFBMemoryArena* ptr_arena, const IFBU32 stack_size);
+    const IFBU32 arena_commit_relative (IFBMemoryArena* ptr_arena, const IFBU32 stack_size);
 
     //operations
     const IFBU32 push_relative         (IFBStack* stack, const IFBU32 size);

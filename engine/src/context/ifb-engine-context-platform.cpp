@@ -28,12 +28,12 @@ namespace ifb_platform {
     ifb_platform_funcptr_monitor_count        monitor_count;
     ifb_platform_funcptr_monitor_info         monitor_info;
 
-    ifb_platform_funcptr_file_open_read_only  file_open_read_only;
-    ifb_platform_funcptr_file_open_read_write file_open_read_write;
-    ifb_platform_funcptr_file_close           file_close;
-    ifb_platform_funcptr_file_size            file_size;
-    ifb_platform_funcptr_file_read            file_read;
-    ifb_platform_funcptr_file_write           file_write;
+    // ifb_platform_funcptr_file_open_read_only  file_open_read_only;
+    // ifb_platform_funcptr_file_open_read_write file_open_read_write;
+    // ifb_platform_funcptr_file_close           file_close;
+    // ifb_platform_funcptr_file_size            file_size;
+    // ifb_platform_funcptr_file_read            file_read;
+    // ifb_platform_funcptr_file_write           file_write;
 
 };
 
