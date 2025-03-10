@@ -61,6 +61,16 @@ namespace ifb_win32 {
 };
 
 /**********************************************************************************/
+/* THREADS                                                                        */
+/**********************************************************************************/
+
+namespace ifb_win32 {
+
+    ifb_internal const IFBB8 thread_create  (IFBThread* ptr_thread);
+    ifb_internal const IFBB8 thread_destroy (IFBThread* ptr_thread);
+};
+
+/**********************************************************************************/
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
@@ -220,6 +230,10 @@ namespace ifb_win32 {
         platform_api_ref.memory.release      = ifb_win32::memory_release;
         platform_api_ref.memory.commit       = ifb_win32::memory_commit;
 
+        //threads
+        platform_api_ref.thread.create       = ifb_win32::thread_create;
+        platform_api_ref.thread.destroy      = ifb_win32::thread_destroy;
+
         //window    
         platform_api_ref.window.create       = ifb_win32::window_create;
         platform_api_ref.window.destroy      = ifb_win32::window_destroy;
@@ -230,8 +244,8 @@ namespace ifb_win32 {
         platform_api_ref.window.imgui_init   = ifb_win32::window_imgui_init;
 
         //monitor
-        platform_api_ref.monitor.count                 = ifb_win32::monitor_count;
-        platform_api_ref.monitor.info                  = ifb_win32::monitor_info;
+        platform_api_ref.monitor.count       = ifb_win32::monitor_count;
+        platform_api_ref.monitor.info        = ifb_win32::monitor_info;
 
         //files
         // platform_api_ref.file.file_ro_open             = ifb_win32::file_ro_open;
