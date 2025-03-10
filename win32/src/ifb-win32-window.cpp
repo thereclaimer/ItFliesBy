@@ -8,7 +8,7 @@
 
 ifb_internal const IFBB8
 ifb_win32::window_create(
-    const IFBCStr title,
+    const IFBChar* title,
     const IFBU32  width,
     const IFBU32  height,
     const IFBU32  position_x,

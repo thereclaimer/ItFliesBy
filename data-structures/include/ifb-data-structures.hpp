@@ -5,27 +5,8 @@
 #include <ifb-memory.hpp>
 
 /**********************************************************************************/
-/* FORWARD DECLARATIONS                                                           */
-/**********************************************************************************/
-
-struct IFBDataStructure {
-    IFBAddr data_start;
-    IFBU32  data_size;
-};
-
-struct IFBArray;
-struct IFBStack;
-struct IFBQueue;     //TODO
-struct IFBArrayList; //TODO
-struct IFBLinkedList;
-struct IFBHash;
-struct IFBHashTable;
-
-/**********************************************************************************/
 /* ARRAY                                                                          */
 /**********************************************************************************/
-
-#define IFB_STACK_INVALID_POSITION 0xFFFFFFFF
 
 namespace ifb_array {
 
@@ -107,18 +88,19 @@ namespace ifb_stack {
     //reset
     const IFBB8  reset          (IFBStack* stack_ptr);
 
-    //push / pull
-    const IFBU32 push_relative  (IFBStack* stack_ptr, const IFBU32 size);
-    const IFBPtr push_absolute  (IFBStack* stack_ptr, const IFBU32 size);
-    const IFBB8  pull           (IFBStack* stack_ptr, const IFBU32 size);
+    //operations
+    const IFBU32 push_relative         (IFBStack* stack, const IFBU32 size);
+    const IFBPtr push_absolute         (IFBStack* stack, const IFBU32 size);
+    const IFBB8  pull                  (IFBStack* stack, const IFBU32 size);
+    const IFBB8  reset                 (IFBStack* stack);
     
     //pointers
-    const IFBPtr get_pointer    (const IFBStack* stack_ptr, const IFBU32 position);
+    const IFBPtr get_pointer           (const IFBStack* stack, const IFBU32 position);
     
     //size
-    const IFBU32 get_size_total (const IFBStack* stack_ptr);
-    const IFBU32 get_size_free  (const IFBStack* stack_ptr);
-    const IFBU32 get_size_used  (const IFBStack* stack_ptr);
+    const IFBU32 get_size_total        (const IFBStack* stack);
+    const IFBU32 get_size_free         (const IFBStack* stack);
+    const IFBU32 get_size_used         (const IFBStack* stack);
 };
 
 /**********************************************************************************/

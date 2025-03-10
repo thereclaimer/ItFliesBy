@@ -76,11 +76,11 @@ namespace ifb_platform {
 
 typedef const IFBB8
 (*ifb_platform_funcptr_window_create) (
-    const IFBCStr title,
-    const IFBU32  width,
-    const IFBU32  height,
-    const IFBU32  position_x,
-    const IFBU32  position_y);
+    const IFBChar* title,
+    const IFBU32   width,
+    const IFBU32   height,
+    const IFBU32   position_x,
+    const IFBU32   position_y);
 
 typedef IFBGLContext
 (*ifb_platform_funcptr_window_opengl_init) (
@@ -155,60 +155,43 @@ namespace ifb_platform {
 /* FILES                                                                          */                            
 /**********************************************************************************/
 
-typedef const IFBB8
-(*ifb_platform_funcptr_file_open_read_only) (
-    const IFBCStr    in_file_path,
-          IFBIndex& out_file_index_ref);
+typedef const IFBB8 (*ifb_platform_func_ptr_file_ro_open)            (IFBFileReadOnly*  file_read_only,  const IFBChar* file_path);
+typedef const IFBB8 (*ifb_platform_func_ptr_file_ro_read_immediate)  (IFBFileReadOnly*  file_read_only,  const IFBU32   read_buffer_size,  IFBByte* read_buffer_ptr, const IFBU32 file_offset);
+typedef const IFBB8 (*ifb_platform_func_ptr_file_ro_read_async)      (IFBFileReadOnly*  file_read_only,  const IFBU32   read_buffer_size,  IFBByte* read_buffer_ptr, const IFBU32 file_offset);
+typedef const IFBB8 (*ifb_platform_func_ptr_file_ro_close)           (IFBFileReadOnly*  file_read_only);
 
-typedef const IFBB8
-(*ifb_platform_funcptr_file_open_read_write) (
-    const IFBCStr    in_file_path,
-          IFBIndex& out_file_index_ref);
-
-typedef const IFBB8
-(*ifb_platform_funcptr_file_open_read_write) (
-    const IFBCStr    in_file_path,
-          IFBIndex& out_file_index_ref);
-
-typedef const IFBB8
-(*ifb_platform_funcptr_file_close) (
-    const IFBIndex file_index);
-
-typedef const IFBSize
-(*ifb_platform_funcptr_file_size) (
-    const IFBIndex file_index);
-
-typedef const IFBB8
-(*ifb_platform_funcptr_file_read)(
-    const IFBIndex  in_file_index,
-    const IFBSize   in_file_read_start,
-    const IFBSize   in_file_read_size,
-          IFBByte* out_file_read_buffer);
-
-typedef const IFBB8
-(*ifb_platform_funcptr_file_write)(
-    const IFBIndex file_index,
-    const IFBSize  file_write_start,
-    const IFBSize  file_write_size,
-          IFBByte* file_write_buffer);
+typedef const IFBB8 (*ifb_platform_func_ptr_file_rw_open)            (IFBFileReadWrite* file_read_write, const IFBChar* file_path);
+typedef const IFBB8 (*ifb_platform_func_ptr_file_rw_read_immediate)  (IFBFileReadWrite* file_read_write, const IFBU32   read_buffer_size,  IFBByte*       read_buffer_ptr);
+typedef const IFBB8 (*ifb_platform_func_ptr_file_rw_read_async)      (IFBFileReadWrite* file_read_write, const IFBU32   read_buffer_size,  IFBByte*       read_buffer_ptr);
+typedef const IFBB8 (*ifb_platform_func_ptr_file_rw_write_immediate) (IFBFileReadWrite* file_read_write, const IFBU32   write_buffer_size, const IFBByte* write_buffer_ptr);
+typedef const IFBB8 (*ifb_platform_func_ptr_file_rw_write_async)     (IFBFileReadWrite* file_read_write, const IFBU32   write_buffer_size, const IFBByte* write_buffer_ptr);
+typedef const IFBB8 (*ifb_platform_func_ptr_file_rw_close)           (IFBFileReadWrite* file_read_write);
 
 struct IFBPlatformFileApi {
-    ifb_platform_funcptr_file_open_read_only  open_read_only;
-    ifb_platform_funcptr_file_open_read_write open_read_write;
-    ifb_platform_funcptr_file_close           close;
-    ifb_platform_funcptr_file_size            size;
-    ifb_platform_funcptr_file_read            read;
-    ifb_platform_funcptr_file_write           write;
+    ifb_platform_func_ptr_file_ro_open            file_ro_open;
+    ifb_platform_func_ptr_file_ro_close           file_ro_close;
+    ifb_platform_func_ptr_file_ro_read_immediate  file_ro_read_immediate;
+    ifb_platform_func_ptr_file_ro_read_async      file_ro_read_async;
+    ifb_platform_func_ptr_file_rw_open            file_rw_open;
+    ifb_platform_func_ptr_file_rw_close           file_rw_close;
+    ifb_platform_func_ptr_file_rw_read_immediate  file_rw_read_immediate;
+    ifb_platform_func_ptr_file_rw_read_async      file_rw_read_async;
+    ifb_platform_func_ptr_file_rw_write_immediate file_rw_write_immediate;
+    ifb_platform_func_ptr_file_rw_write_async     file_rw_write_async;
 };
 
 namespace ifb_platform {
 
-    extern ifb_platform_funcptr_file_open_read_only  open_read_only;
-    extern ifb_platform_funcptr_file_open_read_write open_read_write;
-    extern ifb_platform_funcptr_file_close           close;
-    extern ifb_platform_funcptr_file_size            size;
-    extern ifb_platform_funcptr_file_read            read;
-    extern ifb_platform_funcptr_file_write           write;
+    extern ifb_platform_func_ptr_file_ro_open            file_ro_open;
+    extern ifb_platform_func_ptr_file_ro_close           file_ro_close;
+    extern ifb_platform_func_ptr_file_ro_read_immediate  file_ro_read_immediate;
+    extern ifb_platform_func_ptr_file_ro_read_async      file_ro_read_async;
+    extern ifb_platform_func_ptr_file_rw_open            file_rw_open;
+    extern ifb_platform_func_ptr_file_rw_close           file_rw_close;
+    extern ifb_platform_func_ptr_file_rw_read_immediate  file_rw_read_immediate;
+    extern ifb_platform_func_ptr_file_rw_read_async      file_rw_read_async;
+    extern ifb_platform_func_ptr_file_rw_write_immediate file_rw_write_immediate;
+    extern ifb_platform_func_ptr_file_rw_write_async     file_rw_write_async;
 };
 
 /**********************************************************************************/
@@ -217,11 +200,11 @@ namespace ifb_platform {
 
 typedef const IFBB8
 (*ifb_platform_funcptr_file_dialog_select_file) (
-    const IFBCStr  in_file_dialog_starting_directory,
-    const IFBSize  in_file_type_count,
-    const IFBCStr* in_file_type_name_cstr_ptr,
-    const IFBCStr* in_file_type_spec_cstr_ptr,
-          IFBCStr out_file_selection_buffer);
+    const IFBChar*  in_file_dialog_starting_directory,
+    const IFBSize   in_file_type_count,
+    const IFBChar** in_file_type_name_cstr_ptr,
+    const IFBChar** in_file_type_spec_cstr_ptr,
+          IFBChar* out_file_selection_buffer);
 
 struct IFBPlatformFileDialogApi {
     ifb_platform_funcptr_file_dialog_select_file select_file;
@@ -235,6 +218,7 @@ struct IFBPlatformApi {
     IFBPlatformSystemApi  system;
     IFBPlatformMemoryApi  memory;
     IFBPlatformWindowApi  window;
+    IFBPlatformFileApi    file;
     IFBPlatformMonitorApi monitor;
 };
 
