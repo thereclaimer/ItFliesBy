@@ -11,11 +11,8 @@
 
 //core
 struct IFBEngineCore;
-
-struct IFBEngineCoreMemoryStack;
-struct IFBEngineCoreMemorySubStack;
-struct IFBEngineCoreMemoryReservation;
 struct IFBEngineCoreMemory;
+struct IFBEngineCoreThreads;
 
 /**********************************************************************************/
 /* MEMORY                                                                         */
@@ -23,34 +20,33 @@ struct IFBEngineCoreMemory;
 
 #define IFB_ENGINE_CORE_MEMORY_ARENA_SIZE ifb_macro_size_kilobytes(64) 
 
-struct IFBEngineCoreMemoryStack {
-    IFBByte* data;
-    IFBU32   size;
-};
-
-struct IFBEngineCoreMemoryReservation {
-    IFBMemoryReservation* ptr_reservation; 
-    IFBU32                size_arena;
-};
-
 struct IFBEngineCoreMemory {
     IFBMemoryContext*              ptr_memory_context;
-    IFBEngineCoreMemoryStack       stack;
-    IFBEngineCoreMemoryReservation reservation; 
+    IFBMemoryReservation*          ptr_memory_reservation;
+    IFBU32                         arena_size;
 };
 
 namespace ifb_engine {
 
     //reservation
-    const IFBB8       core_memory_reserve_platform_memory (IFBEngineCore* core_ptr, const IFBU64 size);
-    const IFBB8       core_memory_release_platform_memory (IFBEngineCore* core_ptr);
+    const IFBB8     core_memory_reserve_platform_memory (IFBEngineCore* core_ptr, const IFBU64 size);
+    const IFBB8     core_memory_release_platform_memory (IFBEngineCore* core_ptr);
 
     //stack
-    const IFBPtr      core_memory_commit_bytes_absolute   (IFBEngineCore* core_ptr, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBU32      core_memory_commit_bytes_relative   (IFBEngineCore* core_ptr, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBPtr    core_memory_commit_bytes_absolute   (IFBEngineCore* core_ptr, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBU32    core_memory_commit_bytes_relative   (IFBEngineCore* core_ptr, const IFBU32 size, const IFBU32 alignment = 0);
 
     //arenas
-    IFBMemoryArena*   core_memory_commit_arena            (IFBEngineCore* core_ptr);           
+    IFBMemoryArena* core_memory_commit_arena            (IFBEngineCore* core_ptr);           
+};
+
+/**********************************************************************************/
+/* THREADS                                                                        */
+/**********************************************************************************/
+
+struct IFBEngineCoreThreads {
+    IFBThread* thread_array_ptr;
+    IFBU32     thread_array_count;
 };
 
 /**********************************************************************************/
@@ -58,8 +54,9 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineCore {
-    IFBSystemInfo       system_info;
-    IFBEngineCoreMemory memory; 
+    IFBSystemInfo        system_info;
+    IFBEngineCoreMemory  memory;
+    IFBEngineCoreThreads threads;
 };
 
 namespace ifb_engine {

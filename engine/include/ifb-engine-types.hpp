@@ -23,6 +23,7 @@ struct IFBEngineMemoryArenaBlock;
 
 struct IFBHNDEngineSingleton : IFBHND32  { };
 struct IFBHNDEngineArena     : IFBHNDPTR { };
+struct IFBHNDEngineThread    : IFBHND32  { };
 
 /**********************************************************************************/
 /* PUBLIC TYPES                                                                   */

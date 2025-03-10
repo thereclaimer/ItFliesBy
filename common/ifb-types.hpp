@@ -175,8 +175,9 @@ struct IFBMemoryArena {
 struct IFBHNDPlatformThread : IFBHNDPTR { };
 
 struct IFBThread {
-    IFBU32    logical_core_id_parent;
-    IFBU32    logical_core_id_current;
+    IFBMemoryArena* ptr_arena;
+    IFBU32          logical_core_id_parent;
+    IFBU32          logical_core_id_current;
 };
 
 /**********************************************************************************/
