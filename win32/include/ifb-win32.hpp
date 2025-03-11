@@ -64,10 +64,18 @@ namespace ifb_win32 {
 /* THREADS                                                                        */
 /**********************************************************************************/
 
+struct IFBWin32ThreadInfo {
+    HANDLE handle;
+    DWORD  id;
+    DWORD  flags;
+};
+
 namespace ifb_win32 {
 
+    //create/destroy
     ifb_internal const IFBB8 thread_create  (IFBThread* ptr_thread);
     ifb_internal const IFBB8 thread_destroy (IFBThread* ptr_thread);
+
 };
 
 /**********************************************************************************/
@@ -303,8 +311,8 @@ namespace ifb_win32 {
     IFBWin32Memory*         context_get_memory        (IFBVoid);
     IFBEngineContextUpdate* context_get_engine_update (IFBVoid);
 
-    IFBWin32Args*   context_get_args   (IFBVoid);
-    IFBWin32Window* context_get_window (IFBVoid);
+    IFBWin32Args*   context_get_args        (IFBVoid);
+    IFBWin32Window* context_get_window      (IFBVoid);
 };
 
 
