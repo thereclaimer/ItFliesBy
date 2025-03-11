@@ -12,16 +12,18 @@ typedef const IFBB8     (*ifb_platform_funcptr_system_get_info) (IFBSystemInfo* 
 typedef const IFBTimems (*ifb_platform_funcptr_system_time_ms)  (IFBVoid);
 typedef IFBVoid         (*ifb_platform_funcptr_system_sleep)    (const IFBU32 ms);
 
-struct IFBPlatformSystemApi {
-    ifb_platform_funcptr_system_get_info get_info;
-    ifb_platform_funcptr_system_time_ms  time_ms;
-    ifb_platform_funcptr_system_sleep    sleep;
+typedef ifb_platform_funcptr_system_get_info IFBPlatformSystemGetInfo;
+typedef ifb_platform_funcptr_system_time_ms  IFBPlatformSystemTimeMS;
+typedef ifb_platform_funcptr_system_sleep    IFBPlatformSystemSleep;
+IFBPlatformSystemGetInfo get_info;
+    IFBPlatformSystemTimeMS  time_ms;
+    IFBPlatformSystemSleep   sleep;
 };
 
 namespace ifb_platform {
-    extern ifb_platform_funcptr_system_get_info system_get_info;
-    extern ifb_platform_funcptr_system_time_ms  system_time_ms;
-    extern ifb_platform_funcptr_system_sleep    system_sleep;
+    extern IFBPlatformSystemGetInfo system_get_info;
+    extern IFBPlatformSystemTimeMS  system_time_ms;
+    extern IFBPlatform][[9]p\SystemSleep   system_sleep;
 };
 
 /**********************************************************************************/
@@ -33,19 +35,25 @@ typedef const IFBB8  (*ifb_platform_funcptr_memory_release)  (const IFBPtr reser
 typedef const IFBPtr (*ifb_platform_funcptr_memory_commit)   (const IFBPtr commit_start,      const IFBU64 commit_size);
 typedef const IFBB8  (*ifb_platform_funcptr_memory_decommit) (const IFBPtr commit_start,      const IFBU64 commit_size);
 
+typedef ifb_platform_funcptr_memory_reserve  IFBPlatformMemoryReserve;
+typedef ifb_platform_funcptr_memory_release  IFBPlatformMemoryRelease;
+typedef ifb_platform_funcptr_memory_commit   IFBPlatformMemoryCommit;
+typedef ifb_platform_funcptr_memory_decommit IFBPlatformMemoryDecommit;
+
 struct IFBPlatformMemoryApi {
-    ifb_platform_funcptr_memory_reserve  reserve;
-    ifb_platform_funcptr_memory_release  release;
-    ifb_platform_funcptr_memory_commit   commit;
-    ifb_platform_funcptr_memory_decommit decommit;
+    IFBPlatformMemoryReserve  reserve;
+    IFBPlatformMemoryRelease  release;
+    IFBPlatformMemoryCommit   commit;
+    IFBPlatformMemoryDecommit decommit;
 };
+
 
 namespace ifb_platform {
 
-    extern ifb_platform_funcptr_memory_reserve  memory_reserve;
-    extern ifb_platform_funcptr_memory_release  memory_release;
-    extern ifb_platform_funcptr_memory_commit   memory_commit;
-    extern ifb_platform_funcptr_memory_decommit memory_decommit;
+    extern IFBPlatformMemoryReserve  memory_reserve;
+    extern IFBPlatformMemoryRelease  memory_release;
+    extern IFBPlatformMemoryCommit   memory_commit;
+    extern IFBPlatformMemoryDecommit memory_decommit;
 };
 
 
@@ -86,25 +94,33 @@ typedef const IFBB8   (*ifb_platform_funcptr_window_destroy)      (IFBVoid);
 typedef const IFBB8   (*ifb_platform_funcptr_window_frame_start)  (IFBVoid);
 typedef const IFBB8   (*ifb_platform_funcptr_window_frame_render) (IFBVoid);
 
+typedef ifb_platform_funcptr_window_create       IFBPlatformWindowCreate;
+typedef ifb_platform_funcptr_window_destroy      IFBPlatformWindowDestroy;
+typedef ifb_platform_funcptr_window_frame_start  IFBPlatformWindowFrameStart;
+typedef ifb_platform_funcptr_window_frame_render IFBPlatformWindowFrameRender;
+typedef ifb_platform_funcptr_window_show         IFBPlatformWindowShow;
+typedef ifb_platform_funcptr_window_opengl_init  IFBPlatformWindowOpenGLInit;
+typedef ifb_platform_funcptr_window_imgui_init   IFBPlatformWindowImGUIInit;
+
 struct IFBPlatformWindowApi {
-    ifb_platform_funcptr_window_create       create;
-    ifb_platform_funcptr_window_destroy      destroy;
-    ifb_platform_funcptr_window_frame_start  frame_start;
-    ifb_platform_funcptr_window_frame_render frame_render;
-    ifb_platform_funcptr_window_show         show;
-    ifb_platform_funcptr_window_opengl_init  opengl_init;
-    ifb_platform_funcptr_window_imgui_init   imgui_init;
+    IFBPlatformWindowCreate      create;
+    IFBPlatformWindowDestroy     destroy;
+    IFBPlatformWindowFrameStart  frame_start;
+    IFBPlatformWindowFrameRender frame_render;
+    IFBPlatformWindowShow        show;
+    IFBPlatformWindowOpenGLInit  opengl_init;
+    IFBPlatformWindowImGUIInit   imgui_init;
 };
 
 namespace ifb_platform {
 
-    extern ifb_platform_funcptr_window_create       window_create;
-    extern ifb_platform_funcptr_window_destroy      window_destroy;
-    extern ifb_platform_funcptr_window_frame_start  window_frame_start;
-    extern ifb_platform_funcptr_window_frame_render window_frame_render;
-    extern ifb_platform_funcptr_window_show         window_show;
-    extern ifb_platform_funcptr_window_opengl_init  window_opengl_init;
-    extern ifb_platform_funcptr_window_imgui_init   window_imgui_init;
+    extern IFBPlatformWindowCreate      window_create;
+    extern IFBPlatformWindowDestroy     window_destroy;
+    extern IFBPlatformWindowFrameStart  window_frame_start;
+    extern IFBPlatformWindowFrameRender window_frame_render;
+    extern IFBPlatformWindowShow        window_show;
+    extern IFBPlatformWindowOpenGLInit  window_opengl_init;
+    extern IFBPlatformWindowImGUIInit   window_imgui_init;
 };
 
 /**********************************************************************************/
@@ -147,31 +163,42 @@ typedef const IFBB8 (*ifb_platform_func_ptr_file_rw_write_immediate) (IFBFileRea
 typedef const IFBB8 (*ifb_platform_func_ptr_file_rw_write_async)     (IFBFileReadWrite* file_read_write, const IFBU32   write_buffer_size, const IFBByte* write_buffer_ptr);
 typedef const IFBB8 (*ifb_platform_func_ptr_file_rw_close)           (IFBFileReadWrite* file_read_write);
 
+typedef ifb_platform_func_ptr_file_ro_open            IFBPlatformFileROOpen;
+typedef ifb_platform_func_ptr_file_ro_read_immediate  IFBPlatformFileROReadImmediate;
+typedef ifb_platform_func_ptr_file_ro_read_async      IFBPlatformFileROReadAsync;
+typedef ifb_platform_func_ptr_file_ro_close           IFBPlatformFileROClose;
+typedef ifb_platform_func_ptr_file_rw_open            IFBPlatformFileROOpen;
+typedef ifb_platform_func_ptr_file_rw_read_immediate  IFBPlatformFileROReadImmediate;
+typedef ifb_platform_func_ptr_file_rw_read_async      IFBPlatformFileROReadAsync;
+typedef ifb_platform_func_ptr_file_rw_write_immediate IFBPlatformFileROWriteImmediate;
+typedef ifb_platform_func_ptr_file_rw_write_async     IFBPlatformFileROWriteAsync;
+typedef ifb_platform_func_ptr_file_rw_close           IFBPlatformFileROClose;
+
 struct IFBPlatformFileApi {
-    ifb_platform_func_ptr_file_ro_open            ro_open;
-    ifb_platform_func_ptr_file_ro_close           ro_close;
-    ifb_platform_func_ptr_file_ro_read_immediate  ro_read_immediate;
-    ifb_platform_func_ptr_file_ro_read_async      ro_read_async;
-    ifb_platform_func_ptr_file_rw_open            rw_open;
-    ifb_platform_func_ptr_file_rw_close           rw_close;
-    ifb_platform_func_ptr_file_rw_read_immediate  rw_read_immediate;
-    ifb_platform_func_ptr_file_rw_read_async      rw_read_async;
-    ifb_platform_func_ptr_file_rw_write_immediate rw_write_immediate;
-    ifb_platform_func_ptr_file_rw_write_async     rw_write_async;
+    IFBPlatformFileROOpen           ro_open;
+    IFBPlatformFileROReadImmediate  ro_close;
+    IFBPlatformFileROReadAsync      ro_read_immediate;
+    IFBPlatformFileROClose          ro_read_async;
+    IFBPlatformFileROOpen           rw_open;
+    IFBPlatformFileROReadImmediate  rw_close;
+    IFBPlatformFileROReadAsync      rw_read_immediate;
+    IFBPlatformFileROWriteImmediate rw_read_async;
+    IFBPlatformFileROWriteAsync     rw_write_immediate;
+    IFBPlatformFileROClose          rw_write_async;
 };
 
 namespace ifb_platform {
 
-    extern ifb_platform_func_ptr_file_ro_open            file_ro_open;
-    extern ifb_platform_func_ptr_file_ro_close           file_ro_close;
-    extern ifb_platform_func_ptr_file_ro_read_immediate  file_ro_read_immediate;
-    extern ifb_platform_func_ptr_file_ro_read_async      file_ro_read_async;
-    extern ifb_platform_func_ptr_file_rw_open            file_rw_open;
-    extern ifb_platform_func_ptr_file_rw_close           file_rw_close;
-    extern ifb_platform_func_ptr_file_rw_read_immediate  file_rw_read_immediate;
-    extern ifb_platform_func_ptr_file_rw_read_async      file_rw_read_async;
-    extern ifb_platform_func_ptr_file_rw_write_immediate file_rw_write_immediate;
-    extern ifb_platform_func_ptr_file_rw_write_async     file_rw_write_async;
+    extern IFBPlatformFileROOpen           file_ro_open;
+    extern IFBPlatformFileROReadImmediate  file_ro_close;
+    extern IFBPlatformFileROReadAsync      file_ro_read_immediate;
+    extern IFBPlatformFileROClose          file_ro_read_async;
+    extern IFBPlatformFileROOpen           file_rw_open;
+    extern IFBPlatformFileROReadImmediate  file_rw_close;
+    extern IFBPlatformFileROReadAsync      file_rw_read_immediate;
+    extern IFBPlatformFileROWriteImmediate file_rw_read_async;
+    extern IFBPlatformFileROWriteAsync     file_rw_write_immediate;
+    extern IFBPlatformFileROClose          file_rw_write_async;
 };
 
 /**********************************************************************************/

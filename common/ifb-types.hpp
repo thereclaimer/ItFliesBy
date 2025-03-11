@@ -194,17 +194,22 @@ struct IFBMemoryArena {
 /* THREADING                                                                      */
 /**********************************************************************************/
 
-struct IFBHNDPlatformThread : IFBHNDPTR { };
-
-struct IFBThread {
-    IFBStack* platform_context_stack;
-    IFBU32    logical_core_id_parent;
-    IFBU32    logical_core_id_current;
+struct IFBThreadData {
+    IFBPtr data_pointer;
+    IFBU32 data_size;
 };
 
-typedef const IFBB8
-(*ifb_thread_funcptr_task)(
-    IFBVoid);
+typedef const IFBB8 (*ifb_thread_funcptr_task) (IFBThreadData* ptr_data);
+typedef ifb_thread_funcptr_task IFBThreadTask;
+
+struct IFBThread {
+    IFBPtr        platform_context_pointer;
+    IFBU32        platform_context_size;
+    IFBU32        logical_core_id_parent;
+    IFBU32        logical_core_id_current;
+    IFBThreadData data;
+    IFBThreadTask task;
+};
 
 /**********************************************************************************/
 /* SIMD                                                                           */
