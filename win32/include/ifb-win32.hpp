@@ -218,7 +218,7 @@ namespace ifb_win32 {
 
     inline IFBVoid
     platform_api_initialize(
-        IFBPlatformApi& platform_api_ref) {
+        IFBPlatformAPI& platform_api_ref) {
 
         //system
         platform_api_ref.system.get_info     = ifb_win32::system_get_info;
@@ -291,7 +291,7 @@ namespace ifb_win32 {
 
     const IFBB8
     context_create(
-        const IFBPlatformApi& platform_api_ref,
+        const IFBPlatformAPI& platform_api_ref,
         const IFBWin32Args&   win32_args_ref);
         
     const IFBB8

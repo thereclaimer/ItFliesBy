@@ -8,25 +8,25 @@
 
 namespace ifb_platform {
 
-    ifb_platform_funcptr_system_get_info      system_get_info;
-    ifb_platform_funcptr_system_time_ms       system_time_ms;
-    ifb_platform_funcptr_system_sleep         system_sleep;
+    IFBPlatformSystemGetInfo      system_get_info;
+    IFBPlatformSystemTimeMS       system_time_ms;
+    IFBPlatformSystemSleep        system_sleep;
 
-    ifb_platform_funcptr_memory_reserve       memory_reserve;
-    ifb_platform_funcptr_memory_release       memory_release;
-    ifb_platform_funcptr_memory_commit        memory_commit;
-    ifb_platform_funcptr_memory_decommit      memory_decommit;
+    IFBPlatformMemoryReserve      memory_reserve;
+    IFBPlatformMemoryRelease      memory_release;
+    IFBPlatformMemoryCommit       memory_commit;
+    IFBPlatformMemoryDecommit     memory_decommit;
 
-    ifb_platform_funcptr_window_create        window_create;
-    ifb_platform_funcptr_window_destroy       window_destroy;
-    ifb_platform_funcptr_window_frame_start   window_frame_start;
-    ifb_platform_funcptr_window_frame_render  window_frame_render;
-    ifb_platform_funcptr_window_show          window_show;
-    ifb_platform_funcptr_window_opengl_init   window_opengl_init;
-    ifb_platform_funcptr_window_imgui_init    window_imgui_init;
+    IFBPlatformWindowCreate       window_create;
+    IFBPlatformWindowDestroy      window_destroy;
+    IFBPlatformWindowFrameStart   window_frame_start;
+    IFBPlatformWindowFrameRender  window_frame_render;
+    IFBPlatformWindowShow         window_show;
+    IFBPlatformWindowOpenGLInit   window_opengl_init;
+    IFBPlatformWindowImGUIInit    window_imgui_init;
 
-    ifb_platform_funcptr_monitor_count        monitor_count;
-    ifb_platform_funcptr_monitor_info         monitor_info;
+    IFBPlatformMonitorCount       monitor_count;
+    IFBPlatformMonitorInfo        monitor_info;
 
     // ifb_platform_funcptr_file_open_read_only  file_open_read_only;
     // ifb_platform_funcptr_file_open_read_write file_open_read_write;
@@ -43,15 +43,15 @@ namespace ifb_platform {
 
 const IFBB8
 ifb_engine::platform_api_initialize(
-    const IFBPlatformApi* ptr_platform_api) {
+    const IFBPlatformAPI* ptr_platform_api) {
 
     if (!ptr_platform_api) return(false);
     
     //cache the api
-    const IFBPlatformSystemApi&  ref_api_system  = ptr_platform_api->system;
-    const IFBPlatformMemoryApi&  ref_api_memory  = ptr_platform_api->memory;
-    const IFBPlatformWindowApi&  ref_api_window  = ptr_platform_api->window;
-    const IFBPlatformMonitorApi& ref_api_monitor = ptr_platform_api->monitor;
+    const IFBPlatformAPISystem&  ref_api_system  = ptr_platform_api->system;
+    const IFBPlatformAPIMemory&  ref_api_memory  = ptr_platform_api->memory;
+    const IFBPlatformAPIWindow&  ref_api_window  = ptr_platform_api->window;
+    const IFBPlatformAPIMonitor& ref_api_monitor = ptr_platform_api->monitor;
 
     //system
     ifb_platform::system_get_info     = ref_api_system.get_info;

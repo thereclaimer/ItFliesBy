@@ -86,7 +86,7 @@ namespace ifb_engine {
 
     const IFBB8
     platform_api_initialize(
-        const IFBPlatformApi* ptr_platform_api);
+        const IFBPlatformAPI* ptr_platform_api);
 };
 
 /**********************************************************************************/

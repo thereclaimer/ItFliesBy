@@ -20,7 +20,7 @@ namespace ifb_engine {
     // create/destroy
     ifb_engine_api const IFBHNDEngineArena 
     context_create(
-        const IFBPlatformApi* ptr_platform_api,
+        const IFBPlatformAPI* ptr_platform_api,
         const IFBByte*        ptr_stack_memory,
         const IFBU32          size_stack_memory,
         const IFBU64          reservation_size);

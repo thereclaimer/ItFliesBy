@@ -9,7 +9,7 @@
 
 ifb_engine_api const IFBHNDEngineArena
 ifb_engine::context_create(
-    const IFBPlatformApi* ptr_platform_api,
+    const IFBPlatformAPI* ptr_platform_api,
     const IFBByte*        stack_memory_ptr,
     const IFBU32          stack_memory_size,
     const IFBU64          reservation_size) {

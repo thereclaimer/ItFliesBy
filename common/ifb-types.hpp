@@ -194,14 +194,17 @@ struct IFBMemoryArena {
 /* THREADING                                                                      */
 /**********************************************************************************/
 
+//data
 struct IFBThreadData {
     IFBPtr data_pointer;
     IFBU32 data_size;
 };
 
+//task
 typedef const IFBB8 (*ifb_thread_funcptr_task) (IFBThreadData* ptr_data);
 typedef ifb_thread_funcptr_task IFBThreadTask;
 
+//thread
 struct IFBThread {
     IFBPtr        platform_context_pointer;
     IFBU32        platform_context_size;

@@ -23,7 +23,7 @@ wWinMain(
     win32_args.n_cmd_show      = n_cmd_show;
 
     //initialize the platform api
-    IFBPlatformApi platform_api;
+    IFBPlatformAPI platform_api;
     ifb_win32::platform_api_initialize(platform_api);
 
     //create the context
