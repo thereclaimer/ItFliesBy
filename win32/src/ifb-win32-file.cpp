@@ -389,9 +389,8 @@ ifb_win32::file_async_completion_routine_rw_write(
 /* INTERNAL                                                                        */
 /**********************************************************************************/
 
-
 inline IFBWin32FileInfoReadOnly* 
-ifb_win32::file_read_only_push_win32_info(
+ifb_win32::file_ro_win32_info_stack_push(
     IFBFileReadOnly* file_read_only) {
 
     //sanity check
@@ -412,7 +411,7 @@ ifb_win32::file_read_only_push_win32_info(
 }
 
 inline IFBWin32FileInfoReadOnly*
-ifb_win32::file_read_only_get_win32_info(
+ifb_win32::file_ro_win32_info_stack_load(
     IFBFileReadOnly* file_read_only) {
 
     //sanity check
@@ -428,7 +427,7 @@ ifb_win32::file_read_only_get_win32_info(
 }
 
 inline IFBFileReadOnly*
-ifb_win32::file_from_overlapped_read_only(
+ifb_win32::file_ro_load_from_overlapped(
     const LPOVERLAPPED overlapped_ptr) {
 
     ifb_macro_assert(overlapped_ptr);
@@ -442,8 +441,45 @@ ifb_win32::file_from_overlapped_read_only(
     return(ptr_file);
 }
 
+inline IFBWin32FileInfoReadWrite* 
+ifb_win32::file_rw_win32_info_stack_push(
+    IFBFileReadWrite* file_read_write) {
+
+    //sanity check
+    ifb_macro_assert(file_read_write);
+    ifb_macro_assert(file_read_write->platform_context_stack);
+
+    //push our win32 file info onto the stack
+    const IFBU32              win32_file_info_size = ifb_macro_align_size_struct(IFBWin32FileInfoReadOnly);
+    IFBWin32FileInfoReadOnly* win32_file_info_ptr  = (IFBWin32FileInfoReadWrite*)ifb_stack::push_absolute(
+        file_read_write->platform_context_stack,
+        win32_file_info_size);
+
+    //sanity check
+    ifb_macro_assert(win32_file_info_ptr);
+
+    //we're done
+    return(win32_file_info_ptr);
+}
+
+inline IFBWin32FileInfoReadWrite*
+ifb_win32::file_rw_win32_info_stack_load(
+    IFBFileReadWrite* file_read_write) {
+
+    //sanity check
+    ifb_macro_assert(file_read_write);
+    ifb_macro_assert(file_read_write->platform_context_stack);
+
+    //get the base of the stack
+    IFBWin32FileInfoReadWrite* file_info = ifb_stack::get_pointer(file_read_write->platform_context_stack, 0);
+    ifb_macro_assert(file_info);
+
+    //we're done
+    return(file_info);
+}
+
 inline IFBFileReadWrite*
-ifb_win32::file_from_overlapped_read_write(
+ifb_win32::file_rw_load_from_overlapped(
     const LPOVERLAPPED overlapped_ptr) {
 
     ifb_macro_assert(overlapped_ptr);
