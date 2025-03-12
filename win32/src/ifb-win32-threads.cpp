@@ -7,11 +7,23 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
+struct IFBWin32ThreadDebugInfo {
+    IFBU32   thread_id;
+    IFBU32   thread_core_number;
+    IFBU32   thread_debug_buffer_length;
+    IFBChar* thread_debug_buffer_ptr;
+};
+
 namespace ifb_win32 {
 
     IFBWin32ThreadContext* thread_get_context (const IFBThread* ptr_thread);
     DWORD WINAPI           thread_routine           (LPVOID data);
     IFBThread*             thread_validate_data     (LPVOID data);
+
+    IFBVoid
+    thread_debug_out(
+        const IFBWin32ThreadDebugInfo& thread_debug_info_ref,
+        const IFBChar*                 thread_debug_message_ptr);
 };
 
 
@@ -60,6 +72,12 @@ ifb_win32::thread_create(
         result &= (thread_core_id_parent    <  win32_core_count);
         result &= (thread_win32_context_ptr != NULL); 
         if (!result) break;
+
+        //initialize lock and condition
+        LPCRITICAL_SECTION  routiune_data_lock  = &thread_win32_context_ptr->data_lock; 
+        PCONDITION_VARIABLE routiune_task_ready = &thread_win32_context_ptr->task_ready;
+        InitializeCriticalSection(routiune_data_lock);
+        InitializeConditionVariable(routiune_task_ready);
 
         //thread win32 properties
         LPSECURITY_ATTRIBUTES  thread_win32_security_attributes = NULL; 
@@ -141,16 +159,76 @@ ifb_win32::thread_set_core(
 ifb_internal DWORD WINAPI
 ifb_win32::thread_routine(
     LPVOID data) {
+    
+    //debug string
+    const IFBU32 debug_out_size = 64;
+    IFBChar debug_out[debug_out_size];
 
     //get the thread context
     IFBThread*             ptr_thread         = ifb_win32::thread_validate_data (data);
     IFBWin32ThreadContext* ptr_thread_context = ifb_win32::thread_get_context   (ptr_thread);
 
-    //debug string
-    const IFBU32 debug_out_size = 128;
-    IFBChar debug_out[debug_out_size];
-    (IFBVoid)sprintf_s(debug_out,debug_out_size,"HELLO FROM THREAD [%d]",ptr_thread->logical_core_id_current);
-    ifb_win32::system_debug_out(debug_out);
+    //this routine will run as long as...
+    IFBB8 run_routine = true;
+    run_routine &= (ptr_thread != NULL);                               //...the engine thread is not null AND
+    run_routine &= run_routine && (ptr_thread_context        != NULL); //...the win32 context is not null AND
+    // run_routine &= run_routine && (ptr_thread->task_data     != NULL); //...the thread has data           AND
+    // run_routine &= run_routine && (ptr_thread->task_function != NULL); //...the thread has a task
+    if (!run_routine) return(S_FALSE);
+
+    //cache thread properties
+    const IFBU32 thread_id          = ptr_thread_context->id; 
+    const IFBU32 thread_core_number = ptr_thread->logical_core_id_current;
+
+    //intialize debug info
+    IFBWin32ThreadDebugInfo debug_info;
+    debug_info.thread_id                  = thread_id;
+    debug_info.thread_core_number         = thread_core_number;
+    debug_info.thread_debug_buffer_length = debug_out_size;
+    debug_info.thread_debug_buffer_ptr    = debug_out;
+
+    ifb_win32::thread_debug_out(debug_info,"STARTUP");
+
+    //run the routine
+    while(run_routine) {
+
+        ifb_win32::thread_debug_out(debug_info,"ROUTINE START");
+        
+        //task condition and data lock
+        PCONDITION_VARIABLE routiune_task_ready = &ptr_thread_context->task_ready;
+        LPCRITICAL_SECTION  routiune_data_lock  = &ptr_thread_context->data_lock; 
+
+        //lock the task data
+        EnterCriticalSection(routiune_data_lock);
+        ifb_win32::thread_debug_out(debug_info,"TASK DATA LOCKED");
+
+        //wait unil the task is ready
+        SleepConditionVariableCS(
+            routiune_task_ready,
+            routiune_data_lock,
+            INFINITE);
+        
+        //task function and data
+        IFBPtr        routine_task_data     = ptr_thread->task_data;
+        IFBThreadTask routine_task_function = ptr_thread->task_function;
+
+        //double check that we have data and a function
+        run_routine &= (routine_task_data     != NULL);
+        run_routine &= (routine_task_function != NULL);
+
+        //execute the task
+        ifb_win32::thread_debug_out(debug_info,"TASK START");
+        run_routine &= run_routine && routine_task_function(routine_task_data);
+        ifb_win32::thread_debug_out(debug_info,"TASK END");
+
+        //unlock the task data
+        LeaveCriticalSection(routiune_data_lock);
+        ifb_win32::thread_debug_out(debug_info,"TASK DATA UNLOCKED");
+
+        ifb_win32::thread_debug_out(debug_info,"ROUTINE END");
+    }
+
+    ifb_win32::thread_debug_out(debug_info,"SHUTDOWN");
 
     //we're done
     return(S_OK);
@@ -194,4 +272,22 @@ ifb_win32::thread_validate_data(
 
     //we're done
     return(ptr_thread);
+}
+
+inline IFBVoid
+ifb_win32::thread_debug_out(
+    const IFBWin32ThreadDebugInfo& thread_debug_info_ref,
+    const IFBChar*                 thread_debug_message_ptr) {
+
+    //format the debug string
+    (VOID)sprintf_s(
+        thread_debug_info_ref.thread_debug_buffer_ptr,
+        thread_debug_info_ref.thread_debug_buffer_length,
+        "[THREAD-%d-CORE-%d]: %s",
+        thread_debug_info_ref.thread_id,
+        thread_debug_info_ref.thread_core_number,
+        thread_debug_message_ptr);
+
+    //print the message
+    ifb_win32::system_debug_out(thread_debug_info_ref.thread_debug_buffer_ptr);
 }

@@ -57,8 +57,8 @@ ifb_engine::core_threads_create_pool(
         thread_ptr->platform_context_size    = thread_context_size;
         thread_ptr->logical_core_id_parent   = parent_core_number;
         thread_ptr->logical_core_id_current  = core_id;
-        thread_ptr->data                     = {0};
-        thread_ptr->task                     = NULL;
+        thread_ptr->task_data                = NULL;
+        thread_ptr->task_function            = NULL;
 
         //update the thread index
         ++thread_index;

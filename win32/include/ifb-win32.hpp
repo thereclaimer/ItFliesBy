@@ -69,9 +69,11 @@ namespace ifb_win32 {
 #define IFB_WIN32_THREAD_STACK_SIZE 0
 
 struct IFBWin32ThreadContext {
-    HANDLE handle;
-    DWORD  id;
-    DWORD  flags;
+    HANDLE             handle;
+    CONDITION_VARIABLE task_ready;
+    CRITICAL_SECTION   data_lock;
+    DWORD              id;
+    DWORD              flags;
 };
 
 namespace ifb_win32 {

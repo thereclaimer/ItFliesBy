@@ -194,15 +194,8 @@ struct IFBMemoryArena {
 /* THREADING                                                                      */
 /**********************************************************************************/
 
-//data
-struct IFBThreadData {
-    IFBPtr data_pointer;
-    IFBU32 data_size;
-};
-
 //task
-typedef const IFBB8 (*ifb_thread_funcptr_task) (IFBThreadData* ptr_data);
-typedef ifb_thread_funcptr_task IFBThreadTask;
+typedef const IFBB8 (*IFBThreadTask) (IFBPtr data_ptr);
 
 //thread
 struct IFBThread {
@@ -210,8 +203,8 @@ struct IFBThread {
     IFBU32        platform_context_size;
     IFBU32        logical_core_id_parent;
     IFBU32        logical_core_id_current;
-    IFBThreadData data;
-    IFBThreadTask task;
+    IFBPtr        task_data;
+    IFBThreadTask task_function;
 };
 
 /**********************************************************************************/
