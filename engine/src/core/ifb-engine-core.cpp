@@ -3,6 +3,7 @@
 #include "ifb-engine-internal-core.hpp"
 
 #include "ifb-engine-core-memory.cpp"
+#include "ifb-engine-core-threads.cpp"
 
 inline IFBEngineCore*
 ifb_engine::core_create(
@@ -15,7 +16,7 @@ ifb_engine::core_create(
     ifb_macro_assert(core_stack_memory_size);
     ifb_macro_assert(core_reserved_memory_size);
 
-    //get the system infoc
+    //get the system info
     IFBSystemInfo system_info;
     const IFBB8 system_info_valid = ifb_platform::system_get_info(&system_info); 
     if (!system_info_valid) return(NULL);
@@ -37,10 +38,19 @@ ifb_engine::core_create(
     core_ptr->memory.ptr_context     = ptr_memory_context; 
     core_ptr->memory.ptr_reservation = NULL; 
 
+    //result for the next steps
+    IFBU32 result = true;
+
     //reserve the platform memory
-    ifb_engine::core_memory_reserve_platform_memory(
+    result &= ifb_engine::core_memory_reserve_platform_memory(
         core_ptr,
         core_reserved_memory_size);
+    ifb_macro_assert(result);
+
+    //create the thread pool
+    const IFBU32 thread_context_size = IFB_ENGINE_CORE_THREAD_CONTEXT_SIZE;
+    result &= ifb_engine::core_threads_create_pool(core_ptr,thread_context_size);
+    ifb_macro_assert(result);
 
     //we're done
     return(core_ptr);

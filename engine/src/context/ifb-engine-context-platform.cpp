@@ -17,6 +17,9 @@ namespace ifb_platform {
     IFBPlatformMemoryCommit       memory_commit;
     IFBPlatformMemoryDecommit     memory_decommit;
 
+    IFBPlatformThreadCreate       thread_create;
+    IFBPlatformThreadDestroy      thread_destroy;
+
     IFBPlatformWindowCreate       window_create;
     IFBPlatformWindowDestroy      window_destroy;
     IFBPlatformWindowFrameStart   window_frame_start;
@@ -50,6 +53,7 @@ ifb_engine::platform_api_initialize(
     //cache the api
     const IFBPlatformAPISystem&  ref_api_system  = ptr_platform_api->system;
     const IFBPlatformAPIMemory&  ref_api_memory  = ptr_platform_api->memory;
+    const IFBPlatformAPIThread&  ref_api_thread  = ptr_platform_api->thread;
     const IFBPlatformAPIWindow&  ref_api_window  = ptr_platform_api->window;
     const IFBPlatformAPIMonitor& ref_api_monitor = ptr_platform_api->monitor;
 
@@ -63,6 +67,10 @@ ifb_engine::platform_api_initialize(
     ifb_platform::memory_release      = ref_api_memory.release;
     ifb_platform::memory_commit       = ref_api_memory.commit;
     ifb_platform::memory_decommit     = ref_api_memory.decommit;
+
+    //threads
+    ifb_platform::thread_create       = ref_api_thread.create;
+    ifb_platform::thread_destroy      = ref_api_thread.destroy;
 
     //window
     ifb_platform::window_create       = ref_api_window.create;

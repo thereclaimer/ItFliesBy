@@ -22,6 +22,16 @@ wWinMain(
     win32_args.p_cmd_line      = p_cmd_line;
     win32_args.n_cmd_show      = n_cmd_show;
 
+    //enforce that the main thread stays on the processor it was started on
+    const HANDLE    current_thread      = GetCurrentThread();
+    const IFBU32    current_core        = GetCurrentProcessorNumber();
+    const DWORD_PTR core_affinity_mask  = (DWORD_PTR)(1ULL << current_core);
+    const DWORD_PTR prior_affinity_mask = SetThreadAffinityMask(
+        current_thread,
+        core_affinity_mask);
+    const IFBB8 thread_assigned = (prior_affinity_mask != NULL);
+    ifb_macro_assert(thread_assigned);
+
     //initialize the platform api
     IFBPlatformAPI platform_api;
     ifb_win32::platform_api_initialize(platform_api);

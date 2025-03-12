@@ -12,13 +12,18 @@
 //core
 struct IFBEngineCore;
 struct IFBEngineCoreMemory;
-struct IFBEngineCoreThreads;
+struct IFBEngineCoreThreadPool;
+
+//handles
+struct IFBHNDEngineCoreThread : IFBHND32 { }; 
+
+#define IFB_ENGINE_CORE_MEMORY_ARENA_SIZE   ifb_macro_size_kilobytes(64) 
+#define IFB_ENGINE_CORE_THREAD_CONTEXT_SIZE 64
 
 /**********************************************************************************/
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
-#define IFB_ENGINE_CORE_MEMORY_ARENA_SIZE ifb_macro_size_kilobytes(64) 
 
 struct IFBEngineCoreMemory {
     IFBMemoryContext*     ptr_context;
@@ -44,9 +49,15 @@ namespace ifb_engine {
 /* THREADS                                                                        */
 /**********************************************************************************/
 
-struct IFBEngineCoreThreads {
-    IFBThread* thread_array_ptr;
+struct IFBEngineCoreThreadPool {
+    IFBThread* thread_array;
     IFBU32     thread_array_count;
+    IFBU32     platform_context_size;
+};
+
+namespace ifb_engine {
+
+    const IFBB8 core_threads_create_pool(IFBEngineCore* core_ptr, const IFBU32 platform_context_size_per_thread);
 };
 
 /**********************************************************************************/
@@ -54,9 +65,9 @@ struct IFBEngineCoreThreads {
 /**********************************************************************************/
 
 struct IFBEngineCore {
-    IFBSystemInfo        system_info;
-    IFBEngineCoreMemory  memory;
-    IFBEngineCoreThreads threads;
+    IFBSystemInfo           system_info;
+    IFBEngineCoreMemory     memory;
+    IFBEngineCoreThreadPool thread_pool;
 };
 
 namespace ifb_engine {

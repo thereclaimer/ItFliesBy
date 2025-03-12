@@ -52,17 +52,27 @@ ifb_win32::thread_create(
         &ptr_win32_thread_info->id);  // thread id
 
     //if that failed, we're done
-    if (!ptr_win32_thread_info->handle) return(false);
+    const IFBB8 thread_created = (ptr_win32_thread_info->handle != NULL); 
 
     //assign the thread to the requested core
-    DWORD_PTR core_affinity_mask = (DWORD_PTR)(1ULL << win32_core_id_requested);
-    DWORD_PTR result = SetThreadAffinityMask(
+    DWORD_PTR core_affinity_mask  = (DWORD_PTR)(1ULL << win32_core_id_requested);
+    DWORD_PTR prior_affinity_mask = SetThreadAffinityMask(
         ptr_win32_thread_info->handle,
         core_affinity_mask);
-    if (!result)
+    const IFBB8 thread_assigned = (prior_affinity_mask != NULL);
 
+    //last check to see if everything worked
+    IFBB8 result = true;
+    result &= thread_created;
+    result &= thread_assigned;
+    
+    //if not, we need to close the handle
+    if (!result) {
+        CloseHandle(ptr_win32_thread_info->handle);
+    }
 
-    return(false);
+    //we're done
+    return(result);
 }
 
 ifb_internal const IFBB8
@@ -99,13 +109,4 @@ ifb_win32::thread_get_win32_info(
 
     //we're done
     return(ptr_win32_thread_info);
-}
-
-inline IFBVoid
-ifb_win32::thread_get_default_args(
-    IFBWin32ThreadCreateArgs& ref_thread_args) {
-
-
-
-
 }
