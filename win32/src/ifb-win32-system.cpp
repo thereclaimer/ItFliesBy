@@ -161,3 +161,11 @@ ifb_win32::system_sleep(
 
     ifb_macro_panic();
 }
+
+ifb_internal IFBVoid
+ifb_win32::system_debug_out(
+    const IFBChar* debug_string) {
+
+    OutputDebugString(debug_string);
+    OutputDebugString("\n");
+}

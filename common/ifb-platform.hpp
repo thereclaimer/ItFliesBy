@@ -20,20 +20,24 @@ struct IFBPlatformAPIMonitor;
 /* SYSTEM                                                                         */
 /**********************************************************************************/
 
-typedef const IFBB8     (*IFBPlatformSystemGetInfo) (IFBSystemInfo* system_info);
-typedef const IFBTimems (*IFBPlatformSystemTimeMS)  (IFBVoid);
-typedef IFBVoid         (*IFBPlatformSystemSleep)   (const IFBU32 ms);
+typedef const IFBB8     (*IFBPlatformSystemGetInfo)    (IFBSystemInfo* system_info);
+typedef const IFBTimems (*IFBPlatformSystemTimeMS)     (IFBVoid);
+typedef IFBVoid         (*IFBPlatformSystemSleep)      (const IFBU32   ms);
+typedef IFBVoid         (*IFBPlatformSystemDebugPrint) (const IFBChar* debug_string);
 
 struct IFBPlatformAPISystem {
-    IFBPlatformSystemGetInfo get_info;
-    IFBPlatformSystemTimeMS  time_ms;
-    IFBPlatformSystemSleep   sleep;
+    IFBPlatformSystemGetInfo    get_info;
+    IFBPlatformSystemTimeMS     time_ms;
+    IFBPlatformSystemSleep      sleep;
+    IFBPlatformSystemDebugPrint debug_print;
 };
 
 namespace ifb_platform {
-    extern IFBPlatformSystemGetInfo system_get_info;
-    extern IFBPlatformSystemTimeMS  system_time_ms;
-    extern IFBPlatformSystemSleep   system_sleep;
+    extern IFBPlatformSystemGetInfo    system_get_info;
+    extern IFBPlatformSystemTimeMS     system_time_ms;
+    extern IFBPlatformSystemSleep      system_sleep;
+    extern IFBPlatformSystemDebugPrint system_debug_print;
+
 };
 
 /**********************************************************************************/

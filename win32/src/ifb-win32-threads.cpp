@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdio.h>
 #include "ifb-win32.hpp"
 
 /**********************************************************************************/
@@ -8,8 +9,9 @@
 
 namespace ifb_win32 {
 
-    DWORD WINAPI        thread_function(LPVOID data);
-    IFBWin32ThreadInfo* thread_get_win32_info(const IFBThread* ptr_thread);
+    IFBWin32ThreadInfo* thread_get_win32_info (const IFBThread* ptr_thread);
+    DWORD WINAPI        thread_function       (LPVOID data);
+    IFBThread*          thread_validate_data  (LPVOID data);
 };
 
 
@@ -111,7 +113,18 @@ ifb_internal DWORD WINAPI
 ifb_win32::thread_function(
     LPVOID data) {
 
-    return(0);
+    //get the thread context
+    IFBThread*          ptr_thread      = ifb_win32::thread_validate_data  (data);
+    IFBWin32ThreadInfo* ptr_thread_info = ifb_win32::thread_get_win32_info (ptr_thread);
+
+    //debug string
+    const IFBU32 debug_out_size = 128;
+    IFBChar debug_out[debug_out_size];
+    (IFBVoid)sprintf_s(debug_out,debug_out_size,"HELLO FROM THREAD [%d]",ptr_thread->logical_core_id_current);
+    ifb_win32::system_debug_out(debug_out);
+
+    //we're done
+    return(S_OK);
 }
 
 inline IFBWin32ThreadInfo* 
@@ -128,4 +141,23 @@ ifb_win32::thread_get_win32_info(
 
     //we're done
     return(ptr_win32_thread_info);
+}
+
+inline IFBThread*
+ifb_win32::thread_validate_data(
+    LPVOID data) {
+
+    //make sure the pointer is valid
+    ifb_macro_assert(data);
+
+    //cast the pointer
+    IFBThread* ptr_thread = (IFBThread*)data;
+
+    //make sure the thread is operating on the assigned core
+    const IFBU32 core_id_current  = GetCurrentProcessorNumber();
+    const IFBU32 core_id_assigned = ptr_thread->logical_core_id_current;
+    ifb_macro_assert(core_id_current == core_id_assigned);
+
+    //we're done
+    return(ptr_thread);
 }

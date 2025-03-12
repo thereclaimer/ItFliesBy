@@ -44,9 +44,10 @@ namespace ifb_win32 {
 
 namespace ifb_win32 {
 
-    ifb_internal const IFBB8   system_get_info (IFBSystemInfo* system_info);
-    ifb_internal const IFBU64  system_time_ms  (IFBVoid);
-    ifb_internal       IFBVoid system_sleep    (const IFBU32 ms);
+    ifb_internal const IFBB8   system_get_info  (IFBSystemInfo* system_info);
+    ifb_internal const IFBU64  system_time_ms   (IFBVoid);
+    ifb_internal       IFBVoid system_sleep     (const IFBU32   ms);
+    ifb_internal       IFBVoid system_debug_out (const IFBChar* debug_string);
 };
 
 /**********************************************************************************/
@@ -233,6 +234,7 @@ namespace ifb_win32 {
         platform_api_ref.system.get_info     = ifb_win32::system_get_info;
         platform_api_ref.system.time_ms      = ifb_win32::system_time_ms;
         platform_api_ref.system.sleep        = ifb_win32::system_sleep;
+        platform_api_ref.system.debug_print  = ifb_win32::system_debug_out;
 
         //memory    
         platform_api_ref.memory.reserve      = ifb_win32::memory_reserve;
@@ -300,7 +302,6 @@ struct IFBWin32Context {
     IFBWin32Memory*         ptr_memory;
     IFBEngineContextUpdate* ptr_engine_update;
     IFBWin32CoreThread      core_thread;
-    
 };
 
 namespace ifb_win32 {
@@ -310,17 +311,13 @@ namespace ifb_win32 {
         const IFBPlatformAPI& platform_api_ref,
         const IFBWin32Args&   win32_args_ref);
         
-    const IFBB8
-    context_main_loop(IFBVoid);
-    
-    const IFBB8
-    context_destroy(IFBVoid);
+    const IFBB8 context_main_loop (IFBVoid);
+    const IFBB8 context_destroy   (IFBVoid);
 
     IFBWin32Memory*         context_get_memory        (IFBVoid);
     IFBEngineContextUpdate* context_get_engine_update (IFBVoid);
-
-    IFBWin32Args*   context_get_args        (IFBVoid);
-    IFBWin32Window* context_get_window      (IFBVoid);
+    IFBWin32Args*           context_get_args          (IFBVoid);
+    IFBWin32Window*         context_get_window        (IFBVoid);
 };
 
 

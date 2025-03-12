@@ -11,6 +11,7 @@ namespace ifb_platform {
     IFBPlatformSystemGetInfo      system_get_info;
     IFBPlatformSystemTimeMS       system_time_ms;
     IFBPlatformSystemSleep        system_sleep;
+    IFBPlatformSystemDebugPrint   system_debug_print;
 
     IFBPlatformMemoryReserve      memory_reserve;
     IFBPlatformMemoryRelease      memory_release;
