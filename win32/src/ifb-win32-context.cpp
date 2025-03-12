@@ -17,6 +17,12 @@ ifb_win32::context_create(
     const IFBPlatformAPI& platform_api_ref,
     const IFBWin32Args&   win32_args_ref) {
 
+    //enforce that the main thread stays on the processor it was started on
+    const HANDLE current_thread  = GetCurrentThread();
+    const IFBU32 current_core    = GetCurrentProcessorNumber();
+    const IFBB8  thread_assigned = ifb_win32::thread_set_core(current_thread,current_core);
+    ifb_macro_assert(thread_assigned);
+
     //engine memory
     const IFBU64      reservation_gb = 4UL;
     const IFBU64      engine_memory_reserved_size = ifb_macro_size_gigabytes(reservation_gb);
@@ -52,7 +58,9 @@ ifb_win32::context_create(
     win32_memory_ptr->win32_handles.window = ifb_engine::arena_commit_bytes_relative(win32_arena,size_window);
 
     //update the context
-    win32_context_ptr->ptr_memory = win32_memory_ptr;
+    win32_context_ptr->ptr_memory                  = win32_memory_ptr;
+    win32_context_ptr->core_thread.win32_handle    = current_thread;
+    win32_context_ptr->core_thread.cpu_core_number = current_core;
     _ptr_context = win32_context_ptr;
 
     //set the args

@@ -73,9 +73,10 @@ struct IFBWin32ThreadInfo {
 namespace ifb_win32 {
 
     //create/destroy
-    ifb_internal const IFBB8 thread_create  (IFBThread* ptr_thread);
-    ifb_internal const IFBB8 thread_destroy (IFBThread* ptr_thread);
-
+    ifb_internal const IFBB8 thread_create   (IFBThread* ptr_thread);
+    ifb_internal const IFBB8 thread_destroy  (IFBThread* ptr_thread);
+    
+    ifb_internal const IFBB8 thread_set_core (const HANDLE win32_thread_handle, const IFBU32 core_number);
 };
 
 /**********************************************************************************/
@@ -290,9 +291,16 @@ struct IFBWin32Memory {
     IFBWin32Handles   win32_handles;
 };
 
+struct IFBWin32CoreThread {
+    HANDLE win32_handle;
+    IFBU32 cpu_core_number;
+};
+
 struct IFBWin32Context {
     IFBWin32Memory*         ptr_memory;
     IFBEngineContextUpdate* ptr_engine_update;
+    IFBWin32CoreThread      core_thread;
+    
 };
 
 namespace ifb_win32 {

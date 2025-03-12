@@ -55,11 +55,9 @@ ifb_win32::thread_create(
     const IFBB8 thread_created = (ptr_win32_thread_info->handle != NULL); 
 
     //assign the thread to the requested core
-    DWORD_PTR core_affinity_mask  = (DWORD_PTR)(1ULL << win32_core_id_requested);
-    DWORD_PTR prior_affinity_mask = SetThreadAffinityMask(
+    const IFBB8 thread_assigned = ifb_win32::thread_set_core(
         ptr_win32_thread_info->handle,
-        core_affinity_mask);
-    const IFBB8 thread_assigned = (prior_affinity_mask != NULL);
+        win32_core_id_requested); 
 
     //last check to see if everything worked
     IFBB8 result = true;
@@ -82,6 +80,27 @@ ifb_win32::thread_destroy(
     if (!ptr_thread) return(false);
     
     return(false);
+}
+
+ifb_internal const IFBB8 
+ifb_win32::thread_set_core(
+    const HANDLE win32_thread_handle,
+    const IFBU32 core_number) {
+
+    //calculate the affinity mask.
+    //where the core number is the bit
+    const DWORD_PTR core_affinity_mask  = (DWORD_PTR)(1ULL << core_number);
+    
+    //set the mask, returns the prior affinity mask
+    const DWORD_PTR prior_affinity_mask = SetThreadAffinityMask(
+        win32_thread_handle,
+        core_affinity_mask);
+        
+    //if thats not null, it succeeded
+    const IFBB8 thread_assigned = (prior_affinity_mask != NULL);
+
+    //we're done
+    return(thread_assigned);
 }
 
 /**********************************************************************************/
