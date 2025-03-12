@@ -60,12 +60,14 @@ ifb_engine::core_threads_create_pool(
         thread_ptr->data                     = {0};
         thread_ptr->task                     = NULL;
 
-        //tell the platform to create the thread
-        result &= ifb_platform::thread_create(thread_ptr);
-
         //update the thread index
         ++thread_index;
     }
+
+    //create the threads
+    result &= ifb_platform::thread_create(
+        thread_array_ptr,
+        thread_count);
 
     //update the thread pool
     IFBEngineCoreThreadPool& thread_pool_ref = core_ptr->thread_pool;

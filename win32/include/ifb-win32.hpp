@@ -65,7 +65,10 @@ namespace ifb_win32 {
 /* THREADS                                                                        */
 /**********************************************************************************/
 
-struct IFBWin32ThreadInfo {
+#define IFB_WIN32_THREAD_FLAGS      0
+#define IFB_WIN32_THREAD_STACK_SIZE 0
+
+struct IFBWin32ThreadContext {
     HANDLE handle;
     DWORD  id;
     DWORD  flags;
@@ -74,9 +77,11 @@ struct IFBWin32ThreadInfo {
 namespace ifb_win32 {
 
     //create/destroy
-    ifb_internal const IFBB8 thread_create   (IFBThread* ptr_thread);
-    ifb_internal const IFBB8 thread_destroy  (IFBThread* ptr_thread);
-    
+    ifb_internal const IFBB8 thread_create  (IFBThread* thread_ptr, const IFBU32 thread_count);
+    ifb_internal const IFBB8 thread_destroy (IFBThread* thread_ptr, const IFBU32 thread_count);
+    ifb_internal const IFBB8 thread_run     (IFBThread* thread_ptr, const IFBU32 thread_count);
+    ifb_internal const IFBB8 thread_stop    (IFBThread* thread_ptr, const IFBU32 thread_count);
+
     ifb_internal const IFBB8 thread_set_core (const HANDLE win32_thread_handle, const IFBU32 core_number);
 };
 

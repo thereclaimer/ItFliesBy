@@ -68,18 +68,24 @@ namespace ifb_platform {
 /* THREADS                                                                        */
 /**********************************************************************************/
 
-typedef const IFBB8 (*IFBPlatformThreadCreate)  (IFBThread* ptr_thread);
-typedef const IFBB8 (*IFBPlatformThreadDestroy) (IFBThread* ptr_thread);
+typedef const IFBB8 (*IFBPlatformThreadCreate)  (IFBThread* thread_ptr, const IFBU32 thread_count);
+typedef const IFBB8 (*IFBPlatformThreadDestroy) (IFBThread* thread_ptr, const IFBU32 thread_count);
+typedef const IFBB8 (*IFBPlatformThreadRun)     (IFBThread* thread_ptr, const IFBU32 thread_count);
+typedef const IFBB8 (*IFBPlatformThreadStop)    (IFBThread* thread_ptr, const IFBU32 thread_count);
 
 struct IFBPlatformAPIThread {
     IFBPlatformThreadCreate  create;
     IFBPlatformThreadDestroy destroy;
+    IFBPlatformThreadRun     run;
+    IFBPlatformThreadStop    stop;
 };
 
 namespace ifb_platform {
 
     extern IFBPlatformThreadCreate  thread_create;
     extern IFBPlatformThreadDestroy thread_destroy;
+    extern IFBPlatformThreadRun     thread_run;
+    extern IFBPlatformThreadStop    thread_stop;
 };
 
 /**********************************************************************************/
