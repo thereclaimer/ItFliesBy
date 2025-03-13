@@ -207,6 +207,11 @@ struct IFBThread {
     IFBThreadTask task_function;
 };
 
+struct IFBThreadPool {
+    IFBU32     thread_count;
+    IFBThread* thread_array;
+};
+
 /**********************************************************************************/
 /* SIMD                                                                           */
 /**********************************************************************************/
