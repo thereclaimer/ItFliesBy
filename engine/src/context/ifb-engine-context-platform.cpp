@@ -18,7 +18,7 @@ namespace ifb_platform {
     IFBPlatformMemoryCommit       memory_commit;
     IFBPlatformMemoryDecommit     memory_decommit;
 
-    IFBPlatformThreadCreate       thread_create;
+    IFBPlatformThreadCreate_OLD       thread_create;
     IFBPlatformThreadDestroy      thread_destroy;
 
     IFBPlatformWindowCreate       window_create;

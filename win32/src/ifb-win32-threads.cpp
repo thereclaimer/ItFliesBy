@@ -7,6 +7,9 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
+ifb_global const IFBU32 IFB_WIN32_THREAD_CONTEXT_SIZE     = sizeof(IFBWin32Context); 
+ifb_global const IFBU32 IFB_WIN32_THREAD_DEBUG_OUT_LENGTH = 64;
+
 struct IFBWin32ThreadDebugInfo {
     IFBU32   thread_id;
     IFBU32   thread_core_number;
@@ -16,9 +19,9 @@ struct IFBWin32ThreadDebugInfo {
 
 namespace ifb_win32 {
 
-    IFBWin32ThreadContext* thread_get_context (const IFBThread* ptr_thread);
-    DWORD WINAPI           thread_routine           (LPVOID data);
-    IFBThread*             thread_validate_data     (LPVOID data);
+    IFBWin32ThreadContext*    thread_get_context_win32    (const IFBThreadPlatformContext* thread_platform_context);
+    IFBThreadPlatformContext* thread_get_context_platform (LPVOID data);
+    DWORD WINAPI           thread_routine              (LPVOID data);
 
     IFBVoid
     thread_debug_out(
@@ -26,67 +29,54 @@ namespace ifb_win32 {
         const IFBChar*                 thread_debug_message_ptr);
 };
 
-
 /**********************************************************************************/
 /* CREATE/DESTROY                                                                 */
 /**********************************************************************************/
 
 ifb_internal const IFBB8
 ifb_win32::thread_create(
-          IFBThread* thread_ptr,
-    const IFBU32     thread_count) {
-
-    IFBB8 result = true;
+    const IFBThreadPlatformContext* thread_context,
+    const IFBU32                    thread_count,
+    const IFBChar*                  thread_description,
+    const IFBU32                    thread_description_stride,
+          IFBU64*                   thread_id) {
 
     //sanity check
-    if (!thread_ptr) return(false);
+    IFBB8 result = true;                           // we can create the thread(s) IF...
+    result &= (thread_context            != NULL); //...we have a context                   AND
+    result &= (thread_count              != 0);    //...we have at least one thread         AND
+    result &= (thread_description        != NULL); //...we have a descripiton               AND
+    result &= (thread_description_stride != 0);    //...we have a description length/stride AND
+    result &= (thread_id                 != 0);    //...we can return a thread id           AND
+    if (!result) return(false);                    // if that fails, we're done
 
-    //get the processor information
-    SYSTEM_INFO win32_system_info;
-    GetSystemInfo(&win32_system_info);
-    const IFBU32 win32_core_count        = win32_system_info.dwNumberOfProcessors;
-    const IFBU32 win32_core_id_current   = GetCurrentProcessorNumber();
+    //cached properties
+    CONDITION_VARIABLE thread_win32_task_ready;
+    CRITICAL_SECTION   thread_win32_data_lock;
 
-    // iterate through each thread and intialize the context
-    // based on the information at each index
-    //
-    // this loop is all or nothing, we successfully create
-    // all threads or we fail
-    for ( 
+    //loop through the contexts and create each thread
+    for (
         IFBU32 thread_index = 0;
                thread_index < thread_count;
              ++thread_index) {
 
-        //get the current thread
-        IFBThread* thread_current_ptr = &thread_ptr[thread_index];
-
-        //get the requested and parent core ids 
-        const IFBU32 thread_core_id_requested = thread_current_ptr->logical_core_id_current;
-        const IFBU32 thread_core_id_parent    = thread_current_ptr->logical_core_id_parent;
-
-        //get win32 info
-        IFBWin32ThreadContext* thread_win32_context_ptr = ifb_win32::thread_get_context(thread_current_ptr);
-        
-        //make sure the core ids and thread info are valid
-        result &= (thread_core_id_requested <  win32_core_count); 
-        result &= (thread_core_id_parent    <  win32_core_count);
-        result &= (thread_win32_context_ptr != NULL); 
-        if (!result) break;
+        //get the current thread context and description
+        const IFBThreadPlatformContext* current_thread_context            = &thread_context[thread_index];
+        const IFBU32                    current_thread_description_offset = thread_description_stride * thread_index;
+        const IFBChar*                  current_thread_description        = &thread_description[current_thread_description_offset];
 
         //initialize lock and condition
-        LPCRITICAL_SECTION  routiune_data_lock  = &thread_win32_context_ptr->data_lock; 
-        PCONDITION_VARIABLE routiune_task_ready = &thread_win32_context_ptr->task_ready;
-        InitializeCriticalSection(routiune_data_lock);
-        InitializeConditionVariable(routiune_task_ready);
+        InitializeCriticalSection   (&thread_win32_data_lock);
+        InitializeConditionVariable (&thread_win32_task_ready);
 
         //thread win32 properties
         LPSECURITY_ATTRIBUTES  thread_win32_security_attributes = NULL; 
         const DWORD            thread_win32_stack_size          = IFB_WIN32_THREAD_STACK_SIZE;
         LPTHREAD_START_ROUTINE thread_win32_routine             = ifb_win32::thread_routine;
-        LPVOID                 thread_win32_data                = (LPVOID)thread_current_ptr;
+        LPVOID                 thread_win32_data                = (LPVOID)&current_thread_context;
         const DWORD            thread_win32_flags               = IFB_WIN32_THREAD_FLAGS; 
         DWORD                  thread_win32_id                  = 0;
-        
+    
         //create the win32 thread handle
         const HANDLE thread_win32_handle = CreateThread(
             thread_win32_security_attributes, // security attributes
@@ -95,26 +85,28 @@ ifb_win32::thread_create(
             thread_win32_data,                // thread function data
             thread_win32_flags,               // flags
            &thread_win32_id);                 // thread id
-    
-        //assign the thread to the requested core
-        result &= (thread_win32_handle > 0);
-        result &= ifb_win32::thread_set_core(thread_win32_handle, thread_core_id_requested); 
 
-        //if creating the thread or assigning it to a core failed, 
-        //make sure the handle is closed
-        if (!result) {
-
-            //we don't care about the result, windows can
-            //deal with invalid handles and the function
-            //has failed anyway
-            (VOID)CloseHandle(thread_win32_handle);
-            break;
-        }
+        //check that we have a valid thread handle
+        result &= (thread_win32_handle != NULL);
+        if (!result) break;
 
         //update the thread win32 context
-        thread_win32_context_ptr->handle = thread_win32_handle;
-        thread_win32_context_ptr->id     = thread_win32_id;
-        thread_win32_context_ptr->flags  = thread_win32_flags;
+        IFBWin32ThreadContext* thread_win32_context = ifb_win32::thread_get_context_win32(current_thread_context);
+        ifb_macro_assert(thread_win32_context);
+        thread_win32_context->handle     = thread_win32_handle;
+        thread_win32_context->task_ready = thread_win32_task_ready;
+        thread_win32_context->data_lock  = thread_win32_data_lock;
+        thread_win32_context->id         = thread_win32_id;
+        thread_win32_context->flags      = thread_win32_flags;
+
+        //update the thread id
+        thread_id[thread_index] = thread_win32_id;
+
+        //set the thread description
+        //TODO: this is a wstring despite being in UTF-8 mode
+        // SetThreadDescription(thread_win32_handle,current_thread_description);
+
+
     }
 
     //we're done
@@ -123,33 +115,58 @@ ifb_win32::thread_create(
 
 ifb_internal const IFBB8
 ifb_win32::thread_destroy(
-          IFBThread* thread_ptr,
-    const IFBU32     thread_count) {
+    const IFBThreadPlatformContext* thread_context,
+    const IFBU32                    thread_count) {
 
-    if (!thread_ptr) return(false);
-    
+    if (!thread_context) return(false);
+
+    ifb_macro_panic();
+
     return(false);
 }
 
-ifb_internal const IFBB8 
-ifb_win32::thread_set_core(
-    const HANDLE win32_thread_handle,
-    const IFBU32 core_number) {
+ifb_internal const IFBB8
+ifb_win32::thread_assign_cores(
+    const IFBThreadPlatformContext* thread_context,
+    const IFBU32                    thread_count,
+    const IFBU64*                   thread_core_mask) {
 
-    //calculate the affinity mask.
-    //where the core number is the bit
-    const DWORD_PTR core_affinity_mask  = (DWORD_PTR)(1ULL << core_number);
+    //sanity check
+    IFBB8 result = true;                  // we can procceed IF...
+    result &= (thread_context   != NULL); //...we have a context           AND
+    result &= (thread_count     != 0);    //...we have at least one thread AND
+    result &= (thread_core_mask != NULL); //...we have a core mask
+    if (!result) return(false);           // if that failed, we're done
+
+    //loop through the contexts and assign the cores 
+    for (
+        IFBU32 thread_index = 0;
+               thread_index < thread_count;
+             ++thread_index) {
+
+        //get the current thread context and core mask
+        const IFBThreadPlatformContext* current_thread_context   = &thread_context   [thread_index];
+        const IFBU64                    current_thread_core_mask =  thread_core_mask [thread_index]; 
     
-    //set the mask, returns the prior affinity mask
-    const DWORD_PTR prior_affinity_mask = SetThreadAffinityMask(
-        win32_thread_handle,
-        core_affinity_mask);
-        
-    //if thats not null, it succeeded
-    const IFBB8 thread_assigned = (prior_affinity_mask != NULL);
+        //if its zero, there's nothing to do here
+        //just go to the next thread
+        if (current_thread_core_mask != 0) continue;
+
+        //get the win32 context, it should never be null
+        IFBWin32ThreadContext* win32_thread_context = ifb_win32::thread_get_context_win32(current_thread_context);
+        ifb_macro_assert(win32_thread_context);
+
+        //set the core mask
+        const HANDLE    win32_thread_handle            = win32_thread_context->handle;
+        const DWORD_PTR win32_thread_affinity_mask_new = (DWORD_PTR)current_thread_core_mask;
+        const DWORD_PTR win32_thread_affinity_mask_old = SetThreadAffinityMask(win32_thread_handle,win32_thread_affinity_mask_new);
+
+        //if that returns a null mask, it failed
+        if (!win32_thread_affinity_mask_old) return(false);
+    }
 
     //we're done
-    return(thread_assigned);
+    return(true);
 }
 
 /**********************************************************************************/
@@ -161,42 +178,37 @@ ifb_win32::thread_routine(
     LPVOID data) {
     
     //debug string
-    const IFBU32 debug_out_size = 64;
-    IFBChar debug_out[debug_out_size];
+    IFBChar debug_out[IFB_WIN32_THREAD_DEBUG_OUT_LENGTH];
 
-    //get the thread context
-    IFBThread*             ptr_thread         = ifb_win32::thread_validate_data (data);
-    IFBWin32ThreadContext* ptr_thread_context = ifb_win32::thread_get_context   (ptr_thread);
-
-    //this routine will run as long as...
-    IFBB8 run_routine = true;
-    run_routine &= (ptr_thread != NULL);                               //...the engine thread is not null AND
-    run_routine &= run_routine && (ptr_thread_context        != NULL); //...the win32 context is not null AND
-    // run_routine &= run_routine && (ptr_thread->task_data     != NULL); //...the thread has data           AND
-    // run_routine &= run_routine && (ptr_thread->task_function != NULL); //...the thread has a task
-    if (!run_routine) return(S_FALSE);
+    //get the thread contexts
+    //they should never be null
+    IFBThreadPlatformContext* thread_context_platform = ifb_win32::thread_get_context_platform (data);
+    IFBWin32ThreadContext*    thread_context_win32    = ifb_win32::thread_get_context_win32    (thread_context_platform);
+    ifb_macro_assert(thread_context_platform);
+    ifb_macro_assert(thread_context_win32);
 
     //cache thread properties
-    const IFBU32 thread_id          = ptr_thread_context->id; 
-    const IFBU32 thread_core_number = ptr_thread->logical_core_id_current;
+    const IFBU32 thread_id   = thread_context_win32->id; 
+    const IFBU32 thread_core = GetCurrentProcessorNumber(); 
 
     //intialize debug info
     IFBWin32ThreadDebugInfo debug_info;
     debug_info.thread_id                  = thread_id;
-    debug_info.thread_core_number         = thread_core_number;
-    debug_info.thread_debug_buffer_length = debug_out_size;
+    debug_info.thread_core_number         = thread_core;
+    debug_info.thread_debug_buffer_length = IFB_WIN32_THREAD_DEBUG_OUT_LENGTH;
     debug_info.thread_debug_buffer_ptr    = debug_out;
 
     ifb_win32::thread_debug_out(debug_info,"STARTUP");
 
     //run the routine
+    IFBB8 run_routine = true;
     while(run_routine) {
 
         ifb_win32::thread_debug_out(debug_info,"ROUTINE START");
         
         //task condition and data lock
-        PCONDITION_VARIABLE routiune_task_ready = &ptr_thread_context->task_ready;
-        LPCRITICAL_SECTION  routiune_data_lock  = &ptr_thread_context->data_lock; 
+        PCONDITION_VARIABLE routiune_task_ready = &thread_context_win32->task_ready;
+        LPCRITICAL_SECTION  routiune_data_lock  = &thread_context_win32->data_lock; 
 
         //lock the task data
         EnterCriticalSection(routiune_data_lock);
@@ -209,8 +221,8 @@ ifb_win32::thread_routine(
             INFINITE);
         
         //task function and data
-        IFBPtr        routine_task_data     = ptr_thread->task_data;
-        IFBThreadTask routine_task_function = ptr_thread->task_function;
+        IFBPtr                routine_task_data     = thread_context_platform->task_data_pointer;
+        IFBThreadTaskFunction routine_task_function = thread_context_platform->task_func_pointer;
 
         //double check that we have data and a function
         run_routine &= (routine_task_data     != NULL);
@@ -235,44 +247,31 @@ ifb_win32::thread_routine(
 }
 
 inline IFBWin32ThreadContext* 
-ifb_win32::thread_get_context(
-    const IFBThread* ptr_thread) {
+ifb_win32::thread_get_context_win32(
+    const IFBThreadPlatformContext* thread_platform_context) {
 
-    //get the context size
-    const IFBU32 context_size = ifb_macro_align_size_struct(IFBWin32ThreadContext);
-
-    //sanity check
-    IFBB8 result = true;
-    result &= (ptr_thread != NULL);
-    result &= (result && ptr_thread->platform_context_pointer != NULL);
-    result &= (result && ptr_thread->platform_context_size    >= context_size);
-    if (!result) return(NULL);
+    //sanity check, these should never fail
+    ifb_macro_assert(thread_platform_context);
+    ifb_macro_assert(thread_platform_context->platform_data_pointer != NULL);
+    ifb_macro_assert(thread_platform_context->platform_data_size    >= IFB_WIN32_THREAD_CONTEXT_SIZE);
 
     //get thread info
-    IFBWin32ThreadContext* ptr_win32_thread_info = (IFBWin32ThreadContext*)ptr_thread->platform_context_pointer;   
+    IFBWin32ThreadContext* ptr_win32_thread_info = (IFBWin32ThreadContext*)thread_platform_context->platform_data_pointer;   
 
     //we're done
     return(ptr_win32_thread_info);
 }
 
-inline IFBThread*
-ifb_win32::thread_validate_data(
+inline IFBThreadPlatformContext*
+ifb_win32::thread_get_context_platform(
     LPVOID data) {
 
-    //make sure the pointer is valid
-    if (!data) return(NULL);
-
-    //cast the pointer
-    IFBThread* ptr_thread = (IFBThread*)data;
-
-    //make sure the thread is operating on the assigned core
-    const IFBU32 core_id_current  = GetCurrentProcessorNumber();
-    const IFBU32 core_id_assigned = ptr_thread->logical_core_id_current;
-    if (core_id_current != core_id_assigned) return(NULL);
-
-    //we're done
-    return(ptr_thread);
+    ifb_macro_assert(data);
+    IFBThreadPlatformContext* thread_platform_context = (IFBThreadPlatformContext*)data;
+    
+    return(thread_platform_context);
 }
+
 
 inline IFBVoid
 ifb_win32::thread_debug_out(

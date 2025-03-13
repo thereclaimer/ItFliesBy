@@ -68,24 +68,35 @@ namespace ifb_platform {
 /* THREADS                                                                        */
 /**********************************************************************************/
 
-typedef const IFBB8 (*IFBPlatformThreadCreate)  (IFBThread* thread_ptr, const IFBU32 thread_count);
-typedef const IFBB8 (*IFBPlatformThreadDestroy) (IFBThread* thread_ptr, const IFBU32 thread_count);
-typedef const IFBB8 (*IFBPlatformThreadRun)     (IFBThread* thread_ptr, const IFBU32 thread_count);
-typedef const IFBB8 (*IFBPlatformThreadStop)    (IFBThread* thread_ptr, const IFBU32 thread_count);
+typedef const IFBB8
+(*IFBPlatformThreadCreate) (
+    const IFBThreadPlatformContext* thread_context,
+    const IFBU32                    thread_count,
+    const IFBChar*                  thread_description,
+    const IFBU32                    thread_description_stride,
+          IFBU64*                   thread_id);
+
+typedef const IFBB8 (*IFBPlatformThreadDestroy)     (const IFBThreadPlatformContext* thread_context, const IFBU32 thread_count);
+typedef const IFBB8 (*IFBPlatformThreadAssignCores) (const IFBThreadPlatformContext* thread_context, const IFBU32 thread_count, const IFBU64* thread_core_mask);
+typedef const IFBB8 (*IFBPlatformThreadWake)        (const IFBThreadPlatformContext* thread_context, const IFBU32 thread_count);
+typedef const IFBB8 (*IFBPlatformThreadSleep)       (const IFBThreadPlatformContext* thread_context, const IFBU32 thread_count);
+typedef const IFBB8 (*IFBPlatformThreadGetStatus)   (const IFBThreadPlatformContext* thread_context, const IFBU32 thread_count, IFBThreadStatus* thread_status);
 
 struct IFBPlatformAPIThread {
-    IFBPlatformThreadCreate  create;
-    IFBPlatformThreadDestroy destroy;
-    IFBPlatformThreadRun     run;
-    IFBPlatformThreadStop    stop;
+    IFBPlatformThreadCreate      create;
+    IFBPlatformThreadDestroy     destroy;
+    IFBPlatformThreadAssignCores assign_cores;
+    IFBPlatformThreadWake        wake;
+    IFBPlatformThreadSleep       sleep;
 };
 
 namespace ifb_platform {
 
-    extern IFBPlatformThreadCreate  thread_create;
-    extern IFBPlatformThreadDestroy thread_destroy;
-    extern IFBPlatformThreadRun     thread_run;
-    extern IFBPlatformThreadStop    thread_stop;
+    extern IFBPlatformThreadCreate      thread_create;
+    extern IFBPlatformThreadDestroy     thread_destroy;
+    extern IFBPlatformThreadAssignCores thread_assign_cores;
+    extern IFBPlatformThreadWake        thread_wake;
+    extern IFBPlatformThreadSleep       thread_sleep;
 };
 
 /**********************************************************************************/

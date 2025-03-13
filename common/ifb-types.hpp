@@ -72,6 +72,9 @@ struct IFBMemoryReservation;
 
 //threading
 struct IFBThread;
+struct IFBThreadTask;
+struct IFBThreadPool;
+struct IFBThreadPlatformContext;
 
 //math
 struct IFBVec2;
@@ -194,17 +197,49 @@ struct IFBMemoryArena {
 /* THREADING                                                                      */
 /**********************************************************************************/
 
-//task
-typedef const IFBB8 (*IFBThreadTask) (IFBPtr data_ptr);
+struct IFBHNDThread     : IFBHND32 { };
+struct IFBHNDThreadPool : IFBHND32 { };
 
-//thread
+//task
+typedef const IFBB8 (*IFBThreadTaskFunction) (IFBPtr data_ptr);
+
+struct IFBThreadPool {
+    struct {
+        IFBThreadPlatformContext* array_context;                                           
+        IFBU64*                   array_id;
+        IFBU64*                   array_core_mask;
+        IFBChar*                  description_buffer;
+    } pointers;
+    IFBU32 thread_count_total;
+    IFBU32 thread_count_running;
+    IFBU32 description_stride;
+};
+
+struct IFBThreadTask {
+    IFBPtr                data;
+    IFBThreadTaskFunction func;
+};
+
+struct IFBThreadPlatformContext {
+    IFBPtr                platform_data_pointer;
+    IFBU64                platform_data_size;   
+    IFBPtr                task_data_pointer;
+    IFBThreadTaskFunction task_func_pointer;
+};
+
+
 struct IFBThread {
-    IFBPtr        platform_context_pointer;
-    IFBU32        platform_context_size;
-    IFBU32        logical_core_id_parent;
-    IFBU32        logical_core_id_current;
-    IFBPtr        task_data;
-    IFBThreadTask task_function;
+    IFBThreadPlatformContext platform_context;
+    IFBChar*                 description;
+    IFBU64                   id;
+    IFBU64                   core_mask;
+};
+
+struct IFBThreadStatus {
+    IFBU64 id;
+    IFBU64 core_mask;
+    IFBU32 active_core;
+    IFBB32 running;
 };
 
 /**********************************************************************************/
@@ -232,8 +267,11 @@ struct IFBVec2 {
             IFBF32 x;
             IFBF32 y;
         };
+
         IFBF32 xy[2];
+
     };
+
 };
 
 struct IFBVec3 {
