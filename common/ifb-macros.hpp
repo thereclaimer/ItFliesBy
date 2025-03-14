@@ -49,7 +49,8 @@
 
 #define ifb_macro_color_normalize_byte(byte)             (IFBF32)(((IFBF32)byte) / ((IFBF32)0xFF))
 
-#define ifb_macro_pointer_from_offset(start,offset,type) (type*)((IFBAddr)start + (IFBAddr)offset)
+#define ifb_macro_pointer_from_offset(start,offset,type)    (type*)((IFBAddr)start + (IFBAddr)offset)
+#define ifb_macro_pointer_advance(pointer,offset,size,type) (type*)(((IFBPtr*)pointer) + offset); offset += size
 
 #define ifb_macro_pack_u8_to_u32(u8_a,u8_b,u8_c,u8_d)    (IFBU32)((((IFBU32)u8_a) << 24) | (((IFBU32)u8_b) << 16) | (((IFBU32)u8_c) << 8) | (((IFBU32)u8_d)))
 

@@ -9,5 +9,6 @@
 #include "ifb-hash.hpp"
 #include "ifb-user-input.hpp"
 #include "ifb-platform.hpp"
+#include "ifb-utillities.hpp"
 
 #endif //IFB_HPP
