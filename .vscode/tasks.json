@@ -114,6 +114,8 @@
 				"Build IFB Graphics",
 				"Build IFB Data Structures",
 				"Build IFB Rendering",
+				"Build IFB Threads",
+
 			]
 		},
 	]

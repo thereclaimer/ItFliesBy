@@ -214,6 +214,7 @@ struct IFBThreadPool {
     IFBU32 thread_count_total;
     IFBU32 thread_count_running;
     IFBU32 description_stride;
+    IFBU32 platform_data_size;
 };
 
 struct IFBThreadTask {

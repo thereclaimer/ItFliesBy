@@ -53,21 +53,21 @@ ifb_engine::core_threads_create_pool(
         IFBThread* thread_ptr = &thread_array_ptr[thread_index];
 
         //set the thread properties
-        thread_ptr->platform_context_pointer = (IFBPtr)thread_context;
-        thread_ptr->platform_context_size    = thread_context_size;
-        thread_ptr->logical_core_id_parent   = parent_core_number;
-        thread_ptr->logical_core_id_current  = core_id;
-        thread_ptr->task_data                = NULL;
-        thread_ptr->task_function            = NULL;
+        // thread_ptr->platform_context_pointer = (IFBPtr)thread_context;
+        // thread_ptr->platform_context_size    = thread_context_size;
+        // thread_ptr->logical_core_id_parent   = parent_core_number;
+        // thread_ptr->logical_core_id_current  = core_id;
+        // thread_ptr->task_data                = NULL;
+        // thread_ptr->task_function            = NULL;
 
         //update the thread index
         ++thread_index;
     }
 
     //create the threads
-    result &= ifb_platform::thread_create(
-        thread_array_ptr,
-        thread_count);
+    // result &= ifb_platform::thread_create(
+    //     thread_array_ptr,
+    //     thread_count);
 
     //update the thread pool
     IFBEngineCoreThreadPool& thread_pool_ref = core_ptr->thread_pool;
