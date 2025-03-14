@@ -3,6 +3,7 @@
 
 #include <ifb.hpp>
 #include <ifb-memory.hpp>
+#include <ifb-data-structures.hpp>
 
 /**********************************************************************************/
 /* THREAD POOL                                                                    */
@@ -12,11 +13,11 @@ namespace ifb_thread {
 
     //memory
     IFBThreadPool*         pool_arena_load_pointer    (IFBMemoryArena* arena, const IFBHNDThreadPool thread_pool_handle);
-    IFBThreadPool*         pool_arena_commit_absolute (IFBMemoryArena* arena, const IFBU32 thread_count, const IFBU32 thread_description_stride);
-    const IFBHNDThreadPool pool_arena_commit_relative (IFBMemoryArena* arena, const IFBU32 thread_count, const IFBU32 thread_description_stride);
+    IFBThreadPool*         pool_arena_commit_absolute (IFBMemoryArena* arena, const IFBU32 thread_count, const IFBU32 thread_description_stride, const IFBU32 thread_platform_data_size);
+    const IFBHNDThreadPool pool_arena_commit_relative (IFBMemoryArena* arena, const IFBU32 thread_count, const IFBU32 thread_description_stride, const IFBU32 thread_platform_data_size);
 
     //reserve/release
-    const IFBB8            pool_threads_reserve       (IFBThreadPool* thread_pool, const IFBU32 thread_count, const IFBChar*      thread_descriptions, const IFBThreadTask* thread_tasks IFBHNDThread* thread_handles);
+    const IFBB8            pool_threads_reserve       (IFBThreadPool* thread_pool, const IFBU32 thread_count, const IFBChar*      thread_descriptions, const IFBThreadTask* thread_tasks, IFBHNDThread* thread_handles);
     const IFBB8            pool_threads_release       (IFBThreadPool* thread_pool, const IFBU32 thread_count, const IFBHNDThread* thread_handles);
     
     //control

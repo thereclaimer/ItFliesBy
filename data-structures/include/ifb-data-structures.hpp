@@ -70,6 +70,7 @@ namespace ifb_array_list {
 /* STACK                                                                          */
 /**********************************************************************************/
 
+
 namespace ifb_stack {
 
     IFBStack*    arena_load_pointer    (IFBMemoryArena* ptr_arena, const IFBU32 arena_offset);

@@ -1,11 +1,13 @@
-#include "ifb-threading.hpp"
+#pragma once
+
+#include "ifb-threads.hpp"
 
 /**********************************************************************************/
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
 IFBThreadPool*
-ifb_thread::pool_load_pointer(
+ifb_thread::pool_arena_load_pointer(
           IFBMemoryArena*  arena,
     const IFBHNDThreadPool thread_pool_handle) {
 
@@ -15,7 +17,7 @@ ifb_thread::pool_load_pointer(
 }
 
 IFBThreadPool*
-ifb_thread::pool_commit_absolute(
+ifb_thread::pool_arena_commit_absolute(
 	      IFBMemoryArena* arena,
 	const IFBU32          thread_count,
 	const IFBU32          thread_description_stride,
@@ -68,10 +70,10 @@ ifb_thread::pool_commit_absolute(
            ++thread_index) {
 
 	  //set the array values
-	  ptr_array_context  [thread_index].platform_data_pointer = NULL 
+	  ptr_array_context  [thread_index].platform_data_pointer = NULL;
 	  ptr_array_context  [thread_index].platform_data_size    = thread_platform_data_size;
 	  ptr_array_context  [thread_index].task_data_pointer     = ifb_utilities::pointer_advance(pointer_offset,thread_platform_data_size);
-	  ptr_array_context  [thread_index].task_func_pointer     = 0
+	  ptr_array_context  [thread_index].task_func_pointer     = 0;
 	  ptr_array_id       [thread_index]                       = 0;
 	  ptr_array_core_mask[thread_index]                       = 0;
     }
@@ -85,21 +87,26 @@ ifb_thread::pool_commit_absolute(
     ptr_thread_pool->thread_count_running        = 0;
     ptr_thread_pool->description_stride          = thread_description_stride;
 
+
     //we're done
     return(ptr_thread_pool);
 }
 
 const IFBHNDThreadPool
-ifb_thread::pool_commit_relative(
+ifb_thread::pool_arena_commit_relative(
 	      IFBMemoryArena* arena,
     const IFBU32          thread_count,
-    const IFBU32          thread_description_stride) {
+    const IFBU32          thread_description_stride,
+    const IFBU32          thread_platform_data_size) {
+
+    //thread pool handle
+    IFBHNDThreadPool thread_pool_handle;
+    thread_pool_handle.offset = 0; 
 
     //sanity check
 	ifb_macro_assert(arena);
     ifb_macro_assert(thread_count);
     ifb_macro_assert(thread_description_stride);
-    ifb_macro_assert(thread_platform_data_size);
 
     //property sizes
     const IFBU32 size_thread_pool        = ifb_macro_align_size_struct(IFBThreadPool); 
@@ -108,6 +115,8 @@ ifb_thread::pool_commit_relative(
     const IFBU32 size_array_core_mask    = ifb_macro_array_size(IFBU64,                   thread_count); 
     const IFBU32 size_description_buffer = thread_count * thread_description_stride;
     const IFBU32 size_platform_data      = thread_count * thread_platform_data_size;
+    const IFBU32 size_stack_struct       = ifb_macro_align_size_struct(IFBStack); 
+    const IFBU32 size_stack_data         = size_array_context; 
 
     //total commit size    
     const IFBU32 size_total = (
@@ -119,9 +128,9 @@ ifb_thread::pool_commit_relative(
         size_platform_data);
 
     //commit memory
-    const IFBHNDThreadPool thread_pool_handle = ifb_memory::arena_commit_bytes_relative(arena,size_total);
-    IFBPtr ptr_commit = ifb_memory::arena_get_pointer(arena,thread_pool_handle.offset); 
-    if (!ptr_commit) return(NULL);
+    const IFBU32 arena_offset = ifb_memory::arena_commit_bytes_relative(arena,size_total);
+    IFBPtr ptr_commit = ifb_memory::arena_get_pointer(arena,arena_offset); 
+    if (!ptr_commit) return(thread_pool_handle);
 
     //pointer offset
     IFBPointerOffset pointer_offset;
@@ -146,10 +155,12 @@ ifb_thread::pool_commit_relative(
 	  ptr_array_context  [thread_index].platform_data_pointer = NULL;
 	  ptr_array_context  [thread_index].platform_data_size    = thread_platform_data_size;
 	  ptr_array_context  [thread_index].task_data_pointer     = ifb_utilities::pointer_advance(pointer_offset,thread_platform_data_size);
-	  ptr_array_context  [thread_index].task_func_pointer     = 0
+	  ptr_array_context  [thread_index].task_func_pointer     = 0;
 	  ptr_array_id       [thread_index]                       = 0;
 	  ptr_array_core_mask[thread_index]                       = 0;
     }
+
+    //create temporary stack for storing platform context requests
 
     //update the pool    
     ptr_thread_pool->pointers.array_context      = ptr_array_context;
@@ -159,6 +170,7 @@ ifb_thread::pool_commit_relative(
     ptr_thread_pool->thread_count_total          = thread_count;
     ptr_thread_pool->thread_count_running        = 0;
     ptr_thread_pool->description_stride          = thread_description_stride;
+
 
     //we're done
     return(thread_pool_handle);
@@ -170,11 +182,11 @@ ifb_thread::pool_commit_relative(
 
 const IFBB8
 ifb_thread::pool_threads_reserve (
-	      IFBThreadPool* thread_pool,
-    const IFBU32         thread_count,
-    const IFBChar*       thread_descriptions,
-    const IFBThreadTask* thread_tasks, 
-	      IFBHNDThread*  thread_handles) {
+	      IFBThreadPool*  thread_pool,
+    const IFBU32          thread_count,
+    const IFBChar*        thread_descriptions,
+    const IFBThreadTask*  thread_tasks, 
+	      IFBHNDThread*   thread_handles) {
 
     //sanity check, make sure we have valid pointers
     ifb_macro_assert(thread_pool);

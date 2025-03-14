@@ -86,6 +86,19 @@
 			"group": "build",
 		},
 		{
+			"label":   "Build IFB Threads",
+			"command": "build-ifb-threads.bat",
+			"args":[
+            ],
+			"options": {
+				"cwd": "${workspaceFolder}/scripts"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build",
+		},
+		{
 			"label":   "Build IFB Libs",
 			"args":[
             ],

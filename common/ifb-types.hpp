@@ -209,6 +209,7 @@ struct IFBThreadPool {
         IFBU64*                   array_id;
         IFBU64*                   array_core_mask;
         IFBChar*                  description_buffer;
+        IFBStack*                 tmp_stack;
     } pointers;
     IFBU32 thread_count_total;
     IFBU32 thread_count_running;
