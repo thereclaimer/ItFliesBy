@@ -49,7 +49,7 @@ ifb_engine::core_create(
 
     //create the thread pool
     const IFBU32 thread_context_size = IFB_ENGINE_CORE_THREAD_CONTEXT_SIZE;
-    result &= ifb_engine::core_threads_create_pool(core_ptr,thread_context_size);
+    result &= ifb_engine::core_threads_create(core_ptr,thread_context_size);
     ifb_macro_assert(result);
 
     //we're done

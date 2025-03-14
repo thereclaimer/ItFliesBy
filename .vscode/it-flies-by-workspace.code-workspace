@@ -45,8 +45,8 @@
 			"name": "String"
 		},
 		{
-			"path": "../threading",
-			"name": "Threading"
+			"path": "../threads",
+			"name": "Threads"
 		},
 		{
 			"path": "../win32",

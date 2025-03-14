@@ -24,7 +24,6 @@ struct IFBHNDEngineCoreThread : IFBHND32 { };
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
-
 struct IFBEngineCoreMemory {
     IFBMemoryContext*     ptr_context;
     IFBMemoryReservation* ptr_reservation;
@@ -49,15 +48,14 @@ namespace ifb_engine {
 /* THREADS                                                                        */
 /**********************************************************************************/
 
-struct IFBEngineCoreThreadPool {
-    IFBThread* thread_array;
-    IFBU32     thread_array_count;
-    IFBU32     platform_context_size;
+struct IFBEngineCoreThreads {
+    IFBMemoryArena* ptr_arena;
+    IFBThreadPool*  ptr_thread_pool;
 };
 
 namespace ifb_engine {
 
-    const IFBB8 core_threads_create_pool(IFBEngineCore* core_ptr, const IFBU32 platform_context_size_per_thread);
+    const IFBB8 core_threads_create(IFBEngineCore* core_ptr, const IFBU32 thread_context_size);
 };
 
 /**********************************************************************************/
@@ -65,9 +63,9 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineCore {
-    IFBSystemInfo           system_info;
-    IFBEngineCoreMemory     memory;
-    IFBEngineCoreThreadPool thread_pool;
+    IFBSystemInfo        system_info;
+    IFBEngineCoreMemory  memory;
+    IFBEngineCoreThreads threads;
 };
 
 namespace ifb_engine {
