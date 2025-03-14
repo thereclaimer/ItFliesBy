@@ -2,8 +2,56 @@
 	"folders": [
 		{
 			"path": "../",
-			"name": "ItFliesBy"
-		}
+			"name": "All"
+		},
+		{
+			"path": "../common",
+			"name": "Common"
+		},
+		{
+			"path": "../data-structures",
+			"name": "DataStructures"
+		},
+		{
+			"path": "../engine",
+			"name": "Engine"
+		},
+		{
+			"path": "../game",
+			"name": "Game"
+		},
+		{
+			"path": "../graphics",
+			"name": "Graphics"
+		},
+		{
+			"path": "../io",
+			"name": "IO"
+		},
+		{
+			"path": "../math",
+			"name": "Math"
+		},
+		{
+			"path": "../memory",
+			"name": "Memory"
+		},
+		{
+			"path": "../rendering",
+			"name": "Rendering"
+		},
+		{
+			"path": "../string",
+			"name": "String"
+		},
+		{
+			"path": "../threading",
+			"name": "Threading"
+		},
+		{
+			"path": "../win32",
+			"name": "Win32"
+		},
 	],
 	"settings": {
 		"files.associations": {
