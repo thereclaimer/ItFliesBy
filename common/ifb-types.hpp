@@ -231,10 +231,7 @@ struct IFBThreadPlatformContext {
 
 
 struct IFBThread {
-    IFBThreadPlatformContext platform_context;
-    IFBChar*                 description;
-    IFBU64                   id;
-    IFBU64                   core_mask;
+    IFBU32 pool_index;
 };
 
 struct IFBThreadStatus {
@@ -312,7 +309,7 @@ struct IFBMat3 {
 struct IFBTransform {
     IFBVec2 translation;
     IFBVec2 scale;
-    IFBF32 rotation_radians;
+    IFBF32  rotation_radians;
 };
 
 struct IFBPoint {
