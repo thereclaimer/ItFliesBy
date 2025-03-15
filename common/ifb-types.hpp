@@ -72,9 +72,10 @@ struct IFBMemoryReservation;
 
 //threading
 struct IFBThread;
+struct IFBThreadStatus;
 struct IFBThreadTask;
-struct IFBThreadPool;
 struct IFBThreadPlatformContext;
+struct IFBThreadPool;
 
 //math
 struct IFBVec2;
@@ -203,18 +204,15 @@ struct IFBHNDThreadPool : IFBHND32 { };
 //task
 typedef const IFBB8 (*IFBThreadTaskFunction) (IFBPtr data_ptr);
 
-struct IFBThreadPool {
-    struct {
-        IFBThreadPlatformContext* array_context;                                           
-        IFBU64*                   array_id;
-        IFBU64*                   array_core_mask;
-        IFBChar*                  description_buffer;
-        IFBStack*                 tmp_stack;
-    } pointers;
-    IFBU32 thread_count_total;
-    IFBU32 thread_count_running;
-    IFBU32 description_stride;
-    IFBU32 platform_data_size;
+struct IFBThread {
+    IFBU32 pool_index;
+};
+
+struct IFBThreadStatus {
+    IFBU64 id;
+    IFBU64 core_mask;
+    IFBU32 active_core;
+    IFBB32 running;
 };
 
 struct IFBThreadTask {
@@ -229,16 +227,24 @@ struct IFBThreadPlatformContext {
     IFBThreadTaskFunction task_func_pointer;
 };
 
-
-struct IFBThread {
-    IFBU32 pool_index;
+struct IFBThreadPool {
+    struct {
+        IFBThreadPlatformContext* array_context;                                           
+        IFBU64*                   array_id;
+        IFBU64*                   array_core_mask;
+        IFBChar*                  description_buffer;
+    } pointers;
+    IFBU32 thread_count_total;
+    IFBU32 thread_count_running;
+    IFBU32 description_stride;
+    IFBU32 platform_data_size;
 };
 
-struct IFBThreadStatus {
-    IFBU64 id;
-    IFBU64 core_mask;
-    IFBU32 active_core;
-    IFBB32 running;
+struct IFBThreadPoolRequestContext {
+    IFBMemoryArena*  thread_arena;
+    IFBThread*       thread_handle_array;
+    IFBHNDThreadPool thread_pool_handle;
+    IFBU32           thread_count;
 };
 
 /**********************************************************************************/

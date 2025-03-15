@@ -4,9 +4,9 @@
 
 namespace ifb_thread_pool {
 
-    IFBThreadPlatformContext* stack_push_context(IFBThreadPool* thread_pool, const IFBU32 count);
-    IFBU64*                   stack_push_id     (IFBThreadPool* thread_pool, const IFBU32 count);
-    IFBVoid                   stack_reset       (IFBThreadPool* thread_pool);
+    const IFBB8    validate          (IFBThreadPool*  thread_pool);
+    const IFBB8    validate_request  (const IFBThreadPoolRequestContext* thread_pool_request);
+    IFBThreadPool* load              (IFBMemoryArena* arena, const IFBHNDThreadPool thread_pool_handle);
 };
 
 /**********************************************************************************/
@@ -28,6 +28,19 @@ ifb_thread_pool::validate(
     return(result);
 }
 
+const IFBB8 
+ifb_thread_pool::validate_request(
+    const IFBThreadPoolRequestContext* request_context) {
+
+    IFBB8 
+
+    request_context->thread_arena;
+    request_context->thread_handle_array;
+    request_context->thread_pool_handle;
+    request_context->thread_count;
+
+}
+
 IFBThreadPool*
 ifb_thread_pool::load(
           IFBMemoryArena*  arena,
@@ -38,96 +51,8 @@ ifb_thread_pool::load(
 	return(thread_pool);
 }
 
-IFBThreadPool*
-ifb_thread_pool::commit_absolute(
-	      IFBMemoryArena* arena,
-	const IFBU32          thread_count,
-	const IFBU32          thread_description_stride,
-	const IFBU32          thread_platform_data_size) {
-
-    //sanity check
-	ifb_macro_assert(arena);
-    ifb_macro_assert(thread_count);
-    ifb_macro_assert(thread_description_stride);
-    ifb_macro_assert(thread_platform_data_size);
-
-    //property sizes
-    const IFBU32 size_thread_pool        = ifb_macro_align_size_struct(IFBThreadPool); 
-    const IFBU32 size_array_context      = ifb_macro_array_size(IFBThreadPlatformContext, thread_count); 
-    const IFBU32 size_array_id           = ifb_macro_array_size(IFBU64,                   thread_count); 
-    const IFBU32 size_array_core_mask    = ifb_macro_array_size(IFBU64,                   thread_count); 
-    const IFBU32 size_description_buffer = thread_count * thread_description_stride;
-    const IFBU32 size_stack_struct       = ifb_macro_align_size_struct(IFBStack);
-    const IFBU32 size_stack_data         = size_array_context * 2;  //just for kicks, make sure we have enough room
-    const IFBU32 size_platform_data      = thread_count * thread_platform_data_size;
-
-    //total commit size    
-    const IFBU32 size_total = (
-        size_thread_pool        +
-        size_array_context      +
-        size_array_id           +
-        size_array_core_mask    +
-        size_description_buffer +
-        size_platform_data      +
-        size_stack_struct       +
-        size_stack_data);
-
-    //commit memory    
-    IFBPtr ptr_commit = ifb_memory::arena_commit_bytes_absolute(arena,size_total); 
-    if (!ptr_commit) return(NULL);
-
-    //pointer offset
-    IFBPointerOffset pointer_offset;
-    pointer_offset.address = (IFBAddr)ptr_commit;
-    pointer_offset.offset  = 0;
-
-    //set pointers
-    IFBU32 offset = 0;
-    IFBThreadPool*            ptr_thread_pool        = ifb_utilities_macro_pointer_advance_and_cast(pointer_offset, size_thread_pool,        IFBThreadPool);
-    IFBThreadPlatformContext* ptr_array_context      = ifb_utilities_macro_pointer_advance_and_cast(pointer_offset, size_array_context,      IFBThreadPlatformContext);
-    IFBU64*                   ptr_array_id           = ifb_utilities_macro_pointer_advance_and_cast(pointer_offset, size_array_id,           IFBU64);
-    IFBU64*                   ptr_array_core_mask    = ifb_utilities_macro_pointer_advance_and_cast(pointer_offset, size_array_core_mask,    IFBU64);
-    IFBChar*                  ptr_description_buffer = ifb_utilities_macro_pointer_advance_and_cast(pointer_offset, size_description_buffer, IFBChar);
-    IFBStack*                 ptr_stack_struct       = ifb_utilities_macro_pointer_advance_and_cast(pointer_offset, size_stack_struct,       IFBStack);
-    IFBPtr                    ptr_stack_data         = ifb_utilities_macro_pointer_advance_and_cast(pointer_offset, size_stack_data,         IFBPtr);
-
-    //initialize the thread arrays
-    for (
-	  IFBU32 thread_index = 0;
-             thread_index < thread_count;
-           ++thread_index) {
-
-	  //set the array values
-	  ptr_array_context  [thread_index].platform_data_pointer = NULL;
-	  ptr_array_context  [thread_index].platform_data_size    = thread_platform_data_size;
-	  ptr_array_context  [thread_index].task_data_pointer     = ifb_utilities::pointer_advance(pointer_offset,thread_platform_data_size);
-	  ptr_array_context  [thread_index].task_func_pointer     = 0;
-	  ptr_array_id       [thread_index]                       = 0;
-	  ptr_array_core_mask[thread_index]                       = 0;
-    }
-
-    //initialize the stack
-    ptr_stack_struct->data_start = (IFBAddr)ptr_stack_data;
-    ptr_stack_struct->data_size  = size_stack_data;
-    ptr_stack_struct->position   = 0;
-
-    //update the pool    
-    ptr_thread_pool->pointers.array_context      = ptr_array_context;
-    ptr_thread_pool->pointers.array_id           = ptr_array_id;
-    ptr_thread_pool->pointers.array_core_mask    = ptr_array_core_mask;
-    ptr_thread_pool->pointers.description_buffer = ptr_description_buffer;
-    ptr_thread_pool->pointers.tmp_stack          = ptr_stack_struct; 
-    ptr_thread_pool->thread_count_total          = thread_count;
-    ptr_thread_pool->thread_count_running        = 0;
-    ptr_thread_pool->description_stride          = thread_description_stride;
-    ptr_thread_pool->platform_data_size          = thread_platform_data_size;
-
-    //we're done
-    return(ptr_thread_pool);
-}
-
 const IFBHNDThreadPool
-ifb_thread_pool::commit_relative(
+ifb_thread_pool::arena_commit(
 	      IFBMemoryArena* arena,
     const IFBU32          thread_count,
     const IFBU32          thread_description_stride,
@@ -224,19 +149,17 @@ ifb_thread_pool::commit_relative(
 
 const IFBB8
 ifb_thread_pool::threads_reserve (
-	      IFBThreadPool*  thread_pool,
-    const IFBU32          thread_count,
-    const IFBChar*        thread_descriptions,
-    const IFBThreadTask*  thread_tasks, 
-	      IFBHNDThread*   thread_handles) {
+          IFBThreadPoolRequestContext* thread_request_context,
+    const IFBChar*                     thread_descriptions,
+    const IFBThreadTask*               thread_tasks) {
 
     IFBB8 result = true;
 
     //sanity check, make sure we have valid pointers
-    ifb_macro_assert(thread_pool);
+    ifb_macro_assert(thread_request_context);
+    ifb_macro_assert(thread_request_context);
     ifb_macro_assert(thread_descriptions);
     ifb_macro_assert(thread_tasks);
-    ifb_macro_assert(thread_handles);
 
     //validate the pool and the thread count
     result &= ifb_thread_pool::validate(thread_pool);
