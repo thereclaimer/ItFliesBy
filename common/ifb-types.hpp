@@ -66,6 +66,14 @@ struct IFBLine;
 struct IFBTransform;
 
 //data structures
+struct IFBHNDArray;
+struct IFBHNDStack;
+struct IFBHNDQueue;
+struct IFBHNDArrayList;
+struct IFBHNDLinkedList;
+struct IFBHNDHash;
+struct IFBHNDHashTable;
+
 struct IFBDataStructure;
 struct IFBArray;
 struct IFBStack;
@@ -324,4 +332,4 @@ struct IFBFileReadOnlyTable {
     IFBFileReadOnlyTableRecords records;
 };
 
-#endif //IFB_TYPES_HPP
+#endif //IFB_TYPES_HPPt6b

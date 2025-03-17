@@ -46,6 +46,11 @@ namespace ifb_array {
 
 namespace ifb_array_list {
 
+    const IFBU32   allocation_size        (const IFBU32 element_size, const IFBU32 element_count);
+    IFBArrayList*  initialize_from_memory (const IFBU32 element_size, const IFBU32 element_count, const IFBPtr memory);   
+    IFBArrayList*  commit_to_arena        (const IFBU32 element_size, const IFBU32 element_count, )
+
+
     //create/reset
     const IFBB8  reset                (IFBArrayList* array_list_ptr);
 
