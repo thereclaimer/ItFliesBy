@@ -175,16 +175,16 @@ typedef const IFBB8 (*ifb_platform_func_ptr_file_rw_write_async)     (IFBFileRea
 typedef const IFBB8 (*ifb_platform_func_ptr_file_rw_close)           (IFBFileReadWrite* file_read_write);
 
 struct IFBPlatformFileApi {
-    ifb_platform_func_ptr_file_ro_open            file_ro_open;
-    ifb_platform_func_ptr_file_ro_close           file_ro_close;
-    ifb_platform_func_ptr_file_ro_read_immediate  file_ro_read_immediate;
-    ifb_platform_func_ptr_file_ro_read_async      file_ro_read_async;
-    ifb_platform_func_ptr_file_rw_open            file_rw_open;
-    ifb_platform_func_ptr_file_rw_close           file_rw_close;
-    ifb_platform_func_ptr_file_rw_read_immediate  file_rw_read_immediate;
-    ifb_platform_func_ptr_file_rw_read_async      file_rw_read_async;
-    ifb_platform_func_ptr_file_rw_write_immediate file_rw_write_immediate;
-    ifb_platform_func_ptr_file_rw_write_async     file_rw_write_async;
+    ifb_platform_func_ptr_file_ro_open            ro_open;
+    ifb_platform_func_ptr_file_ro_close           ro_close;
+    ifb_platform_func_ptr_file_ro_read_immediate  ro_read_immediate;
+    ifb_platform_func_ptr_file_ro_read_async      ro_read_async;
+    ifb_platform_func_ptr_file_rw_open            rw_open;
+    ifb_platform_func_ptr_file_rw_close           rw_close;
+    ifb_platform_func_ptr_file_rw_read_immediate  rw_read_immediate;
+    ifb_platform_func_ptr_file_rw_read_async      rw_read_async;
+    ifb_platform_func_ptr_file_rw_write_immediate rw_write_immediate;
+    ifb_platform_func_ptr_file_rw_write_async     rw_write_async;
 };
 
 namespace ifb_platform {

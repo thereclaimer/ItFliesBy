@@ -87,9 +87,17 @@ struct IFBWindow;
 struct IFBMonitor;
 
 //files
-struct IFBHNDPlatformFile;
+struct IFBFile;
+struct IFBFileBuffer;
+struct IFBFilePlatformContext;
 struct IFBFileReadOnly;
+struct IFBFileReadOnlyTable;
+struct IFBFileReadOnlyTableRecords;
+struct IFBFileReadOnlyPlatformContext;
 struct IFBFileReadWrite;
+struct IFBFileReadWriteTable;
+struct IFBFileReadWriteTableRecords;
+struct IFBFileReadWritePlatformContext;
 
 /**********************************************************************************/
 /* HANDLES                                                                        */
@@ -197,7 +205,6 @@ struct IFBStack : IFBDataStructure {
     IFBU32 position;
 };
 
-
 /**********************************************************************************/
 /* GRAPHICS                                                                       */
 /**********************************************************************************/
@@ -272,19 +279,49 @@ struct IFBMonitor {
 /* FILES                                                                          */
 /**********************************************************************************/
 
-struct IFBFileReadOnly {
-    IFBStack* platform_context_stack;
-    IFBB32    platform_lock;
-    IFBU32    size;
-    IFBU32    bytes_read;
+struct IFBFile {
+    IFBU32 table_index;
 };
 
-struct IFBFileReadWrite {
-    IFBStack* platform_context_stack;
-    IFBB32    platform_lock;
-    IFBU32    size;
-    IFBU32    bytes_read;
-    IFBU32    bytes_written;
+struct IFBFileBuffer {
+    IFBAddr start;
+    IFBU32  size;
+    IFBU32  offset;
+};
+
+struct IFBFilePlatformContext {
+    IFBPtr data;
+    IFBB64 locked;
+};
+
+struct IFBFileReadOnly                 : IFBFile                { };
+struct IFBFileReadWrite                : IFBFile                { };
+struct IFBFileReadOnlyPlatformContext  : IFBFilePlatformContext { }; 
+struct IFBFileReadWritePlatformContext : IFBFilePlatformContext { }; 
+
+struct IFBFileReadOnlyTableRecords {
+    IFBU64 count;
+    struct {
+        IFBU32*                         array_file_size;
+        IFBFileReadOnlyPlatformContext* array_platform_context;        
+        IFBU32*                         array_bytes_read;
+    } pointers;
+};
+
+struct IFBFileReadWriteTableRecords {
+    IFBU64 count;
+    struct {
+        IFBU32*                         array_file_size;
+        IFBFileReadOnlyPlatformContext* array_platform_context;        
+        IFBU32*                         array_bytes_read;
+        IFBU32*                         array_bytes_written;
+    } pointers;
+};
+
+struct IFBFileReadOnlyTable {
+    IFBAddr                     file_platform_context_start;
+    IFBU64                      file_platform_context_size;
+    IFBFileReadOnlyTableRecords records;
 };
 
 #endif //IFB_TYPES_HPP
