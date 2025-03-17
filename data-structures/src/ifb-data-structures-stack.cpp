@@ -74,6 +74,8 @@ ifb_stack::reset(
     return(true);
 }
 
+#define IFB_HANDLE_INVALID_U32 0xFFFFFFFF
+
 const IFBU32
 ifb_stack::push_relative(
           IFBStack* stack_ptr,

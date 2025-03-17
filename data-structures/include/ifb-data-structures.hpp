@@ -44,26 +44,24 @@ namespace ifb_array {
 /* ARRAY LIST                                                                      */
 /**********************************************************************************/
 
+
 namespace ifb_array_list {
 
-    const IFBU32   allocation_size        (const IFBU32 element_size, const IFBU32 element_count);
-    IFBArrayList*  initialize_from_memory (const IFBU32 element_size, const IFBU32 element_count, const IFBPtr memory);   
-    IFBArrayList*  commit_to_arena        (const IFBU32 element_size, const IFBU32 element_count, )
+    //memory
+    const IFBU32   memory_allocation_size  (const IFBU32 element_size, const IFBU32 element_count);
+    IFBArrayList*  memory_initialize       (const IFBU32 element_size, const IFBU32 element_count, const IFBPtr memory);   
 
+    //operations
+    const IFBB8 reset                 (IFBArrayList* array_list_ptr);
+    const IFBB8 remove                (IFBArrayList* array_list_ptr, const IFBU32 index);
+    const IFBB8 add_to_front          (IFBArrayList* array_list_ptr, const IFBPtr element_ptr);
+    const IFBB8 add_to_end            (IFBArrayList* array_list_ptr, const IFBPtr element_ptr);
+    const IFBB8 insert                (IFBArrayList* array_list_ptr, const IFBPtr element_ptr, const IFBU32 index);
+    const IFBB8 is_empty              (IFBArrayList* array_list_ptr);
 
-    //create/reset
-    const IFBB8  reset                (IFBArrayList* array_list_ptr);
-
-    //add/remove
-    const IFBB8  remove               (IFBArrayList* array_list_ptr, const IFBU32   index);
-    const IFBU32 add                  (IFBArrayList* array_list_ptr, const IFBByte* element_ptr);
-    const IFBU32 insert               (IFBArrayList* array_list_ptr, const IFBByte* element_ptr, const IFBU32 index);
-
-    //size/count    
+    //size
     const IFBU32 get_size_total       (const IFBArrayList* array_list_ptr);
     const IFBU32 get_size_used        (const IFBArrayList* array_list_ptr);
-    const IFBU32 get_element_size     (const IFBArrayList* array_list_ptr);
-    const IFBU32 get_element_count    (const IFBArrayList* array_list_ptr);
     
     //pointers
     const IFBPtr get_element_first    (const IFBArrayList* array_list_ptr);

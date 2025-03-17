@@ -199,11 +199,27 @@ struct IFBLine {
 /**********************************************************************************/
 
 struct IFBDataStructure {
-    IFBAddr             data_start;
-    IFBU32              data_size;
+    IFBAddr data_start;
+    IFBU64  data_size;
+};
+
+struct IFBArray : IFBDataStructure {
+    IFBU32 element_size;
+    IFBU32 element_count;
 };
 
 struct IFBStack : IFBDataStructure {
+    IFBU64 position;
+};
+
+struct IFBArrayList : IFBDataStructure {
+    IFBU64 element_size;
+    IFBU32 element_count_total;
+    IFBU32 element_count_current;
+};
+
+
+struct IFBQueue : IFBDataStructure {
     IFBU32 position;
 };
 
