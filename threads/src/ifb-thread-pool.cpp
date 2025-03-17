@@ -24,7 +24,6 @@ ifb_thread_pool::validate(
     result &= (thread_pool->pointers.array_id           != NULL);
     result &= (thread_pool->pointers.array_core_mask    != NULL);
     result &= (thread_pool->pointers.description_buffer != NULL);
-    result &= (thread_pool->pointers.tmp_stack          != NULL);
     return(result);
 }
 
@@ -32,7 +31,7 @@ const IFBB8
 ifb_thread_pool::validate_request(
     const IFBThreadPoolRequestContext* request_context) {
 
-    IFBB8 
+    IFBB8 result = true;
 
     request_context->thread_arena;
     request_context->thread_handle_array;
