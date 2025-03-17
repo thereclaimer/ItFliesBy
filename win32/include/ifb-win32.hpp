@@ -6,17 +6,47 @@
 #include <ifb-engine.hpp>
 
 /**********************************************************************************/
+/* REGISTRY                                                                       */
+/**********************************************************************************/
+
+struct IFBWin32RegKeyU32 {
+    HKEY   key;
+    IFBU32 value;
+};
+
+namespace ifb_win32 {
+
+    //read only
+    const IFBB8 registry_key_open_read_only_classes_root   (const LPCSTR key_path, HKEY& key_ref);
+    const IFBB8 registry_key_open_read_only_current_user   (const LPCSTR key_path, HKEY& key_ref);
+    const IFBB8 registry_key_open_read_only_local_machine  (const LPCSTR key_path, HKEY& key_ref);
+    const IFBB8 registry_key_open_read_only_users          (const LPCSTR key_path, HKEY& key_ref);
+    const IFBB8 registry_key_open_read_only_current_config (const LPCSTR key_path, HKEY& key_ref);
+
+    //close
+    const IFBB8 registry_key_close(const HKEY key);
+
+    //values
+    const IFBB8 registry_key_read_value_u32           (const HKEY key, const LPCSTR value_name, IFBU32& value_ref);
+    const IFBB8 registry_key_read_value_cpu_speed_mhz (IFBWin32RegKeyU32& key_u32);
+};
+
+#define IFB_WIN32_SYSTEM_REGKEY_PROCESSOR_0     R"(HARDWARE\DESCRIPTION\System\CentralProcessor\0)" 
+#define IFB_WIN32_SYSTEM_REGKEY_PROCESSOR_0_MHZ "~MHz"
+
+
+#define ifb_win32_macro_registry_key_cpu_0(key_ref)                         ifb_win32::registry_key_open_read_only_local_machine(IFB_WIN32_SYSTEM_REGKEY_PROCESSOR_0, key_ref)
+#define ifb_win32_macro_registry_key_cpu_0_value_u32_mhz(key,value_u32_ref) ifb_win32::registry_key_read_value_u32(key,IFB_WIN32_SYSTEM_REGKEY_PROCESSOR_0_MHZ,value_u32_ref)
+
+/**********************************************************************************/
 /* SYSTEM                                                                         */
 /**********************************************************************************/
 
 namespace ifb_win32 {
 
-    IFBVoid system_api_initialize(IFBPlatformSystemApi& platform_system_api_ref);
-
-    ifb_internal const IFBU32  system_page_size              (IFBVoid);
-    ifb_internal const IFBU32  system_allocation_granularity (IFBVoid);
-    ifb_internal const IFBU64  system_time_ms                (IFBVoid);
-    ifb_internal       IFBVoid system_sleep                  (const IFBU32 ms);
+    ifb_internal const IFBB8   system_get_info (IFBSystemInfo* system_info);
+    ifb_internal const IFBU64  system_time_ms  (IFBVoid);
+    ifb_internal       IFBVoid system_sleep    (const IFBU32 ms);
 };
 
 /**********************************************************************************/
@@ -24,8 +54,6 @@ namespace ifb_win32 {
 /**********************************************************************************/
 
 namespace ifb_win32 {
-
-    IFBVoid memory_api_initialize(IFBPlatformMemoryApi& platform_memory_api_ref);
 
     ifb_internal const IFBPtr memory_reserve (const IFBU64 reservation_size);
     ifb_internal const IFBB8  memory_release (const IFBPtr reservation_start, const IFBU64 reservation_size);
@@ -62,8 +90,6 @@ typedef const LRESULT
  
 namespace ifb_win32 {
 
-    IFBVoid window_api_initialize(IFBPlatformWindowApi& window_api_ref);
-
     ifb_internal const IFBB8 
     window_create(
         const IFBChar* title,
@@ -97,8 +123,6 @@ namespace ifb_win32 {
 /**********************************************************************************/
 
 namespace ifb_win32 {
-
-    IFBVoid monitor_api_initialize(IFBPlatformMonitorApi& monitor_api_ref);
 
     const IFBU32 monitor_count (IFBVoid);
     
@@ -158,10 +182,6 @@ namespace ifb_win32 {
 
 namespace ifb_win32 {
 
-    ifb_internal IFBVoid 
-    file_dialog_api_initialize(
-        IFBPlatformFileDialogApi& platform_api_file_dialog_ref);
-
     ifb_internal const IFBB8
     file_dialog_select_file(
         const IFBChar*  in_file_dialog_starting_directory,
@@ -191,24 +211,23 @@ namespace ifb_win32 {
         IFBPlatformApi& platform_api_ref) {
 
         //system
-        platform_api_ref.system.page_size              = ifb_win32::system_page_size;
-        platform_api_ref.system.allocation_granularity = ifb_win32::system_allocation_granularity;
-        platform_api_ref.system.time_ms                = ifb_win32::system_time_ms;
-        platform_api_ref.system.sleep                  = ifb_win32::system_sleep;
+        platform_api_ref.system.get_info     = ifb_win32::system_get_info;
+        platform_api_ref.system.time_ms      = ifb_win32::system_time_ms;
+        platform_api_ref.system.sleep        = ifb_win32::system_sleep;
 
         //memory    
-        platform_api_ref.memory.reserve                = ifb_win32::memory_reserve;
-        platform_api_ref.memory.release                = ifb_win32::memory_release;
-        platform_api_ref.memory.commit                 = ifb_win32::memory_commit;
+        platform_api_ref.memory.reserve      = ifb_win32::memory_reserve;
+        platform_api_ref.memory.release      = ifb_win32::memory_release;
+        platform_api_ref.memory.commit       = ifb_win32::memory_commit;
 
         //window    
-        platform_api_ref.window.create                 = ifb_win32::window_create;
-        platform_api_ref.window.destroy                = ifb_win32::window_destroy;
-        platform_api_ref.window.frame_start            = ifb_win32::window_frame_start;
-        platform_api_ref.window.frame_render           = ifb_win32::window_frame_render;
-        platform_api_ref.window.show                   = ifb_win32::window_show;
-        platform_api_ref.window.opengl_init            = ifb_win32::window_opengl_init;
-        platform_api_ref.window.imgui_init             = ifb_win32::window_imgui_init;
+        platform_api_ref.window.create       = ifb_win32::window_create;
+        platform_api_ref.window.destroy      = ifb_win32::window_destroy;
+        platform_api_ref.window.frame_start  = ifb_win32::window_frame_start;
+        platform_api_ref.window.frame_render = ifb_win32::window_frame_render;
+        platform_api_ref.window.show         = ifb_win32::window_show;
+        platform_api_ref.window.opengl_init  = ifb_win32::window_opengl_init;
+        platform_api_ref.window.imgui_init   = ifb_win32::window_imgui_init;
 
         //monitor
         platform_api_ref.monitor.count                 = ifb_win32::monitor_count;

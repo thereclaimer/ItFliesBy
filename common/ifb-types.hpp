@@ -5,6 +5,37 @@
 #include <xmmintrin.h>
 
 /**********************************************************************************/
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
+
+//handles
+struct IFBHND8;
+struct IFBHND16;
+struct IFBHND32;
+struct IFBHND64;
+struct IFBHNDPTR;
+
+//system
+struct IFBSystemInfo;
+struct IFBSystemMemory;
+struct IFBSystemCPU;
+
+//math
+struct IFBVec2;
+struct IFBVec3;
+struct IFBMat3;
+struct IFBPoint;
+struct IFBLine;
+struct IFBTransform;
+struct IFBDimensions;
+struct IFBPosition;
+
+//colors
+struct IFBColorNormalized;
+struct IFBColorHex;
+struct IFBColor32;
+
+/**********************************************************************************/
 /* PRIMITIVES                                                                     */
 /**********************************************************************************/
 
@@ -47,67 +78,6 @@ typedef intptr_t IFBAddr;
 typedef uint64_t IFBTimems;
 
 /**********************************************************************************/
-/* FORWARD DECLARATIONS                                                           */
-/**********************************************************************************/
-
-//handles
-struct IFBHND8;
-struct IFBHND16;
-struct IFBHND32;
-struct IFBHND64;
-struct IFBHNDPTR;
-
-//math
-struct IFBVec2;
-struct IFBVec3;
-struct IFBMat3;
-struct IFBPoint;
-struct IFBLine;
-struct IFBTransform;
-
-//data structures
-struct IFBHNDArray;
-struct IFBHNDStack;
-struct IFBHNDQueue;
-struct IFBHNDArrayList;
-struct IFBHNDLinkedList;
-struct IFBHNDHash;
-struct IFBHNDHashTable;
-
-struct IFBDataStructure;
-struct IFBArray;
-struct IFBStack;
-struct IFBQueue;
-struct IFBArrayList;
-struct IFBLinkedList;
-struct IFBHash;
-struct IFBHashTable;
-
-//graphics
-struct IFBColorNormalized;
-struct IFBColorHex;
-struct IFBColor32;
-struct IFBDimensions;
-struct IFBPosition;
-struct IFBDimensionsAndPosition;
-struct IFBGraphicsContexts;
-struct IFBWindow;
-struct IFBMonitor;
-
-//files
-struct IFBFile;
-struct IFBFileBuffer;
-struct IFBFilePlatformContext;
-struct IFBFileReadOnly;
-struct IFBFileReadOnlyTable;
-struct IFBFileReadOnlyTableRecords;
-struct IFBFileReadOnlyPlatformContext;
-struct IFBFileReadWrite;
-struct IFBFileReadWriteTable;
-struct IFBFileReadWriteTableRecords;
-struct IFBFileReadWritePlatformContext;
-
-/**********************************************************************************/
 /* HANDLES                                                                        */
 /**********************************************************************************/
 
@@ -117,10 +87,34 @@ struct IFBHND32  { IFBU32 offset;  };
 struct IFBHND64  { IFBU64 offset;  };
 struct IFBHNDPTR { IFBPtr pointer; };
 
-#define IFB_HANDLE_INVALID_U8  0xFF
-#define IFB_HANDLE_INVALID_U16 0xFFFF 
-#define IFB_HANDLE_INVALID_U32 0xFFFFFFFF 
-#define IFB_HANDLE_INVALID_U64 0xFFFFFFFFFFFFFFFF 
+/**********************************************************************************/
+/* SYSTEM                                                                         */
+/**********************************************************************************/
+
+struct IFBSystemMemoryInfo {
+    IFBU32 page_size;
+    IFBU32 allocation_granularity;
+};
+
+struct IFBSystemCPUCacheInfo {
+    IFBU32 size_total;
+    IFBU32 size_line;
+};
+
+struct IFBSystemCPUInfo {
+    IFBU32                parent_core_number;
+    IFBU32                speed_mhz;
+    IFBU32                core_count_physical;
+    IFBU32                core_count_logical;
+    IFBSystemCPUCacheInfo cache_l1;
+    IFBSystemCPUCacheInfo cache_l2;
+    IFBSystemCPUCacheInfo cache_l3;
+};
+
+struct IFBSystemInfo {
+    IFBSystemCPUInfo    cpu;
+    IFBSystemMemoryInfo memory;
+};
 
 /**********************************************************************************/
 /* SIMD                                                                           */
@@ -135,7 +129,7 @@ struct IFBHNDPTR { IFBPtr pointer; };
     #include <x86intrin.h>
 #endif //_MSC_VER
 
-typedef __m128 ifb_xmm_f128;
+typedef __m128 IFBXMMF128;
 
 /**********************************************************************************/
 /* MATH                                                                           */

@@ -24,9 +24,9 @@ ifb_math::batch_a_add_b(
     const IFBF32* b,
           IFBF32* c) {
 
-    ifb_xmm_f128 xmm_a;
-    ifb_xmm_f128 xmm_b;
-    ifb_xmm_f128 xmm_c;
+    IFBXMMF128 xmm_a;
+    IFBXMMF128 xmm_b;
+    IFBXMMF128 xmm_c;
 
     ifb_macro_assert(count % 4 == 0);
 
@@ -54,9 +54,9 @@ ifb_math::batch_a_sub_b(
     const IFBF32* b,
           IFBF32* c) {
 
-    ifb_xmm_f128 xmm_a;
-    ifb_xmm_f128 xmm_b;
-    ifb_xmm_f128 xmm_c;
+    IFBXMMF128 xmm_a;
+    IFBXMMF128 xmm_b;
+    IFBXMMF128 xmm_c;
 
     ifb_macro_assert(count % 4 == 0);
 
@@ -84,9 +84,9 @@ ifb_math::batch_a_mul_b(
     const IFBF32* b,
           IFBF32* c) {
 
-    ifb_xmm_f128 xmm_a;
-    ifb_xmm_f128 xmm_b;
-    ifb_xmm_f128 xmm_c;
+    IFBXMMF128 xmm_a;
+    IFBXMMF128 xmm_b;
+    IFBXMMF128 xmm_c;
 
     ifb_macro_assert(count % 4 == 0);
 
@@ -114,9 +114,9 @@ ifb_math::batch_a_div_b(
     const IFBF32* b,
           IFBF32* c) {
 
-    ifb_xmm_f128 xmm_a;
-    ifb_xmm_f128 xmm_b;
-    ifb_xmm_f128 xmm_c;
+    IFBXMMF128 xmm_a;
+    IFBXMMF128 xmm_b;
+    IFBXMMF128 xmm_c;
 
     ifb_macro_assert(count % 4 == 0);
 
@@ -143,8 +143,8 @@ ifb_math::batch_sqrt(
     const IFBF32* val,
           IFBF32* val_sqrt) {
 
-    ifb_xmm_f128 xmm_a;
-    ifb_xmm_f128 xmm_b;
+    IFBXMMF128 xmm_a;
+    IFBXMMF128 xmm_b;
 
     ifb_macro_assert(count % 4 == 0);
 

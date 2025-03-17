@@ -8,13 +8,9 @@
 /* SYSTEM                                                                         */
 /**********************************************************************************/
 
-typedef const IFBU32
-(*ifb_platform_funcptr_system_page_size)(
-    IFBVoid);
-
-typedef const IFBU32
-(*ifb_platform_funcptr_system_allocation_granularity)(
-    IFBVoid);
+typedef const IFBB8
+(*ifb_platform_funcptr_system_get_info)(
+    IFBSystemInfo* system_info);
 
 typedef const IFBTimems
 (*ifb_platform_funcptr_system_time_ms)(
@@ -25,18 +21,15 @@ typedef IFBVoid
     const IFBU32 ms);
 
 struct IFBPlatformSystemApi {
-    ifb_platform_funcptr_system_page_size              page_size;
-    ifb_platform_funcptr_system_allocation_granularity allocation_granularity;
-    ifb_platform_funcptr_system_time_ms                time_ms;
-    ifb_platform_funcptr_system_sleep                  sleep;
+    ifb_platform_funcptr_system_get_info get_info;
+    ifb_platform_funcptr_system_time_ms  time_ms;
+    ifb_platform_funcptr_system_sleep    sleep;
 };
 
 namespace ifb_platform {
-
-    extern ifb_platform_funcptr_system_page_size              system_page_size;
-    extern ifb_platform_funcptr_system_allocation_granularity system_allocation_granularity;
-    extern ifb_platform_funcptr_system_time_ms                system_time_ms;
-    extern ifb_platform_funcptr_system_sleep                  system_sleep;
+    extern ifb_platform_funcptr_system_get_info system_get_info;
+    extern ifb_platform_funcptr_system_time_ms  system_time_ms;
+    extern ifb_platform_funcptr_system_sleep    system_sleep;
 };
 
 /**********************************************************************************/

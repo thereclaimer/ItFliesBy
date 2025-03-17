@@ -15,8 +15,14 @@ ifb_engine::core_create(
     ifb_macro_assert(core_stack_memory_size);
     ifb_macro_assert(core_reserved_memory_size);
 
+    //get the system infoc
+    IFBSystemInfo system_info;
+    const IFBB8 system_info_valid = ifb_platform::system_get_info(&system_info); 
+    if (!system_info_valid) return(NULL);
+
     //create the memory context
     const IFBB8 memory_context_created = ifb_memory::context_create(
+        &system_info.memory,
         core_stack_memory_ptr,
         core_stack_memory_size);
     if (!memory_context_created) return(NULL);

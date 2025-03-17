@@ -12,16 +12,18 @@ ifb_global IFBMemoryContext* _ptr_context;
 
 const IFBB8
 ifb_memory::context_create(
-    const IFBByte* stack_memory,
-    const IFBU32   stack_size) {
+    const IFBSystemMemoryInfo* system_memory_info,
+    const IFBByte*             stack_memory,
+    const IFBU32               stack_size) {
 
     //calculate the size of the memory struct
     const IFBU32 memory_struct_size = ifb_macro_align_size_struct(IFBMemoryContext);
 
     // make sure the stack is valid and large enough
     IFBB8 result = true;
-    result &= stack_memory != NULL;
-    result &= stack_size   >= memory_struct_size;
+    result &= system_memory_info != NULL;
+    result &= stack_memory       != NULL;
+    result &= stack_size         >= memory_struct_size;
 
     //if everything isn't valid, we're done
     if (!result) return(false);
@@ -79,17 +81,11 @@ ifb_memory::context_create(
         ref_stack.position += current_size;
     }
 
-    //get the system information
-    const IFBU32 system_page_size   = ifb_platform::system_page_size();
-    const IFBU32 system_granularity = ifb_platform::system_allocation_granularity();
-    ifb_macro_assert(system_page_size);
-    ifb_macro_assert(system_granularity);
-
     //update the context info
     IFBMemoryContextInfo* ptr_context_info = ifb_memory::context_get_local_info();
     ifb_macro_assert(ptr_context_info);
-    ptr_context_info->system_page_size   = system_page_size; 
-    ptr_context_info->system_granularity = system_granularity; 
+    ptr_context_info->system_page_size   = system_memory_info->page_size; 
+    ptr_context_info->system_granularity = system_memory_info->allocation_granularity; 
 
     //we're done
     return(true);
