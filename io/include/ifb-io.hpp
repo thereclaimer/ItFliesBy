@@ -8,20 +8,29 @@
 /* FILE - READ ONLY                                                               */
 /**********************************************************************************/
 
-namespace ifb_file_ro {
+struct IFBFileTableArgs {
+    IFBHNDArena arena_handle;
+    IFBChar*    file_path_buffer;
+    IFBU32      file_path_stride; 
+    IFBU32      file_count;
+};
 
-    //memory
-    IFBFileReadOnly* arena_load_pointer    (const IFBHNDArena arena_handle, const IFBU32 arena_offset);
-    IFBFileReadOnly* arena_commit_absolute (const IFBHNDArena arena_handle, const IFBU32 platform_stack_size);
-    const IFBU32     arena_commit_relative (const IFBHNDArena arena_handle, const IFBU32 platform_stack_size);
+struct IFBFileTableReadOnlyRequest {
+    IFBFileReadOnlyTable*   file_table;
+    IFBFileReadOnlyRequest* file_request;
+};
 
-    //open/close    
-    const IFBB8 open           (IFBFileReadOnly* file_read_only, const IFBChar* file_path_cstr);
-    const IFBB8 close          (IFBFileReadOnly* file_read_only);
-    
-    //read
-    const IFBB8 read_immediate (IFBFileReadOnly* file_read_only, const IFBHNDArena arena_handle, IFBU32& arena_offset, const IFBU32 read_size, const IFBU32 read_offset = 0);
-    const IFBB8 read_async     (IFBFileReadOnly* file_read_only, const IFBHNDArena arena_handle, IFBU32& arena_offset, const IFBU32 read_size, const IFBU32 read_offset = 0);
+namespace ifb_file_table_ro {
+
+    IFBFileReadOnlyTable*        commit_table    (IFBFileTableArgs* args);
+    IFBFileTableReadOnlyRequest* reserve_request (const IFBHNDArena arena_handle, const IFBU32 file_count);
+    IFBFileTableReadOnlyRequest* release_request (const IFBHNDArena arena_handle, IFBFileTableReadOnlyRequest* file_table_request);
+
+    const IFBB8 file_open           (IFBFileTableReadOnlyRequest* file_table_request);
+    const IFBB8 file_close          (IFBFileTableReadOnlyRequest* file_table_request);
+    const IFBB8 file_read_immediate (IFBFileTableReadOnlyRequest* file_table_request);
+    const IFBB8 file_read_async     (IFBFileTableReadOnlyRequest* file_table_request);
+
 };
 
 /**********************************************************************************/

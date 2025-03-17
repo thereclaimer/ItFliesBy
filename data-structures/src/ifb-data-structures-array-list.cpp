@@ -102,10 +102,10 @@ ifb_array_list::remove(
     const IFBU32 count_new     = count_current - 1; 
 
     //make sure we can do the removal
-    IFBB8 can_remove = true;              // we can remove IF...
-    can_remove &= count_current != 0;     //...we have a non-zero count AND
-    can_remove &= index <= count_current; //...the index is less than the count
-    if (!can_remove) return(false);       // if we can't remove, we're done
+    IFBB8 can_remove = true;                // we can remove IF...
+    can_remove &= (count_current != 0);     //...we have a non-zero count AND
+    can_remove &= (index <= count_current); //...the index is less than the count
+    if (!can_remove) return(false);         // if we can't remove, we're done
 
     //shift the memory down
     ifb_array_list::shift_down(array_list_ptr,index,1);

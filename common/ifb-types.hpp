@@ -301,10 +301,15 @@ struct IFBFile {
     IFBU32 table_index;
 };
 
+
+typedef IFBU32 (*IFBFileReadOnlyAsyncCallback)  (const IFBFile file);
+typedef IFBU32 (*IFBFileReadWriteAsyncCallback) (const IFBFile file);
+
+
 struct IFBFileBuffer {
     IFBAddr start;
     IFBU32  size;
-    IFBU32  offset;
+    IFBU32  file_offset;
 };
 
 struct IFBFilePlatformContext {
@@ -316,6 +321,8 @@ struct IFBFileReadOnly                 : IFBFile                { };
 struct IFBFileReadWrite                : IFBFile                { };
 struct IFBFileReadOnlyPlatformContext  : IFBFilePlatformContext { }; 
 struct IFBFileReadWritePlatformContext : IFBFilePlatformContext { }; 
+
+struct IFBFileArrayList : IFBArrayList { };
 
 struct IFBFileReadOnlyTableRecords {
     IFBU64 count;
@@ -336,10 +343,49 @@ struct IFBFileReadWriteTableRecords {
     } pointers;
 };
 
-struct IFBFileReadOnlyTable {
-    IFBAddr                     file_platform_context_start;
-    IFBU64                      file_platform_context_size;
-    IFBFileReadOnlyTableRecords records;
+struct IFBFileReadOnlyTableLists {
+    IFBFileArrayList files_open;
+    IFBFileArrayList files_closed;
 };
+
+struct IFBFileReadOnlyTablePlatformContext {
+    IFBFileReadOnlyAsyncCallback callback;
+    IFBAddr                      data_start;
+};
+
+struct IFBFileReadWritePlatformContext {
+    IFBFileReadWriteAsyncCallback callback;    
+    IFBAddr                       data_start;
+}
+
+struct IFBFileReadOnlyTable {
+    IFBFileReadOnlyTablePlatformContext* platform_context;
+    IFBFileReadOnlyTableRecords*         records;
+    IFBFileReadOnlyTableLists*           lists;
+};
+
+
+struct IFBFileReadOnlyRequest {
+    struct {
+        IFBFileReadOnlyPlatformContext* platform_context;
+        IFBFileBuffer*                  buffer;
+        IFBChar*                        file_path;
+        IFBU32*                         file_table_index;
+    } pointers;
+    IFBU32 file_count;
+    IFBU32 file_path_stride;
+};
+
+struct IFBFileReadWriteRequest {
+    struct {
+        IFBFileReadWritePlatformContext* platform_context;
+        IFBFileBuffer*                   buffer;
+        IFBChar*                         file_path;
+        IFBU32*                          file_table_index;
+    } pointers;
+    IFBU32 file_count;
+    IFBU32 file_path_stride;
+};
+
 
 #endif //IFB_TYPES_HPPt6b

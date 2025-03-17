@@ -3,61 +3,75 @@
 #pragma once
 
 /**********************************************************************************/
-/* INTERNAL                                                                        */
+/* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
 namespace ifb_win32 {
 
-    IFBWin32FileInfoReadOnly*  file_ro_win32_info_stack_push  (IFBFileReadOnly* file_read_only);
-    IFBWin32FileInfoReadOnly*  file_ro_win32_info_stack_load  (IFBFileReadOnly* file_read_only);
-    IFBFileReadOnly*           file_ro_load_from_overlapped   (const LPOVERLAPPED overlapped_ptr);
-
-    IFBWin32FileInfoReadWrite* file_rw_win32_info_stack_push  (IFBFileReadWrite* file_read_write);
-    IFBWin32FileInfoReadWrite* file_rw_win32_info_stack_load  (IFBFileReadWrite* file_read_write);
-    IFBFileReadWrite*          file_rw_load_from_overlapped   (const LPOVERLAPPED overlapped_ptr);
+    const IFBB8           file_ro_validate_request(const IFBFileReadOnlyRequest*         file_ro_request);
+    IFBWin32FileReadOnly* file_ro_validate_context(const IFBFileReadOnlyPlatformContext& file_ro_context);
 };
 
 /**********************************************************************************/
 /* READ ONLY                                                                      */
 /**********************************************************************************/
 
+ifb_internal const IFBU32
+ifb_win32::file_ro_context_size(
+    IFBVoid) {
+
+    const IFBU32 context_size = ifb_macro_align_size_struct(IFBWin32FileReadOnly);
+    return(context_size);
+}
+
 ifb_internal const IFBB8
 ifb_win32::file_ro_open(
-          IFBFileReadOnly* file_read_only,
-    const IFBChar*         file_path) {
+    IFBFileReadOnlyRequest* file_ro_request) {
 
-    //sanity check
-    IFBB8 result = true;
-    result &= (file_read_only != NULL);
-    result &= (file_path      != NULL);
+    //validate the request
+    IFBB8 result = ifb_win32::file_ro_validate_request(file_ro_request);
     if (!result) return(false);
 
-    //push a new win32 file info structure
-    IFBWin32FileInfoReadOnly* ptr_win32_file_info = ifb_win32::file_stack_push_win32_info_read_only(file_read_only);
-    ifb_macro_assert(ptr_win32_file_info);
-    ptr_win32_file_info->ptr_ifb_file = file_read_only;
+    //get the file path information
+    const IFBU32                    file_count            = file_ro_request->file_count;
+    const IFBU32                    file_path_stride      = file_ro_request->file_path_stride;
+    const IFBChar*                  file_path_buffer      = file_ro_request->pointers.file_path;
+    IFBFileReadOnlyPlatformContext* file_platform_context = file_ro_request->pointers.platform_context;
 
-    //open the file
-    ptr_win32_file_info->win32_file_handle = CreateFile(
-        file_path,
-        GENERIC_READ,
-        FILE_SHARE_READ,
-        NULL,
-        OPEN_ALWAYS,
-        FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,
-        NULL);
+    //loop through the contexts and open the handles
+    for (
+        IFBU32 file_index = 0;
+               file_index < file_count;
+             ++file_index) {
 
-    //sanity check
-    result &= (ptr_win32_file_info->win32_file_handle != INVALID_HANDLE_VALUE);
+        //get the file path
+        const IFBU32   win32_file_path_offset = file_index * file_path_stride;
+        const IFBChar* win32_file_path_buffer = file_path_buffer[current_file_path_offset];
+        
+        //get the context
+        IFBFileReadOnlyPlatformContext& current_platform_context_ref = file_platform_context[file_index];
 
-    //get the size
-    const IFBU32 file_size = GetFileSize(file_path,MAXINT32);
+        //validate the context
+        IFBWin32FileReadOnly* win32_file = ifb_win32::file_ro_validate_context(current_platform_context_ref);
 
-    //initialize the file struct
-    file_read_only->platform_lock = 0;
-    file_read_only->size          = file_size;
-    file_read_only->bytes_read    = 0;
+        //open the file handle
+        const HANDLE win32_file_handle = CreateFile(
+            win32_file_path_buffer,
+            win32_file_access,
+            win32_file_share_mode,
+            win32_file_security_attributes,
+            win32_file_creation,
+            win32_file_flags,
+            win32_file_template);
+
+        //make sure the handle is valid
+        result &= (win32_file_handle != INVALID_HANDLE_VALUE); 
     
+        //update the file
+        win32_file->win32_file_handle = win32_file_handle;
+        win32_file->win32_overlapped  = {0};
+    }
+
     //we're done
     return(result);
 }
@@ -321,12 +335,6 @@ ifb_win32::file_rw_read_async(
     return(result);   
 }
 
-ifb_internal const IFBB8
-ifb_win32::file_rw_write_immediate (IFBFileReadWrite* file_read_write, const IFBU32   write_buffer_size, const IFBByte* write_buffer_ptr);
-ifb_internal const IFBB8
-ifb_win32::file_rw_write_async     (IFBFileReadWrite* file_read_write);
-
-
 /**********************************************************************************/
 /* COMPLETION ROUTINES                                                            */
 /**********************************************************************************/
@@ -388,6 +396,19 @@ ifb_win32::file_async_completion_routine_rw_write(
 /**********************************************************************************/
 /* INTERNAL                                                                        */
 /**********************************************************************************/
+
+inline const IFBB8
+ifb_win32::file_ro_validate_request(
+    const IFBFileReadOnlyRequest* file_ro_request) {
+    
+    if (!file_ro_request) return(false);
+
+    IFBB8 is_valid = true;
+    is_valid &= (file_ro_request->pointers.platform_context != NULL);
+    is_valid &= (file_ro_request->pointers.file_table_index != NULL);
+    is_valid &= (file_ro_request->file_count != 0);
+    return(is_valid);
+}
 
 inline IFBWin32FileInfoReadOnly* 
 ifb_win32::file_ro_win32_info_stack_push(

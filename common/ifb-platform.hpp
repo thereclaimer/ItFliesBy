@@ -155,23 +155,27 @@ namespace ifb_platform {
 /* FILES                                                                          */                            
 /**********************************************************************************/
 
-typedef const IFBB8 (*ifb_platform_func_ptr_file_ro_open)            (IFBFileReadOnly*  file_read_only,  const IFBChar* file_path);
-typedef const IFBB8 (*ifb_platform_func_ptr_file_ro_read_immediate)  (IFBFileReadOnly*  file_read_only,  const IFBU32   read_buffer_size,  IFBByte* read_buffer_ptr, const IFBU32 file_offset);
-typedef const IFBB8 (*ifb_platform_func_ptr_file_ro_read_async)      (IFBFileReadOnly*  file_read_only,  const IFBU32   read_buffer_size,  IFBByte* read_buffer_ptr, const IFBU32 file_offset);
-typedef const IFBB8 (*ifb_platform_func_ptr_file_ro_close)           (IFBFileReadOnly*  file_read_only);
+typedef const IFBU32 (*ifb_platform_func_ptr_file_ro_context_size)     (IFBVoid);
+typedef const IFBB8  (*ifb_platform_func_ptr_file_ro_open)             (IFBFileReadOnlyRequest* file_ro_request);             
+typedef const IFBU32 (*ifb_platform_func_ptr_file_ro_read_immediate)   (IFBFileReadOnlyRequest* file_ro_request);   
+typedef const IFBB8  (*ifb_platform_func_ptr_file_ro_read_async)       (IFBFileReadOnlyRequest* file_ro_request);       
+typedef const IFBB8  (*ifb_platform_func_ptr_file_ro_close)            (IFBFileReadOnlyRequest* file_ro_request);            
 
-typedef const IFBB8 (*ifb_platform_func_ptr_file_rw_open)            (IFBFileReadWrite* file_read_write, const IFBChar* file_path);
-typedef const IFBB8 (*ifb_platform_func_ptr_file_rw_read_immediate)  (IFBFileReadWrite* file_read_write, const IFBU32   read_buffer_size,  IFBByte*       read_buffer_ptr);
-typedef const IFBB8 (*ifb_platform_func_ptr_file_rw_read_async)      (IFBFileReadWrite* file_read_write, const IFBU32   read_buffer_size,  IFBByte*       read_buffer_ptr);
-typedef const IFBB8 (*ifb_platform_func_ptr_file_rw_write_immediate) (IFBFileReadWrite* file_read_write, const IFBU32   write_buffer_size, const IFBByte* write_buffer_ptr);
-typedef const IFBB8 (*ifb_platform_func_ptr_file_rw_write_async)     (IFBFileReadWrite* file_read_write, const IFBU32   write_buffer_size, const IFBByte* write_buffer_ptr);
-typedef const IFBB8 (*ifb_platform_func_ptr_file_rw_close)           (IFBFileReadWrite* file_read_write);
+typedef const IFBU32 (*ifb_platform_func_ptr_file_rw_context_size)    (IFBVoid);
+typedef const IFBB8  (*ifb_platform_func_ptr_file_rw_open)            (IFBFileReadWriteRequest* file_rw_request);             
+typedef const IFBU32 (*ifb_platform_func_ptr_file_rw_read_immediate)  (IFBFileReadWriteRequest* file_rw_request);   
+typedef const IFBB8  (*ifb_platform_func_ptr_file_rw_read_async)      (IFBFileReadWriteRequest* file_rw_request);       
+typedef const IFBU32 (*ifb_platform_func_ptr_file_rw_write_immediate) (IFBFileReadWriteRequest* file_rw_request);  
+typedef const IFBB8  (*ifb_platform_func_ptr_file_rw_write_async)     (IFBFileReadWriteRequest* file_rw_request);      
+typedef const IFBB8  (*ifb_platform_func_ptr_file_rw_close)           (IFBFileReadWriteRequest* file_rw_request);            
 
 struct IFBPlatformFileApi {
+    ifb_platform_func_ptr_file_ro_context_size    ro_context_size;
     ifb_platform_func_ptr_file_ro_open            ro_open;
     ifb_platform_func_ptr_file_ro_close           ro_close;
     ifb_platform_func_ptr_file_ro_read_immediate  ro_read_immediate;
     ifb_platform_func_ptr_file_ro_read_async      ro_read_async;
+    ifb_platform_func_ptr_file_rw_context_size    rw_context_size;
     ifb_platform_func_ptr_file_rw_open            rw_open;
     ifb_platform_func_ptr_file_rw_close           rw_close;
     ifb_platform_func_ptr_file_rw_read_immediate  rw_read_immediate;
@@ -182,10 +186,12 @@ struct IFBPlatformFileApi {
 
 namespace ifb_platform {
 
+    extern ifb_platform_func_ptr_file_ro_context_size    file_ro_context_size;
     extern ifb_platform_func_ptr_file_ro_open            file_ro_open;
     extern ifb_platform_func_ptr_file_ro_close           file_ro_close;
     extern ifb_platform_func_ptr_file_ro_read_immediate  file_ro_read_immediate;
     extern ifb_platform_func_ptr_file_ro_read_async      file_ro_read_async;
+    extern ifb_platform_func_ptr_file_rw_context_size    file_rw_context_size;
     extern ifb_platform_func_ptr_file_rw_open            file_rw_open;
     extern ifb_platform_func_ptr_file_rw_close           file_rw_close;
     extern ifb_platform_func_ptr_file_rw_read_immediate  file_rw_read_immediate;
