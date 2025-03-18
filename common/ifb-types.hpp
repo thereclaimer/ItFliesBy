@@ -41,10 +41,13 @@ struct IFBHNDFileTable;
 struct IFBFile;
 struct IFBFileBuffer;
 struct IFBFileContext;
+struct IFBFileTableArgs;
 struct IFBFileReadOnlyTable;
 struct IFBFileReadOnlyRequest;
 struct IFBFileReadWriteTable;
 struct IFBFileReadWriteRequest;
+
+//memory
 
 /**********************************************************************************/
 /* PRIMITIVES                                                                     */
@@ -97,6 +100,9 @@ struct IFBHND16  { IFBU16 offset;  };
 struct IFBHND32  { IFBU32 offset;  };
 struct IFBHND64  { IFBU64 offset;  };
 struct IFBHNDPTR { IFBPtr pointer; };
+
+struct IFBHNDArena       : IFBHNDPTR { };
+struct IFBHNDReservation : IFBHNDPTR { };
 
 /**********************************************************************************/
 /* SYSTEM                                                                         */
@@ -328,14 +334,20 @@ struct IFBFileBuffer {
 };
 
 struct IFBFileContext {
-    IFBAddr              data_start;
-    IFBFileAsyncCallback callback_function;
+    IFBAddr              memory_start;
+    IFBFileAsyncCallback callback_read;
+    IFBFileAsyncCallback callback_writeb;
     IFBU32               context_data_size;
     IFBU32               bytes_transferred;
-    struct {
-        IFBHND32 callback_data;
-        IFBHND32 context_data_pointer;
-    } handles;
+    IFBHND32             handle_context_data;
+};
+
+struct IFBFileTableArgs {
+    IFBHNDArena          arena_handle;
+    IFBFileAsyncCallback file_read_callback;
+    IFBChar*             file_path_buffer;
+    IFBU32               file_path_stride; 
+    IFBU32               file_count;
 };
 
 struct IFBFileReadOnlyTable {

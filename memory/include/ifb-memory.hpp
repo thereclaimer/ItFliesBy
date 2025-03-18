@@ -8,8 +8,6 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-struct IFBHNDReservation : IFBHNDPTR { };
-struct IFBHNDArena       : IFBHNDPTR { };
 
 struct IFBHNDAllocator : IFBHND32 {
     IFBHNDArena arena;
