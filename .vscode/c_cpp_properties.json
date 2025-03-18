@@ -3,12 +3,18 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
-            ],
-            "defines": [
-                "_DEBUG",
-                "UNICODE",
-                "_UNICODE"
+                "${workspaceFolder}/Common/**",
+                "${workspaceFolder}/DataStructures/**",
+                "${workspaceFolder}/Engine/**",
+                "${workspaceFolder}/Game/**",
+                "${workspaceFolder}/Graphics/**",
+                "${workspaceFolder}/IO/**",
+                "${workspaceFolder}/Math/**",
+                "${workspaceFolder}/Memory/**",
+                "${workspaceFolder}/Rendering/**",
+                "${workspaceFolder}/String/**",
+                "${workspaceFolder}/Threads/**",
+                "${workspaceFolder}/Win32/**"
             ],
             "windowsSdkVersion": "10.0.19041.0",
             "compilerPath": null,
@@ -17,7 +23,18 @@
             "intelliSenseMode": "windows-msvc-x64",
             "browse": {
                 "path": [
-                    "${workspaceFolder}/**"
+                "${workspaceFolder}/Common/**",
+                "${workspaceFolder}/DataStructures/**",
+                "${workspaceFolder}/Engine/**",
+                "${workspaceFolder}/Game/**",
+                "${workspaceFolder}/Graphics/**",
+                "${workspaceFolder}/IO/**",
+                "${workspaceFolder}/Math/**",
+                "${workspaceFolder}/Memory/**",
+                "${workspaceFolder}/Rendering/**",
+                "${workspaceFolder}/String/**",
+                "${workspaceFolder}/Threads/**",
+                "${workspaceFolder}/Win32/**"
                 ]
             }
         }

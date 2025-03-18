@@ -2,7 +2,6 @@
 #define IFB_RENDERING_HPP
 
 #include "ifb-types.hpp"
-#include "ifb-memory.hpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */

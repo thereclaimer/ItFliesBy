@@ -198,54 +198,53 @@ struct IFBMemoryArena {
 /* THREADING                                                                      */
 /**********************************************************************************/
 
-struct IFBHNDThread     : IFBHND32 { };
-struct IFBHNDThreadPool : IFBHND32 { };
+// struct IFBHNDThreadPool : IFBHND32 { };
 
-//task
-typedef const IFBB8 (*IFBThreadTaskFunction) (IFBPtr data_ptr);
+// //task
+// typedef const IFBB8 (*IFBThreadTaskFunction) (IFBPtr data_ptr);
 
-struct IFBThread {
-    IFBU32 pool_index;
-};
+// struct IFBThread {
+//     IFBU32 pool_index;
+// };
 
-struct IFBThreadStatus {
-    IFBU64 id;
-    IFBU64 core_mask;
-    IFBU32 active_core;
-    IFBB32 running;
-};
+// struct IFBThreadStatus {
+//     IFBU64 id;
+//     IFBU64 core_mask;
+//     IFBU32 active_core;
+//     IFBB32 running;
+// };
 
-struct IFBThreadTask {
-    IFBPtr                data;
-    IFBThreadTaskFunction func;
-};
+// struct IFBThreadTask {
+//     IFBPtr                data;
+//     IFBThreadTaskFunction func;
+// };
 
-struct IFBThreadPlatformContext {
-    IFBPtr                platform_data_pointer;
-    IFBU64                platform_data_size;   
-    IFBPtr                task_data_pointer;
-    IFBThreadTaskFunction task_func_pointer;
-};
+// struct IFBThreadPlatformContext {
+//     IFBPtr                platform_data_pointer;
+//     IFBU64                platform_data_size;   
+//     IFBPtr                task_data_pointer;
+//     IFBThreadTaskFunction task_func_pointer;
+// };
 
-struct IFBThreadPool {
-    struct {
-        IFBThreadPlatformContext* array_context;                                           
-        IFBU64*                   array_id;
-        IFBU64*                   array_core_mask;
-        IFBChar*                  description_buffer;
-    } pointers;
-    IFBU32 thread_count_total;
-    IFBU32 thread_count_running;
-    IFBU32 description_stride;
-    IFBU32 platform_data_size;
-};
+// struct IFBThreadPool {
+//     struct {
+//         IFBThreadPlatformContext* array_context;                                           
+//         IFBU64*                   array_id;
+//         IFBU64*                   array_core_mask;
+//         IFBChar*                  description_buffer;
+//     } pointers;
+//     IFBU32 thread_count_total;
+//     IFBU32 thread_count_running;
+//     IFBU32 description_stride;
+//     IFBU32 platform_data_size;
+// };
 
-struct IFBThreadPoolRequestContext {
-    IFBMemoryArena*  thread_arena;
-    IFBThread*       thread_handle_array;
-    IFBHNDThreadPool thread_pool_handle;
-    IFBU32           thread_count;
-};
+// struct IFBThreadPoolRequestContext {
+//     IFBMemoryArena*  thread_arena;
+//     IFBThread*       thread_handle_array;
+//     IFBHNDThreadPool thread_pool_handle;
+//     IFBU32           thread_count;
+// };
 
 /**********************************************************************************/
 /* SIMD                                                                           */
@@ -272,11 +271,8 @@ struct IFBVec2 {
             IFBF32 x;
             IFBF32 y;
         };
-
         IFBF32 xy[2];
-
     };
-
 };
 
 struct IFBVec3 {

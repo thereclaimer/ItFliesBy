@@ -20,7 +20,7 @@ struct IFBTag;
 
 struct IFBTag : IFBIDTag {
     IFBChar value[IFB_TAG_LENGTH];
-    IFBHash  hash;
+    IFBHash hash;
 };
 
 namespace ifb_tag {

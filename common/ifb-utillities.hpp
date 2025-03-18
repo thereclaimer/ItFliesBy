@@ -28,6 +28,6 @@ ifb_utilities::pointer_advance(
     return(next_pointer);
 }
 
-#define ifb_utilities_macro_pointer_advance_and_cast(pointer_offset_ref,size,type) (type*)ifb_utilities::pointer_advance(pointer_offset_ref,size)
+// #define ifb_utilities_macro_pointer_advance_and_cast(pointer_offset_ref,size,type) (type*)ifb_utilities::pointer_advance(pointer_offset_ref,size)
 
 #endif //IFB_UTILITIES_HPP

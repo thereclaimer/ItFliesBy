@@ -43,10 +43,10 @@ enum IFBAssetType_ {
     IFBAssetType_Sound  = 3,
 };
 
-struct IFBAsset78  {
+struct IFBAsset  {
     IFBHash      hash;
     IFBAssetType type;
-    IFBU32      size;
+    IFBU32       size;
 };
 
 struct IFBAssetTable {

@@ -21,7 +21,7 @@ namespace ifb_win32 {
 
     IFBWin32ThreadContext*    thread_get_context_win32    (const IFBThreadPlatformContext* thread_platform_context);
     IFBThreadPlatformContext* thread_get_context_platform (LPVOID data);
-    DWORD WINAPI           thread_routine              (LPVOID data);
+    DWORD WINAPI              thread_routine              (LPVOID data);
 
     IFBVoid
     thread_debug_out(

@@ -27,7 +27,7 @@ namespace ifb_thread_pool {
     const IFBB8 threads_sync      (IFBThreadPoolRequestContext* request_context);
     
     //cores    
-    const IFBB8 threads_set_cores (IFBThreadPoolRequestContext* request_context, const IFBU64* thread_core_masks);
+    const IFBB8 threads_set_cores (IFBThreadPoolRequestContext* request_context, const IFB87tU64* thread_core_masks);
     const IFBB8 threads_get_cores (IFBThreadPoolRequestContext* request_context,       IFBU64* thread_core_masks);
 };
 

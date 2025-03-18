@@ -2,9 +2,6 @@
 #define IFB_SPRITE_HPP
 
 #include "ifb-types.hpp"
-#include "ifb-graphics.hpp"
-#include "ifb-rendering.hpp"
-#include "ifb-memory.hpp"
 #include "ifb-tag.hpp"
 
 /**********************************************************************************/

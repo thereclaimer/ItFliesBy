@@ -207,22 +207,6 @@ namespace ifb_platform {
 };
 
 /**********************************************************************************/
-/* FILE DIALOG                                                                    */
-/**********************************************************************************/
-
-typedef const IFBB8
-(*IFBPlatformFileDialogSelectFile) (
-    const IFBChar*  in_file_dialog_starting_directory,
-    const IFBSize   in_file_type_count,
-    const IFBChar** in_file_type_name_cstr_ptr,
-    const IFBChar** in_file_type_spec_cstr_ptr,
-          IFBChar* out_file_selection_buffer);
-
-struct IFBPlatformFileDialogApi {
-    IFBPlatformFileDialogSelectFile select_file;
-};
-
-/**********************************************************************************/
 /* PLATFORM API                                                                   */
 /**********************************************************************************/
 
