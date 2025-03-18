@@ -336,7 +336,7 @@ struct IFBFileBuffer {
 struct IFBFileContext {
     IFBAddr              memory_start;
     IFBFileAsyncCallback callback_read;
-    IFBFileAsyncCallback callback_writeb;
+    IFBFileAsyncCallback callback_write;
     IFBU32               context_data_size;
     IFBU32               bytes_transferred;
     IFBHND32             handle_context_data;
@@ -344,7 +344,8 @@ struct IFBFileContext {
 
 struct IFBFileTableArgs {
     IFBHNDArena          arena_handle;
-    IFBFileAsyncCallback file_read_callback;
+    IFBFileAsyncCallback file_callback_read;
+    IFBFileAsyncCallback file_callback_write;
     IFBChar*             file_path_buffer;
     IFBU32               file_path_stride; 
     IFBU32               file_count;

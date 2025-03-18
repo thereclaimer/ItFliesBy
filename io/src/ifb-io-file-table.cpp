@@ -2,31 +2,11 @@
 
 #include "ifb-io.hpp"
 
+#include "ifb-io-file-table-initialization.cpp"
+
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
-
-struct IFBFileTableReadOnlyCommitSize {
-    IFBU16 total;
-    struct {
-        IFBU16 file_table_size;
-        IFBU16 file_path_buffer;
-        IFBU16 array_file_context;
-        IFBU16 array_last_bytes_read;
-        IFBU16 array_list_files_open;
-        IFBU16 array_list_files_closed;
-        IFBU16 array_list_files_locked;
-        IFBU16 context_memory_size;
-    } properties;
-};
-
-namespace ifb_file_table {
-    
-    IFBVoid                         args_assert_valid                    (const IFBFileTableArgs* args);
-    IFBFileTableReadOnlyCommitSize* args_read_only_commit_size_reserve   (const IFBFileTableArgs* args);
-    IFBVoid                         args_read_only_commit_size_release   (const IFBFileTableArgs* args);
-    IFBVoid                         args_read_only_commit_size_calculate (const IFBFileTableArgs* args, const IFBU32 context_data_size, IFBFileTableReadOnlyCommitSize* commit_size);
-};
 
 /**********************************************************************************/
 /* READ ONLY                                                                      */
@@ -35,14 +15,21 @@ namespace ifb_file_table {
 const IFBHNDFileTable 
 ifb_file_table::commit_read_only(const IFBFileTableArgs* args) {
 
-    IFBHNDFileTable file_table_handle;
-    file_table_handle.offset = 0;
+    //create our initalization struct
+    IFBFileTableReadOnlyInit init;
+    init.args          = (IFBFileTableArgs*)args;
+    init.sizes         = NULL;
+    init.table         = NULL;
+    init.handle.offset = 0;
 
-    //make sure our arguments are valid
-    ifb_file_table::args_assert_valid(args);
+    //file table initialization steps
+    ifb_file_table::read_only_init_step_0_args_assert        (init);
+    ifb_file_table::read_only_init_step_1_reserve_size_cache (init);
+    ifb_file_table::read_only_init_step_2_commit_table       (init);
+    ifb_file_table::read_only_init_step_3_release_size_cache (init);
 
     //reserve our commit sizes
-    IFBFileTableReadOnlyCommitSize* commit_size = ifb_file_table::args_read_only_commit_size_reserve(args);
+    IFBFileTableReadOnlySizes* commit_size = ifb_file_table::read_only_sizes_reserve(args);
 
     //get the context data size
     const IFBU32 file_context_data_size = ifb_platform::file_ro_context_size();
@@ -69,15 +56,17 @@ ifb_file_table::commit_read_only(const IFBFileTableArgs* args) {
     //make sure its valid
     ifb_macro_assert(file_table);
 
-    //set header properties
+    //cache args
     const IFBAddr              file_table_start = (IFBAddr)file_table;
     const IFBU32               file_count       = args->file_count;
-    const IFBFileAsyncCallback file_callback    = args->file_read_callback;
+    const IFBFileAsyncCallback file_callback    = args->file_callback_read;
+
+    //set header properties
     file_table->header.start            = file_table_start;
     file_table->header.size             = commit_size->total;
     file_table->header.file_count       = file_count; 
     file_table->header.file_path_stride = args->file_path_stride;
-    file_table->header.callback         = args->file_read_callback;
+    file_table->header.callback         = file_callback; 
 
     //calculate the offsets
     const IFBU16 offset_file_path_buffer        = commit_size->properties.file_table_size;
@@ -95,6 +84,22 @@ ifb_file_table::commit_read_only(const IFBFileTableArgs* args) {
     file_table->handles.array_list_files_open.offset   = offset_array_list_files_open;
     file_table->handles.array_list_files_closed.offset = offset_array_list_files_closed;
     file_table->handles.array_list_files_locked.offset = offset_array_list_files_locked;
+
+    //load the list memory
+    const IFBPtr ptr_memory_list_file_open   = ifb_memory::arena_get_pointer(file_table_arena, offset_array_list_files_open);
+    const IFBPtr ptr_memory_list_file_closed = ifb_memory::arena_get_pointer(file_table_arena, offset_array_list_files_closed);
+    const IFBPtr ptr_memory_list_file_locked = ifb_memory::arena_get_pointer(file_table_arena, offset_array_list_files_locked);
+
+    //initialize the lists
+    const IFBU32 element_size = sizeof(IFBHNDFile);
+    IFBArrayList* list_file_open   = ifb_array_list::memory_initialize(element_size, file_count, ptr_memory_list_file_open);
+    IFBArrayList* list_file_closed = ifb_array_list::memory_initialize(element_size, file_count, ptr_memory_list_file_closed);
+    IFBArrayList* list_file_locked = ifb_array_list::memory_initialize(element_size, file_count, ptr_memory_list_file_locked);
+
+    //assert the lists are valid
+    ifb_macro_assert(list_file_open);
+    ifb_macro_assert(list_file_closed);
+    ifb_macro_assert(list_file_locked);
 
     //load the context array
     IFBFileContext* file_context_array = (IFBFileContext*)ifb_memory::arena_get_pointer(file_table_arena,offset_array_file_context);
@@ -126,83 +131,67 @@ ifb_file_table::commit_read_only(const IFBFileTableArgs* args) {
     return(file_table_handle);
 } 
 
-
 /**********************************************************************************/
 /* INTERNAL                                                                       */
 /**********************************************************************************/
 
 inline IFBVoid
-ifb_file_table::args_assert_valid(
-    const IFBFileTableArgs* args) {
+ifb_file_table::read_only_init_step_0_args_assert(
+    IFBFileTableReadOnlyInit& init_ref) {
 
-    ifb_macro_assert(args);
-    ifb_macro_assert(args->arena_handle.pointer != NULL);
-    ifb_macro_assert(args->file_read_callback   != NULL);
-    ifb_macro_assert(args->file_path_buffer     != NULL);
-    ifb_macro_assert(args->file_path_stride     != NULL);
-    ifb_macro_assert(args->file_count           != NULL);
+    ifb_macro_assert(init_ref.args);
+    ifb_macro_assert(init_ref.args->arena_handle.pointer != NULL);
+    ifb_macro_assert(init_ref.args->file_callback_read   != NULL);
+    ifb_macro_assert(init_ref.args->file_path_buffer     != NULL);
+    ifb_macro_assert(init_ref.args->file_path_stride     != NULL);
+    ifb_macro_assert(init_ref.args->file_count           != NULL);
 }
 
-inline IFBFileTableReadOnlyCommitSize*
-ifb_file_table::args_read_only_commit_size_reserve(
-    const IFBFileTableArgs* args) {
 
-    const IFBU32 size = ifb_macro_align_size_struct(IFBFileTableReadOnlyCommitSize);
+inline IFBVoid
+ifb_file_table::read_only_init_step_1_reserve_sizes(
+    IFBFileTableReadOnlyInit& init_ref) {
 
-    IFBFileTableReadOnlyCommitSize* result = (IFBFileTableReadOnlyCommitSize*)ifb_memory::arena_reserve_bytes_absolute(
-        args->arena_handle,
+    //calculate the struct size
+    const IFBU32 size = ifb_macro_align_size_struct(IFBFileTableReadOnlySizes);
+
+    //commit the struct
+    IFBFileTableReadOnlySizes* table_sizes = (IFBFileTableReadOnlySizes*)ifb_memory::arena_reserve_bytes_absolute(
+        init_ref.args->arena_handle,
         size);
-    
-    ifb_macro_assert(result);
 
-    return(result);
-}
+    //sanity check    
+    ifb_macro_assert(table_sizes);
 
-inline IFBVoid
-ifb_file_table::args_read_only_commit_size_release(
-    const IFBFileTableArgs* args) {
-
-    const IFBU32 size   = ifb_macro_align_size_struct(IFBFileTableReadOnlyCommitSize);
-    const IFBB8  result = ifb_memory::arena_release_bytes(args->arena_handle,size);
-
-    ifb_macro_assert(result);
-}
-
-inline IFBVoid
-ifb_file_table::args_read_only_commit_size_calculate(
-    const IFBFileTableArgs*               args,
-    const IFBU32                          context_data_size,
-          IFBFileTableReadOnlyCommitSize* commit_size) {
-
-    //all values should be below the max commit size
-    const IFBU32 commit_size_max = 0xFFFF;
-
-    //cache constants
-    const IFBU32 file_count               = args->file_count;
-    const IFBU32 file_path_stride         = args->file_path_stride;
+    //create a cache of static values
+    const IFBU32 file_count               = init_ref.args->file_count; 
+    const IFBU32 file_path_stride         = init_ref.args->file_path_stride;
     const IFBU32 file_handle_size         = sizeof(IFBHNDFile);
-    const IFBU32 file_array_list_size     = ifb_array_list::memory_allocation_size(file_handle_size,file_count);
-    const IFBU32 file_context_size_struct = ifb_macro_align_size_struct(IFBFileContext);
+    table_sizes->tmp_cache.context_data   = ifb_platform::file_ro_context_size();
+    table_sizes->tmp_cache.commit_max     = 0xFFFF; 
+    table_sizes->tmp_cache.file_handle    = file_handle_size;
+    table_sizes->tmp_cache.array_list     = ifb_array_list::memory_allocation_size(file_handle_size,file_count);
+    table_sizes->tmp_cache.context_struct = ifb_macro_align_size_struct(IFBFileContext);
 
     //property sizes
     const IFBU32 commit_size_file_table              = ifb_macro_align_size_struct(IFBFileReadOnlyTable); 
     const IFBU32 commit_size_file_path_buffer        = file_count * file_path_stride;
-    const IFBU32 commit_size_array_file_context      = file_count * file_context_size_struct;
+    const IFBU32 commit_size_array_file_context      = file_count * table_sizes->tmp_cache.context_struct;
     const IFBU32 commit_size_array_last_bytes_read   = file_count * sizeof(IFBU32);
-    const IFBU32 commit_size_array_list_files_open   = file_array_list_size;
-    const IFBU32 commit_size_array_list_files_closed = file_array_list_size;
-    const IFBU32 commit_size_array_list_files_locked = file_array_list_size;
-    const IFBU32 commit_size_context_data            = file_count * context_data_size;
+    const IFBU32 commit_size_array_list_files_open   = table_sizes->tmp_cache.array_list;
+    const IFBU32 commit_size_array_list_files_closed = table_sizes->tmp_cache.array_list;
+    const IFBU32 commit_size_array_list_files_locked = table_sizes->tmp_cache.array_list;
+    const IFBU32 commit_size_context_data            = file_count * table_sizes->tmp_cache.context_struct;
 
     //make sure the properties are within the expected commit size
-    ifb_macro_assert(commit_size_file_table              < commit_size_max);
-    ifb_macro_assert(commit_size_file_path_buffer        < commit_size_max);
-    ifb_macro_assert(commit_size_array_file_context      < commit_size_max);
-    ifb_macro_assert(commit_size_array_last_bytes_read   < commit_size_max);
-    ifb_macro_assert(commit_size_array_list_files_open   < commit_size_max);
-    ifb_macro_assert(commit_size_array_list_files_closed < commit_size_max);
-    ifb_macro_assert(commit_size_array_list_files_locked < commit_size_max);
-    ifb_macro_assert(commit_size_context_data            < commit_size_max);
+    ifb_macro_assert(commit_size_file_table              < table_sizes->tmp_cache.commit_max);
+    ifb_macro_assert(commit_size_file_path_buffer        < table_sizes->tmp_cache.commit_max);
+    ifb_macro_assert(commit_size_array_file_context      < table_sizes->tmp_cache.commit_max);
+    ifb_macro_assert(commit_size_array_last_bytes_read   < table_sizes->tmp_cache.commit_max);
+    ifb_macro_assert(commit_size_array_list_files_open   < table_sizes->tmp_cache.commit_max);
+    ifb_macro_assert(commit_size_array_list_files_closed < table_sizes->tmp_cache.commit_max);
+    ifb_macro_assert(commit_size_array_list_files_locked < table_sizes->tmp_cache.commit_max);
+    ifb_macro_assert(commit_size_context_data            < table_sizes->tmp_cache.commit_max);
 
     //total size    
     const IFBU32 commit_size_total = ( 
@@ -216,16 +205,32 @@ ifb_file_table::args_read_only_commit_size_calculate(
         commit_size_context_data);
 
     //update the structure
-    commit_size->total                              = *((IFBU16*)(&commit_size_total));
-    commit_size->properties.file_table_size         = *((IFBU16*)(&commit_size_file_table));        
-    commit_size->properties.file_path_buffer        = *((IFBU16*)(&commit_size_file_path_buffer));        
-    commit_size->properties.array_file_context      = *((IFBU16*)(&commit_size_array_file_context));      
-    commit_size->properties.array_last_bytes_read   = *((IFBU16*)(&commit_size_array_last_bytes_read));   
-    commit_size->properties.array_list_files_open   = *((IFBU16*)(&commit_size_array_list_files_open));   
-    commit_size->properties.array_list_files_closed = *((IFBU16*)(&commit_size_array_list_files_closed)); 
-    commit_size->properties.array_list_files_locked = *((IFBU16*)(&commit_size_array_list_files_locked)); 
-    commit_size->properties.context_memory_size     = *((IFBU16*)(&commit_size_context_data));
+    table_sizes->commit.total                   = *((IFBU16*)(&commit_size_total));
+    table_sizes->commit.file_table_size         = *((IFBU16*)(&commit_size_file_table));        
+    table_sizes->commit.file_path_buffer        = *((IFBU16*)(&commit_size_file_path_buffer));        
+    table_sizes->commit.array_file_context      = *((IFBU16*)(&commit_size_array_file_context));      
+    table_sizes->commit.array_last_bytes_read   = *((IFBU16*)(&commit_size_array_last_bytes_read));   
+    table_sizes->commit.array_list_files_open   = *((IFBU16*)(&commit_size_array_list_files_open));   
+    table_sizes->commit.array_list_files_closed = *((IFBU16*)(&commit_size_array_list_files_closed)); 
+    table_sizes->commit.array_list_files_locked = *((IFBU16*)(&commit_size_array_list_files_locked)); 
+    table_sizes->commit.context_memory_size     = *((IFBU16*)(&commit_size_context_data));
 
     //make sure we are within expected memory size
-    ifb_macro_assert(commit_size_total < commit_size_max);
+    ifb_macro_assert(commit_size_total < table_sizes->tmp_cache.commit_max);
+}
+
+inline IFBVoid
+ifb_file_table::read_only_init_step_3_release_sizes(
+    const IFBFileTableArgs* args) {
+
+    const IFBU32 size   = ifb_macro_align_size_struct(IFBFileTableReadOnlySizes);
+    const IFBB8  result = ifb_memory::arena_release_bytes(args->arena_handle,size);
+
+    ifb_macro_assert(result);
+}
+
+inline const IFBU32
+ifb_file_table::read_only_init_step_2_commit_table(
+    IFBFileTableReadOnlyInit& init_ref) {
+
 }
