@@ -301,7 +301,6 @@ struct IFBFile {
     IFBU32 table_index;
 };
 
-
 typedef IFBU32 (*IFBFileReadOnlyAsyncCallback)  (const IFBFile file);
 typedef IFBU32 (*IFBFileReadWriteAsyncCallback) (const IFBFile file);
 
@@ -312,35 +311,34 @@ struct IFBFileBuffer {
     IFBU32  file_offset;
 };
 
-struct IFBFilePlatformContext {
+struct IFBFileContext {
     IFBPtr data;
     IFBB64 locked;
 };
 
-struct IFBFileReadOnly                 : IFBFile                { };
-struct IFBFileReadWrite                : IFBFile                { };
-struct IFBFileReadOnlyContext  : IFBFilePlatformContext { }; 
-struct IFBFileReadWriteContext : IFBFilePlatformContext { }; 
-
-struct IFBFileArrayList : IFBArrayList { };
+struct IFBFileReadOnly         : IFBFile        { };
+struct IFBFileReadWrite        : IFBFile        { };
+struct IFBFileReadOnlyContext  : IFBFileContext { }; 
+struct IFBFileReadWriteContext : IFBFileContext { }; 
+struct IFBFileArrayList        : IFBArrayList   { };
 
 struct IFBFileReadOnlyTableRecords {
     IFBU64 count;
     struct {
-        IFBU32*                         array_file_size;
-        IFBFileReadOnlyContext* array_platform_context;        
-        IFBU32*                         array_bytes_read;
-    } pointers;
+        IFBU32*                 file_size;
+        IFBFileReadOnlyContext* platform_context;        
+        IFBU32*                 bytes_read;
+    } arrays;
 };
 
 struct IFBFileReadWriteTableRecords {
     IFBU64 count;
     struct {
-        IFBU32*                         array_file_size;
-        IFBFileReadOnlyContext* array_platform_context;        
-        IFBU32*                         array_bytes_read;
-        IFBU32*                         array_bytes_written;
-    } pointers;
+        IFBU32*                 file_size;
+        IFBFileReadOnlyContext* context;        
+        IFBU32*                 bytes_read;
+        IFBU32*                 bytes_written;
+    } arrays;
 };
 
 struct IFBFileReadOnlyTableLists {
@@ -348,18 +346,19 @@ struct IFBFileReadOnlyTableLists {
     IFBFileArrayList files_closed;
 };
 
-struct IFBFileReadOnlyTablePlatformContext {
+struct IFBFileReadOnlyContext {
     IFBFileReadOnlyAsyncCallback callback;
     IFBAddr                      data_start;
 };
 
 struct IFBFileReadWriteContext {
-    IFBFileReadWriteAsyncCallback callback;    
-    IFBAddr                       data_start;
+    IFBAddr platform_data_start;
+    IFBU64  platform_data_size;
+    IFBU32  file_table_index;
+    IFBU32  bytes_transferred;
 }
 
 struct IFBFileReadOnlyTable {
-    IFBFileReadOnlyTablePlatformContext* platform_context;
     IFBFileReadOnlyTableRecords*         records;
     IFBFileReadOnlyTableLists*           lists;
 };
@@ -371,20 +370,21 @@ struct IFBFileReadOnlyRequest {
         IFBFileBuffer*          buffer;
         IFBChar*                file_path;
         IFBU32*                 file_table_index;
-    } pointers;
+    } arrays;
     IFBU32 file_count;
     IFBU32 file_path_stride;
 };
 
 struct IFBFileReadWriteRequest {
     struct {
-        IFBFileReadWriteContext* context;
-        IFBFileBuffer*           buffer;
-        IFBChar*                 file_path;
-        IFBU32*                  file_table_index;
-    } pointers;
-    IFBU32 file_count;
-    IFBU32 file_path_stride;
+        IFBFileReadWriteContext*      context;
+        IFBFileBuffer*                buffer;
+        IFBChar*                      file_path;
+        IFBU32*                       file_table_index;
+    } arrays;
+    IFBU32                        file_count;
+    IFBU32                        file_path_stride;
+    IFBFileReadWriteAsyncCallback async_callback;
 };
 
 

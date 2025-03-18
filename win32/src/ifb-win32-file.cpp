@@ -9,8 +9,8 @@
 namespace ifb_win32 {
     
     //validation
-    const IFBB8           file_ro_validate_request(const IFBFileReadOnlyRequest*         file_ro_request);
-    IFBWin32FileReadOnly* file_ro_validate_context(const IFBFileReadOnlyContext& file_ro_context);
+    const IFBB8 file_ro_validate_request(const IFBFileReadOnlyRequest* file_ro_request);
+    const IFBB8 file_ro_validate_context(const IFBFileReadOnlyContext* file_ro_context);
 
     //completion routines
     void file_ro_async_callback_read  (DWORD error_code, DWORD bytes_transfered, LPOVERLAPPED overlapped_ptr);
@@ -124,33 +124,7 @@ ifb_win32::file_ro_read_async(
             win32_file_read_buffer_size,
             win32_file_overlapped,
             win32_file_completion_routine);
-    
     }
-
-
-    result &= (file_read_only   != NULL);
-    result &= (read_buffer_size != 0);
-    result &= (read_buffer_ptr  != NULL);
-    result &= (file_offset      <  file_read_only->size);
-    result &= (!file_read_only->platform_lock);
-    if (!result) return(false);
-
-    //get the file info
-    IFBWin32FileInfoReadOnly* ptr_file_info = ifb_win32::file_read_only_get_win32_info(file_read_only);
-    ifb_macro_assert(ptr_file_info);
-
-    //update the file
-    file_read_only->platform_lock = true;
-    file_read_only->bytes_read    = 0;
-
-    //cache read info
-    HANDLE     file_handle     = ptr_file_info->win32_file_handle;
-    OVERLAPPED file_overlapped = ptr_file_info->win32_overlapped;
-
-    //set the offset
-    file_overlapped.Offset = file_offset;
-
-    //do the read
 
     //we're done
     return(result);   
