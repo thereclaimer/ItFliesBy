@@ -35,6 +35,17 @@ struct IFBColorNormalized;
 struct IFBColorHex;
 struct IFBColor32;
 
+//files
+struct IFBHNDFile;
+struct IFBHNDFileTable;
+struct IFBFile;
+struct IFBFileBuffer;
+struct IFBFileContext;
+struct IFBFileReadOnlyTable;
+struct IFBFileReadOnlyRequest;
+struct IFBFileReadWriteTable;
+struct IFBFileReadWriteRequest;
+
 /**********************************************************************************/
 /* PRIMITIVES                                                                     */
 /**********************************************************************************/
@@ -198,28 +209,28 @@ struct IFBLine {
 /* DATA STRUCTURES                                                                */
 /**********************************************************************************/
 
-struct IFBDataStructure {
-    IFBAddr data_start;
-    IFBU64  data_size;
+struct IFBMemoryBlock {
+    IFBAddr start;
+    IFBU64  size;
 };
 
-struct IFBArray : IFBDataStructure {
+struct IFBArray : IFBMemoryBlock {
     IFBU32 element_size;
     IFBU32 element_count;
 };
 
-struct IFBStack : IFBDataStructure {
+struct IFBStack : IFBMemoryBlock {
     IFBU64 position;
 };
 
-struct IFBArrayList : IFBDataStructure {
+struct IFBArrayList : IFBMemoryBlock {
     IFBU64 element_size;
     IFBU32 element_count_total;
     IFBU32 element_count_current;
 };
 
 
-struct IFBQueue : IFBDataStructure {
+struct IFBQueue : IFBMemoryBlock {
     IFBU32 position;
 };
 
@@ -297,95 +308,192 @@ struct IFBMonitor {
 /* FILES                                                                          */
 /**********************************************************************************/
 
+//callback
+typedef IFBU32 (*IFBFileAsyncCallback) (IFBFileContext* file_context);
+
+//handles
+struct IFBHNDFile      : IFBHND16 { };
+struct IFBHNDFileTable : IFBHND32 { };
+
 struct IFBFile {
-    IFBU32 table_index;
+    IFBHNDFileTable file_table;
+    IFBU32          size;
+    IFBU16          table_index;
+    IFBB16          read_only;
 };
 
-typedef IFBU32 (*IFBFileReadOnlyAsyncCallback)  (const IFBFile file);
-typedef IFBU32 (*IFBFileReadWriteAsyncCallback) (const IFBFile file);
-
-
 struct IFBFileBuffer {
-    IFBAddr start;
-    IFBU32  size;
-    IFBU32  file_offset;
+    IFBPtr start;
+    IFBU64 size;
 };
 
 struct IFBFileContext {
-    IFBPtr data;
-    IFBB64 locked;
-};
-
-struct IFBFileReadOnly         : IFBFile        { };
-struct IFBFileReadWrite        : IFBFile        { };
-struct IFBFileReadOnlyContext  : IFBFileContext { }; 
-struct IFBFileReadWriteContext : IFBFileContext { }; 
-struct IFBFileArrayList        : IFBArrayList   { };
-
-struct IFBFileReadOnlyTableRecords {
-    IFBU64 count;
+    IFBAddr              data_start;
+    IFBFileAsyncCallback callback_function;
+    IFBU32               context_data_size;
+    IFBU32               bytes_transferred;
     struct {
-        IFBU32*                 file_size;
-        IFBFileReadOnlyContext* platform_context;        
-        IFBU32*                 bytes_read;
-    } arrays;
+        IFBHND32 callback_data;
+        IFBHND32 context_data_pointer;
+    } handles;
 };
-
-struct IFBFileReadWriteTableRecords {
-    IFBU64 count;
-    struct {
-        IFBU32*                 file_size;
-        IFBFileReadOnlyContext* context;        
-        IFBU32*                 bytes_read;
-        IFBU32*                 bytes_written;
-    } arrays;
-};
-
-struct IFBFileReadOnlyTableLists {
-    IFBFileArrayList files_open;
-    IFBFileArrayList files_closed;
-};
-
-struct IFBFileReadOnlyContext {
-    IFBFileReadOnlyAsyncCallback callback;
-    IFBAddr                      data_start;
-};
-
-struct IFBFileReadWriteContext {
-    IFBAddr platform_data_start;
-    IFBU64  platform_data_size;
-    IFBU32  file_table_index;
-    IFBU32  bytes_transferred;
-}
 
 struct IFBFileReadOnlyTable {
-    IFBFileReadOnlyTableRecords*         records;
-    IFBFileReadOnlyTableLists*           lists;
-};
+    struct {
+        IFBAddr              start;
+        IFBU64               size;
+        IFBU16               file_count;
+        IFBU16               file_path_stride;
+        IFBFileAsyncCallback callback;
+    } header;
 
+    struct {
+        IFBHND16 file_path_buffer;
+        IFBHND16 array_file_context;
+        IFBHND16 array_last_bytes_read;
+        IFBHND16 array_list_files_open;
+        IFBHND16 array_list_files_closed;
+        IFBHND16 array_list_files_locked;
+    } handles;
+};
 
 struct IFBFileReadOnlyRequest {
+    IFBAddr memory_start;
+    IFBU64  memory_size;
+    IFBU32  file_count;
+    IFBU32  file_path_stride;
     struct {
-        IFBFileReadOnlyContext* context;
-        IFBFileBuffer*          buffer;
-        IFBChar*                file_path;
-        IFBU32*                 file_table_index;
-    } arrays;
-    IFBU32 file_count;
-    IFBU32 file_path_stride;
+        IFBHND16 context;
+        IFBHND16 buffer;
+        IFBHND16 file_path;
+        IFBHND16 file_table_index;
+    } handles;
 };
 
-struct IFBFileReadWriteRequest {
-    struct {
-        IFBFileReadWriteContext*      context;
-        IFBFileBuffer*                buffer;
-        IFBChar*                      file_path;
-        IFBU32*                       file_table_index;
-    } arrays;
-    IFBU32                        file_count;
-    IFBU32                        file_path_stride;
-    IFBFileReadWriteAsyncCallback async_callback;
-};
+// namespace ifb_file_ro {
+
+//     const IFBFileContext* request_load_array_file_context     (const IFBFileReadOnlyRequest* request);
+//     const IFBFileBuffer*  request_load_array_file_buffer      (const IFBFileReadOnlyRequest* request);
+//     const IFBChar*        request_load_array_file_path        (const IFBFileReadOnlyRequest* request);
+//     const IFBHND16*       request_load_array_file_table_index (const IFBFileReadOnlyRequest* request);
+//     const IFBChar*        request_load_file_path              (const IFBFileReadOnlyRequest* request, const IFBChar* file_path_buffer, const IFBU32 file_index);
+// };
+
+// #define IFB_HANDLE_INVALID_U16 0xFFFF
+
+// inline const IFBFileContext*
+// ifb_file_ro::request_load_array_file_context(
+//     IFBFileReadOnlyRequest* request) {
+
+//     ifb_macro_assert(request);
+
+//     //calculate the address
+//     const IFBAddr start       = request->memory_start;
+//     const IFBU32  offset      = request->handles.context;
+//     const IFBAddr result_addr = start + offset;
+
+//     //make sure its valid
+//     ifb_macro_assert(start  != 0);
+//     ifb_macro_assert(offset != IFB_HANDLE_INVALID_U16);
+
+//     //if the address is valid, cast it
+//     IFBFileContext* result_ptr = (IFBFileContext*)result_addr;
+
+//     //we're done
+//     return(result_ptr); 
+// }
+
+// inline const IFBFileBuffer*
+// ifb_file_ro::request_load_array_file_buffer(
+//     IFBFileReadOnlyRequest* request) {
+
+//     ifb_macro_assert(request);
+
+//     //calculate the address
+//     const IFBAddr start       = request->memory_start;
+//     const IFBU32  offset      = request->handles.buffer;
+//     const IFBAddr result_addr = start + offset;
+
+//     //make sure its valid
+//     ifb_macro_assert(start  != 0);
+//     ifb_macro_assert(offset != IFB_HANDLE_INVALID_U16);
+
+//     //if the address is valid, cast it
+//     IFBFileBuffer* result_ptr = (IFBFileBuffer*)result_addr;
+
+//     //we're done
+//     return(result_ptr); 
+// }
+
+// inline const IFBChar*
+// ifb_file_ro::request_load_array_file_path(
+//     IFBFileReadOnlyRequest* request) {
+
+//     ifb_macro_assert(request);
+
+//     //calculate the address
+//     const IFBAddr start       = request->memory_start;
+//     const IFBU32  offset      = request->handles.file_path;
+//     const IFBAddr result_addr = start + offset;
+    
+//     //make sure its valid
+//     ifb_macro_assert(start  != 0);
+//     ifb_macro_assert(offset != IFB_HANDLE_INVALID_U16);
+
+//     //if the address is valid, cast it
+//     IFBChar* result_ptr = (IFBChar*)result_addr;
+
+//     //we're done
+//     return(result_ptr); 
+// }
+
+// inline const IFBHND16*
+// ifb_file_ro::request_load_array_file_table_index(
+//     IFBFileReadOnlyRequest* request) {
+
+//     ifb_macro_assert(request);
+
+//     //calculate the address
+//     const IFBAddr start       = request->memory_start;
+//     const IFBU32  offset      = request->handles.file_table_index;
+//     const IFBAddr result_addr = start + offset;
+
+//     //make sure its valid
+//     ifb_macro_assert(start  != 0);
+//     ifb_macro_assert(offset != IFB_HANDLE_INVALID_U16);
+
+//     //if the address is valid, cast it
+//     IFBHND16* result_ptr = (IFBHND16*)result_addr;
+
+//     //we're done
+//     return(result_ptr); 
+// }
+
+// inline const IFBChar*
+// ifb_file_ro::request_load_file_path(
+//     const IFBFileReadOnlyRequest* request,
+//     const IFBChar*                file_path_buffer,
+//     const IFBU32                  file_index) {
+
+//     //ensure the pointers are valid
+//     ifb_macro_assert(request);
+//     ifb_macro_assert(file_path_buffer);
+//     ifb_macro_assert(file_index);
+
+//     //calculate the offset
+//     const IFBU32 file_count       = request->file_count;
+//     const IFBU32 file_path_stride = request->file_path_stride;
+//     const IFBU32 file_path_offset = file_count * file_path_stride;
+
+//     //make sure the index is valid
+//     ifb_macro_assert(file_index < file_count);
+
+//     //calculate the file path
+//     IFBChar* file_path = &file_path_buffer[file_path_offset];
+
+//     //we're done
+//     return(file_path);
+// }
 
 
-#endif //IFB_TYPES_HPPt6b
+#endif //IFB_TYPES_HPP

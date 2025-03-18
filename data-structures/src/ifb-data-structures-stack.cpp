@@ -89,7 +89,7 @@ ifb_stack::push_relative(
     const IFBU32 new_position      = starting_position + size; 
 
     //sanity check
-    if (new_position > stack_ptr->data_size) return(IFB_HANDLE_INVALID_U32);
+    if (new_position > stack_ptr->size) return(IFB_HANDLE_INVALID_U32);
 
     //update the position
     stack_ptr->position = new_position;
@@ -110,7 +110,7 @@ ifb_stack::push_absolute(
 
     //calculate the address, if the position is valid
     const IFBAddr push_address = (position != IFB_HANDLE_INVALID_U32)  
-        ? stack_ptr->data_start + position
+        ? stack_ptr->start + position
         : 0;
 
     //cast the pointer
@@ -123,7 +123,7 @@ ifb_stack::push_absolute(
 const IFBB8
 ifb_stack::pull(
           IFBStack* stack_ptr,
-    const IFBU32   size) {
+    const IFBU32    size) {
 
     //sanity check
     if (!stack_ptr || size > stack_ptr->position) return(false);
@@ -148,7 +148,7 @@ ifb_stack::get_pointer(
     if (!stack_ptr || position > stack_ptr->position) return(NULL);
 
     //calculate the pointer
-    const IFBAddr address = stack_ptr->data_start + position;
+    const IFBAddr address = stack_ptr->start + position;
     const IFBPtr  pointer = (IFBPtr)address;
 
     //we're done
@@ -164,7 +164,7 @@ ifb_stack::get_size_total(
     const IFBStack* stack_ptr) {
 
     const IFBU32 size_total = stack_ptr
-        ? stack_ptr->data_size
+        ? stack_ptr->size
         : 0;
 
     return(size_total);
@@ -175,7 +175,7 @@ ifb_stack::get_size_free(
     const IFBStack* stack_ptr) {
 
     const IFBU32 size_free = stack_ptr
-        ? stack_ptr->data_size - stack_ptr->position 
+        ? stack_ptr->size - stack_ptr->position 
         : 0;
 
     return(size_free);

@@ -125,7 +125,7 @@ namespace ifb_linked_list {
 /* HASH TABLE                                                                     */
 /**********************************************************************************/
 
-struct IFBHashTable : IFBDataStructure {
+struct IFBHashTable : IFBMemoryBlock {
     IFBU32 element_array_start;
     IFBU32 element_size;
     IFBU32 element_count_max;

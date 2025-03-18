@@ -61,8 +61,8 @@ ifb_array_list::memory_initialize(
     IFBArrayList* array_list = (IFBArrayList*)memory;    
     
     //initialize the array list
-    array_list->data_start            = addr_data;
-    array_list->data_size             = size_data;    
+    array_list->start                 = addr_data;
+    array_list->size                  = size_data;    
     array_list->element_size          = element_size;
     array_list->element_count_total   = element_count;
     array_list->element_count_current = 0;
@@ -141,7 +141,7 @@ ifb_array_list::add_to_front(
     //add the new element to the front
     const IFBU32   element_size = array_list_ptr->element_size;
     const IFBByte* source       = (IFBByte*)element_ptr; 
-    IFBByte*       destination  = (IFBByte*)array_list_ptr->data_start; 
+    IFBByte*       destination  = (IFBByte*)array_list_ptr->start; 
 
     for (
         IFBU32 byte_index = 0;
@@ -176,7 +176,7 @@ ifb_array_list::add_to_end(
     //no need to shift, just calculate the start and size
     const IFBU32   element_size       = array_list_ptr->element_size;
     const IFBU32   destination_offset = element_size * count_current; 
-    const IFBAddr  destination_start  = array_list_ptr->data_start + destination_offset;
+    const IFBAddr  destination_start  = array_list_ptr->start + destination_offset;
     const IFBByte* source             = (IFBByte*)element_ptr;
     IFBByte*       destination        = (IFBByte*)destination_start; 
 
@@ -234,7 +234,7 @@ ifb_array_list::insert(
     //copy everything over
     const IFBU32   element_size       = array_list_ptr->element_size;
     const IFBU32   destination_offset = element_size * index; 
-    const IFBAddr  destination_start  = array_list_ptr->data_start + destination_offset;
+    const IFBAddr  destination_start  = array_list_ptr->start + destination_offset;
     const IFBByte* source             = (IFBByte*)element_ptr;
     IFBByte*       destination        = (IFBByte*)destination_start; 
 
@@ -304,7 +304,7 @@ ifb_array_list::get_element_first(
     //otherwise, cast the data start
     const IFBPtr element = list_is_empty
         ? NULL
-        : (IFBPtr)array_list_ptr->data_start;
+        : (IFBPtr)array_list_ptr->start;
 
     //we're done
     return(element);
@@ -324,7 +324,7 @@ ifb_array_list::get_element_last(
 
     //get the address, if we have a valid offset
     const IFBAddr element_address = element_offset 
-        ? array_list_ptr->data_start + element_offset
+        ? array_list_ptr->start + element_offset
         : 0;
 
     //cast the element
@@ -376,8 +376,8 @@ ifb_array_list::assert_valid(
 
     //validate the list
     IFBB8 valid = true;                                                  // the list is valid IF...
-    valid &= (array_list->data_start            != 0);                   //...the data start isn't null AND
-    valid &= (array_list->data_size             == size_total);          //...the data size is accurate AND
+    valid &= (array_list->start            != 0);                   //...the data start isn't null AND
+    valid &= (array_list->size             == size_total);          //...the data size is accurate AND
     valid &= (array_list->element_size          != 0);                   //...the element size isn't 0  AND
     valid &= (array_list->element_count_total   != 0);                   //...the tota count isn't 0    AND
     valid &= (array_list->element_count_current <= element_count_total); //...the current count isn't greater than the total count
@@ -400,7 +400,7 @@ ifb_array_list::shift_down(
     const IFBU32 index_offset = size_element * index;
 
     //calculate the source
-    const IFBAddr  shift_source_start = array_list->data_start + index_offset;
+    const IFBAddr  shift_source_start = array_list->start + index_offset;
     IFBByte*       shift_source       = (IFBByte*)shift_source_start; 
 
     //copy the values
@@ -437,7 +437,7 @@ ifb_array_list::shift_up(
     const IFBU32 index_offset = size_element * index;
 
     //calculate the source
-    const IFBAddr  shift_source_start = array_list->data_start + index_offset;
+    const IFBAddr  shift_source_start = array_list->start + index_offset;
     IFBByte*       shift_source       = (IFBByte*)shift_source_start; 
 
     //copy the values
