@@ -319,8 +319,8 @@ struct IFBFilePlatformContext {
 
 struct IFBFileReadOnly                 : IFBFile                { };
 struct IFBFileReadWrite                : IFBFile                { };
-struct IFBFileReadOnlyPlatformContext  : IFBFilePlatformContext { }; 
-struct IFBFileReadWritePlatformContext : IFBFilePlatformContext { }; 
+struct IFBFileReadOnlyContext  : IFBFilePlatformContext { }; 
+struct IFBFileReadWriteContext : IFBFilePlatformContext { }; 
 
 struct IFBFileArrayList : IFBArrayList { };
 
@@ -328,7 +328,7 @@ struct IFBFileReadOnlyTableRecords {
     IFBU64 count;
     struct {
         IFBU32*                         array_file_size;
-        IFBFileReadOnlyPlatformContext* array_platform_context;        
+        IFBFileReadOnlyContext* array_platform_context;        
         IFBU32*                         array_bytes_read;
     } pointers;
 };
@@ -337,7 +337,7 @@ struct IFBFileReadWriteTableRecords {
     IFBU64 count;
     struct {
         IFBU32*                         array_file_size;
-        IFBFileReadOnlyPlatformContext* array_platform_context;        
+        IFBFileReadOnlyContext* array_platform_context;        
         IFBU32*                         array_bytes_read;
         IFBU32*                         array_bytes_written;
     } pointers;
@@ -353,7 +353,7 @@ struct IFBFileReadOnlyTablePlatformContext {
     IFBAddr                      data_start;
 };
 
-struct IFBFileReadWritePlatformContext {
+struct IFBFileReadWriteContext {
     IFBFileReadWriteAsyncCallback callback;    
     IFBAddr                       data_start;
 }
@@ -367,10 +367,10 @@ struct IFBFileReadOnlyTable {
 
 struct IFBFileReadOnlyRequest {
     struct {
-        IFBFileReadOnlyPlatformContext* platform_context;
-        IFBFileBuffer*                  buffer;
-        IFBChar*                        file_path;
-        IFBU32*                         file_table_index;
+        IFBFileReadOnlyContext* context;
+        IFBFileBuffer*          buffer;
+        IFBChar*                file_path;
+        IFBU32*                 file_table_index;
     } pointers;
     IFBU32 file_count;
     IFBU32 file_path_stride;
@@ -378,10 +378,10 @@ struct IFBFileReadOnlyRequest {
 
 struct IFBFileReadWriteRequest {
     struct {
-        IFBFileReadWritePlatformContext* platform_context;
-        IFBFileBuffer*                   buffer;
-        IFBChar*                         file_path;
-        IFBU32*                          file_table_index;
+        IFBFileReadWriteContext* context;
+        IFBFileBuffer*           buffer;
+        IFBChar*                 file_path;
+        IFBU32*                  file_table_index;
     } pointers;
     IFBU32 file_count;
     IFBU32 file_path_stride;
