@@ -380,7 +380,7 @@ struct IFBFileReadOnlyRequest {
         IFBHND16 context;
         IFBHND16 buffer;
         IFBHND16 file_path;
-        IFBHND16 file_table_index;
+        IFBHND16 file_handle;
     } handles;
 };
 
