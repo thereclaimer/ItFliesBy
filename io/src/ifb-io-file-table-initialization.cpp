@@ -30,18 +30,22 @@ struct IFBFileTableReadOnlySizeCache {
 };
 
 struct IFBFileTableReadOnlyInit {
-    IFBFileTableArgs*               args;
+    IFBFileTableArgs*              args;
     IFBFileTableReadOnlySizeCache* sizes;
-    IFBFileReadOnlyTable*      table;
-    IFBHNDFileTable            handle;
+    IFBFileReadOnlyTable*          table;
+    IFBHNDFileTable                handle;
 };
 
 namespace ifb_file_table {
     
-    IFBVoid read_only_init_step_0_args_assert        (IFBFileTableReadOnlyInit& init_ref);
+    IFBVoid read_only_init_step_0_validate_args      (IFBFileTableReadOnlyInit& init_ref);
     IFBVoid read_only_init_step_1_reserve_size_cache (IFBFileTableReadOnlyInit& init_ref);
     IFBVoid read_only_init_step_2_commit_table       (IFBFileTableReadOnlyInit& init_ref);
-    IFBVoid read_only_init_step_3_release_size_cache (IFBFileTableReadOnlyInit& init_ref);
+    IFBVoid read_only_init_step_3_set_table_header   (IFBFileTableReadOnlyInit& init_ref);
+    IFBVoid read_only_init_step_4_set_table_handles  (IFBFileTableReadOnlyInit& init_ref);
+    IFBVoid read_only_init_step_5_set_table_lists    (IFBFileTableReadOnlyInit& init_ref);
+    IFBVoid read_only_init_step_6_set_table_contexts (IFBFileTableReadOnlyInit& init_ref);
+    IFBVoid read_only_init_step_7_release_size_cache (IFBFileTableReadOnlyInit& init_ref);
 };
 
 /**********************************************************************************/
@@ -131,18 +135,154 @@ ifb_file_table::read_only_init_step_1_reserve_size_cache(
     ifb_macro_assert(commit_size_total < table_sizes->tmp_cache.commit_max);
 }
 
-inline IFBVoid
-ifb_file_table::read_only_init_step_3_release_size_cache(
-    IFBFileTableReadOnlyInit& init_ref) {
-
-    const IFBU32 size   = ifb_macro_align_size_struct(IFBFileTableReadOnlySizeCache);
-    const IFBB8  result = ifb_memory::arena_release_bytes(init_ref.args->arena_handle,size);
-
-    ifb_macro_assert(result);
-}
-
 inline IFBVoid 
 ifb_file_table::read_only_init_step_2_commit_table(
     IFBFileTableReadOnlyInit& init_ref) {
 
+    //do the commit
+    const IFBHNDArena file_table_arena      = init_ref.args->arena_handle; 
+    const IFBU32      file_table_size_total = init_ref.sizes->commit.total; 
+    const IFBU32      file_table_offset     = ifb_memory::arena_commit_bytes_relative(
+        file_table_arena,
+        file_table_size_total);
+
+    //load the pointer
+    IFBFileReadOnlyTable* file_table = (IFBFileReadOnlyTable*)ifb_memory::arena_get_pointer(
+        file_table_arena,
+        file_table_offset);
+
+    //make sure its valid
+    ifb_macro_assert(file_table);
+
+    //update the init struct
+    init_ref.table         = file_table;
+    init_ref.handle.offset = file_table_offset;
+}
+
+inline IFBVoid
+ifb_file_table::read_only_init_step_3_set_table_header(
+    IFBFileTableReadOnlyInit& init_ref) {
+
+    //get the table
+    IFBFileReadOnlyTable* file_table = init_ref.table;
+
+    //set header properties
+    file_table->header.start            = (IFBAddr)init_ref.table;
+    file_table->header.size             = init_ref.sizes->commit.total;
+    file_table->header.file_count       = init_ref.args->file_count; 
+    file_table->header.file_path_stride = init_ref.args->file_path_stride;
+    file_table->header.callback         = init_ref.args->file_callback_read; 
+}
+
+inline IFBVoid
+ifb_file_table::read_only_init_step_4_set_table_handles(
+    IFBFileTableReadOnlyInit& init_ref) {
+
+    //calculate the offsets
+    const IFBU16 offset_file_path_buffer        = init_ref.sizes->commit.file_table_size;
+    const IFBU16 offset_array_file_context      = init_ref.sizes->commit.file_path_buffer        + offset_file_path_buffer;
+    const IFBU16 offset_array_last_bytes_read   = init_ref.sizes->commit.array_file_context      + offset_array_file_context;
+    const IFBU16 offset_array_list_files_open   = init_ref.sizes->commit.array_last_bytes_read   + offset_array_last_bytes_read;
+    const IFBU16 offset_array_list_files_closed = init_ref.sizes->commit.array_list_files_open   + offset_array_list_files_open;
+    const IFBU16 offset_array_list_files_locked = init_ref.sizes->commit.array_list_files_closed + offset_array_list_files_closed;
+    const IFBU16 offset_context_data            = init_ref.sizes->commit.array_list_files_locked + offset_array_list_files_locked;
+
+    //set handles
+    init_ref.table->handles.file_path_buffer.offset        = offset_file_path_buffer;
+    init_ref.table->handles.array_file_context.offset      = offset_array_file_context;
+    init_ref.table->handles.array_last_bytes_read.offset   = offset_array_last_bytes_read;
+    init_ref.table->handles.array_list_files_open.offset   = offset_array_list_files_open;
+    init_ref.table->handles.array_list_files_closed.offset = offset_array_list_files_closed;
+    init_ref.table->handles.array_list_files_locked.offset = offset_array_list_files_locked;
+    init_ref.table->handles.context_data.offset            = offset_context_data;
+}
+
+inline IFBVoid
+ifb_file_table::read_only_init_step_5_set_table_lists(
+    IFBFileTableReadOnlyInit& init_ref) {
+    
+    //cache memory and offsets
+    const IFBAddr memory_start       = init_ref.table->header.start;
+    const IFBU32  offset_list_open   = init_ref.table->handles.array_list_files_open.offset;
+    const IFBU32  offset_list_closed = init_ref.table->handles.array_list_files_closed.offset;
+    const IFBU32  offset_list_locked = init_ref.table->handles.array_list_files_locked.offset;
+
+    //calculate addresses
+    const IFBAddr addr_list_file_open   = memory_start + offset_list_open;
+    const IFBAddr addr_list_file_closed = memory_start + offset_list_closed;
+    const IFBAddr addr_list_file_locked = memory_start + offset_list_locked;
+    
+    const IFBPtr memory_list_file_open   = (IFBPtr)addr_list_file_open; 
+    const IFBPtr memory_list_file_closed = (IFBPtr)addr_list_file_closed; 
+    const IFBPtr memory_list_file_locked = (IFBPtr)addr_list_file_locked; 
+
+    const IFBU32 file_handle_size  = init_ref.sizes->tmp_cache.file_handle;
+    const IFBU32 file_handle_count = init_ref.args->file_count;
+
+    //initialize the lists
+    IFBArrayList* list_file_open   = ifb_array_list::memory_initialize(file_handle_size, file_handle_count, memory_list_file_open);
+    IFBArrayList* list_file_closed = ifb_array_list::memory_initialize(file_handle_size, file_handle_count, memory_list_file_closed);
+    IFBArrayList* list_file_locked = ifb_array_list::memory_initialize(file_handle_size, file_handle_count, memory_list_file_locked);
+
+    //assert the lists are valid
+    ifb_macro_assert(list_file_open);
+    ifb_macro_assert(list_file_closed);
+    ifb_macro_assert(list_file_locked);
+
+    //add the indexes to the closed list
+    for (
+        IFBU32 file_index = 0;
+               file_index < file_handle_count;
+             ++file_index) {
+
+        //add the index
+        const IFBB8 result = ifb_array_list::add_to_end(list_file_open,(IFBPtr)&file_index);
+        ifb_macro_assert(result);
+    }
+}
+
+inline IFBVoid 
+ifb_file_table::read_only_init_step_6_set_table_contexts(
+    IFBFileTableReadOnlyInit& init_ref) {
+
+    //cache constants
+    const IFBU32               file_count                     = init_ref.args->file_count;
+    const IFBU32               file_context_data_size         = init_ref.sizes->tmp_cache.context_data; 
+    const IFBU32               offset_file_context_array      = init_ref.table->handles.array_file_context.offset;
+    const IFBU32               offset_file_context_data_start = init_ref.table->handles.context_data.offset;
+    const IFBAddr              file_table_memory              = init_ref.table->header.start;
+    const IFBFileAsyncCallback file_async_callback            = init_ref.table->header.callback;
+
+    //get the file context array    
+    const IFBAddr   file_context_array_addr = file_table_memory + offset_file_context_array;
+    IFBFileContext* file_context_array_ptr  = (IFBFileContext*)file_context_array_addr;
+    ifb_macro_assert(file_context_array_ptr);
+
+    //initialize the contexts
+    for (
+        IFBU32 file_context_index = 0;
+               file_context_index < file_count;
+             ++file_context_index) {
+
+        //get the current context struct and data offset
+        const IFBU32    current_file_data_offset    = offset_file_context_data_start + (file_context_data_size * file_context_index);
+        IFBFileContext& current_file_context_struct = file_context_array_ptr[file_context_index];
+
+        //initialize the context
+        current_file_context_struct.memory_start               = file_table_memory;
+        current_file_context_struct.callback_read              = file_async_callback;
+        current_file_context_struct.callback_write             = NULL;
+        current_file_context_struct.context_data_size          = file_context_data_size;
+        current_file_context_struct.bytes_transferred          = 0;
+        current_file_context_struct.handle_context_data.offset = current_file_data_offset;
+    }
+}
+
+inline IFBVoid
+ifb_file_table::read_only_init_step_7_release_size_cache(
+    IFBFileTableReadOnlyInit& init_ref) {
+
+    const IFBU32 size   = init_ref.sizes->tmp_cache.sizes_struct; 
+    const IFBB8  result = ifb_memory::arena_release_bytes(init_ref.args->arena_handle,size);
+    ifb_macro_assert(result);
 }

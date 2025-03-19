@@ -367,6 +367,7 @@ struct IFBFileReadOnlyTable {
         IFBHND16 array_list_files_open;
         IFBHND16 array_list_files_closed;
         IFBHND16 array_list_files_locked;
+        IFBHND16 context_data;
     } handles;
 };
 
