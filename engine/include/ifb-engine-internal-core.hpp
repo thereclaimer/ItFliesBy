@@ -72,7 +72,6 @@ struct IFBEngineCoreFiles {
 namespace ifb_engine {
 
     const IFBB8 core_files_commit_tables(IFBEngineCore* core_ptr);
-
 };
 
 /**********************************************************************************/

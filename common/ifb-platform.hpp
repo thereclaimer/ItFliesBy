@@ -155,11 +155,11 @@ namespace ifb_platform {
 /* FILES                                                                          */                            
 /**********************************************************************************/
 
-typedef const IFBU32 (*ifb_platform_func_ptr_file_ro_context_size)     (IFBVoid);
-typedef const IFBB8  (*ifb_platform_func_ptr_file_ro_open)             (IFBFileReadOnlyRequest* file_ro_request);             
-typedef const IFBU32 (*ifb_platform_func_ptr_file_ro_read_immediate)   (IFBFileReadOnlyRequest* file_ro_request);   
-typedef const IFBB8  (*ifb_platform_func_ptr_file_ro_read_async)       (IFBFileReadOnlyRequest* file_ro_request);       
-typedef const IFBB8  (*ifb_platform_func_ptr_file_ro_close)            (IFBFileReadOnlyRequest* file_ro_request);            
+typedef const IFBU32 (*ifb_platform_func_ptr_file_ro_context_size)    (IFBVoid);
+typedef const IFBB8  (*ifb_platform_func_ptr_file_ro_open)            (IFBFileReadOnlyRequest* file_ro_request);             
+typedef const IFBU32 (*ifb_platform_func_ptr_file_ro_read_immediate)  (IFBFileReadOnlyRequest* file_ro_request);   
+typedef const IFBB8  (*ifb_platform_func_ptr_file_ro_read_async)      (IFBFileReadOnlyRequest* file_ro_request);       
+typedef const IFBB8  (*ifb_platform_func_ptr_file_ro_close)           (IFBFileReadOnlyRequest* file_ro_request);            
 
 typedef const IFBU32 (*ifb_platform_func_ptr_file_rw_context_size)    (IFBVoid);
 typedef const IFBB8  (*ifb_platform_func_ptr_file_rw_open)            (IFBFileReadWriteRequest* file_rw_request);             

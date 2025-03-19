@@ -8,32 +8,38 @@
 
 namespace ifb_platform {
 
-    ifb_platform_funcptr_system_get_info      system_get_info;
-    ifb_platform_funcptr_system_time_ms       system_time_ms;
-    ifb_platform_funcptr_system_sleep         system_sleep;
+    ifb_platform_funcptr_system_get_info          system_get_info;
+    ifb_platform_funcptr_system_time_ms           system_time_ms;
+    ifb_platform_funcptr_system_sleep             system_sleep;
 
-    ifb_platform_funcptr_memory_reserve       memory_reserve;
-    ifb_platform_funcptr_memory_release       memory_release;
-    ifb_platform_funcptr_memory_commit        memory_commit;
-    ifb_platform_funcptr_memory_decommit      memory_decommit;
+    ifb_platform_funcptr_memory_reserve           memory_reserve;
+    ifb_platform_funcptr_memory_release           memory_release;
+    ifb_platform_funcptr_memory_commit            memory_commit;
+    ifb_platform_funcptr_memory_decommit          memory_decommit;
 
-    ifb_platform_funcptr_window_create        window_create;
-    ifb_platform_funcptr_window_destroy       window_destroy;
-    ifb_platform_funcptr_window_frame_start   window_frame_start;
-    ifb_platform_funcptr_window_frame_render  window_frame_render;
-    ifb_platform_funcptr_window_show          window_show;
-    ifb_platform_funcptr_window_opengl_init   window_opengl_init;
-    ifb_platform_funcptr_window_imgui_init    window_imgui_init;
+    ifb_platform_funcptr_window_create            window_create;
+    ifb_platform_funcptr_window_destroy           window_destroy;
+    ifb_platform_funcptr_window_frame_start       window_frame_start;
+    ifb_platform_funcptr_window_frame_render      window_frame_render;
+    ifb_platform_funcptr_window_show              window_show;
+    ifb_platform_funcptr_window_opengl_init       window_opengl_init;
+    ifb_platform_funcptr_window_imgui_init        window_imgui_init;
 
-    ifb_platform_funcptr_monitor_count        monitor_count;
-    ifb_platform_funcptr_monitor_info         monitor_info;
+    ifb_platform_funcptr_monitor_count            monitor_count;
+    ifb_platform_funcptr_monitor_info             monitor_info;
 
-    ifb_platform_funcptr_file_open_read_only  file_open_read_only;
-    ifb_platform_funcptr_file_open_read_write file_open_read_write;
-    ifb_platform_funcptr_file_close           file_close;
-    ifb_platform_funcptr_file_size            file_size;
-    ifb_platform_funcptr_file_read            file_read;
-    ifb_platform_funcptr_file_write           file_write;
+    ifb_platform_func_ptr_file_ro_context_size    file_ro_context_size;
+    ifb_platform_func_ptr_file_ro_open            file_ro_open;
+    ifb_platform_func_ptr_file_ro_close           file_ro_close;
+    ifb_platform_func_ptr_file_ro_read_immediate  file_ro_read_immediate;
+    ifb_platform_func_ptr_file_ro_read_async      file_ro_read_async;
+    ifb_platform_func_ptr_file_rw_context_size    file_rw_context_size;
+    ifb_platform_func_ptr_file_rw_open            file_rw_open;
+    ifb_platform_func_ptr_file_rw_close           file_rw_close;
+    ifb_platform_func_ptr_file_rw_read_immediate  file_rw_read_immediate;
+    ifb_platform_func_ptr_file_rw_read_async      file_rw_read_async;
+    ifb_platform_func_ptr_file_rw_write_immediate file_rw_write_immediate;
+    ifb_platform_func_ptr_file_rw_write_async     file_rw_write_async;
 
 };
 
