@@ -9,14 +9,14 @@
 namespace ifb_win32 {
     
     //validation
-    const IFBB8 file_ro_validate_request(const IFBFileReadOnlyRequest* file_ro_request);
+    const IFBB8 file_ro_validate_request(const IFBFileRequestReadOnly* file_ro_request);
     const IFBB8 file_ro_validate_context(const IFBFileContext*         file_ro_context);
 
     //memory
-    IFBFileContext* file_ro_request_load_context     (const IFBFileReadOnlyRequest* file_ro_request);
-    IFBFileBuffer*  file_ro_request_load_buffer      (const IFBFileReadOnlyRequest* file_ro_request);
-    IFBChar*        file_ro_request_load_file_path   (const IFBFileReadOnlyRequest* file_ro_request);
-    IFBHNDFile*     file_ro_request_load_file_handle (const IFBFileReadOnlyRequest* file_ro_request);
+    IFBFileContext* file_ro_request_load_context     (const IFBFileRequestReadOnly* file_ro_request);
+    IFBFileBuffer*  file_ro_request_load_buffer      (const IFBFileRequestReadOnly* file_ro_request);
+    IFBChar*        file_ro_request_load_file_path   (const IFBFileRequestReadOnly* file_ro_request);
+    IFBHNDFile*     file_ro_request_load_file_handle (const IFBFileRequestReadOnly* file_ro_request);
 
     //completion routines
     void file_ro_async_callback_read  (DWORD error_code, DWORD bytes_transfered, LPOVERLAPPED overlapped_ptr);
@@ -38,7 +38,7 @@ ifb_win32::file_ro_context_size(
 
 ifb_internal const IFBB8
 ifb_win32::file_ro_open(
-    IFBFileReadOnlyRequest* file_ro_request) {
+    IFBFileRequestReadOnly* file_ro_request) {
 
     //validate the request
     IFBB8 result = ifb_win32::file_ro_validate_request(file_ro_request);
@@ -90,7 +90,7 @@ ifb_win32::file_ro_open(
 
 ifb_internal const IFBB8
 ifb_win32::file_ro_read_async(
-    IFBFileReadOnlyRequest* file_ro_request) {
+    IFBFileRequestReadOnly* file_ro_request) {
 
     //validate the request
     IFBB8 result = ifb_win32::file_ro_validate_request(file_ro_request);
@@ -259,7 +259,7 @@ ifb_win32::file_async_completion_routine_rw_write(
 
 inline const IFBB8
 ifb_win32::file_ro_validate_request(
-    const IFBFileReadOnlyRequest* file_ro_request) {
+    const IFBFileRequestReadOnly* file_ro_request) {
     
     if (!file_ro_request) return(false);
 
@@ -272,7 +272,7 @@ ifb_win32::file_ro_validate_request(
 
 inline IFBFileContext*
 ifb_win32::file_ro_request_load_context(
-    const IFBFileReadOnlyRequest* file_ro_request) {
+    const IFBFileRequestReadOnly* file_ro_request) {
 
     const IFBU32  offset      = file_ro_request->handles.context.offset;
     const IFBAddr start       = file_ro_request->memory_start;
@@ -284,7 +284,7 @@ ifb_win32::file_ro_request_load_context(
 
 inline IFBFileBuffer*
 ifb_win32::file_ro_request_load_buffer(
-    const IFBFileReadOnlyRequest* file_ro_request) {
+    const IFBFileRequestReadOnly* file_ro_request) {
 
     const IFBU32  offset      = file_ro_request->handles.buffer.offset;
     const IFBAddr start       = file_ro_request->memory_start;
@@ -296,7 +296,7 @@ ifb_win32::file_ro_request_load_buffer(
 
 inline IFBChar*
 ifb_win32::file_ro_request_load_file_path(
-    const IFBFileReadOnlyRequest* file_ro_request) {
+    const IFBFileRequestReadOnly* file_ro_request) {
 
     const IFBU32  offset      = file_ro_request->handles.file_path.offset;
     const IFBAddr start       = file_ro_request->memory_start;
@@ -308,7 +308,7 @@ ifb_win32::file_ro_request_load_file_path(
 
 inline IFBHNDFile*
 ifb_win32::file_ro_request_load_file_handle(
-    const IFBFileReadOnlyRequest* file_ro_request) {
+    const IFBFileRequestReadOnly* file_ro_request) {
 
     const IFBU32  offset      = file_ro_request->handles.file_handle.offset;
     const IFBAddr start       = file_ro_request->memory_start;

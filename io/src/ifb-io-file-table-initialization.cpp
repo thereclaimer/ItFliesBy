@@ -32,7 +32,7 @@ struct IFBFileTableReadOnlySizeCache {
 struct IFBFileTableReadOnlyInit {
     IFBFileTableArgs*              args;
     IFBFileTableReadOnlySizeCache* sizes;
-    IFBFileReadOnlyTable*          table;
+    IFBFileTableReadOnly*          table;
     IFBHNDFileTable                handle;
 };
 
@@ -91,7 +91,7 @@ ifb_file_table::read_only_init_step_1_reserve_size_cache(
     table_sizes->tmp_cache.context_struct = ifb_macro_align_size_struct(IFBFileContext);
 
     //property sizes
-    const IFBU32 commit_size_file_table              = ifb_macro_align_size_struct(IFBFileReadOnlyTable); 
+    const IFBU32 commit_size_file_table              = ifb_macro_align_size_struct(IFBFileTableReadOnly); 
     const IFBU32 commit_size_file_path_buffer        = file_count * file_path_stride;
     const IFBU32 commit_size_array_file_context      = file_count * table_sizes->tmp_cache.context_struct;
     const IFBU32 commit_size_array_last_bytes_read   = file_count * sizeof(IFBU32);
@@ -148,7 +148,7 @@ ifb_file_table::read_only_init_step_2_commit_table(
         file_table_size_total);
 
     //load the pointer
-    IFBFileReadOnlyTable* file_table = (IFBFileReadOnlyTable*)ifb_memory::arena_get_pointer(
+    IFBFileTableReadOnly* file_table = (IFBFileTableReadOnly*)ifb_memory::arena_get_pointer(
         file_table_arena,
         file_table_offset);
 
@@ -165,11 +165,11 @@ ifb_file_table::read_only_init_step_3_set_table_header(
     IFBFileTableReadOnlyInit& init_ref) {
 
     //get the table
-    IFBFileReadOnlyTable* file_table = init_ref.table;
+    IFBFileTableReadOnly* file_table = init_ref.table;
 
     //set header properties
-    file_table->header.start            = (IFBAddr)init_ref.table;
-    file_table->header.size             = init_ref.sizes->commit.total;
+    file_table->header.memory.start     = (IFBAddr)init_ref.table;
+    file_table->header.memory.size      = init_ref.sizes->commit.total;
     file_table->header.file_count       = init_ref.args->file_count; 
     file_table->header.file_path_stride = init_ref.args->file_path_stride;
     file_table->header.callback         = init_ref.args->file_callback_read; 
@@ -203,7 +203,7 @@ ifb_file_table::read_only_init_step_5_set_table_lists(
     IFBFileTableReadOnlyInit& init_ref) {
     
     //cache memory and offsets
-    const IFBAddr memory_start       = init_ref.table->header.start;
+    const IFBAddr memory_start       = init_ref.table->header.memory.start;
     const IFBU32  offset_list_open   = init_ref.table->handles.array_list_files_open.offset;
     const IFBU32  offset_list_closed = init_ref.table->handles.array_list_files_closed.offset;
     const IFBU32  offset_list_locked = init_ref.table->handles.array_list_files_locked.offset;
@@ -251,7 +251,7 @@ ifb_file_table::read_only_init_step_6_set_table_contexts(
     const IFBU32               file_context_data_size         = init_ref.sizes->tmp_cache.context_data; 
     const IFBU32               offset_file_context_array      = init_ref.table->handles.array_file_context.offset;
     const IFBU32               offset_file_context_data_start = init_ref.table->handles.context_data.offset;
-    const IFBAddr              file_table_memory              = init_ref.table->header.start;
+    const IFBAddr              file_table_memory              = init_ref.table->header.memory.start;
     const IFBFileAsyncCallback file_async_callback            = init_ref.table->header.callback;
 
     //get the file context array    
@@ -270,12 +270,11 @@ ifb_file_table::read_only_init_step_6_set_table_contexts(
         IFBFileContext& current_file_context_struct = file_context_array_ptr[file_context_index];
 
         //initialize the context
-        current_file_context_struct.memory_start               = file_table_memory;
-        current_file_context_struct.callback_read              = file_async_callback;
-        current_file_context_struct.callback_write             = NULL;
-        current_file_context_struct.context_data_size          = file_context_data_size;
-        current_file_context_struct.bytes_transferred          = 0;
-        current_file_context_struct.handle_context_data.offset = current_file_data_offset;
+        current_file_context_struct.platform_memory.start = file_table_memory;
+        current_file_context_struct.platform_memory.size  = file_context_data_size;
+        current_file_context_struct.callbacks.read        = file_async_callback;
+        current_file_context_struct.callbacks.write       = NULL;
+        current_file_context_struct.bytes_transferred     = 0;
     }
 }
 
@@ -287,7 +286,7 @@ ifb_file_table::read_only_init_step_7_set_table_path_buffer(
     const IFBU32   file_count                    = init_ref.args->file_count;
     const IFBU32   file_path_stride              = init_ref.args->file_path_stride;
     const IFBU32   file_path_buffer_size         = file_count * file_path_stride;
-    const IFBAddr  file_table_start              = init_ref.table->header.start;
+    const IFBAddr  file_table_start              = init_ref.table->header.memory.start;
     const IFBU32   file_table_path_buffer_offset = init_ref.table->handles.file_path_buffer.offset;
     const IFBAddr  file_table_path_buffer_start  = file_table_start + file_table_path_buffer_offset;
     
