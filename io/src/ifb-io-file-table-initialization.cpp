@@ -38,14 +38,15 @@ struct IFBFileTableReadOnlyInit {
 
 namespace ifb_file_table {
     
-    IFBVoid read_only_init_step_0_validate_args      (IFBFileTableReadOnlyInit& init_ref);
-    IFBVoid read_only_init_step_1_reserve_size_cache (IFBFileTableReadOnlyInit& init_ref);
-    IFBVoid read_only_init_step_2_commit_table       (IFBFileTableReadOnlyInit& init_ref);
-    IFBVoid read_only_init_step_3_set_table_header   (IFBFileTableReadOnlyInit& init_ref);
-    IFBVoid read_only_init_step_4_set_table_handles  (IFBFileTableReadOnlyInit& init_ref);
-    IFBVoid read_only_init_step_5_set_table_lists    (IFBFileTableReadOnlyInit& init_ref);
-    IFBVoid read_only_init_step_6_set_table_contexts (IFBFileTableReadOnlyInit& init_ref);
-    IFBVoid read_only_init_step_7_release_size_cache (IFBFileTableReadOnlyInit& init_ref);
+    IFBVoid read_only_init_step_0_validate_args         (IFBFileTableReadOnlyInit& init_ref);
+    IFBVoid read_only_init_step_1_reserve_size_cache    (IFBFileTableReadOnlyInit& init_ref);
+    IFBVoid read_only_init_step_2_commit_table          (IFBFileTableReadOnlyInit& init_ref);
+    IFBVoid read_only_init_step_3_set_table_header      (IFBFileTableReadOnlyInit& init_ref);
+    IFBVoid read_only_init_step_4_set_table_handles     (IFBFileTableReadOnlyInit& init_ref);
+    IFBVoid read_only_init_step_5_set_table_lists       (IFBFileTableReadOnlyInit& init_ref);
+    IFBVoid read_only_init_step_6_set_table_contexts    (IFBFileTableReadOnlyInit& init_ref);
+    IFBVoid read_only_init_step_7_set_table_path_buffer (IFBFileTableReadOnlyInit& init_ref);
+    IFBVoid read_only_init_step_8_release_size_cache    (IFBFileTableReadOnlyInit& init_ref);
 };
 
 /**********************************************************************************/
@@ -279,7 +280,34 @@ ifb_file_table::read_only_init_step_6_set_table_contexts(
 }
 
 inline IFBVoid
-ifb_file_table::read_only_init_step_7_release_size_cache(
+ifb_file_table::read_only_init_step_7_set_table_path_buffer(
+    IFBFileTableReadOnlyInit& init_ref) {
+
+    //calculate sizes and addresses
+    const IFBU32   file_count                    = init_ref.args->file_count;
+    const IFBU32   file_path_stride              = init_ref.args->file_path_stride;
+    const IFBU32   file_path_buffer_size         = file_count * file_path_stride;
+    const IFBAddr  file_table_start              = init_ref.table->header.start;
+    const IFBU32   file_table_path_buffer_offset = init_ref.table->handles.file_path_buffer.offset;
+    const IFBAddr  file_table_path_buffer_start  = file_table_start + file_table_path_buffer_offset;
+    
+    //source and destination buffers
+    const IFBChar* file_path_buffer_source      = init_ref.args->file_path_buffer;
+    IFBChar*       file_path_buffer_destination = (IFBChar*)file_table_path_buffer_start; 
+
+    //copy the buffer
+    for (
+        IFBU32 char_index = 0;
+               char_index < file_path_buffer_size;
+             ++char_index) {
+
+        file_path_buffer_destination[char_index] = file_path_buffer_source[char_index];
+    }
+}
+
+
+inline IFBVoid
+ifb_file_table::read_only_init_step_8_release_size_cache(
     IFBFileTableReadOnlyInit& init_ref) {
 
     const IFBU32 size   = init_ref.sizes->tmp_cache.sizes_struct; 
