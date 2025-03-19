@@ -7,7 +7,7 @@
 /* CREATE/DESTROY                                                                 */
 /**********************************************************************************/
 
-ifb_engine_api const IFBHNDArena
+ifb_engine_api const IFBHNDEngineArena
 ifb_engine::context_create(
     const IFBPlatformAPI* ptr_platform_api,
     const IFBByte*        stack_memory_ptr,
@@ -15,7 +15,7 @@ ifb_engine::context_create(
     const IFBU64          reservation_size) {
 
     //platform arena
-    IFBHNDArena platform_arena_handle;
+    IFBHNDEngineArena platform_arena_handle;
     platform_arena_handle.pointer = NULL;
 
     //get the context
@@ -48,7 +48,7 @@ ifb_engine::context_create(
     ptr_arenas->rendering = ifb_engine::core_memory_commit_arena(context_ref.ptr_core);
 
     //set the platform arena
-    platform_arena_handle = ptr_arenas->platform; 
+    platform_arena_handle.pointer = (IFBPtr)ptr_arenas->platform; 
 
     //we're done
     return(platform_arena_handle);

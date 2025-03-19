@@ -94,9 +94,9 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineArenas {
-    IFBHNDArena platform;
-    IFBHNDArena graphics;
-    IFBHNDArena rendering;
+    IFBMemoryArena* platform;
+    IFBMemoryArena* graphics;
+    IFBMemoryArena* rendering;
 };
 
 /**********************************************************************************/

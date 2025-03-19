@@ -26,7 +26,7 @@ struct IFBEngineGraphicsHandles {
 };
 
 struct IFBEngineGraphics {
-    IFBHNDArena              arena;
+    IFBMemoryArena*          arena;
     IFBEngineGraphicsHandles handles;
     IFBColorFormat           color_format;
 };
@@ -37,7 +37,7 @@ namespace ifb_engine {
     const IFBB8 
     graphics_initialize(
               IFBEngineGraphics* ptr_graphics,
-        const IFBHNDArena        arena_handle,
+              IFBMemoryArena*    ptr_arena,
         const IFBColorFormat     color_format);
 
     //pointers
