@@ -1,30 +1,28 @@
-#include "ifb-memory-internal.hpp"
+#include "ifb-memory.hpp"
+
+/**********************************************************************************/
+/* ARENAS                                                                         */
+/**********************************************************************************/
 
 //arena commit
-const IFBHNDArena
+IFBMemoryArena*
 ifb_memory::reservation_commit_arena(
-    const IFBHNDReservation reservation_handle,
-    const IFBU32            size_minimum) {
+          IFBMemoryReservation* ptr_reservation,
+    const IFBU32                size_minimum) {
 
-    IFBHNDArena arena_handle;
-    arena_handle.pointer = NULL;
+    IFBMemoryArena* ptr_arena = NULL;
 
     //sanity check
-    IFBB8 result = true;
-    result &= reservation_handle.pointer != NULL;
-    result &= size_minimum               != 0;
-    if (!result) return(arena_handle);
-
-    //get the reservation
-    IFBReservation* ptr_reservation = ifb_memory::context_get_reservation(reservation_handle); 
     ifb_macro_assert(ptr_reservation);
+    ifb_macro_assert(size_minimum);
 
-    //align the size
-    const IFBU32 page_size   = ptr_reservation->page_size;
-    const IFBU32 commit_size = ifb_macro_align_a_to_b(size_minimum,page_size);
-    const IFBU32 page_count  = commit_size / page_size;
-    
+    //get the context
+    IFBMemoryContext* ptr_context = ptr_reservation->ptr_context;
+
     //calculate the commit start
+    const IFBU32  page_size         = ptr_context->system_page_size; 
+    const IFBU32  commit_size       = ifb_macro_align_a_to_b(size_minimum,page_size);
+    const IFBU32  commit_page_count = commit_size / page_size;
     const IFBU32  commit_offset     = ptr_reservation->page_count_committed * page_size; 
     const IFBAddr commit_start_addr = ptr_reservation->start                + commit_offset;
     const IFBPtr  commit_start_ptr  = (IFBPtr)commit_start_addr;
@@ -35,21 +33,19 @@ ifb_memory::reservation_commit_arena(
         commit_size);
     
     //make sure we got the expected result
-    if (commit_result != commit_start_ptr) return(arena_handle);
+    if (commit_result != commit_start_ptr) return(NULL);
 
     //search the list for arenas to recycle
-    IFBArenaList* ptr_arena_list = ifb_memory::context_get_arena_list();
-    IFBArena*     ptr_arena      = NULL;
     for (
-        IFBArena* ptr_arena_current = ptr_arena_list->ptr_first;
+        IFBMemoryArena* ptr_arena_current = ptr_context->ptr_arena_first;
         ptr_arena_current != NULL;
         ptr_arena_current = ptr_arena_current->ptr_next) {
             
         //if the arena has no reservation and no start address
         //it is free to use
         IFBB8 arena_is_free = true;
-        arena_is_free &= (ptr_arena_current->handle_reservation.pointer == NULL);
-        arena_is_free &= (ptr_arena_current->start                      == 0);
+        arena_is_free &= (ptr_arena_current->ptr_reservation == NULL);
+        arena_is_free &= (ptr_arena_current->start           == 0);
         if (arena_is_free) {
             ptr_arena = ptr_arena_current;
             break;
@@ -60,19 +56,17 @@ ifb_memory::reservation_commit_arena(
     if (!ptr_arena) {
 
         //commit reservation structure
-        const IFBU32 arena_struct_size = ifb_macro_align_size_struct(IFBArena); 
-        arena_handle.pointer           = ifb_memory::context_stack_commit_absolute(arena_struct_size);
-        
-        //get the pointer
-        ptr_arena = ifb_memory::context_get_arena(arena_handle);
+        const IFBU32 arena_struct_size = ifb_macro_align_size_struct(IFBMemoryArena); 
+        ptr_arena = (IFBMemoryArena*)ifb_memory::context_stack_commit_absolute(
+            ptr_reservation->ptr_context,
+            arena_struct_size);
     }
      
     //we should always have an arena at this point
     ifb_macro_assert(ptr_arena);
 
     //initialize the arena
-    ptr_arena->handle_reservation = reservation_handle;
-    ptr_arena->handle_arena       = arena_handle;
+    ptr_arena->ptr_reservation    = ptr_reservation;
     ptr_arena->ptr_next           = NULL;
     ptr_arena->start              = (IFBAddr)commit_result;
     ptr_arena->size               = commit_size;
@@ -80,70 +74,46 @@ ifb_memory::reservation_commit_arena(
     ptr_arena->position_reserved  = 0;
     
     //if this is the first one, we need to initialize the list
-    if (ptr_arena_list->count == 0) {
+    if (ptr_context->count_arenas == 0) {
 
         //pointers should be null
-        ifb_macro_assert(ptr_arena_list->ptr_first == NULL);
-        ifb_macro_assert(ptr_arena_list->ptr_last  == NULL);
+        ifb_macro_assert(ptr_context->ptr_arena_first == NULL);
+        ifb_macro_assert(ptr_context->ptr_arena_last  == NULL);
 
         //initialize the list
-        ptr_arena_list->ptr_first = ptr_arena;
-        ptr_arena_list->ptr_last  = ptr_arena;
-        ptr_arena_list->count     = 1;
+        ptr_context->ptr_arena_first = ptr_arena;
+        ptr_context->ptr_arena_last  = ptr_arena;
+        ptr_context->count_arenas    = 1;
     }
     else {
 
         //first and last elements should NOT be null
-        ifb_macro_assert(ptr_arena_list->ptr_first);
-        ifb_macro_assert(ptr_arena_list->ptr_last);
+        ifb_macro_assert(ptr_context->ptr_arena_first);
+        ifb_macro_assert(ptr_context->ptr_arena_last);
         
         //cache first and last elements
-        IFBArena* first_element = ptr_arena_list->ptr_first; 
-        IFBArena* last_element  = ptr_arena_list->ptr_last; 
+        IFBMemoryArena* element_first = ptr_context->ptr_arena_first; 
+        IFBMemoryArena* element_last  = ptr_context->ptr_arena_last; 
         
         //if we are adding a second element, make sure
         //we update the next pointer for the first element
-        if (ptr_arena_list->count == 1) {
-            ifb_macro_assert(first_element->ptr_next == NULL);
-            first_element->ptr_next = ptr_arena;
+        if (ptr_context->count_arenas == 1) {
+            ifb_macro_assert(element_first->ptr_next == NULL);
+            element_first->ptr_next = ptr_arena;
         }
         
         //update the end of the list
-        ifb_macro_assert(first_element->ptr_next);
-        last_element->ptr_next   = ptr_arena;
-        ptr_arena_list->ptr_last = ptr_arena;
+        ifb_macro_assert(element_first->ptr_next);
+        element_last->ptr_next      = ptr_arena;
+        ptr_context->ptr_arena_last = ptr_arena; 
 
         //update the count
-        ++ptr_arena_list->count;                        
+        ++ptr_context->count_arenas;
     }
 
     //update the reservation
-    ptr_reservation->page_count_committed += page_count;
+    ptr_reservation->page_count_committed += commit_page_count;
 
     //we're done
-    return(arena_handle);
-}
-
-//info
-const IFBB8
-ifb_memory::reservation_get_info(
-    const IFBHNDReservation   reservation_handle,
-          IFBReservationInfo* reservation_info_ptr) {
-
-    //sanity check
-    if (!reservation_info_ptr) return(false);
-
-    //get the reservation
-    IFBReservation* ptr_reservation = ifb_memory::context_get_reservation(reservation_handle); 
-    ifb_macro_assert(ptr_reservation);    
-
-    //set the info
-    const IFBU32 page_size = ptr_reservation->page_size;
-    reservation_info_ptr->page_count_total     = ptr_reservation->page_count_total;
-    reservation_info_ptr->page_count_committed = ptr_reservation->page_count_committed;
-    reservation_info_ptr->size_total           = (IFBU64)ptr_reservation->page_count_total     * (IFBU64)page_size;
-    reservation_info_ptr->size_committed       = (IFBU64)ptr_reservation->page_count_committed * (IFBU64)page_size;
-
-    //we're done
-    return(true);
+    return(ptr_arena);
 }

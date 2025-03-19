@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ifb-memory-internal.hpp"
+#include "ifb-memory.hpp"
 
 /**********************************************************************************/
 /* RESET                                                                          */
@@ -8,29 +8,26 @@
 
 IFBVoid
 ifb_memory::arena_reset_all(
-    const IFBHNDArena arena_handle) {
+    IFBMemoryArena* ptr_arena) {
 
-    IFBArena* ptr_arena = ifb_memory::context_get_arena(arena_handle);
-
+    ifb_macro_assert(ptr_arena);
     ptr_arena->position_committed = 0;
     ptr_arena->position_reserved  = 0;
 }
 
 IFBVoid
 ifb_memory::arena_reset_committed_space(
-    const IFBHNDArena arena_handle) {
+    IFBMemoryArena* ptr_arena) {
 
-    IFBArena* ptr_arena = ifb_memory::context_get_arena(arena_handle);
-
+    ifb_macro_assert(ptr_arena);
     ptr_arena->position_committed = 0;
 }
 
 IFBVoid
 ifb_memory::arena_reset_reserved_space(
-    const IFBHNDArena arena_handle) {
+    IFBMemoryArena* ptr_arena) {
 
-    IFBArena* ptr_arena = ifb_memory::context_get_arena(arena_handle);
-
+    ifb_macro_assert(ptr_arena);
     ptr_arena->position_reserved = 0;
 }
 
@@ -40,12 +37,11 @@ ifb_memory::arena_reset_reserved_space(
 
 const IFBPtr
 ifb_memory::arena_get_pointer(
-    const IFBHNDArena arena_handle,
-    const IFBU32      offset) {
+    const IFBMemoryArena* ptr_arena,
+    const IFBU32          offset) {
 
-    //get the arena
-    IFBArena* ptr_arena = ifb_memory::context_get_arena(arena_handle);
-    
+    ifb_macro_assert(ptr_arena);
+
     //calculate the pointer, if its valid
     const IFBAddr address = ptr_arena->start + offset;
     const IFBPtr  pointer = offset < ptr_arena->size
@@ -56,21 +52,12 @@ ifb_memory::arena_get_pointer(
     return(pointer);
 }
 
-const IFBB8
-ifb_memory::arena_get_info(
-    const IFBHNDArena   arena_handle,
-          IFBArenaInfo* arena_info_ptr) {
-
-    return(false);
-}
-
 const IFBAddr
 ifb_memory::arena_get_start(
-    const IFBHNDArena arena_handle) {
+    const IFBMemoryArena* ptr_arena) {
 
-    //get the arena
-    IFBArena* ptr_arena = ifb_memory::context_get_arena(arena_handle);
-
+    ifb_macro_assert(ptr_arena);
+    
     //get the start address
     const IFBAddr start = ptr_arena->start;
 
@@ -84,15 +71,15 @@ ifb_memory::arena_get_start(
 
 const IFBPtr
 ifb_memory::arena_reserve_bytes_absolute(
-    const IFBHNDArena arena_handle,
-    const IFBU32      size,
-    const IFBU32      alignment) {
+          IFBMemoryArena* ptr_arena,
+    const IFBU32          size,
+    const IFBU32          alignment) {
 
     IFBPtr ptr_result = NULL;
     
-    //get the arena
-    IFBArena* ptr_arena = ifb_memory::context_get_arena(arena_handle);
-    
+    //sanity check
+    ifb_macro_assert(ptr_arena);
+
     //sanity check
     if (size == 0) return(NULL);
 
@@ -121,12 +108,12 @@ ifb_memory::arena_reserve_bytes_absolute(
 
 const IFBU32
 ifb_memory::arena_reserve_bytes_relative(
-    const IFBHNDArena arena_handle,
-    const IFBU32      size,
-    const IFBU32      alignment) {
-        
-    //get the arena
-    IFBArena* ptr_arena = ifb_memory::context_get_arena(arena_handle);
+          IFBMemoryArena* ptr_arena,
+    const IFBU32            size,
+    const IFBU32            alignment) {
+    
+    //sanity check
+    ifb_macro_assert(ptr_arena);
     
     //we use the arena size as an invalid offset since using it will return null
     IFBU32 offset_result = ptr_arena->size;
@@ -157,12 +144,12 @@ ifb_memory::arena_reserve_bytes_relative(
 
 const IFBB8
 ifb_memory::arena_release_bytes(
-    const IFBHNDArena arena_handle,
-    const IFBU32      size,
-    const IFBU32      alignment) {
-
-    //get the arena
-    IFBArena* ptr_arena = ifb_memory::context_get_arena(arena_handle);
+          IFBMemoryArena* ptr_arena,
+    const IFBU32            size,
+    const IFBU32            alignment) {
+    
+    //sanity check
+    ifb_macro_assert(ptr_arena);
     
     //determine if we can release the bytes
     //we can release if we aren't releasing more than we have reserved
@@ -184,14 +171,14 @@ ifb_memory::arena_release_bytes(
 
 const IFBPtr 
 ifb_memory::arena_commit_bytes_absolute(
-    const IFBHNDArena arena_handle,
-    const IFBU32      size,
-    const IFBU32      alignment) {
+          IFBMemoryArena* ptr_arena,
+    const IFBU32            size,
+    const IFBU32            alignment) {
 
     IFBPtr ptr_commit_result = NULL;
-
-    //get the arena
-    IFBArena* ptr_arena = ifb_memory::context_get_arena(arena_handle);
+    
+    //sanity check
+    ifb_macro_assert(ptr_arena);
 
     //determine if we can commit
     //we can commit if the commit size is smaller than the difference
@@ -221,12 +208,12 @@ ifb_memory::arena_commit_bytes_absolute(
 
 const IFBU32 
 ifb_memory::arena_commit_bytes_relative(
-    const IFBHNDArena arena_handle,
-    const IFBU32      size,
-    const IFBU32      alignment) {
-        
-    //get the arena
-    IFBArena* ptr_arena = ifb_memory::context_get_arena(arena_handle);
+          IFBMemoryArena* ptr_arena,
+    const IFBU32            size,
+    const IFBU32            alignment) {
+    
+    //sanity check
+    ifb_macro_assert(ptr_arena);
     
     //we use the arena size as an invalid offset since using it will return null
     IFBU32 offset_result = ptr_arena->size;
@@ -257,9 +244,9 @@ ifb_memory::arena_commit_bytes_relative(
 
 const IFBChar*
 ifb_memory::arena_commit_string(
-    const IFBHNDArena arena_handle,
-    const IFBChar*    c_string,
-    const IFBU32      max_length) {
+          IFBMemoryArena* ptr_arena,
+    const IFBChar*          c_string,
+    const IFBU32            max_length) {
 
     //get the actual length of the string
     const IFBU32 length_actual = strnlen_s(
@@ -269,7 +256,7 @@ ifb_memory::arena_commit_string(
     //commit the bytes
     //add one to account for a null terminator
     IFBChar* result_c_str = (IFBChar*)ifb_memory::arena_commit_bytes_absolute(
-        arena_handle,
+        ptr_arena,
         length_actual + 1);
 
     //copy the string
