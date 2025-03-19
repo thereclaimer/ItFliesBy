@@ -68,17 +68,16 @@ namespace ifb_array_list {
     const IFBPtr get_element_last     (const IFBArrayList* array_list_ptr);
     const IFBPtr get_element_at_index (const IFBArrayList* array_list_ptr, const IFBU32 index);
 };
-
 /**********************************************************************************/
 /* STACK                                                                          */
 /**********************************************************************************/
 
+
 namespace ifb_stack {
 
-    //memory
-    IFBStack*    arena_load_pointer    (const IFBHNDArena arena_handle, const IFBU32 arena_offset);
-    IFBStack*    arena_commit_absolute (const IFBHNDArena arena_handle, const IFBU32 stack_size);
-    const IFBU32 arena_commit_relative (const IFBHNDArena arena_handle, const IFBU32 stack_size);
+    IFBStack*    arena_load_pointer    (IFBMemoryArena* ptr_arena, const IFBU32 arena_offset);
+    IFBStack*    arena_commit_absolute (IFBMemoryArena* ptr_arena, const IFBU32 stack_size);
+    const IFBU32 arena_commit_relative (IFBMemoryArena* ptr_arena, const IFBU32 stack_size);
 
     //operations
     const IFBU32 push_relative         (IFBStack* stack, const IFBU32 size);
@@ -125,20 +124,13 @@ namespace ifb_linked_list {
 /* HASH TABLE                                                                     */
 /**********************************************************************************/
 
-struct IFBHashTable : IFBMemoryBlock {
-    IFBU32 element_array_start;
-    IFBU32 element_size;
-    IFBU32 element_count_max;
-    IFBU32 key_length_max;
-};
-
 namespace ifb_hash_table {
 
     //memory
     const IFBU32   memory_size              (const IFBU32 element_count,const IFBU32 element_size);
-    const IFBU32   commit_to_arena_relative (const IFBHNDArena arena_handle, const IFBU32 element_count, const IFBU32 element_size, const IFBU32 key_length_max);
-    IFBHashTable*  commit_to_arena_absolute (const IFBHNDArena arena_handle, const IFBU32 element_count, const IFBU32 element_size, const IFBU32 key_length_max);
-    IFBHashTable*  load_from_arena          (const IFBHNDArena arena_handle, const IFBU32 offset);
+    const IFBU32   commit_to_arena_relative (IFBMemoryArena* ptr_arena, const IFBU32 element_count, const IFBU32 element_size, const IFBU32 key_length_max);
+    IFBHashTable*  commit_to_arena_absolute (IFBMemoryArena* ptr_arena, const IFBU32 element_count, const IFBU32 element_size, const IFBU32 key_length_max);
+    IFBHashTable*  load_from_arena          (IFBMemoryArena* ptr_arena, const IFBU32 offset);
 
     //operations
     const IFBB8    insert                   (IFBHashTable*       ptr_hash_table, const IFBChar* key, const IFBByte* element, IFBU32* ptr_element_index = NULL);

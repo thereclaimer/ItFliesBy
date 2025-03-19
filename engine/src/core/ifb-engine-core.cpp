@@ -15,31 +15,36 @@ ifb_engine::core_create(
     ifb_macro_assert(core_stack_memory_size);
     ifb_macro_assert(core_reserved_memory_size);
 
-    //get the system infoc
+    //get the system info
     IFBSystemInfo system_info;
     const IFBB8 system_info_valid = ifb_platform::system_get_info(&system_info); 
     if (!system_info_valid) return(NULL);
 
     //create the memory context
-    const IFBB8 memory_context_created = ifb_memory::context_create(
+    IFBMemoryContext* ptr_memory_context = ifb_memory::context_create(
         &system_info.memory,
         core_stack_memory_ptr,
         core_stack_memory_size);
-    if (!memory_context_created) return(NULL);
+    if (!ptr_memory_context) return(NULL);
 
     //allocate the core
     const IFBU32 core_size  = ifb_macro_align_size_struct(IFBEngineCore);
-    IFBEngineCore* core_ptr = (IFBEngineCore*)ifb_memory::context_stack_commit_absolute(core_size);
+    IFBEngineCore* core_ptr = (IFBEngineCore*)ifb_memory::context_stack_commit_absolute(ptr_memory_context,core_size);
     ifb_macro_assert(core_ptr);
-    
-    //reserve the platform memory
-    ifb_engine::core_memory_reserve_platform_memory(
-        core_ptr,
-        core_reserved_memory_size);
 
     //initialize the core structure
-    core_ptr->memory.stack.data  = (IFBByte*)core_stack_memory_ptr;
-    core_ptr->memory.stack.size  = core_stack_memory_size;
+    core_ptr->system_info            = system_info;
+    core_ptr->memory.ptr_context     = ptr_memory_context; 
+    core_ptr->memory.ptr_reservation = NULL; 
+
+    //result for the next steps
+    IFBU32 result = true;
+
+    //reserve the platform memory
+    result &= ifb_engine::core_memory_reserve_platform_memory(
+        core_ptr,
+        core_reserved_memory_size);
+    ifb_macro_assert(result);
 
     //we're done
     return(core_ptr);
@@ -54,7 +59,7 @@ ifb_engine::core_destroy(
     IFBB8 result = true;
 
     //destroy the memory context
-    result &= ifb_memory::context_destroy();
+    result &= ifb_memory::context_destroy(core_ptr->memory.ptr_context);
 
     return(result);
 }

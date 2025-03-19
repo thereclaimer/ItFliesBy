@@ -261,11 +261,9 @@ struct IFBWin32Handles {
 };
 
 struct IFBWin32Memory {
-    IFBHNDArena     arena_handle;
-    IFBWin32Handles win32_handles;
+    IFBHNDEngineArena arena_handle;
+    IFBWin32Handles   win32_handles;
 };
-
-
 
 struct IFBWin32Context {
     IFBWin32Memory*         ptr_memory;

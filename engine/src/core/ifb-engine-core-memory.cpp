@@ -3,15 +3,6 @@
 #include "ifb-engine-internal-core.hpp"
 
 /**********************************************************************************/
-/* FORWARD DECLARATIONS                                                           */
-/**********************************************************************************/
-
-namespace ifb_engine {
-
-    IFBEngineCoreMemoryReservation& core_memory_get_and_validate_reservation(IFBEngineCore* core_ptr);
-};
-
-/**********************************************************************************/
 /* RESERVATION                                                                    */
 /**********************************************************************************/
 
@@ -24,25 +15,18 @@ ifb_engine::core_memory_reserve_platform_memory(
     ifb_macro_assert(core_ptr);
     ifb_macro_assert(size);
 
+    IFBEngineCoreMemory& ref_core_memory = core_ptr->memory;
+
     //reserve the memory
-    const IFBHNDReservation reservation_handle = ifb_memory::context_reserve_platform_memory(size);
-    if (!ifb_memory_macro_handle_valid(reservation_handle)) return(false);
+    ref_core_memory.ptr_reservation = ifb_memory::context_reserve_platform_memory(
+        ref_core_memory.ptr_context,
+        size);
+    if (!ref_core_memory.ptr_reservation) return(false);
 
-    //get the actual reservation size
-    IFBReservationInfo reservation_info;
-    IFBB8 result = ifb_memory::reservation_get_info(
-        reservation_handle,
-        &reservation_info);
-    ifb_macro_assert(result);
-
-    //initialize the reservation structure
-    IFBEngineCoreMemoryReservation& reservation = core_ptr->memory.reservation;
-    reservation.handle        = reservation_handle; 
-    reservation.size_reserved = reservation_info.size_total;
-    reservation.size_arena    = IFB_ENGINE_CORE_MEMORY_ARENA_SIZE;
+    ref_core_memory.arena_size = IFB_ENGINE_CORE_MEMORY_ARENA_SIZE;
 
     //we're done
-    return(result);
+    return(true);
 }
 
 inline const IFBB8
@@ -52,16 +36,12 @@ ifb_engine::core_memory_release_platform_memory(
     //sanity check
     ifb_macro_assert(core_ptr);
 
-    //cache the reservation
-    IFBEngineCoreMemoryReservation& reservation_ref = core_ptr->memory.reservation;
-
-    //release it
-    const IFBB8 result = ifb_memory::context_release_platform_memory(reservation_ref.handle);
+    //release the reservation
+    const IFBB8 result = ifb_memory::context_release_platform_memory(core_ptr->memory.ptr_reservation);
     if (!result) return(false);
 
     //null the structure
-    reservation_ref.handle.pointer = NULL;
-    reservation_ref.size_reserved  = 0;
+    core_ptr->memory.ptr_reservation = NULL;
 
     //we're done
     return(true);
@@ -81,8 +61,13 @@ ifb_engine::core_memory_commit_bytes_absolute(
     ifb_macro_assert(core_ptr);
     ifb_macro_assert(size);
 
+    IFBEngineCoreMemory& core_memory_ref = core_ptr->memory;
+
     //do the commit 
-    const IFBPtr pointer = ifb_memory::context_stack_commit_absolute(size,alignment);
+    const IFBPtr pointer = ifb_memory::context_stack_commit_absolute(
+        core_memory_ref.ptr_context,
+        size,
+        alignment);
 
     //sanity check again
     ifb_macro_assert(pointer);
@@ -101,8 +86,13 @@ ifb_engine::core_memory_commit_bytes_relative(
     ifb_macro_assert(core_ptr);
     ifb_macro_assert(size);
 
+    IFBEngineCoreMemory& core_memory_ref = core_ptr->memory;
+
     //do the commit 
-    const IFBU32 offset = ifb_memory::context_stack_commit_relative(size,alignment);
+    const IFBU32 offset = ifb_memory::context_stack_commit_relative(
+        core_memory_ref.ptr_context,
+        size,
+        alignment);
 
     //sanity check again
     ifb_macro_assert(offset);
@@ -115,44 +105,20 @@ ifb_engine::core_memory_commit_bytes_relative(
 /* ARENAS                                                                         */
 /**********************************************************************************/
 
-inline const IFBHNDArena 
+inline IFBMemoryArena* 
 ifb_engine::core_memory_commit_arena(
     IFBEngineCore* core_ptr) {
 
-    //get the reservation
-    IFBEngineCoreMemoryReservation& ref_reservation = ifb_engine::core_memory_get_and_validate_reservation(core_ptr);
+    ifb_macro_assert(core_ptr);
 
     //commit the arena
-    const IFBHNDArena arena_handle = ifb_memory::reservation_commit_arena(
-        ref_reservation.handle,
-        ref_reservation.size_arena);
+    IFBMemoryArena* ptr_arena = ifb_memory::reservation_commit_arena(
+        core_ptr->memory.ptr_reservation,
+        core_ptr->memory.arena_size);
 
     //sanity check
-    ifb_macro_assert(arena_handle.pointer);
+    ifb_macro_assert(ptr_arena);
 
     //we're done
-    return(arena_handle);
-}
-
-/**********************************************************************************/
-/* INTERNAL                                                                       */
-/**********************************************************************************/
-
-inline IFBEngineCoreMemoryReservation&
-ifb_engine::core_memory_get_and_validate_reservation(
-    IFBEngineCore* core_ptr) {
-
-    //make sure the core pointer is valid
-    ifb_macro_assert(core_ptr);
-    
-    //get the reservation
-    IFBEngineCoreMemoryReservation& ref_reservation = core_ptr->memory.reservation;
-    
-    //make sure the reservation is initialized
-    ifb_macro_assert(ref_reservation.handle.pointer);
-    ifb_macro_assert(ref_reservation.size_arena);
-    ifb_macro_assert(ref_reservation.size_reserved);
-
-    //we're done
-    return(ref_reservation);
+    return(ptr_arena);
 }

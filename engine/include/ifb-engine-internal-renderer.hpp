@@ -20,7 +20,7 @@ struct IFBEngineRendererHandles {
 };
 
 struct IFBEngineRenderer {
-    IFBHNDArena              arena;
+    IFBMemoryArena*          arena;
     IFBEngineRendererHandles handles;
 };
 
@@ -30,7 +30,7 @@ namespace ifb_engine {
     const IFBB8
     renderer_initialize(
               IFBEngineRenderer*  ptr_renderer,
-        const IFBHNDArena         arena_handle,
+              IFBMemoryArena*     ptr_arena,
         const IFBDimensions*      ptr_viewport_dimensions,
         const IFBColorNormalized* ptr_viewport_clear_color);
 

@@ -21,40 +21,30 @@ struct IFBEngineCoreMemory;
 //files
 struct IFBEngineCoreFiles;
 
+#define IFB_ENGINE_CORE_MEMORY_ARENA_SIZE ifb_macro_size_kilobytes(64)
+
 /**********************************************************************************/
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
-#define IFB_ENGINE_CORE_MEMORY_ARENA_SIZE ifb_macro_size_kilobytes(64) 
-
-struct IFBEngineCoreMemoryStack {
-    IFBByte* data;
-    IFBU32   size;
-};
-
-struct IFBEngineCoreMemoryReservation {
-    IFBU64            size_reserved;
-    IFBU32            size_arena;
-    IFBHNDReservation handle; 
-};
-
 struct IFBEngineCoreMemory {
-    IFBEngineCoreMemoryStack       stack;
-    IFBEngineCoreMemoryReservation reservation; 
+    IFBMemoryContext*     ptr_context;
+    IFBMemoryReservation* ptr_reservation;
+    IFBU32                arena_size;
 };
 
 namespace ifb_engine {
 
     //reservation
-    const IFBB8       core_memory_reserve_platform_memory (IFBEngineCore* core_ptr, const IFBU64 size);
-    const IFBB8       core_memory_release_platform_memory (IFBEngineCore* core_ptr);
+    const IFBB8     core_memory_reserve_platform_memory (IFBEngineCore* core_ptr, const IFBU64 size);
+    const IFBB8     core_memory_release_platform_memory (IFBEngineCore* core_ptr);
 
     //stack
-    const IFBPtr      core_memory_commit_bytes_absolute   (IFBEngineCore* core_ptr, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBU32      core_memory_commit_bytes_relative   (IFBEngineCore* core_ptr, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBPtr    core_memory_commit_bytes_absolute   (IFBEngineCore* core_ptr, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBU32    core_memory_commit_bytes_relative   (IFBEngineCore* core_ptr, const IFBU32 size, const IFBU32 alignment = 0);
 
     //arenas
-    const IFBHNDArena core_memory_commit_arena            (IFBEngineCore* core_ptr);           
+    IFBMemoryArena* core_memory_commit_arena            (IFBEngineCore* core_ptr);           
 };
 
 /**********************************************************************************/
@@ -62,7 +52,7 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineCoreFiles {
-    IFBHNDArena arena_handle;
+    IFBMemoryArena* arena;
     struct  {
         IFBHNDFileTable read_only;
         IFBHNDFileTable read_write;
@@ -79,6 +69,7 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineCore {
+    IFBSystemInfo        system_info;
     IFBEngineCoreMemory memory; 
     IFBEngineCoreFiles  files;
 };
