@@ -168,18 +168,18 @@ namespace ifb_platform {
 /**********************************************************************************/
 
 typedef const IFBU32 (*IFBPlatformFileROContextSize)    (IFBVoid);
-typedef const IFBB8  (*IFBPlatformFileROOpen)           (IFBFileReadOnlyRequest* file_ro_request);
-typedef const IFBB8  (*IFBPlatformFileROReadImmediate)  (IFBFileReadOnlyRequest* file_ro_request);
-typedef const IFBB8  (*IFBPlatformFileROReadAsync)      (IFBFileReadOnlyRequest* file_ro_request);
-typedef const IFBB8  (*IFBPlatformFileROClose)          (IFBFileReadOnlyRequest* file_ro_request);
+typedef const IFBB8  (*IFBPlatformFileROOpen)           (IFBFileRequest* file_ro_request);
+typedef const IFBB8  (*IFBPlatformFileROReadImmediate)  (IFBFileRequest* file_ro_request);
+typedef const IFBB8  (*IFBPlatformFileROReadAsync)      (IFBFileRequest* file_ro_request);
+typedef const IFBB8  (*IFBPlatformFileROClose)          (IFBFileRequest* file_ro_request);
 
 typedef const IFBU32 (*IFBPlatformFileRWContextSize)    (IFBVoid);
-typedef const IFBB8  (*IFBPlatformFileRWOpen)           (IFBFileReadWriteRequest* file_rw_request);
-typedef const IFBB8  (*IFBPlatformFileRWReadImmediate)  (IFBFileReadWriteRequest* file_rw_request);
-typedef const IFBB8  (*IFBPlatformFileRWReadAsync)      (IFBFileReadWriteRequest* file_rw_request);
-typedef const IFBB8  (*IFBPlatformFileRWWriteImmediate) (IFBFileReadWriteRequest* file_rw_request);
-typedef const IFBB8  (*IFBPlatformFileRWWriteAsync)     (IFBFileReadWriteRequest* file_rw_request);
-typedef const IFBB8  (*IFBPlatformFileRWClose)          (IFBFileReadWriteRequest* file_rw_request);
+typedef const IFBB8  (*IFBPlatformFileRWOpen)           (IFBFileRequest* file_rw_request);
+typedef const IFBB8  (*IFBPlatformFileRWReadImmediate)  (IFBFileRequest* file_rw_request);
+typedef const IFBB8  (*IFBPlatformFileRWReadAsync)      (IFBFileRequest* file_rw_request);
+typedef const IFBB8  (*IFBPlatformFileRWWriteImmediate) (IFBFileRequest* file_rw_request);
+typedef const IFBB8  (*IFBPlatformFileRWWriteAsync)     (IFBFileRequest* file_rw_request);
+typedef const IFBB8  (*IFBPlatformFileRWClose)          (IFBFileRequest* file_rw_request);
 
 struct IFBPlatformAPIFile {
     IFBPlatformFileROContextSize    ro_context_size;

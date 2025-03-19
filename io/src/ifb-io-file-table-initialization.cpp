@@ -32,7 +32,7 @@ struct IFBFileTableReadOnlySizeCache {
 struct IFBFileTableReadOnlyInit {
     IFBFileTableArgs*              args;
     IFBFileTableReadOnlySizeCache* sizes;
-    IFBFileReadOnlyTable*          table;
+    IFBFileTableReadOnly*          table;
     IFBHNDFileTable                handle;
 };
 
@@ -91,7 +91,7 @@ ifb_file_table::read_only_init_step_1_reserve_size_cache(
     table_sizes->tmp_cache.context_struct = ifb_macro_align_size_struct(IFBFileContext);
 
     //property sizes
-    const IFBU32 commit_size_file_table              = ifb_macro_align_size_struct(IFBFileReadOnlyTable); 
+    const IFBU32 commit_size_file_table              = ifb_macro_align_size_struct(IFBFileTableReadOnly); 
     const IFBU32 commit_size_file_path_buffer        = file_count * file_path_stride;
     const IFBU32 commit_size_array_file_context      = file_count * table_sizes->tmp_cache.context_struct;
     const IFBU32 commit_size_array_last_bytes_read   = file_count * sizeof(IFBU32);
@@ -148,7 +148,7 @@ ifb_file_table::read_only_init_step_2_commit_table(
         file_table_size_total);
 
     //load the pointer
-    IFBFileReadOnlyTable* file_table = (IFBFileReadOnlyTable*)ifb_memory::arena_get_pointer(
+    IFBFileTableReadOnly* file_table = (IFBFileTableReadOnly*)ifb_memory::arena_get_pointer(
         file_table_arena,
         file_table_offset);
 
@@ -165,7 +165,7 @@ ifb_file_table::read_only_init_step_3_set_table_header(
     IFBFileTableReadOnlyInit& init_ref) {
 
     //get the table
-    IFBFileReadOnlyTable* file_table = init_ref.table;
+    IFBFileTableReadOnly* file_table = init_ref.table;
 
     //set header properties
     file_table->header.start            = (IFBAddr)init_ref.table;

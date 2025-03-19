@@ -1,7 +1,7 @@
 #ifndef IFB_USER_INPUT_HPP
 #define IFB_USER_INPUT_HPP
 
-#include "ifb-types.hpp"
+#include "ifb-types-primitives.hpp"
 #include "ifb-scopes.hpp"
 #include "ifb-macros.hpp"
 

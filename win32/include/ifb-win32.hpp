@@ -153,19 +153,19 @@ namespace ifb_win32 {
 
     //read only
     ifb_internal const IFBU32 file_ro_context_size     (IFBVoid);
-    ifb_internal const IFBB8  file_ro_open             (IFBFileReadOnlyRequest* file_ro_request);
-    ifb_internal const IFBB8  file_ro_read_async       (IFBFileReadOnlyRequest* file_ro_request);
-    ifb_internal const IFBU32 file_ro_read_immediate   (IFBFileReadOnlyRequest* file_ro_request);
-    ifb_internal const IFBB8  file_ro_close            (IFBFileReadOnlyRequest* file_ro_request);
+    ifb_internal const IFBB8  file_ro_open             (IFBFileRequestReadOnly* file_ro_request);
+    ifb_internal const IFBB8  file_ro_read_async       (IFBFileRequestReadOnly* file_ro_request);
+    ifb_internal const IFBU32 file_ro_read_immediate   (IFBFileRequestReadOnly* file_ro_request);
+    ifb_internal const IFBB8  file_ro_close            (IFBFileRequestReadOnly* file_ro_request);
     
     //read write
     ifb_internal const IFBU32 file_rw_context_size     (IFBVoid);
-    ifb_internal const IFBB8  file_rw_open             (IFBFileReadWriteRequest* file_rw_request);
-    ifb_internal const IFBU32 file_rw_read_immediate   (IFBFileReadWriteRequest* file_rw_request);
-    ifb_internal const IFBB8  file_rw_read_async       (IFBFileReadWriteRequest* file_rw_request);
-    ifb_internal const IFBU32 file_rw_write_immediate  (IFBFileReadWriteRequest* file_rw_request);
-    ifb_internal const IFBB8  file_rw_write_async      (IFBFileReadWriteRequest* file_rw_request);
-    ifb_internal const IFBB8  file_rw_close            (IFBFileReadWriteRequest* file_rw_request);
+    ifb_internal const IFBB8  file_rw_open             (IFBFileRequestReadWrite* file_rw_request);
+    ifb_internal const IFBU32 file_rw_read_immediate   (IFBFileRequestReadWrite* file_rw_request);
+    ifb_internal const IFBB8  file_rw_read_async       (IFBFileRequestReadWrite* file_rw_request);
+    ifb_internal const IFBU32 file_rw_write_immediate  (IFBFileRequestReadWrite* file_rw_request);
+    ifb_internal const IFBB8  file_rw_write_async      (IFBFileRequestReadWrite* file_rw_request);
+    ifb_internal const IFBB8  file_rw_close            (IFBFileRequestReadWrite* file_rw_request);
 
 
 };
