@@ -109,8 +109,10 @@ struct IFBHND32  { IFBU32 offset;  };
 struct IFBHND64  { IFBU64 offset;  };
 struct IFBHNDPTR { IFBPtr pointer; };
 
-struct IFBHNDArena       : IFBHNDPTR { };
-struct IFBHNDReservation : IFBHNDPTR { };
+#define IFB_HANDLE_INVALID_U8  0xFF
+#define IFB_HANDLE_INVALID_U16 0xFFFF 
+#define IFB_HANDLE_INVALID_U32 0xFFFFFFFF 
+#define IFB_HANDLE_INVALID_U64 0xFFFFFFFFFFFFFFFF
 
 /**********************************************************************************/
 /* SYSTEM                                                                         */
@@ -288,6 +290,14 @@ struct IFBQueue : IFBMemoryBlock {
     IFBU32 position;
 };
 
+struct IFBHashTable : IFBMemoryBlock {
+    IFBU32 element_array_start;
+    IFBU32 element_size;
+    IFBU32 element_count_max;
+    IFBU32 key_length_max;
+};
+
+
 /**********************************************************************************/
 /* GRAPHICS                                                                       */
 /**********************************************************************************/
@@ -391,7 +401,7 @@ struct IFBFileContext {
 };
 
 struct IFBFileTableArgs {
-    IFBHNDArena          arena_handle;
+    IFBMemoryArena*      arena;
     IFBFileAsyncCallback file_callback_read;
     IFBFileAsyncCallback file_callback_write;
     IFBChar*             file_path_buffer;

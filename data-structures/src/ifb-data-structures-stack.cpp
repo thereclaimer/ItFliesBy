@@ -8,11 +8,11 @@
 
 IFBStack*    
 ifb_stack::arena_load_pointer(
-    const IFBHNDArena arena_handle,
-    const IFBU32      arena_offset) {
+          IFBMemoryArena* ptr_arena,
+    const IFBU32          arena_offset) {
 
     IFBStack* pointer = (IFBStack*)ifb_memory::arena_get_pointer(
-        arena_handle,
+        ptr_arena,
         arena_offset);
 
     ifb_macro_assert(pointer);
@@ -22,8 +22,8 @@ ifb_stack::arena_load_pointer(
 
 IFBStack*    
 ifb_stack::arena_commit_absolute(
-    const IFBHNDArena arena_handle,
-    const IFBU32      stack_size) {
+          IFBMemoryArena* ptr_arena,
+    const IFBU32          stack_size) {
 
     //calculate the commit size
     const IFBU32 struct_size = ifb_macro_align_size_struct(IFBStack);
@@ -31,7 +31,7 @@ ifb_stack::arena_commit_absolute(
 
     //do the commit
     IFBStack* pointer = (IFBStack*)ifb_memory::arena_commit_bytes_absolute(
-        arena_handle,
+        ptr_arena,
         commit_size);
 
     //we're done
@@ -40,8 +40,8 @@ ifb_stack::arena_commit_absolute(
 
 const IFBU32 
 ifb_stack::arena_commit_relative(
-    const IFBHNDArena arena_handle,
-    const IFBU32      stack_size) {
+          IFBMemoryArena* ptr_arena,
+    const IFBU32          stack_size) {
 
     //calculate the commit size
     const IFBU32 struct_size = ifb_macro_align_size_struct(IFBStack);
@@ -49,7 +49,7 @@ ifb_stack::arena_commit_relative(
 
     //do the commit
     IFBU32 offset = ifb_memory::arena_commit_bytes_relative(
-        arena_handle,
+        ptr_arena,
         commit_size);
 
     //we're done
@@ -73,8 +73,6 @@ ifb_stack::reset(
     //we're done
     return(true);
 }
-
-#define IFB_HANDLE_INVALID_U32 0xFFFFFFFF
 
 const IFBU32
 ifb_stack::push_relative(
@@ -123,7 +121,7 @@ ifb_stack::push_absolute(
 const IFBB8
 ifb_stack::pull(
           IFBStack* stack_ptr,
-    const IFBU32    size) {
+    const IFBU32   size) {
 
     //sanity check
     if (!stack_ptr || size > stack_ptr->position) return(false);

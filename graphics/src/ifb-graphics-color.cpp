@@ -108,15 +108,15 @@ ifb_graphics::color_pack_normalized_to_32(
 
 const IFBColorTable*
 ifb_graphics::color_table_commit_to_arena_absolute(
-    const IFBHNDArena    arena_handle,
-    const IFBColorFormat color_format,
-    const IFBU32         color_count,
-    const IFBChar**      color_key_array,
-    const IFBColorHex*   color_hex_array) {
+          IFBMemoryArena* ptr_arena,
+    const IFBColorFormat  color_format,
+    const IFBU32          color_count,
+    const IFBChar**       color_key_array,
+    const IFBColorHex*    color_hex_array) {
 
     //sanity check
     IFBB8 result = true;
-    result &= ifb_memory_macro_handle_valid(arena_handle);
+    result &= (ptr_arena       != NULL); 
     result &= (color_count     != 0);
     result &= (color_key_array != NULL);
     result &= (color_hex_array != NULL);
@@ -125,14 +125,14 @@ ifb_graphics::color_table_commit_to_arena_absolute(
     //commit the color table
     const IFBU32   color_table_size = ifb_macro_align_size_struct(IFBColorTable); 
     IFBColorTable* color_table_ptr  = (IFBColorTable*)ifb_memory::arena_commit_bytes_absolute(
-        arena_handle,
+        ptr_arena,
         color_table_size);
 
     //commit the hash table
     const IFBU32  color_hex_size   = sizeof(IFBColorHex);
     const IFBU32  color_key_length = 32;
     IFBHashTable* hash_table_ptr   = ifb_hash_table::commit_to_arena_absolute(
-        arena_handle,
+        ptr_arena,
         color_count,
         color_hex_size,
         color_key_length);
@@ -168,15 +168,15 @@ ifb_graphics::color_table_commit_to_arena_absolute(
 
 const IFBU32
 ifb_graphics::color_table_commit_to_arena_relative(
-    const IFBHNDArena    arena_handle,
-    const IFBColorFormat color_format,
-    const IFBU32         color_count,
-    const IFBChar**      color_key_array,
-    const IFBColorHex*   color_hex_array) {
+          IFBMemoryArena* ptr_arena,
+    const IFBColorFormat  color_format,
+    const IFBU32          color_count,
+    const IFBChar**       color_key_array,
+    const IFBColorHex*    color_hex_array) {
 
         //sanity check
     IFBB8 result = true;
-    result &= ifb_memory_macro_handle_valid(arena_handle);
+    result &= (ptr_arena       != NULL); 
     result &= (color_count     != 0);
     result &= (color_key_array != NULL);
     result &= (color_hex_array != NULL);
@@ -185,17 +185,19 @@ ifb_graphics::color_table_commit_to_arena_relative(
     //commit the color table
     const IFBU32 color_table_size   = ifb_macro_align_size_struct(IFBColorTable); 
     const IFBU32 color_table_offset = ifb_memory::arena_commit_bytes_relative(
-        arena_handle,
+        ptr_arena,
         color_table_size);
 
     //load the pointer
-    IFBColorTable* color_table_ptr = (IFBColorTable*)ifb_memory::arena_get_pointer(arena_handle,color_table_offset);
+    IFBColorTable* color_table_ptr = (IFBColorTable*)ifb_memory::arena_get_pointer(
+        ptr_arena,
+        color_table_offset);
 
     //commit the hash table
     const IFBU32  color_hex_size   = sizeof(IFBColorHex);
     const IFBU32  color_key_length = 32;
     IFBHashTable* hash_table_ptr   = ifb_hash_table::commit_to_arena_absolute(
-        arena_handle,
+        ptr_arena,
         color_count,
         color_hex_size,
         color_key_length);
@@ -231,12 +233,12 @@ ifb_graphics::color_table_commit_to_arena_relative(
 
 const IFBColorTable*
 ifb_graphics::color_table_load_from_arena(
-    const IFBHNDArena arena_handle,
-    const IFBU32      color_table_offset) {
+          IFBMemoryArena* ptr_arena,
+    const IFBU32          color_table_offset) {
 
     //get the pointer
     const IFBColorTable* ptr_color_table = (IFBColorTable*)ifb_memory::arena_get_pointer(
-        arena_handle,
+        ptr_arena,
         color_table_offset);
 
     //it should be valid

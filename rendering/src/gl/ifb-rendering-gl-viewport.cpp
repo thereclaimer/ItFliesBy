@@ -4,29 +4,29 @@
 
 IFBGLViewport*
 ifb_gl::viewport_load_from_arena(
-    const IFBHNDArena arena_handle,
-    const IFBU32      offset) {
+          IFBMemoryArena* ptr_arena,
+    const IFBU32          offset) {
 
-    IFBGLViewport* ptr_viewport = (IFBGLViewport*)ifb_memory::arena_get_pointer(arena_handle,offset);
+    IFBGLViewport* ptr_viewport = (IFBGLViewport*)ifb_memory::arena_get_pointer(ptr_arena,offset);
     ifb_macro_assert(ptr_viewport);
     return(ptr_viewport);
 }
 
 IFBGLViewport*
 ifb_gl::viewport_commit_to_arena_absolute(
-    const IFBHNDArena arena_handle) {
+    IFBMemoryArena* ptr_arena) {
     
     const IFBU32   viewport_size = ifb_macro_align_size_struct(IFBGLViewport);
-    IFBGLViewport* viewport_ptr  = (IFBGLViewport*)ifb_memory::arena_commit_bytes_absolute(arena_handle,viewport_size);
+    IFBGLViewport* viewport_ptr  = (IFBGLViewport*)ifb_memory::arena_commit_bytes_absolute(ptr_arena,viewport_size);
     return(viewport_ptr);
 }
 
 const IFBU32
 ifb_gl::viewport_commit_to_arena_relative(
-    const IFBHNDArena arena_handle) {
+    IFBMemoryArena* ptr_arena) {
 
     const IFBU32 viewport_size   = ifb_macro_align_size_struct(IFBGLViewport);
-    const IFBU32 viewport_offset = ifb_memory::arena_commit_bytes_relative(arena_handle,viewport_size);
+    const IFBU32 viewport_offset = ifb_memory::arena_commit_bytes_relative(ptr_arena,viewport_size);
     
     return(viewport_offset);
 }

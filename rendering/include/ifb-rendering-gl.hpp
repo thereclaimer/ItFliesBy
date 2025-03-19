@@ -62,9 +62,9 @@ struct IFBGLViewport {
 
 namespace ifb_gl {
 
-    IFBGLViewport*     viewport_load_from_arena                          (const IFBHNDArena arena_handle, const IFBU32 offset);
-    IFBGLViewport*     viewport_commit_to_arena_absolute                 (const IFBHNDArena arena_handle);
-    const IFBU32       viewport_commit_to_arena_relative                 (const IFBHNDArena arena_handle);
+    IFBGLViewport*     viewport_load_from_arena                          (IFBMemoryArena* ptr_arena, const IFBU32 offset);
+    IFBGLViewport*     viewport_commit_to_arena_absolute                 (IFBMemoryArena* ptr_arena);
+    const IFBU32       viewport_commit_to_arena_relative                 (IFBMemoryArena* ptr_arena);
 
     IFBVoid            viewport_initialize                               (IFBGLViewport* viewport);
     IFBVoid            viewport_clear                                    (IFBGLViewport* viewport);

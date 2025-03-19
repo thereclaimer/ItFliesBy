@@ -58,11 +58,11 @@ ifb_file_table::read_only_init_step_0_validate_args(
     IFBFileTableReadOnlyInit& init_ref) {
 
     ifb_macro_assert(init_ref.args);
-    ifb_macro_assert(init_ref.args->arena_handle.pointer != NULL);
-    ifb_macro_assert(init_ref.args->file_callback_read   != NULL);
-    ifb_macro_assert(init_ref.args->file_path_buffer     != NULL);
-    ifb_macro_assert(init_ref.args->file_path_stride     != NULL);
-    ifb_macro_assert(init_ref.args->file_count           != NULL);
+    ifb_macro_assert(init_ref.args->arena              != NULL);
+    ifb_macro_assert(init_ref.args->file_callback_read != NULL);
+    ifb_macro_assert(init_ref.args->file_path_buffer   != NULL);
+    ifb_macro_assert(init_ref.args->file_path_stride   != NULL);
+    ifb_macro_assert(init_ref.args->file_count         != NULL);
 }
 
 inline IFBVoid
@@ -74,7 +74,7 @@ ifb_file_table::read_only_init_step_1_reserve_size_cache(
 
     //commit the struct
     IFBFileTableReadOnlySizeCache* table_sizes = (IFBFileTableReadOnlySizeCache*)ifb_memory::arena_reserve_bytes_absolute(
-        init_ref.args->arena_handle,
+        init_ref.args->arena,
         size);
 
     //sanity check    
@@ -141,9 +141,9 @@ ifb_file_table::read_only_init_step_2_commit_table(
     IFBFileTableReadOnlyInit& init_ref) {
 
     //do the commit
-    const IFBHNDArena file_table_arena      = init_ref.args->arena_handle; 
-    const IFBU32      file_table_size_total = init_ref.sizes->commit.total; 
-    const IFBU32      file_table_offset     = ifb_memory::arena_commit_bytes_relative(
+    IFBMemoryArena* file_table_arena      = init_ref.args->arena; 
+    const IFBU32    file_table_size_total = init_ref.sizes->commit.total; 
+    const IFBU32    file_table_offset     = ifb_memory::arena_commit_bytes_relative(
         file_table_arena,
         file_table_size_total);
 
@@ -311,6 +311,6 @@ ifb_file_table::read_only_init_step_8_release_size_cache(
     IFBFileTableReadOnlyInit& init_ref) {
 
     const IFBU32 size   = init_ref.sizes->tmp_cache.sizes_struct; 
-    const IFBB8  result = ifb_memory::arena_release_bytes(init_ref.args->arena_handle,size);
+    const IFBB8  result = ifb_memory::arena_release_bytes(init_ref.args->arena,size);
     ifb_macro_assert(result);
 }
