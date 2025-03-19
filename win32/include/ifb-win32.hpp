@@ -205,7 +205,7 @@ namespace ifb_win32 {
 
     inline IFBVoid
     platform_api_initialize(
-        IFBPlatformApi& platform_api_ref) {
+        IFBPlatformAPI& platform_api_ref) {
 
         //system
         platform_api_ref.system.get_info     = ifb_win32::system_get_info;
@@ -231,16 +231,16 @@ namespace ifb_win32 {
         platform_api_ref.monitor.info                  = ifb_win32::monitor_info;
 
         //files
-        platform_file_api_ref.file_ro_open             = ifb_win32::file_ro_open;
-        platform_file_api_ref.file_ro_close            = ifb_win32::file_ro_close;
-        platform_file_api_ref.file_ro_read_immediate   = ifb_win32::file_ro_read_immediate;
-        platform_file_api_ref.file_ro_read_async       = ifb_win32::file_ro_read_async;
-        platform_file_api_ref.file_rw_open             = ifb_win32::file_rw_open;
-        platform_file_api_ref.file_rw_close            = ifb_win32::file_rw_close;
-        platform_file_api_ref.file_rw_read_immediate   = ifb_win32::file_rw_read_immediate;
-        platform_file_api_ref.file_rw_read_async       = ifb_win32::file_rw_read_async;
-        platform_file_api_ref.file_rw_write_immediate  = ifb_win32::file_rw_write_immediate;
-        platform_file_api_ref.file_rw_write_async      = ifb_win32::file_rw_write_async;
+        // platform_file_api_ref.file_ro_open             = ifb_win32::file_ro_open;
+        // platform_file_api_ref.file_ro_close            = ifb_win32::file_ro_close;
+        // platform_file_api_ref.file_ro_read_immediate   = ifb_win32::file_ro_read_immediate;
+        // platform_file_api_ref.file_ro_read_async       = ifb_win32::file_ro_read_async;
+        // platform_file_api_ref.file_rw_open             = ifb_win32::file_rw_open;
+        // platform_file_api_ref.file_rw_close            = ifb_win32::file_rw_close;
+        // platform_file_api_ref.file_rw_read_immediate   = ifb_win32::file_rw_read_immediate;
+        // platform_file_api_ref.file_rw_read_async       = ifb_win32::file_rw_read_async;
+        // platform_file_api_ref.file_rw_write_immediate  = ifb_win32::file_rw_write_immediate;
+        // platform_file_api_ref.file_rw_write_async      = ifb_win32::file_rw_write_async;
     }
 };
 
@@ -276,7 +276,7 @@ namespace ifb_win32 {
 
     const IFBB8
     context_create(
-        const IFBPlatformApi& platform_api_ref,
+        const IFBPlatformAPI& platform_api_ref,
         const IFBWin32Args&   win32_args_ref);
         
     const IFBB8

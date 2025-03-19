@@ -14,7 +14,7 @@ ifb_global IFBWin32Context* _ptr_context;
 
 inline const IFBB8
 ifb_win32::context_create(
-    const IFBPlatformApi& platform_api_ref,
+    const IFBPlatformAPI& platform_api_ref,
     const IFBWin32Args&   win32_args_ref) {
 
     //engine memory
