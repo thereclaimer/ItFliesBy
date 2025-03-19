@@ -57,7 +57,7 @@ ifb_file_table::read_only_load_file_path_buffer(
     const IFBFileTableReadOnly* table) {
 
     const IFBU32  offset      = table->handles.file_path_buffer.offset;
-    const IFBAddr start       = table->header.start;
+    const IFBAddr start       = table->header.memory.start;
     const IFBAddr result_addr = offset + start;
 
     IFBChar* result_ptr = (IFBChar*)result_addr;
@@ -69,7 +69,7 @@ ifb_file_table::read_only_load_array_file_context(
     const IFBFileTableReadOnly* table) {
 
     const IFBU32  offset      = table->handles.array_file_context.offset;
-    const IFBAddr start       = table->header.start;
+    const IFBAddr start       = table->header.memory.start;
     const IFBAddr result_addr = offset + start;
 
     IFBFileContext* result_ptr = (IFBFileContext*)result_addr;
@@ -81,7 +81,7 @@ ifb_file_table::read_only_load_array_last_bytes_read(
     const IFBFileTableReadOnly* table) {
 
     const IFBU32  offset      = table->handles.array_last_bytes_read.offset;
-    const IFBAddr start       = table->header.start;
+    const IFBAddr start       = table->header.memory.start;
     const IFBAddr result_addr = offset + start;
 
     IFBU32* result_ptr = (IFBU32*)result_addr;
@@ -93,7 +93,7 @@ ifb_file_table::read_only_load_array_list_files_open(
     const IFBFileTableReadOnly* table) {
 
     const IFBU32  offset      = table->handles.array_list_files_open.offset;
-    const IFBAddr start       = table->header.start;
+    const IFBAddr start       = table->header.memory.start;
     const IFBAddr result_addr = offset + start;
 
     IFBArrayList* result_ptr = (IFBArrayList*)result_addr;
@@ -105,7 +105,7 @@ ifb_file_table::read_only_load_array_list_files_closed(
     const IFBFileTableReadOnly* table) {
 
     const IFBU32  offset      = table->handles.array_list_files_closed.offset;
-    const IFBAddr start       = table->header.start;
+    const IFBAddr start       = table->header.memory.start;
     const IFBAddr result_addr = offset + start;
 
     IFBArrayList* result_ptr = (IFBArrayList*)result_addr;
@@ -117,7 +117,7 @@ ifb_file_table::read_only_load_array_list_files_locked(
     const IFBFileTableReadOnly* table) {
 
     const IFBU32  offset      = table->handles.array_list_files_locked.offset;
-    const IFBAddr start       = table->header.start;
+    const IFBAddr start       = table->header.memory.start;
     const IFBAddr result_addr = offset + start;
 
     IFBArrayList* result_ptr = (IFBArrayList*)result_addr;
@@ -129,7 +129,7 @@ ifb_file_table::read_only_load_context_data(
     const IFBFileTableReadOnly* table) {
 
     const IFBU32  offset      = table->handles.context_data.offset;
-    const IFBAddr start       = table->header.start;
+    const IFBAddr start       = table->header.memory.start;
     const IFBAddr result_addr = offset + start;
 
     IFBPtr* result_ptr = (IFBPtr*)result_addr;

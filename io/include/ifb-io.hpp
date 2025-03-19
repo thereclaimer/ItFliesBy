@@ -21,10 +21,10 @@ namespace ifb_file_table {
 
 namespace ifb_file_ro {
 
-    const IFBB8 file_open           (const IFBFileRequestReadOnly* request);
-    const IFBB8 file_close          (const IFBFileRequestReadOnly* request);
-    const IFBB8 file_read_immediate (const IFBFileRequestReadOnly* request);
-    const IFBB8 file_read_async     (const IFBFileRequestReadOnly* request);
+    const IFBB8 file_open           (const IFBFileRequest* request);
+    const IFBB8 file_close          (const IFBFileRequest* request);
+    const IFBB8 file_read_immediate (const IFBFileRequest* request);
+    const IFBB8 file_read_async     (const IFBFileRequest* request);
 };
 
 #endif //IFB_IO_HPP
