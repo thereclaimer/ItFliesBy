@@ -11,11 +11,11 @@ ifb_win32::file_dialog_api_initialize(
 
 ifb_internal const IFBB8
 ifb_win32::file_dialog_select_file(
-    const IFBCStr  in_file_dialog_starting_directory,
+    const IFBChar*  in_file_dialog_starting_directory,
     const IFBSize  in_file_type_count,
-    const IFBCStr* in_file_type_name_cstr_ptr,
-    const IFBCStr* in_file_type_spec_cstr_ptr,
-          IFBCStr out_file_selection_buffer) {
+    const IFBChar** in_file_type_name_cstr_ptr,
+    const IFBChar** in_file_type_spec_cstr_ptr,
+          IFBChar* out_file_selection_buffer) {
 
     //sanity check
     if (
@@ -51,8 +51,8 @@ ifb_win32::file_dialog_select_file(
         ++file_type_index) {
 
         //cache the current c-strings
-        const IFBCStr file_type_name_cstr = in_file_type_name_cstr_ptr[file_type_index];
-        const IFBCStr file_type_spec_cstr = in_file_type_spec_cstr_ptr[file_type_index];
+        const IFBChar* file_type_name_cstr = in_file_type_name_cstr_ptr[file_type_index];
+        const IFBChar* file_type_spec_cstr = in_file_type_spec_cstr_ptr[file_type_index];
 
         //get the c-string lengths, including the null terminator
         const IFBSize file_type_name_cstr_length = strnlen_s(file_type_name_cstr, IFB_WIN32_DIALOG_CSTR_LENGTH_MAX) + 1;

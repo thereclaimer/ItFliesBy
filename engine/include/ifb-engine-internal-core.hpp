@@ -12,10 +12,14 @@
 //core
 struct IFBEngineCore;
 
+//memory
 struct IFBEngineCoreMemoryStack;
 struct IFBEngineCoreMemorySubStack;
 struct IFBEngineCoreMemoryReservation;
 struct IFBEngineCoreMemory;
+
+//files
+struct IFBEngineCoreFiles;
 
 /**********************************************************************************/
 /* MEMORY                                                                         */
@@ -53,6 +57,22 @@ namespace ifb_engine {
     const IFBHNDArena core_memory_commit_arena            (IFBEngineCore* core_ptr);           
 };
 
+/**********************************************************************************/
+/* FILES                                                                          */
+/**********************************************************************************/
+
+struct IFBEngineCoreFiles {
+    IFBHNDArena arena_handle;
+    struct  {
+        IFBHNDFileTable read_only;
+        IFBHNDFileTable read_write;
+    } table_handles;
+};
+
+namespace ifb_engine {
+
+    const IFBB8 core_files_commit_tables(IFBEngineCore* core_ptr);
+};
 
 /**********************************************************************************/
 /* CORE                                                                           */
@@ -60,6 +80,7 @@ namespace ifb_engine {
 
 struct IFBEngineCore {
     IFBEngineCoreMemory memory; 
+    IFBEngineCoreFiles  files;
 };
 
 namespace ifb_engine {

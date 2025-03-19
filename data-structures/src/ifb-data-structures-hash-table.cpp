@@ -59,8 +59,8 @@ ifb_hash_table::commit_to_arena_relative(
     const IFBAddr start_address_elements = start_address_data + size_array_hash; 
 
     //initialize the table
-    ptr_hash_table->data_start          = start_address_data;
-    ptr_hash_table->data_size           = size_data;
+    ptr_hash_table->start               = start_address_data;
+    ptr_hash_table->size                = size_data;
     ptr_hash_table->element_array_start = start_address_elements;
     ptr_hash_table->element_size        = element_size;
     ptr_hash_table->element_count_max   = element_count;
@@ -96,8 +96,8 @@ ifb_hash_table::commit_to_arena_absolute(
     const IFBAddr start_address_elements = start_address_data + size_array_hash; 
 
     //initialize the table
-    ptr_hash_table->data_start          = start_address_data;
-    ptr_hash_table->data_size           = size_data;
+    ptr_hash_table->start               = start_address_data;
+    ptr_hash_table->size                = size_data;
     ptr_hash_table->element_array_start = start_address_elements;
     ptr_hash_table->element_size        = element_size;
     ptr_hash_table->element_count_max   = element_count;
@@ -435,7 +435,7 @@ inline IFBHash*
 ifb_hash_table::get_hash_array(
     const IFBHashTable* ptr_hash_table) {
 
-    IFBHash* hash_array = (IFBHash*)ptr_hash_table->data_start;
+    IFBHash* hash_array = (IFBHash*)ptr_hash_table->start;
     ifb_macro_assert(hash_array);
     return(hash_array);
 }

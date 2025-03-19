@@ -92,7 +92,7 @@ namespace ifb_win32 {
 
     ifb_internal const IFBB8 
     window_create(
-        const IFBCStr title,
+        const IFBChar* title,
         const IFBU32  width,
         const IFBU32  height,
         const IFBU32  position_x,
@@ -139,57 +139,35 @@ namespace ifb_win32 {
 /* FILES                                                                          */
 /**********************************************************************************/
 
-#define IFB_WIN32_FILE_MANAGER_MAX_FILES 32
-
-struct IFBWin32FileOverlappedInfo { 
-    OVERLAPPED                 overlapped;
-    IFBIndex                  file_index; 
-    IFBSize                   bytes_read;
-    IFBSize                   bytes_written;
+struct IFBWin32FileReadOnly {
+    HANDLE     win32_file_handle;
+    OVERLAPPED win32_overlapped;
 };
 
-struct IFBWin32FileTable {
-    IFBSize row_count;
-    struct {
-        HANDLE                     handle    [IFB_WIN32_FILE_MANAGER_MAX_FILES];
-        IFBSize                   size      [IFB_WIN32_FILE_MANAGER_MAX_FILES];
-        IFBWin32FileOverlappedInfo overlapped[IFB_WIN32_FILE_MANAGER_MAX_FILES];
-    } columns;
+struct IFBWin32FileReadWrite {
+    HANDLE     win32_file_handle;
+    OVERLAPPED win32_overlapped;
 };
 
 namespace ifb_win32 {
 
-    ifb_internal const IFBB8 file_open_read_only  (const IFBCStr in_file_path, IFBIndex& out_file_index_ref);
-    ifb_internal const IFBB8 file_open_read_write (const IFBCStr in_file_path, IFBIndex& out_file_index_ref);
-
-    ifb_internal const IFBB8   file_close (const IFBIndex file_index);
-    ifb_internal const IFBSize file_size  (const IFBIndex file_index);
+    //read only
+    ifb_internal const IFBU32 file_ro_context_size     (IFBVoid);
+    ifb_internal const IFBB8  file_ro_open             (IFBFileReadOnlyRequest* file_ro_request);
+    ifb_internal const IFBB8  file_ro_read_async       (IFBFileReadOnlyRequest* file_ro_request);
+    ifb_internal const IFBU32 file_ro_read_immediate   (IFBFileReadOnlyRequest* file_ro_request);
+    ifb_internal const IFBB8  file_ro_close            (IFBFileReadOnlyRequest* file_ro_request);
     
-    ifb_internal const IFBB8 
-    file_read(
-        const IFBIndex   in_file_index,
-        const IFBSize    in_file_read_start,
-        const IFBSize    in_file_read_size,
-              IFBByte*  out_file_read_buffer);
+    //read write
+    ifb_internal const IFBU32 file_rw_context_size     (IFBVoid);
+    ifb_internal const IFBB8  file_rw_open             (IFBFileReadWriteRequest* file_rw_request);
+    ifb_internal const IFBU32 file_rw_read_immediate   (IFBFileReadWriteRequest* file_rw_request);
+    ifb_internal const IFBB8  file_rw_read_async       (IFBFileReadWriteRequest* file_rw_request);
+    ifb_internal const IFBU32 file_rw_write_immediate  (IFBFileReadWriteRequest* file_rw_request);
+    ifb_internal const IFBB8  file_rw_write_async      (IFBFileReadWriteRequest* file_rw_request);
+    ifb_internal const IFBB8  file_rw_close            (IFBFileReadWriteRequest* file_rw_request);
 
-    ifb_internal const IFBB8 
-    file_write(
-        const IFBIndex   in_file_index,
-        const IFBSize    in_file_write_start,
-        const IFBSize    in_file_write_size,
-              IFBByte*  out_file_write_buffer);
 
-    ifb_internal IFBVoid CALLBACK
-    file_read_callback(
-        DWORD        error_code,
-        DWORD        bytes_transferred,
-        LPOVERLAPPED overlapped_ptr);
-
-    ifb_internal IFBVoid CALLBACK
-    file_write_callback(
-        DWORD        error_code,
-        DWORD        bytes_transferred,
-        LPOVERLAPPED overlapped_ptr);
 };
 
 /**********************************************************************************/
@@ -203,11 +181,11 @@ namespace ifb_win32 {
 
     ifb_internal const IFBB8
     file_dialog_select_file(
-        const IFBCStr  in_file_dialog_starting_directory,
-        const IFBSize  in_file_type_count,
-        const IFBCStr* in_file_type_name_cstr_ptr,
-        const IFBCStr* in_file_type_spec_cstr_ptr,
-              IFBCStr out_file_selection_buffer);
+        const IFBChar*  in_file_dialog_starting_directory,
+        const IFBSize   in_file_type_count,
+        const IFBChar** in_file_type_name_cstr_ptr,
+        const IFBChar** in_file_type_spec_cstr_ptr,
+              IFBChar* out_file_selection_buffer);
 };
 
 /**********************************************************************************/
@@ -249,8 +227,20 @@ namespace ifb_win32 {
         platform_api_ref.window.imgui_init   = ifb_win32::window_imgui_init;
 
         //monitor
-        platform_api_ref.monitor.count       = ifb_win32::monitor_count;
-        platform_api_ref.monitor.info        = ifb_win32::monitor_info;
+        platform_api_ref.monitor.count                 = ifb_win32::monitor_count;
+        platform_api_ref.monitor.info                  = ifb_win32::monitor_info;
+
+        //files
+        platform_file_api_ref.file_ro_open             = ifb_win32::file_ro_open;
+        platform_file_api_ref.file_ro_close            = ifb_win32::file_ro_close;
+        platform_file_api_ref.file_ro_read_immediate   = ifb_win32::file_ro_read_immediate;
+        platform_file_api_ref.file_ro_read_async       = ifb_win32::file_ro_read_async;
+        platform_file_api_ref.file_rw_open             = ifb_win32::file_rw_open;
+        platform_file_api_ref.file_rw_close            = ifb_win32::file_rw_close;
+        platform_file_api_ref.file_rw_read_immediate   = ifb_win32::file_rw_read_immediate;
+        platform_file_api_ref.file_rw_read_async       = ifb_win32::file_rw_read_async;
+        platform_file_api_ref.file_rw_write_immediate  = ifb_win32::file_rw_write_immediate;
+        platform_file_api_ref.file_rw_write_async      = ifb_win32::file_rw_write_async;
     }
 };
 

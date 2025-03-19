@@ -57,7 +57,7 @@ ifb_tag::tag_hash(
     const IFBChar* tag_value) {
 
     const IFBHash tag_hash = tag_value != NULL 
-        ? ifb_hash::get_hash((IFBCStr)tag_value,IFB_TAG_LENGTH)
+        ? ifb_hash::get_hash((IFBChar*)tag_value,IFB_TAG_LENGTH)
         : IFBHash{0};
 
     return(tag_hash);
