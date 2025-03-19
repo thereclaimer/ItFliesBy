@@ -5,126 +5,138 @@
 #include "ifb-scopes.hpp"
 
 /**********************************************************************************/
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
+
+struct IFBPlatformAPI;
+struct IFBPlatformAPISystem;
+struct IFBPlatformAPIMemory;
+struct IFBPlatformAPIThread;
+struct IFBPlatformAPIWindow;
+struct IFBPlatformAPIFile;
+struct IFBPlatformAPIMonitor;
+
+/**********************************************************************************/
 /* SYSTEM                                                                         */
 /**********************************************************************************/
 
-typedef const IFBB8
-(*ifb_platform_funcptr_system_get_info)(
-    IFBSystemInfo* system_info);
+typedef const IFBB8     (*IFBPlatformSystemGetInfo)    (IFBSystemInfo* system_info);
+typedef const IFBTimems (*IFBPlatformSystemTimeMS)     (IFBVoid);
+typedef IFBVoid         (*IFBPlatformSystemSleep)      (const IFBU32   ms);
+typedef IFBVoid         (*IFBPlatformSystemDebugPrint) (const IFBChar* debug_string);
 
-typedef const IFBTimems
-(*ifb_platform_funcptr_system_time_ms)(
-    IFBVoid);
-
-typedef IFBVoid
-(*ifb_platform_funcptr_system_sleep)(
-    const IFBU32 ms);
-
-struct IFBPlatformSystemApi {
-    ifb_platform_funcptr_system_get_info get_info;
-    ifb_platform_funcptr_system_time_ms  time_ms;
-    ifb_platform_funcptr_system_sleep    sleep;
+struct IFBPlatformAPISystem {
+    IFBPlatformSystemGetInfo    get_info;
+    IFBPlatformSystemTimeMS     time_ms;
+    IFBPlatformSystemSleep      sleep;
+    IFBPlatformSystemDebugPrint debug_print;
 };
 
 namespace ifb_platform {
-    extern ifb_platform_funcptr_system_get_info system_get_info;
-    extern ifb_platform_funcptr_system_time_ms  system_time_ms;
-    extern ifb_platform_funcptr_system_sleep    system_sleep;
+    extern IFBPlatformSystemGetInfo    system_get_info;
+    extern IFBPlatformSystemTimeMS     system_time_ms;
+    extern IFBPlatformSystemSleep      system_sleep;
+    extern IFBPlatformSystemDebugPrint system_debug_print;
+
 };
 
 /**********************************************************************************/
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
-typedef const IFBPtr
-(*ifb_platform_funcptr_memory_reserve)(
-    const IFBU64 reservation_size);
+typedef const IFBPtr (*IFBPlatformMemoryReserve)  (const IFBU64 reservation_size);
+typedef const IFBB8  (*IFBPlatformMemoryRelease)  (const IFBPtr reservation_start, const IFBU64 reservation_size);
+typedef const IFBPtr (*IFBPlatformMemoryCommit)   (const IFBPtr commit_start,      const IFBU64 commit_size);
+typedef const IFBB8  (*IFBPlatformMemoryDecommit) (const IFBPtr commit_start,      const IFBU64 commit_size);
 
-typedef const IFBB8
-(*ifb_platform_funcptr_memory_release)(
-    const IFBPtr reservation_start,
-    const IFBU64 reservation_size);
-
-typedef const IFBPtr
-(*ifb_platform_funcptr_memory_commit)(
-    const IFBPtr commit_start,
-    const IFBU64 commit_size);
-
-typedef const IFBB8
-(*ifb_platform_funcptr_memory_decommit)(
-    const IFBPtr commit_start,
-    const IFBU64 commit_size);
-
-struct IFBPlatformMemoryApi {
-    ifb_platform_funcptr_memory_reserve  reserve;
-    ifb_platform_funcptr_memory_release  release;
-    ifb_platform_funcptr_memory_commit   commit;
-    ifb_platform_funcptr_memory_decommit decommit;
+struct IFBPlatformAPIMemory {
+    IFBPlatformMemoryReserve  reserve;
+    IFBPlatformMemoryRelease  release;
+    IFBPlatformMemoryCommit   commit;
+    IFBPlatformMemoryDecommit decommit;
 };
 
 namespace ifb_platform {
 
-    extern ifb_platform_funcptr_memory_reserve  memory_reserve;
-    extern ifb_platform_funcptr_memory_release  memory_release;
-    extern ifb_platform_funcptr_memory_commit   memory_commit;
-    extern ifb_platform_funcptr_memory_decommit memory_decommit;
+    extern IFBPlatformMemoryReserve  memory_reserve;
+    extern IFBPlatformMemoryRelease  memory_release;
+    extern IFBPlatformMemoryCommit   memory_commit;
+    extern IFBPlatformMemoryDecommit memory_decommit;
 };
+
+/**********************************************************************************/
+/* THREADS                                                                        */
+/**********************************************************************************/
+
+// typedef const IFBB8
+// (*IFBPlatformThreadCreate) (
+//     const IFBThreadPlatformContext* thread_context,
+//     const IFBU32                    thread_count,
+//     const IFBChar*                  thread_description,
+//     const IFBU32                    thread_description_stride,
+//           IFBU64*                   thread_id);
+
+// typedef const IFBB8 (*IFBPlatformThreadDestroy)     (const IFBThreadPlatformContext* thread_context, const IFBU32 thread_count);
+// typedef const IFBB8 (*IFBPlatformThreadAssignCores) (const IFBThreadPlatformContext* thread_context, const IFBU32 thread_count, const IFBU64* thread_core_mask);
+// typedef const IFBB8 (*IFBPlatformThreadWake)        (const IFBThreadPlatformContext* thread_context, const IFBU32 thread_count);
+// typedef const IFBB8 (*IFBPlatformThreadSleep)       (const IFBThreadPlatformContext* thread_context, const IFBU32 thread_count);
+// typedef const IFBB8 (*IFBPlatformThreadGetStatus)   (const IFBThreadPlatformContext* thread_context, const IFBU32 thread_count, IFBThreadStatus* thread_status);
+
+// struct IFBPlatformAPIThread {
+//     IFBPlatformThreadCreate      create;
+//     IFBPlatformThreadDestroy     destroy;
+//     IFBPlatformThreadAssignCores assign_cores;
+//     IFBPlatformThreadWake        wake;
+//     IFBPlatformThreadSleep       sleep;
+// };
+
+// namespace ifb_platform {
+
+//     extern IFBPlatformThreadCreate      thread_create;
+//     extern IFBPlatformThreadDestroy     thread_destroy;
+//     extern IFBPlatformThreadAssignCores thread_assign_cores;
+//     extern IFBPlatformThreadWake        thread_wake;
+//     extern IFBPlatformThreadSleep       thread_sleep;
+// };
 
 /**********************************************************************************/
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
 typedef const IFBB8
-(*ifb_platform_funcptr_window_create) (
+(*IFBPlatformWindowCreate) (
     const IFBChar* title,
     const IFBU32   width,
     const IFBU32   height,
     const IFBU32   position_x,
     const IFBU32   position_y);
 
-typedef IFBGLContext
-(*ifb_platform_funcptr_window_opengl_init) (
-    IFBVoid);
+typedef const IFBB8   (*IFBPlatformWindowDestroy)     (IFBVoid);
+typedef const IFBB8   (*IFBPlatformWindowFrameStart)  (IFBVoid);
+typedef const IFBB8   (*IFBPlatformWindowFrameRender) (IFBVoid);
+typedef const IFBB8   (*IFBPlatformWindowShow)        (IFBVoid);
+typedef IFBGLContext  (*IFBPlatformWindowOpenGLInit)  (IFBVoid);
+typedef ImGuiContext* (*IFBPlatformWindowImGUIInit)   (IFBVoid);
 
-typedef ImGuiContext*
-(*ifb_platform_funcptr_window_imgui_init) (
-    IFBVoid);
-
-typedef const IFBB8
-(*ifb_platform_funcptr_window_show)(
-    IFBVoid);
-
-typedef const IFBB8
-(*ifb_platform_funcptr_window_destroy)(
-    IFBVoid);
-
-typedef const IFBB8
-(*ifb_platform_funcptr_window_frame_start)(
-    IFBVoid);
-
-typedef const IFBB8
-(*ifb_platform_funcptr_window_frame_render)(
-    IFBVoid);
-
-struct IFBPlatformWindowApi {
-    ifb_platform_funcptr_window_create       create;
-    ifb_platform_funcptr_window_destroy      destroy;
-    ifb_platform_funcptr_window_frame_start  frame_start;
-    ifb_platform_funcptr_window_frame_render frame_render;
-    ifb_platform_funcptr_window_show         show;
-    ifb_platform_funcptr_window_opengl_init  opengl_init;
-    ifb_platform_funcptr_window_imgui_init   imgui_init;
+struct IFBPlatformAPIWindow {
+    IFBPlatformWindowCreate      create;
+    IFBPlatformWindowDestroy     destroy;
+    IFBPlatformWindowFrameStart  frame_start;
+    IFBPlatformWindowFrameRender frame_render;
+    IFBPlatformWindowShow        show;
+    IFBPlatformWindowOpenGLInit  opengl_init;
+    IFBPlatformWindowImGUIInit   imgui_init;
 };
 
 namespace ifb_platform {
 
-    extern ifb_platform_funcptr_window_create       window_create;
-    extern ifb_platform_funcptr_window_destroy      window_destroy;
-    extern ifb_platform_funcptr_window_frame_start  window_frame_start;
-    extern ifb_platform_funcptr_window_frame_render window_frame_render;
-    extern ifb_platform_funcptr_window_show         window_show;
-    extern ifb_platform_funcptr_window_opengl_init  window_opengl_init;
-    extern ifb_platform_funcptr_window_imgui_init   window_imgui_init;
+    extern IFBPlatformWindowCreate      window_create;
+    extern IFBPlatformWindowDestroy     window_destroy;
+    extern IFBPlatformWindowFrameStart  window_frame_start;
+    extern IFBPlatformWindowFrameRender window_frame_render;
+    extern IFBPlatformWindowShow        window_show;
+    extern IFBPlatformWindowOpenGLInit  window_opengl_init;
+    extern IFBPlatformWindowImGUIInit   window_imgui_init;
 };
 
 /**********************************************************************************/
@@ -132,99 +144,85 @@ namespace ifb_platform {
 /**********************************************************************************/
 
 typedef const IFBU32
-(*ifb_platform_funcptr_monitor_count) (
+(*IFBPlatformMonitorCount) (
     IFBVoid);
 
 typedef const IFBB8
-(*ifb_platform_funcptr_monitor_info)(
+(*IFBPlatformMonitorInfo)(
     const IFBU32      monitor_count,
           IFBMonitor* monitor_array);
 
-struct IFBPlatformMonitorApi {
-    ifb_platform_funcptr_monitor_count count;
-    ifb_platform_funcptr_monitor_info  info;
+struct IFBPlatformAPIMonitor {
+    IFBPlatformMonitorCount count;
+    IFBPlatformMonitorInfo  info;
 };
 
 namespace ifb_platform {
 
-    extern ifb_platform_funcptr_monitor_count monitor_count;
-    extern ifb_platform_funcptr_monitor_info  monitor_info;
+    extern IFBPlatformMonitorCount monitor_count;
+    extern IFBPlatformMonitorInfo  monitor_info;
 };
 
 /**********************************************************************************/
 /* FILES                                                                          */                            
 /**********************************************************************************/
 
-typedef const IFBU32 (*ifb_platform_func_ptr_file_ro_context_size)    (IFBVoid);
-typedef const IFBB8  (*ifb_platform_func_ptr_file_ro_open)            (IFBFileReadOnlyRequest* file_ro_request);             
-typedef const IFBU32 (*ifb_platform_func_ptr_file_ro_read_immediate)  (IFBFileReadOnlyRequest* file_ro_request);   
-typedef const IFBB8  (*ifb_platform_func_ptr_file_ro_read_async)      (IFBFileReadOnlyRequest* file_ro_request);       
-typedef const IFBB8  (*ifb_platform_func_ptr_file_ro_close)           (IFBFileReadOnlyRequest* file_ro_request);            
+typedef const IFBU32 (*IFBPlatformFileROContextSize)    (IFBVoid);
+typedef const IFBB8  (*IFBPlatformFileROOpen)           (IFBFileReadOnlyRequest* file_ro_request);
+typedef const IFBB8  (*IFBPlatformFileROReadImmediate)  (IFBFileReadOnlyRequest* file_ro_request);
+typedef const IFBB8  (*IFBPlatformFileROReadAsync)      (IFBFileReadOnlyRequest* file_ro_request);
+typedef const IFBB8  (*IFBPlatformFileROClose)          (IFBFileReadOnlyRequest* file_ro_request);
 
-typedef const IFBU32 (*ifb_platform_func_ptr_file_rw_context_size)    (IFBVoid);
-typedef const IFBB8  (*ifb_platform_func_ptr_file_rw_open)            (IFBFileReadWriteRequest* file_rw_request);             
-typedef const IFBU32 (*ifb_platform_func_ptr_file_rw_read_immediate)  (IFBFileReadWriteRequest* file_rw_request);   
-typedef const IFBB8  (*ifb_platform_func_ptr_file_rw_read_async)      (IFBFileReadWriteRequest* file_rw_request);       
-typedef const IFBU32 (*ifb_platform_func_ptr_file_rw_write_immediate) (IFBFileReadWriteRequest* file_rw_request);  
-typedef const IFBB8  (*ifb_platform_func_ptr_file_rw_write_async)     (IFBFileReadWriteRequest* file_rw_request);      
-typedef const IFBB8  (*ifb_platform_func_ptr_file_rw_close)           (IFBFileReadWriteRequest* file_rw_request);            
+typedef const IFBU32 (*IFBPlatformFileRWContextSize)    (IFBVoid);
+typedef const IFBB8  (*IFBPlatformFileRWOpen)           (IFBFileReadWriteRequest* file_rw_request);
+typedef const IFBB8  (*IFBPlatformFileRWReadImmediate)  (IFBFileReadWriteRequest* file_rw_request);
+typedef const IFBB8  (*IFBPlatformFileRWReadAsync)      (IFBFileReadWriteRequest* file_rw_request);
+typedef const IFBB8  (*IFBPlatformFileRWWriteImmediate) (IFBFileReadWriteRequest* file_rw_request);
+typedef const IFBB8  (*IFBPlatformFileRWWriteAsync)     (IFBFileReadWriteRequest* file_rw_request);
+typedef const IFBB8  (*IFBPlatformFileRWClose)          (IFBFileReadWriteRequest* file_rw_request);
 
-struct IFBPlatformFileApi {
-    ifb_platform_func_ptr_file_ro_context_size    ro_context_size;
-    ifb_platform_func_ptr_file_ro_open            ro_open;
-    ifb_platform_func_ptr_file_ro_close           ro_close;
-    ifb_platform_func_ptr_file_ro_read_immediate  ro_read_immediate;
-    ifb_platform_func_ptr_file_ro_read_async      ro_read_async;
-    ifb_platform_func_ptr_file_rw_context_size    rw_context_size;
-    ifb_platform_func_ptr_file_rw_open            rw_open;
-    ifb_platform_func_ptr_file_rw_close           rw_close;
-    ifb_platform_func_ptr_file_rw_read_immediate  rw_read_immediate;
-    ifb_platform_func_ptr_file_rw_read_async      rw_read_async;
-    ifb_platform_func_ptr_file_rw_write_immediate rw_write_immediate;
-    ifb_platform_func_ptr_file_rw_write_async     rw_write_async;
+struct IFBPlatformAPIFile {
+    IFBPlatformFileROContextSize    ro_context_size;
+    IFBPlatformFileROOpen           ro_open;
+    IFBPlatformFileROReadImmediate  ro_close;
+    IFBPlatformFileROReadAsync      ro_read_immediate;
+    IFBPlatformFileROClose          ro_read_async;
+    IFBPlatformFileRWContextSize    rw_context_size;
+    IFBPlatformFileRWOpen           rw_open;
+    IFBPlatformFileRWReadImmediate  rw_close;
+    IFBPlatformFileRWReadAsync      rw_read_immediate;
+    IFBPlatformFileRWWriteImmediate rw_read_async;
+    IFBPlatformFileRWWriteAsync     rw_write_immediate;
+    IFBPlatformFileRWClose          rw_write_async;
 };
 
 namespace ifb_platform {
 
-    extern ifb_platform_func_ptr_file_ro_context_size    file_ro_context_size;
-    extern ifb_platform_func_ptr_file_ro_open            file_ro_open;
-    extern ifb_platform_func_ptr_file_ro_close           file_ro_close;
-    extern ifb_platform_func_ptr_file_ro_read_immediate  file_ro_read_immediate;
-    extern ifb_platform_func_ptr_file_ro_read_async      file_ro_read_async;
-    extern ifb_platform_func_ptr_file_rw_context_size    file_rw_context_size;
-    extern ifb_platform_func_ptr_file_rw_open            file_rw_open;
-    extern ifb_platform_func_ptr_file_rw_close           file_rw_close;
-    extern ifb_platform_func_ptr_file_rw_read_immediate  file_rw_read_immediate;
-    extern ifb_platform_func_ptr_file_rw_read_async      file_rw_read_async;
-    extern ifb_platform_func_ptr_file_rw_write_immediate file_rw_write_immediate;
-    extern ifb_platform_func_ptr_file_rw_write_async     file_rw_write_async;
-};
-
-/**********************************************************************************/
-/* FILE DIALOG                                                                    */
-/**********************************************************************************/
-
-typedef const IFBB8
-(*ifb_platform_funcptr_file_dialog_select_file) (
-    const IFBChar*  in_file_dialog_starting_directory,
-    const IFBSize   in_file_type_count,
-    const IFBChar** in_file_type_name_cstr_ptr,
-    const IFBChar** in_file_type_spec_cstr_ptr,
-          IFBChar* out_file_selection_buffer);
-
-struct IFBPlatformFileDialogApi {
-    ifb_platform_funcptr_file_dialog_select_file select_file;
+    extern IFBPlatformFileROContextSize    file_ro_context_size;
+    extern IFBPlatformFileROOpen           file_ro_open;
+    extern IFBPlatformFileROReadImmediate  file_ro_close;
+    extern IFBPlatformFileROReadAsync      file_ro_read_immediate;
+    extern IFBPlatformFileROClose          file_ro_read_async;
+    extern IFBPlatformFileRWContextSize    file_rw_context_size;
+    extern IFBPlatformFileRWOpen           file_rw_open;
+    extern IFBPlatformFileRWReadImmediate  file_rw_close;
+    extern IFBPlatformFileRWReadAsync      file_rw_read_immediate;
+    extern IFBPlatformFileRWWriteImmediate file_rw_read_async;
+    extern IFBPlatformFileRWWriteAsync     file_rw_write_immediate;
+    extern IFBPlatformFileRWClose          file_rw_write_async;
 };
 
 /**********************************************************************************/
 /* PLATFORM API                                                                   */
 /**********************************************************************************/
 
-struct IFBPlatformApi {
-    IFBPlatformSystemApi  system;
-    IFBPlatformMemoryApi  memory;
-    IFBPlatformWindowApi  window;
-    IFBPlatformMonitorApi monitor;
+struct IFBPlatformAPI {
+    IFBPlatformAPISystem  system;
+    IFBPlatformAPIMemory  memory;
+    // IFBPlatformAPIThread  thread;
+    IFBPlatformAPIWindow  window;
+    IFBPlatformAPIFile    file;
+    IFBPlatformAPIMonitor monitor;
 };
 
 #endif //IFB_ENGINE_PLATFORM_HPP
