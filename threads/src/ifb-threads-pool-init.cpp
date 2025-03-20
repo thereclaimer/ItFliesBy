@@ -195,10 +195,10 @@ ifb_thread::pool_init_step_5_validate_pool(
     result_ref &= (pool->header.stride_memory_task     == sizes->other.task_function); 
 
     //validate handles
-    result_ref &= (pool->handles.description_buffer         != 0);
-    result_ref &= (pool->handles.memory_platform            != 0);
-    result_ref &= (pool->handles.memory_task                != 0);
-    result_ref &= (pool->handles.array_task_functions       != 0);
-    result_ref &= (pool->handles.array_list_running_threads != 0);
-    result_ref &= (pool->handles.array_affinity_mask        != 0);
+    result_ref &= (pool->handles.description_buffer.offset         != 0);
+    result_ref &= (pool->handles.memory_platform.offset            != 0);
+    result_ref &= (pool->handles.memory_task.offset                != 0);
+    result_ref &= (pool->handles.array_task_functions.offset       != 0);
+    result_ref &= (pool->handles.array_list_running_threads.offset != 0);
+    result_ref &= (pool->handles.array_affinity_mask.offset        != 0);
 }
