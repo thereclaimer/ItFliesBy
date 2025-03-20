@@ -1,8 +1,7 @@
 #ifndef IFB_PLATFORM_HPP
 #define IFB_PLATFORM_HPP
 
-#include "ifb-types.hpp"
-#include "ifb-scopes.hpp"
+#include <ifb.hpp>
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -37,7 +36,6 @@ namespace ifb_platform {
     extern IFBPlatformSystemTimeMS     system_time_ms;
     extern IFBPlatformSystemSleep      system_sleep;
     extern IFBPlatformSystemDebugPrint system_debug_print;
-
 };
 
 /**********************************************************************************/
@@ -219,6 +217,11 @@ struct IFBPlatformAPI {
     IFBPlatformAPIWindow  window;
     IFBPlatformAPIFile    file;
     IFBPlatformAPIMonitor monitor;
+};
+
+namespace ifb_platform {
+
+    const IFBB8 set_api (const IFBPlatformAPI* platform_api);
 };
 
 #endif //IFB_ENGINE_PLATFORM_HPP

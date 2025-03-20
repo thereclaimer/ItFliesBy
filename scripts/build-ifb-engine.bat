@@ -68,6 +68,7 @@ if not exist %dir_vcpkg% call vcpkg install
                     /I engine\src\graphics     ^
                     /I engine\src\renderer     ^
                     /I memory\include          ^
+                    /I platform\include        ^
                     /I data-structures\include ^
                     /I graphics\include        ^
                     /I rendering\include       ^
@@ -93,6 +94,7 @@ if not exist %dir_vcpkg% call vcpkg install
                     ItFliesBy.Graphics.lib       ^
                     ItFliesBy.DataStructures.lib ^
                     ItFliesBy.Rendering.lib      ^
+                    ItFliesBy.Platform.lib       ^
                     glew32.lib                   ^
                     opengl32.lib
 

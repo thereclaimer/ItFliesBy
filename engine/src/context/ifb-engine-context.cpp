@@ -4,7 +4,6 @@
 #include "ifb-engine-internal-context.hpp"
 
 #include "ifb-engine-context-singletons.cpp"
-#include "ifb-engine-context-platform.cpp"
 #include "ifb-engine-context-config.cpp"
 
 /**********************************************************************************/

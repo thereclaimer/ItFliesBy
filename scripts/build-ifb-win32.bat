@@ -12,12 +12,22 @@ pushd ..
 
 @set path_build=              build\debug
 
-@set path_engine_include=     engine\include
 
 ::vcpkg install directories
 @set path_vcpkg=              vcpkg_installed
-@set path_vcpkg_include=      %path_vcpkg%\x64-windows\include
 @set path_vcpkg_lib=          %path_vcpkg%\x64-windows\lib
+
+::includes
+@set path_include_win32=          win32\include
+@set path_include_engine=         engine\include
+@set path_include_platform=       platform\include
+@set path_include_common=         common
+@set path_include_external=       external
+@set path_include_memory=         memory\include
+@set path_include_datastructures= data-structures\include
+@set path_include_graphics=       graphics\include
+@set path_include_rendering=      rendering\include
+@set path_include_vcpkg=          %path_vcpkg%\x64-windows\include
 
 ::----------------------------------------------------------------
 :: DEPENDENCIES
@@ -38,16 +48,16 @@ if not exist %path_build%\obj mkdir %path_build%\obj
                     /Fo:%path_build%\obj\ItFliesBy.obj ^
                     /Fd:%path_build%\bin\ItFliesBy.pdb
 
-@set cl_includes=   /I win32\include           ^
-                    /I common                  ^
-                    /I memory\include          ^
-                    /I data-structures\include ^
-                    /I graphics\include        ^
-                    /I rendering\include       ^
-                    /I external                ^
-                    /I %path_engine_include%   ^
-                    /I %path_vcpkg_include%
-
+@set cl_includes=   /I %path_include_win32%          ^
+                    /I %path_include_engine%         ^
+                    /I %path_include_platform%       ^
+                    /I %path_include_common%         ^
+                    /I %path_include_external%       ^
+                    /I %path_include_memory%         ^
+                    /I %path_include_datastructures% ^
+                    /I %path_include_graphics%       ^
+                    /I %path_include_rendering%      ^
+                    /I %path_include_vcpkg%
 
 @set cl_source=     win32\src\ifb-win32.cpp
 

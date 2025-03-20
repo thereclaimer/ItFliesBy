@@ -6,6 +6,7 @@
 #include <ifb-data-structures.hpp>
 #include <ifb-graphics.hpp>
 #include <ifb-rendering-gl.hpp>
+#include <ifb-platform.hpp>
 
 #include "ifb-engine-types.hpp"
 #include "ifb-engine-api.hpp"
