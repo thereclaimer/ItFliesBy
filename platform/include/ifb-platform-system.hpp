@@ -14,11 +14,6 @@ struct IFBSystemInfo;
 /* SYSTEM API                                                                     */
 /**********************************************************************************/
 
-struct IFBSystemMemoryInfo {
-    IFBU32 page_size;
-    IFBU32 allocation_granularity;
-};
-
 struct IFBSystemCPUCacheInfo {
     IFBU32 size_total;
     IFBU32 size_line;
@@ -34,14 +29,15 @@ struct IFBSystemCPUInfo {
     IFBSystemCPUCacheInfo cache_l3;
 };
 
-struct IFBSystemInfo {
-    IFBSystemCPUInfo    cpu;
-    IFBSystemMemoryInfo memory;
+struct IFBSystemMemoryInfo {
+    IFBU32 page_size;
+    IFBU32 allocation_granularity;
 };
 
-typedef const IFBB8     (*IFBPlatformSystemGetInfo)    (IFBSystemInfo* system_info);
-typedef const IFBTimems (*IFBPlatformSystemTimeMS)     (IFBVoid);
-typedef IFBVoid         (*IFBPlatformSystemSleep)      (const IFBU32   ms);
-typedef IFBVoid         (*IFBPlatformSystemDebugPrint) (const IFBChar* debug_string);
+typedef const IFBB8     (*IFBPlatformSystemGetInfoCPU)    (IFBSystemCPUInfo*    cpu_info);
+typedef const IFBB8     (*IFBPlatformSystemGetInfoMemory) (IFBSystemMemoryInfo* memory_info);
+typedef const IFBTimems (*IFBPlatformSystemTimeMS)        (IFBVoid);
+typedef IFBVoid         (*IFBPlatformSystemSleep)         (const IFBU32   ms);
+typedef IFBVoid         (*IFBPlatformSystemDebugPrint)    (const IFBChar* debug_string);
 
 #endif //IFB_PLATFORM_SYSTEM_HPP

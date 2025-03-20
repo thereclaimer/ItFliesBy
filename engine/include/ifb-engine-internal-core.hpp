@@ -70,7 +70,6 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineCore {
-    IFBSystemInfo        system_info;
     IFBEngineCoreMemory memory; 
     IFBEngineCoreFiles  files;
 };

@@ -6,21 +6,24 @@
 
 IFBMemoryContext*
 ifb_memory::context_create(
-    const IFBSystemMemoryInfo* system_memory_info,
-    const IFBByte*             stack_memory,
-    const IFBU32               stack_size) {
+    const IFBByte* stack_memory,
+    const IFBU32   stack_size) {
+
+    IFBB8 result = true;
+
+    //get the system memory info
+    IFBSystemMemoryInfo memory_info;
+    result &= ifb_platform::system_get_info_memory(&memory_info);
 
     //calculate the size of the memory struct
-    const IFBU32 memory_struct_size = ifb_macro_align_size_struct(IFBMemoryContext);
+    const IFBU32 context_size = ifb_macro_align_size_struct(IFBMemoryContext);
 
-    // make sure the stack is valid and large enough
-    IFBB8 result = true;
-    result &= system_memory_info != NULL;
-    result &= stack_memory       != NULL;
-    result &= stack_size         >= memory_struct_size;
-
-    //if everything isn't valid, we're done
-    if (!result) return(NULL);
+    //we can proceed IF...
+    result &= (memory_info.page_size              >  0);            //...the system page size isn't 0 AND
+    result &= (memory_info.allocation_granularity >  0);            //...the system granularity isn't 0 AND
+    result &= (stack_memory                       != NULL);         //...the stack memory isn't null AND
+    result &= (stack_size                         >= context_size); //...the stack memory can fit the context
+    if (!result) return(NULL);                                      // if everything isn't valid, we're done
 
     //cast the stack memory to the memory struct
     IFBMemoryContext* ptr_context = (IFBMemoryContext*)stack_memory;
@@ -33,9 +36,9 @@ ifb_memory::context_create(
     ptr_context->ptr_reservation_last  = NULL;
     ptr_context->stack_start           = stack_start;
     ptr_context->stack_size            = stack_size;
-    ptr_context->stack_position        = memory_struct_size;
-    ptr_context->system_page_size      = system_memory_info->page_size;
-    ptr_context->system_granularity    = system_memory_info->allocation_granularity;
+    ptr_context->stack_position        = context_size;
+    ptr_context->system_page_size      = memory_info.page_size;
+    ptr_context->system_granularity    = memory_info.allocation_granularity;
 
     //we're done
     return(ptr_context);

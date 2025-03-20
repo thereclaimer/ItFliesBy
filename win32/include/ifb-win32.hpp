@@ -44,9 +44,11 @@ namespace ifb_win32 {
 
 namespace ifb_win32 {
 
-    ifb_internal const IFBB8   system_get_info (IFBSystemInfo* system_info);
-    ifb_internal const IFBU64  system_time_ms  (IFBVoid);
-    ifb_internal       IFBVoid system_sleep    (const IFBU32 ms);
+    ifb_internal const IFBB8   system_get_info_cpu    (IFBSystemCPUInfo*    cpu_info);
+    ifb_internal const IFBB8   system_get_info_memory (IFBSystemMemoryInfo* memory_info);
+    ifb_internal const IFBU64  system_time_ms         (IFBVoid);
+    ifb_internal       IFBVoid system_sleep           (const IFBU32 ms);
+    ifb_internal       IFBVoid system_debug_print     (const IFBChar* debug_string);
 };
 
 /**********************************************************************************/
@@ -206,27 +208,28 @@ namespace ifb_win32 {
         IFBPlatformAPI& platform_api_ref) {
 
         //system
-        platform_api_ref.system.get_info     = ifb_win32::system_get_info;
-        platform_api_ref.system.time_ms      = ifb_win32::system_time_ms;
-        platform_api_ref.system.sleep        = ifb_win32::system_sleep;
+        platform_api_ref.system.get_info_cpu    = ifb_win32::system_get_info_cpu;
+        platform_api_ref.system.get_info_memory = ifb_win32::system_get_info_memory;
+        platform_api_ref.system.time_ms         = ifb_win32::system_time_ms;
+        platform_api_ref.system.sleep           = ifb_win32::system_sleep;
 
         //memory    
-        platform_api_ref.memory.reserve      = ifb_win32::memory_reserve;
-        platform_api_ref.memory.release      = ifb_win32::memory_release;
-        platform_api_ref.memory.commit       = ifb_win32::memory_commit;
+        platform_api_ref.memory.reserve         = ifb_win32::memory_reserve;
+        platform_api_ref.memory.release         = ifb_win32::memory_release;
+        platform_api_ref.memory.commit          = ifb_win32::memory_commit;
 
         //window    
-        platform_api_ref.window.create       = ifb_win32::window_create;
-        platform_api_ref.window.destroy      = ifb_win32::window_destroy;
-        platform_api_ref.window.frame_start  = ifb_win32::window_frame_start;
-        platform_api_ref.window.frame_render = ifb_win32::window_frame_render;
-        platform_api_ref.window.show         = ifb_win32::window_show;
-        platform_api_ref.window.opengl_init  = ifb_win32::window_opengl_init;
-        platform_api_ref.window.imgui_init   = ifb_win32::window_imgui_init;
+        platform_api_ref.window.create          = ifb_win32::window_create;
+        platform_api_ref.window.destroy         = ifb_win32::window_destroy;
+        platform_api_ref.window.frame_start     = ifb_win32::window_frame_start;
+        platform_api_ref.window.frame_render    = ifb_win32::window_frame_render;
+        platform_api_ref.window.show            = ifb_win32::window_show;
+        platform_api_ref.window.opengl_init     = ifb_win32::window_opengl_init;
+        platform_api_ref.window.imgui_init      = ifb_win32::window_imgui_init;
 
         //monitor
-        platform_api_ref.monitor.count                 = ifb_win32::monitor_count;
-        platform_api_ref.monitor.info                  = ifb_win32::monitor_info;
+        platform_api_ref.monitor.count          = ifb_win32::monitor_count;
+        platform_api_ref.monitor.info           = ifb_win32::monitor_info;
 
         //files
         // platform_file_api_ref.file_ro_open             = ifb_win32::file_ro_open;

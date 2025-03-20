@@ -23,7 +23,8 @@ struct IFBPlatformAPI;
 struct IFBPlatformAPI {
 
     struct {
-        IFBPlatformSystemGetInfo       get_info;
+        IFBPlatformSystemGetInfoCPU    get_info_cpu;
+        IFBPlatformSystemGetInfoMemory get_info_memory;
         IFBPlatformSystemTimeMS        time_ms;
         IFBPlatformSystemSleep         sleep;
         IFBPlatformSystemDebugPrint    debug_print;
@@ -83,7 +84,8 @@ namespace ifb_platform {
     //------------------
     // system
     //------------------
-    extern IFBPlatformSystemGetInfo        system_get_info;
+    extern IFBPlatformSystemGetInfoCPU     system_get_info_cpu;
+    extern IFBPlatformSystemGetInfoMemory  system_get_info_memory;
     extern IFBPlatformSystemTimeMS         system_time_ms;
     extern IFBPlatformSystemSleep          system_sleep;
     extern IFBPlatformSystemDebugPrint     system_debug_print;

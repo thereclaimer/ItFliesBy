@@ -42,12 +42,11 @@ struct IFBMemoryContext {
 
 namespace ifb_memory {
 
-    //create/destroy
+    //create/destroy 
     IFBMemoryContext*
     context_create(
-        const IFBSystemMemoryInfo* system_memory_info,
-        const IFBByte*             stack_memory,
-        const IFBU32               stack_size);
+        const IFBByte* stack_memory,
+        const IFBU32   stack_size);
     
     const IFBB8           context_destroy                   (IFBMemoryContext* ptr_context);
 

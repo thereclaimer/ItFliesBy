@@ -2,16 +2,12 @@
 
 #include "ifb-win32.hpp"
 
-
 ifb_internal const IFBB8
-ifb_win32::system_get_info(
-    IFBSystemInfo* system_info) {
-
-
-    IFBB8 result = true;
-
-    //sanity check
-    if (!system_info) return(false);
+ifb_win32::system_get_info_cpu(
+    IFBSystemCPUInfo* cpu_info) {
+    
+    IFBB8 result = (cpu_info != NULL);
+    if (!result) return(false);
 
     //buffer for logical processor info
     //
@@ -20,16 +16,13 @@ ifb_win32::system_get_info(
     // size of this buffer could be, but given
     // we are just querying for a couple of numbers
     // I don't expect this to be a wumbo size buffer
-
     const IFBU32 result_buffer_size = 4096;
     IFBByte      result_buffer[result_buffer_size];
-
+    
     //get the win32 system info and processor count
     SYSTEM_INFO win32_sys_info;
     GetSystemInfo(&win32_sys_info);
-    const IFBU32 memory_page_size              = win32_sys_info.dwPageSize;
-    const IFBU32 memory_allocation_granularity = win32_sys_info.dwAllocationGranularity;
-    const IFBU32 parent_core_number            = GetCurrentProcessorNumber();
+    const IFBU32 parent_core_number = GetCurrentProcessorNumber();
 
     //get the cpu speed from the registry
     IFBWin32RegKeyU32 reg_key_cpu_mhz;
@@ -44,12 +37,8 @@ ifb_win32::system_get_info(
     PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX processor_info_buffer  = (PSYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX)result_buffer;
 
     //get the processor info
-    result &= GetLogicalProcessorInformationEx(
-        RelationAll,
-        processor_info_buffer,
-        &result_length);
-
-    result &= result_length > 0;
+    result &= GetLogicalProcessorInformationEx(RelationAll,processor_info_buffer,&result_length);
+    result &= (result_length > 0);
 
     // because the win32 api isn't the best designed api, we need to 
     // iterate through the entire buffer of processor information
@@ -131,20 +120,36 @@ ifb_win32::system_get_info(
     }
 
     //update system info
-    system_info->memory.page_size              = memory_page_size;
-    system_info->memory.allocation_granularity = memory_allocation_granularity;
-    system_info->cpu.parent_core_number        = parent_core_number;
-    system_info->cpu.core_count_logical        = count_cores_logical;
-    system_info->cpu.core_count_physical       = count_cores_physical;
-    system_info->cpu.cache_l1.size_total       = l1_cache_size;
-    system_info->cpu.cache_l1.size_line        = l1_cache_line;
-    system_info->cpu.cache_l2.size_total       = l2_cache_size;
-    system_info->cpu.cache_l2.size_line        = l2_cache_line;
-    system_info->cpu.cache_l3.size_total       = l3_cache_size;
-    system_info->cpu.cache_l3.size_line        = l3_cache_line;
+    cpu_info->parent_core_number  = parent_core_number;
+    cpu_info->core_count_logical  = count_cores_logical;
+    cpu_info->core_count_physical = count_cores_physical;
+    cpu_info->cache_l1.size_total = l1_cache_size;
+    cpu_info->cache_l1.size_line  = l1_cache_line;
+    cpu_info->cache_l2.size_total = l2_cache_size;
+    cpu_info->cache_l2.size_line  = l2_cache_line;
+    cpu_info->cache_l3.size_total = l3_cache_size;
+    cpu_info->cache_l3.size_line  = l3_cache_line;
 
     //we're done
     return(result);
+}
+
+ifb_internal const IFBB8
+ifb_win32::system_get_info_memory(
+    IFBSystemMemoryInfo* memory_info) {
+
+    if (!memory_info) return(false);
+
+    //get the win32 system info
+    SYSTEM_INFO win32_sys_info;
+    GetSystemInfo(&win32_sys_info);
+
+    //get memory info
+    memory_info->page_size              = win32_sys_info.dwPageSize;
+    memory_info->allocation_granularity = win32_sys_info.dwAllocationGranularity;
+
+    //we're done
+    return(true);
 }
 
 ifb_internal const IFBU64
