@@ -23,6 +23,8 @@ struct IFBThreadContext;
 struct IFBThreadPool;
 struct IFBThreadPoolHeader;
 struct IFBThreadPoolHandles;
+struct IFBThreadPoolArgs;
+struct IFBThreadPoolInit;
 
 //callback
 typedef IFBVoid (*IFBThreadTaskCallback) (IFBThread* thread_context);
@@ -53,6 +55,33 @@ struct IFBThread {
 /* THREAD POOL                                                                    */
 /**********************************************************************************/
 
+struct IFBThreadPoolSizesCache {
+    struct {
+        IFBU32 max;
+        IFBU32 thread_handle;
+        IFBU32 task_function;
+        IFBU32 affinity_mask;
+        IFBU32 platform_instance;
+    } other;
+    struct {
+        IFBU16 total;
+        IFBU16 pool_struct_size;
+        IFBU16 platform_total;
+        IFBU16 description_buffer;
+        IFBU16 task_data;
+        IFBU16 thread_functions;
+        IFBU16 array_list_running_threads;
+        IFBU16 array_affinity_mask;  
+    } memory;
+};
+
+struct IFBThreadPoolArgs {
+    IFBMemoryBlock thread_pool_memory;
+    IFBU64         thread_count;
+    IFBU32         stride_task_data;
+    IFBU32         stride_thread_description; 
+};
+
 struct IFBThreadPoolHeader {
     IFBMemoryBlock memory;
     IFBU32         thread_count;
@@ -73,6 +102,13 @@ struct IFBThreadPoolHandles {
 struct IFBThreadPool {
     IFBThreadPoolHeader  header;
     IFBThreadPoolHandles handles;
+    IFBByte              padding[4];
+};
+
+struct IFBThreadPoolInit {
+    IFBThreadPoolArgs*       args;
+    IFBThreadPoolSizesCache* sizes_cache;
+    IFBThreadPool*           pointer;
 };
 
 /**********************************************************************************/
