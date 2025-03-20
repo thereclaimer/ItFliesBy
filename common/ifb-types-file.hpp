@@ -2,7 +2,6 @@
 #define IFB_TYPES_FILE_HPP
 
 #include "ifb-types-primitives.hpp"
-#include "ifb-types-memory.hpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */

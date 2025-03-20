@@ -68,13 +68,21 @@ namespace ifb_platform {
 /* THREADS                                                                        */
 /**********************************************************************************/
 
+struct IFBPlatformThreadContext {
+};
+
+struct IFBPlatformThreadRequest {
+    IFBPlatformThreadContext* context_array;
+    IFBU64                    thread_count;
+};
+
 typedef const IFBU32 (*IFBPlatformThreadSize)        (IFBVoid);
-typedef const IFBB8  (*IFBPlatformThreadCreate)      (const IFBThreadRequest* request);
-typedef const IFBB8  (*IFBPlatformThreadDestroy)     (const IFBThreadRequest* request);
-typedef const IFBB8  (*IFBPlatformThreadAssignCores) (const IFBThreadRequest* request);
-typedef const IFBB8  (*IFBPlatformThreadWake)        (const IFBThreadRequest* request);
-typedef const IFBB8  (*IFBPlatformThreadSleep)       (const IFBThreadRequest* request);
-typedef const IFBB8  (*IFBPlatformThreadGetStatus)   (const IFBThreadRequest* request);
+typedef const IFBB8  (*IFBPlatformThreadCreate)      (const IFBPlatformThreadRequest* request);
+typedef const IFBB8  (*IFBPlatformThreadDestroy)     (const IFBPlatformThreadRequest* request);
+typedef const IFBB8  (*IFBPlatformThreadAssignCores) (const IFBPlatformThreadRequest* request);
+typedef const IFBB8  (*IFBPlatformThreadWake)        (const IFBPlatformThreadRequest* request);
+typedef const IFBB8  (*IFBPlatformThreadSleep)       (const IFBPlatformThreadRequest* request);
+typedef const IFBB8  (*IFBPlatformThreadGetStatus)   (const IFBPlatformThreadRequest* request);
 
 struct IFBPlatformAPIThread {
     IFBPlatformThreadSize        size;
