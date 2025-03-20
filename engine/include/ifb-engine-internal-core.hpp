@@ -2,6 +2,7 @@
 #define IFB_ENGINE_INTERNAL_CORE_HPP
 
 #include <ifb-memory.hpp>
+#include <ifb-threads.hpp>
 
 #include "ifb-engine.hpp"
 
@@ -20,6 +21,9 @@ struct IFBEngineCoreMemory;
 
 //files
 struct IFBEngineCoreFiles;
+
+//threads
+struct IFBEngineCoreThreads;
 
 #define IFB_ENGINE_CORE_MEMORY_ARENA_SIZE ifb_macro_size_kilobytes(64)
 
@@ -47,6 +51,21 @@ namespace ifb_engine {
     IFBMemoryArena* core_memory_commit_arena            (IFBEngineCore* core_ptr);           
 };
 
+
+/**********************************************************************************/
+/* THREADS                                                                        */
+/**********************************************************************************/
+
+struct IFBEngineCoreThreads {
+    IFBMemoryArena* arena;
+    IFBThreadPool*  pool;
+};
+
+namespace ifb_engine {
+
+    const IFBB8 core_threads_commit_pool (IFBEngineCore* core_ptr);
+};
+
 /**********************************************************************************/
 /* FILES                                                                          */
 /**********************************************************************************/
@@ -61,7 +80,7 @@ struct IFBEngineCoreFiles {
 
 namespace ifb_engine {
 
-    const IFBB8 core_files_commit_tables(IFBEngineCore* core_ptr);
+    const IFBB8 core_files_commit_tables (IFBEngineCore* core_ptr);
 };
 
 /**********************************************************************************/
@@ -69,7 +88,7 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineCore {
-    IFBSystemInfo        system_info;
+    IFBSystemInfo       system_info;
     IFBEngineCoreMemory memory; 
     IFBEngineCoreFiles  files;
 };
