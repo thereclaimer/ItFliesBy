@@ -1,7 +1,7 @@
 #ifndef IFB_BIT_FLAGS_HPP
 #define IFB_BIT_FLAGS_HPP
 
-#include "ifb-types-primitives.hpp"
+#include "ifb-types.hpp"
 #include "ifb-macros.hpp"
 
 #define IFB_BIT_FLAG_0  (1 << 0)

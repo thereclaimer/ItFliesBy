@@ -19,6 +19,32 @@ struct IFBPlatformAPIMonitor;
 /* SYSTEM                                                                         */
 /**********************************************************************************/
 
+
+struct IFBSystemMemoryInfo {
+    IFBU32 page_size;
+    IFBU32 allocation_granularity;
+};
+
+struct IFBSystemCPUCacheInfo {
+    IFBU32 size_total;
+    IFBU32 size_line;
+};
+
+struct IFBSystemCPUInfo {
+    IFBU32                parent_core_number;
+    IFBU32                speed_mhz;
+    IFBU32                core_count_physical;
+    IFBU32                core_count_logical;
+    IFBSystemCPUCacheInfo cache_l1;
+    IFBSystemCPUCacheInfo cache_l2;
+    IFBSystemCPUCacheInfo cache_l3;
+};
+
+struct IFBSystemInfo {
+    IFBSystemCPUInfo    cpu;
+    IFBSystemMemoryInfo memory;
+};
+
 typedef const IFBB8     (*IFBPlatformSystemGetInfo)    (IFBSystemInfo* system_info);
 typedef const IFBTimems (*IFBPlatformSystemTimeMS)     (IFBVoid);
 typedef IFBVoid         (*IFBPlatformSystemSleep)      (const IFBU32   ms);
@@ -66,13 +92,21 @@ namespace ifb_platform {
 /* THREADS                                                                        */
 /**********************************************************************************/
 
+struct IFBPlatformThreadContext {
+};
+
+struct IFBPlatformThreadRequest {
+    IFBPlatformThreadContext* context_array;
+    IFBU64                    thread_count;
+};
+
 typedef const IFBU32 (*IFBPlatformThreadSize)        (IFBVoid);
-typedef const IFBB8  (*IFBPlatformThreadCreate)      (const IFBThreadRequest* request);
-typedef const IFBB8  (*IFBPlatformThreadDestroy)     (const IFBThreadRequest* request);
-typedef const IFBB8  (*IFBPlatformThreadAssignCores) (const IFBThreadRequest* request);
-typedef const IFBB8  (*IFBPlatformThreadWake)        (const IFBThreadRequest* request);
-typedef const IFBB8  (*IFBPlatformThreadSleep)       (const IFBThreadRequest* request);
-typedef const IFBB8  (*IFBPlatformThreadGetStatus)   (const IFBThreadRequest* request);
+typedef const IFBB8  (*IFBPlatformThreadCreate)      (const IFBPlatformThreadRequest* request);
+typedef const IFBB8  (*IFBPlatformThreadDestroy)     (const IFBPlatformThreadRequest* request);
+typedef const IFBB8  (*IFBPlatformThreadAssignCores) (const IFBPlatformThreadRequest* request);
+typedef const IFBB8  (*IFBPlatformThreadWake)        (const IFBPlatformThreadRequest* request);
+typedef const IFBB8  (*IFBPlatformThreadSleep)       (const IFBPlatformThreadRequest* request);
+typedef const IFBB8  (*IFBPlatformThreadGetStatus)   (const IFBPlatformThreadRequest* request);
 
 struct IFBPlatformAPIThread {
     IFBPlatformThreadSize        size;
@@ -96,6 +130,8 @@ namespace ifb_platform {
 /**********************************************************************************/
 /* WINDOW                                                                         */
 /**********************************************************************************/
+
+typedef IFBVoid* IFBGLContext;
 
 typedef const IFBB8
 (*IFBPlatformWindowCreate) (
@@ -137,6 +173,8 @@ namespace ifb_platform {
 /* MONITOR                                                                        */
 /**********************************************************************************/
 
+struct IFBMonitor;
+
 typedef const IFBU32
 (*IFBPlatformMonitorCount) (
     IFBVoid);
@@ -161,19 +199,23 @@ namespace ifb_platform {
 /* FILES                                                                          */                            
 /**********************************************************************************/
 
+struct IFBPlatformFileRequest {
+    IFBPtr x; //TEMPORARY
+};
+
 typedef const IFBU32 (*IFBPlatformFileROContextSize)    (IFBVoid);
-typedef const IFBB8  (*IFBPlatformFileROOpen)           (IFBFileRequest* file_ro_request);
-typedef const IFBB8  (*IFBPlatformFileROReadImmediate)  (IFBFileRequest* file_ro_request);
-typedef const IFBB8  (*IFBPlatformFileROReadAsync)      (IFBFileRequest* file_ro_request);
-typedef const IFBB8  (*IFBPlatformFileROClose)          (IFBFileRequest* file_ro_request);
+typedef const IFBB8  (*IFBPlatformFileROOpen)           (IFBPlatformFileRequest* file_ro_request);
+typedef const IFBB8  (*IFBPlatformFileROReadImmediate)  (IFBPlatformFileRequest* file_ro_request);
+typedef const IFBB8  (*IFBPlatformFileROReadAsync)      (IFBPlatformFileRequest* file_ro_request);
+typedef const IFBB8  (*IFBPlatformFileROClose)          (IFBPlatformFileRequest* file_ro_request);
 
 typedef const IFBU32 (*IFBPlatformFileRWContextSize)    (IFBVoid);
-typedef const IFBB8  (*IFBPlatformFileRWOpen)           (IFBFileRequest* file_rw_request);
-typedef const IFBB8  (*IFBPlatformFileRWReadImmediate)  (IFBFileRequest* file_rw_request);
-typedef const IFBB8  (*IFBPlatformFileRWReadAsync)      (IFBFileRequest* file_rw_request);
-typedef const IFBB8  (*IFBPlatformFileRWWriteImmediate) (IFBFileRequest* file_rw_request);
-typedef const IFBB8  (*IFBPlatformFileRWWriteAsync)     (IFBFileRequest* file_rw_request);
-typedef const IFBB8  (*IFBPlatformFileRWClose)          (IFBFileRequest* file_rw_request);
+typedef const IFBB8  (*IFBPlatformFileRWOpen)           (IFBPlatformFileRequest* file_rw_request);
+typedef const IFBB8  (*IFBPlatformFileRWReadImmediate)  (IFBPlatformFileRequest* file_rw_request);
+typedef const IFBB8  (*IFBPlatformFileRWReadAsync)      (IFBPlatformFileRequest* file_rw_request);
+typedef const IFBB8  (*IFBPlatformFileRWWriteImmediate) (IFBPlatformFileRequest* file_rw_request);
+typedef const IFBB8  (*IFBPlatformFileRWWriteAsync)     (IFBPlatformFileRequest* file_rw_request);
+typedef const IFBB8  (*IFBPlatformFileRWClose)          (IFBPlatformFileRequest* file_rw_request);
 
 struct IFBPlatformAPIFile {
     IFBPlatformFileROContextSize    ro_context_size;

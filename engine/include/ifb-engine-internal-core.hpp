@@ -2,6 +2,7 @@
 #define IFB_ENGINE_INTERNAL_CORE_HPP
 
 #include <ifb-memory.hpp>
+#include <ifb-io.hpp>
 
 #include "ifb-engine.hpp"
 

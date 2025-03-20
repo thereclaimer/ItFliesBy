@@ -8,13 +8,47 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-struct IFBWindow;
-struct IFBWindowTitle;
+struct IFBColorNormalized;
+struct IFBColorHex;
+struct IFBColor32;
+struct IFBDimensions;
+struct IFBPosition;
+struct IFBDimensionsAndPosition;
 struct IFBGraphicsContexts;
+struct IFBWindow;
+struct IFBMonitor;
+
+typedef IFBPtr IFBGLContext;
+typedef IFBPtr IFBImGuiContext;
 
 /**********************************************************************************/
 /* COLORS                                                                         */
 /**********************************************************************************/
+
+struct IFBColorNormalized {
+    IFBF32 red;
+    IFBF32 blue;
+    IFBF32 green;
+    IFBF32 alpha;
+};
+
+struct IFBColorHex {
+    IFBU8 red;
+    IFBU8 blue;
+    IFBU8 green;
+    IFBU8 alpha;
+};
+
+struct IFBColor32 {
+    IFBU32 value;
+};
+
+enum IFBColorFormat : IFBU32 {
+     IFBColorFormat_RGBA = 0,
+     IFBColorFormat_ARGB = 1,
+     IFBColorFormat_ABGR = 2,
+     IFBColorFormat_BGRA = 3
+};
 
 struct IFBColorTable {
     IFBHashTable*  ptr_hash_table;
@@ -66,6 +100,22 @@ namespace ifb_graphics {
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
+#define IFB_WINDOW_TITLE_LENGTH_MAX 255
+
+struct IFBGraphicsContexts {
+    IFBGLContext    opengl;
+    IFBImGuiContext imgui;
+};
+
+struct IFBWindow {
+    IFBPosition         position;
+    IFBDimensions       dimensions;
+    IFBGraphicsContexts graphics_contexts;
+    IFBB32              visible;
+    IFBB32              quit_received;
+    IFBChar*            title;
+};
+
 namespace ifb_graphics {
 
     IFBWindow*   window_commit_to_arena_absolute (IFBMemoryArena* ptr_arena);
@@ -80,6 +130,12 @@ namespace ifb_graphics {
 /**********************************************************************************/
 /* MONITOR                                                                        */
 /**********************************************************************************/
+struct IFBMonitor {
+    IFBDimensions dimensions;
+    IFBPosition   position;
+    IFBU32        refresh_hz;
+    IFBU32        index;
+};
 
 struct IFBMonitorTable {
     IFBU32      monitor_primary;

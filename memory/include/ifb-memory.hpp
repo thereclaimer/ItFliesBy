@@ -5,9 +5,41 @@
 #include <ifb-platform.hpp>
 
 /**********************************************************************************/
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
+
+struct IFBHNDMemoryContext;
+struct IFBHNDMemoryReservation;
+struct IFBHNDMemoryArena;
+struct IFBMemoryContext;
+struct IFBMemoryArena;
+struct IFBMemoryReservation;
+struct IFBMemoryBlock;
+
+
+struct IFBMemoryBlock {
+    IFBAddr start;
+    IFBU64  size;
+};
+
+/**********************************************************************************/
 /* CONTEXT                                                                        */
 /**********************************************************************************/
- 
+
+struct IFBMemoryContext {
+    IFBMemoryReservation* ptr_reservation_first;
+    IFBMemoryReservation* ptr_reservation_last;
+    IFBMemoryArena*       ptr_arena_first;
+    IFBMemoryArena*       ptr_arena_last;
+    IFBAddr               stack_start;
+    IFBU32                stack_size;
+    IFBU32                stack_position;
+    IFBU32                count_reservations;
+    IFBU32                count_arenas;
+    IFBU32                system_page_size;
+    IFBU32                system_granularity;
+};
+
 namespace ifb_memory {
 
     //create/destroy
@@ -41,6 +73,13 @@ namespace ifb_memory {
 /* RESERVATION                                                                    */
 /**********************************************************************************/
 
+struct IFBMemoryReservation {
+    IFBMemoryContext*     ptr_context;
+    IFBMemoryReservation* ptr_next;
+    IFBAddr               start;
+    IFBU32                page_count_total;
+    IFBU32                page_count_committed;
+};
 
 namespace ifb_memory {
 
@@ -54,6 +93,15 @@ namespace ifb_memory {
 /**********************************************************************************/
 /* ARENA                                                                          */
 /**********************************************************************************/
+
+struct IFBMemoryArena {
+    IFBMemoryReservation* ptr_reservation;
+    IFBMemoryArena*       ptr_next;
+    IFBAddr               start;
+    IFBU32                size;
+    IFBU32                position_committed;
+    IFBU32                position_reserved;
+};
 
 namespace ifb_memory {
 
