@@ -8,6 +8,5 @@
 #include "ifb-macros.hpp"
 #include "ifb-hash.hpp"
 #include "ifb-user-input.hpp"
-#include "ifb-platform.hpp"
 
 #endif //IFB_HPP
