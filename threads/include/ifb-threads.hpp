@@ -5,16 +5,16 @@
 
 namespace ifb_thread {
 
-    const IFBU32 memory_size_pool_args (IFBVoid);
-    const IFBU32 memory_size_platform  (const IFBU32 thread_count);
-    const IFBU32 memory_size_pool      (const IFBU32 thread_count, const IFBU32 thread_data_stride);
-
+    const IFBU32 memory_size_pool_args       (IFBVoid);
+    const IFBU32 memory_size_platform_thread (const IFBU32 thread_count);
+    const IFBU32 memory_size_pool            (const IFBU32 thread_count, const IFBU32 thread_data_stride);
 };
 
 struct IFBThreadPoolArgs {
-    IFBMemoryBlock         thread_pool_memory;
-    IFBU32                 thread_count;
-    IFBU32                 thread_task_data_stride;    
+    IFBMemoryBlock thread_pool_memory;
+    IFBU32         thread_count;
+    IFBU32         stride_task_data;
+    IFBU32         stride_thread_description; 
 };
 
 namespace ifb_thread {
