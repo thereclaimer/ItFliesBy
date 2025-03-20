@@ -71,6 +71,7 @@ if not exist %dir_vcpkg% call vcpkg install
                     /I platform\include        ^
                     /I data-structures\include ^
                     /I graphics\include        ^
+                    /I threads\include         ^
                     /I rendering\include       ^
                     /I io\include              ^
                     /I common                  ^
