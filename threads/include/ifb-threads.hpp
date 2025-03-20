@@ -3,19 +3,17 @@
 
 #include <ifb.hpp>
 
-
-
 namespace ifb_thread {
 
-    const IFBU32 memory_size_pool_args       (IFBVoid);
-    const IFBU32 memory_size_platform_thread (const IFBU32 thread_count);
-    const IFBU32 memory_size_pool            (const IFBU32 thread_count, const IFBU32 thread_data_stride, const IFBU32 stride_thread_description);
+    const IFBU32 memory_size_pool_init        (IFBVoid);
+    const IFBU32 memory_size_pool_args        (IFBVoid);
+    const IFBU32 memory_size_pool_sizes_cache (IFBVoid);
 };
 
 namespace ifb_thread {
     
-    const IFBHNDThreadPool pool_create  (const IFBThreadPoolArgs* args);
-    const IFBB8            pool_destroy (const IFBThreadPool*     thread_pool);
+    const IFBB8 pool_create  (IFBThreadPoolInit*   init);
+    const IFBB8 pool_destroy (const IFBThreadPool* thread_pool);
 }
 
 #endif //IFB_THREADS_HPP

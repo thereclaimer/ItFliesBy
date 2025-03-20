@@ -31,7 +31,8 @@
 			"glew.c": "cpp",
 			"initializer_list": "cpp",
 			"system_error": "cpp",
-			"exception": "cpp"
+			"exception": "cpp",
+			"limits": "cpp"
 		}
 	}
 }
