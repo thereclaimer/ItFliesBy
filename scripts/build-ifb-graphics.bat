@@ -13,17 +13,18 @@ pushd ..
 ::build path
 @set path_build=          build\debug
 
-::include paths 
-@set path_graphics_include=  graphics\include
-@set path_common=            common
-@set path_external=          external
-@set path_datastructures=    data-structures\include
-@set path_memory=            memory\include
-
 ::vcpkg install directories
 @set path_vcpkg=              vcpkg_installed
-@set path_vcpkg_include=      %path_vcpkg%\x64-windows\include
 @set path_vcpkg_lib=          %path_vcpkg%\x64-windows\lib
+
+::include paths 
+@set path_include_graphics=       graphics\include
+@set path_include_platform=       platform\include
+@set path_include_common=         common
+@set path_include_external=       external
+@set path_include_datastructures= data-structures\include
+@set path_include_memory=         memory\include
+@set path_include_vcpkg=          %path_vcpkg%\x64-windows\include
 
 ::----------------------------------------------------------------
 :: DEPENDENCIES
@@ -44,12 +45,13 @@ if not exist %path_build%\lib mkdir %path_build%\lib
 
 @set cl_output=     /Fo:%path_build%\obj\ItFliesBy.Graphics.obj
 
-@set cl_includes=   /I %path_graphics_include% ^
-                    /I %path_datastructures%   ^
-                    /I %path_memory%           ^
-                    /I %path_common%           ^
-                    /I %path_external%         ^
-                    /I %path_vcpkg_include%
+@set cl_includes=   /I %path_include_graphics%       ^
+                    /I %path_include_platform%       ^
+                    /I %path_include_common%         ^
+                    /I %path_include_external%       ^
+                    /I %path_include_datastructures% ^
+                    /I %path_include_memory%         ^
+                    /I %path_include_vcpkg%
 
 @set cl_source=     graphics\src\ifb-graphics.cpp
 
@@ -67,7 +69,7 @@ call cl.exe       ^
 :: LIB
 ::----------------------------------------------------------------
 
-call lib.exe                                  ^
+call lib.exe                                    ^
     /OUT:build\debug\lib\ItFliesBy.Graphics.lib ^
     %path_build%\obj\ItFliesBy.Graphics.obj
 

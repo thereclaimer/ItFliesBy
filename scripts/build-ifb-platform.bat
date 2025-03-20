@@ -11,18 +11,17 @@ pushd ..
 ::----------------------------------------------------------------
 
 ::build path
-@set path_build=          build\debug
+@set path_build=             build\debug
+
+::include paths 
+@set path_platform_include=  platform\include
+@set path_common=            common
+@set path_external=          external
 
 ::vcpkg install directories
 @set path_vcpkg=              vcpkg_installed
+@set path_vcpkg_include=      %path_vcpkg%\x64-windows\include
 @set path_vcpkg_lib=          %path_vcpkg%\x64-windows\lib
-
-::include paths 
-@set path_include_memory=    memory\include
-@set path_include_platform=  platform\include
-@set path_include_common=    common
-@set path_include_external=  external
-@set path_include_vcpkg=     %path_vcpkg%\x64-windows\include
 
 ::----------------------------------------------------------------
 :: DEPENDENCIES
@@ -41,15 +40,14 @@ if not exist %path_build%\lib mkdir %path_build%\lib
                     /Z7   ^
                     /EHsc
 
-@set cl_output=     /Fo:%path_build%\obj\ItFliesBy.Memory.obj
+@set cl_output=     /Fo:%path_build%\obj\ItFliesBy.Platform.obj
 
-@set cl_includes=   /I %path_include_memory%   ^
-                    /I %path_include_platform% ^
-                    /I %path_include_common%   ^
-                    /I %path_include_external% ^
-                    /I %path_include_vcpkg%
+@set cl_includes=   /I %path_platform_include% ^
+                    /I %path_common%           ^
+                    /I %path_external%         ^
+                    /I %path_vcpkg_include%
 
-@set cl_source=     memory\src\ifb-memory.cpp
+@set cl_source=     platform\src\ifb-platform.cpp
 
 ::----------------------------------------------------------------
 :: BUILD
@@ -65,9 +63,9 @@ call cl.exe       ^
 :: LIB
 ::----------------------------------------------------------------
 
-call lib.exe                                  ^
-    /OUT:build\debug\lib\ItFliesBy.Memory.lib ^
-    %path_build%\obj\ItFliesBy.Memory.obj
+call lib.exe                                    ^
+    /OUT:build\debug\lib\ItFliesBy.Platform.lib ^
+    %path_build%\obj\ItFliesBy.IO.obj
 
 ::----------------------------------------------------------------
 :: END

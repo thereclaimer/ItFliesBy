@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ifb-engine-internal-context.hpp"
+#include "ifb-platform.hpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -38,17 +38,17 @@ namespace ifb_platform {
 /**********************************************************************************/
 
 const IFBB8
-ifb_engine::platform_api_initialize(
-    const IFBPlatformAPI* ptr_platform_api) {
+ifb_platform::set_api(
+    const IFBPlatformAPI* platform_api) {
 
-    if (!ptr_platform_api) return(false);
+    if (!platform_api) return(false);
     
     //cache the api
-    const IFBPlatformAPISystem&  ref_api_system  = ptr_platform_api->system;
-    const IFBPlatformAPIMemory&  ref_api_memory  = ptr_platform_api->memory;
-    // const IFBPlatformAPIThread&  ref_api_thread  = ptr_platform_api->thread;
-    const IFBPlatformAPIWindow&  ref_api_window  = ptr_platform_api->window;
-    const IFBPlatformAPIMonitor& ref_api_monitor = ptr_platform_api->monitor;
+    const IFBPlatformAPISystem&  ref_api_system  = platform_api->system;
+    const IFBPlatformAPIMemory&  ref_api_memory  = platform_api->memory;
+    // const IFBPlatformAPIThread&  ref_api_thread  = platform_api->thread;
+    const IFBPlatformAPIWindow&  ref_api_window  = platform_api->window;
+    const IFBPlatformAPIMonitor& ref_api_monitor = platform_api->monitor;
 
     //system
     ifb_platform::system_get_info     = ref_api_system.get_info;
