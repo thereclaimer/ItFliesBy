@@ -8,10 +8,11 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
+struct IFBEngineInit;
 struct IFBEngineConfig;
 struct IFBEngineMemoryInfo;
 struct IFBEngineSizeAndAlignment;
-
+struct IFBEngineContext;
 
 struct IFBEngineMemoryArenaUnmanaged;
 struct IFBEngineMemoryArenaLinear;
@@ -28,6 +29,17 @@ struct IFBHNDEngineThread    : IFBHND32  { };
 /**********************************************************************************/
 /* PUBLIC TYPES                                                                   */
 /**********************************************************************************/
+
+struct IFBEngineArgs {
+    IFBPlatformAPI*   platform_api;
+    IFBMemoryContext* memory_context;
+};
+
+struct IFBEngineInit {
+    IFBB64            result;
+    IFBEngineArgs*    args;
+    IFBEngineContext* context;
+};
 
 struct IFBEngineConfig {
     IFBU16 memory_stack_size_kb;

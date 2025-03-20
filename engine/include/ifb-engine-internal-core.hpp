@@ -76,15 +76,8 @@ struct IFBEngineCore {
 
 namespace ifb_engine {
 
-    IFBEngineCore*
-    core_create(
-        const IFBByte* core_stack_memory_ptr,
-        const IFBU32   core_stack_memory_size,
-        const IFBU64   core_reserved_memory_size);
-    
-    const IFBB8
-    core_destroy(
-        IFBEngineCore* core_ptr);
+    IFBEngineCore* core_create  (IFBMemoryContext* memory_context);
+    const IFBB8    core_destroy (IFBEngineCore*    core);
 };
 
 /**********************************************************************************/

@@ -6,36 +6,34 @@
 
 IFBMemoryContext*
 ifb_memory::context_create(
-    const IFBByte* stack_memory,
-    const IFBU32   stack_size) {
+    const IFBMemoryContextStack* context_stack) {
 
-    IFBB8 result = true;
+    //make sure we have our context stack
+    IFBB8 result = (context_stack != NULL);
+    if (!result) return(NULL);
 
     //get the system memory info
     IFBSystemMemoryInfo memory_info;
     result &= ifb_platform::system_get_info_memory(&memory_info);
 
-    //calculate the size of the memory struct
-    const IFBU32 context_size = ifb_macro_align_size_struct(IFBMemoryContext);
+    //initial context info
+    const IFBU32  context_size        = ifb_macro_align_size_struct(IFBMemoryContext);
+    const IFBU64  context_stack_size  = context_stack->size; 
+    const IFBAddr context_stack_start = (IFBAddr)context_stack->memory;
 
     //we can proceed IF...
     result &= (memory_info.page_size              >  0);            //...the system page size isn't 0 AND
     result &= (memory_info.allocation_granularity >  0);            //...the system granularity isn't 0 AND
-    result &= (stack_memory                       != NULL);         //...the stack memory isn't null AND
-    result &= (stack_size                         >= context_size); //...the stack memory can fit the context
+    result &= (context_stack_start                != NULL);         //...the stack memory isn't null AND
+    result &= (context_stack_size                 >= context_size); //...the stack memory can fit the context
     if (!result) return(NULL);                                      // if everything isn't valid, we're done
 
-    //cast the stack memory to the memory struct
-    IFBMemoryContext* ptr_context = (IFBMemoryContext*)stack_memory;
-
-    //calculate stack addresses
-    const IFBAddr stack_start = (IFBAddr)stack_memory;
-
-    //initialize the context
+    //cast and initialize the context
+    IFBMemoryContext* ptr_context = (IFBMemoryContext*)context_stack_start;
     ptr_context->ptr_reservation_first = NULL;
     ptr_context->ptr_reservation_last  = NULL;
-    ptr_context->stack_start           = stack_start;
-    ptr_context->stack_size            = stack_size;
+    ptr_context->stack_start           = context_stack_start;
+    ptr_context->stack_size            = context_stack_size; 
     ptr_context->stack_position        = context_size;
     ptr_context->system_page_size      = memory_info.page_size;
     ptr_context->system_granularity    = memory_info.allocation_granularity;

@@ -12,6 +12,7 @@ struct IFBHNDMemoryContext;
 struct IFBHNDMemoryReservation;
 struct IFBHNDMemoryArena;
 struct IFBMemoryContext;
+struct IFBMemoryContextStack;
 struct IFBMemoryArena;
 struct IFBMemoryReservation;
 struct IFBMemoryBlock;
@@ -25,6 +26,11 @@ struct IFBMemoryBlock {
 /**********************************************************************************/
 /* CONTEXT                                                                        */
 /**********************************************************************************/
+
+struct IFBMemoryContextStack {
+    IFBByte* memory;
+    IFBU64   size;
+};
 
 struct IFBMemoryContext {
     IFBMemoryReservation* ptr_reservation_first;
@@ -43,11 +49,7 @@ struct IFBMemoryContext {
 namespace ifb_memory {
 
     //create/destroy 
-    IFBMemoryContext*
-    context_create(
-        const IFBByte* stack_memory,
-        const IFBU32   stack_size);
-    
+    IFBMemoryContext*     context_create                    (const IFBMemoryContextStack* context_stack);
     const IFBB8           context_destroy                   (IFBMemoryContext* ptr_context);
 
     //alignment
