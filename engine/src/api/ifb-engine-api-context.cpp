@@ -28,7 +28,7 @@ ifb_engine::context_create(
     ifb_macro_assert(reservation_size);
 
     //set the api
-    (IFBVoid)ifb_engine::platform_api_initialize(ptr_platform_api);
+    (IFBVoid)ifb_platform::set_api(ptr_platform_api);
         
     //create the core
     context_ref.ptr_core = ifb_engine::core_create(

@@ -5,8 +5,23 @@
 #include <ifb-memory.hpp>
 
 /**********************************************************************************/
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
+
+struct IFBArray;
+struct IFBArrayList;
+struct IFBStack;
+struct IFBQueue;
+struct IFBHashTable;
+
+/**********************************************************************************/
 /* ARRAY                                                                          */
 /**********************************************************************************/
+
+struct IFBArray : IFBMemoryBlock {
+    IFBU32 element_size;
+    IFBU32 element_count;
+};
 
 namespace ifb_array {
 
@@ -25,9 +40,9 @@ namespace ifb_array {
     const IFBB8
     initialize(
               IFBArray* array_ptr,
-        const IFBPtr   data,
-        const IFBU32   element_size,
-        const IFBU32   element_count);
+        const IFBPtr    data,
+        const IFBU32    element_size,
+        const IFBU32    element_count);
 
     //pointers
     const IFBPtr get_pointer_indexed (const IFBArray* array_ptr, const IFBU32 index);
@@ -44,6 +59,11 @@ namespace ifb_array {
 /* ARRAY LIST                                                                      */
 /**********************************************************************************/
 
+struct IFBArrayList : IFBMemoryBlock {
+    IFBU64 element_size;
+    IFBU32 element_count_total;
+    IFBU32 element_count_current;
+};
 
 namespace ifb_array_list {
 
@@ -72,6 +92,9 @@ namespace ifb_array_list {
 /* STACK                                                                          */
 /**********************************************************************************/
 
+struct IFBStack : IFBMemoryBlock {
+    IFBU64 position;
+};
 
 namespace ifb_stack {
 
@@ -98,6 +121,10 @@ namespace ifb_stack {
 /* QUEUE                                                                          */
 /**********************************************************************************/
 
+struct IFBQueue : IFBMemoryBlock {
+    IFBU32 position;
+};
+
 namespace ifb_queue {
 
     const IFBB8  reset          (const IFBQueue* queue_ptr);
@@ -123,6 +150,13 @@ namespace ifb_linked_list {
 /**********************************************************************************/
 /* HASH TABLE                                                                     */
 /**********************************************************************************/
+
+struct IFBHashTable : IFBMemoryBlock {
+    IFBU32 element_array_start;
+    IFBU32 element_size;
+    IFBU32 element_count_max;
+    IFBU32 key_length_max;
+};
 
 namespace ifb_hash_table {
 

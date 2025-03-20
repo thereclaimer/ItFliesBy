@@ -153,19 +153,19 @@ namespace ifb_win32 {
 
     //read only
     ifb_internal const IFBU32 file_ro_context_size     (IFBVoid);
-    ifb_internal const IFBB8  file_ro_open             (IFBFileRequest* file_ro_request);
-    ifb_internal const IFBB8  file_ro_read_async       (IFBFileRequest* file_ro_request);
-    ifb_internal const IFBU32 file_ro_read_immediate   (IFBFileRequest* file_ro_request);
-    ifb_internal const IFBB8  file_ro_close            (IFBFileRequest* file_ro_request);
+    ifb_internal const IFBB8  file_ro_open             (IFBPlatformFileRequest* file_ro_request);
+    ifb_internal const IFBB8  file_ro_read_async       (IFBPlatformFileRequest* file_ro_request);
+    ifb_internal const IFBU32 file_ro_read_immediate   (IFBPlatformFileRequest* file_ro_request);
+    ifb_internal const IFBB8  file_ro_close            (IFBPlatformFileRequest* file_ro_request);
     
     //read write
     ifb_internal const IFBU32 file_rw_context_size     (IFBVoid);
-    ifb_internal const IFBB8  file_rw_open             (IFBFileRequest* file_rw_request);
-    ifb_internal const IFBU32 file_rw_read_immediate   (IFBFileRequest* file_rw_request);
-    ifb_internal const IFBB8  file_rw_read_async       (IFBFileRequest* file_rw_request);
-    ifb_internal const IFBU32 file_rw_write_immediate  (IFBFileRequest* file_rw_request);
-    ifb_internal const IFBB8  file_rw_write_async      (IFBFileRequest* file_rw_request);
-    ifb_internal const IFBB8  file_rw_close            (IFBFileRequest* file_rw_request);
+    ifb_internal const IFBB8  file_rw_open             (IFBPlatformFileRequest* file_rw_request);
+    ifb_internal const IFBU32 file_rw_read_immediate   (IFBPlatformFileRequest* file_rw_request);
+    ifb_internal const IFBB8  file_rw_read_async       (IFBPlatformFileRequest* file_rw_request);
+    ifb_internal const IFBU32 file_rw_write_immediate  (IFBPlatformFileRequest* file_rw_request);
+    ifb_internal const IFBB8  file_rw_write_async      (IFBPlatformFileRequest* file_rw_request);
+    ifb_internal const IFBB8  file_rw_close            (IFBPlatformFileRequest* file_rw_request);
 };
 
 /**********************************************************************************/

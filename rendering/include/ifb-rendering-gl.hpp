@@ -15,24 +15,24 @@ struct IFBGLViewport;
 
 struct IFBGLID { GLuint gl_id; };
 
-struct IFBGLIDShaderStage   : IFBGLID { };
-struct IFBGLIDShaderProgram : IFBGLID { };
-struct IFBGLIDUniform       : IFBGLID { };
-struct IFBGLIDVertex        : IFBGLID { };
-struct IFBGLIDBuffer        : IFBGLID { };
+struct IFBGLIDShaderStage         : IFBGLID            { };
+struct IFBGLIDShaderProgram       : IFBGLID            { };
+struct IFBGLIDUniform             : IFBGLID            { };
+struct IFBGLIDVertex              : IFBGLID            { };
+struct IFBGLIDBuffer              : IFBGLID            { };
 
 struct IFBGLIDShaderStageVertex   : IFBGLIDShaderStage { };   
 struct IFBGLIDShaderStageFragment : IFBGLIDShaderStage { }; 
 
-struct IFBGLIDUniformU32  : IFBGLIDUniform { };
-struct IFBGLIDUniformF32  : IFBGLIDUniform { };
-struct IFBGLIDUniformVec2 : IFBGLIDUniform { };
-struct IFBGLIDUniformVec3 : IFBGLIDUniform { };
-struct IFBGLIDUniformMat3 : IFBGLIDUniform { };
-struct IFBGLIDUniformMat4 : IFBGLIDUniform { };
+struct IFBGLIDUniformU32          : IFBGLIDUniform     { };
+struct IFBGLIDUniformF32          : IFBGLIDUniform     { };
+struct IFBGLIDUniformVec2         : IFBGLIDUniform     { };
+struct IFBGLIDUniformVec3         : IFBGLIDUniform     { };
+struct IFBGLIDUniformMat3         : IFBGLIDUniform     { };
+struct IFBGLIDUniformMat4         : IFBGLIDUniform     { };
 
-struct IFBGLIDBufferVertex  : IFBGLIDBuffer { };
-struct IFBGLIDBufferElement : IFBGLIDBuffer { };
+struct IFBGLIDBufferVertex        : IFBGLIDBuffer      { };
+struct IFBGLIDBufferElement       : IFBGLIDBuffer      { };
 
 #define IFB_GL_INVALID_UNIFORM_LOCATION -1
 
