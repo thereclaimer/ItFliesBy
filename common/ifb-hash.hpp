@@ -3,7 +3,7 @@
 
 #include <string.h>
 
-#include "ifb-types-primitives.hpp"
+#include "ifb-types.hpp"
 #include "ifb-scopes.hpp"
 
 /**********************************************************************************/

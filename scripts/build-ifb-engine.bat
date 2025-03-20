@@ -72,6 +72,7 @@ if not exist %dir_vcpkg% call vcpkg install
                     /I data-structures\include ^
                     /I graphics\include        ^
                     /I rendering\include       ^
+                    /I io\include              ^
                     /I common                  ^
                     /I external                ^
                     /I math                    ^
