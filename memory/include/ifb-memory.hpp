@@ -8,9 +8,7 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-struct IFBHNDMemoryContext;
-struct IFBHNDMemoryReservation;
-struct IFBHNDMemoryArena;
+struct IFBMemoryStack;
 struct IFBMemoryContext;
 struct IFBMemoryContextStack;
 struct IFBMemoryArena;
@@ -21,6 +19,20 @@ struct IFBMemoryBlock;
 struct IFBMemoryBlock {
     IFBAddr start;
     IFBU64  size;
+};
+
+/**********************************************************************************/
+/* STACK                                                                          */
+/**********************************************************************************/
+
+
+namespace ifb_memory {
+
+    IFBMemoryStack* stack_create                (const IFBByte* stack_memory, const IFBU32 stack_size);
+
+    const IFBU32    stack_commit_bytes_relative (IFBMemoryStack* stack, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBPtr    stack_commit_bytes_absolute (IFBMemoryStack* stack, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBPtr    stack_get_pointer           (IFBMemoryStack* stack, const IFBU32 offset);
 };
 
 /**********************************************************************************/

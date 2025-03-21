@@ -78,7 +78,6 @@ struct IFBEngineContextUpdate {
     IFBInput                     user_input;
 };
 
-
 namespace ifb_engine {
 
     inline IFBVoid     update_flags_set_quit              (IFBEngineContextUpdateFlags& flags_ref)       { ifb_macro_bit_set(IFBEngineContextUpdateFlags_Quit,             flags_ref); }

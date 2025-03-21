@@ -82,11 +82,11 @@ ifb_engine::context_initialize_graphics_and_rendering(
     return(result);
 }
 
-inline IFBEngineContext&
-ifb_engine::context_ref(
+inline IFBEngineContext*
+ifb_engine::context(
     IFBVoid) {
 
-    return(_context);
+    return(&_context);
 }
 
 inline IFBEngineCore*
