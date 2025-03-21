@@ -45,7 +45,7 @@ ifb_memory::stack_create(
 }
 
 const IFBU32
-ifb_memory::stack_commit_bytes_relative(
+ifb_memory::stack_push_bytes_relative(
           IFBMemoryStack* stack,
     const IFBU32          size,
     const IFBU32          alignment) {
@@ -73,7 +73,7 @@ ifb_memory::stack_commit_bytes_relative(
 }
 
 const IFBPtr
-ifb_memory::stack_commit_bytes_absolute(
+ifb_memory::stack_push_bytes_absolute(
           IFBMemoryStack* stack,
     const IFBU32          size,
     const IFBU32          alignment) {
@@ -120,6 +120,33 @@ ifb_memory::stack_get_pointer(
         
     //we're done
     return(stack_pointer);
+}
+
+const IFBB8
+ifb_memory::stack_pull_bytes(
+          IFBMemoryStack* stack,
+    const IFBU32          size,
+    const IFBU32          alignment) {
+
+    //validate stack
+    ifb_memory::stack_assert_valid(stack);
+
+    //get sizes
+    const IFBU32 size_aligned     = ifb_macro_align_a_to_b(size,alignment);
+    const IFBU32 position_current = stack->position;
+    const IFBU32 position_dif     = position_current - IFB_MEMORY_STACK_STRUCT_SIZE; 
+    const IFBU32 position_new     = stack->position - size_aligned;
+
+    //make sure we can pull
+    //there has to be at least enough memory for the stack struct
+    IFBB8 can_pull = (size <= position_dif);
+    if (!can_pull) return(false);
+
+    //update the stack position
+    stack->position = position_new;
+
+    //we're done
+    return(true);
 }
 
 /**********************************************************************************/
