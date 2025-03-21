@@ -1,40 +1,35 @@
 #include "ifb-memory.hpp"
 
+ifb_global const IFBU32 IFB_MEMORY_CONTEXT_STRUCT_SIZE = ifb_macro_align_size_struct(IFBMemoryContext);
+
 /**********************************************************************************/
 /* CREATE / DESTROY                                                               */
 /**********************************************************************************/
 
 IFBMemoryContext*
 ifb_memory::context_create(
-    const IFBMemoryContextStack* context_stack) {
+    const IFBByte* stack_memory,
+    const IFBU64   stack_size) {
 
-    //make sure we have our context stack
-    IFBB8 result = (context_stack != NULL);
-    if (!result) return(NULL);
+    IFBB8 result = true; 
 
     //get the system memory info
     IFBSystemMemoryInfo memory_info;
     result &= ifb_platform::system_get_info_memory(&memory_info);
 
-    //initial context info
-    const IFBU32  context_size        = ifb_macro_align_size_struct(IFBMemoryContext);
-    const IFBU64  context_stack_size  = context_stack->size; 
-    const IFBAddr context_stack_start = (IFBAddr)context_stack->memory;
-
     //we can proceed IF...
-    result &= (memory_info.page_size              >  0);            //...the system page size isn't 0 AND
-    result &= (memory_info.allocation_granularity >  0);            //...the system granularity isn't 0 AND
-    result &= (context_stack_start                != NULL);         //...the stack memory isn't null AND
-    result &= (context_stack_size                 >= context_size); //...the stack memory can fit the context
-    if (!result) return(NULL);                                      // if everything isn't valid, we're done
+    result &= (stack_memory                      != NULL);                           //...the stack memory isn't null AND
+    result &= (stack_size                        >= IFB_MEMORY_CONTEXT_STRUCT_SIZE); //...the stack memory can fit the context AND
+    result &= (memory_info.page_size              > 0);                              //...the system page size isn't 0 AND
+    result &= (memory_info.allocation_granularity > 0);                              //...the system granularity isn't 0
+    if (!result) return(NULL);                                                       // if everything isn't valid, we're done
 
     //cast and initialize the context
-    IFBMemoryContext* ptr_context = (IFBMemoryContext*)context_stack_start;
+    IFBMemoryContext* ptr_context = (IFBMemoryContext*)stack_memory;
     ptr_context->ptr_reservation_first = NULL;
     ptr_context->ptr_reservation_last  = NULL;
-    ptr_context->stack_start           = context_stack_start;
-    ptr_context->stack_size            = context_stack_size; 
-    ptr_context->stack_position        = context_size;
+    ptr_context->stack_size            = stack_size; 
+    ptr_context->stack_position        = IFB_MEMORY_CONTEXT_STRUCT_SIZE;
     ptr_context->system_page_size      = memory_info.page_size;
     ptr_context->system_granularity    = memory_info.allocation_granularity;
 
@@ -183,7 +178,7 @@ ifb_memory::context_stack_commit_absolute(
     ptr_context->stack_position = stack_position_new;
     
     //calculate the pointer
-    const IFBAddr stack_start          = ptr_context->stack_start;
+    const IFBAddr stack_start          = (IFBAddr)ptr_context;
     const IFBAddr stack_result_offset  = stack_start + stack_position_current;
     const IFBPtr  stack_result_pointer = (IFBPtr)stack_result_offset;
 
@@ -199,7 +194,7 @@ ifb_memory::context_stack_get_pointer(
     ifb_macro_assert(ptr_context);
 
     //calculate the pointer
-    const IFBAddr stack_start   = ptr_context->stack_start;
+    const IFBAddr stack_start   = (IFBAddr)ptr_context;
     const IFBAddr stack_offset  = stack_start + offset;
     const IFBPtr  stack_pointer = (stack_offset < ptr_context->stack_size) ? (IFBPtr)stack_offset : NULL; 
         
