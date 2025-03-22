@@ -272,3 +272,16 @@ ifb_memory::manager_assert_valid(
 /**********************************************************************************/
 /* ARENA COMMIT                                                                   */
 /**********************************************************************************/
+
+inline IFBVoid 
+ifb_memory::manager_arena_commit_step_0_validate_args(
+    IFBMemoryManagerArenaCommit& commit_ref) {
+
+    ifb_memory::manager_assert_valid(commit_ref.manager);
+}
+
+inline IFBVoid 
+ifb_memory::manager_arena_commit_step_1_find_free_arena(
+    IFBMemoryManagerArenaCommit& commit_ref) {
+
+}

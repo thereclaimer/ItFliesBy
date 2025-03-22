@@ -9,12 +9,18 @@ const IFBHNDMemoryArena
 ifb_memory::arena_commit(
     IFBMemoryManager* memory_manager) {
     
-    
+    //arena commit args
+    IFBMemoryManagerArenaCommit commit;
+    commit.result      = true;
+    commit.manager     = memory_manager;
+    commit.arena_index = IFB_MEMORY_ARENA_INVALID;
 
+    //commit steps
+    ifb_memory::manager_arena_commit_step_0_validate_args   (commit);
+    ifb_memory::manager_arena_commit_step_1_find_free_arena (commit);
 
     IFBHNDMemoryArena arena;
     arena.offset = 0;
-
     return(arena);
 }
 

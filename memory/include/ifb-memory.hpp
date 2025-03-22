@@ -43,6 +43,8 @@ namespace ifb_memory {
 /* MEMORY MANAGER                                                                 */
 /**********************************************************************************/
 
+#define IFB_MEMORY_ARENA_INVALID 0xFFFFFFFF
+
 struct IFBHNDMemoryArena : IFBHND32 { };
 
 struct IFBMemoryManagerArgs {
