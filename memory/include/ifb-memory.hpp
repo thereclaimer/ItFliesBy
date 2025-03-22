@@ -61,26 +61,17 @@ namespace ifb_memory {
 /* ARENA                                                                          */
 /**********************************************************************************/
 
-struct IFBMemoryArenaRequest {
-    struct {
-        IFBMemoryManager* manager;
-        IFBHNDMemoryArena arena_handle;
-        IFBU32            size;
-        IFBU32            alignment;
-    } in;
-    struct {
-        IFBU32            offset;
-        IFBPtr            pointer;
-    } out;
-};
-
 namespace ifb_memory {
 
-    const IFBB8 arena_commit     (IFBMemoryArenaRequest* request);
-    const IFBB8 arena_decommit   (IFBMemoryArenaRequest* request);
-    const IFBB8 arena_reset      (IFBMemoryArenaRequest* request);
-    const IFBB8 arena_push_bytes (IFBMemoryArenaRequest* request);
-    const IFBB8 arena_pull_bytes (IFBMemoryArenaRequest* request);
+    //commit/decommit
+    const IFBHNDMemoryArena arena_commit              (IFBMemoryManager* memory_manager);
+    const IFBB8             arena_decommit            (IFBMemoryManager* memory_manager, const IFBHNDMemoryArena arena_handle);
+
+    //operations
+    const IFBB8             arena_reset               (IFBMemoryManager* memory_manager, const IFBHNDMemoryArena arena_handle, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBU32            arena_push_bytes_relative (IFBMemoryManager* memory_manager, const IFBHNDMemoryArena arena_handle, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBPtr            arena_push_bytes_absolute (IFBMemoryManager* memory_manager, const IFBHNDMemoryArena arena_handle, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBB8             arena_pull_bytes          (IFBMemoryManager* memory_manager, const IFBHNDMemoryArena arena_handle, const IFBU32 size, const IFBU32 alignment = 0);
 };
 
 #endif //IFB_MEMORY_HPP

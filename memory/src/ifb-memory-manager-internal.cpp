@@ -8,17 +8,25 @@
 
 struct IFBMemoryManagerArrays;
 struct IFBMemoryManagerInit;
+struct IFBMemoryManagerArenaCommit;
 
-//initialization steps
 namespace ifb_memory {
 
-    IFBVoid manager_init_step_0_validate_args         (IFBMemoryManagerInit& init_ref);
-    IFBVoid manager_init_step_1_get_system_info       (IFBMemoryManagerInit& init_ref);
-    IFBVoid manager_init_step_3_calculate_sizes       (IFBMemoryManagerInit& init_ref);
-    IFBVoid manager_init_step_2_allocate_manager      (IFBMemoryManagerInit& init_ref);
-    IFBVoid manager_init_step_4_reserve_system_memory (IFBMemoryManagerInit& init_ref);
-    IFBVoid manager_init_step_5_set_properties        (IFBMemoryManagerInit& init_ref);
-    IFBVoid manager_init_step_6_cleanup               (IFBMemoryManagerInit& init_ref);
+    //initialization
+    IFBVoid manager_init_step_0_validate_args           (IFBMemoryManagerInit& init_ref);
+    IFBVoid manager_init_step_1_get_system_info         (IFBMemoryManagerInit& init_ref);
+    IFBVoid manager_init_step_3_calculate_sizes         (IFBMemoryManagerInit& init_ref);
+    IFBVoid manager_init_step_2_allocate_manager        (IFBMemoryManagerInit& init_ref);
+    IFBVoid manager_init_step_4_reserve_system_memory   (IFBMemoryManagerInit& init_ref);
+    IFBVoid manager_init_step_5_set_properties          (IFBMemoryManagerInit& init_ref);
+    IFBVoid manager_init_step_6_cleanup                 (IFBMemoryManagerInit& init_ref);
+
+    //validation
+    IFBVoid manager_assert_valid                        (IFBMemoryManager* memory_manager);
+
+    //arena commit
+    IFBVoid manager_arena_commit_step_0_validate_args   (IFBMemoryManagerArenaCommit& commit_ref);
+    IFBVoid manager_arena_commit_step_1_find_free_arena (IFBMemoryManagerArenaCommit& commit_ref);
 };
 
 /**********************************************************************************/
@@ -62,6 +70,12 @@ struct IFBMemoryManagerInit {
         IFBU32 commit_size_array_arena_position_committed;
         IFBU32 commit_size_array_arena_position_reserved;
     } cache;
+};
+
+struct IFBMemoryManagerArenaCommit {
+    IFBB64            result;
+    IFBMemoryManager* manager;
+    IFBU32            arena_index;
 };
 
 /**********************************************************************************/
@@ -234,3 +248,27 @@ ifb_memory::manager_init_step_6_cleanup(
     init_ref.manager     = NULL;
     init_ref.reservation = NULL;    
 }
+
+/**********************************************************************************/
+/* VALIDATION                                                                     */
+/**********************************************************************************/
+
+inline IFBVoid
+ifb_memory::manager_assert_valid(
+    IFBMemoryManager* memory_manager) {
+
+    ifb_macro_assert(memory_manager);
+    ifb_macro_assert(memory_manager->reserved_memory_start                  != 0);
+    ifb_macro_assert(memory_manager->count_arenas                           != 0);
+    ifb_macro_assert(memory_manager->count_pages                            != 0);
+    ifb_macro_assert(memory_manager->size_arena                             != 0);
+    ifb_macro_assert(memory_manager->size_page                              != 0);
+    ifb_macro_assert(memory_manager->size_granularity                       != 0);
+    ifb_macro_assert(memory_manager->arena_array_offsets.start              != 0);
+    ifb_macro_assert(memory_manager->arena_array_offsets.position_committed != 0);
+    ifb_macro_assert(memory_manager->arena_array_offsets.position_reserved  != 0);
+}
+
+/**********************************************************************************/
+/* ARENA COMMIT                                                                   */
+/**********************************************************************************/
