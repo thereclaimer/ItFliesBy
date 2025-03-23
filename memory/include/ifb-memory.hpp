@@ -8,19 +8,17 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-struct IFBMemoryManager;
-struct IFBMemoryArena;
-struct IFBMemoryBlock;
-
 typedef IFBAddr IFBMemoryStack;
 typedef IFBU32  IFBMemoryManagerID;
 typedef IFBU32  IFBMemoryArenaID;
 
+struct IFBMemoryBlock;
+
+#define IFB_MEMORY_INVALID_VALUE 0xFFFFFFFF
+
 /**********************************************************************************/
 /* STACK                                                                          */
 /**********************************************************************************/
-
-#define IFB_MEMORY_STACK_INVALID_OFFSET 0xFFFFFFFF
 
 namespace ifb_memory {
 
@@ -39,52 +37,54 @@ namespace ifb_memory {
 /* MEMORY MANAGER                                                                 */
 /**********************************************************************************/
 
-struct IFBMemoryManager {
-    IFBMemoryStack      stack;
-    IFBMemoryManagerID  manager_id;
-    IFBByte             padding[4];
-};
-
 namespace ifb_memory {
 
-    const IFBB8
+    const IFBMemoryManagerID
     manager_create(
-              IFBMemoryManager* memory_manager,
-        const IFBU64            size_reservation,
-        const IFBU32            size_arena);
+        const IFBMemoryStack memory_stack,
+        const IFBU64         memory_size_reservation,
+        const IFBU32         memory_size_arena);
     
     const IFBB8
     manager_destroy(
-        const IFBMemoryManager* memory_manager);
+        const IFBMemoryStack     memory_stack,
+        const IFBMemoryManagerID memory_manager_id);
 };
 
 /**********************************************************************************/
 /* ARENA                                                                          */
 /**********************************************************************************/
 
-#define IFB_MEMORY_ARENA_INDEX_INVALID  0xFFFFFFFF
-#define IFB_MEMORY_ARENA_OFFSET_INVALID 0xFFFFFFFF
-
-struct IFBMemoryArena {
-    IFBMemoryStack         stack;
+struct IFBMemoryArenaContext {
+    IFBMemoryStack stack;
     struct {
         IFBMemoryManagerID manager;
         IFBMemoryArenaID   arena;
     } ids;
+    
+    union {
+        IFBPtr absolute_pointer;
+        IFBU32 relative_offset;
+    } memory;
+    
+    union {
+        IFBU32 size;
+        IFBU32 offset;
+    } input;
 };
 
 namespace ifb_memory {
 
     //commit/decommit
-    const IFBB8  arena_commit              (IFBMemoryArena* arena);
-    const IFBB8  arena_decommit            (IFBMemoryArena* arena);
+    const IFBB8 arena_commit               (IFBMemoryArenaContext* arena_context);
+    const IFBB8 arena_decommit             (IFBMemoryArenaContext* arena_context);
 
     //operations
-    const IFBB8  arena_reset               (const IFBMemoryArena* arena);
-    const IFBU32 arena_push_bytes_relative (const IFBMemoryArena* arena, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBPtr arena_push_bytes_absolute (const IFBMemoryArena* arena, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBB8  arena_pull_bytes          (const IFBMemoryArena* arena, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBPtr arena_get_pointer         (const IFBMemoryArena* arena, const IFBU32 offset);
+    const IFBB8  arena_reset               (IFBMemoryArenaContext* arena_context);
+    const IFBU32 arena_push_bytes_relative (IFBMemoryArenaContext* arena_context);
+    const IFBPtr arena_push_bytes_absolute (IFBMemoryArenaContext* arena_context);
+    const IFBB8  arena_pull_bytes          (IFBMemoryArenaContext* arena_context);
+    const IFBPtr arena_get_pointer         (IFBMemoryArenaContext* arena_context);
 };
 
 struct IFBMemoryBlock {

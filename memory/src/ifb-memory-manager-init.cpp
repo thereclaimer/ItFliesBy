@@ -4,50 +4,6 @@
 #include "ifb-memory-internal.cpp"
 
 /**********************************************************************************/
-/* FORWARD DECLARATIONS                                                           */
-/**********************************************************************************/
-
-struct IFBMemoryManagerInit;
-
-namespace ifb_memory {
-
-    IFBVoid manager_init_step_0_validate_args         (IFBMemoryManagerInit& init_ref);
-    IFBVoid manager_init_step_1_get_system_info       (IFBMemoryManagerInit& init_ref);
-    IFBVoid manager_init_step_3_calculate_sizes       (IFBMemoryManagerInit& init_ref);
-    IFBVoid manager_init_step_2_allocate_manager      (IFBMemoryManagerInit& init_ref);
-    IFBVoid manager_init_step_4_reserve_system_memory (IFBMemoryManagerInit& init_ref);
-    IFBVoid manager_init_step_5_set_properties        (IFBMemoryManagerInit& init_ref);
-    IFBVoid manager_init_step_6_cleanup               (IFBMemoryManagerInit& init_ref);
-};
-
-/**********************************************************************************/
-/* DEFINITIONS                                                                    */
-/**********************************************************************************/
-
-struct IFBMemoryManagerInit {
-    IFBB64                    result;
-    IFBMemoryManagerInternal* manager;
-    IFBPtr                    reservation;
-    IFBSystemMemoryInfo       sys_info;
-    IFBU32                    manager_handle;
-    struct {
-        IFBAddr stack_start;
-        IFBU64  size_reservation;
-        IFBU32  size_arena;
-    } args;
-    struct {
-        IFBU32  aligned_size_reservation;
-        IFBU32  aligned_size_arena;
-        IFBU32  count_arenas;
-        IFBU32  commit_size_total;
-        IFBU32  commit_size_manager_struct;
-        IFBU32  commit_size_array_arena_start;
-        IFBU32  commit_size_array_arena_position;
-        IFBByte padding[4];
-    } cache;
-};
-
-/**********************************************************************************/
 /* INITIALIZATION                                                                 */
 /**********************************************************************************/
 
@@ -90,7 +46,7 @@ ifb_memory::manager_init_step_3_calculate_sizes(
         init_ref.cache.count_arenas = init_ref.cache.aligned_size_reservation / init_ref.cache.aligned_size_arena;
 
         //property sizes    
-        init_ref.cache.commit_size_manager_struct       = ifb_macro_align_size_struct(IFBMemoryManagerInternal);
+        init_ref.cache.commit_size_manager_struct       = ifb_macro_align_size_struct(IFBMemoryManager);
         init_ref.cache.commit_size_array_arena_start    = sizeof(IFBAddr) * init_ref.cache.count_arenas;
         init_ref.cache.commit_size_array_arena_position = sizeof(IFBU32)  * init_ref.cache.count_arenas;
      
@@ -118,7 +74,7 @@ ifb_memory::manager_init_step_2_allocate_manager(
     if (init_ref.result) {
 
         //do the stack commit
-        init_ref.manager = (IFBMemoryManagerInternal*)ifb_memory::stack_push_bytes_absolute(
+        init_ref.manager = (IFBMemoryManager*)ifb_memory::stack_push_bytes_absolute(
             init_ref.args.stack_start,
             init_ref.cache.commit_size_total);
 
