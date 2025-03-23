@@ -3,7 +3,7 @@
 
 #include "ifb-memory.hpp"
 
-#include "ifb-memory-manager-internal.cpp"
+#include "ifb-memory-internal.cpp"
 #include "ifb-memory-arena-commit.cpp"
 #include "ifb-memory-arena-decommit.cpp"
 

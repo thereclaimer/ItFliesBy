@@ -2,7 +2,7 @@
 
 #include "ifb-memory.hpp"
 
-#include "ifb-memory-manager-internal.cpp"
+#include "ifb-memory-manager.cpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -64,25 +64,19 @@ ifb_memory::arena_commit_step_1_cache_manager_properties(
     IFBMemoryArenaCommit& commit_ref) {
 
     //get the memory manager
-    IFBMemoryManagerInternal* memory_manager = (IFBMemoryManagerInternal*)ifb_memory::stack_get_pointer(
+    IFBMemoryManagerInternal* memory_manager = ifb_memory::manager_load(
         commit_ref.handles.stack,
         commit_ref.handles.manager);
 
     //make sure our memory manager is valid
     commit_ref.result &= (memory_manager != NULL);
     if (commit_ref.result) {
-        
-        //get addresses and offsets
-        const IFBU32  offset_arena_array_start    = memory_manager->offset_arena_array_start;
-        const IFBU32  offset_arena_array_position = memory_manager->offset_arena_array_position;
-        const IFBAddr start_memory                = (IFBAddr)memory_manager;
-        const IFBAddr addr_arena_array_start      = start_memory + offset_arena_array_start; 
-        const IFBAddr addr_arena_array_position   = start_memory + offset_arena_array_position; 
 
         //cache the properties we need for the arena commit
+        const IFBAddr start_memory                     = (IFBAddr)memory_manager;
         commit_ref.manager_cache.start_reservation     = memory_manager->reserved_memory_start;
-        commit_ref.manager_cache.arena_array_start     = (IFBAddr*)addr_arena_array_start; 
-        commit_ref.manager_cache.arena_array_position  =  (IFBU32*)addr_arena_array_position; 
+        commit_ref.manager_cache.arena_array_start     = (IFBAddr*)ifb_memory::get_pointer(start_memory, memory_manager->offset_arena_array_start);
+        commit_ref.manager_cache.arena_array_position  =  (IFBU32*)ifb_memory::get_pointer(start_memory, memory_manager->offset_arena_array_position);
         commit_ref.manager_cache.arena_count           = memory_manager->count_arenas;
         commit_ref.manager_cache.arena_size            = memory_manager->size_arena;
     
@@ -107,7 +101,6 @@ ifb_memory::arena_commit_step_2_find_free_arena(
         //cache constant properties
         const IFBAddr* arena_start_array = commit_ref.manager_cache.arena_array_start;  
         const IFBU32   arena_count       = commit_ref.manager_cache.arena_count; 
-
 
         //search for a free arena
         for (

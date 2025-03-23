@@ -89,5 +89,24 @@ struct IFBMemoryBlock {
     IFBU64  size;
 };
 
+/**********************************************************************************/
+/* UTILITIES                                                                      */
+/**********************************************************************************/
+
+namespace ifb_memory {
+
+    const IFBPtr get_pointer(const IFBAddr start, const IFBU32 offset);
+};
+
+inline const IFBPtr
+ifb_memory::get_pointer(
+    const IFBAddr start,
+    const IFBU32  offset) {
+
+    const IFBAddr address = start + offset;
+    const IFBPtr  pointer = (IFBPtr)address;
+
+    return(pointer);
+}
 
 #endif //IFB_MEMORY_HPP

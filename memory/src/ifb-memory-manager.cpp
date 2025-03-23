@@ -4,6 +4,24 @@
 #include "ifb-memory-manager-init.cpp"
 
 /**********************************************************************************/
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
+
+struct IFBMemoryManagerArrays {
+    IFBAddr* arena_start;
+    IFBU32*  arena_position;
+};
+
+namespace ifb_memory {
+
+    IFBVoid                   manager_assert_valid              (IFBMemoryManagerInternal* memory_manager);
+    IFBMemoryManagerInternal* manager_load                      (const IFBAddr stack_handle, const IFBU32 manager_offset);
+    IFBAddr*                  manager_load_array_arena_start    (IFBMemoryManagerInternal* memory_manager);
+    IFBU32*                   manager_load_array_arena_position (IFBMemoryManagerInternal* memory_manager);
+    IFBVoid                   manager_load_arrays               (IFBMemoryManagerInternal* memory_manager, IFBMemoryManagerArrays* arrays);
+};
+
+/**********************************************************************************/
 /* MEMORY MANAGER                                                                 */
 /**********************************************************************************/
 
@@ -44,4 +62,52 @@ ifb_memory::manager_destroy(
     const IFBMemoryManager* memory_manager) {
 
     return(false);
+}
+
+inline IFBMemoryManagerInternal*
+ifb_memory::manager_load(
+    const IFBAddr handle_stack,
+    const IFBU32  handle_manager) {
+
+    //get the memory manager
+    IFBMemoryManagerInternal* memory_manager = (IFBMemoryManagerInternal*)ifb_memory::stack_get_pointer(
+        handle_stack,
+        handle_manager);
+
+    return(memory_manager);
+}
+
+inline IFBAddr*
+ifb_memory::manager_load_array_arena_start(
+    IFBMemoryManagerInternal* memory_manager) {
+
+    const IFBU32  offset  = memory_manager->offset_arena_array_start;
+    const IFBAddr start   = (IFBAddr)memory_manager;
+    const IFBAddr address = start + offset;
+    IFBAddr*      pointer = (IFBAddr*)address;
+    
+    return(pointer); 
+}
+
+inline IFBU32* 
+ifb_memory::manager_load_array_arena_position(
+    IFBMemoryManagerInternal* memory_manager) {
+
+    const IFBU32  offset  = memory_manager->offset_arena_array_position;
+    const IFBAddr start   = (IFBAddr)memory_manager;
+    const IFBAddr address = start + offset;
+    IFBAddr*      pointer = (IFBAddr*)address;
+}
+
+inline IFBVoid
+ifb_memory::manager_load_arrays(
+    IFBMemoryManagerInternal* memory_manager,
+    IFBMemoryManagerArrays*   arrays) {
+
+    ifb_macro_assert(memory_manager);
+    ifb_macro_assert(arrays);
+
+    const IFBAddr start    = (IFBAddr)memory_manager;
+    arrays->arena_start    = (IFBAddr*)(start + memory_manager->offset_arena_array_start);
+    arrays->arena_position =  (IFBU32*)(start + memory_manager->offset_arena_array_position);
 }
