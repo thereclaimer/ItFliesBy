@@ -9,12 +9,9 @@
 /**********************************************************************************/
 
 struct IFBMemoryStack;
+struct IFBMemoryManager;
 struct IFBMemoryArena;
 struct IFBMemoryBlock;
-
-typedef IFBAddr IFBMemoryHandleStack;
-typedef IFBU32  IFBMemoryHandleManager;
-typedef IFBU32  IFBMemoryHandleArena;
 
 /**********************************************************************************/
 /* STACK                                                                          */
@@ -22,17 +19,21 @@ typedef IFBU32  IFBMemoryHandleArena;
 
 #define IFB_MEMORY_STACK_INVALID_OFFSET 0xFFFFFFFF
 
+struct IFBMemoryStack {
+    IFBAddr start;
+};
+
 namespace ifb_memory {
 
-    const IFBMemoryHandleStack
+    const IFBMemoryStack
     stack_create(
         const IFBByte* stack_memory,
         const IFBU32   stack_size);
 
-    const IFBU32 stack_push_bytes_relative (const IFBMemoryHandleStack, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBPtr stack_push_bytes_absolute (const IFBMemoryHandleStack, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBB8  stack_pull_bytes          (const IFBMemoryHandleStack, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBPtr stack_get_pointer         (const IFBMemoryHandleStack, const IFBU32 offset);
+    const IFBU32 stack_push_bytes_relative (const IFBMemoryStack, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBPtr stack_push_bytes_absolute (const IFBMemoryStack, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBB8  stack_pull_bytes          (const IFBMemoryStack, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBPtr stack_get_pointer         (const IFBMemoryStack, const IFBU32 offset);
 };
 
 /**********************************************************************************/

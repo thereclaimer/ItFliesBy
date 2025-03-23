@@ -73,7 +73,7 @@ ifb_memory::arena_push_step_1_cache_manager_properties(
             push_ref.args.handle_manager);
 
         //cache properties
-        ifb_memory::manager_load_arrays(memory_manager,&push_ref.arrays);
+        ifb_memory::manager_load_arrays(memory_manager,&push_ref.manager_cache.arrays);
         push_ref.manager_cache.arena_size  = memory_manager->size_arena;
         push_ref.manager_cache.arena_count = memory_manager->count_arenas;
     }

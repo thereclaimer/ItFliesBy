@@ -29,7 +29,7 @@ struct IFBMemoryManagerInit {
     IFBMemoryManagerInternal* manager;
     IFBPtr                    reservation;
     IFBSystemMemoryInfo       sys_info;
-    IFBMemoryHandleManager    manager_handle;
+    IFBU32                    manager_handle;
     struct {
         IFBAddr stack_start;
         IFBU64  size_reservation;
