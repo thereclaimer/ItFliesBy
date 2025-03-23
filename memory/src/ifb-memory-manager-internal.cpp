@@ -56,11 +56,16 @@ struct IFBMemoryManagerArrays {
 };
 
 struct IFBMemoryManagerInit {
-    IFBB64                result;
-    IFBMemoryManagerArgs* args;
-    IFBMemoryManager*     manager;
-    IFBPtr                reservation;
-    IFBSystemMemoryInfo   sys_info;
+    IFBB64                 result;
+    IFBMemoryManager*      manager;
+    IFBPtr                 reservation;
+    IFBSystemMemoryInfo    sys_info;
+    IFBMemoryManagerHandle manager_handle;
+    struct {
+        IFBAddr stack_start;
+        IFBU64  size_reservation;
+        IFBU32  size_arena;
+    } args;
     struct {
         IFBU32  aligned_size_reservation;
         IFBU32  aligned_size_arena;
@@ -102,13 +107,10 @@ inline IFBVoid
 ifb_memory::manager_init_step_0_validate_args(
     IFBMemoryManagerInit& init_ref) {
     
-    init_ref.result = (init_ref.args != NULL);
-    if (init_ref.result) {
-        
-        init_ref.result &= (init_ref.args->stack            != NULL);
-        init_ref.result &= (init_ref.args->size_reservation != NULL);
-        init_ref.result &= (init_ref.args->size_arena       != NULL);
-    }
+    init_ref.result =  true;    
+    init_ref.result &= (init_ref.args.stack_start      != 0);
+    init_ref.result &= (init_ref.args.size_reservation != NULL);
+    init_ref.result &= (init_ref.args.size_arena       != NULL);
 }
 
 inline IFBVoid 
@@ -128,12 +130,12 @@ ifb_memory::manager_init_step_3_calculate_sizes(
 
         //align the reservation size to the allocation granularity
         init_ref.cache.aligned_size_reservation = ifb_macro_align_a_to_b(
-            init_ref.args->size_reservation,
+            init_ref.args.size_reservation,
             (IFBU64)init_ref.sys_info.allocation_granularity);
 
         //align the arena size to a page size
         init_ref.cache.aligned_size_arena = ifb_macro_align_a_to_b(
-            (IFBU32)init_ref.args->size_arena,
+            (IFBU32)init_ref.args.size_arena,
             init_ref.sys_info.page_size);
 
         //page and arena counts
@@ -169,7 +171,7 @@ ifb_memory::manager_init_step_2_allocate_manager(
 
         //do the stack commit
         init_ref.manager = (IFBMemoryManager*)ifb_memory::stack_push_bytes_absolute(
-            init_ref.args->stack,
+            init_ref.args.stack_start,
             init_ref.cache.commit_size_total);
 
         //make sure we have the manager
@@ -243,7 +245,7 @@ ifb_memory::manager_init_step_6_cleanup(
 
         //release the memory
         const IFBB8 released = ifb_memory::stack_pull_bytes(
-            init_ref.args->stack,
+            init_ref.args.stack_start,
             init_ref.cache.commit_size_total);
 
         //we should AlWAYS be able to release memory        

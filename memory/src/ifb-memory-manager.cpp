@@ -8,14 +8,17 @@
 /* MEMORY MANAGER                                                                 */
 /**********************************************************************************/
 
-IFBMemoryManager*
+const IFBMemoryManagerHandle
 ifb_memory::manager_create(
-    IFBMemoryManagerArgs* args) {
+    const IFBMemoryStackStart stack_start,
+    const IFBU64              size_reservation,
+    const IFBU32              size_arena) {
 
     //init struct
     IFBMemoryManagerInit init;
-    init.result = true;
-    init.args   = args;
+    init.args.stack_start      = stack_start;
+    init.args.size_reservation = size_reservation;
+    init.args.size_arena       = size_arena;
 
     //initialize the memory manager
     manager_init_step_0_validate_args         (init);
@@ -27,8 +30,8 @@ ifb_memory::manager_create(
     manager_init_step_6_cleanup               (init);
 
     //get the result
-    IFBMemoryManager* result = init.result
-        ? init.manager
+    const IFBMemoryManagerHandle result = init.result
+        ? init.manager_handle
         : NULL;
 
     //we're done
@@ -37,7 +40,8 @@ ifb_memory::manager_create(
 
 const IFBB8      
 ifb_memory::manager_destroy(
-    IFBMemoryManager* memory_manager) {
+    const IFBMemoryStackStart    stack_start,
+    const IFBMemoryManagerHandle memory_manager_handle) {
 
     return(false);
 }
