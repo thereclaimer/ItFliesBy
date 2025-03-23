@@ -62,7 +62,8 @@ namespace ifb_memory {
 /* ARENA                                                                          */
 /**********************************************************************************/
 
-#define IFB_MEMORY_ARENA_INDEX_INVALID 0xFFFFFFFF
+#define IFB_MEMORY_ARENA_INDEX_INVALID  0xFFFFFFFF
+#define IFB_MEMORY_ARENA_OFFSET_INVALID 0xFFFFFFFF
 
 struct IFBMemoryArena {
     IFBAddr handle_stack;
