@@ -15,14 +15,14 @@ struct IFBMemoryStack {
 
 namespace ifb_memory {
 
-    IFBMemoryStack* stack_cast_and_assert_valid (const IFBMemoryStackStart stack_start);
+    IFBMemoryStack* stack_cast_and_assert_valid (const IFBMemoryHandleStack stack_start);
 };
 
 /**********************************************************************************/
 /* STACK                                                                          */
 /**********************************************************************************/
 
-const IFBMemoryStackStart
+const IFBMemoryHandleStack
 ifb_memory::stack_create(
     const IFBByte* stack_memory,
     const IFBU32   stack_size) {
@@ -41,7 +41,7 @@ ifb_memory::stack_create(
     stack->position = IFB_MEMORY_STACK_STRUCT_SIZE;
 
     //get the address
-    const IFBMemoryStackStart result = (IFBMemoryStackStart)stack; 
+    const IFBMemoryHandleStack result = (IFBMemoryHandleStack)stack; 
 
     //we're done
     return(result);
@@ -49,7 +49,7 @@ ifb_memory::stack_create(
 
 const IFBU32
 ifb_memory::stack_push_bytes_relative(
-    const IFBMemoryStackStart stack_start,
+    const IFBMemoryHandleStack stack_start,
     const IFBU32              size,
     const IFBU32              alignment) {
 
@@ -77,7 +77,7 @@ ifb_memory::stack_push_bytes_relative(
 
 const IFBPtr
 ifb_memory::stack_push_bytes_absolute(
-    const IFBMemoryStackStart stack_start,
+    const IFBMemoryHandleStack stack_start,
     const IFBU32          size,
     const IFBU32          alignment) {
 
@@ -109,7 +109,7 @@ ifb_memory::stack_push_bytes_absolute(
 
 const IFBPtr
 ifb_memory::stack_get_pointer(
-    const IFBMemoryStackStart stack_start,
+    const IFBMemoryHandleStack stack_start,
     const IFBU32              offset) {
 
     //validate stack
@@ -125,7 +125,7 @@ ifb_memory::stack_get_pointer(
 
 const IFBB8
 ifb_memory::stack_pull_bytes(
-    const IFBMemoryStackStart stack_start,
+    const IFBMemoryHandleStack stack_start,
     const IFBU32              size,
     const IFBU32              alignment) {
 
@@ -156,7 +156,7 @@ ifb_memory::stack_pull_bytes(
 
 inline IFBMemoryStack*
 stack_cast_and_assert_valid(
-    const IFBMemoryStackStart stack_start) {
+    const IFBMemoryHandleStack stack_start) {
 
     IFBMemoryStack* stack = (IFBMemoryStack*)stack_start;
 
