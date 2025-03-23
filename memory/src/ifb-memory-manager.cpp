@@ -1,8 +1,7 @@
 #pragma once
 
 #include "ifb-memory.hpp"
-
-#include "ifb-memory-manager-internal.cpp"
+#include "ifb-memory-manager-init.cpp"
 
 /**********************************************************************************/
 /* MEMORY MANAGER                                                                 */
@@ -24,13 +23,13 @@ ifb_memory::manager_create(
     init.args.size_arena       = size_arena;
 
     //initialize the memory manager
-    manager_init_step_0_validate_args         (init);
-    manager_init_step_1_get_system_info       (init);
-    manager_init_step_3_calculate_sizes       (init);
-    manager_init_step_2_allocate_manager      (init);
-    manager_init_step_4_reserve_system_memory (init);
-    manager_init_step_5_set_properties        (init);
-    manager_init_step_6_cleanup               (init);
+    ifb_memory::manager_init_step_0_validate_args         (init);
+    ifb_memory::manager_init_step_1_get_system_info       (init);
+    ifb_memory::manager_init_step_3_calculate_sizes       (init);
+    ifb_memory::manager_init_step_2_allocate_manager      (init);
+    ifb_memory::manager_init_step_4_reserve_system_memory (init);
+    ifb_memory::manager_init_step_5_set_properties        (init);
+    ifb_memory::manager_init_step_6_cleanup               (init);
 
     //get the handle and result
     memory_manager->handle_manager = init.manager_handle;

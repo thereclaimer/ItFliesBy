@@ -81,8 +81,8 @@ namespace ifb_memory {
     const IFBU32 arena_push_bytes_relative (const IFBMemoryArena* arena, const IFBU32 size, const IFBU32 alignment = 0);
     const IFBPtr arena_push_bytes_absolute (const IFBMemoryArena* arena, const IFBU32 size, const IFBU32 alignment = 0);
     const IFBB8  arena_pull_bytes          (const IFBMemoryArena* arena, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBPtr arena_get_pointer         (const IFBMemoryArena* arena, const IFBU32 offset);
 };
-
 
 struct IFBMemoryBlock {
     IFBAddr start;
