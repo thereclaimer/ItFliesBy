@@ -37,7 +37,7 @@ ifb_memory::arena_decommit_step_1_cache_manager_properties(
         decommit_ref.manager_cache.arena_count       = memory_manager_internal->count_arenas;
     
         //make sure our arena index is valid
-        const IFBU32 arena_index = decommit_ref.args.arena->ids.arena;
+        const IFBU32 arena_index = decommit_ref.context->ids.arena;
         const IFBU32 arena_count = decommit_ref.manager_cache.arena_count; 
         decommit_ref.result &= (arena_index < arena_count);
     }
@@ -50,7 +50,7 @@ ifb_memory::arena_decommit_step_3_decommit_memory(
     if (decommit_ref.result) {
 
         //get the commit pointer
-        const IFBU32  arena_index      = decommit_ref.args.arena->ids.arena;
+        const IFBU32  arena_index      = decommit_ref.context->ids.arena;
         const IFBAddr arena_start_addr = decommit_ref.manager_cache.arena_start_array[arena_index];
         const IFBPtr  arena_start_ptr  = (IFBPtr)arena_start_addr;
 
@@ -68,7 +68,7 @@ ifb_memory::arena_decommit_step_4_update_arena_start_array(
     if (decommit_ref.result) {
 
         //update the array        
-        const IFBU32 arena_index = decommit_ref.args.arena->ids.arena;
+        const IFBU32 arena_index = decommit_ref.context->ids.arena;
         decommit_ref.manager_cache.arena_start_array[arena_index] = 0;
     }
 }
