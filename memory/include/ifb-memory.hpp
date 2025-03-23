@@ -23,6 +23,8 @@ struct IFBMemoryBlock {
     IFBU64  size;
 };
 
+typedef IFBU32 IFBMemoryArenaIndex;
+
 /**********************************************************************************/
 /* STACK                                                                          */
 /**********************************************************************************/
@@ -31,7 +33,7 @@ struct IFBMemoryBlock {
 
 namespace ifb_memory {
 
-    IFBMemoryStack* stack_create                (const IFBByte* stack_memory, const IFBU32 stack_size);
+    IFBMemoryStack* stack_create              (const IFBByte* stack_memory, const IFBU32 stack_size);
 
     const IFBU32    stack_push_bytes_relative (IFBMemoryStack* stack, const IFBU32 size, const IFBU32 alignment = 0);
     const IFBPtr    stack_push_bytes_absolute (IFBMemoryStack* stack, const IFBU32 size, const IFBU32 alignment = 0);
@@ -43,9 +45,6 @@ namespace ifb_memory {
 /* MEMORY MANAGER                                                                 */
 /**********************************************************************************/
 
-#define IFB_MEMORY_ARENA_INVALID 0xFFFFFFFF
-
-struct IFBHNDMemoryArena : IFBHND32 { };
 
 struct IFBMemoryManagerArgs {
     IFBMemoryStack* stack;    
@@ -63,17 +62,19 @@ namespace ifb_memory {
 /* ARENA                                                                          */
 /**********************************************************************************/
 
+#define IFB_MEMORY_ARENA_INDEX_INVALID 0xFFFFFFFF
+
 namespace ifb_memory {
 
     //commit/decommit
-    const IFBHNDMemoryArena arena_commit              (IFBMemoryManager* memory_manager);
-    const IFBB8             arena_decommit            (IFBMemoryManager* memory_manager, const IFBHNDMemoryArena arena_handle);
+    const IFBMemoryArenaIndex arena_commit              (IFBMemoryManager* memory_manager);
+    const IFBB8               arena_decommit            (IFBMemoryManager* memory_manager, const IFBMemoryArenaIndex arena_index);
 
     //operations
-    const IFBB8             arena_reset               (IFBMemoryManager* memory_manager, const IFBHNDMemoryArena arena_handle, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBU32            arena_push_bytes_relative (IFBMemoryManager* memory_manager, const IFBHNDMemoryArena arena_handle, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBPtr            arena_push_bytes_absolute (IFBMemoryManager* memory_manager, const IFBHNDMemoryArena arena_handle, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBB8             arena_pull_bytes          (IFBMemoryManager* memory_manager, const IFBHNDMemoryArena arena_handle, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBB8               arena_reset               (IFBMemoryManager* memory_manager, const IFBMemoryArenaIndex arena_index, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBU32              arena_push_bytes_relative (IFBMemoryManager* memory_manager, const IFBMemoryArenaIndex arena_index, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBPtr              arena_push_bytes_absolute (IFBMemoryManager* memory_manager, const IFBMemoryArenaIndex arena_index, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBB8               arena_pull_bytes          (IFBMemoryManager* memory_manager, const IFBMemoryArenaIndex arena_index, const IFBU32 size, const IFBU32 alignment = 0);
 };
 
 #endif //IFB_MEMORY_HPP
