@@ -115,7 +115,7 @@ struct IFBMemoryArenaCommit {
         IFBAddr                arena_start;
         IFBU32                 arena_count;
         IFBU32                 arena_size;
-    } manager_cache;
+    } cache;
 };
 
 struct IFBMemoryArenaDecommit {
@@ -125,7 +125,7 @@ struct IFBMemoryArenaDecommit {
         IFBAddr* arena_start_array;
         IFBU32   arena_size;
         IFBU32   arena_count;
-    } manager_cache;
+    } cache;
 };
 
 struct IFBMemoryArenaReset {
@@ -144,5 +144,5 @@ struct IFBMemoryArenaPushBytes {
         IFBMemoryManagerArrays arrays; 
         IFBU32                 arena_size;
         IFBU32                 arena_count;
-    } manager_cache;
+    } cache;
 };

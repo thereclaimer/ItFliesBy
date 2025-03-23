@@ -32,9 +32,9 @@ ifb_memory::arena_push_step_1_cache_manager_properties(
             push_ref.context->ids.manager);
 
         //cache properties
-        ifb_memory::manager_load_arrays(memory_manager,&push_ref.manager_cache.arrays);
-        push_ref.manager_cache.arena_size  = memory_manager->size_arena;
-        push_ref.manager_cache.arena_count = memory_manager->count_arenas;
+        ifb_memory::manager_load_arrays(memory_manager,&push_ref.cache.arrays);
+        push_ref.cache.arena_size  = memory_manager->size_arena;
+        push_ref.cache.arena_count = memory_manager->count_arenas;
     }
 }
 
@@ -46,8 +46,8 @@ ifb_memory::arena_push_step_2_push_bytes_relative(
 
         //calculate the new position
         const IFBU32 arena_index        = push_ref.context->ids.arena;
-        const IFBU32 arena_size         = push_ref.manager_cache.arena_size;
-        const IFBU32 arena_offset       = push_ref.manager_cache.arrays.arena_position[arena_index];
+        const IFBU32 arena_size         = push_ref.cache.arena_size;
+        const IFBU32 arena_offset       = push_ref.cache.arrays.arena_position[arena_index];
         const IFBU32 arena_position_new = arena_offset + push_ref.context->input.size;
 
         //make sure we can fit
@@ -55,7 +55,7 @@ ifb_memory::arena_push_step_2_push_bytes_relative(
         if (push_ref.result) {
 
             //if we can, update the position
-            push_ref.manager_cache.arrays.arena_position[arena_index] = arena_position_new;
+            push_ref.cache.arrays.arena_position[arena_index] = arena_position_new;
         
             //update the memory
             push_ref.context->memory.relative_offset = arena_offset;
@@ -71,8 +71,8 @@ ifb_memory::arena_push_step_2_push_bytes_absolute(
 
         //calculate the new position
         const IFBU32 arena_index        = push_ref.context->ids.arena;
-        const IFBU32 arena_size         = push_ref.manager_cache.arena_size;
-        const IFBU32 arena_offset       = push_ref.manager_cache.arrays.arena_position[arena_index];
+        const IFBU32 arena_size         = push_ref.cache.arena_size;
+        const IFBU32 arena_offset       = push_ref.cache.arrays.arena_position[arena_index];
         const IFBU32 arena_position_new = arena_offset + push_ref.context->input.size;
 
         //make sure we can fit
@@ -80,10 +80,10 @@ ifb_memory::arena_push_step_2_push_bytes_absolute(
         if (push_ref.result) {
 
             //if we can, update the position
-            push_ref.manager_cache.arrays.arena_position[arena_index] = arena_position_new;
+            push_ref.cache.arrays.arena_position[arena_index] = arena_position_new;
         
             //update the memory
-            const IFBAddr arena_start                 = push_ref.manager_cache.arrays.arena_start[arena_index];
+            const IFBAddr arena_start                 = push_ref.cache.arrays.arena_start[arena_index];
             const IFBAddr arena_memory_absolute       = arena_start + arena_offset;
             push_ref.context->memory.absolute_pointer = (IFBPtr)arena_memory_absolute;
         }
