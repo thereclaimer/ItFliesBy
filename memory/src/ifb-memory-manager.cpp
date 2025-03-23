@@ -36,7 +36,7 @@ ifb_memory::manager_create(
 
     //init struct
     IFBMemoryManagerInit init;
-    init.args.stack_start      = memory_manager->handle_stack;
+    init.args.stack_start      = memory_manager->stack;
     init.args.size_reservation = size_reservation;
     init.args.size_arena       = size_arena;
 
@@ -50,8 +50,8 @@ ifb_memory::manager_create(
     ifb_memory::manager_init_step_6_cleanup               (init);
 
     //get the handle and result
-    memory_manager->handle_manager = init.manager_handle;
-    const IFBB8 result             = init.result ? true : false;
+    memory_manager->manager_id = init.manager_handle;
+    const IFBB8 result         = init.result ? true : false;
 
     //we're done
     return(result);

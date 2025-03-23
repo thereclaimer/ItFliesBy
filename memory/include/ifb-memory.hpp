@@ -8,20 +8,19 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-struct IFBMemoryStack;
 struct IFBMemoryManager;
 struct IFBMemoryArena;
 struct IFBMemoryBlock;
+
+typedef IFBAddr IFBMemoryStack;
+typedef IFBU32  IFBMemoryManagerID;
+typedef IFBU32  IFBMemoryArenaID;
 
 /**********************************************************************************/
 /* STACK                                                                          */
 /**********************************************************************************/
 
 #define IFB_MEMORY_STACK_INVALID_OFFSET 0xFFFFFFFF
-
-struct IFBMemoryStack {
-    IFBAddr start;
-};
 
 namespace ifb_memory {
 
@@ -41,9 +40,9 @@ namespace ifb_memory {
 /**********************************************************************************/
 
 struct IFBMemoryManager {
-    IFBAddr handle_stack;
-    IFBU32  handle_manager;
-    IFBByte padding[4];
+    IFBMemoryStack      stack;
+    IFBMemoryManagerID  manager_id;
+    IFBByte             padding[4];
 };
 
 namespace ifb_memory {
@@ -67,9 +66,11 @@ namespace ifb_memory {
 #define IFB_MEMORY_ARENA_OFFSET_INVALID 0xFFFFFFFF
 
 struct IFBMemoryArena {
-    IFBAddr handle_stack;
-    IFBU32  handle_manager;
-    IFBU32  handle_arena;
+    IFBMemoryStack         stack;
+    struct {
+        IFBMemoryManagerID manager;
+        IFBMemoryArenaID   arena;
+    } ids;
 };
 
 namespace ifb_memory {

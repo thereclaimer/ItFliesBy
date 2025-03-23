@@ -15,11 +15,11 @@ ifb_memory::arena_commit(
     //sanity check
     ifb_macro_assert(arena);
 
-    //set the handle values
+    //set the arena values
     IFBMemoryArenaCommit commit;
-    commit.handles.stack   = arena->handle_stack;
-    commit.handles.manager = arena->handle_manager; 
- 
+    commit.arena.start_stack = arena->stack;
+    commit.arena.id_manager  = arena->ids.manager;
+
     //commit steps
     ifb_memory::arena_commit_step_0_validate_args            (commit);
     ifb_memory::arena_commit_step_1_cache_manager_properties (commit);
@@ -29,7 +29,7 @@ ifb_memory::arena_commit(
     ifb_memory::arena_commit_step_5_update_arrays            (commit);
 
     //update the arena
-    arena->handle_arena = commit.arena.index;
+    arena->ids.arena = commit.arena.id_arena;
 
     //we're done
     return(commit.result ? true : false);
@@ -44,9 +44,9 @@ ifb_memory::arena_decommit(
 
     //set the args
     IFBMemoryArenaDecommit decommit;
-    decommit.args.handle_stack   = arena->handle_stack;
-    decommit.args.handle_manager = arena->handle_manager; 
-    decommit.args.handle_arena   = arena->handle_arena;
+    decommit.args.handle_stack   = arena->stack;
+    decommit.args.handle_manager = arena->ids.manager; 
+    decommit.args.handle_arena   = arena->ids.arena;
 
     //do the decommit
     ifb_memory::arena_decommit_step_0_validate_args            (decommit);
@@ -79,9 +79,9 @@ ifb_memory::arena_push_bytes_relative(
 
     //set the args
     IFBMemoryArenaPushBytes push;
-    push.args.handle_stack   = arena->handle_stack;
-    push.args.handle_manager = arena->handle_manager;
-    push.args.handle_arena   = arena->handle_arena;
+    push.args.handle_stack   = arena->stack;
+    push.args.handle_manager = arena->ids.manager; 
+    push.args.handle_arena   = arena->ids.arena;
     push.args.size           = size;
     push.args.alignment      = alignment;
 
@@ -110,9 +110,9 @@ ifb_memory::arena_push_bytes_absolute(
 
     //set the args
     IFBMemoryArenaPushBytes push;
-    push.args.handle_stack   = arena->handle_stack;
-    push.args.handle_manager = arena->handle_manager;
-    push.args.handle_arena   = arena->handle_arena;
+    push.args.handle_stack   = arena->stack;
+    push.args.handle_manager = arena->ids.manager; 
+    push.args.handle_arena   = arena->ids.arena;
     push.args.size           = size;
     push.args.alignment      = alignment;
 

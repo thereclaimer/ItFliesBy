@@ -28,14 +28,11 @@ ifb_memory::stack_create(
     const IFBByte* stack_memory,
     const IFBU32   stack_size) {
 
-    IFBMemoryStack stack;
-    stack.start = 0;
-
     //check args
     IFBB8 can_create = true;                                      // we can create the stack IF...
     can_create &= (stack_memory != NULL);                         //...the memory isn't null AND
     can_create &= (stack_size   >= IFB_MEMORY_STACK_STRUCT_SIZE); //...we can fit the struct in the memory
-    if (!can_create) return(stack);                               // if we can't create, we're done
+    if (!can_create) return(0);                                   // if we can't create, we're done
 
     //cast the memory
     IFBMemoryStackInternal* stack_internal = (IFBMemoryStackInternal*)stack_memory;
@@ -45,7 +42,7 @@ ifb_memory::stack_create(
     stack_internal->position = IFB_MEMORY_STACK_STRUCT_SIZE;
 
     //get the address
-    stack.start = (IFBAddr)stack_memory;
+    const IFBMemoryStack stack = (IFBAddr)stack_memory;
 
     //we're done
     return(stack);
@@ -104,7 +101,7 @@ ifb_memory::stack_push_bytes_absolute(
     stack_internal->position = stack_position_new;
     
     //calculate the pointer
-    const IFBAddr stack_result_offset  = stack.start + stack_offset;
+    const IFBAddr stack_result_offset  = stack + stack_offset;
     const IFBPtr  stack_result_pointer = (IFBPtr)stack_result_offset;
 
     //we're done
@@ -120,7 +117,7 @@ ifb_memory::stack_get_pointer(
     IFBMemoryStackInternal* stack_internal = stack_cast_and_assert_valid(stack);
 
     //calculate the pointer
-    const IFBAddr stack_offset  = stack.start + offset;
+    const IFBAddr stack_offset  = stack + offset;
     const IFBPtr  stack_pointer = (stack_offset < stack_internal->size) ? (IFBPtr)stack_offset : NULL; 
         
     //we're done
@@ -162,7 +159,7 @@ inline IFBMemoryStackInternal*
 stack_cast_and_assert_valid(
     const IFBMemoryStack stack) {
 
-    IFBMemoryStackInternal* stack_internal = (IFBMemoryStackInternal*)stack.start;
+    IFBMemoryStackInternal* stack_internal = (IFBMemoryStackInternal*)stack;
 
     ifb_macro_assert(stack_internal);
     ifb_macro_assert(stack_internal->size     >= IFB_MEMORY_STACK_STRUCT_SIZE);
