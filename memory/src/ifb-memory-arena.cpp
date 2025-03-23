@@ -6,6 +6,7 @@
 #include "ifb-memory-internal.cpp"
 #include "ifb-memory-arena-commit.cpp"
 #include "ifb-memory-arena-decommit.cpp"
+#include "ifb-memory-arena-reset.cpp"
 #include "ifb-memory-arena-push.cpp"
 
 const IFBB8
@@ -50,8 +51,17 @@ const IFBB8
 ifb_memory::arena_reset(
     IFBMemoryArenaContext* arena_context) {
 
+    //set the args
+    IFBMemoryArenaReset reset;
+    reset.context = arena_context;
 
-    return(false);
+    //do the reset
+    ifb_memory::arena_reset_step_0_validate_args    (reset);
+    ifb_memory::arena_reset_step_1_cache_properties (reset);
+    ifb_memory::arena_reset_step_2_reset_arena      (reset);
+
+    //we're done
+    return(reset.result ? true : false);
 }
 
 

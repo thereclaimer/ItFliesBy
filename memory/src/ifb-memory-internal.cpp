@@ -14,15 +14,16 @@ struct IFBMemoryManagerInit;
 //arena
 struct IFBMemoryArenaCommit;
 struct IFBMemoryArenaDecommit;
+struct IFBMemoryArenaReset;
 struct IFBMemoryArenaPushBytes;
 
 namespace ifb_memory {
 
     //manager operations
-    IFBMemoryManager* manager_load_and_assert_valid     (const IFBMemoryStack stack, const IFBMemoryManagerID manager_id);
-    IFBAddr*          manager_load_array_arena_start    (IFBMemoryManager* memory_manager);
-    IFBU32*           manager_load_array_arena_position (IFBMemoryManager* memory_manager);
-    IFBVoid           manager_load_arrays               (IFBMemoryManager* memory_manager, IFBMemoryManagerArrays* arrays);
+    IFBMemoryManager* manager_load_and_assert_valid        (const IFBMemoryStack stack, const IFBMemoryManagerID manager_id);
+    IFBAddr*          manager_load_array_arena_start       (IFBMemoryManager* memory_manager);
+    IFBU32*           manager_load_array_arena_position    (IFBMemoryManager* memory_manager);
+    IFBVoid           manager_load_arrays                  (IFBMemoryManager* memory_manager, IFBMemoryManagerArrays* arrays);
 
     //manager init
     IFBVoid manager_init_step_0_validate_args              (IFBMemoryManagerInit& init_ref);
@@ -46,6 +47,11 @@ namespace ifb_memory {
     IFBVoid arena_decommit_step_2_load_arena_start_array   (IFBMemoryArenaDecommit& decommit_ref);
     IFBVoid arena_decommit_step_3_decommit_memory          (IFBMemoryArenaDecommit& decommit_ref);
     IFBVoid arena_decommit_step_4_update_arena_start_array (IFBMemoryArenaDecommit& decommit_ref);
+
+    //arena reset
+    IFBVoid arena_reset_step_0_validate_args               (IFBMemoryArenaReset& reset_ref);
+    IFBVoid arena_reset_step_1_cache_properties            (IFBMemoryArenaReset& reset_ref);
+    IFBVoid arena_reset_step_2_reset_arena                 (IFBMemoryArenaReset& reset_ref);
 
     //arena push bytes
     IFBVoid arena_push_step_0_validate_args                (IFBMemoryArenaPushBytes& push_ref);
@@ -120,6 +126,15 @@ struct IFBMemoryArenaDecommit {
         IFBU32   arena_size;
         IFBU32   arena_count;
     } manager_cache;
+};
+
+struct IFBMemoryArenaReset {
+    IFBB64                 result;
+    IFBMemoryArenaContext* context;
+    struct {
+        IFBU32* arena_position_array;
+        IFBU64  arena_count;
+    } cache; 
 };
 
 struct IFBMemoryArenaPushBytes {

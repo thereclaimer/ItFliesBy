@@ -18,7 +18,6 @@ namespace ifb_memory {
     IFBMemoryStackInternal* stack_cast_and_assert_valid (const IFBMemoryStack stack);
 };
 
-
 /**********************************************************************************/
 /* STACK                                                                          */
 /**********************************************************************************/
@@ -156,7 +155,7 @@ ifb_memory::stack_pull_bytes(
 /**********************************************************************************/
 
 inline IFBMemoryStackInternal*
-stack_cast_and_assert_valid(
+ifb_memory::stack_cast_and_assert_valid(
     const IFBMemoryStack stack) {
 
     IFBMemoryStackInternal* stack_internal = (IFBMemoryStackInternal*)stack;

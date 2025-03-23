@@ -77,11 +77,11 @@ inline IFBAddr*
 ifb_memory::manager_load_array_arena_start(
     IFBMemoryManager* memory_manager) {
 
-    const IFBU32  offset  = memory_manager->offset_arena_array_start;
-    const IFBAddr start   = (IFBAddr)memory_manager;
-    const IFBAddr address = start + offset;
-    IFBAddr*      pointer = (IFBAddr*)address;
+    const IFBU32  offset = memory_manager->offset_arena_array_start;
+    const IFBAddr start  = (IFBAddr)memory_manager;
     
+    IFBAddr* pointer = (IFBAddr*)ifb_memory::get_pointer(start,offset);
+
     return(pointer); 
 }
 
@@ -91,8 +91,10 @@ ifb_memory::manager_load_array_arena_position(
 
     const IFBU32  offset  = memory_manager->offset_arena_array_position;
     const IFBAddr start   = (IFBAddr)memory_manager;
-    const IFBAddr address = start + offset;
-    IFBAddr*      pointer = (IFBAddr*)address;
+    
+    IFBU32* pointer = (IFBU32*)ifb_memory::get_pointer(start,offset);
+
+    return(pointer);
 }
 
 inline IFBVoid
