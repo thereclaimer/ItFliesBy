@@ -11,3 +11,9 @@ struct IFBArray : IFBDataStructure {
     IFBU32 element_size;
     IFBU32 element_count;
 };
+
+struct IFBArrayList : IFBDataStructure {
+    IFBU64 element_size;
+    IFBU32 element_count_total;
+    IFBU32 element_count_current;
+};

@@ -7,11 +7,13 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-typedef IFBAddr IFBIDArray;
-typedef IFBAddr IFBIDArrayList;
-typedef IFBAddr IFBIDStack;
-typedef IFBAddr IFBIDQueue;
-typedef IFBAddr IFBIDHashTable;
+typedef IFBAddr IFBDS64;
+
+typedef IFBDS64 IFBDS64Array;
+typedef IFBDS64 IFBDS64ArrayList;
+typedef IFBDS64 IFBDS64Stack;
+typedef IFBDS64 IFBDS64Queue;
+typedef IFBDS64 IFBDS64HashTable;
 
 struct IFBDataStructureSize {
     IFBU64 total;
@@ -30,20 +32,20 @@ namespace ifb_array {
     IFBVoid memory_size (IFBDataStructureSize& memory_size_ref);
     
     //create/initialize
-    IFBIDArray
+    const IFBDS64Array
     create(
         const IFBPtr memory,
         const IFBU32 element_size,
         const IFBU32 element_count);
 
     //pointers
-    const IFBPtr get_pointer_indexed (const IFBArray* array_ptr, const IFBU32 index);
-    const IFBPtr get_pointer_start   (const IFBArray* array_ptr);
+    const IFBPtr get_pointer_indexed (const IFBDS64Array array, const IFBU32 index);
+    const IFBPtr get_pointer_start   (const IFBDS64Array array);
     
     //size / count
-    const IFBU32 get_element_size    (const IFBArray* array_ptr);
-    const IFBU32 get_element_count   (const IFBArray* array_ptr);
-    const IFBU32 get_array_size      (const IFBArray* array_ptr);
+    const IFBU32 get_element_size    (const IFBDS64Array array);
+    const IFBU32 get_element_count   (const IFBDS64Array array);
+    const IFBU32 get_array_size      (const IFBDS64Array array);
 };
 
 
@@ -51,11 +53,6 @@ namespace ifb_array {
 /* ARRAY LIST                                                                      */
 /**********************************************************************************/
 
-struct IFBArrayList : IFBMemoryBlock {
-    IFBU64 element_size;
-    IFBU32 element_count_total;
-    IFBU32 element_count_current;
-};
 
 namespace ifb_array_list {
 
@@ -64,21 +61,21 @@ namespace ifb_array_list {
     IFBArrayList*  memory_initialize       (const IFBU32 element_size, const IFBU32 element_count, const IFBPtr memory);   
 
     //operations
-    const IFBB8 reset                 (IFBArrayList* array_list_ptr);
-    const IFBB8 remove                (IFBArrayList* array_list_ptr, const IFBU32 index);
-    const IFBB8 add_to_front          (IFBArrayList* array_list_ptr, const IFBPtr element_ptr);
-    const IFBB8 add_to_end            (IFBArrayList* array_list_ptr, const IFBPtr element_ptr);
-    const IFBB8 insert                (IFBArrayList* array_list_ptr, const IFBPtr element_ptr, const IFBU32 index);
-    const IFBB8 is_empty              (IFBArrayList* array_list_ptr);
+    const IFBB8 reset                 (const IFBDS64ArrayList array_list);
+    const IFBB8 remove                (const IFBDS64ArrayList array_list, const IFBU32 index);
+    const IFBB8 add_to_front          (const IFBDS64ArrayList array_list, const IFBPtr element_ptr);
+    const IFBB8 add_to_end            (const IFBDS64ArrayList array_list, const IFBPtr element_ptr);
+    const IFBB8 insert                (const IFBDS64ArrayList array_list, const IFBPtr element_ptr, const IFBU32 index);
+    const IFBB8 is_empty              (const IFBDS64ArrayList array_list);
 
     //size
-    const IFBU32 get_size_total       (const IFBArrayList* array_list_ptr);
-    const IFBU32 get_size_used        (const IFBArrayList* array_list_ptr);
+    const IFBU32 get_size_total       (const IFBDS64ArrayList array_list);
+    const IFBU32 get_size_used        (const IFBDS64ArrayList array_list);
     
     //pointers
-    const IFBPtr get_element_first    (const IFBArrayList* array_list_ptr);
-    const IFBPtr get_element_last     (const IFBArrayList* array_list_ptr);
-    const IFBPtr get_element_at_index (const IFBArrayList* array_list_ptr, const IFBU32 index);
+    const IFBPtr get_element_first    (const IFBDS64ArrayList array_list);
+    const IFBPtr get_element_last     (const IFBDS64ArrayList array_list);
+    const IFBPtr get_element_at_index (const IFBDS64ArrayList array_list, const IFBU32 index);
 };
 /**********************************************************************************/
 /* STACK                                                                          */
