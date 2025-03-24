@@ -2,47 +2,39 @@
 #define IFB_DATA_STRUCTURES_HPP
 
 #include <ifb.hpp>
-#include <ifb-memory.hpp>
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-struct IFBArray;
-struct IFBArrayList;
-struct IFBStack;
-struct IFBQueue;
-struct IFBHashTable;
+typedef IFBAddr IFBIDArray;
+typedef IFBAddr IFBIDArrayList;
+typedef IFBAddr IFBIDStack;
+typedef IFBAddr IFBIDQueue;
+typedef IFBAddr IFBIDHashTable;
+
+struct IFBDataStructureSize {
+    IFBU64 total;
+    IFBU32 structure;
+    IFBU32 data;
+};  
 
 /**********************************************************************************/
 /* ARRAY                                                                          */
 /**********************************************************************************/
 
-struct IFBArray : IFBMemoryBlock {
-    IFBU32 element_size;
-    IFBU32 element_count;
-};
 
 namespace ifb_array {
 
-    //allocate
-    const IFBU32 allocation_size_structure (IFBVoid);
-    const IFBU32 allocation_size_data      (const IFBU32 element_size,const IFBU32 element_count);
-    const IFBU32 allocation_size_total     (const IFBU32 element_size,const IFBU32 element_count);
+    //memory
+    IFBVoid memory_size (IFBDataStructureSize& memory_size_ref);
     
     //create/initialize
-    IFBArray*
+    IFBIDArray
     create(
         const IFBPtr memory,
         const IFBU32 element_size,
         const IFBU32 element_count);
-
-    const IFBB8
-    initialize(
-              IFBArray* array_ptr,
-        const IFBPtr    data,
-        const IFBU32    element_size,
-        const IFBU32    element_count);
 
     //pointers
     const IFBPtr get_pointer_indexed (const IFBArray* array_ptr, const IFBU32 index);

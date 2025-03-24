@@ -8,11 +8,12 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-typedef IFBAddr IFBMemoryStack;
-typedef IFBU32  IFBMemoryManagerID;
-typedef IFBU32  IFBMemoryArenaID;
+typedef IFBAddr  IFBMEM64;
+typedef IFBU32   IFBMEM32;
 
-struct IFBMemoryBlock;
+typedef IFBMEM64 IFBMEM64Stack;
+typedef IFBMEM32 IFBMEM32Manager;
+typedef IFBMEM32 IFBMEM32Arena;
 
 #define IFB_MEMORY_INVALID_VALUE 0xFFFFFFFF
 
@@ -22,15 +23,15 @@ struct IFBMemoryBlock;
 
 namespace ifb_memory {
 
-    const IFBMemoryStack
+    const IFBMEM64Stack
     stack_create(
         const IFBByte* stack_memory,
         const IFBU32   stack_size);
 
-    const IFBU32 stack_push_bytes_relative (const IFBMemoryStack, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBPtr stack_push_bytes_absolute (const IFBMemoryStack, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBB8  stack_pull_bytes          (const IFBMemoryStack, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBPtr stack_get_pointer         (const IFBMemoryStack, const IFBU32 offset);
+    const IFBU32 stack_push_bytes_relative (const IFBMEM64Stack stack_id, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBPtr stack_push_bytes_absolute (const IFBMEM64Stack stack_id, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBB8  stack_pull_bytes          (const IFBMEM64Stack stack_id, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBPtr stack_get_pointer         (const IFBMEM64Stack stack_id, const IFBU32 offset);
 };
 
 /**********************************************************************************/
@@ -39,16 +40,16 @@ namespace ifb_memory {
 
 namespace ifb_memory {
 
-    const IFBMemoryManagerID
+    const IFBMEM32Manager
     manager_create(
-        const IFBMemoryStack memory_stack,
-        const IFBU64         memory_size_reservation,
-        const IFBU32         memory_size_arena);
+        const IFBMEM64Stack memory_stack,
+        const IFBU64        memory_size_reservation,
+        const IFBU32        memory_size_arena);
     
     const IFBB8
     manager_destroy(
-        const IFBMemoryStack     memory_stack,
-        const IFBMemoryManagerID memory_manager_id);
+        const IFBMEM64Stack   memory_stack,
+        const IFBMEM32Manager memory_manager);
 };
 
 /**********************************************************************************/
@@ -56,10 +57,10 @@ namespace ifb_memory {
 /**********************************************************************************/
 
 struct IFBMemoryArenaContext {
-    IFBMemoryStack stack;
     struct {
-        IFBMemoryManagerID manager;
-        IFBMemoryArenaID   arena;
+        IFBMEM64Stack   stack;
+        IFBMEM32Manager manager;
+        IFBMEM32Arena   arena;
     } ids;
     
     union {
@@ -85,11 +86,6 @@ namespace ifb_memory {
     const IFBPtr arena_push_bytes_absolute (IFBMemoryArenaContext* arena_context);
     const IFBB8  arena_pull_bytes          (IFBMemoryArenaContext* arena_context);
     const IFBPtr arena_get_pointer         (IFBMemoryArenaContext* arena_context);
-};
-
-struct IFBMemoryBlock {
-    IFBAddr start;
-    IFBU64  size;
 };
 
 /**********************************************************************************/
