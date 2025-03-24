@@ -14,7 +14,7 @@ ifb_memory::arena_push_step_0_validate_args(
     ifb_macro_assert(push_ref.context);
 
     push_ref.result  = true;
-    push_ref.result &= (push_ref.context->stack       != 0);
+    push_ref.result &= (push_ref.context->ids.stack   != 0);
     push_ref.result &= (push_ref.context->ids.manager != 0);
     push_ref.result &= (push_ref.context->ids.manager != IFB_MEMORY_INVALID_VALUE);
     push_ref.result &= (push_ref.context->ids.arena   != IFB_MEMORY_INVALID_VALUE);
@@ -28,7 +28,7 @@ ifb_memory::arena_push_step_1_cache_manager_properties(
 
         //get the memory manager
         IFBMemoryManager* memory_manager = ifb_memory::manager_load_and_assert_valid(
-            push_ref.context->stack,
+            push_ref.context->ids.stack,
             push_ref.context->ids.manager);
 
         //cache properties

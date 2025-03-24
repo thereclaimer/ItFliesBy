@@ -21,7 +21,7 @@ struct IFBMemoryArenaPullBytes;
 namespace ifb_memory {
 
     //manager operations
-    IFBMemoryManager* manager_load_and_assert_valid        (const IFBMemoryStack stack, const IFBID32MemoryManager manager_id);
+    IFBMemoryManager* manager_load_and_assert_valid        (const IFBMEM64Stack stack_id, const IFBMEM32Manager manager_id);
     IFBAddr*          manager_load_array_arena_start       (IFBMemoryManager* memory_manager);
     IFBU32*           manager_load_array_arena_position    (IFBMemoryManager* memory_manager);
     IFBVoid           manager_load_arrays                  (IFBMemoryManager* memory_manager, IFBMemoryManagerArrays* arrays);
@@ -90,7 +90,7 @@ struct IFBMemoryManagerInit {
     IFBMemoryManager*   manager;
     IFBPtr              reservation;
     IFBSystemMemoryInfo sys_info;
-    IFBID32MemoryManager  manager_id;
+    IFBMEM32            manager_id;
     struct {
         IFBAddr stack_start;
         IFBU64  size_reservation;

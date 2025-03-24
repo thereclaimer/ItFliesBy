@@ -77,9 +77,9 @@ ifb_memory::stack_push_bytes_relative(
 
 const IFBPtr
 ifb_memory::stack_push_bytes_absolute(
-    const IFBMemoryStack stack,
-    const IFBU32         size,
-    const IFBU32         alignment) {
+    const IFBMEM64Stack stack,
+    const IFBU32        size,
+    const IFBU32        alignment) {
 
     //validate stack
     IFBMemoryStack* stack_internal = stack_cast_and_assert_valid(stack);
@@ -109,8 +109,8 @@ ifb_memory::stack_push_bytes_absolute(
 
 const IFBPtr
 ifb_memory::stack_get_pointer(
-    const IFBMemoryStack stack,
-    const IFBU32         offset) {
+    const IFBMEM64Stack stack,
+    const IFBU32        offset) {
 
     //validate stack
     IFBMemoryStack* stack_internal = stack_cast_and_assert_valid(stack);
@@ -156,14 +156,14 @@ ifb_memory::stack_pull_bytes(
 
 inline IFBMemoryStack*
 ifb_memory::stack_cast_and_assert_valid(
-    const IFBID64MemoryStack stack_id) {
+    const IFBMEM64Stack stack_id) {
 
-    IFBMemoryStack* stack_internal = (IFBMemoryStack*)stack_id;
+    IFBMemoryStack* stack = (IFBMemoryStack*)stack_id;
 
-    ifb_macro_assert(stack_internal);
-    ifb_macro_assert(stack_internal->size     >= IFB_MEMORY_STACK_STRUCT_SIZE);
-    ifb_macro_assert(stack_internal->position >= IFB_MEMORY_STACK_STRUCT_SIZE);
-    ifb_macro_assert(stack_internal->position <  stack_internal->size);
+    ifb_macro_assert(stack);
+    ifb_macro_assert(stack->size     >= IFB_MEMORY_STACK_STRUCT_SIZE);
+    ifb_macro_assert(stack->position >= IFB_MEMORY_STACK_STRUCT_SIZE);
+    ifb_macro_assert(stack->position <  stack->size);
 
-    return(stack_internal);
+    return(stack);
 }   

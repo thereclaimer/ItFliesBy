@@ -14,7 +14,7 @@ ifb_memory::arena_decommit_step_0_validate_args(
     ifb_macro_assert(decommit_ref.context);
 
     decommit_ref.result  = true;
-    decommit_ref.result &= (decommit_ref.context->stack       != 0); 
+    decommit_ref.result &= (decommit_ref.context->ids.stack   != 0); 
     decommit_ref.result &= (decommit_ref.context->ids.manager != 0);
     decommit_ref.result &= (decommit_ref.context->ids.manager != IFB_MEMORY_INVALID_VALUE);
     decommit_ref.result &= (decommit_ref.context->ids.arena   != IFB_MEMORY_INVALID_VALUE);
@@ -28,7 +28,7 @@ ifb_memory::arena_decommit_step_1_cache_manager_properties(
 
         //get the memory manager
         IFBMemoryManager* memory_manager_internal = ifb_memory::manager_load_and_assert_valid(
-            decommit_ref.context->stack,
+            decommit_ref.context->ids.stack,
             decommit_ref.context->ids.manager);
 
         //cache the properties we need for the arena decommit

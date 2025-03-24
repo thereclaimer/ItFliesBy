@@ -15,7 +15,7 @@ ifb_memory::arena_commit_step_0_validate_args(
 
     //initial values
     commit_ref.result  =  true;
-    commit_ref.result &= (commit_ref.context->stack       != 0);
+    commit_ref.result &= (commit_ref.context->ids.stack   != 0);
     commit_ref.result &= (commit_ref.context->ids.manager != 0);
     commit_ref.result &= (commit_ref.context->ids.manager != IFB_MEMORY_INVALID_VALUE);
 }
@@ -28,7 +28,7 @@ ifb_memory::arena_commit_step_1_cache_manager_properties(
 
         //get the memory manager
         IFBMemoryManager* memory_manager_internal = ifb_memory::manager_load_and_assert_valid(
-            commit_ref.context->stack,
+            commit_ref.context->ids.stack,
             commit_ref.context->ids.manager);
 
         //load the arrays

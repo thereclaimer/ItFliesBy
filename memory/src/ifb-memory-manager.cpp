@@ -7,11 +7,11 @@
 /* MEMORY MANAGER                                                                 */
 /**********************************************************************************/
 
-const IFBID32MemoryManager
+const IFBMEM32Manager
 ifb_memory::manager_create(
-    const IFBMemoryStack memory_stack,
-    const IFBU64         memory_size_reservation,
-    const IFBU32         memory_size_arena) {
+    const IFBMEM64Stack memory_stack,
+    const IFBU64        memory_size_reservation,
+    const IFBU32        memory_size_arena) {
 
     //init struct
     IFBMemoryManagerInit init;
@@ -29,7 +29,7 @@ ifb_memory::manager_create(
     ifb_memory::manager_init_step_6_cleanup               (init);
 
     //get the handle and result
-    const IFBID32MemoryManager manager_id = init.result 
+    const IFBMEM32Manager manager_id = init.result 
         ? init.manager_id
         : IFB_MEMORY_INVALID_VALUE;
 
@@ -39,16 +39,16 @@ ifb_memory::manager_create(
 
 const IFBB8      
 ifb_memory::manager_destroy(
-    const IFBMemoryStack     memory_stack,
-    const IFBID32MemoryManager memory_manager_id) {
+    const IFBMEM64Stack   memory_stack,
+    const IFBMEM32Manager memory_manager_id) {
 
     return(false);
 }
 
 inline IFBMemoryManager*
 ifb_memory::manager_load_and_assert_valid(
-    const IFBMemoryStack     stack,
-    const IFBID32MemoryManager manager_id) {
+    const IFBMEM64Stack   stack,
+    const IFBMEM32Manager manager_id) {
 
     //assert arguments
     ifb_macro_assert(stack);

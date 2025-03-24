@@ -10,7 +10,7 @@ ifb_memory::arena_reset_step_0_validate_args(
     ifb_macro_assert(reset_ref.context);
 
     reset_ref.result = true;
-    reset_ref.result &= (reset_ref.context->stack       != 0);
+    reset_ref.result &= (reset_ref.context->ids.stack   != 0);
     reset_ref.result &= (reset_ref.context->ids.manager != 0);
     reset_ref.result &= (reset_ref.context->ids.manager != IFB_MEMORY_INVALID_VALUE);
     reset_ref.result &= (reset_ref.context->ids.arena   != IFB_MEMORY_INVALID_VALUE);
@@ -24,7 +24,7 @@ ifb_memory::arena_reset_step_1_cache_properties(
 
         //get the memory manager
         IFBMemoryManager* memory_manager = ifb_memory::manager_load_and_assert_valid(
-            reset_ref.context->stack,
+            reset_ref.context->ids.stack,
             reset_ref.context->ids.manager);
          
         reset_ref.cache.arena_position_array = ifb_memory::manager_load_array_arena_position(memory_manager);
