@@ -92,9 +92,9 @@ struct IFBMemoryManagerInit {
     IFBSystemMemoryInfo sys_info;
     IFBMEM32Manager     manager_handle;
     struct {
-        IFBMEM64Stack stack;
-        IFBU64        size_reservation;
-        IFBU32        size_arena;
+        IFBMemoryManagerContext* context;
+        IFBU64                   size_reservation;
+        IFBU32                   size_arena;
     } args;
     struct {
         IFBU32  aligned_size_reservation;
@@ -146,11 +146,16 @@ struct IFBMemoryArenaReset {
 struct IFBMemoryArenaPushBytes {
     IFBB64                 result;
     IFBMemoryArenaContext* context;
+    IFBU32                 push_size;
     struct {
         IFBMemoryManagerArrays arrays; 
         IFBU32                 arena_size;
         IFBU32                 arena_count;
     } cache;
+    union {
+        IFBPtr absolute_pointer;
+        IFBU32 relative_offset;
+    } memory;
 };
 
 struct IFBMemoryArenaPullBytes {

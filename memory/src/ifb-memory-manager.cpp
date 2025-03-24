@@ -7,17 +7,17 @@
 /* MEMORY MANAGER                                                                 */
 /**********************************************************************************/
 
-const IFBMEM32Manager
+const IFBB8
 ifb_memory::manager_create(
-    const IFBMEM64Stack memory_stack,
-    const IFBU64        memory_size_reservation,
-    const IFBU32        memory_size_arena) {
+          IFBMemoryManagerContext& manager_context,
+    const IFBU64                   size_reservation,
+    const IFBU32                   size_arena) {
 
     //init struct
     IFBMemoryManagerInit init;
-    init.args.stack            = memory_stack; 
-    init.args.size_reservation = memory_size_reservation; 
-    init.args.size_arena       = memory_size_arena; 
+    init.args.context          = &manager_context; 
+    init.args.size_reservation = size_reservation; 
+    init.args.size_arena       = size_arena; 
 
     //initialize the memory manager
     ifb_memory::manager_init_step_0_validate_args         (init);
@@ -28,20 +28,13 @@ ifb_memory::manager_create(
     ifb_memory::manager_init_step_5_set_properties        (init);
     ifb_memory::manager_init_step_6_cleanup               (init);
 
-    //get the handle
-    IFBMEM32Manager manager_handle;
-    manager_handle.h32 = init.result 
-        ? init.manager_handle.h32
-        : IFB_MEMORY_INVALID_HANDLE_32;
-
     //we're done
-    return(manager_handle);
+    return(init.result ? true : false);
 }
 
 const IFBB8      
 ifb_memory::manager_destroy(
-    const IFBMEM64Stack   memory_stack,
-    const IFBMEM32Manager memory_manager_id) {
+    IFBMemoryManagerContext& manager_context) {
 
     return(false);
 }

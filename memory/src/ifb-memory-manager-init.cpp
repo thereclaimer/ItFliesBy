@@ -12,7 +12,7 @@ ifb_memory::manager_init_step_0_validate_args(
     IFBMemoryManagerInit& init_ref) {
     
     init_ref.result =  true;    
-    init_ref.result &= ifb_memory_macro_is_handle_valid_stack(init_ref.args.stack); 
+    init_ref.result &= ifb_memory_macro_is_handle_valid_stack(init_ref.args.context->handle_stack); 
     init_ref.result &= (init_ref.args.size_reservation != NULL);
     init_ref.result &= (init_ref.args.size_arena       != NULL);
 }
@@ -75,7 +75,7 @@ ifb_memory::manager_init_step_2_allocate_manager(
 
         //do the stack commit
         init_ref.manager = (IFBMemoryManager*)ifb_memory::stack_push_bytes_absolute(
-            init_ref.args.stack,
+            init_ref.args.context->handle_stack,
             init_ref.cache.commit_size_total);
 
         //make sure we have the manager
@@ -149,7 +149,7 @@ ifb_memory::manager_init_step_6_cleanup(
 
         //release the memory
         const IFBB8 released = ifb_memory::stack_pull_bytes(
-            init_ref.args.stack,
+            init_ref.args.context->handle_stack,
             init_ref.cache.commit_size_total);
 
         //we should AlWAYS be able to release memory        
