@@ -16,6 +16,7 @@ struct IFBMemoryArenaCommit;
 struct IFBMemoryArenaDecommit;
 struct IFBMemoryArenaReset;
 struct IFBMemoryArenaPushBytes;
+struct IFBMemoryArenaPullBytes;
 
 namespace ifb_memory {
 
@@ -58,6 +59,11 @@ namespace ifb_memory {
     IFBVoid arena_push_step_1_cache_manager_properties     (IFBMemoryArenaPushBytes& push_ref);
     IFBVoid arena_push_step_2_push_bytes_relative          (IFBMemoryArenaPushBytes& push_ref);
     IFBVoid arena_push_step_2_push_bytes_absolute          (IFBMemoryArenaPushBytes& push_ref);
+
+    //arena reset
+    IFBVoid arena_pull_step_0_validate_args                (IFBMemoryArenaPullBytes& pull_ref);
+    IFBVoid arena_pull_step_1_cache_properties             (IFBMemoryArenaPullBytes& pull_ref);
+    IFBVoid arena_pull_step_2_pull_bytes                   (IFBMemoryArenaPullBytes& pull_ref);
 };
 
 /**********************************************************************************/
@@ -145,4 +151,13 @@ struct IFBMemoryArenaPushBytes {
         IFBU32                 arena_size;
         IFBU32                 arena_count;
     } cache;
+};
+
+struct IFBMemoryArenaPullBytes {
+    IFBB64                 result;
+    IFBMemoryArenaContext* context;
+    struct {
+        IFBU32* arena_position_array;
+        IFBU64  arena_count;
+    } cache; 
 };

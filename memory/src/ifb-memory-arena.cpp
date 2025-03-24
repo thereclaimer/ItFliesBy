@@ -113,5 +113,15 @@ const IFBB8
 ifb_memory::arena_pull_bytes(
     IFBMemoryArenaContext* arena_context) {
 
-    return(false);
+    //set the args
+    IFBMemoryArenaPullBytes pull;
+    pull.context = arena_context;
+
+    //do the pull
+    ifb_memory::arena_pull_step_0_validate_args    (pull);
+    ifb_memory::arena_pull_step_1_cache_properties (pull);
+    ifb_memory::arena_pull_step_2_pull_bytes       (pull);
+
+    //we're done
+    return(pull.result ? true : false);
 }

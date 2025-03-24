@@ -89,8 +89,8 @@ inline IFBU32*
 ifb_memory::manager_load_array_arena_position(
     IFBMemoryManager* memory_manager) {
 
-    const IFBU32  offset  = memory_manager->offset_arena_array_position;
-    const IFBAddr start   = (IFBAddr)memory_manager;
+    const IFBU32  offset = memory_manager->offset_arena_array_position;
+    const IFBAddr start  = (IFBAddr)memory_manager;
     
     IFBU32* pointer = (IFBU32*)ifb_memory::get_pointer(start,offset);
 
@@ -102,10 +102,16 @@ ifb_memory::manager_load_arrays(
     IFBMemoryManager* memory_manager,
     IFBMemoryManagerArrays*   arrays) {
 
+    //sanity check
     ifb_macro_assert(memory_manager);
     ifb_macro_assert(arrays);
 
-    const IFBAddr start    = (IFBAddr)memory_manager;
-    arrays->arena_start    = (IFBAddr*)(start + memory_manager->offset_arena_array_start);
-    arrays->arena_position =  (IFBU32*)(start + memory_manager->offset_arena_array_position);
+    //addresses and offsets
+    const IFBAddr start                 = (IFBAddr)memory_manager;
+    const IFBU32  offset_array_start    = memory_manager->offset_arena_array_start;
+    const IFBU32  offset_array_position = memory_manager->offset_arena_array_position;
+
+    //get the arrays
+    arrays->arena_start    = (IFBAddr*)ifb_memory::get_pointer(start, offset_array_start);
+    arrays->arena_position =  (IFBU32*)ifb_memory::get_pointer(start, offset_array_position);
 }
