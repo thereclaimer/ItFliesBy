@@ -1,16 +1,26 @@
 #pragma once
 
 #include "ifb-data-structures.hpp"
+#include "ifb-data-structures-internal.cpp"
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
+struct IFBArrayList : IFBDataStructure {
+    IFBU32 element_size;
+    IFBU32 element_count_total;
+    IFBU32 element_count_current;
+};
+
 namespace ifb_array_list {
 
-    IFBVoid assert_valid (const IFBArrayList* array_list);
-    IFBVoid shift_down   (IFBArrayList* array_list, const IFBU32 index, const IFBU32 count);
-    IFBVoid shift_up     (IFBArrayList* array_list, const IFBU32 index, const IFBU32 count);
+    //validate
+    IFBArrayList* cast_and_assert_valid (const IFBDS64ArrayList array_list_handle);
+
+    //shift
+    IFBVoid       shift_down            (IFBArrayList* array_list, const IFBU32 index, const IFBU32 count);
+    IFBVoid       shift_up              (IFBArrayList* array_list, const IFBU32 index, const IFBU32 count);
 };
 
 /**********************************************************************************/
@@ -70,6 +80,9 @@ ifb_array_list::memory_initialize(
     //we're done
     return(array_list);
 }
+
+IFBVoid                ifb_array_list::memory_size  (IFBArrayListMemory& memory);
+const IFBDS64ArrayList ifb_array_list::memory_init  (IFBArrayListMemory& memory);
 
 /**********************************************************************************/
 /* OPERATIONS                                                                     */

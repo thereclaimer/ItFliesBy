@@ -18,54 +18,73 @@ namespace ifb_array {
     IFBArray* cast_and_assert_valid(const IFBDS64Array array_handle);
 };
 
+#define IFB_ARRAY_STRUCT_SIZE                    ifb_macro_align_size_struct(IFBArray)
+
+#define ifb_array_macro_size_data(stride,count)  (stride * count)
+#define ifb_array_macro_size_total(stride,count) IFB_ARRAY_STRUCT_SIZE + ifb_array_macro_size_data(stride,count) 
+
 /**********************************************************************************/
 /* MEMORY                                                                       */
 /**********************************************************************************/
 
 IFBVoid
-ifb_array::memory_size(
-    IFBArrayMemory& array_memory) {
+ifb_array::size(
+    IFBArrayArgs& args) {
 
     //cache args
-    const IFBU32 element_size  = array_memory.args.element_size;
-    const IFBU32 element_count = array_memory.args.element_count;
+    const IFBU32 element_size  = args.element_size;
+    const IFBU32 element_count = args.element_count;
 
     //calculate the memory size
-    array_memory.size_struct = ifb_macro_align_size_struct(IFBArray);
-    array_memory.size_data   = element_size * element_count;
-    array_memory.size_total  = array_memory.size_struct  + array_memory.size_data;
+    args.memory_size = ifb_array_macro_size_total(args.element_size,args.element_count);
 }
 
 const IFBDS64Array
-ifb_array::memory_init(
-    IFBArrayMemory& array_memory) {
+ifb_array::create(
+    IFBArrayArgs& args) {
 
     //sanity check
-    ifb_macro_assert(array_memory.pointer            != NULL);
-    ifb_macro_assert(array_memory.size_total         != 0);
-    ifb_macro_assert(array_memory.size_struct        != 0);
-    ifb_macro_assert(array_memory.size_data          != 0);
-    ifb_macro_assert(array_memory.args.element_size  != 0);
-    ifb_macro_assert(array_memory.args.element_count != 0);
+    ifb_macro_assert(args.memory_ptr    != NULL);
+    ifb_macro_assert(args.memory_size   != 0);
+    ifb_macro_assert(args.element_size  != 0);
+    ifb_macro_assert(args.element_count != 0);
 
     //get the addresses
-    const IFBAddr array_start_struct = (IFBAddr)array_memory.pointer;
-    const IFBAddr array_start_data   = array_start_struct + array_memory.size_struct;
+    const IFBAddr array_start_struct = (IFBAddr)args.memory_ptr;
+    const IFBAddr array_start_data   = array_start_struct + IFB_ARRAY_STRUCT_SIZE;
 
     //cast the pointer
-    IFBArray* array_ptr = (IFBArray*)array_memory.pointer;
+    IFBArray* array_ptr = (IFBArray*)args.memory_ptr;
     
     //initialize the array
     array_ptr->start                 = array_start_data;
-    array_ptr->size                  = array_memory.size_data;
-    array_ptr->element_size          = array_memory.args.element_size;
-    array_ptr->element_count_total   = array_memory.args.element_count;
+    array_ptr->size                  = ifb_array_macro_size_data(args.element_size, args.element_count);
+    array_ptr->element_size          = args.element_size;
+    array_ptr->element_count_total   = args.element_count;
     array_ptr->element_count_current = 0;
 
     //we're done, get the handle and return it
     IFBDS64Array array_handle;
     array_handle.h64 = array_start_struct;
     return(array_handle);
+}
+
+/**********************************************************************************/
+/* INFO                                                                           */
+/**********************************************************************************/
+
+IFBVoid
+ifb_array::info(
+    const IFBDS64Array  array_handle,
+          IFBArrayInfo& info) {
+
+    //get the array
+    IFBArray* array = ifb_array::cast_and_assert_valid(array_handle);
+
+    //set the info
+    info.element_size          = array->element_size;
+    info.element_count_total   = array->element_count_total;
+    info.element_count_current = array->element_count_current;
 }
 
 /**********************************************************************************/
@@ -89,7 +108,7 @@ ifb_array::add(
 
     //sanity check
     IFBB8 result = true;
-    result &= (count > 0);
+    result &= (count   >  0);
     result &= (element != NULL);
     if (!result) return(false);
 
@@ -152,8 +171,8 @@ ifb_array::index(
 
 const IFBB8
 ifb_array::iterate(
-    const IFBDS64Array      array_handle,
-          IFBArrayIterator& iterator) {
+    const IFBDS64Array array_handle,
+          IFBIterator& iterator) {
 
     //get the array
     IFBArray* array = ifb_array::cast_and_assert_valid(array_handle);
@@ -179,24 +198,6 @@ ifb_array::iterate(
 }
 
 /**********************************************************************************/
-/* INFO                                                                           */
-/**********************************************************************************/
-
-IFBVoid
-ifb_array::info(
-    const IFBDS64Array  array_handle,
-          IFBArrayInfo& info) {
-
-    //get the array
-    IFBArray* array = ifb_array::cast_and_assert_valid(array_handle);
-
-    //set the info
-    info.element_size          = array->element_size;
-    info.element_count_total   = array->element_count_total;
-    info.element_count_current = array->element_count_current;
-}
-
-/**********************************************************************************/
 /* INTERNAL                                                                       */
 /**********************************************************************************/
 
@@ -208,12 +209,14 @@ ifb_array::cast_and_assert_valid(
     IFBArray* array = (IFBArray*)array_handle.h64;
 
     //assert the properties are valid
-    ifb_macro_assert(array);
-    ifb_macro_assert(array->size                  != 0);
-    ifb_macro_assert(array->start                 != 0);
-    ifb_macro_assert(array->element_size          != 0);
-    ifb_macro_assert(array->element_count_total   != 0);
-    ifb_macro_assert(array->element_count_current <= array->element_count_total);
+    IFBB8 result = true;
+    result &= (array                        != NULL);
+    result &= (array->size                  != NULL);
+    result &= (array->start                 != NULL);
+    result &= (array->element_size          != NULL);
+    result &= (array->element_count_total   != NULL);
+    result &= (array->element_count_current <= array->element_count_total);
+    ifb_macro_assert(result);
 
     //we're done
     return(array);
