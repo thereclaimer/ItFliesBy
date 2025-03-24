@@ -81,7 +81,7 @@ ifb_memory::arena_push_bytes_relative(
     //get the offset
     const IFBU32 offset = push.result
         ? push.context->memory.relative_offset
-        : IFB_MEMORY_INVALID_VALUE;
+        : IFB_MEMORY_INVALID_HANDLE_32;
 
     //we're done
     return(offset);

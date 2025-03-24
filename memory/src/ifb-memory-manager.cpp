@@ -15,7 +15,7 @@ ifb_memory::manager_create(
 
     //init struct
     IFBMemoryManagerInit init;
-    init.args.stack_start      = memory_stack; 
+    init.args.stack            = memory_stack; 
     init.args.size_reservation = memory_size_reservation; 
     init.args.size_arena       = memory_size_arena; 
 
@@ -28,13 +28,14 @@ ifb_memory::manager_create(
     ifb_memory::manager_init_step_5_set_properties        (init);
     ifb_memory::manager_init_step_6_cleanup               (init);
 
-    //get the handle and result
-    const IFBMEM32Manager manager_id = init.result 
-        ? init.manager_id
-        : IFB_MEMORY_INVALID_VALUE;
+    //get the handle
+    IFBMEM32Manager manager_handle;
+    manager_handle.h32 = init.result 
+        ? init.manager_handle.h32
+        : IFB_MEMORY_INVALID_HANDLE_32;
 
     //we're done
-    return(manager_id);
+    return(manager_handle);
 }
 
 const IFBB8      
@@ -48,16 +49,12 @@ ifb_memory::manager_destroy(
 inline IFBMemoryManager*
 ifb_memory::manager_load_and_assert_valid(
     const IFBMEM64Stack   stack,
-    const IFBMEM32Manager manager_id) {
-
-    //assert arguments
-    ifb_macro_assert(stack);
-    ifb_macro_assert(manager_id);
+    const IFBMEM32Manager manager_handle) {
 
     //get the memory manager
     IFBMemoryManager* memory_manager_internal = (IFBMemoryManager*)ifb_memory::stack_get_pointer(
         stack,
-        manager_id);
+        manager_handle.h32);
 
     //assert memory manager
     ifb_macro_assert(memory_manager_internal);

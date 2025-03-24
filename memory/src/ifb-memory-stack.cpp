@@ -15,7 +15,7 @@ struct IFBMemoryStack {
 
 namespace ifb_memory {
 
-    IFBMemoryStack* stack_cast_and_assert_valid (const IFBMEM64Stack stack_id);
+    IFBMemoryStack* stack_cast_and_assert_valid (const IFBMEM64Stack stack_handle);
 };
 
 /**********************************************************************************/
@@ -27,11 +27,14 @@ ifb_memory::stack_create(
     const IFBByte* stack_memory,
     const IFBU32   stack_size) {
 
+    IFBMEM64Stack stack_handle;
+    stack_handle.h64 = IFB_MEMORY_INVALID_HANDLE_64;
+
     //check args
     IFBB8 can_create = true;                                      // we can create the stack IF...
     can_create &= (stack_memory != NULL);                         //...the memory isn't null AND
     can_create &= (stack_size   >= IFB_MEMORY_STACK_STRUCT_SIZE); //...we can fit the struct in the memory
-    if (!can_create) return(0);                                   // if we can't create, we're done
+    if (!can_create) return(stack_handle);                        // if we can't create, we're done
 
     //cast the memory
     IFBMemoryStack* stack_internal = (IFBMemoryStack*)stack_memory;
@@ -41,10 +44,10 @@ ifb_memory::stack_create(
     stack_internal->position = IFB_MEMORY_STACK_STRUCT_SIZE;
 
     //get the address
-    const IFBMEM64Stack stack_id = (IFBMEM64Stack)stack_memory;
+    stack_handle.h64 = (IFBAddr)stack_memory;
 
     //we're done
-    return(stack_id);
+    return(stack_handle);
 }
 
 const IFBU32
@@ -77,19 +80,19 @@ ifb_memory::stack_push_bytes_relative(
 
 const IFBPtr
 ifb_memory::stack_push_bytes_absolute(
-    const IFBMEM64Stack stack,
+    const IFBMEM64Stack stack_handle,
     const IFBU32        size,
     const IFBU32        alignment) {
 
     //validate stack
-    IFBMemoryStack* stack_internal = stack_cast_and_assert_valid(stack);
+    IFBMemoryStack* stack = ifb_memory::stack_cast_and_assert_valid(stack_handle);
 
     //calculate the aligned size
     const IFBU32 size_aligned = ifb_macro_align_a_to_b(size,alignment);
 
     //calculate the new position
-    const IFBU32 stack_size         = stack_internal->size;
-    const IFBU32 stack_offset       = stack_internal->position;
+    const IFBU32 stack_size         = stack->size;
+    const IFBU32 stack_offset       = stack->position;
     const IFBU32 stack_position_new = stack_offset + size_aligned;
 
     //make sure we can fit the commit
@@ -97,10 +100,10 @@ ifb_memory::stack_push_bytes_absolute(
     if (!can_commit) return(NULL);
 
     //update the position
-    stack_internal->position = stack_position_new;
+    stack->position = stack_position_new;
     
     //calculate the pointer
-    const IFBAddr stack_result_offset  = stack + stack_offset;
+    const IFBAddr stack_result_offset  = stack_handle.h64 + stack_offset;
     const IFBPtr  stack_result_pointer = (IFBPtr)stack_result_offset;
 
     //we're done
@@ -109,15 +112,15 @@ ifb_memory::stack_push_bytes_absolute(
 
 const IFBPtr
 ifb_memory::stack_get_pointer(
-    const IFBMEM64Stack stack,
+    const IFBMEM64Stack stack_handle,
     const IFBU32        offset) {
 
     //validate stack
-    IFBMemoryStack* stack_internal = stack_cast_and_assert_valid(stack);
+    IFBMemoryStack* stack = ifb_memory::stack_cast_and_assert_valid(stack_handle);
 
     //calculate the pointer
-    const IFBAddr stack_offset  = stack + offset;
-    const IFBPtr  stack_pointer = (stack_offset < stack_internal->size) ? (IFBPtr)stack_offset : NULL; 
+    const IFBAddr stack_offset  = stack_handle.h64 + offset;
+    const IFBPtr  stack_pointer = (stack_offset < stack->size) ? (IFBPtr)stack_offset : NULL; 
         
     //we're done
     return(stack_pointer);
@@ -156,9 +159,9 @@ ifb_memory::stack_pull_bytes(
 
 inline IFBMemoryStack*
 ifb_memory::stack_cast_and_assert_valid(
-    const IFBMEM64Stack stack_id) {
+    const IFBMEM64Stack stack_handle) {
 
-    IFBMemoryStack* stack = (IFBMemoryStack*)stack_id;
+    IFBMemoryStack* stack = (IFBMemoryStack*)stack_handle.h64;
 
     ifb_macro_assert(stack);
     ifb_macro_assert(stack->size     >= IFB_MEMORY_STACK_STRUCT_SIZE);

@@ -90,11 +90,11 @@ struct IFBMemoryManagerInit {
     IFBMemoryManager*   manager;
     IFBPtr              reservation;
     IFBSystemMemoryInfo sys_info;
-    IFBMEM32            manager_id;
+    IFBMEM32Manager     manager_handle;
     struct {
-        IFBAddr stack_start;
-        IFBU64  size_reservation;
-        IFBU32  size_arena;
+        IFBMEM64Stack stack;
+        IFBU64        size_reservation;
+        IFBU32        size_arena;
     } args;
     struct {
         IFBU32  aligned_size_reservation;

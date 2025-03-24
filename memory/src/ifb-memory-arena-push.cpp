@@ -14,10 +14,9 @@ ifb_memory::arena_push_step_0_validate_args(
     ifb_macro_assert(push_ref.context);
 
     push_ref.result  = true;
-    push_ref.result &= (push_ref.context->ids.stack   != 0);
-    push_ref.result &= (push_ref.context->ids.manager != 0);
-    push_ref.result &= (push_ref.context->ids.manager != IFB_MEMORY_INVALID_VALUE);
-    push_ref.result &= (push_ref.context->ids.arena   != IFB_MEMORY_INVALID_VALUE);
+    push_ref.result &= ifb_memory_macro_is_handle_valid_stack   (push_ref.context->handles.stack);
+    push_ref.result &= ifb_memory_macro_is_handle_valid_manager (push_ref.context->handles.manager);
+    push_ref.result &= ifb_memory_macro_is_handle_valid_arena   (push_ref.context->handles.arena);
 }
 
 inline IFBVoid
@@ -28,8 +27,8 @@ ifb_memory::arena_push_step_1_cache_manager_properties(
 
         //get the memory manager
         IFBMemoryManager* memory_manager = ifb_memory::manager_load_and_assert_valid(
-            push_ref.context->ids.stack,
-            push_ref.context->ids.manager);
+            push_ref.context->handles.stack,
+            push_ref.context->handles.manager);
 
         //cache properties
         ifb_memory::manager_load_arrays(memory_manager,&push_ref.cache.arrays);
@@ -45,7 +44,7 @@ ifb_memory::arena_push_step_2_push_bytes_relative(
     if (push_ref.result) {
 
         //calculate the new position
-        const IFBU32 arena_index        = push_ref.context->ids.arena;
+        const IFBU32 arena_index        = push_ref.context->handles.arena.h32;
         const IFBU32 arena_size         = push_ref.cache.arena_size;
         const IFBU32 arena_offset       = push_ref.cache.arrays.arena_position[arena_index];
         const IFBU32 arena_position_new = arena_offset + push_ref.context->input.size;
@@ -70,7 +69,7 @@ ifb_memory::arena_push_step_2_push_bytes_absolute(
     if (push_ref.result) {
 
         //calculate the new position
-        const IFBU32 arena_index        = push_ref.context->ids.arena;
+        const IFBU32 arena_index        = push_ref.context->handles.arena.h32;
         const IFBU32 arena_size         = push_ref.cache.arena_size;
         const IFBU32 arena_offset       = push_ref.cache.arrays.arena_position[arena_index];
         const IFBU32 arena_position_new = arena_offset + push_ref.context->input.size;

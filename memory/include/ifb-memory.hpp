@@ -8,14 +8,15 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-typedef IFBAddr  IFBMEM64;
-typedef IFBU32   IFBMEM32;
+typedef IFBU32  IFBMEM32Handle;
+typedef IFBAddr IFBMEM64Handle;
 
-typedef IFBMEM64 IFBMEM64Stack;
-typedef IFBMEM32 IFBMEM32Manager;
-typedef IFBMEM32 IFBMEM32Arena;
+struct IFBMEM64Stack   { IFBMEM64Handle h64; };
+struct IFBMEM32Manager { IFBMEM32Handle h32; };
+struct IFBMEM32Arena   { IFBMEM32Handle h32; };
 
-#define IFB_MEMORY_INVALID_VALUE 0xFFFFFFFF
+#define IFB_MEMORY_INVALID_HANDLE_32 0xFFFFFFFF
+#define IFB_MEMORY_INVALID_HANDLE_64 0
 
 /**********************************************************************************/
 /* STACK                                                                          */
@@ -28,10 +29,10 @@ namespace ifb_memory {
         const IFBByte* stack_memory,
         const IFBU32   stack_size);
 
-    const IFBU32 stack_push_bytes_relative (const IFBMEM64Stack stack_id, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBPtr stack_push_bytes_absolute (const IFBMEM64Stack stack_id, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBB8  stack_pull_bytes          (const IFBMEM64Stack stack_id, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBPtr stack_get_pointer         (const IFBMEM64Stack stack_id, const IFBU32 offset);
+    const IFBU32 stack_push_bytes_relative (const IFBMEM64Stack stack_handle, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBPtr stack_push_bytes_absolute (const IFBMEM64Stack stack_handle, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBB8  stack_pull_bytes          (const IFBMEM64Stack stack_handle, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBPtr stack_get_pointer         (const IFBMEM64Stack stack_handle, const IFBU32 offset);
 };
 
 /**********************************************************************************/
@@ -61,7 +62,7 @@ struct IFBMemoryArenaContext {
         IFBMEM64Stack   stack;
         IFBMEM32Manager manager;
         IFBMEM32Arena   arena;
-    } ids;
+    } handles;
     
     union {
         IFBPtr absolute_pointer;
@@ -109,3 +110,7 @@ ifb_memory::get_pointer(
 }
 
 #endif //IFB_MEMORY_HPP
+
+#define ifb_memory_macro_is_handle_valid_stack(stack)       (stack.h64 != IFB_MEMORY_INVALID_HANDLE_64)
+#define ifb_memory_macro_is_handle_valid_manager(manager) (manager.h32 != IFB_MEMORY_INVALID_HANDLE_32 && manager.h32 != 0)
+#define ifb_memory_macro_is_handle_valid_arena(arena)       (arena.h32 != IFB_MEMORY_INVALID_HANDLE_32)

@@ -14,10 +14,9 @@ ifb_memory::arena_commit_step_0_validate_args(
     ifb_macro_assert(commit_ref.context);
 
     //initial values
-    commit_ref.result  =  true;
-    commit_ref.result &= (commit_ref.context->ids.stack   != 0);
-    commit_ref.result &= (commit_ref.context->ids.manager != 0);
-    commit_ref.result &= (commit_ref.context->ids.manager != IFB_MEMORY_INVALID_VALUE);
+    commit_ref.result  = true;
+    commit_ref.result &= ifb_memory_macro_is_handle_valid_stack   (commit_ref.context->handles.stack);
+    commit_ref.result &= ifb_memory_macro_is_handle_valid_manager (commit_ref.context->handles.manager);
 }
 
 inline IFBVoid
@@ -28,8 +27,8 @@ ifb_memory::arena_commit_step_1_cache_manager_properties(
 
         //get the memory manager
         IFBMemoryManager* memory_manager_internal = ifb_memory::manager_load_and_assert_valid(
-            commit_ref.context->ids.stack,
-            commit_ref.context->ids.manager);
+            commit_ref.context->handles.stack,
+            commit_ref.context->handles.manager);
 
         //load the arrays
         ifb_memory::manager_load_arrays(memory_manager_internal,&commit_ref.cache.arrays);
@@ -55,7 +54,7 @@ ifb_memory::arena_commit_step_2_find_free_arena(
     if (commit_ref.result) {
 
         //initial arena id
-        commit_ref.context->ids.arena = IFB_MEMORY_INVALID_VALUE;
+        commit_ref.context->handles.arena.h32 = IFB_MEMORY_INVALID_HANDLE_32;
 
         //cache constant properties
         const IFBAddr* arena_start_array = commit_ref.cache.arrays.arena_start;  
@@ -70,16 +69,14 @@ ifb_memory::arena_commit_step_2_find_free_arena(
             //if the address is zero, we have found a free arena
             if (arena_start_array[arena_index] == 0) {
                 
-                //huzzah!
-                //we have a free arena
-                //set the index
-                commit_ref.context->ids.arena = arena_index;
+                //we have a free arena, set the index
+                commit_ref.context->handles.arena.h32 = arena_index;
                 break;
             }
         } 
     
         //check if we found an id
-        commit_ref.result &= (commit_ref.context->ids.arena != IFB_MEMORY_INVALID_VALUE); 
+        commit_ref.result &= (commit_ref.context->handles.arena.h32 != IFB_MEMORY_INVALID_HANDLE_32); 
     }
 }
 
@@ -90,7 +87,7 @@ ifb_memory::arena_commit_step_3_commit_memory(
     if (commit_ref.result) {
 
         //calculate the arena offset
-        const IFBU32 arena_index        = commit_ref.context->ids.arena;
+        const IFBU32 arena_index        = commit_ref.context->handles.arena.h32;
         const IFBU32 arena_size         = commit_ref.cache.arena_size;
         const IFBU32 arena_offset       = (arena_index * arena_size);
 
@@ -115,7 +112,7 @@ ifb_memory::arena_commit_step_4_update_arrays(
     if (commit_ref.result) {
     
         //get arena values
-        const IFBU32 arena_index = commit_ref.context->ids.arena;
+        const IFBU32 arena_index = commit_ref.context->handles.arena.h32;
         const IFBU32 arena_start = commit_ref.cache.arena_start;
 
         //update the arrays

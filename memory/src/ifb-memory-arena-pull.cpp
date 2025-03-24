@@ -8,10 +8,11 @@ ifb_memory::arena_pull_step_0_validate_args(
     IFBMemoryArenaPullBytes& pull_ref) {
 
     ifb_macro_assert(pull_ref.context);
-    push_ref.result &= (pull_ref.context->stack       != 0);
-    push_ref.result &= (pull_ref.context->ids.manager != 0);
-    push_ref.result &= (pull_ref.context->ids.manager != IFB_MEMORY_INVALID_VALUE);
-    push_ref.result &= (pull_ref.context->ids.arena   != IFB_MEMORY_INVALID_VALUE);
+    
+    pull_ref.result  = true;
+    pull_ref.result &= ifb_memory_macro_is_handle_valid_stack   (reset_ref.context->handles.stack);
+    pull_ref.result &= ifb_memory_macro_is_handle_valid_manager (reset_ref.context->handles.manager);
+    pull_ref.result &= ifb_memory_macro_is_handle_valid_arena   (reset_ref.context->handles.arena);
 }
 
 inline IFBVoid
@@ -23,7 +24,7 @@ ifb_memory::arena_pull_step_1_cache_properties(
         //get the memory manager
         IFBMemoryManager* memory_manager = ifb_memory::manager_load_and_assert_valid(
             pull_ref.context->stack,
-            pull_ref.context->ids.manager);
+            pull_ref.context->handles.manager);
 
         //cache the properties
         pull_ref.cache.arena_position_array = ifb_memory::manager_load_array_arena_position(memory_manager);
@@ -36,7 +37,7 @@ ifb_memory::arena_pull_step_2_pull_bytes(
     IFBMemoryArenaPullBytes& pull_ref) {
      
     const IFBU32 arena_pull  = pull_ref.context->input.size;
-    const IFBU32 arena_index = pull_ref.context->ids.arena;
+    const IFBU32 arena_index = pull_ref.context->handles.arena;
     const IFBU32 arena_count = pull_ref.cache.arena_count;
     
     //make sure the index is valid
