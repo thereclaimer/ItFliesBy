@@ -27,62 +27,48 @@ namespace ifb_array_list {
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
-const IFBU32
-ifb_array_list::memory_allocation_size(
-    const IFBU32 element_size,
-    const IFBU32 element_count) {
+IFBVoid
+ifb_array_list::size(
+    IFBArrayListArgs& args) {
 
-    //calculate the struct and data size
-    const IFBU32 size_struct = ifb_macro_align_size_struct(IFBArrayList); 
-    const IFBU32 size_data   = element_size * element_count;
-    const IFBU32 size_total  = size_struct  * size_data;
-
-    //if the data size is 0, there's nothing to do
-    const IFBU32 result = size_data == 0 
-        ? 0
-        : size_total;
-
-    //we're done
-    return(result);
+    const IFBU32 array_list_size_struct = ifb_macro_align_size_struct(IFBArrayList);
+    const IFBU32 array_list_size_data   = args.element_size * args.element_count;
+    args.memory_size = array_list_size_struct + array_list_size_data; 
 }
 
-IFBArrayList*
-ifb_array_list::memory_initialize(
-    const IFBU32 element_size,
-    const IFBU32 element_count,
-    const IFBPtr memory) {
+const IFBDS64ArrayList
+ifb_array_list::create(
+    IFBArrayListArgs& args) {
 
-    //calculate the sizes
-    const IFBU32  size_struct = ifb_macro_align_size_struct(IFBArrayList); 
-    const IFBU32  size_data   = element_size * element_count;
-    const IFBU32  size_total  = size_struct  * size_data;
+    //validate the args
+    IFBB8 args_are_valid = true;
+    args_are_valid &= (args.memory_ptr    != NULL);
+    args_are_valid &= (args.memory_size   != 0);
+    args_are_valid &= (args.element_size  != 0);
+    args_are_valid &= (args.element_count != 0);
+    ifb_macro_assert(args_are_valid);
 
-    //calculate the addresses
-    const IFBAddr addr_struct = (IFBAddr)memory;
-    const IFBAddr addr_data   = addr_struct + size_struct; 
+    //sizes
+    const IFBU32 array_list_size_data     = args.element_size * args.element_count;
+    const IFBU32 array_list_size_struct   = ifb_macro_align_size_struct(IFBArrayList);
 
-    //sanity check
-    IFBB8 valid = true;
-    valid &= (size_data != 0);
-    valid &= (memory    != NULL);
-    if (!valid) return(NULL);
+    //cast the pointer
+    const IFBAddr array_list_start_struct = (IFBAddr)args.memory_ptr;
+    const IFBAddr array_list_start_data   = array_list_start_struct + array_list_size_struct; 
+    IFBArrayList* array_list_ptr          = (IFBArrayList*)array_list_start_struct;
 
-    //cast the memory
-    IFBArrayList* array_list = (IFBArrayList*)memory;    
-    
-    //initialize the array list
-    array_list->start                 = addr_data;
-    array_list->size                  = size_data;    
-    array_list->element_size          = element_size;
-    array_list->element_count_total   = element_count;
-    array_list->element_count_current = 0;
+    //intialize the array list
+    array_list_ptr->start                 = array_list_start_data;
+    array_list_ptr->size                  = array_list_size_data;    
+    array_list_ptr->element_size          = args.element_size;
+    array_list_ptr->element_count_total   = args.element_count;
+    array_list_ptr->element_count_current = 0;
 
-    //we're done
-    return(array_list);
+    //return the handle
+    IFBDS64ArrayList array_list_handle;
+    array_list_handle.h64 = array_list_start_struct;
+    return(array_list_handle);
 }
-
-IFBVoid                ifb_array_list::memory_size  (IFBArrayListMemory& memory);
-const IFBDS64ArrayList ifb_array_list::memory_init  (IFBArrayListMemory& memory);
 
 /**********************************************************************************/
 /* OPERATIONS                                                                     */
@@ -90,7 +76,7 @@ const IFBDS64ArrayList ifb_array_list::memory_init  (IFBArrayListMemory& memory)
 
 const IFBB8
 ifb_array_list::reset(
-    IFBArrayList* array_list_ptr) {
+    const IFBDS64ArrayList array_list_handle) {
 
     //assert the list is valid
     ifb_array_list::assert_valid(array_list_ptr);
@@ -104,8 +90,8 @@ ifb_array_list::reset(
 
 const IFBB8
 ifb_array_list::remove(
-          IFBArrayList* array_list_ptr,
-    const IFBU32        index) {
+    const IFBDS64ArrayList array_list_handle,
+    const IFBU32           index) {
 
     //assert the list is valid
     ifb_array_list::assert_valid(array_list_ptr);
@@ -131,8 +117,8 @@ ifb_array_list::remove(
 
 const IFBB8
 ifb_array_list::add_to_front(
-          IFBArrayList* array_list_ptr,
-    const IFBPtr        element_ptr) {
+    const IFBDS64ArrayList array_list_handle,
+    const IFBPtr           element_ptr) {
 
     //assert the list is valid
     ifb_array_list::assert_valid(array_list_ptr);
@@ -169,8 +155,8 @@ ifb_array_list::add_to_front(
 
 const IFBB8
 ifb_array_list::add_to_end(
-          IFBArrayList* array_list_ptr,
-    const IFBPtr        element_ptr) {
+    const IFBDS64ArrayList array_list_handle,
+    const IFBPtr           element_ptr) {
 
     //assert the list is valid
     ifb_array_list::assert_valid(array_list_ptr);
@@ -206,9 +192,9 @@ ifb_array_list::add_to_end(
 
 const IFBB8
 ifb_array_list::insert(
-          IFBArrayList* array_list_ptr,
-    const IFBPtr        element_ptr,
-    const IFBU32        index) {
+    const IFBDS64ArrayList array_list_handle,
+    const IFBPtr           element_ptr,
+    const IFBU32           index) {
 
     //assert the list is valid
     ifb_array_list::assert_valid(array_list_ptr);
@@ -263,6 +249,76 @@ ifb_array_list::insert(
     return(true);
 }
 
+
+const IFBPtr
+ifb_array_list::first(
+    const IFBArrayList* array_list_ptr) {
+
+    //assert the list is valid
+    ifb_array_list::assert_valid(array_list_ptr);
+
+    //check if the list is empty
+    const IFBB8 list_is_empty = (array_list_ptr->element_count_current == 0); 
+
+    //if the list is empty, just return null
+    //otherwise, cast the data start
+    const IFBPtr element = list_is_empty
+        ? NULL
+        : (IFBPtr)array_list_ptr->start;
+
+    //we're done
+    return(element);
+}
+
+const IFBPtr
+ifb_array_list::last(
+    const IFBArrayList* array_list_ptr) {
+
+    //assert the list is valid
+    ifb_array_list::assert_valid(array_list_ptr);
+
+    //get the offset of the last element
+    const IFBU32 element_count  = array_list_ptr->element_count_current;
+    const IFBU32 element_size   = array_list_ptr->element_size;
+    const IFBU32 element_offset = element_count * element_size;
+
+    //get the address, if we have a valid offset
+    const IFBAddr element_address = element_offset 
+        ? array_list_ptr->start + element_offset
+        : 0;
+
+    //cast the element
+    const IFBPtr element = (IFBPtr)element_address; 
+
+    //we're done
+    return(element);
+}
+
+const IFBPtr
+ifb_array_list::index(
+    const IFBArrayList* array_list_ptr,
+    const IFBU32        index) {
+
+    //assert the list is valid
+    ifb_array_list::assert_valid(array_list_ptr);
+
+    //get the offset of the last index
+    const IFBU32 element_size   = array_list_ptr->element_size;
+    const IFBU32 element_offset = index * element_size;
+
+    //get the address, if we have a valid index
+    const IFBAddr element_address = element_offset
+        ? index < array_list_ptr->element_count_current
+        : 0;
+
+    //cast the element
+    const IFBPtr element = (IFBPtr)element_address; 
+
+    //we're done
+    return(element);
+}
+
+
 /**********************************************************************************/
 /* SIZE
 /**********************************************************************************/
@@ -300,101 +356,23 @@ ifb_array_list::get_size_used(
 }
 
 /**********************************************************************************/
-/* POINTERS                                                                       */
-/**********************************************************************************/
-
-const IFBPtr
-ifb_array_list::get_element_first(
-    const IFBArrayList* array_list_ptr) {
-
-    //assert the list is valid
-    ifb_array_list::assert_valid(array_list_ptr);
-
-    //check if the list is empty
-    const IFBB8 list_is_empty = (array_list_ptr->element_count_current == 0); 
-
-    //if the list is empty, just return null
-    //otherwise, cast the data start
-    const IFBPtr element = list_is_empty
-        ? NULL
-        : (IFBPtr)array_list_ptr->start;
-
-    //we're done
-    return(element);
-}
-
-const IFBPtr
-ifb_array_list::get_element_last(
-    const IFBArrayList* array_list_ptr) {
-
-    //assert the list is valid
-    ifb_array_list::assert_valid(array_list_ptr);
-
-    //get the offset of the last element
-    const IFBU32 element_count  = array_list_ptr->element_count_current;
-    const IFBU32 element_size   = array_list_ptr->element_size;
-    const IFBU32 element_offset = element_count * element_size;
-
-    //get the address, if we have a valid offset
-    const IFBAddr element_address = element_offset 
-        ? array_list_ptr->start + element_offset
-        : 0;
-
-    //cast the element
-    const IFBPtr element = (IFBPtr)element_address; 
-
-    //we're done
-    return(element);
-}
-
-const IFBPtr
-ifb_array_list::get_element_at_index(
-    const IFBArrayList* array_list_ptr,
-    const IFBU32        index) {
-
-    //assert the list is valid
-    ifb_array_list::assert_valid(array_list_ptr);
-
-    //get the offset of the last index
-    const IFBU32 element_size   = array_list_ptr->element_size;
-    const IFBU32 element_offset = index * element_size;
-
-    //get the address, if we have a valid index
-    const IFBAddr element_address = element_offset
-        ? index < array_list_ptr->element_count_current
-        : 0;
-
-    //cast the element
-    const IFBPtr element = (IFBPtr)element_address; 
-
-    //we're done
-    return(element);
-}
-
-/**********************************************************************************/
 /* INTERNAL                                                                       */
 /**********************************************************************************/
 
 inline IFBVoid
-ifb_array_list::assert_valid(
-    const IFBArrayList* array_list) {
+ifb_array_list::cast_and_assert_valid(
+    const IFBDS64ArrayList array_list_handle) {
 
     //assert the pointer isn't null
     ifb_macro_assert(array_list);
 
-    //constants
-    const IFBU32 element_size        = array_list->element_size;
-    const IFBU32 element_count_total = array_list->element_count_total;
-    const IFBU32 size_total          = element_size * element_count_total;
-
-    //validate the list
-    IFBB8 valid = true;                                                  // the list is valid IF...
-    valid &= (array_list->start            != 0);                   //...the data start isn't null AND
-    valid &= (array_list->size             == size_total);          //...the data size is accurate AND
-    valid &= (array_list->element_size          != 0);                   //...the element size isn't 0  AND
-    valid &= (array_list->element_count_total   != 0);                   //...the tota count isn't 0    AND
-    valid &= (array_list->element_count_current <= element_count_total); //...the current count isn't greater than the total count
-    ifb_macro_assert(valid);
+    IFBB8 is_valid = true;
+    is_valid &= (array_list->start                 != 0);
+    is_valid &= (array_list->size                  != 0);
+    is_valid &= (array_list->element_size          != 0);
+    is_valid &= (array_list->element_count_total   != 0);
+    is_valid &= (array_list->element_count_current <= array_list->element_count_total);
+    ifb_macro_assert(is_valid);
 }
 
 //TODO: verify
