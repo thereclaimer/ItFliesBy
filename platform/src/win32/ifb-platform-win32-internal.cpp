@@ -24,7 +24,7 @@ namespace ifb_platform {
     const IFBPtr win32_memory_reserve  (const IFBU64 reservation_size);
     const IFBB8  win32_memory_release  (const IFBPtr reservation_start, const IFBU64 reservation_size);
     const IFBPtr win32_memory_commit   (const IFBPtr commit_start,      const IFBU64 commit_size);
-    const IFBPtr win32_memory_decommit (const IFBPtr commit_start,      const IFBU64 commit_size);
+    const IFBB8  win32_memory_decommit (const IFBPtr commit_start,      const IFBU64 commit_size);
 };
 
 /**********************************************************************************/

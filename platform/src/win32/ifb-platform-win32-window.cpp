@@ -92,17 +92,16 @@ ifb_platform::win32_window_create(
     // query for the closest format descriptor
     // then set the chosen pixel format
     const IFBS32 pixel_format_descriptor    = ChoosePixelFormat (window_device_context, &preferred_pixel_format_descriptor);
-    const IFBB8  pixel_format_is_set        = SetPixelFormat    (window_device_context, chosen_format_descriptor,&preferred_pixel_format_descriptor);
+    const IFBB8  pixel_format_is_set        = SetPixelFormat    (window_device_context, pixel_format_descriptor,&preferred_pixel_format_descriptor);
 
     //create the opengl context and make it current
     const HGLRC win32_opengl_context        = wglCreateContext  (window_device_context);
     const IFBB8 win32_opengl_context_active = wglMakeCurrent    (window_device_context,win32_opengl_context);
 
     //sanity check
-    const IFBB8 result = true;
-    result &= (pixel_format_is_set         == true);
+    result &= (pixel_format_is_set);
     result &= (win32_opengl_context        != NULL);
-    result &= (win32_opengl_context_active == true);
+    result &= (win32_opengl_context_active);
     if (!result) return(false);
 
     //------------------------------
@@ -111,7 +110,7 @@ ifb_platform::win32_window_create(
     
     // check the version before initialization
     // the program will crash if we try to initialize with an invalid version
-    result &= IMGUI_CHECKVERSION();
+    result &= (IMGUI_CHECKVERSION() == true);
     if (!result) return(false);
 
     // create the imgui context for win32 opengl
@@ -130,7 +129,7 @@ ifb_platform::win32_window_create(
     win32_window->contexts.imgui  = win32_imgui_context;
     win32_window->contexts.opengl = win32_opengl_context;
     win32_window->handles.window  = window_handle;
-    win32_window->handles.device  = device_context;
+    win32_window->handles.device  = window_device_context;
     
     //last check
     result &= (win32_window->contexts.imgui  != NULL); 
@@ -151,7 +150,7 @@ ifb_platform::win32_window_create(
 
 ifb_internal const IFBB8 
 ifb_platform::win32_window_destroy(
-    IFBPlatformWindow* window) {
+    IFBWin32Window* win32_window) {
 
     PostQuitMessage(0);
 
@@ -171,7 +170,7 @@ ifb_platform::win32_window_frame_start(
 
     //go through the messages for the window 
     MSG window_message;
-    while(PeekMessage(&window_message,win32_window->window_handle,0,0,PM_REMOVE)) {
+    while(PeekMessage(&window_message,win32_window->handles.window,0,0,PM_REMOVE)) {
 
         switch(window_message.message) {
 
@@ -179,7 +178,7 @@ ifb_platform::win32_window_frame_start(
             case WM_KEYDOWN:
             case WM_SYSKEYDOWN: {
 
-                const IFBKeyCode keycode = ifb_win32::user_input_keycode((IFBU32)window_message.wParam);
+                // const IFBKeyCode keycode = ifb_win32::user_input_keycode((IFBU32)window_message.wParam);
 
             } break;
 
@@ -187,12 +186,8 @@ ifb_platform::win32_window_frame_start(
             case WM_KEYUP:
             case WM_SYSKEYUP: {
 
-                const IFBKeyCode keycode = ifb_win32::user_input_keycode((IFBU32)window_message.wParam);
+                // const IFBKeyCode keycode = ifb_win32::user_input_keycode((IFBU32)window_message.wParam);
 
-            } break;
-
-            case WM_QUIT: {
-                win32_window->quit_received = true;
             } break;
         }
 
@@ -206,19 +201,16 @@ ifb_platform::win32_window_frame_start(
 
 ifb_internal const IFBB8 
 ifb_platform::win32_window_frame_render(
-    IFBPlatformWindow* platform_window) {
-
-    //get the window
-    IFBWin32Window* win32_window = ifb_platform::win32_window_cast_and_assert_valid(platform_window); 
+    IFBWin32Window* win32_window) {
 
     //if we have an imgui context, render the draw data
-    if (platform_window->contexts.imgui) {
+    if (win32_window->contexts.imgui) {
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
 
     //swap the buffers
-    SwapBuffers(win32_window->contexts.device);
+    SwapBuffers(win32_window->handles.device);
 
     //we're done
     return(true);
@@ -226,13 +218,10 @@ ifb_platform::win32_window_frame_render(
 
 ifb_internal const IFBB8 
 ifb_platform::win32_window_show(
-    IFBPlatformWindow* platform_window) {
-
-    //get the window
-    IFBWin32Window* win32_window = ifb_platform::win32_window_cast_and_assert_valid(platform_window); 
+    IFBWin32Window* win32_window) {
     
     //show the window
-    const IFBB8 result = (IFBB8)ShowWindow(win32_window->,1);
+    const IFBB8 result = (IFBB8)ShowWindow(win32_window->handles.window,1);
 
     //we're done
     return(true);
@@ -243,36 +232,21 @@ ifb_platform::win32_window_show(
 /**********************************************************************************/
 
 inline IFBWin32Window*
-ifb_platform::win32_window_cast_and_assert_valid(
-    IFBPlatformWindow* platform_window) {
-
-    //cast the win32 context
-    IFBWin32Window* win32_window = (IFBWin32Window*)platform_window;
-
-    //check platform contexts
-    ifb_macro_assert(win32_window);
-    ifb_macro_assert(win32_window->contexts.imgui);
-    ifb_macro_assert(win32_window->contexts.opengl);
-    ifb_macro_assert(win32_window->handles.window);
-    ifb_macro_assert(win32_window->handles.device);
-}
-
-inline IFBWin32Window*
 ifb_platform::win32_window_load_and_assert_valid(
     const HWND window_handle) {
 
     //load the context
-    IFBWin32Window* win32_window = GetWindowLongPtr(
+    IFBWin32Window* win32_window = (IFBWin32Window*)GetWindowLongPtr(
         window_handle,
         GWLP_USERDATA);
 
     //validate pointers / win32 window handle
     IFBB8 is_valid = true; 
     is_valid &= (win32_window != NULL);
-    is_valid &= (win32_window->contexts.imgui);
-    is_valid &= (win32_window->contexts.opengl);
-    is_valid &= (win32_window->handles.window);
-    is_valid &= (win32_window->handles.device);    
+    is_valid &= (win32_window->contexts.imgui  != NULL);
+    is_valid &= (win32_window->contexts.opengl != NULL);
+    is_valid &= (win32_window->handles.window  != NULL);
+    is_valid &= (win32_window->handles.device  != NULL);    
     is_valid &= (win32_window->handles.window == window_handle);
 
     //assert valid
@@ -351,22 +325,22 @@ ifb_platform::win32_window_on_wm_move(
     const IFBU32 window_position_x = LOWORD(window->message_params.l); 
     const IFBU32 window_position_y = HIWORD(window->message_params.l); 
 
-    window_ptr->position_x = window_position_x;
-    window_ptr->position_y = window_position_y;
+    window->pos.x = window_position_x;
+    window->pos.y = window_position_y;
 
     //we're done
     return(S_OK);
 }
 
-inline const LRESULT 
-ifb_platform::win32_window_on_wm_quit(
-    IFBWin32Window* window) {
+// inline const LRESULT 
+// ifb_platform::win32_window_on_wm_quit(
+//     IFBWin32Window* window) {
 
-    //TODO(SAM): this event isn't being received for some reason
+//     //TODO(SAM): this event isn't being received for some reason
 
-    //we're done
-    return(S_OK);
-}
+//     //we're done
+//     return(S_OK);
+// }
 
 inline const LRESULT 
 ifb_platform::win32_window_on_wm_destroy(

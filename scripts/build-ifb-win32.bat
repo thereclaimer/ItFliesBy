@@ -21,6 +21,7 @@ pushd ..
 @set path_include_win32=          win32\include
 @set path_include_engine=         engine\include
 @set path_include_platform=       platform\include
+@set path_include_platform_win32= platform\src\win32
 @set path_include_common=         common
 @set path_include_external=       external
 @set path_include_memory=         memory\include
@@ -51,6 +52,7 @@ if not exist %path_build%\obj mkdir %path_build%\obj
 @set cl_includes=   /I %path_include_win32%          ^
                     /I %path_include_engine%         ^
                     /I %path_include_platform%       ^
+                    /I %path_include_platform_win32% ^
                     /I %path_include_common%         ^
                     /I %path_include_external%       ^
                     /I %path_include_memory%         ^
