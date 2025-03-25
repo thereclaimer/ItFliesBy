@@ -19,7 +19,6 @@ struct IFBPlatformAPIMonitor;
 /* SYSTEM                                                                         */
 /**********************************************************************************/
 
-
 struct IFBSystemMemoryInfo {
     IFBU32 page_size;
     IFBU32 allocation_granularity;
@@ -133,20 +132,28 @@ namespace ifb_platform {
 
 typedef IFBVoid* IFBGLContext;
 
-typedef const IFBB8
-(*IFBPlatformWindowCreate) (
-    const IFBChar* title,
-    const IFBU32   width,
-    const IFBU32   height,
-    const IFBU32   position_x,
-    const IFBU32   position_y);
+struct IFBPlatformWindow {
+    IFBChar*   title;
+    struct {
+        ImGuiContext* imgui;
+        IFBGLContext  opengl;
+    } contexts;
+    struct {
+        IFBU32 width;
+        IFBU32 height;
+    } dims;
+    struct {
+        IFBU32 x;
+        IFBU32 y;
+    } pos;
+};
 
-typedef const IFBB8   (*IFBPlatformWindowDestroy)     (IFBVoid);
-typedef const IFBB8   (*IFBPlatformWindowFrameStart)  (IFBVoid);
-typedef const IFBB8   (*IFBPlatformWindowFrameRender) (IFBVoid);
-typedef const IFBB8   (*IFBPlatformWindowShow)        (IFBVoid);
-typedef IFBGLContext  (*IFBPlatformWindowOpenGLInit)  (IFBVoid);
-typedef ImGuiContext* (*IFBPlatformWindowImGUIInit)   (IFBVoid);
+typedef const IFBU32  (*IFBPlatformWindowContextSize) (IFBPlatformWindow* window);
+typedef const IFBB8   (*IFBPlatformWindowCreate)      (IFBPlatformWindow* window);
+typedef const IFBB8   (*IFBPlatformWindowDestroy)     (IFBPlatformWindow* window);
+typedef const IFBB8   (*IFBPlatformWindowFrameStart)  (IFBPlatformWindow* window);
+typedef const IFBB8   (*IFBPlatformWindowFrameRender) (IFBPlatformWindow* window);
+typedef const IFBB8   (*IFBPlatformWindowShow)        (IFBPlatformWindow* window);
 
 struct IFBPlatformAPIWindow {
     IFBPlatformWindowCreate      create;
@@ -154,8 +161,6 @@ struct IFBPlatformAPIWindow {
     IFBPlatformWindowFrameStart  frame_start;
     IFBPlatformWindowFrameRender frame_render;
     IFBPlatformWindowShow        show;
-    IFBPlatformWindowOpenGLInit  opengl_init;
-    IFBPlatformWindowImGUIInit   imgui_init;
 };
 
 namespace ifb_platform {
@@ -165,8 +170,6 @@ namespace ifb_platform {
     extern IFBPlatformWindowFrameStart  window_frame_start;
     extern IFBPlatformWindowFrameRender window_frame_render;
     extern IFBPlatformWindowShow        window_show;
-    extern IFBPlatformWindowOpenGLInit  window_opengl_init;
-    extern IFBPlatformWindowImGUIInit   window_imgui_init;
 };
 
 /**********************************************************************************/

@@ -169,24 +169,6 @@ namespace ifb_win32 {
 };
 
 /**********************************************************************************/
-/* FILE DIALOG                                                                    */
-/**********************************************************************************/
-
-#define IFB_WIN32_DIALOG_CSTR_LENGTH_MAX 256
-#define IFB_WIN32_DIALOG_WSTR_LENGTH_MAX 128
-
-namespace ifb_win32 {
-
-    ifb_internal const IFBB8
-    file_dialog_select_file(
-        const IFBChar*  in_file_dialog_starting_directory,
-        const IFBSize   in_file_type_count,
-        const IFBChar** in_file_type_name_cstr_ptr,
-        const IFBChar** in_file_type_spec_cstr_ptr,
-              IFBChar* out_file_selection_buffer);
-};
-
-/**********************************************************************************/
 /* USER INPUT                                                                     */
 /**********************************************************************************/
 
