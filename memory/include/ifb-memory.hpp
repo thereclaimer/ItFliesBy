@@ -8,15 +8,17 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-typedef IFBU32  IFBMEM32Handle;
-typedef IFBAddr IFBMEM64Handle;
-
-struct IFBMEM64Stack   { IFBMEM64Handle h64; };
-struct IFBMEM32Manager { IFBMEM32Handle h32; };
-struct IFBMEM32Arena   { IFBMEM32Handle h32; };
+struct IFBMEM64Stack   : IFBHND64 { };
+struct IFBMEM32Manager : IFBHND32 { };
+struct IFBMEM32Arena   : IFBHND32 { };
 
 #define IFB_MEMORY_INVALID_HANDLE_32 0xFFFFFFFF
 #define IFB_MEMORY_INVALID_HANDLE_64 0
+
+struct IFBMemory {
+    IFBAddr start;
+    IFBU64  size;
+};
 
 /**********************************************************************************/
 /* STACK                                                                          */
@@ -24,15 +26,11 @@ struct IFBMEM32Arena   { IFBMEM32Handle h32; };
 
 namespace ifb_memory {
 
-    const IFBMEM64Stack
-    stack_create(
-        const IFBByte* stack_memory,
-        const IFBU32   stack_size);
-
-    const IFBU32 stack_push_bytes_relative (const IFBMEM64Stack stack_handle, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBPtr stack_push_bytes_absolute (const IFBMEM64Stack stack_handle, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBB8  stack_pull_bytes          (const IFBMEM64Stack stack_handle, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBPtr stack_get_pointer         (const IFBMEM64Stack stack_handle, const IFBU32 offset);
+    const IFBMEM64Stack stack_create              (const IFBMemory&    stack_memory);
+    const IFBU32        stack_push_bytes_relative (const IFBMEM64Stack stack_handle, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBPtr        stack_push_bytes_absolute (const IFBMEM64Stack stack_handle, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBB8         stack_pull_bytes          (const IFBMEM64Stack stack_handle, const IFBU32 size, const IFBU32 alignment = 0);
+    const IFBPtr        stack_get_pointer         (const IFBMEM64Stack stack_handle, const IFBU32 offset);
 };
 
 /**********************************************************************************/
@@ -80,7 +78,8 @@ namespace ifb_memory {
 
 namespace ifb_memory {
 
-    const IFBPtr get_pointer(const IFBAddr start, const IFBU32 offset);
+    const IFBPtr get_pointer (const IFBAddr    start,  const IFBU32 offset);
+    const IFBPtr get_pointer (const IFBMemory& memory, const IFBU32 offset);
 };
 
 inline const IFBPtr
@@ -89,7 +88,22 @@ ifb_memory::get_pointer(
     const IFBU32  offset) {
 
     const IFBAddr address = start + offset;
-    const IFBPtr  pointer = (IFBPtr)address;
+    const IFBPtr  pointer = (address != 0) ? (IFBPtr)address : NULL;
+
+    return(pointer);
+}
+
+inline const IFBPtr 
+ifb_memory::get_pointer(
+    const IFBMemory& memory,
+    const IFBU32     offset) {
+
+    IFBB8 is_valid = true;
+    is_valid &= (memory.start != 0);
+    is_valid &= (memory.size   >  offset);
+
+    const IFBAddr address = memory.start + offset;
+    const IFBPtr  pointer = is_valid ? (IFBPtr)address : NULL;
 
     return(pointer);
 }

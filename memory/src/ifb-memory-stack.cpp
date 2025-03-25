@@ -24,27 +24,26 @@ namespace ifb_memory {
 
 const IFBMEM64Stack
 ifb_memory::stack_create(
-    const IFBByte* stack_memory,
-    const IFBU32   stack_size) {
+    const IFBMemory& stack_memory) {
 
     IFBMEM64Stack stack_handle;
     stack_handle.h64 = IFB_MEMORY_INVALID_HANDLE_64;
 
     //check args
-    IFBB8 can_create = true;                                      // we can create the stack IF...
-    can_create &= (stack_memory != NULL);                         //...the memory isn't null AND
-    can_create &= (stack_size   >= IFB_MEMORY_STACK_STRUCT_SIZE); //...we can fit the struct in the memory
-    if (!can_create) return(stack_handle);                        // if we can't create, we're done
+    IFBB8 can_create = true;                                            // we can create the stack IF...
+    can_create &= (stack_memory.start != NULL);                         //...the memory isn't null AND
+    can_create &= (stack_memory.size  >= IFB_MEMORY_STACK_STRUCT_SIZE); //...we can fit the struct in the memory
+    if (!can_create) return(stack_handle);                              // if we can't create, we're done
 
     //cast the memory
-    IFBMemoryStack* stack_internal = (IFBMemoryStack*)stack_memory;
+    IFBMemoryStack* stack_internal = (IFBMemoryStack*)stack_memory.start;
     
     //initialize the stack
-    stack_internal->size     = stack_size;
+    stack_internal->size     = stack_memory.size;
     stack_internal->position = IFB_MEMORY_STACK_STRUCT_SIZE;
 
     //get the address
-    stack_handle.h64 = (IFBAddr)stack_memory;
+    stack_handle.h64 = (IFBAddr)stack_memory.start;
 
     //we're done
     return(stack_handle);
