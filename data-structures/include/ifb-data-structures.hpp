@@ -54,17 +54,17 @@ struct IFBArrayInfo {
 namespace ifb_array {
 
     //memory
-    IFBVoid            size        (IFBArrayArgs& args);
-    const IFBDS64Array create      (IFBArrayArgs& args);
+    IFBVoid            size    (IFBArrayArgs& args);
+    const IFBDS64Array create  (IFBArrayArgs& args);
     
     //info
-    IFBVoid            info        (const IFBDS64Array array_handle, IFBArrayInfo& info);
+    IFBVoid            info    (const IFBDS64Array array_handle, IFBArrayInfo& info);
 
     //operations
-    IFBVoid            clear       (const IFBDS64Array array_handle);
-    const IFBB8        add         (const IFBDS64Array array_handle, const IFBU32 count, const IFBPtr element);
-    const IFBPtr       index       (const IFBDS64Array array_handle, const IFBU32 index);
-    const IFBB8        iterate     (const IFBDS64Array array_handle, IFBIterator& iterator);
+    IFBVoid            clear   (const IFBDS64Array array_handle);
+    const IFBB8        add     (const IFBDS64Array array_handle, const IFBU32 count, const IFBPtr element);
+    const IFBPtr       index   (const IFBDS64Array array_handle, const IFBU32 index);
+    const IFBB8        iterate (const IFBDS64Array array_handle, IFBIterator& iterator);
 };
 
 /**********************************************************************************/

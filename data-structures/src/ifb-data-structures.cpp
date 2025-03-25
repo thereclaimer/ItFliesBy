@@ -3,4 +3,4 @@
 #include "ifb-data-structures-array.cpp"
 // #include "ifb-data-structures-stack.cpp"
 // #include "ifb-data-structures-hash-table.cpp"
-// #include "ifb-data-structures-array-list.cpp"
+#include "ifb-data-structures-array-list.cpp"
