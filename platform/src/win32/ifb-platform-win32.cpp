@@ -17,7 +17,7 @@ namespace ifb_platform {
     IFBPlatformMemoryCommit       memory_commit;
     IFBPlatformMemoryDecommit     memory_decommit;
 
-    IFBPlatformWindowCreate       window_create = (IFBPlatformWindowCreate)ifb_platform::win32_window_create;
+    IFBPlatformWindowCreate       window_create = ifb_platform::win32_window_create;
     IFBPlatformWindowDestroy      window_destroy;
     IFBPlatformWindowFrameStart   window_frame_start;
     IFBPlatformWindowFrameRender  window_frame_render;

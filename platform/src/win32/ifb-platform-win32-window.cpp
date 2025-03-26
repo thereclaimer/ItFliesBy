@@ -25,7 +25,7 @@ namespace ifb_platform {
 /**********************************************************************************/
 
 ifb_internal const IFBU32
-ifb_platform::win32_window_size(
+ifb_platform::win32_window_context_size(
     IFBVoid) {
 
     const IFBU32 context_size = ifb_macro_align_size_struct(IFBWin32Window);
@@ -100,7 +100,7 @@ ifb_platform::win32_window_create(
 
     //sanity check
     result &= (pixel_format_is_set);
-    result &= (win32_opengl_context        != NULL);
+    result &= (win32_opengl_context != NULL);
     result &= (win32_opengl_context_active);
     if (!result) return(false);
 

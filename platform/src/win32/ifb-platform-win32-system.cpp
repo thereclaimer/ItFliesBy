@@ -2,6 +2,42 @@
 
 #include "ifb-platform-win32-internal.cpp"
 
+/**********************************************************************************/
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
+
+struct IFBWin32RegKeyU32 {
+    HKEY   key;
+    IFBU32 value;
+};
+
+namespace ifb_platform {
+
+    //read only
+    const IFBB8 win32_registry_key_open_read_only_classes_root   (const LPCSTR key_path, HKEY& key_ref);
+    const IFBB8 win32_registry_key_open_read_only_current_user   (const LPCSTR key_path, HKEY& key_ref);
+    const IFBB8 win32_registry_key_open_read_only_local_machine  (const LPCSTR key_path, HKEY& key_ref);
+    const IFBB8 win32_registry_key_open_read_only_users          (const LPCSTR key_path, HKEY& key_ref);
+    const IFBB8 win32_registry_key_open_read_only_current_config (const LPCSTR key_path, HKEY& key_ref);
+
+    //close
+    const IFBB8 win32_registry_key_close                         (const HKEY key);
+
+    //values
+    const IFBB8 win32_registry_key_read_value_u32                (const HKEY key, const LPCSTR value_name, IFBU32& value_ref);
+    const IFBB8 win32_registry_key_read_value_cpu_speed_mhz      (IFBWin32RegKeyU32& key_u32);
+};
+
+#define IFB_WIN32_SYSTEM_REGKEY_PROCESSOR_0     R"(HARDWARE\DESCRIPTION\System\CentralProcessor\0)" 
+#define IFB_WIN32_SYSTEM_REGKEY_PROCESSOR_0_MHZ "~MHz"
+
+#define ifb_win32_macro_registry_key_cpu_0(key_ref)                         ifb_platform::win32_registry_key_open_read_only_local_machine (IFB_WIN32_SYSTEM_REGKEY_PROCESSOR_0, key_ref)
+#define ifb_win32_macro_registry_key_cpu_0_value_u32_mhz(key,value_u32_ref) ifb_platform::win32_registry_key_read_value_u32               (key,IFB_WIN32_SYSTEM_REGKEY_PROCESSOR_0_MHZ,value_u32_ref)
+
+/**********************************************************************************/
+/* WIN32 SYSTEM                                                                   */
+/**********************************************************************************/
+
 const IFBB8
 ifb_platform::win32_system_get_info(
     IFBSystemInfo* system_info) {
@@ -31,7 +67,7 @@ ifb_platform::win32_system_get_info(
 
     //get the cpu speed from the registry
     IFBWin32RegKeyU32 reg_key_cpu_mhz;
-    result &= ifb_win32::registry_key_read_value_cpu_speed_mhz(reg_key_cpu_mhz);
+    result &= ifb_platform::win32_registry_key_read_value_cpu_speed_mhz(reg_key_cpu_mhz);
 
     //make sure the information we need will fit in the result buffer
     DWORD result_length = 0;
