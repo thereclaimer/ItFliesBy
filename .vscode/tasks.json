@@ -12,10 +12,7 @@
 			"problemMatcher": [
 				"$msCompile"
 			],
-			"group": "build",
-			"dependsOn":[
-				"Build IFB Engine"
-			]
+			"group": "build"
 		},
 		{
 			"label":   "Build IFB Engine",

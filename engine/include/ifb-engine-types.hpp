@@ -22,17 +22,17 @@ struct IFBEngineMemoryArenaBlock;
 /* HANDLES                                                                        */
 /**********************************************************************************/
 
-struct IFBHNDEngineSingleton : IFBHND32  { };
-struct IFBHNDEngineArena     : IFBHNDPTR { };
-struct IFBHNDEngineThread    : IFBHND32  { };
+struct IFBHNDEngineSingleton : IFBHND32 { };
+struct IFBHNDEngineArena     : IFBHND32 { };
+struct IFBHNDEngineThread    : IFBHND32 { };
 
 /**********************************************************************************/
 /* PUBLIC TYPES                                                                   */
 /**********************************************************************************/
 
 struct IFBEngineArgs {
-    IFBPlatformAPI*   platform_api;
-    IFBMemoryContext* memory_context;
+    IFBPlatformAPI* platform_api;
+    IFBMEM64Stack   global_stack_handle;
 };
 
 struct IFBEngineInit {

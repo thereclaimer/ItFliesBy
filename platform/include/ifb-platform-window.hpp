@@ -9,23 +9,36 @@
 
 typedef IFBVoid* IFBGLContext;
 
+enum IFBPlatformWindowFlags_ {
+    IFBPlatformWindowFlags_None    = IFB_BIT_FLAG_0,
+    IFBPlatformWindowFlags_Closed  = IFB_BIT_FLAG_1,
+    IFBPlatformWindowFlags_Visible = IFB_BIT_FLAG_2,
+    IFBPlatformWindowFlags_Resized = IFB_BIT_FLAG_3,
+    IFBPlatformWindowFlags_Moved   = IFB_BIT_FLAG_4,
+};
+
+typedef IFBU64 IFBPlatformWindowFlags; 
+
+struct IFBPlatformWindow {
+    IFBChar*               title;
+    IFBPlatformWindowFlags flags;
+    IFBDimensions          dims;
+    IFBPosition            pos;
+    struct {
+        ImGuiContext* imgui;
+        IFBGLContext  opengl;
+    } graphics_contexts;
+};
+
 /**********************************************************************************/
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
-typedef const IFBB8
-(*IFBPlatformWindowCreate) (
-    const IFBChar* title,
-    const IFBU32   width,
-    const IFBU32   height,
-    const IFBU32   position_x,
-    const IFBU32   position_y);
-
-typedef const IFBB8   (*IFBPlatformWindowDestroy)     (IFBVoid);
-typedef const IFBB8   (*IFBPlatformWindowFrameStart)  (IFBVoid);
-typedef const IFBB8   (*IFBPlatformWindowFrameRender) (IFBVoid);
-typedef const IFBB8   (*IFBPlatformWindowShow)        (IFBVoid);
-typedef IFBGLContext  (*IFBPlatformWindowOpenGLInit)  (IFBVoid);
-typedef ImGuiContext* (*IFBPlatformWindowImGUIInit)   (IFBVoid);
+typedef const IFBU32  (*IFBPlatformWindowSize)          (IFBPlatformWindow* window);
+typedef const IFBB8   (*IFBPlatformWindowCreate)        (IFBPlatformWindow* window);
+typedef const IFBB8   (*IFBPlatformWindowDestroy)       (IFBPlatformWindow* window);
+typedef const IFBB8   (*IFBPlatformWindowProcessEvents) (IFBPlatformWindow* window);
+typedef const IFBB8   (*IFBPlatformWindowSwapBuffers)   (IFBPlatformWindow* window);
+typedef const IFBB8   (*IFBPlatformWindowShow)          (IFBPlatformWindow* window);
 
 #endif //IFB_PLATFORM_WINDOW_HPP

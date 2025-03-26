@@ -47,13 +47,11 @@ struct IFBPlatformAPI {
     } thread;
 
     struct {
-        IFBPlatformWindowCreate         create;
-        IFBPlatformWindowDestroy        destroy;
-        IFBPlatformWindowFrameStart     frame_start;
-        IFBPlatformWindowFrameRender    frame_render;
-        IFBPlatformWindowShow           show;
-        IFBPlatformWindowOpenGLInit     opengl_init;
-        IFBPlatformWindowImGUIInit      imgui_init;
+        IFBPlatformWindowCreate        create;
+        IFBPlatformWindowDestroy       destroy;
+        IFBPlatformWindowProcessEvents process_events;
+        IFBPlatformWindowSwapBuffers   swap_buffers;
+        IFBPlatformWindowShow          show;
     } window;
 
     struct {
@@ -113,11 +111,9 @@ namespace ifb_platform {
     //------------------
     extern IFBPlatformWindowCreate         window_create;
     extern IFBPlatformWindowDestroy        window_destroy;
-    extern IFBPlatformWindowFrameStart     window_frame_start;
-    extern IFBPlatformWindowFrameRender    window_frame_render;
+    extern IFBPlatformWindowProcessEvents  window_process_events;
+    extern IFBPlatformWindow               window_swap_buffers;
     extern IFBPlatformWindowShow           window_show;
-    extern IFBPlatformWindowOpenGLInit     window_opengl_init;
-    extern IFBPlatformWindowImGUIInit      window_imgui_init;
 
     //------------------
     // monitor
