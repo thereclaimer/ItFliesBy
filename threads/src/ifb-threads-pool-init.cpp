@@ -66,9 +66,9 @@ ifb_thread::pool_init_step_1_set_size_cache(
     const IFBU32 pool_size_platform_total             = arg_thread_count * tmp_size_platform_instance;
     const IFBU32 pool_size_description_buffer         = arg_thread_count * arg_thread_stride_description;
     const IFBU32 pool_size_task_data                  = arg_thread_count * arg_thread_stride_task_data;
-    const IFBU32 pool_size_task_functions           = arg_thread_count * tmp_size_task_function;
+    const IFBU32 pool_size_task_functions             = arg_thread_count * tmp_size_task_function;
     const IFBU32 pool_size_array_affinity_mask        = arg_thread_count * tmp_size_affinity_mask;
-    const IFBU32 pool_size_array_list_running_threads = ifb_array_list::memory_allocation_size(tmp_size_thread_handle,arg_thread_count);
+    const IFBU32 pool_size_array_list_running_threads = ifb_array_list::size(tmp_size_thread_handle,arg_thread_count);
 
     //thread pool total size
     const IFBU32 pool_size_total = 
@@ -165,13 +165,13 @@ ifb_thread::pool_init_step_4_set_handles(
     const IFBU16 offset_array_affinity_mask        = sizes->memory.array_list_running_threads + offset_array_list_running_threads;
 
     //set handles
-    IFBThreadPoolHandles& handles = pool->handles;
-    handles.description_buffer.offset         = offset_description_buffer;
-    handles.memory_platform.offset            = offset_memory_platform;
-    handles.memory_task.offset                = offset_memory_task;
-    handles.array_task_functions.offset       = offset_array_task_functions;
-    handles.array_list_running_threads.offset = offset_array_list_running_threads;
-    handles.array_affinity_mask.offset        = offset_array_affinity_mask;
+    IFBThreadPoolOffsets& offsets = pool->offsets;
+    offsets.description_buffer         = offset_description_buffer;
+    offsets.memory_platform            = offset_memory_platform;
+    offsets.memory_task                = offset_memory_task;
+    offsets.array_task_functions       = offset_array_task_functions;
+    offsets.array_list_running_threads = offset_array_list_running_threads;
+    offsets.array_affinity_mask        = offset_array_affinity_mask;
 }
 
 inline IFBVoid 
@@ -195,10 +195,10 @@ ifb_thread::pool_init_step_5_validate_pool(
     result_ref &= (pool->header.stride_memory_task     == sizes->other.task_function); 
 
     //validate handles
-    result_ref &= (pool->handles.description_buffer.offset         != 0);
-    result_ref &= (pool->handles.memory_platform.offset            != 0);
-    result_ref &= (pool->handles.memory_task.offset                != 0);
-    result_ref &= (pool->handles.array_task_functions.offset       != 0);
-    result_ref &= (pool->handles.array_list_running_threads.offset != 0);
-    result_ref &= (pool->handles.array_affinity_mask.offset        != 0);
+    result_ref &= (pool->offsets.description_buffer         != 0);
+    result_ref &= (pool->offsets.memory_platform            != 0);
+    result_ref &= (pool->offsets.memory_task                != 0);
+    result_ref &= (pool->offsets.array_task_functions       != 0);
+    result_ref &= (pool->offsets.array_list_running_threads != 0);
+    result_ref &= (pool->offsets.array_affinity_mask        != 0);
 }

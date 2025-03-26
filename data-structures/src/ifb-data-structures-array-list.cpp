@@ -27,13 +27,16 @@ namespace ifb_array_list {
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
-IFBVoid
+const IFBU32
 ifb_array_list::size(
-    IFBArrayListArgs& args) {
+    const IFBU32 element_size,
+    const IFBU32 element_count) {
 
     const IFBU32 array_list_size_struct = ifb_macro_align_size_struct(IFBArrayList);
-    const IFBU32 array_list_size_data   = args.element_size * args.element_count;
-    args.memory_size = array_list_size_struct + array_list_size_data; 
+    const IFBU32 array_list_size_data   = element_size * element_count;
+    const IFBU32 array_list_size_total  = array_list_size_struct + array_list_size_data; 
+
+    return(array_list_size_total);
 }
 
 const IFBDS64ArrayList
@@ -83,8 +86,6 @@ ifb_array_list::reset(
     
     //reset the current count
     array_list->element_count_current = 0;
-    
-    //we're done
 }
 
 const IFBB8

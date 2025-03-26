@@ -87,7 +87,7 @@ struct IFBArrayListInfo {
 namespace ifb_array_list {
 
     //memory
-    IFBVoid                size         (IFBArrayListArgs& args);
+    const IFBU32           size         (const IFBU32 element_size, const IFBU32 element_count);
     const IFBDS64ArrayList create       (IFBArrayListArgs& args);
 
     //info
