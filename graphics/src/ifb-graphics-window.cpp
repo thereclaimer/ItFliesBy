@@ -6,29 +6,32 @@
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
-IFBWindow*
-ifb_graphics::window_commit_to_arena_absolute(
-    IFBMemoryArena* ptr_arena) {
-
-    const IFBU32 window_size = ifb_macro_align_size_struct(IFBWindow); 
-    IFBWindow*   window_ptr  = (IFBWindow*)ifb_memory::arena_commit_bytes_absolute(
-        ptr_arena,
-        window_size);
-
-    return(window_ptr);
-}
-
 const IFBU32
-ifb_graphics::window_commit_to_arena_relative(
-    IFBMemoryArena* ptr_arena) {
+ifb_graphics::window_memory_size(
+    IFBVoid) {
 
-    const IFBU32 window_size   = ifb_macro_align_size_struct(IFBWindow); 
-    const IFBU32 window_offset = ifb_memory::arena_commit_bytes_relative(
-        ptr_arena,
-        window_size);
+    const IFBU32 size_window = ifb_macro_align_size_struct(IFBWindow); 
+    const IFBU32 size_title  = IFB_WINDOW_TITLE_LENGTH_MAX;
+    const IFBU32 size_total  = size_window + size_title;
 
-    return(window_offset);
+    return(size_total);
 }
+
+IFBWindow* 
+ifb_graphics::window_memory_initialize(
+    const IFBPtr memory) {
+
+    ifb_macro_assert(memory);
+
+    const IFBAddr start_window = (IFBAddr)memory;
+    const IFBAddr start_title  = start_window + ifb_macro_align_size_struct(IFBWindow);
+
+    IFBWindow* window = (IFBWindow*)start_window;
+    window->title     = (IFBChar*)start_title;
+
+    return(window);
+}
+
 
 const IFBB8 
 ifb_graphics::window_show(

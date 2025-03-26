@@ -3,6 +3,7 @@
 
 #include <ifb.hpp>
 #include <ifb-data-structures.hpp>
+#include <ifb-platform.hpp>
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -50,11 +51,6 @@ enum IFBColorFormat : IFBU32 {
      IFBColorFormat_BGRA = 3
 };
 
-struct IFBColorTable {
-    IFBHashTable*  ptr_hash_table;
-    IFBColorFormat color_format;
-};
-
 namespace ifb_graphics {
     
     const IFBB8      color_normalize             (const IFBColorHex*        ptr_color_hex,        IFBColorNormalized*       ptr_color_normalized);
@@ -62,38 +58,6 @@ namespace ifb_graphics {
     
     const IFBColor32 color_pack_hex_to_32        (const IFBColorFormat      color_format,         const IFBColorHex*        ptr_color_hex); 
     const IFBColor32 color_pack_normalized_to_32 (const IFBColorFormat      color_format,         const IFBColorNormalized* ptr_color_normalized); 
-
-    //color table
-    const IFBColorTable*
-    color_table_commit_to_arena_absolute(
-              IFBMemoryArena* ptr_arena,
-        const IFBColorFormat  color_format,
-        const IFBU32          color_count,
-        const IFBChar**       color_key_array,
-        const IFBColorHex*    color_hex_array);
-
-    const IFBU32
-    color_table_commit_to_arena_relative(
-              IFBMemoryArena* ptr_arena,
-        const IFBColorFormat  color_format,
-        const IFBU32          color_count,
-        const IFBChar**       color_key_array,
-        const IFBColorHex*    color_hex_array);
-
-    const IFBColorTable*
-    color_table_load_from_arena(
-              IFBMemoryArena* ptr_arena,
-        const IFBU32          color_table_offset);
-
-    //lookup
-    const IFBB8 color_table_lookup_hex        (const IFBColorTable* ptr_color_table, const IFBChar* ptr_color_key, IFBColorHex*        ptr_color_hex);
-    const IFBB8 color_table_lookup_normalized (const IFBColorTable* ptr_color_table, const IFBChar* ptr_color_key, IFBColorNormalized* ptr_color_normalized);
-    const IFBB8 color_table_lookup_packed_32  (const IFBColorTable* ptr_color_table, const IFBChar* ptr_color_key, IFBColor32*         ptr_color_32);
-
-    //indexing
-    const IFBB8 color_table_get_hex           (const IFBColorTable* ptr_color_table, const IFBU32   color_index,   IFBColorHex*        ptr_color_hex);
-    const IFBB8 color_table_get_normalized    (const IFBColorTable* ptr_color_table, const IFBU32   color_index,   IFBColorNormalized* ptr_color_normalized);
-    const IFBB8 color_table_get_packed_32     (const IFBColorTable* ptr_color_table, const IFBU32   color_index,   IFBColor32*         ptr_color_32);
 };
 
 /**********************************************************************************/
@@ -118,8 +82,8 @@ struct IFBWindow {
 
 namespace ifb_graphics {
 
-    IFBWindow*   window_commit_to_arena_absolute (IFBMemoryArena* ptr_arena);
-    const IFBU32 window_commit_to_arena_relative (IFBMemoryArena* ptr_arena);
+    const IFBU32 window_memory_size              (IFBVoid);
+    IFBWindow*   window_memory_initialize        (const IFBPtr memory);
 
     const IFBB8  window_show                     (IFBWindow* ptr_window);
     const IFBB8  window_frame_start              (IFBWindow* ptr_window);
@@ -145,28 +109,14 @@ struct IFBMonitorTable {
 
 namespace ifb_graphics {
 
-    const IFBB8 monitor_table_initialize          (IFBMonitorTable* monitor_table_ptr, IFBMemoryArena* ptr_arena);
-    const IFBB8 monitor_table_update              (IFBMonitorTable* monitor_table_ptr);
-    const IFBB8 monitor_table_get_monitor         (const IFBMonitorTable* monitor_table_ptr, IFBMonitor* monitor_ptr);
-    const IFBB8 monitor_table_get_monitor_primary (const IFBMonitorTable* monitor_table_ptr, IFBMonitor* monitor_ptr);
+    const IFBU32     monitor_table_memory_size         (IFBVoid);
+    IFBMonitorTable* monitor_table_memory_initialize   (const IFBPtr memory);
 
-    const IFBB8 monitor_get_center                (const IFBMonitor* monitor_ptr, IFBPosition* center_position_ptr);
+    const IFBB8      monitor_table_update              (IFBMonitorTable* monitor_table_ptr);
+    const IFBB8      monitor_table_get_monitor         (const IFBMonitorTable* monitor_table_ptr, IFBMonitor* monitor_ptr);
+    const IFBB8      monitor_table_get_monitor_primary (const IFBMonitorTable* monitor_table_ptr, IFBMonitor* monitor_ptr);
+
+    const IFBB8      monitor_get_center                (const IFBMonitor* monitor_ptr, IFBPosition* center_position_ptr);
 };
-
-/**********************************************************************************/
-/* MACROS                                                                         */
-/**********************************************************************************/
-
-#define ifb_graphics_macro_commit_absolute_window(ptr_arena)              ifb_memory_macro_commit_struct_to_arena_absolute(ptr_arena,IFBWindow)
-#define ifb_graphics_macro_commit_absolute_monitor_table(ptr_arena)       ifb_memory_macro_commit_struct_to_arena_absolute(ptr_arena,IFBMonitorTable)
-#define ifb_graphics_macro_commit_absolute_monitor(ptr_arena)             ifb_memory_macro_commit_struct_to_arena_absolute(ptr_arena,IFBMonitor)
-
-#define ifb_graphics_macro_commit_relative_window(ptr_arena)              ifb_memory_macro_commit_struct_to_arena_relative(ptr_arena,IFBWindow)
-#define ifb_graphics_macro_commit_relative_monitor(ptr_arena)             ifb_memory_macro_commit_struct_to_arena_relative(ptr_arena,IFBMonitor)
-#define ifb_graphics_macro_commit_relative_monitor_table(ptr_arena)       ifb_memory_macro_commit_struct_to_arena_relative(ptr_arena,IFBMonitorTable)
-
-#define ifb_graphics_macro_get_pointer_to_window(ptr_arena,offset)        ifb_memory_macro_get_pointer_from_arena(ptr_arena,offset,IFBWindow)
-#define ifb_graphics_macro_get_pointer_to_monitor(ptr_arena,offset)       ifb_memory_macro_get_pointer_from_arena(ptr_arena,offset,IFBMonitor)
-#define ifb_graphics_macro_get_pointer_to_monitor_table(ptr_arena,offset) ifb_memory_macro_get_pointer_from_arena(ptr_arena,offset,IFBMonitorTable)
 
 #endif //IFB_GRAPHICS_HPP
