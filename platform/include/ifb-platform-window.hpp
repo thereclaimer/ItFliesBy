@@ -34,7 +34,7 @@ struct IFBPlatformWindow {
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
-typedef const IFBU32  (*IFBPlatformWindowSize)          (IFBPlatformWindow* window);
+typedef const IFBU32  (*IFBPlatformWindowSize)          (IFBVoid);
 typedef const IFBB8   (*IFBPlatformWindowCreate)        (IFBPlatformWindow* window);
 typedef const IFBB8   (*IFBPlatformWindowDestroy)       (IFBPlatformWindow* window);
 typedef const IFBB8   (*IFBPlatformWindowProcessEvents) (IFBPlatformWindow* window);

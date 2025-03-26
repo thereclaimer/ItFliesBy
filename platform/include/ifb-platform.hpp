@@ -109,6 +109,7 @@ namespace ifb_platform {
     //------------------
     // window
     //------------------
+    extern IFBPlatformWindowSize           window_size;
     extern IFBPlatformWindowCreate         window_create;
     extern IFBPlatformWindowDestroy        window_destroy;
     extern IFBPlatformWindowProcessEvents  window_process_events;

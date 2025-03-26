@@ -19,13 +19,12 @@ namespace ifb_platform {
     IFBPlatformMemoryCommit        memory_commit;
     IFBPlatformMemoryDecommit      memory_decommit;
 
+    IFBPlatformWindowSize          window_size;
     IFBPlatformWindowCreate        window_create;
     IFBPlatformWindowDestroy       window_destroy;
-    IFBPlatformWindowFrameStart    window_frame_start;
-    IFBPlatformWindowFrameRender   window_frame_render;
+    IFBPlatformWindowProcessEvents window_process_events;
+    IFBPlatformWindowSwapBuffers   window_swap_buffers;
     IFBPlatformWindowShow          window_show;
-    IFBPlatformWindowOpenGLInit    window_opengl_init;
-    IFBPlatformWindowImGUIInit     window_imgui_init;
 
     IFBPlatformMonitorCount        monitor_count;
     IFBPlatformMonitorInfo         monitor_info;

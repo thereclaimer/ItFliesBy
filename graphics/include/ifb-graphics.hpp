@@ -2,6 +2,7 @@
 #define IFB_GRAPHICS_HPP
 
 #include <ifb.hpp>
+#include <ifb-memory.hpp>
 #include <ifb-data-structures.hpp>
 #include <ifb-platform.hpp>
 
@@ -12,15 +13,7 @@
 struct IFBColorNormalized;
 struct IFBColorHex;
 struct IFBColor32;
-struct IFBDimensions;
-struct IFBPosition;
-struct IFBDimensionsAndPosition;
-struct IFBGraphicsContexts;
-struct IFBWindow;
 struct IFBMonitor;
-
-typedef IFBPtr IFBGLContext;
-typedef IFBPtr IFBImGuiContext;
 
 /**********************************************************************************/
 /* COLORS                                                                         */
@@ -66,29 +59,25 @@ namespace ifb_graphics {
 
 #define IFB_WINDOW_TITLE_LENGTH_MAX 255
 
-struct IFBGraphicsContexts {
-    IFBGLContext    opengl;
-    IFBImGuiContext imgui;
-};
+//TODO: temporary
+struct IFBGraphicsWindow : IFBPlatformWindow { };
 
-struct IFBWindow {
-    IFBPosition         position;
-    IFBDimensions       dimensions;
-    IFBGraphicsContexts graphics_contexts;
-    IFBB32              visible;
-    IFBB32              quit_received;
-    IFBChar*            title;
-};
+struct IFBGraphicsWindowArgs {
+    IFBMemory     memory;
+    IFBChar*      title;
+    IFBDimensions dims;
+    IFBPosition   pos;
+};  
 
 namespace ifb_graphics {
 
-    const IFBU32 window_memory_size              (IFBVoid);
-    IFBWindow*   window_memory_initialize        (const IFBPtr memory);
+    const IFBU32         window_memory_size              (IFBVoid);
+    IFBGraphicsWindow*   window_memory_initialize        (const IFBGraphicsWindowArgs& args);
 
-    const IFBB8  window_show                     (IFBWindow* ptr_window);
-    const IFBB8  window_frame_start              (IFBWindow* ptr_window);
-    const IFBB8  window_frame_render             (IFBWindow* ptr_window);
-    const IFBB8  window_context_gl_create        (IFBWindow* ptr_window);
+    const IFBB8          window_show                     (IFBGraphicsWindow* ptr_window);
+    const IFBB8          window_frame_start              (IFBGraphicsWindow* ptr_window);
+    const IFBB8          window_frame_render             (IFBGraphicsWindow* ptr_window);
+    const IFBB8          window_context_gl_create        (IFBGraphicsWindow* ptr_window);
 };
 
 /**********************************************************************************/
