@@ -75,18 +75,18 @@ struct IFBThreadPoolSizesCache {
 };
 
 struct IFBThreadPoolArgs {
-    IFBMemoryBlock thread_pool_memory;
-    IFBU64         thread_count;
-    IFBU32         stride_task_data;
-    IFBU32         stride_thread_description; 
+    IFBMemory thread_pool_memory;
+    IFBU64    thread_count;
+    IFBU32    stride_task_data;
+    IFBU32    stride_thread_description; 
 };
 
 struct IFBThreadPoolHeader {
-    IFBMemoryBlock memory;
-    IFBU32         thread_count;
-    IFBU32         stride_description;
-    IFBU32         stride_memory_platform;
-    IFBU32         stride_memory_task;
+    IFBMemory memory;
+    IFBU32    thread_count;
+    IFBU32    stride_description;
+    IFBU32    stride_memory_platform;
+    IFBU32    stride_memory_task;
 };
 
 struct IFBThreadPoolHandles {
@@ -115,8 +115,8 @@ struct IFBThreadPoolInit {
 /**********************************************************************************/
 
 struct IFBThreadRequest {
-    IFBMemoryBlock memory;
-    IFBU64         thread_count;
+    IFBMemory memory;
+    IFBU64    thread_count;
 };
 
 /**********************************************************************************/

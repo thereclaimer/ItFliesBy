@@ -1,6 +1,8 @@
 #ifndef IFB_RENDERING_GL_HPP
 #define IFB_RENDERING_GL_HPP
 
+#include <ifb-memory.hpp>
+
 #include "ifb-dependencies.hpp"
 #include "ifb-types.hpp"
 #include "ifb-graphics.hpp"
@@ -60,13 +62,17 @@ struct IFBGLViewport {
     IFBColorNormalized       clear_color;
 };
 
+struct IFBGLViewportArgs {
+    IFBMemory           memory;
+    IFBPosition         position;
+    IFBDimensions       dimensions;
+    IFBColorNormalized  clear_color;
+};
 namespace ifb_gl {
 
-    IFBGLViewport*     viewport_load_from_arena                          (IFBMemoryArena* ptr_arena, const IFBU32 offset);
-    IFBGLViewport*     viewport_commit_to_arena_absolute                 (IFBMemoryArena* ptr_arena);
-    const IFBU32       viewport_commit_to_arena_relative                 (IFBMemoryArena* ptr_arena);
+    const IFBU32       viewport_memory_size                              (IFBVoid);
+    IFBGLViewport*     viewport_memory_initialize                        (const IFBGLViewportArgs& args);
 
-    IFBVoid            viewport_initialize                               (IFBGLViewport* viewport);
     IFBVoid            viewport_clear                                    (IFBGLViewport* viewport);
     IFBVoid            viewport_update                                   (IFBGLViewport* viewport);
 

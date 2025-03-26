@@ -78,8 +78,9 @@ namespace ifb_memory {
 
 namespace ifb_memory {
 
-    const IFBPtr get_pointer (const IFBAddr    start,  const IFBU32 offset);
-    const IFBPtr get_pointer (const IFBMemory& memory, const IFBU32 offset);
+    const IFBPtr  get_pointer (const IFBAddr    start,  const IFBU32 offset);
+    const IFBPtr  get_pointer (const IFBMemory& memory, const IFBU32 offset);
+          IFBVoid zero_buffer (const IFBMemory& memory);
 };
 
 inline const IFBPtr
@@ -106,6 +107,26 @@ ifb_memory::get_pointer(
     const IFBPtr  pointer = is_valid ? (IFBPtr)address : NULL;
 
     return(pointer);
+}
+
+inline IFBVoid
+ifb_memory::zero_buffer(
+    const IFBMemory& memory) {
+
+    IFBB8 is_valid = true;
+    is_valid &= (memory.start != 0);
+    is_valid &= (memory.size  != 0);
+    ifb_macro_assert(is_valid);
+
+    IFBByte* buffer = (IFBByte*)memory.start;
+
+    for (
+        IFBU32 index = 0;
+               index < memory.size;
+             ++index) {
+        
+        buffer[index] = 0;
+    }
 }
 
 /**********************************************************************************/
