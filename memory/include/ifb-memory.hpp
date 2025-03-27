@@ -8,9 +8,9 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-struct IFBMEM64Stack   : IFBHND64 { };
-struct IFBMEM32Manager : IFBHND32 { };
-struct IFBMEM32Arena   : IFBHND32 { };
+struct IFBMEM64Stack       : IFBHND64 { };
+struct IFBMEM32Reservation : IFBHND32 { };
+struct IFBMEM32Arena       : IFBHND32 { };
 
 #define IFB_MEMORY_INVALID_HANDLE_32 0xFFFFFFFF
 #define IFB_MEMORY_INVALID_HANDLE_64 0
@@ -34,18 +34,18 @@ namespace ifb_memory {
 };
 
 /**********************************************************************************/
-/* MEMORY MANAGER                                                                 */
+/* RESERVATION                                                             */
 /**********************************************************************************/
 
-struct IFBMemoryManagerContext {
-    IFBMEM64Stack   handle_stack;
-    IFBMEM32Manager handle_manager;
+struct IFBMemoryReservationContext {
+    IFBMEM64Stack       handle_stack;
+    IFBMEM32Reservation handle_reservation;
 };
 
 namespace ifb_memory {
 
-    const IFBB8 manager_create  (IFBMemoryManagerContext& manager_context, const IFBU64 size_reservation,const IFBU32 size_arena);
-    const IFBB8 manager_destroy (IFBMemoryManagerContext& manager_context);
+    const IFBB8 reserve_system_memory  (IFBMemoryReservationContext& reservation_context, const IFBU64 size_reservation,const IFBU32 size_arena);
+    const IFBB8 release_system_memory  (IFBMemoryReservationContext& reservation_context);
 };
 
 /**********************************************************************************/
@@ -53,16 +53,16 @@ namespace ifb_memory {
 /**********************************************************************************/
 
 struct IFBMemoryArenaContext {
-    IFBMEM64Stack   handle_stack;
-    IFBMEM32Manager handle_manager;
-    IFBMEM32Arena   handle_arena;
+    IFBMEM64Stack       handle_stack;
+    IFBMEM32Reservation handle_reservation;
+    IFBMEM32Arena       handle_arena;
 };
 
 namespace ifb_memory {
 
     //commit/decommit
-    const IFBB8 arena_commit               (IFBMemoryArenaContext& arena_context);
-    const IFBB8 arena_decommit             (IFBMemoryArenaContext& arena_context);
+    const IFBB8  arena_commit               (IFBMemoryArenaContext& arena_context);
+    const IFBB8  arena_decommit             (IFBMemoryArenaContext& arena_context);
 
     //operations
     const IFBB8  arena_reset               (IFBMemoryArenaContext& arena_context);
@@ -134,7 +134,7 @@ ifb_memory::zero_buffer(
 /**********************************************************************************/
 
 #define ifb_memory_macro_is_handle_valid_stack(stack)       (stack.h64 != IFB_MEMORY_INVALID_HANDLE_64)
-#define ifb_memory_macro_is_handle_valid_manager(manager) (manager.h32 != IFB_MEMORY_INVALID_HANDLE_32 && manager.h32 != 0)
+#define ifb_memory_macro_is_handle_valid_reservation(reservation) (reservation.h32 != IFB_MEMORY_INVALID_HANDLE_32 && reservation.h32 != 0)
 #define ifb_memory_macro_is_handle_valid_arena(arena)       (arena.h32 != IFB_MEMORY_INVALID_HANDLE_32)
 
 

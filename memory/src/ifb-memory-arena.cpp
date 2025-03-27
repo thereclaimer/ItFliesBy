@@ -18,11 +18,11 @@ ifb_memory::arena_commit(
     commit.context = &arena_context;
 
     //commit steps
-    ifb_memory::arena_commit_step_0_validate_args            (commit);
-    ifb_memory::arena_commit_step_1_cache_manager_properties (commit);
-    ifb_memory::arena_commit_step_2_find_free_arena          (commit);
-    ifb_memory::arena_commit_step_3_commit_memory            (commit);
-    ifb_memory::arena_commit_step_4_update_arrays            (commit);
+    ifb_memory::arena_commit_step_0_validate_args                (commit);
+    ifb_memory::arena_commit_step_1_cache_reservation_properties (commit);
+    ifb_memory::arena_commit_step_2_find_free_arena              (commit);
+    ifb_memory::arena_commit_step_3_commit_memory                (commit);
+    ifb_memory::arena_commit_step_4_update_arrays                (commit);
 
     //we're done
     return(commit.result ? true : false);
@@ -37,11 +37,11 @@ ifb_memory::arena_decommit(
     decommit.context = &arena_context;
 
     //do the decommit
-    ifb_memory::arena_decommit_step_0_validate_args            (decommit);
-    ifb_memory::arena_decommit_step_1_cache_manager_properties (decommit);
-    ifb_memory::arena_decommit_step_2_load_arena_start_array   (decommit);
-    ifb_memory::arena_decommit_step_3_decommit_memory          (decommit);
-    ifb_memory::arena_decommit_step_4_update_arena_start_array (decommit);
+    ifb_memory::arena_decommit_step_0_validate_args                (decommit);
+    ifb_memory::arena_decommit_step_1_cache_reservation_properties (decommit);
+    ifb_memory::arena_decommit_step_2_load_arena_start_array       (decommit);
+    ifb_memory::arena_decommit_step_3_decommit_memory              (decommit);
+    ifb_memory::arena_decommit_step_4_update_arena_start_array     (decommit);
 
     //we're done
     return(decommit.result ? true : false);
@@ -75,9 +75,9 @@ ifb_memory::arena_push_bytes_relative(
     push.context = &arena_context;
 
     //do the push
-    ifb_memory::arena_push_step_0_validate_args            (push);
-    ifb_memory::arena_push_step_1_cache_manager_properties (push);
-    ifb_memory::arena_push_step_2_push_bytes_relative      (push);
+    ifb_memory::arena_push_step_0_validate_args                (push);
+    ifb_memory::arena_push_step_1_cache_reservation_properties (push);
+    ifb_memory::arena_push_step_2_push_bytes_relative          (push);
 
     //get the offset
     const IFBU32 offset = push.result
@@ -98,9 +98,9 @@ ifb_memory::arena_push_bytes_absolute(
     push.context = &arena_context;
 
     //do the push
-    ifb_memory::arena_push_step_0_validate_args            (push);
-    ifb_memory::arena_push_step_1_cache_manager_properties (push);
-    ifb_memory::arena_push_step_2_push_bytes_absolute      (push);
+    ifb_memory::arena_push_step_0_validate_args                (push);
+    ifb_memory::arena_push_step_1_cache_reservation_properties (push);
+    ifb_memory::arena_push_step_2_push_bytes_absolute          (push);
 
     //get the pointer
     const IFBPtr pointer = push.result

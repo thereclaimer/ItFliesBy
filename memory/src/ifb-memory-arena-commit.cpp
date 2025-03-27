@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ifb-memory.hpp"
-#include "ifb-memory-manager.cpp"
+#include "ifb-memory-reservation.cpp"
 
 /**********************************************************************************/
 /* ARENA COMMIT STEPS                                                             */
@@ -16,27 +16,27 @@ ifb_memory::arena_commit_step_0_validate_args(
     //initial values
     commit_ref.result  = true;
     commit_ref.result &= ifb_memory_macro_is_handle_valid_stack   (commit_ref.context->handle_stack);
-    commit_ref.result &= ifb_memory_macro_is_handle_valid_manager (commit_ref.context->handle_manager);
+    commit_ref.result &= ifb_memory_macro_is_handle_valid_reservation (commit_ref.context->handle_reservation);
 }
 
 inline IFBVoid
-ifb_memory::arena_commit_step_1_cache_manager_properties(
+ifb_memory::arena_commit_step_1_cache_reservation_properties(
     IFBMemoryArenaCommit& commit_ref) {
 
     if (commit_ref.result) {
 
-        //get the memory manager
-        IFBMemoryManager* memory_manager_internal = ifb_memory::manager_load_and_assert_valid(
+        //get the memory reservation
+        IFBMemoryReservation* reservation_internal = ifb_memory::reservation_load_and_assert_valid(
             commit_ref.context->handle_stack,
-            commit_ref.context->handle_manager);
+            commit_ref.context->handle_reservation);
 
         //load the arrays
-        ifb_memory::manager_load_arrays(memory_manager_internal,&commit_ref.cache.arrays);
+        ifb_memory::reservation_load_arrays(reservation_internal,&commit_ref.cache.arrays);
         
         //cache the other properties
-        commit_ref.cache.reservation_start = memory_manager_internal->reserved_memory_start;
-        commit_ref.cache.arena_count       = memory_manager_internal->count_arenas;
-        commit_ref.cache.arena_size        = memory_manager_internal->size_arena;
+        commit_ref.cache.reservation_start = reservation_internal->reserved_memory_start;
+        commit_ref.cache.arena_count       = reservation_internal->count_arenas;
+        commit_ref.cache.arena_size        = reservation_internal->size_arena;
     
         //make sure the properties are non-zero
         commit_ref.result &= (commit_ref.cache.reservation_start     != 0);

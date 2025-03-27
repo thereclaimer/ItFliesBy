@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ifb-memory.hpp"
-#include "ifb-memory-manager.cpp"
+#include "ifb-memory-reservation.cpp"
 
 /**********************************************************************************/
 /* ARENA PUSH STEPS                                                               */
@@ -15,25 +15,25 @@ ifb_memory::arena_push_step_0_validate_args(
 
     push_ref.result  = true;
     push_ref.result &= ifb_memory_macro_is_handle_valid_stack   (push_ref.context->handle_stack);
-    push_ref.result &= ifb_memory_macro_is_handle_valid_manager (push_ref.context->handle_manager);
+    push_ref.result &= ifb_memory_macro_is_handle_valid_reservation (push_ref.context->handle_reservation);
     push_ref.result &= ifb_memory_macro_is_handle_valid_arena   (push_ref.context->handle_arena);
 }
 
 inline IFBVoid
-ifb_memory::arena_push_step_1_cache_manager_properties(
+ifb_memory::arena_push_step_1_cache_reservation_properties(
     IFBMemoryArenaPushBytes& push_ref) {
 
     if (push_ref.result) {
 
-        //get the memory manager
-        IFBMemoryManager* memory_manager = ifb_memory::manager_load_and_assert_valid(
+        //get the memory reservation
+        IFBMemoryReservation* reservation = ifb_memory::reservation_load_and_assert_valid(
             push_ref.context->handle_stack,
-            push_ref.context->handle_manager);
+            push_ref.context->handle_reservation);
 
         //cache properties
-        ifb_memory::manager_load_arrays(memory_manager,&push_ref.cache.arrays);
-        push_ref.cache.arena_size  = memory_manager->size_arena;
-        push_ref.cache.arena_count = memory_manager->count_arenas;
+        ifb_memory::reservation_load_arrays(reservation,&push_ref.cache.arrays);
+        push_ref.cache.arena_size  = reservation->size_arena;
+        push_ref.cache.arena_count = reservation->count_arenas;
     }
 }
 

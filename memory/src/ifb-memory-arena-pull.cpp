@@ -11,7 +11,7 @@ ifb_memory::arena_pull_step_0_validate_args(
     
     pull_ref.result  = true;
     pull_ref.result &= ifb_memory_macro_is_handle_valid_stack   (reset_ref.context->handle_stack);
-    pull_ref.result &= ifb_memory_macro_is_handle_valid_manager (reset_ref.context->handle_manager);
+    pull_ref.result &= ifb_memory_macro_is_handle_valid_reservation (reset_ref.context->handle_reservation);
     pull_ref.result &= ifb_memory_macro_is_handle_valid_arena   (reset_ref.context->handle_arena);
 }
 
@@ -21,14 +21,14 @@ ifb_memory::arena_pull_step_1_cache_properties(
 
     if (pull_ref.result) {
 
-        //get the memory manager
-        IFBMemoryManager* memory_manager = ifb_memory::manager_load_and_assert_valid(
+        //get the memory reservation
+        IFBMemoryReservation* reservation = ifb_memory::reservation_load_and_assert_valid(
             pull_ref.context->stack,
-            pull_ref.context->handle_manager);
+            pull_ref.context->handle_reservation);
 
         //cache the properties
-        pull_ref.cache.arena_position_array = ifb_memory::manager_load_array_arena_position(memory_manager);
-        pull_ref.cache.arena_count          = memory_manager->count_arenas;
+        pull_ref.cache.arena_position_array = ifb_memory::reservation_load_array_arena_position(reservation);
+        pull_ref.cache.arena_count          = reservation->count_arenas;
     }
 }
 

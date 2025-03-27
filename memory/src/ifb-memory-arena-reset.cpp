@@ -11,7 +11,7 @@ ifb_memory::arena_reset_step_0_validate_args(
 
     reset_ref.result  = true;
     reset_ref.result &= ifb_memory_macro_is_handle_valid_stack   (reset_ref.context->handle_stack);
-    reset_ref.result &= ifb_memory_macro_is_handle_valid_manager (reset_ref.context->handle_manager);
+    reset_ref.result &= ifb_memory_macro_is_handle_valid_reservation (reset_ref.context->handle_reservation);
     reset_ref.result &= ifb_memory_macro_is_handle_valid_arena   (reset_ref.context->handle_arena);
 }
 
@@ -21,12 +21,12 @@ ifb_memory::arena_reset_step_1_cache_properties(
 
     if (reset_ref.result) {
 
-        //get the memory manager
-        IFBMemoryManager* memory_manager = ifb_memory::manager_load_and_assert_valid(
+        //get the memory reservation
+        IFBMemoryReservation* reservation = ifb_memory::reservation_load_and_assert_valid(
             reset_ref.context->handle_stack,
-            reset_ref.context->handle_manager);
+            reset_ref.context->handle_reservation);
          
-        reset_ref.cache.arena_position_array = ifb_memory::manager_load_array_arena_position(memory_manager);
+        reset_ref.cache.arena_position_array = ifb_memory::reservation_load_array_arena_position(reservation);
         reset_ref.cache.arena_count          = reset_ref.cache.arena_count;
     }
 }

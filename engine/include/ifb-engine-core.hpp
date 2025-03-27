@@ -15,7 +15,7 @@ struct IFBEngineCore;
 
 struct IFBEngineCore {
     IFBMEM64Stack      global_stack;
-    IFBMEM32Manager    memory_manager;
+    IFBMEM32Reservation    memory_manager;
     IFBGraphicsWindow* graphics_window;
 };
 
