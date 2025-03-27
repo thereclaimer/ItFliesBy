@@ -45,8 +45,12 @@ ifb_memory::reservation_init_step_3_calculate_sizes(
         //page and arena counts
         init_ref.cache.count_arenas = init_ref.cache.aligned_size_reservation / init_ref.cache.aligned_size_arena;
 
+        // TODO: the array to store this amount of information is HUGE for
+        // reservations in the gigabyte range. This will definitely work,
+        // but maybe later we come up with a better way to track arenas
+
         //property sizes    
-        init_ref.cache.commit_size_reservation_struct       = ifb_macro_align_size_struct(IFBMemoryReservation);
+        init_ref.cache.commit_size_reservation_struct   = ifb_macro_align_size_struct(IFBMemoryReservation);
         init_ref.cache.commit_size_array_arena_start    = sizeof(IFBAddr) * init_ref.cache.count_arenas;
         init_ref.cache.commit_size_array_arena_position = sizeof(IFBU32)  * init_ref.cache.count_arenas;
      

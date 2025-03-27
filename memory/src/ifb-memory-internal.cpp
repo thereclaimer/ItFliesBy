@@ -97,14 +97,13 @@ struct IFBMemoryReservationInit {
         IFBU32                   size_arena;
     } args;
     struct {
-        IFBU32  aligned_size_reservation;
+        IFBU64  aligned_size_reservation;
         IFBU32  aligned_size_arena;
         IFBU32  count_arenas;
         IFBU32  commit_size_total;
         IFBU32  commit_size_reservation_struct;
         IFBU32  commit_size_array_arena_start;
         IFBU32  commit_size_array_arena_position;
-        IFBByte padding[4];
     } cache;
 };
 

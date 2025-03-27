@@ -12,7 +12,6 @@
 #include <ifb-data-structures.hpp>
 #include <ifb-graphics.hpp>
 #include <ifb-rendering-gl.hpp>
-#include <ifb-io.hpp>
 #include <ifb-platform.hpp>
 
 /**********************************************************************************/
@@ -44,15 +43,15 @@ struct IFBEngineContextArgs {
 namespace ifb_engine {
 
     // create/destroy
-    ifb_engine_api const IFBENG64Context context_create       (IFBEngineContextArgs* args);
-    ifb_engine_api const IFBB8           context_destroy      (IFBVoid);
+    ifb_engine_api const IFBENG64Context context_create       (const IFBEngineContextArgs& args);
+    ifb_engine_api const IFBB8           context_destroy      (const IFBENG64Context context_handle);
         
     // startup/shutdown
-    ifb_engine_api const IFBB8           context_startup      (IFBVoid);
-    ifb_engine_api const IFBB8           context_shutdown     (IFBVoid);
+    ifb_engine_api const IFBB8           context_startup      (const IFBENG64Context context_handle);
+    ifb_engine_api const IFBB8           context_shutdown     (const IFBENG64Context context_handle);
 
     // rendering
-    ifb_engine_api const IFBB8           context_render_frame (IFBVoid);
+    ifb_engine_api const IFBB8           context_render_frame (const IFBENG64Context context_handle);
 };
 
 #endif //IFB_ENGINE_HPP

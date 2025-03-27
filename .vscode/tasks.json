@@ -26,7 +26,7 @@
 				"$msCompile"
 			],
 			"group": "build",
-			"dependsOn":[
+			"dependsOn": [
 				"Build IFB Libs"
 			]
 		},

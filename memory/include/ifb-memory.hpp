@@ -33,6 +33,8 @@ namespace ifb_memory {
     const IFBPtr        stack_get_pointer         (const IFBMEM64Stack stack_handle, const IFBU32 offset);
 };
 
+#define ifb_memory_macro_stack_push_struct_absolute(stack,struct) (struct*)ifb_memory::stack_push_bytes_absolute(stack,sizeof(struct),alignof(struct))
+
 /**********************************************************************************/
 /* RESERVATION                                                             */
 /**********************************************************************************/

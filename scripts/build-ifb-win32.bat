@@ -10,11 +10,11 @@ pushd ..
 :: VARIABLES
 ::----------------------------------------------------------------
 
-@set path_build=              build\debug
+@set path_build=                  build\debug
 
 ::vcpkg install directories
-@set path_vcpkg=              vcpkg_installed
-@set path_vcpkg_lib=          %path_vcpkg%\x64-windows\lib
+@set path_vcpkg=                  vcpkg_installed
+@set path_vcpkg_lib=              %path_vcpkg%\x64-windows\lib
 
 ::includes
 @set path_include_win32=          win32\include
