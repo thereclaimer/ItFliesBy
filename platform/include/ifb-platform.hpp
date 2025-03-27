@@ -113,7 +113,7 @@ namespace ifb_platform {
     extern IFBPlatformWindowCreate         window_create;
     extern IFBPlatformWindowDestroy        window_destroy;
     extern IFBPlatformWindowProcessEvents  window_process_events;
-    extern IFBPlatformWindow               window_swap_buffers;
+    extern IFBPlatformWindowSwapBuffers    window_swap_buffers;
     extern IFBPlatformWindowShow           window_show;
 
     //------------------

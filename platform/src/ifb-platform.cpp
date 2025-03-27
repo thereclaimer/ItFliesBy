@@ -55,11 +55,9 @@ ifb_platform::set_api(
     //window
     ifb_platform::window_create          = platform_api->window.create;
     ifb_platform::window_destroy         = platform_api->window.destroy;
-    ifb_platform::window_frame_start     = platform_api->window.frame_start;
-    ifb_platform::window_frame_render    = platform_api->window.frame_render;
+    ifb_platform::window_process_events  = platform_api->window.process_events;
+    ifb_platform::window_swap_buffers    = platform_api->window.swap_buffers;
     ifb_platform::window_show            = platform_api->window.show;
-    ifb_platform::window_opengl_init     = platform_api->window.opengl_init;
-    ifb_platform::window_imgui_init      = platform_api->window.imgui_init;
 
     //monitor
     ifb_platform::monitor_count          = platform_api->monitor.count;
