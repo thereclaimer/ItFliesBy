@@ -3,6 +3,7 @@
 
 #include <ifb.hpp>
 #include <ifb-memory.hpp>
+#include <ifb-data-structures.hpp>
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -72,35 +73,36 @@ struct IFBThreadPoolSizesCache {
         IFBU16 array_list_running_threads;
         IFBU16 array_affinity_mask;  
     } memory;
+    IFBArrayListArgs array_list_args;
 };
 
 struct IFBThreadPoolArgs {
-    IFBMemoryBlock thread_pool_memory;
-    IFBU64         thread_count;
-    IFBU32         stride_task_data;
-    IFBU32         stride_thread_description; 
+    IFBMemory thread_pool_memory;
+    IFBU64    thread_count;
+    IFBU32    stride_task_data;
+    IFBU32    stride_thread_description; 
 };
 
 struct IFBThreadPoolHeader {
-    IFBMemoryBlock memory;
-    IFBU32         thread_count;
-    IFBU32         stride_description;
-    IFBU32         stride_memory_platform;
-    IFBU32         stride_memory_task;
+    IFBMemory memory;
+    IFBU32    thread_count;
+    IFBU32    stride_description;
+    IFBU32    stride_memory_platform;
+    IFBU32    stride_memory_task;
 };
 
-struct IFBThreadPoolHandles {
-    IFBHND16 description_buffer;  
-    IFBHND16 memory_platform;
-    IFBHND16 memory_task;
-    IFBHND16 array_task_functions;
-    IFBHND16 array_list_running_threads;
-    IFBHND16 array_affinity_mask;
+struct IFBThreadPoolOffsets {
+    IFBU16 description_buffer;
+    IFBU16 memory_platform;
+    IFBU16 memory_task;
+    IFBU16 array_task_functions;
+    IFBU16 array_list_running_threads;
+    IFBU16 array_affinity_mask;
 };
 
 struct IFBThreadPool {
     IFBThreadPoolHeader  header;
-    IFBThreadPoolHandles handles;
+    IFBThreadPoolOffsets offsets;
     IFBByte              padding[4];
 };
 
@@ -115,8 +117,8 @@ struct IFBThreadPoolInit {
 /**********************************************************************************/
 
 struct IFBThreadRequest {
-    IFBMemoryBlock memory;
-    IFBU64         thread_count;
+    IFBMemory memory;
+    IFBU64    thread_count;
 };
 
 /**********************************************************************************/

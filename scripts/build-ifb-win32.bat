@@ -12,7 +12,6 @@ pushd ..
 
 @set path_build=              build\debug
 
-
 ::vcpkg install directories
 @set path_vcpkg=              vcpkg_installed
 @set path_vcpkg_lib=          %path_vcpkg%\x64-windows\lib
@@ -44,9 +43,9 @@ if not exist %path_build%\obj mkdir %path_build%\obj
                     /MD ^
                     /EHsc
 
-@set cl_output=     /Fe:%path_build%\bin\ItFliesBy.exe ^
-                    /Fo:%path_build%\obj\ItFliesBy.obj ^
-                    /Fd:%path_build%\bin\ItFliesBy.pdb
+@set cl_output=     /Fo:%path_build%\obj\ItFliesBy.obj ^
+                    /Fd:%path_build%\bin\ItFliesBy.pdb ^
+                    /Fe:%path_build%\bin\ItFliesBy.exe
 
 @set cl_includes=   /I %path_include_win32%          ^
                     /I %path_include_engine%         ^
@@ -59,7 +58,7 @@ if not exist %path_build%\obj mkdir %path_build%\obj
                     /I %path_include_rendering%      ^
                     /I %path_include_vcpkg%
 
-@set cl_source=     win32\src\ifb-win32.cpp
+@set cl_source=     win32\src\ifb-win32-itfliesby.cpp
 
 @set cl_link=       /link                                    ^
                     /LIBPATH:vcpkg_installed\x64-windows\lib ^
@@ -67,6 +66,7 @@ if not exist %path_build%\obj mkdir %path_build%\obj
                     /SUBSYSTEM:WINDOWS
 
 @set cl_libs=       ItFliesBy.Engine.lib ^
+                    ItFliesBy.Memory.lib ^
                     user32.lib           ^
                     imgui.lib            ^
                     opengl32.lib         ^
@@ -74,7 +74,7 @@ if not exist %path_build%\obj mkdir %path_build%\obj
 
 
 ::----------------------------------------------------------------
-:: BUILD
+:: COMPILE AND LINK
 ::----------------------------------------------------------------
 
 call cl.exe       ^
@@ -83,7 +83,13 @@ call cl.exe       ^
     %cl_includes% ^
     %cl_source%   ^
     %cl_link%     ^
-    %cl_libs%    
+    %cl_libs%
+
+::----------------------------------------------------------------
+:: LINKER ARGUMENTS
+::----------------------------------------------------------------
+
+
 
 ::----------------------------------------------------------------
 :: END

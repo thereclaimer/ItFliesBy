@@ -1,119 +1,109 @@
+#pragma once
+
 #include "ifb-memory.hpp"
+#include "ifb-memory-reservation-init.cpp"
 
 /**********************************************************************************/
-/* ARENAS                                                                         */
+/* MEMORY RESERVATION                                                             */
 /**********************************************************************************/
 
-//arena commit
-IFBMemoryArena*
-ifb_memory::reservation_commit_arena(
-          IFBMemoryReservation* ptr_reservation,
-    const IFBU32                size_minimum) {
+const IFBB8
+ifb_memory::reserve_system_memory(
+          IFBMemoryReservationContext& reservation_context,
+    const IFBU64                   size_reservation,
+    const IFBU32                   size_arena) {
 
-    IFBMemoryArena* ptr_arena = NULL;
+    //init struct
+    IFBMemoryReservationInit init;
+    init.args.context          = &reservation_context; 
+    init.args.size_reservation = size_reservation; 
+    init.args.size_arena       = size_arena; 
 
-    //sanity check
-    ifb_macro_assert(ptr_reservation);
-    ifb_macro_assert(size_minimum);
-
-    //get the context
-    IFBMemoryContext* ptr_context = ptr_reservation->ptr_context;
-
-    //calculate the commit start
-    const IFBU32  page_size         = ptr_context->system_page_size; 
-    const IFBU32  commit_size       = ifb_macro_align_a_to_b(size_minimum,page_size);
-    const IFBU32  commit_page_count = commit_size / page_size;
-    const IFBU32  commit_offset     = ptr_reservation->page_count_committed * page_size; 
-    const IFBAddr commit_start_addr = ptr_reservation->start                + commit_offset;
-    const IFBPtr  commit_start_ptr  = (IFBPtr)commit_start_addr;
-
-    //do the commit
-    const IFBPtr commit_result = ifb_platform::memory_commit(
-        commit_start_ptr,
-        commit_size);
-    
-    //make sure we got the expected result
-    if (commit_result != commit_start_ptr) return(NULL);
-
-    //search the list for arenas to recycle
-    for (
-        IFBMemoryArena* ptr_arena_current = ptr_context->ptr_arena_first;
-        ptr_arena_current != NULL;
-        ptr_arena_current = ptr_arena_current->ptr_next) {
-            
-        //if the arena has no reservation and no start address
-        //it is free to use
-        IFBB8 arena_is_free = true;
-        arena_is_free &= (ptr_arena_current->ptr_reservation == NULL);
-        arena_is_free &= (ptr_arena_current->start           == 0);
-        if (arena_is_free) {
-            ptr_arena = ptr_arena_current;
-            break;
-        }
-    }
-    
-    //if we didn't find an arena struct, we need to commit a new one
-    if (!ptr_arena) {
-
-        //commit reservation structure
-        const IFBU32 arena_struct_size = ifb_macro_align_size_struct(IFBMemoryArena); 
-        ptr_arena = (IFBMemoryArena*)ifb_memory::context_stack_commit_absolute(
-            ptr_reservation->ptr_context,
-            arena_struct_size);
-    }
-     
-    //we should always have an arena at this point
-    ifb_macro_assert(ptr_arena);
-
-    //initialize the arena
-    ptr_arena->ptr_reservation    = ptr_reservation;
-    ptr_arena->ptr_next           = NULL;
-    ptr_arena->start              = (IFBAddr)commit_result;
-    ptr_arena->size               = commit_size;
-    ptr_arena->position_committed = commit_size - 1;
-    ptr_arena->position_reserved  = 0;
-    
-    //if this is the first one, we need to initialize the list
-    if (ptr_context->count_arenas == 0) {
-
-        //pointers should be null
-        ifb_macro_assert(ptr_context->ptr_arena_first == NULL);
-        ifb_macro_assert(ptr_context->ptr_arena_last  == NULL);
-
-        //initialize the list
-        ptr_context->ptr_arena_first = ptr_arena;
-        ptr_context->ptr_arena_last  = ptr_arena;
-        ptr_context->count_arenas    = 1;
-    }
-    else {
-
-        //first and last elements should NOT be null
-        ifb_macro_assert(ptr_context->ptr_arena_first);
-        ifb_macro_assert(ptr_context->ptr_arena_last);
-        
-        //cache first and last elements
-        IFBMemoryArena* element_first = ptr_context->ptr_arena_first; 
-        IFBMemoryArena* element_last  = ptr_context->ptr_arena_last; 
-        
-        //if we are adding a second element, make sure
-        //we update the next pointer for the first element
-        if (ptr_context->count_arenas == 1) {
-            ifb_macro_assert(element_first->ptr_next == NULL);
-            element_first->ptr_next = ptr_arena;
-        }
-        
-        //update the end of the list
-        ifb_macro_assert(element_first->ptr_next);
-        element_last->ptr_next      = ptr_arena;
-        ptr_context->ptr_arena_last = ptr_arena; 
-
-        //update the count
-        ++ptr_context->count_arenas;
-    }
-
-    //update the reservation
-    ptr_reservation->page_count_committed += commit_page_count;
+    //initialize the memory reservation
+    ifb_memory::reservation_init_step_0_validate_args         (init);
+    ifb_memory::reservation_init_step_1_get_system_info       (init);
+    ifb_memory::reservation_init_step_3_calculate_sizes       (init);
+    ifb_memory::reservation_init_step_2_allocate_reservation      (init);
+    ifb_memory::reservation_init_step_4_reserve_system_memory (init);
+    ifb_memory::reservation_init_step_5_set_properties        (init);
+    ifb_memory::reservation_init_step_6_cleanup               (init);
 
     //we're done
-    return(ptr_arena);
+    return(init.result ? true : false);
+}
+
+const IFBB8      
+ifb_memory::release_system_memory(
+    IFBMemoryReservationContext& reservation_context) {
+    
+    ifb_macro_panic();
+
+    return(false);
+}
+
+inline IFBMemoryReservation*
+ifb_memory::reservation_load_and_assert_valid(
+    const IFBMEM64Stack       stack,
+    const IFBMEM32Reservation reservation_handle) {
+
+    //get the memory reservation
+    IFBMemoryReservation* reservation = (IFBMemoryReservation*)ifb_memory::stack_get_pointer(
+        stack,
+        reservation_handle.h32);
+
+    //assert memory reservation
+    ifb_macro_assert(reservation);
+    ifb_macro_assert(reservation->reserved_memory_start);
+    ifb_macro_assert(reservation->count_arenas);
+    ifb_macro_assert(reservation->size_arena);
+    ifb_macro_assert(reservation->size_page);
+    ifb_macro_assert(reservation->size_granularity);
+    ifb_macro_assert(reservation->offset_arena_array_start);
+    ifb_macro_assert(reservation->offset_arena_array_position);
+
+    //we're done
+    return(reservation);
+}
+
+inline IFBAddr*
+ifb_memory::reservation_load_array_arena_start(
+    IFBMemoryReservation* reservation) {
+
+    const IFBU32  offset = reservation->offset_arena_array_start;
+    const IFBAddr start  = (IFBAddr)reservation;
+    
+    IFBAddr* pointer = (IFBAddr*)ifb_memory::get_pointer(start,offset);
+
+    return(pointer); 
+}
+
+inline IFBU32* 
+ifb_memory::reservation_load_array_arena_position(
+    IFBMemoryReservation* reservation) {
+
+    const IFBU32  offset = reservation->offset_arena_array_position;
+    const IFBAddr start  = (IFBAddr)reservation;
+    
+    IFBU32* pointer = (IFBU32*)ifb_memory::get_pointer(start,offset);
+
+    return(pointer);
+}
+
+inline IFBVoid
+ifb_memory::reservation_load_arrays(
+    IFBMemoryReservation*       reservation,
+    IFBMemoryReservationArrays* arrays) {
+
+    //sanity check
+    ifb_macro_assert(reservation);
+    ifb_macro_assert(arrays);
+
+    //addresses and offsets
+    const IFBAddr start                 = (IFBAddr)reservation;
+    const IFBU32  offset_array_start    = reservation->offset_arena_array_start;
+    const IFBU32  offset_array_position = reservation->offset_arena_array_position;
+
+    //get the arrays
+    arrays->arena_start    = (IFBAddr*)ifb_memory::get_pointer(start, offset_array_start);
+    arrays->arena_position =  (IFBU32*)ifb_memory::get_pointer(start, offset_array_position);
 }

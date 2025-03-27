@@ -79,17 +79,15 @@ typedef __m128 IFBXMMF128;
 /* HANDLES                                                                        */
 /**********************************************************************************/
 
-struct IFBHND8   { IFBU8  offset;  };
-struct IFBHND16  { IFBU16 offset;  };
-struct IFBHND32  { IFBU32 offset;  };
-struct IFBHND64  { IFBU64 offset;  };
-struct IFBHNDPTR { IFBPtr pointer; };
+struct IFBHND8  { IFBU8   h8;  };
+struct IFBHND16 { IFBU16  h16; };
+struct IFBHND32 { IFBU32  h32; };
+struct IFBHND64 { IFBAddr h64; };
 
 #define IFB_HANDLE_INVALID_U8  0xFF
 #define IFB_HANDLE_INVALID_U16 0xFFFF 
 #define IFB_HANDLE_INVALID_U32 0xFFFFFFFF 
 #define IFB_HANDLE_INVALID_U64 0xFFFFFFFFFFFFFFFF
-
 
 /**********************************************************************************/
 /* VECTORS                                                                        */

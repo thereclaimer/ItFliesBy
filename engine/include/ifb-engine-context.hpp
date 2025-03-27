@@ -1,8 +1,10 @@
 #ifndef IFB_ENGINE_CONTEXT_HPP
 #define IFB_ENGINE_CONTEXT_HPP
 
-#include <ifb.hpp>
-#include <ifb-data-structures.hpp>
-#include <ifb-platform.hpp>
+#include "ifb-engine.hpp"
+
+struct IFBEngineContext {
+
+};
 
 #endif //IFB_ENGINE_CONTEXT_HPP

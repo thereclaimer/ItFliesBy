@@ -8,27 +8,26 @@
 
 namespace ifb_platform {
 
-    IFBPlatformSystemGetInfo      system_get_info;
-    IFBPlatformSystemTimeMS       system_time_ms;
-    IFBPlatformSystemSleep        system_sleep;
-    IFBPlatformSystemDebugPrint   system_debug_print;
+    IFBPlatformSystemGetInfoCPU    system_get_info_cpu;
+    IFBPlatformSystemGetInfoMemory system_get_info_memory;
+    IFBPlatformSystemTimeMS        system_time_ms;
+    IFBPlatformSystemSleep         system_sleep;
+    IFBPlatformSystemDebugPrint    system_debug_print;
 
-    IFBPlatformMemoryReserve      memory_reserve;
-    IFBPlatformMemoryRelease      memory_release;
-    IFBPlatformMemoryCommit       memory_commit;
-    IFBPlatformMemoryDecommit     memory_decommit;
+    IFBPlatformMemoryReserve       memory_reserve;
+    IFBPlatformMemoryRelease       memory_release;
+    IFBPlatformMemoryCommit        memory_commit;
+    IFBPlatformMemoryDecommit      memory_decommit;
 
+    IFBPlatformWindowSize          window_size;
+    IFBPlatformWindowCreate        window_create;
+    IFBPlatformWindowDestroy       window_destroy;
+    IFBPlatformWindowProcessEvents window_process_events;
+    IFBPlatformWindowSwapBuffers   window_swap_buffers;
+    IFBPlatformWindowShow          window_show;
 
-    IFBPlatformWindowCreate       window_create;
-    IFBPlatformWindowDestroy      window_destroy;
-    IFBPlatformWindowFrameStart   window_frame_start;
-    IFBPlatformWindowFrameRender  window_frame_render;
-    IFBPlatformWindowShow         window_show;
-    IFBPlatformWindowOpenGLInit   window_opengl_init;
-    IFBPlatformWindowImGUIInit    window_imgui_init;
-
-    IFBPlatformMonitorCount       monitor_count;
-    IFBPlatformMonitorInfo        monitor_info;
+    IFBPlatformMonitorCount        monitor_count;
+    IFBPlatformMonitorInfo         monitor_info;
 };
 
 /**********************************************************************************/
@@ -40,36 +39,29 @@ ifb_platform::set_api(
     const IFBPlatformAPI* platform_api) {
 
     if (!platform_api) return(false);
-    
-    //cache the api
-    const IFBPlatformAPISystem&  ref_api_system  = platform_api->system;
-    const IFBPlatformAPIMemory&  ref_api_memory  = platform_api->memory;
-    const IFBPlatformAPIWindow&  ref_api_window  = platform_api->window;
-    const IFBPlatformAPIMonitor& ref_api_monitor = platform_api->monitor;
 
     //system
-    ifb_platform::system_get_info     = ref_api_system.get_info;
-    ifb_platform::system_time_ms      = ref_api_system.time_ms;
-    ifb_platform::system_sleep        = ref_api_system.sleep;
+    ifb_platform::system_get_info_cpu    = platform_api->system.get_info_cpu;
+    ifb_platform::system_get_info_memory = platform_api->system.get_info_memory;
+    ifb_platform::system_time_ms         = platform_api->system.time_ms;
+    ifb_platform::system_sleep           = platform_api->system.sleep;
     
     //memory
-    ifb_platform::memory_reserve      = ref_api_memory.reserve;
-    ifb_platform::memory_release      = ref_api_memory.release;
-    ifb_platform::memory_commit       = ref_api_memory.commit;
-    ifb_platform::memory_decommit     = ref_api_memory.decommit;
+    ifb_platform::memory_reserve         = platform_api->memory.reserve;
+    ifb_platform::memory_release         = platform_api->memory.release;
+    ifb_platform::memory_commit          = platform_api->memory.commit;
+    ifb_platform::memory_decommit        = platform_api->memory.decommit;
 
     //window
-    ifb_platform::window_create       = ref_api_window.create;
-    ifb_platform::window_destroy      = ref_api_window.destroy;
-    ifb_platform::window_frame_start  = ref_api_window.frame_start;
-    ifb_platform::window_frame_render = ref_api_window.frame_render;
-    ifb_platform::window_show         = ref_api_window.show;
-    ifb_platform::window_opengl_init  = ref_api_window.opengl_init;
-    ifb_platform::window_imgui_init   = ref_api_window.imgui_init;
+    ifb_platform::window_create          = platform_api->window.create;
+    ifb_platform::window_destroy         = platform_api->window.destroy;
+    ifb_platform::window_process_events  = platform_api->window.process_events;
+    ifb_platform::window_swap_buffers    = platform_api->window.swap_buffers;
+    ifb_platform::window_show            = platform_api->window.show;
 
     //monitor
-    ifb_platform::monitor_count       = ref_api_monitor.count;
-    ifb_platform::monitor_info        = ref_api_monitor.info;
+    ifb_platform::monitor_count          = platform_api->monitor.count;
+    ifb_platform::monitor_info           = platform_api->monitor.info;
 
     return(true);
 }

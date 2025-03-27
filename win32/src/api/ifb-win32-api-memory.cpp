@@ -44,3 +44,18 @@ ifb_win32::memory_commit(
     //we're done
     return(commit_result);
 }
+
+ifb_internal const IFBB8 
+ifb_win32::memory_decommit(
+    const IFBPtr commit_start,
+    const IFBU64 commit_size) {
+
+    //do the commit
+    const IFBB8 decommit_result = VirtualFree(
+        commit_start,
+        commit_size,
+        MEM_DECOMMIT);
+
+    //we're done
+    return(decommit_result);
+}

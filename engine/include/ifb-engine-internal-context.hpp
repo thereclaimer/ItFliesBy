@@ -120,7 +120,7 @@ namespace ifb_engine {
         IFBEngineCore*            core_ptr,
         IFBEngineSingletons*      singletons_ptr);
 
-    IFBEngineContext&    context_ref                (IFBVoid);
+    IFBEngineContext*    context                    (IFBVoid);
     IFBEngineCore*       context_get_ptr_core       (IFBVoid); 
     IFBEngineSingletons* context_get_ptr_singletons (IFBVoid);
 

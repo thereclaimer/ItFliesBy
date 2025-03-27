@@ -2,39 +2,50 @@
 
 #include "ifb-graphics.hpp"
 
-const IFBB8
-ifb_graphics::monitor_table_initialize(
-    IFBMonitorTable* monitor_table_ptr,
-    IFBMemoryArena*  ptr_arena) {
+const IFBU32
+ifb_graphics::monitor_table_memory_size(
+    IFBVoid) {
 
-    //sanity check
-    ifb_macro_assert(monitor_table_ptr);
-    
-    //get the monitor count
-    const IFBU32 monitor_count = ifb_platform::monitor_count();
-    
-    //this should NEVER happen
-    ifb_macro_assert(monitor_count > 0);
-    
-    //commit monitor array
-    const IFBU32 monitor_array_size = ifb_macro_array_size(IFBMonitor, monitor_count);
-    IFBMonitor*  monitor_array_ptr  = (IFBMonitor*)ifb_memory::arena_commit_bytes_absolute(ptr_arena, monitor_array_size);
+    const IFBU32 count_monitors     = ifb_platform::monitor_count();
+    const IFBU32 size_table         = ifb_macro_align_size_struct(IFBMonitorTable);
+    const IFBU32 size_monitor       = ifb_macro_align_size_struct(IFBMonitor);
+    const IFBU32 size_monitor_array = size_monitor * count_monitors;
 
-    //sanity check
-    IFBB8 result = (monitor_array_ptr != NULL);
+    const IFBU32 size_total = 
+         size_table + 
+         size_monitor_array;
 
-    //set the table values
-    monitor_table_ptr->monitor_primary = 0; //index 0 until otherwise
-    monitor_table_ptr->monitor_count   = monitor_count;
-    monitor_table_ptr->monitor_array   = monitor_array_ptr; 
-
-    //while we're at it, update the table
-    result &= ifb_graphics::monitor_table_update(monitor_table_ptr);
-
-    //we're done
-    return(result);
+    return(size_total);
 }
 
+IFBMonitorTable*
+ifb_graphics::monitor_table_memory_initialize(
+    const IFBPtr memory) {
+
+    ifb_macro_assert(memory);
+
+    //size/count
+    const IFBU32 count_monitors       = ifb_platform::monitor_count();
+    const IFBU32 size_table           = ifb_macro_align_size_struct(IFBMonitorTable);
+
+    //addresses
+    const IFBAddr start_monitor_table = (IFBAddr)memory;
+    const IFBAddr start_monitor_array = start_monitor_table + start_monitor_table;
+
+    //cast the pointer
+    IFBMonitorTable* monitor_table    = (IFBMonitorTable*)memory;
+    
+    //initialize the table
+    monitor_table->monitor_count      = count_monitors;
+    monitor_table->monitor_primary    = 0;
+    monitor_table->monitor_array      = (IFBMonitor*)start_monitor_array;
+
+    //update the table
+    (IFBVoid)ifb_graphics::monitor_table_update(monitor_table);
+
+    //we're done
+    return(monitor_table);
+}
 
 const IFBB8
 ifb_graphics::monitor_table_update(

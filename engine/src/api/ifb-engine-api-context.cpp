@@ -3,55 +3,34 @@
 #include "ifb-engine-api.hpp"
 #include "ifb-engine-internal-context.hpp"
 
+#include "ifb-engine-context-init.cpp"
+
 /**********************************************************************************/
 /* CREATE/DESTROY                                                                 */
 /**********************************************************************************/
 
-ifb_engine_api const IFBHNDEngineArena
+ifb_engine_api const IFBB8
 ifb_engine::context_create(
-    const IFBPlatformAPI* ptr_platform_api,
-    const IFBByte*        stack_memory_ptr,
-    const IFBU32          stack_memory_size,
-    const IFBU64          reservation_size) {
+    IFBEngineArgs* args) {
 
-    //platform arena
-    IFBHNDEngineArena platform_arena_handle;
-    platform_arena_handle.pointer = NULL;
+    //set up the init struct
+    IFBEngineInit init;
+    init.result  = true;
+    init.args    = args;
+    init.context = ifb_engine::context(); 
 
-    //get the context
-    IFBEngineContext& context_ref = ifb_engine::context_ref();
+    //initialize the context
+    ifb_engine::context_init_step_0_validate_args     (init);
+    ifb_engine::context_init_step_1_set_platform_api  (init);
+    ifb_engine::context_init_step_2_create_core       (init);
+    ifb_engine::context_init_step_3_create_singletons (init);    
+    ifb_engine::context_init_step_4_commit_arenas     (init);
 
-    //sanity check
-    ifb_macro_assert(ptr_platform_api);
-    ifb_macro_assert(stack_memory_ptr);
-    ifb_macro_assert(stack_memory_size);
-    ifb_macro_assert(reservation_size);
-
-    //set the api
-    (IFBVoid)ifb_platform::set_api(ptr_platform_api);
-        
-    //create the core
-    context_ref.ptr_core = ifb_engine::core_create(
-        stack_memory_ptr,
-        stack_memory_size,
-        reservation_size);
-    if (!context_ref.ptr_core) return(platform_arena_handle);
-    
-    //commit the singletons
-    context_ref.ptr_singletons = ifb_engine::singletons_create(context_ref.ptr_core);
-    if (!context_ref.ptr_singletons) return(platform_arena_handle);
-
-    //commit the arenas
-    IFBEngineArenas* ptr_arenas = ifb_engine::singletons_load_arenas(context_ref.ptr_singletons);
-    ptr_arenas->platform  = ifb_engine::core_memory_commit_arena(context_ref.ptr_core);
-    ptr_arenas->graphics  = ifb_engine::core_memory_commit_arena(context_ref.ptr_core);
-    ptr_arenas->rendering = ifb_engine::core_memory_commit_arena(context_ref.ptr_core);
-
-    //set the platform arena
-    platform_arena_handle.pointer = (IFBPtr)ptr_arenas->platform; 
+    //check the result
+    const IFBB8 result = init.result ? true : false;
 
     //we're done
-    return(platform_arena_handle);
+    return(result);
 }
 
 ifb_engine_api const IFBB8
@@ -60,9 +39,9 @@ ifb_engine::context_destroy(
 
     IFBB8 result = true;
 
-    IFBEngineContext& context_ref = ifb_engine::context_ref();
+    IFBEngineContext* context = ifb_engine::context();
 
-    result &= ifb_engine::core_destroy(context_ref.ptr_core);
+    result &= ifb_engine::core_destroy(context->ptr_core);
 
     return(result);
 }
