@@ -26,22 +26,25 @@ struct IFBMemoryStack {
 };
 
 struct IFBMemoryReservation {
-    IFBMemoryArena* arenas_committed;
-    IFBMemoryArena* arenas_decommitted;
-    IFBAddr         system_memory_start;
-    IFBU32          page_count_used;
-    IFBU32          stack_offset;
-    IFBU32          size_arena;
-    IFBU32          size_page;
-    IFBU32          size_granularity;
+    IFBMemoryStack* stack;
+    IFBAddr         start;
+    struct {
+        IFBMemoryArena* committed;
+        IFBMemoryArena* decommitted;
+    } arenas;
+    IFBU32 page_count_used;
+    IFBU32 size_arena;
+    IFBU32 size_page;
+    IFBU32 size_granularity;
 };
 
 struct IFBMemoryArena {
-    IFBMemoryArena* next;
-    IFBU32          page_number;
-    IFBU32          offset_arena;
-    IFBU32          offset_reservation;
-    IFBU32          position;
+    IFBMemoryReservation* reservation;
+    IFBMemoryArena*       next;
+    IFBMemoryArena*       prev;
+    IFBAddr               start;
+    IFBU32                page_number;
+    IFBU32                position;
 };
 
 

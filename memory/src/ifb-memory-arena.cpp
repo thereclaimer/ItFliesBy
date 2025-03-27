@@ -17,10 +17,13 @@ ifb_memory::arena_commit(
 
     //first, see if there is an arena on the list of decommitted arenas
     IFBMemoryArena* arena = reservation->arenas_decommitted;
-
-    //if there is, we need to update the list
     if (arena) {
-        reservation->arenas_decommitted = arena->next;
+        
+        //if there is, we need to update the list
+        IFBMemoryArena* new_first_arena = arena->next;
+        new_first_arena->prev = NULL;
+        reservation->arenas_decommitted = new_first_arena;
+
     }
     else {
         
@@ -32,15 +35,46 @@ ifb_memory::arena_commit(
         arena = ifb_memory_macro_stack_push_arena(stack);
         ifb_macro_assert(arena);
 
-        //determine the page number
-        const IFBU32 page_number = reservation->page_count_used;
-        const IFBU32
+        //determine the address
+        arena->page_number = reservation->page_count_used;
+
+    }
+    
+    //either way, we should have an arena
+    ifb_macro_assert(arena);
+
+    //calculate the commit parameters
+    const IFBU32  page_offset    = page_number * reservation->size_page;
+    const IFBAddr page_address   = reservation->system_memory_start + page_offset;
+    const IFBPtr  commit_request = (IFBPtr)page_address; 
+    const IFBU32  commit_size    = reservation->size_arena;
+
+    //do the commit
+    const IFBPtr commit_result = ifb_platform::memory_commit(
+        commit_request
+        commit_size);
+
+    //sanity check
+    ifb_macro_assert(commit_request == commit_result);
+
+    //get the current committed arena list
+    IFBMemoryArena* committed_arena_list = reservation->arenas_committed;
+    
+    //initialize the arena
+    arena->prev               = NULL;
+    arena->reservation_offset = (IFBAddr)arena - address_reservation;
+    arena->position           = 0;
+
+    //add the arena to the front of the committed list
+    if (committed_arena_list) {
+        committed_arena_list->prev = arena;
     }
 
-
+    arena->next = committed_arena_list;
+    reservation->arenas_committed = arena;
 
     //we're done
-    return(commit.result ? true : false);
+    return(arena);
 }
 
 const IFBB8
