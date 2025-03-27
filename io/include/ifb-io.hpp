@@ -15,8 +15,8 @@ struct IFBIO64FileArrayList : IFBHND64 { };
 struct IFBIO16File          : IFBHND16 { };       
 
 //callbacks
-typedef IFBU32 (*IFBFileAsyncCallback) (IFBFileContext* file_context);
-struct  IFBFileAsyncCallbacks;
+// typedef IFBU32 (*IFBFileAsyncCallback) (IFBFileContext* file_context);
+// struct  IFBFileAsyncCallbacks;
 
 /**********************************************************************************/
 /* FILE TABLE                                                                     */

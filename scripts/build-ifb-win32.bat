@@ -12,7 +12,6 @@ pushd ..
 
 @set path_build=              build\debug
 
-
 ::vcpkg install directories
 @set path_vcpkg=              vcpkg_installed
 @set path_vcpkg_lib=          %path_vcpkg%\x64-windows\lib
@@ -40,13 +39,13 @@ if not exist %path_build%\obj mkdir %path_build%\obj
 :: COMPILER ARGUMENTS
 ::----------------------------------------------------------------
 
-@set cl_flags=      /c  ^
-                    /Zi ^
+@set cl_flags=      /Zi ^
                     /MD ^
                     /EHsc
 
 @set cl_output=     /Fo:%path_build%\obj\ItFliesBy.obj ^
-                    /Fd:%path_build%\bin\ItFliesBy.pdb
+                    /Fd:%path_build%\bin\ItFliesBy.pdb ^
+                    /Fe:%path_build%\bin\ItFliesBy.exe
 
 @set cl_includes=   /I %path_include_win32%          ^
                     /I %path_include_engine%         ^
@@ -67,6 +66,7 @@ if not exist %path_build%\obj mkdir %path_build%\obj
                     /SUBSYSTEM:WINDOWS
 
 @set cl_libs=       ItFliesBy.Engine.lib ^
+                    ItFliesBy.Memory.lib ^
                     user32.lib           ^
                     imgui.lib            ^
                     opengl32.lib         ^
@@ -74,14 +74,22 @@ if not exist %path_build%\obj mkdir %path_build%\obj
 
 
 ::----------------------------------------------------------------
-:: BUILD
+:: COMPILE AND LINK
 ::----------------------------------------------------------------
 
 call cl.exe       ^
     %cl_flags%    ^
     %cl_output%   ^
     %cl_includes% ^
-    %cl_source%
+    %cl_source%   ^
+    %cl_link%     ^
+    %cl_libs%
+
+::----------------------------------------------------------------
+:: LINKER ARGUMENTS
+::----------------------------------------------------------------
+
+
 
 ::----------------------------------------------------------------
 :: END
