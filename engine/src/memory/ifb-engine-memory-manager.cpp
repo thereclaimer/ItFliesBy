@@ -27,11 +27,10 @@ ifb_engine::memory_manager_create(
     ifb_macro_assert(result);
 
     //set the memory manager properties
-    memory_manager->sizes.gb_reservation           = IFB_MEMORY_MANAGER_SIZE_GB_RESERVATION;     
-    memory_manager->sizes.kb_arena                 = IFB_MEMORY_MANAGER_SIZE_KB_ARENA;     
-    memory_manager->mem_handles.global_stack       = global_stack;
-    memory_manager->mem_handles.system_reservation = reservation_context.handle_reservation;
+    memory_manager->global_stack       = global_stack;
+    memory_manager->system_reservation = reservation_context.handle_reservation;
 
+    ifb_memory::arena_commit()
 
     //we're done
     return(memory_manager);

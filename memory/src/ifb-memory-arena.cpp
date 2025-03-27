@@ -2,27 +2,42 @@
 #pragma once
 
 #include "ifb-memory.hpp"
-
 #include "ifb-memory-internal.cpp"
-#include "ifb-memory-arena-commit.cpp"
-#include "ifb-memory-arena-decommit.cpp"
-#include "ifb-memory-arena-reset.cpp"
-#include "ifb-memory-arena-push.cpp"
 
-const IFBB8
+IFBMemoryArena*
 ifb_memory::arena_commit(
-    IFBMemoryArenaContext& arena_context) {
-    
-    //set the context
-    IFBMemoryArenaCommit commit;
-    commit.context = &arena_context;
+    const IFBMemoryReservation* reservation) {
 
-    //commit steps
-    ifb_memory::arena_commit_step_0_validate_args                (commit);
-    ifb_memory::arena_commit_step_1_cache_reservation_properties (commit);
-    ifb_memory::arena_commit_step_2_find_free_arena              (commit);
-    ifb_memory::arena_commit_step_3_commit_memory                (commit);
-    ifb_memory::arena_commit_step_4_update_arrays                (commit);
+    ifb_memory::validate_reservation(reservation);
+
+    //get the stack
+    const IFBAddr   address_reservation = (IFBAddr)reservation;
+    const IFBAddr   address_stack       = address_reservation - reservation->stack_offset; 
+    IFBMemoryStack* stack               = (IFBMemoryStack*)address_stack;
+
+    //first, see if there is an arena on the list of decommitted arenas
+    IFBMemoryArena* arena = reservation->arenas_decommitted;
+
+    //if there is, we need to update the list
+    if (arena) {
+        reservation->arenas_decommitted = arena->next;
+    }
+    else {
+        
+        // otherwise, we need to do the following:
+        //  1) push an arena on the stack
+        //  2) determine the address
+        
+        //push the arena
+        arena = ifb_memory_macro_stack_push_arena(stack);
+        ifb_macro_assert(arena);
+
+        //determine the page number
+        const IFBU32 page_number = reservation->page_count_used;
+        const IFBU32
+    }
+
+
 
     //we're done
     return(commit.result ? true : false);
@@ -30,7 +45,7 @@ ifb_memory::arena_commit(
 
 const IFBB8
 ifb_memory::arena_decommit(
-    IFBMemoryArenaContext& arena_context) {
+    IFBMemoryArena* arena) {
   
     //set the args
     IFBMemoryArenaDecommit decommit;
@@ -49,7 +64,7 @@ ifb_memory::arena_decommit(
 
 const IFBB8
 ifb_memory::arena_reset(
-    IFBMemoryArenaContext& arena_context) {
+    IFBMemoryArena* arena) {
 
     //set the args
     IFBMemoryArenaReset reset;
@@ -67,8 +82,8 @@ ifb_memory::arena_reset(
 
 const IFBU32
 ifb_memory::arena_push_bytes_relative(
-          IFBMemoryArenaContext& arena_context,
-    const IFBU32                 size) {
+          IFBMemoryArena* arena,
+    const IFBU32          size) {
 
     //set the args
     IFBMemoryArenaPushBytes push;
@@ -90,8 +105,8 @@ ifb_memory::arena_push_bytes_relative(
 
 const IFBPtr
 ifb_memory::arena_push_bytes_absolute(
-          IFBMemoryArenaContext& arena_context,
-    const IFBU32                 size) {
+          IFBMemoryArena* arena,
+    const IFBU32           size) {
 
     //set the args
     IFBMemoryArenaPushBytes push;
@@ -113,8 +128,8 @@ ifb_memory::arena_push_bytes_absolute(
 
 const IFBB8
 ifb_memory::arena_pull_bytes(
-          IFBMemoryArenaContext& arena_context,
-    const IFBU32                 size) {
+          IFBMemoryArena* arena,
+    const IFBU32          size) {
 
     //set the args
     IFBMemoryArenaPullBytes pull;

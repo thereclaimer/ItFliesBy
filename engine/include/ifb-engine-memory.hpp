@@ -8,16 +8,13 @@
 #define IFB_MEMORY_MANAGER_SIZE_KB_ARENA       64
 
 
-struct IFBEngineMemoryManager {
-    struct {
-        IFBU32 gb_reservation;
-        IFBU32 kb_arena;
-    } sizes;
 
+struct IFBEngineMemoryManager {
+    IFBMEM64Stack       global_stack;
+    IFBMEM32Reservation system_reservation;
     struct {
-        IFBMEM64Stack       global_stack;
-        IFBMEM32Reservation system_reservation;
-    } mem_handles;
+        IFBMEM32Arena graphics_manager;
+    } arenas;
 };
 
 namespace ifb_engine {
