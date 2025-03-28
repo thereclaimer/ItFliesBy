@@ -4,13 +4,6 @@
 #include "ifb-memory-internal.cpp"
 
 /**********************************************************************************/
-/* FORWARD DECLARATIONS                                                           */
-/**********************************************************************************/
-
-
-
-
-/**********************************************************************************/
 /* STACK                                                                          */
 /**********************************************************************************/
 
@@ -60,7 +53,7 @@ ifb_memory::stack_push_bytes_relative(
 }
 
 const IFBPtr
-ifb_memory::stack_push_bytes_absolute(
+ifb_memory::stack_push_bytes_absolute_pointer(
           IFBMemoryStack* stack,
     const IFBU32          size) {
 
@@ -85,6 +78,33 @@ ifb_memory::stack_push_bytes_absolute(
 
     //we're done
     return(stack_result_pointer);
+}
+
+const IFBAddr
+ifb_memory::stack_push_bytes_absolute_address(
+          IFBMemoryStack* stack,
+    const IFBU32          size) {
+
+    //validate stack
+    ifb_memory::validate_stack(stack);
+
+    //calculate the new position
+    const IFBU32 stack_size         = stack->size;
+    const IFBU32 stack_offset       = stack->position;
+    const IFBU32 stack_position_new = stack_offset + size;
+
+    //make sure we can fit the commit
+    const IFBB8 can_commit = (stack_position_new < stack_size); 
+    if (!can_commit) return(NULL);
+
+    //update the position
+    stack->position = stack_position_new;
+    
+    //calculate the address
+    const IFBAddr stack_result_offset = (IFBAddr)stack + stack_offset;
+
+    //we're done
+    return(stack_result_offset);
 }
 
 const IFBPtr

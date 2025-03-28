@@ -15,15 +15,15 @@ ifb_engine::context_create(
     ifb_macro_assert(ifb_platform::set_api(args.platform_api));
 
     //create the global stack
-    IFBMEM64Stack global_stack = ifb_memory::stack_create(args.global_stack);
+    IFBMEMStack global_stack_handle = ifb_memory::stack_create(args.global_stack_memory);
 
     //allocate the context
-    IFBEngineContext* engine_context = ifb_memory_macro_stack_push_struct_absolute(global_stack,IFBEngineContext); 
+    IFBEngineContext* engine_context = ifb_memory_macro_stack_push_struct_absolute(global_stack_handle,IFBEngineContext); 
     ifb_macro_assert(engine_context);
     context_handle.h64 = (IFBAddr)engine_context;
 
     //create the memory manager
-    IFBEngineMemoryManager* memory_manager = ifb_engine::memory_manager_create(global_stack);
+    engine_context->memory_manager = ifb_engine::memory_manager_create(global_stack_handle);
 
     return(context_handle);
 }

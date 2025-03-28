@@ -36,7 +36,7 @@ struct IFBEngineContextArgs;
 /**********************************************************************************/
 
 struct IFBEngineContextArgs {
-    IFBMemory       global_stack;
+    IFBMemory       global_stack_memory;
     IFBPlatformAPI* platform_api;
 };
 

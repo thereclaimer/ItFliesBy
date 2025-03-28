@@ -27,11 +27,12 @@ struct IFBMemory {
 
 namespace ifb_memory {
 
-    IFBMEMStack       stack_create              (const IFBMemory& stack_memory);
-    const IFBU32      stack_push_bytes_relative (IFBMEMStack stack_handle, const IFBU32 size);
-    const IFBPtr      stack_push_bytes_absolute (IFBMEMStack stack_handle, const IFBU32 size);
-    const IFBB8       stack_pull_bytes          (IFBMEMStack stack_handle, const IFBU32 size);
-    const IFBPtr      stack_get_pointer         (IFBMEMStack stack_handle, const IFBU32 offset);
+    IFBMEMStack       stack_create                      (const IFBMemory& stack_memory);
+    const IFBU32      stack_push_bytes_relative         (IFBMEMStack stack_handle, const IFBU32 size);
+    const IFBPtr      stack_push_bytes_absolute_pointer (IFBMEMStack stack_handle, const IFBU32 size);
+    const IFBAddr     stack_push_bytes_absolute_address (IFBMEMStack stack_handle, const IFBU32 size);
+    const IFBB8       stack_pull_bytes                  (IFBMEMStack stack_handle, const IFBU32 size);
+    const IFBPtr      stack_get_pointer                 (IFBMEMStack stack_handle, const IFBU32 offset);
 };
 
 /**********************************************************************************/
@@ -127,7 +128,7 @@ ifb_memory::zero_buffer(
 /* MACROS                                                                         */
 /**********************************************************************************/
 
-#define ifb_memory_macro_stack_push_struct_absolute(stack,struct) (struct*)ifb_memory::stack_push_bytes_absolute(stack,ifb_macro_align_size_struct(struct))
-#define ifb_memory_macro_stack_push_struct_relative(stack,struct)          ifb_memory::stack_push_bytes_relative(stack,ifb_macro_align_size_struct(struct))
+#define ifb_memory_macro_stack_push_struct_absolute(stack,struct) (struct*)ifb_memory::stack_push_bytes_absolute_pointer(stack,ifb_macro_align_size_struct(struct))
+#define ifb_memory_macro_stack_push_struct_relative(stack,struct)          ifb_memory::stack_push_bytes_relative        (stack,ifb_macro_align_size_struct(struct))
 
 #endif //IFB_MEMORY_HPP

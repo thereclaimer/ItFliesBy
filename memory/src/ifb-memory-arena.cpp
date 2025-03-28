@@ -7,20 +7,21 @@ IFBMemoryArena*
 ifb_memory::arena_commit(
     IFBMemoryReservation* reservation) {
 
+    //validate the reservation
     ifb_memory::validate_reservation(reservation);
 
     //get the stack
     IFBMemoryStack* stack = reservation->stack; 
-
+    
+    IFBMemoryArena* arena = NULL;
     //first, see if there is an arena on the list of decommitted arenas
-    IFBMemoryArena* arena = reservation->arenas.decommitted;
-    if (arena) {
+    if (reservation->arenas.decommitted != NULL) {
         
         //if there is, we need to update the list
+        arena = reservation->arenas.decommitted;
         IFBMemoryArena* new_first_arena = arena->next;
         new_first_arena->prev = NULL;
         reservation->arenas.decommitted = new_first_arena;
-
     }
     else {
         
@@ -42,6 +43,7 @@ ifb_memory::arena_commit(
 
     //calculate the commit parameters
     const IFBU32  page_offset    = arena->page_number * reservation->sizes.page;
+    const IFBU32  page_count     = reservation->sizes.arena / reservation->sizes.page;
     const IFBAddr page_address   = reservation->start + page_offset;
     const IFBPtr  commit_request = (IFBPtr)page_address; 
     const IFBU32  commit_size    = reservation->sizes.arena;
@@ -61,6 +63,7 @@ ifb_memory::arena_commit(
     arena->prev        = NULL;
     arena->reservation = reservation; 
     arena->position    = 0;
+    arena->start       = page_address; 
 
     //add the arena to the front of the committed list
     if (committed_arena_list) {
@@ -70,7 +73,7 @@ ifb_memory::arena_commit(
     reservation->arenas.committed = arena;
 
     //update the pages used
-    reservation->page_count_used += reservation->sizes.arena;
+    reservation->page_count_used += page_count; 
 
     //we're done
     return(arena);

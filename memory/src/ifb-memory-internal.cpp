@@ -55,8 +55,8 @@ struct IFBMemoryArena {
 #define IFB_MEMORY_STRUCT_SIZE_RESERVATION ifb_macro_align_size_struct(IFBMemoryReservation)
 #define IFB_MEMORY_STRUCT_SIZE_ARENA       ifb_macro_align_size_struct(IFBMemoryArena)
 
-#define ifb_memory_macro_stack_push_arena(stack)             (IFBMemoryArena*)ifb_memory::stack_push_bytes_absolute(stack,IFB_MEMORY_STRUCT_SIZE_ARENA)
-#define ifb_memory_macro_stack_push_reservation(stack) (IFBMemoryReservation*)ifb_memory::stack_push_bytes_absolute(stack,IFB_MEMORY_STRUCT_SIZE_RESERVATION)
+#define ifb_memory_macro_stack_push_arena(stack)             (IFBMemoryArena*)ifb_memory::stack_push_bytes_absolute_pointer(stack,IFB_MEMORY_STRUCT_SIZE_ARENA)
+#define ifb_memory_macro_stack_push_reservation(stack) (IFBMemoryReservation*)ifb_memory::stack_push_bytes_absolute_pointer(stack,IFB_MEMORY_STRUCT_SIZE_RESERVATION)
 
 inline IFBVoid
 ifb_memory::validate_stack(
