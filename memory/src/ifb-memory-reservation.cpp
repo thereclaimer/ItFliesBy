@@ -49,14 +49,14 @@ ifb_memory::reserve_system_memory(
     const IFBAddr address_stack_offset      = address_stack_reservation - address_stack_start;  
 
     //initialize the reservation
-    reservation->arenas_committed    = NULL;
-    reservation->arenas_decommitted  = NULL;
-    reservation->system_memory_start = system_memory_start;
-    reservation->page_count_used     = 0;
-    reservation->stack_offset        = address_stack_offset;
-    reservation->size_arena          = size_aligned_arena;
-    reservation->size_page           = sys_mem_info.page_size;
-    reservation->size_granularity    = sys_mem_info.allocation_granularity;
+    reservation->arenas.committed   = NULL;
+    reservation->arenas.decommitted = NULL;
+    reservation->start              = system_memory_start;
+    reservation->page_count_used    = 0;
+    reservation->stack              = stack;
+    reservation->sizes.arena        = size_aligned_arena;
+    reservation->sizes.page         = sys_mem_info.page_size;
+    reservation->sizes.granularity  = sys_mem_info.allocation_granularity;
 
     //we're done
     return(reservation);
