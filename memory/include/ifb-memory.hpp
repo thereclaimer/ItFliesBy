@@ -57,14 +57,15 @@ namespace ifb_memory {
 
 namespace ifb_memory {
 
-    IFBMEMArena  arena_commit              (IFBMEMReservation reservation_handle);
+    IFBMEMArena   arena_commit              (IFBMEMReservation reservation_handle);
 
-    const IFBB8  arena_decommit            (IFBMEMArena arena_handle);
-    const IFBB8  arena_reset               (IFBMEMArena arena_handle);
-    const IFBU32 arena_push_bytes_relative (IFBMEMArena arena_handle, const IFBU32 size);
-    const IFBPtr arena_push_bytes_absolute (IFBMEMArena arena_handle, const IFBU32 size);
-    const IFBB8  arena_pull_bytes          (IFBMEMArena arena_handle, const IFBU32 size);
-    const IFBPtr arena_get_pointer         (IFBMEMArena arena_handle, const IFBU32 offset);
+    const IFBB8   arena_decommit                    (IFBMEMArena arena_handle);
+    const IFBB8   arena_reset                       (IFBMEMArena arena_handle);
+    const IFBU32  arena_push_bytes_relative         (IFBMEMArena arena_handle, const IFBU32 size);
+    const IFBPtr  arena_push_bytes_absolute_pointer (IFBMEMArena arena_handle, const IFBU32 size);
+    const IFBAddr arena_push_bytes_absolute_address (IFBMEMArena arena_handle, const IFBU32 size);
+    const IFBB8   arena_pull_bytes                  (IFBMEMArena arena_handle, const IFBU32 size);
+    const IFBPtr  arena_get_pointer                 (IFBMEMArena arena_handle, const IFBU32 offset);
 };
 
 /**********************************************************************************/

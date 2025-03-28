@@ -39,6 +39,34 @@ ifb_engine::memory_manager_create(
     return(memory_manager);
 }    
 
+ifb_internal IFBVoid
+ifb_engine::memory_manager_allocate_core_systems(
+    const IFBEngineMemoryManager* memory_manager) {
+
+    //arenas
+    IFBEngineMemoryArenas* engine_arenas = memory_manager->arenas;
+
+    //get the core stack memory
+    IFBEngineCore engine_core;
+    ifb_engine::memory_stack_get_core(
+        memory_manager->stack,
+        engine_core);
+
+    //memory struct for tracking allocations
+    IFBMemory memory;
+
+    //graphics memory
+    IFBEngineGraphicsManager* graphics_manager = engine_core.graphics;
+    const IFBU32  graphics_data_size  = ifb_engine::_memory_graphics_sizes.graphics_manager_total; 
+    const IFBAddr graphics_data_start = ifb_memory::arena_push_bytes_absolute_address(engine_arenas->core_manager_graphics,graphics_data_size);
+
+    //graphics window
+    memory.start                    = graphics_data_start;
+    memory.size                     = ifb_graphics::window_memory_size(ifb_engine::_memory_graphics_sizes.window_title_length); 
+    graphics_manager->window_handle = ifb_graphics::window_memory_initialize(memory);
+}
+
+
 /**********************************************************************************/
 /* INTERNAL                                                                        */
 /**********************************************************************************/
@@ -50,14 +78,14 @@ ifb_engine::memory_manager_allocate(
     //push the manager on the stack
     const IFBAddr addr_memory_manager = ifb_memory::stack_push_bytes_absolute_address(
         global_stack_handle,
-        ifb_engine::_memory_sizes.total_manager);
+        ifb_engine::_memory_manager_sizes.total_manager);
     ifb_macro_assert(addr_memory_manager);
 
     //calculate addresses
-    const IFBAddr addr_handles      = addr_memory_manager + ifb_engine::_memory_sizes.struct_manager;
-    const IFBAddr addr_stack_struct = addr_handles        + ifb_engine::_memory_sizes.struct_handles;
-    const IFBAddr addr_stack_start  = addr_stack_struct   + ifb_engine::_memory_sizes.struct_stack;
-    const IFBAddr addr_arenas       = addr_stack_start    + ifb_engine::_memory_sizes.stack;
+    const IFBAddr addr_handles      = addr_memory_manager + ifb_engine::_memory_manager_sizes.struct_manager;
+    const IFBAddr addr_stack_struct = addr_handles        + ifb_engine::_memory_manager_sizes.struct_handles;
+    const IFBAddr addr_stack_start  = addr_stack_struct   + ifb_engine::_memory_manager_sizes.struct_stack;
+    const IFBAddr addr_arenas       = addr_stack_start    + ifb_engine::_memory_manager_sizes.stack;
 
     //set the pointers
     IFBEngineMemoryManager* memory_manager = (IFBEngineMemoryManager*)addr_memory_manager; 
@@ -76,8 +104,8 @@ ifb_engine::memory_manager_reserve_system_memory(
     //reserve the memory
     IFBMEMReservation system_reservation_handle = ifb_memory::reserve_system_memory(
         global_stack_handle,
-        ifb_engine::_memory_sizes.total_reservation,
-        ifb_engine::_memory_sizes.total_arena);
+        ifb_engine::_memory_manager_sizes.total_reservation,
+        ifb_engine::_memory_manager_sizes.total_arena);
 
     //sanity check
     ifb_macro_assert(system_reservation_handle);
@@ -94,11 +122,11 @@ ifb_engine::memory_manager_init_stack(
     IFBEngineMemoryStack* stack = memory_manager->stack;
 
     //calculate the start
-    stack->start = ((IFBAddr)stack) + ifb_engine::_memory_sizes.struct_stack;
+    stack->start = ((IFBAddr)stack) + ifb_engine::_memory_manager_sizes.struct_stack;
 
     //get the offset count and stride
     const IFBU16 offset_count  = (IFBU16)(sizeof(stack->offsets)) / (IFBU16)(sizeof(IFBU16));
-    const IFBU16 offset_stride = (IFBU16)ifb_engine::_memory_sizes.stack / offset_count;  
+    const IFBU16 offset_stride = (IFBU16)ifb_engine::_memory_manager_sizes.stack / offset_count;  
 
     //convert the offsets to an array
     IFBU16* offsets = (IFBU16*)&stack->offsets;

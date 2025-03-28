@@ -125,7 +125,7 @@ ifb_memory::arena_push_bytes_relative(
 }
 
 const IFBPtr
-ifb_memory::arena_push_bytes_absolute(
+ifb_memory::arena_push_bytes_absolute_pointer(
           IFBMemoryArena* arena,
     const IFBU32          size) {
 
@@ -148,6 +148,31 @@ ifb_memory::arena_push_bytes_absolute(
 
     //we're done
     return(result_pointer);
+}
+
+const IFBAddr
+ifb_memory::arena_push_bytes_absolute_address(
+          IFBMemoryArena* arena,
+    const IFBU32          size) {
+
+    //validate args
+    ifb_memory::validate_arena(arena);
+    ifb_macro_assert(size);
+
+    //get the new arena size
+    IFBMemoryReservation* reservation = arena->reservation;
+    const IFBU32 arena_size         = reservation->sizes.arena;
+    const IFBU32 arena_offset       = arena->position;
+    const IFBU32 arena_position_new = arena_offset + size;
+
+    //make sure we can do the push
+    ifb_macro_assert(arena_position_new < arena_size);
+
+    //get the pointer
+    const IFBAddr result_address = arena->start + arena_offset;
+
+    //we're done
+    return(result_address);
 }
 
 const IFBB8
