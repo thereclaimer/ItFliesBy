@@ -6,163 +6,85 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-//memory reservation
+struct IFBMemoryStack;
 struct IFBMemoryReservation;
-struct IFBMemoryReservationArrays;
-struct IFBMemoryReservationInit;
-
-//arena
-struct IFBMemoryArenaCommit;
-struct IFBMemoryArenaDecommit;
-struct IFBMemoryArenaReset;
-struct IFBMemoryArenaPushBytes;
-struct IFBMemoryArenaPullBytes;
+struct IFBMemoryArena;
 
 namespace ifb_memory {
 
-    //reservation operations
-    IFBMemoryReservation* reservation_load_and_assert_valid    (const IFBMEM64Stack stack_id, const IFBMEM32Reservation reservation_id);
-    IFBAddr*          reservation_load_array_arena_start       (IFBMemoryReservation* reservation);
-    IFBU32*           reservation_load_array_arena_position    (IFBMemoryReservation* reservation);
-    IFBVoid           reservation_load_arrays                  (IFBMemoryReservation* reservation, IFBMemoryReservationArrays* arrays);
-
-    //reservation init
-    IFBVoid reservation_init_step_0_validate_args              (IFBMemoryReservationInit& init_ref);
-    IFBVoid reservation_init_step_1_get_system_info            (IFBMemoryReservationInit& init_ref);
-    IFBVoid reservation_init_step_3_calculate_sizes            (IFBMemoryReservationInit& init_ref);
-    IFBVoid reservation_init_step_2_allocate_reservation       (IFBMemoryReservationInit& init_ref);
-    IFBVoid reservation_init_step_4_reserve_system_memory      (IFBMemoryReservationInit& init_ref);
-    IFBVoid reservation_init_step_5_set_properties             (IFBMemoryReservationInit& init_ref);
-    IFBVoid reservation_init_step_6_cleanup                    (IFBMemoryReservationInit& init_ref);
-
-    //arena commit
-    IFBVoid arena_commit_step_0_validate_args                  (IFBMemoryArenaCommit& commit_ref);
-    IFBVoid arena_commit_step_1_cache_reservation_properties   (IFBMemoryArenaCommit& commit_ref);
-    IFBVoid arena_commit_step_2_find_free_arena                (IFBMemoryArenaCommit& commit_ref);
-    IFBVoid arena_commit_step_3_commit_memory                  (IFBMemoryArenaCommit& commit_ref);
-    IFBVoid arena_commit_step_4_update_arrays                  (IFBMemoryArenaCommit& commit_ref);
-
-    //arena decommit
-    IFBVoid arena_decommit_step_0_validate_args                (IFBMemoryArenaDecommit& decommit_ref);
-    IFBVoid arena_decommit_step_1_cache_reservation_properties (IFBMemoryArenaDecommit& decommit_ref);
-    IFBVoid arena_decommit_step_2_load_arena_start_array       (IFBMemoryArenaDecommit& decommit_ref);
-    IFBVoid arena_decommit_step_3_decommit_memory              (IFBMemoryArenaDecommit& decommit_ref);
-    IFBVoid arena_decommit_step_4_update_arena_start_array     (IFBMemoryArenaDecommit& decommit_ref);
-
-    //arena reset
-    IFBVoid arena_reset_step_0_validate_args                   (IFBMemoryArenaReset& reset_ref);
-    IFBVoid arena_reset_step_1_cache_properties                (IFBMemoryArenaReset& reset_ref);
-    IFBVoid arena_reset_step_2_reset_arena                     (IFBMemoryArenaReset& reset_ref);
-
-    //arena push bytes
-    IFBVoid arena_push_step_0_validate_args                    (IFBMemoryArenaPushBytes& push_ref);
-    IFBVoid arena_push_step_1_cache_reservation_properties     (IFBMemoryArenaPushBytes& push_ref);
-    IFBVoid arena_push_step_2_push_bytes_relative              (IFBMemoryArenaPushBytes& push_ref);
-    IFBVoid arena_push_step_2_push_bytes_absolute              (IFBMemoryArenaPushBytes& push_ref);
-
-    //arena reset
-    IFBVoid arena_pull_step_0_validate_args                    (IFBMemoryArenaPullBytes& pull_ref);
-    IFBVoid arena_pull_step_1_cache_properties                 (IFBMemoryArenaPullBytes& pull_ref);
-    IFBVoid arena_pull_step_2_pull_bytes                       (IFBMemoryArenaPullBytes& pull_ref);
+    IFBVoid validate_stack       (const IFBMemoryStack*       stack);
+    IFBVoid validate_reservation (const IFBMemoryReservation* reservation);
+    IFBVoid validate_arena       (const IFBMemoryArena*       arena);
 };
 
 /**********************************************************************************/
 /* MEMORY MANAGER DEFINITIONS                                                     */
 /**********************************************************************************/
 
+struct IFBMemoryStack {
+    IFBU32  size;
+    IFBU32  position;
+};
+
 struct IFBMemoryReservation {
-    IFBAddr reserved_memory_start;
-    IFBU32  count_arenas;
-    IFBU32  size_arena;
-    IFBU32  size_page;
-    IFBU32  size_granularity;
-    IFBU32  offset_arena_array_start;
-    IFBU32  offset_arena_array_position;
+    IFBMemoryStack* stack;
+    IFBAddr         start;
+    struct {
+        IFBMemoryArena* committed;
+        IFBMemoryArena* decommitted;
+    } arenas;
+    struct {
+        IFBU32 arena;
+        IFBU32 page;
+        IFBU32 granularity;
+    } sizes;
+    IFBU32 page_count_used;
 };
 
-struct IFBMemoryReservationArrays {
-    IFBAddr* arena_start;
-    IFBU32*  arena_position;
-};
-
-struct IFBMemoryReservationInit {
-    IFBB64                result;
+struct IFBMemoryArena {
     IFBMemoryReservation* reservation;
-    IFBPtr                reserved_system_memory;
-    IFBSystemMemoryInfo   sys_info;
-    IFBMEM32Reservation   reservation_handle;
-    struct {
-        IFBMemoryReservationContext* context;
-        IFBU64                   size_reservation;
-        IFBU32                   size_arena;
-    } args;
-    struct {
-        IFBU32  aligned_size_reservation;
-        IFBU32  aligned_size_arena;
-        IFBU32  count_arenas;
-        IFBU32  commit_size_total;
-        IFBU32  commit_size_reservation_struct;
-        IFBU32  commit_size_array_arena_start;
-        IFBU32  commit_size_array_arena_position;
-        IFBByte padding[4];
-    } cache;
+    IFBMemoryArena*       next;
+    IFBMemoryArena*       prev;
+    IFBAddr               start;
+    IFBU32                page_number;
+    IFBU32                position;
 };
 
-/**********************************************************************************/
-/* ARENA DEFINITIONS                                                              */
-/**********************************************************************************/
 
-struct IFBMemoryArenaCommit {
-    IFBB64                 result;
-    IFBMemoryArenaContext* context;
-    struct {
-        IFBMemoryReservationArrays arrays;
-        IFBAddr                reservation_start;
-        IFBAddr                arena_start;
-        IFBU32                 arena_count;
-        IFBU32                 arena_size;
-    } cache;
-};
+#define IFB_MEMORY_STRUCT_SIZE_STACK       ifb_macro_align_size_struct(IFBMemoryStack)
+#define IFB_MEMORY_STRUCT_SIZE_RESERVATION ifb_macro_align_size_struct(IFBMemoryReservation)
+#define IFB_MEMORY_STRUCT_SIZE_ARENA       ifb_macro_align_size_struct(IFBMemoryArena)
 
-struct IFBMemoryArenaDecommit {
-    IFBB64                 result;
-    IFBMemoryArenaContext* context;
-    struct {
-        IFBAddr* arena_start_array;
-        IFBU32   arena_size;
-        IFBU32   arena_count;
-    } cache;
-};
+#define ifb_memory_macro_stack_push_arena(stack)             (IFBMemoryArena*)ifb_memory::stack_push_bytes_absolute_pointer(stack,IFB_MEMORY_STRUCT_SIZE_ARENA)
+#define ifb_memory_macro_stack_push_reservation(stack) (IFBMemoryReservation*)ifb_memory::stack_push_bytes_absolute_pointer(stack,IFB_MEMORY_STRUCT_SIZE_RESERVATION)
 
-struct IFBMemoryArenaReset {
-    IFBB64                 result;
-    IFBMemoryArenaContext* context;
-    struct {
-        IFBU32* arena_position_array;
-        IFBU64  arena_count;
-    } cache; 
-};
+inline IFBVoid
+ifb_memory::validate_stack(
+    const IFBMemoryStack* stack) {
 
-struct IFBMemoryArenaPushBytes {
-    IFBB64                 result;
-    IFBMemoryArenaContext* context;
-    IFBU32                 push_size;
-    struct {
-        IFBMemoryReservationArrays arrays; 
-        IFBU32                 arena_size;
-        IFBU32                 arena_count;
-    } cache;
-    union {
-        IFBPtr absolute_pointer;
-        IFBU32 relative_offset;
-    } memory;
-};
+    ifb_macro_assert(stack);
+    ifb_macro_assert(stack->size     >= IFB_MEMORY_STRUCT_SIZE_STACK);
+    ifb_macro_assert(stack->position >= IFB_MEMORY_STRUCT_SIZE_STACK);
+    ifb_macro_assert(stack->position <  stack->size);
+}   
 
-struct IFBMemoryArenaPullBytes {
-    IFBB64                 result;
-    IFBMemoryArenaContext* context;
-    struct {
-        IFBU32* arena_position_array;
-        IFBU64  arena_count;
-    } cache; 
-};
+inline IFBVoid
+ifb_memory::validate_reservation(
+    const IFBMemoryReservation* reservation) {
+
+    ifb_macro_assert(reservation);
+    ifb_macro_assert(reservation->stack);
+    ifb_macro_assert(reservation->start);
+    ifb_macro_assert(reservation->sizes.arena);
+    ifb_macro_assert(reservation->sizes.page);
+    ifb_macro_assert(reservation->sizes.granularity);
+}
+
+inline IFBVoid
+ifb_memory::validate_arena(
+    const IFBMemoryArena* arena) {
+
+    ifb_macro_assert(arena);
+    ifb_macro_assert(arena->reservation);
+    ifb_macro_assert(arena->start);
+}

@@ -8,12 +8,13 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-struct IFBMEM64Stack       : IFBHND64 { };
-struct IFBMEM32Reservation : IFBHND32 { };
-struct IFBMEM32Arena       : IFBHND32 { };
+struct IFBMemoryStack;
+struct IFBMemoryReservation;
+struct IFBMemoryArena;
 
-#define IFB_MEMORY_INVALID_HANDLE_32 0xFFFFFFFF
-#define IFB_MEMORY_INVALID_HANDLE_64 0
+typedef IFBMemoryStack*       IFBMEMStack;       
+typedef IFBMemoryReservation* IFBMEMReservation;
+typedef IFBMemoryArena*       IFBMEMArena; 
 
 struct IFBMemory {
     IFBAddr start;
@@ -26,50 +27,44 @@ struct IFBMemory {
 
 namespace ifb_memory {
 
-    const IFBMEM64Stack stack_create              (const IFBMemory&    stack_memory);
-    const IFBU32        stack_push_bytes_relative (const IFBMEM64Stack stack_handle, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBPtr        stack_push_bytes_absolute (const IFBMEM64Stack stack_handle, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBB8         stack_pull_bytes          (const IFBMEM64Stack stack_handle, const IFBU32 size, const IFBU32 alignment = 0);
-    const IFBPtr        stack_get_pointer         (const IFBMEM64Stack stack_handle, const IFBU32 offset);
+    IFBMEMStack       stack_create                      (const IFBMemory& stack_memory);
+    const IFBU32      stack_push_bytes_relative         (IFBMEMStack stack_handle, const IFBU32 size);
+    const IFBPtr      stack_push_bytes_absolute_pointer (IFBMEMStack stack_handle, const IFBU32 size);
+    const IFBAddr     stack_push_bytes_absolute_address (IFBMEMStack stack_handle, const IFBU32 size);
+    const IFBB8       stack_pull_bytes                  (IFBMEMStack stack_handle, const IFBU32 size);
+    const IFBPtr      stack_get_pointer                 (IFBMEMStack stack_handle, const IFBU32 offset);
 };
 
 /**********************************************************************************/
-/* RESERVATION                                                             */
+/* RESERVATION                                                                    */
 /**********************************************************************************/
-
-struct IFBMemoryReservationContext {
-    IFBMEM64Stack       handle_stack;
-    IFBMEM32Reservation handle_reservation;
-};
 
 namespace ifb_memory {
 
-    const IFBB8 reserve_system_memory  (IFBMemoryReservationContext& reservation_context, const IFBU64 size_reservation,const IFBU32 size_arena);
-    const IFBB8 release_system_memory  (IFBMemoryReservationContext& reservation_context);
+    IFBMEMReservation
+    reserve_system_memory(
+              IFBMEMStack stack_handle,
+        const IFBU64      size_reservation,
+        const IFBU32      size_arena);
+
+
+    const IFBB8 release_system_memory (IFBMEMReservation reservation_handle);
 };
 
 /**********************************************************************************/
 /* ARENA                                                                          */
 /**********************************************************************************/
 
-struct IFBMemoryArenaContext {
-    IFBMEM64Stack       handle_stack;
-    IFBMEM32Reservation handle_reservation;
-    IFBMEM32Arena       handle_arena;
-};
-
 namespace ifb_memory {
 
-    //commit/decommit
-    const IFBB8  arena_commit               (IFBMemoryArenaContext& arena_context);
-    const IFBB8  arena_decommit             (IFBMemoryArenaContext& arena_context);
+    IFBMEMArena  arena_commit              (IFBMEMReservation reservation_handle);
 
-    //operations
-    const IFBB8  arena_reset               (IFBMemoryArenaContext& arena_context);
-    const IFBU32 arena_push_bytes_relative (IFBMemoryArenaContext& arena_context, const IFBU32 size);
-    const IFBPtr arena_push_bytes_absolute (IFBMemoryArenaContext& arena_context, const IFBU32 size);
-    const IFBB8  arena_pull_bytes          (IFBMemoryArenaContext& arena_context, const IFBU32 size);
-    const IFBPtr arena_get_pointer         (IFBMemoryArenaContext& arena_context, const IFBU32 offset);
+    const IFBB8  arena_decommit            (IFBMEMArena arena_handle);
+    const IFBB8  arena_reset               (IFBMEMArena arena_handle);
+    const IFBU32 arena_push_bytes_relative (IFBMEMArena arena_handle, const IFBU32 size);
+    const IFBPtr arena_push_bytes_absolute (IFBMEMArena arena_handle, const IFBU32 size);
+    const IFBB8  arena_pull_bytes          (IFBMEMArena arena_handle, const IFBU32 size);
+    const IFBPtr arena_get_pointer         (IFBMEMArena arena_handle, const IFBU32 offset);
 };
 
 /**********************************************************************************/
@@ -133,9 +128,7 @@ ifb_memory::zero_buffer(
 /* MACROS                                                                         */
 /**********************************************************************************/
 
-#define ifb_memory_macro_is_handle_valid_stack(stack)       (stack.h64 != IFB_MEMORY_INVALID_HANDLE_64)
-#define ifb_memory_macro_is_handle_valid_reservation(reservation) (reservation.h32 != IFB_MEMORY_INVALID_HANDLE_32 && reservation.h32 != 0)
-#define ifb_memory_macro_is_handle_valid_arena(arena)       (arena.h32 != IFB_MEMORY_INVALID_HANDLE_32)
-
+#define ifb_memory_macro_stack_push_struct_absolute(stack,struct) (struct*)ifb_memory::stack_push_bytes_absolute_pointer(stack,ifb_macro_align_size_struct(struct))
+#define ifb_memory_macro_stack_push_struct_relative(stack,struct)          ifb_memory::stack_push_bytes_relative        (stack,ifb_macro_align_size_struct(struct))
 
 #endif //IFB_MEMORY_HPP

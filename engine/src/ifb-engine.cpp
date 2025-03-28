@@ -2,5 +2,6 @@
 
 #define IFB_ENGINE_INTERNAL
 
-#include "ifb-engine-context-internal.cpp"
-#include "ifb-engine-context.cpp"
+#include "context/ifb-engine-context.cpp"
+
+#include "memory/ifb-engine-memory-manager.cpp"

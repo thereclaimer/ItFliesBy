@@ -1,130 +1,167 @@
-
 #pragma once
 
 #include "ifb-memory.hpp"
-
 #include "ifb-memory-internal.cpp"
-#include "ifb-memory-arena-commit.cpp"
-#include "ifb-memory-arena-decommit.cpp"
-#include "ifb-memory-arena-reset.cpp"
-#include "ifb-memory-arena-push.cpp"
 
-const IFBB8
+IFBMemoryArena*
 ifb_memory::arena_commit(
-    IFBMemoryArenaContext& arena_context) {
-    
-    //set the context
-    IFBMemoryArenaCommit commit;
-    commit.context = &arena_context;
+    IFBMemoryReservation* reservation) {
 
-    //commit steps
-    ifb_memory::arena_commit_step_0_validate_args                (commit);
-    ifb_memory::arena_commit_step_1_cache_reservation_properties (commit);
-    ifb_memory::arena_commit_step_2_find_free_arena              (commit);
-    ifb_memory::arena_commit_step_3_commit_memory                (commit);
-    ifb_memory::arena_commit_step_4_update_arrays                (commit);
+    //validate the reservation
+    ifb_memory::validate_reservation(reservation);
+
+    //get the stack
+    IFBMemoryStack* stack = reservation->stack; 
+    
+    IFBMemoryArena* arena = NULL;
+    //first, see if there is an arena on the list of decommitted arenas
+    if (reservation->arenas.decommitted != NULL) {
+        
+        //if there is, we need to update the list
+        arena = reservation->arenas.decommitted;
+        IFBMemoryArena* new_first_arena = arena->next;
+        new_first_arena->prev = NULL;
+        reservation->arenas.decommitted = new_first_arena;
+    }
+    else {
+        
+        // otherwise, we need to do the following:
+        //  1) push an arena on the stack
+        //  2) determine the address
+        
+        //push the arena
+        arena = ifb_memory_macro_stack_push_arena(stack);
+        ifb_macro_assert(arena);
+
+        //determine the address
+        arena->page_number = reservation->page_count_used;
+
+    }
+    
+    //either way, we should have an arena
+    ifb_macro_assert(arena);
+
+    //calculate the commit parameters
+    const IFBU32  page_offset    = arena->page_number * reservation->sizes.page;
+    const IFBU32  page_count     = reservation->sizes.arena / reservation->sizes.page;
+    const IFBAddr page_address   = reservation->start + page_offset;
+    const IFBPtr  commit_request = (IFBPtr)page_address; 
+    const IFBU32  commit_size    = reservation->sizes.arena;
+
+    //do the commit
+    const IFBPtr commit_result = ifb_platform::memory_commit(
+        commit_request,
+        commit_size);
+
+    //sanity check
+    ifb_macro_assert(commit_request == commit_result);
+
+    //get the current committed arena list
+    IFBMemoryArena* committed_arena_list = reservation->arenas.committed;
+    
+    //initialize the arena
+    arena->prev        = NULL;
+    arena->reservation = reservation; 
+    arena->position    = 0;
+    arena->start       = page_address; 
+
+    //add the arena to the front of the committed list
+    if (committed_arena_list) {
+        committed_arena_list->prev = arena;
+    }
+    arena->next = committed_arena_list;
+    reservation->arenas.committed = arena;
+
+    //update the pages used
+    reservation->page_count_used += page_count; 
 
     //we're done
-    return(commit.result ? true : false);
+    return(arena);
 }
 
 const IFBB8
 ifb_memory::arena_decommit(
-    IFBMemoryArenaContext& arena_context) {
-  
-    //set the args
-    IFBMemoryArenaDecommit decommit;
-    decommit.context = &arena_context;
+    IFBMemoryArena* arena) {
 
-    //do the decommit
-    ifb_memory::arena_decommit_step_0_validate_args                (decommit);
-    ifb_memory::arena_decommit_step_1_cache_reservation_properties (decommit);
-    ifb_memory::arena_decommit_step_2_load_arena_start_array       (decommit);
-    ifb_memory::arena_decommit_step_3_decommit_memory              (decommit);
-    ifb_memory::arena_decommit_step_4_update_arena_start_array     (decommit);
+    ifb_memory::validate_arena(arena);
 
-    //we're done
-    return(decommit.result ? true : false);
+    ifb_macro_panic();
+
+    return(false);
 }
 
 const IFBB8
 ifb_memory::arena_reset(
-    IFBMemoryArenaContext& arena_context) {
+    IFBMemoryArena* arena) {
 
-    //set the args
-    IFBMemoryArenaReset reset;
-    reset.context = &arena_context;
+    ifb_memory::validate_arena(arena);
 
-    //do the reset
-    ifb_memory::arena_reset_step_0_validate_args    (reset);
-    ifb_memory::arena_reset_step_1_cache_properties (reset);
-    ifb_memory::arena_reset_step_2_reset_arena      (reset);
+    arena->position = 0;
 
-    //we're done
-    return(reset.result ? true : false);
+    return(false);
 }
 
 
 const IFBU32
 ifb_memory::arena_push_bytes_relative(
-          IFBMemoryArenaContext& arena_context,
-    const IFBU32                 size) {
+          IFBMemoryArena* arena,
+    const IFBU32          size) {
 
-    //set the args
-    IFBMemoryArenaPushBytes push;
-    push.context = &arena_context;
+    ifb_memory::validate_arena(arena);
+    ifb_macro_assert(size);
 
-    //do the push
-    ifb_memory::arena_push_step_0_validate_args                (push);
-    ifb_memory::arena_push_step_1_cache_reservation_properties (push);
-    ifb_memory::arena_push_step_2_push_bytes_relative          (push);
-
-    //get the offset
-    const IFBU32 offset = push.result
-        ? push.memory.relative_offset
-        : IFB_MEMORY_INVALID_HANDLE_32;
+    //get the new arena size
+    IFBMemoryReservation* reservation = arena->reservation;
+    const IFBU32 arena_size         = reservation->sizes.arena;
+    const IFBU32 arena_offset       = arena->position;
+    const IFBU32 arena_position_new = arena_offset + size;
+    
+    //make sure we can do the push
+    ifb_macro_assert(arena_position_new < arena_size);
 
     //we're done
-    return(offset);
+    //return the offset prior to the push
+    return(arena_offset);
 }
 
 const IFBPtr
 ifb_memory::arena_push_bytes_absolute(
-          IFBMemoryArenaContext& arena_context,
-    const IFBU32                 size) {
+          IFBMemoryArena* arena,
+    const IFBU32          size) {
 
-    //set the args
-    IFBMemoryArenaPushBytes push;
-    push.context = &arena_context;
+    //validate args
+    ifb_memory::validate_arena(arena);
+    ifb_macro_assert(size);
 
-    //do the push
-    ifb_memory::arena_push_step_0_validate_args                (push);
-    ifb_memory::arena_push_step_1_cache_reservation_properties (push);
-    ifb_memory::arena_push_step_2_push_bytes_absolute          (push);
+    //get the new arena size
+    IFBMemoryReservation* reservation = arena->reservation;
+    const IFBU32 arena_size         = reservation->sizes.arena;
+    const IFBU32 arena_offset       = arena->position;
+    const IFBU32 arena_position_new = arena_offset + size;
+
+    //make sure we can do the push
+    ifb_macro_assert(arena_position_new < arena_size);
 
     //get the pointer
-    const IFBPtr pointer = push.result
-        ? push.memory.absolute_pointer
-        : NULL;
+    const IFBAddr result_address = arena->start + arena_offset;
+    const IFBPtr  result_pointer = (IFBPtr)result_address;
 
     //we're done
-    return(pointer);
+    return(result_pointer);
 }
 
 const IFBB8
 ifb_memory::arena_pull_bytes(
-          IFBMemoryArenaContext& arena_context,
-    const IFBU32                 size) {
+          IFBMemoryArena* arena,
+    const IFBU32          size) {
 
-    //set the args
-    IFBMemoryArenaPullBytes pull;
-    pull.context = &arena_context;
+    //validate args
+    ifb_memory::validate_arena(arena);
+    ifb_macro_assert(size);
 
-    //do the pull
-    ifb_memory::arena_pull_step_0_validate_args    (pull);
-    ifb_memory::arena_pull_step_1_cache_properties (pull);
-    ifb_memory::arena_pull_step_2_pull_bytes       (pull);
+    ifb_macro_assert(arena->position > size);
 
-    //we're done
-    return(pull.result ? true : false);
+    arena->position -= size;
+
+    return(true);
 }
