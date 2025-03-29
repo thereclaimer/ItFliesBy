@@ -30,6 +30,7 @@ ifb_engine::memory_allocate(
     IFBEngineMemory* engine_memory = ifb_engine::memory_initialize(memory_handle_global_stack);
 
     //allocate engine systems
+    ifb_engine::memory_allocate_core(engine_memory);
 
     //we're done
     return(engine_memory);
