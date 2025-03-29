@@ -7,7 +7,7 @@
 
 // create/destroy
 ifb_engine_api const IFBENG64Context
-ifb_engine::context_initialize(
+ifb_engine::context_create(
     const IFBEngineContextArgs& args) {
 
     IFBENG64Context context_handle;

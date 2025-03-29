@@ -57,8 +57,9 @@ ifb_engine::memory_manager_allocate_core_systems(
 
     //graphics memory
     IFBEngineGraphicsManager* graphics_manager = engine_core.graphics;
+    IFBMEMArena               graphics_arena   = engine_arenas->array[IFBEngineMemoryArena_Core_ManagerGraphics]; 
     const IFBU32  graphics_data_size  = ifb_engine::_memory_graphics_sizes.graphics_manager_total; 
-    const IFBAddr graphics_data_start = ifb_memory::arena_push_bytes_absolute_address(engine_arenas->core_manager_graphics,graphics_data_size);
+    const IFBAddr graphics_data_start = ifb_memory::arena_push_bytes_absolute_address(graphics_arena,graphics_data_size);
 
     //graphics window
     memory.start                    = graphics_data_start;
@@ -123,22 +124,6 @@ ifb_engine::memory_manager_init_stack(
 
     //calculate the start
     stack->start = ((IFBAddr)stack) + ifb_engine::_memory_manager_sizes.struct_stack;
-
-    //get the offset count and stride
-    const IFBU16 offset_count  = (IFBU16)(sizeof(stack->offsets)) / (IFBU16)(sizeof(IFBU16));
-    const IFBU16 offset_stride = (IFBU16)ifb_engine::_memory_manager_sizes.stack / offset_count;  
-
-    //convert the offsets to an array
-    IFBU16* offsets = (IFBU16*)&stack->offsets;
-
-    //initialize the offsets
-    for (
-        IFBU16 index = 0;
-               index < offset_count;
-             ++index) {
-
-        offsets[index] = (offset_stride * index);
-    }
 }
 
 inline IFBVoid
@@ -149,11 +134,9 @@ ifb_engine::memory_manager_init_arenas(
     IFBEngineMemoryArenas* arenas      = memory_manager->arenas;
     IFBMEMReservation      reservation = memory_manager->handles->system_reservation;
 
-    //convert the arenas to an array
-    IFBMEMArena* arena_array = (IFBMEMArena*)arenas;
-
-    //get the arena count
-    const IFBU32 arena_count = sizeof(IFBEngineMemoryArenas) / sizeof(IFBMEMArena);
+    //get the arena array info
+    const IFBU32 arena_count = IFBEngineMemoryArena_Count;
+    IFBMEMArena* arena_array = arenas->array;
 
     //initialize the arenas
     for (

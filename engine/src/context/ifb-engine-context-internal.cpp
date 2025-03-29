@@ -23,10 +23,10 @@ ifb_engine::context_allocate_engine_memory(
     IFBMEMStack stack) {
 
     //create the memory manager
-    IFBEngineMemoryManager* memory_manager = ifb_engine::memory_manager_create(global_stack_handle);
+    IFBEngineMemoryManager* memory_manager = ifb_engine::memory_manager_create(stack);
 
     //allocate engine memory
     ifb_engine::memory_manager_allocate_core_systems(memory_manager);
 
-
+    return(memory_manager);
 }

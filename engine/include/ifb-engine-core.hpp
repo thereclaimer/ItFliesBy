@@ -19,6 +19,7 @@ struct IFBEngineThreadManager;
 /* ENGINE CORE                                                                    */
 /**********************************************************************************/
 
+
 struct IFBEngineCore {
     IFBEngineGraphicsManager* graphics;
     IFBEngineFileManager*     files;
@@ -29,9 +30,14 @@ struct IFBEngineCore {
 /* GRAPHICS MANAGER                                                               */
 /**********************************************************************************/
 
+#define IFB_ENGINE_GRAPHICS_WINDOW_TITLE       "It Flies By (DEBUG)"
+#define IFB_ENGINE_GRAPHICS_WINDOW_INIT_WIDTH  1024
+#define IFB_ENGINE_GRAPHICS_WINDOW_INIT_HEIGHT 768
+
 struct IFBEngineGraphicsManager {
     IFBGFXWindow window_handle;
 };
+
 
 /**********************************************************************************/
 /* FILE MANAGER                                                                   */
@@ -49,6 +55,26 @@ struct IFBEngineFileManager {
 
 struct IFBEngineThreadManager {
     IFBU32 x;
+};
+
+/**********************************************************************************/
+/* GLOBALS                                                                        */
+/**********************************************************************************/
+
+struct IFBEngineCoreGlobals {
+    IFBChar* window_title;
+    IFBU32   window_init_width;
+    IFBU32   window_init_height;
+};
+
+namespace ifb_engine {
+
+    ifb_global IFBEngineCoreGlobals _global_core = {
+        IFB_ENGINE_GRAPHICS_WINDOW_TITLE,
+        IFB_ENGINE_GRAPHICS_WINDOW_INIT_WIDTH,
+        IFB_ENGINE_GRAPHICS_WINDOW_INIT_HEIGHT
+    };
+
 };
 
 #endif //IFB_ENGINE_SYSTEMS_HPP

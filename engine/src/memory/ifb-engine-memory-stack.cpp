@@ -2,13 +2,17 @@
 
 #include "ifb-engine-memory.hpp"
 
+#define macro_calculate_stack_pointer(stack,offset) ( \
+    stack->start +                                    \
+    (offset * ifb_engine::_memory_manager_sizes.stack_offset_stride))
+
 inline IFBEngineGraphicsManager*
 ifb_engine::memory_stack_get_manager_graphics(
     const IFBEngineMemoryStack* stack) {
 
-    IFBEngineGraphicsManager* pointer = (IFBEngineGraphicsManager*)(
-        stack->start + 
-        stack->offsets.core_manager_graphics);
+    IFBEngineGraphicsManager* pointer = (IFBEngineGraphicsManager*)macro_calculate_stack_pointer(
+        stack,
+        IFBEngineMemoryStackOffset_Core_ManagerGraphics);
 
     return(pointer);
 }
@@ -17,10 +21,9 @@ inline IFBEngineFileManager*
 ifb_engine::memory_stack_get_manager_files(
     const IFBEngineMemoryStack* stack) {
 
-
-    IFBEngineFileManager* pointer = (IFBEngineFileManager*)(
-        stack->start + 
-        stack->offsets.core_manager_files);
+    IFBEngineFileManager* pointer = (IFBEngineFileManager*)macro_calculate_stack_pointer(
+        stack,
+        IFBEngineMemoryStackOffset_Core_ManagerFiles);
 
     return(pointer);
 }
@@ -29,10 +32,9 @@ inline IFBEngineThreadManager*
 ifb_engine::memory_stack_get_manager_threads(
     const IFBEngineMemoryStack* stack) {
 
-
-    IFBEngineThreadManager* pointer = (IFBEngineThreadManager*)(
-        stack->start + 
-        stack->offsets.core_manager_threads);
+    IFBEngineThreadManager* pointer = (IFBEngineThreadManager*)macro_calculate_stack_pointer(
+        stack,
+        IFBEngineMemoryStackOffset_Core_ManagerThreads);
 
     return(pointer);
 }

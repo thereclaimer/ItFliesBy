@@ -57,7 +57,7 @@ namespace ifb_memory {
 
 namespace ifb_memory {
 
-    IFBMEMArena   arena_commit              (IFBMEMReservation reservation_handle);
+    IFBMEMArena   arena_commit                      (IFBMEMReservation reservation_handle);
 
     const IFBB8   arena_decommit                    (IFBMEMArena arena_handle);
     const IFBB8   arena_reset                       (IFBMEMArena arena_handle);
