@@ -146,6 +146,9 @@ ifb_memory::arena_push_bytes_absolute_pointer(
     const IFBAddr result_address = arena->start + arena_offset;
     const IFBPtr  result_pointer = (IFBPtr)result_address;
 
+    //update the arena position
+    arena->position = arena_position_new;
+
     //we're done
     return(result_pointer);
 }
@@ -170,6 +173,9 @@ ifb_memory::arena_push_bytes_absolute_address(
 
     //get the pointer
     const IFBAddr result_address = arena->start + arena_offset;
+
+    //update the arena position
+    arena->position = arena_position_new;
 
     //we're done
     return(result_address);
