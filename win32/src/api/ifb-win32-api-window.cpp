@@ -41,6 +41,14 @@ namespace ifb_win32 {
 /* WINDOW API                                                                     */
 /**********************************************************************************/
 
+ifb_internal const IFBU32 
+ifb_win32::window_size(
+    IFBVoid) {
+
+    const IFBU32 size = ifb_macro_align_size_struct(IFBWin32Window);
+    return(size);
+}
+
 ifb_internal const IFBB8
 ifb_win32::window_create(
     IFBWin32Window* window) {

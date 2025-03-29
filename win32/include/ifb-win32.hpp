@@ -81,11 +81,12 @@ struct IFBWin32Window : IFBPlatformWindow {
  
 namespace ifb_win32 {
 
-    const IFBB8 window_create         (IFBWin32Window* window);
-    const IFBB8 window_destroy        (IFBWin32Window* window);
-    const IFBB8 window_process_events (IFBWin32Window* window);
-    const IFBB8 window_swap_buffers   (IFBWin32Window* window);
-    const IFBB8 window_show           (IFBWin32Window* window);
+    const IFBU32 window_size           (IFBVoid);
+    const IFBB8  window_create         (IFBWin32Window* window);
+    const IFBB8  window_destroy        (IFBWin32Window* window);
+    const IFBB8  window_process_events (IFBWin32Window* window);
+    const IFBB8  window_swap_buffers   (IFBWin32Window* window);
+    const IFBB8  window_show           (IFBWin32Window* window);
 };
 
 /**********************************************************************************/

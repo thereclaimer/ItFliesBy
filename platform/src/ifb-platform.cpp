@@ -53,6 +53,7 @@ ifb_platform::set_api(
     ifb_platform::memory_decommit        = platform_api->memory.decommit;
 
     //window
+    ifb_platform::window_size            = platform_api->window.size;
     ifb_platform::window_create          = platform_api->window.create;
     ifb_platform::window_destroy         = platform_api->window.destroy;
     ifb_platform::window_process_events  = platform_api->window.process_events;

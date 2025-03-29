@@ -47,6 +47,7 @@ struct IFBPlatformAPI {
     } thread;
 
     struct {
+        IFBPlatformWindowSize          size;
         IFBPlatformWindowCreate        create;
         IFBPlatformWindowDestroy       destroy;
         IFBPlatformWindowProcessEvents process_events;

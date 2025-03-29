@@ -141,25 +141,18 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 #define IFB_ENGINE_MEMORY_CORE_SIZE_GRAPHICS_WINDOW_TITLE  255
-#define IFB_ENGINE_MEMORY_CORE_SIZE_GRAPHICS_WINDOW        ifb_graphics::window_memory_size(IFB_ENGINE_MEMORY_CORE_SIZE_GRAPHICS_WINDOW_TITLE)
 #define IFB_ENGINE_MEMORY_CORE_SIZE_GRAPHICS_MANAGER       ifb_macro_align_size_struct(IFBEngineGraphicsManager)
-#define IFB_ENGINE_MEMORY_CORE_SIZE_GRAPHICS_MANAGER_TOTAL \
-    IFB_ENGINE_MEMORY_CORE_SIZE_GRAPHICS_WINDOW
 
 struct IFBEngineMemoryGraphicsSizes {
     IFBU32 graphics_manager_struct;
-    IFBU32 graphics_manager_total;
     IFBU32 window_title_length;
-    IFBU32 window;
 };
 
 namespace ifb_engine {
     
     ifb_global const IFBEngineMemoryGraphicsSizes _memory_graphics_sizes = {
         IFB_ENGINE_MEMORY_CORE_SIZE_GRAPHICS_MANAGER, 
-        IFB_ENGINE_MEMORY_CORE_SIZE_GRAPHICS_MANAGER_TOTAL, 
         IFB_ENGINE_MEMORY_CORE_SIZE_GRAPHICS_WINDOW_TITLE,
-        IFB_ENGINE_MEMORY_CORE_SIZE_GRAPHICS_WINDOW
     };
 };
 

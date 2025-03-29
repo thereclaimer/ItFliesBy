@@ -15,6 +15,13 @@
 #include <ifb-platform.hpp>
 
 /**********************************************************************************/
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
+
+struct IFBEngineContext;
+struct IFBEngineContextArgs;
+
+/**********************************************************************************/
 /* HANDLES                                                                        */
 /**********************************************************************************/
 
@@ -23,13 +30,7 @@ typedef IFBHND16 IFBENG16Handle;
 typedef IFBHND32 IFBENG32Handle;
 typedef IFBHND64 IFBENG64Handle;
 
-/**********************************************************************************/
-/* FORWARD DECLARATIONS                                                           */
-/**********************************************************************************/
-
-struct IFBENG64Context : IFBENG64Handle { };
-
-struct IFBEngineContextArgs;
+typedef IFBEngineContext* IFBENGContext;
 
 /**********************************************************************************/
 /* CONTEXT                                                                        */
@@ -43,15 +44,15 @@ struct IFBEngineContextArgs {
 namespace ifb_engine {
 
     // create/destroy
-    ifb_engine_api const IFBENG64Context context_create       (const IFBEngineContextArgs& args);
-    ifb_engine_api const IFBB8           context_destroy      (const IFBENG64Context context_handle);
+    ifb_engine_api IFBENGContext context_create    (const IFBEngineContextArgs& args);
+    ifb_engine_api const IFBB8   context_destroy   (const IFBENGContext context_handle);
         
     // startup/shutdown
-    ifb_engine_api const IFBB8           context_startup      (const IFBENG64Context context_handle);
-    ifb_engine_api const IFBB8           context_shutdown     (const IFBENG64Context context_handle);
+    ifb_engine_api const IFBB8   context_startup   (const IFBENGContext context_handle);
+    ifb_engine_api const IFBB8   context_shutdown  (const IFBENGContext context_handle);
 
     // rendering
-    ifb_engine_api const IFBB8           context_render_frame (const IFBENG64Context context_handle);
+    ifb_engine_api const IFBB8   context_main_loop (const IFBENGContext context_handle);
 };
 
 #endif //IFB_ENGINE_HPP

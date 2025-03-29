@@ -58,15 +58,16 @@ ifb_engine::memory_manager_allocate_core_systems(
     //graphics memory
     IFBEngineGraphicsManager* graphics_manager = engine_core.graphics;
     IFBMEMArena               graphics_arena   = engine_arenas->array[IFBEngineMemoryArena_Core_ManagerGraphics]; 
-    const IFBU32  graphics_data_size  = ifb_engine::_memory_graphics_sizes.graphics_manager_total; 
+    
+    const IFBU32  graphics_size_window = ifb_graphics::window_memory_size(ifb_engine::_memory_graphics_sizes.window_title_length); 
+    const IFBU32  graphics_data_size  = graphics_size_window; //NOTE(SAM): for now 
     const IFBAddr graphics_data_start = ifb_memory::arena_push_bytes_absolute_address(graphics_arena,graphics_data_size);
 
     //graphics window
     memory.start                    = graphics_data_start;
-    memory.size                     = ifb_graphics::window_memory_size(ifb_engine::_memory_graphics_sizes.window_title_length); 
+    memory.size                     = graphics_size_window; 
     graphics_manager->window_handle = ifb_graphics::window_memory_initialize(memory);
 }
-
 
 /**********************************************************************************/
 /* INTERNAL                                                                        */
