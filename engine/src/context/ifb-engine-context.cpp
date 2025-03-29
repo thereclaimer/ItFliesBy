@@ -12,12 +12,12 @@ ifb_engine::context_create(
     //set the platform api
     ifb_macro_assert(ifb_platform::set_api(args.platform_api));
 
-    //create the global stack
-    IFBMEMStack global_stack_handle = ifb_memory::stack_create(args.global_stack_memory);
+    //allocate memory
+    IFBEngineMemory* engine_memory = ifb_engine::memory_allocate(args.global_stack_memory);
 
-    //allocate the context
-    IFBEngineContext* engine_context = ifb_engine::context_initialize             (global_stack_handle);
-    engine_context->memory           = ifb_engine::context_allocate_engine_memory (global_stack_handle); 
+    //initialize the context
+    IFBEngineContext* engine_context = ifb_engine::memory_stack_get_context(engine_memory);
+    engine_context->memory = engine_memory;
 
     //we're done
     return(engine_context);

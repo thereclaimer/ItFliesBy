@@ -8,139 +8,132 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-//memory manager
+//memory
 struct IFBEngineMemory;
-struct IFBEngineMemoryHandles;
-struct IFBEngineMemoryStack;
-struct IFBEngineMemoryArenas;
+struct IFBEngineStack;
+struct IFBEngineReservation;
 
 //sizes
 struct IFBMemorySizes;
+
+//handles
+typedef IFBU16 IFBEngineArena;
+typedef IFBU16 IFBEngineStackOffset;
+
+//stack offsets
+enum IFBEngineStackOffset_ {
+    IFBEngineStackOffset_Context              = 0,
+    IFBEngineStackOffset_Core_ManagerGraphics = 1,
+    IFBEngineStackOffset_Core_ManagerThreads  = 2,
+    IFBEngineStackOffset_Core_ManagerFiles    = 3,
+    IFBEngineStackOffset_Count                = 4
+};
+
+//arenas
+enum IFBEngineArena_ {
+    IFBEngineArena_Context              = 0,
+    IFBEngineArena_Core_ManagerGraphics = 1,
+    IFBEngineArena_Core_ManagerThreads  = 2,
+    IFBEngineArena_Core_ManagerFiles    = 3,
+    IFBEngineArena_Count                = 4
+};
+
+/**********************************************************************************/
+/* RESERVED MEMORY                                                                */
+/**********************************************************************************/
+
+struct IFBEngineReservation {
+    IFBMEMReservation system_reservation_handle;
+    IFBMEMArena       arena_handle_array[IFBEngineArena_Count];
+};
+
+/**********************************************************************************/
+/* STACK MEMORY                                                                    */
+/**********************************************************************************/
+
+struct IFBEngineStack {
+    IFBMEMStack global_stack_handle;
+    struct {
+        IFBAddr start;
+        IFBU16  stride;
+    } stack_memory_64k;
+};
+
+namespace ifb_engine {
+
+    IFBEngineContext*         memory_stack_get_context          (const IFBEngineMemory* memory);
+
+    IFBEngineGraphicsManager* memory_stack_get_manager_graphics (const IFBEngineMemory* memory);
+    IFBEngineFileManager*     memory_stack_get_manager_files    (const IFBEngineMemory* memory);
+    IFBEngineThreadManager*   memory_stack_get_manager_threads  (const IFBEngineMemory* memory);
+
+    IFBVoid                   memory_stack_get_core             (const IFBEngineMemory* memory, IFBEngineCore* core);
+
+};
 
 /**********************************************************************************/
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
 struct IFBEngineMemory {
-    IFBEngineMemoryHandles* handles;
-    IFBEngineMemoryStack*   stack;
-    IFBEngineMemoryArenas*  arenas;
-};
-
-struct IFBEngineMemoryHandles {
-    IFBMEMStack       global_stack;
-    IFBMEMReservation system_reservation;    
+    IFBEngineStack       stack;
+    IFBEngineReservation reservation;
 };
 
 namespace ifb_engine {
 
-    IFBEngineMemory* memory_allocate (const IFBMEMStack global_stack_handle);    
+    IFBEngineMemory* memory_allocate (const IFBMemory& stack_memory);    
 }
-
-/**********************************************************************************/
-/* STACK MEMORY                                                                    */
-/**********************************************************************************/
-
-
-enum IFBEngineMemoryStackOffset_ {
-    IFBEngineMemoryStackOffset_Core_ManagerGraphics = 0,
-    IFBEngineMemoryStackOffset_Core_ManagerThreads  = 1,
-    IFBEngineMemoryStackOffset_Core_ManagerFiles    = 2,
-    IFBEngineMemoryStackOffset_Count                = 3
-};
-
-typedef IFBU16 IFBEngineMemoryStackOffset;
-
-struct IFBEngineMemoryStack {
-    IFBAddr start;
-};
-
-namespace ifb_engine {
-
-    IFBEngineGraphicsManager* memory_stack_get_manager_graphics (const IFBEngineMemoryStack* stack);
-    IFBEngineFileManager*     memory_stack_get_manager_files    (const IFBEngineMemoryStack* stack);
-    IFBEngineThreadManager*   memory_stack_get_manager_threads  (const IFBEngineMemoryStack* stack);
-
-    IFBVoid                   memory_stack_get_core             (const IFBEngineMemoryStack* stack, IFBEngineCore* core);
-
-};
 
 /**********************************************************************************/
 /* ARENAS                                                                         */
 /**********************************************************************************/
 
-enum IFBEngineMemoryArena_ {
-    IFBEngineMemoryArena_Frame                = 0,
-    IFBEngineMemoryArena_Core_ManagerGraphics = 1,
-    IFBEngineMemoryArena_Core_ManagerThreads  = 2,
-    IFBEngineMemoryArena_Core_ManagerFiles    = 3,
-    IFBEngineMemoryArena_Count                = 4
-};
-
-struct IFBEngineMemoryArenas {
-    IFBMEMArena array[IFBEngineMemoryArena_Count]; 
-};
-
 namespace ifb_engine {
 
-    inline IFBMEMArena memory_arena_frame                 (IFBEngineMemoryArenas* arenas) { return (arenas->array[IFBEngineMemoryArena_Frame]);                }
-    inline IFBMEMArena memory_arena_core_manager_graphics (IFBEngineMemoryArenas* arenas) { return (arenas->array[IFBEngineMemoryArena_Core_ManagerGraphics]); }
-    inline IFBMEMArena memory_arena_core_manager_threads  (IFBEngineMemoryArenas* arenas) { return (arenas->array[IFBEngineMemoryArena_Core_ManagerThreads]);  }
-    inline IFBMEMArena memory_arena_core_manager_files    (IFBEngineMemoryArenas* arenas) { return (arenas->array[IFBEngineMemoryArena_Core_ManagerFiles]);    }
+    const IFBB8   memory_arena_reset                       (const IFBEngineMemory* memory, const IFBEngineArena arena);
+    const IFBU32  memory_arena_push_bytes_relative         (const IFBEngineMemory* memory, const IFBEngineArena arena, const IFBU32 size);
+    const IFBPtr  memory_arena_push_bytes_absolute_pointer (const IFBEngineMemory* memory, const IFBEngineArena arena, const IFBU32 size);
+    const IFBAddr memory_arena_push_bytes_absolute_address (const IFBEngineMemory* memory, const IFBEngineArena arena, const IFBU32 size);
+    const IFBB8   memory_arena_pull_bytes                  (const IFBEngineMemory* memory, const IFBEngineArena arena, const IFBU32 size);
+    const IFBPtr  memory_arena_get_pointer                 (const IFBEngineMemory* memory, const IFBEngineArena arena, const IFBU32 offset);
 };
 
 /**********************************************************************************/
 /* MEMORY MANAGER SIZES                                                           */
 /**********************************************************************************/
 
-//memory manager sizes
-#define IFB_ENGINE_MEMORY_SIZE_GB_RESERVATION 4
-#define IFB_ENGINE_MEMORY_SIZE_KB_ARENA       64
-#define IFB_ENGINE_MEMORY_SIZE_RESERVATION    ifb_macro_size_gigabytes((IFBU64)IFB_ENGINE_MEMORY_SIZE_GB_RESERVATION)
-#define IFB_ENGINE_MEMORY_SIZE_ARENA          ifb_macro_size_kilobytes(IFB_ENGINE_MEMORY_SIZE_KB_ARENA)
-
-#define IFB_ENGINE_MEMORY_SIZE_STACK               0xFFFF
-#define IFB_ENGINE_MEMORY_SIZE_STRUCT_MANAGER      ifb_macro_align_size_struct(IFBEngineMemory)
-#define IFB_ENGINE_MEMORY_SIZE_STRUCT_HANDLES      ifb_macro_align_size_struct(IFBEngineMemoryHandles)
-#define IFB_ENGINE_MEMORY_SIZE_STRUCT_STACK        ifb_macro_align_size_struct(IFBEngineMemoryStack)
-#define IFB_ENGINE_MEMORY_SIZE_STRUCT_ARENAS       ifb_macro_align_size_struct(IFBEngineMemoryArenas)
-#define IFB_ENGINE_MEMORY_SIZE_STACK_OFFSET_STRIDE (IFB_ENGINE_MEMORY_SIZE_STACK / IFBEngineMemoryStackOffset_Count)
-
-#define IFB_ENGINE_MEMORY_SIZE_MANAGER_TOTAL \
-    IFB_ENGINE_MEMORY_SIZE_STACK          +  \
-    IFB_ENGINE_MEMORY_SIZE_STRUCT_MANAGER +  \
-    IFB_ENGINE_MEMORY_SIZE_STRUCT_HANDLES +  \
-    IFB_ENGINE_MEMORY_SIZE_STRUCT_STACK   +  \
-    IFB_ENGINE_MEMORY_SIZE_STRUCT_ARENAS 
+//memory sizes
+#define IFB_ENGINE_MEMORY_SIZE_GB_RESERVATION    4
+#define IFB_ENGINE_MEMORY_SIZE_KB_ARENA          64
+#define IFB_ENGINE_MEMORY_SIZE_ENGINE_STACK_64k  0xFFFF
+#define IFB_ENGINE_MEMORY_SIZE_STRUCT            ifb_macro_align_size_struct(IFBEngineMemory)
+#define IFB_ENGINE_MEMORY_SIZE_TOTAL_RESERVATION ifb_macro_size_gigabytes((IFBU64)IFB_ENGINE_MEMORY_SIZE_GB_RESERVATION)
+#define IFB_ENGINE_MEMORY_SIZE_TOTAL_ARENA       ifb_macro_size_kilobytes(IFB_ENGINE_MEMORY_SIZE_KB_ARENA)
+#define IFB_ENGINE_MEMORY_SIZE_TOTAL          \
+    IFB_ENGINE_MEMORY_SIZE_ENGINE_STACK_64k + \
+    IFB_ENGINE_MEMORY_SIZE_STRUCT
 
 struct IFBMemorySizes {
     IFBU32 gb_reservation;
     IFBU32 kb_arena;
-    IFBU32 stack;
-    IFBU16 stack_offset_stride;
-    IFBU32 struct_manager;
-    IFBU32 struct_handles;
-    IFBU32 struct_stack;
-    IFBU32 struct_arenas;
+    IFBU32 engine_stack_64k;
+    IFBU32 memory_struct;
     IFBU32 total_arena;
-    IFBU32 total_manager;
+    IFBU32 total_memory;
     IFBU64 total_reservation;
 };
 
 namespace ifb_engine {
 
-    ifb_global constexpr IFBMemorySizes _memory_sizes = {
+    ifb_global constexpr IFBMemorySizes _global_memory_sizes = {
         IFB_ENGINE_MEMORY_SIZE_GB_RESERVATION,
         IFB_ENGINE_MEMORY_SIZE_KB_ARENA,
-        IFB_ENGINE_MEMORY_SIZE_STACK,
-        IFB_ENGINE_MEMORY_SIZE_STACK_OFFSET_STRIDE,
-        IFB_ENGINE_MEMORY_SIZE_STRUCT_MANAGER,
-        IFB_ENGINE_MEMORY_SIZE_STRUCT_HANDLES,
-        IFB_ENGINE_MEMORY_SIZE_STRUCT_STACK,
-        IFB_ENGINE_MEMORY_SIZE_STRUCT_ARENAS,
-        IFB_ENGINE_MEMORY_SIZE_ARENA,
-        IFB_ENGINE_MEMORY_SIZE_MANAGER_TOTAL,
-        IFB_ENGINE_MEMORY_SIZE_RESERVATION
+        IFB_ENGINE_MEMORY_SIZE_ENGINE_STACK_64k,
+        IFB_ENGINE_MEMORY_SIZE_STRUCT,
+        IFB_ENGINE_MEMORY_SIZE_TOTAL_ARENA,
+        IFB_ENGINE_MEMORY_SIZE_TOTAL,
+        IFB_ENGINE_MEMORY_SIZE_TOTAL_RESERVATION
     };
 };
 

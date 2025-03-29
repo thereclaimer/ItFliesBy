@@ -6,6 +6,7 @@
 
 #include "memory/ifb-engine-memory.cpp"
 #include "memory/ifb-engine-memory-stack.cpp"
+#include "memory/ifb-engine-memory-arenas.cpp"
 
 #include "core/ifb-engine-core.cpp"
 #include "core/ifb-engine-core-graphics.cpp"
