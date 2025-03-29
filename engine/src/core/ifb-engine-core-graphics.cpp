@@ -25,3 +25,24 @@ ifb_engine::graphics_manager_create_and_show_window(
     return(result);
 }
 
+inline const IFBB8
+ifb_engine::graphics_manager_frame_start(
+    IFBEngineGraphicsManager* graphics_manager) {
+
+    IFBB8 result = true;
+    
+    result &= ifb_graphics::window_process_events(graphics_manager->window_handle);
+
+    return(result);
+}
+
+inline const IFBB8
+ifb_engine::graphics_manager_frame_render(
+    IFBEngineGraphicsManager* graphics_manager) {
+
+    IFBB8 result = true;
+
+    result &= ifb_graphics::window_swap_buffers(graphics_manager->window_handle);
+
+    return(result);
+}

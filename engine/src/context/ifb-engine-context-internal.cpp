@@ -5,11 +5,12 @@
 
 namespace ifb_engine {
 
-    IFBEngineCore*    context_frame_alloc_core       (const IFBEngineContext* engine_context);
+    IFBEngineCore* context_memory_push_core (const IFBEngineContext* engine_context);
+    IFBVoid        context_memory_reset     (const IFBEngineContext* engine_context);
 };
 
 inline IFBEngineCore*
-ifb_engine::context_frame_alloc_core(
+ifb_engine::context_memory_push_core(
     const IFBEngineContext* engine_context) {
 
     //push a core struct on the arena
@@ -24,4 +25,12 @@ ifb_engine::context_frame_alloc_core(
     //we're done
     return(core);
 }
-  
+
+inline IFBVoid
+ifb_engine::context_memory_reset(
+    const IFBEngineContext* engine_context) {
+
+    ifb_engine::memory_arena_reset(
+        engine_context->memory,
+        IFBEngineArena_Context);
+}

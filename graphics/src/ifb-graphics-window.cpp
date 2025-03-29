@@ -85,7 +85,7 @@ ifb_graphics::window_show(
 }
 
 const IFBB8 
-ifb_graphics::window_frame_start(
+ifb_graphics::window_process_events(
     IFBGraphicsWindow* ptr_window) {
 
     //start the frame
@@ -95,7 +95,7 @@ ifb_graphics::window_frame_start(
 }
 
 const IFBB8 
-ifb_graphics::window_frame_render(
+ifb_graphics::window_swap_buffers(
     IFBGraphicsWindow* ptr_window) {
 
     //start the frame

@@ -27,7 +27,9 @@ struct IFBEngineCore {
 
 namespace ifb_engine {
 
-    const IFBB8 core_startup (IFBEngineCore* core);
+    const IFBB8 core_startup      (IFBEngineCore* core);
+    const IFBB8 core_frame_start  (IFBEngineCore* core);
+    const IFBB8 core_frame_render (IFBEngineCore* core);
 };
 
 #define IFB_ENGINE_CORE_STRUCT_SIZE ifb_macro_align_size_struct(IFBEngineCore)
@@ -47,8 +49,9 @@ struct IFBEngineGraphicsManager {
 
 namespace ifb_engine {
 
-    const IFBB8 graphics_manager_create_and_show_window(IFBEngineGraphicsManager* graphics_manager);
-
+    const IFBB8 graphics_manager_create_and_show_window (IFBEngineGraphicsManager* graphics_manager);
+    const IFBB8 graphics_manager_frame_start            (IFBEngineGraphicsManager* graphics_manager);
+    const IFBB8 graphics_manager_frame_render           (IFBEngineGraphicsManager* graphics_manager);
 };
 
 /**********************************************************************************/
