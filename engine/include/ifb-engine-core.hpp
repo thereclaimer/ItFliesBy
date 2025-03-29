@@ -45,6 +45,12 @@ struct IFBEngineGraphicsManager {
     IFBGFXWindow window_handle;
 };
 
+namespace ifb_engine {
+
+    const IFBB8 graphics_manager_create_and_show_window(IFBEngineGraphicsManager* graphics_manager);
+
+};
+
 /**********************************************************************************/
 /* FILE MANAGER                                                                   */
 /**********************************************************************************/

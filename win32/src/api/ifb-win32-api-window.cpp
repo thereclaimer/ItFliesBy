@@ -34,7 +34,6 @@ namespace ifb_win32 {
     const LRESULT   window_on_wm_move    (IFBWin32Window* window);
     const LRESULT   window_on_wm_quit    (IFBWin32Window* window);
     const LRESULT   window_on_wm_destroy (IFBWin32Window* window);
-
 };
 
 /**********************************************************************************/
@@ -62,12 +61,16 @@ ifb_win32::window_create(
     // CREATE WINDOW
     //-------------------------------------------
 
+    //clear win32 window data
+    window->win32 = {0};
+
     //window class
     WNDCLASSA window_class = {0};
     window_class.lpfnWndProc   = (WNDPROC)ifb_win32::window_callback;
     window_class.hInstance     = GetModuleHandle(NULL);  
     window_class.lpszClassName = "IFBWin32Window";
     window_class.style         = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
+    window_class.cbWndExtra    = ifb_macro_align_size_struct(IFBWin32Window);
 
     //register the class
     const IFBB8 win32_is_window_class_registered = (RegisterClass(&window_class) != 0);
@@ -85,6 +88,15 @@ ifb_win32::window_create(
         NULL,
         window_class.hInstance,
         NULL);
+
+    SetWindowPos(
+        win32_handle_window,
+        NULL,
+        window->pos.x,
+        window->pos.y,
+        window->dims.width,
+        window->dims.height,
+        0);
 
     //get the device context
     const HDC win32_handle_device = GetDC(win32_handle_window);
@@ -256,11 +268,10 @@ ifb_win32::window_assert_store(
     ifb_macro_assert(is_valid);
 
     //store the window
-    is_valid &= SetWindowLongPtr(
+    SetWindowLongPtr(
         window->win32.handles.window,
         GWLP_USERDATA,
         (LONG_PTR)window);
-    ifb_macro_assert(is_valid);
 }
 
 inline IFBWin32Window*
@@ -270,9 +281,12 @@ ifb_win32::window_assert_load(
     //handle
     ifb_macro_assert(win32_window_handle);
 
-    //window
+    //get the window
     IFBWin32Window* window = (IFBWin32Window*)GetWindowLongPtr(win32_window_handle,GWLP_USERDATA);
-    ifb_macro_assert(window);
+
+    //if the window is null, we can assume it hasn't been stored yet and isn't initialized
+    //just return null until there is something to check
+    if (!window) return(NULL);
 
     //properties
     IFBB8 is_valid = true;
@@ -302,7 +316,14 @@ ifb_win32::window_callback(
 
     //get the window
     IFBWin32Window* window = ifb_win32::window_assert_load(window_handle);
-    
+
+    //if it's null, the window hasn't been created and stored yet
+    //return the default process until we have something in place
+    if (!window) {
+        message_handler_result = DefWindowProc(window_handle,message,w_param,l_param);
+        return(message_handler_result);
+    }
+
     //see if imgui needs to process this event
     message_handler_result = ImGui_ImplWin32_WndProcHandler(
         window_handle,message,w_param,l_param);
