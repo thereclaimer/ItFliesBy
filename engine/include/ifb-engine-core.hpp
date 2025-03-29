@@ -36,9 +36,10 @@ namespace ifb_engine {
 /* GRAPHICS MANAGER                                                               */
 /**********************************************************************************/
 
-#define IFB_ENGINE_GRAPHICS_WINDOW_TITLE       "It Flies By (DEBUG)"
-#define IFB_ENGINE_GRAPHICS_WINDOW_INIT_WIDTH  1024
-#define IFB_ENGINE_GRAPHICS_WINDOW_INIT_HEIGHT 768
+#define IFB_ENGINE_GRAPHICS_WINDOW_TITLE        "It Flies By (DEBUG)"
+#define IFB_ENGINE_GRAPHICS_WINDOW_TITLE_LENGTH 255
+#define IFB_ENGINE_GRAPHICS_WINDOW_INIT_WIDTH   1024
+#define IFB_ENGINE_GRAPHICS_WINDOW_INIT_HEIGHT  768
 
 struct IFBEngineGraphicsManager {
     IFBGFXWindow window_handle;
@@ -70,6 +71,7 @@ struct IFBEngineCoreGlobals {
     IFBU32   core_struct_size;
     IFBU32   window_init_width;
     IFBU32   window_init_height;
+    IFBU32   window_title_length;
     IFBChar* window_title;
 };
 
@@ -79,9 +81,9 @@ namespace ifb_engine {
         IFB_ENGINE_CORE_STRUCT_SIZE,
         IFB_ENGINE_GRAPHICS_WINDOW_INIT_WIDTH,
         IFB_ENGINE_GRAPHICS_WINDOW_INIT_HEIGHT,
+        IFB_ENGINE_GRAPHICS_WINDOW_TITLE_LENGTH,
         IFB_ENGINE_GRAPHICS_WINDOW_TITLE
     };
-
 };
 
 #endif //IFB_ENGINE_SYSTEMS_HPP

@@ -12,3 +12,4 @@
 #include "core/ifb-engine-core-graphics.cpp"
 #include "core/ifb-engine-core-files.cpp"
 #include "core/ifb-engine-core-threads.cpp"
+#include "core/ifb-engine-core-startup.cpp"
