@@ -19,12 +19,18 @@ struct IFBEngineThreadManager;
 /* ENGINE CORE                                                                    */
 /**********************************************************************************/
 
-
 struct IFBEngineCore {
     IFBEngineGraphicsManager* graphics;
     IFBEngineFileManager*     files;
     IFBEngineThreadManager*   threads;
 };
+
+namespace ifb_engine {
+
+    const IFBB8 core_startup (IFBEngineCore* core);
+};
+
+#define IFB_ENGINE_CORE_STRUCT_SIZE ifb_macro_align_size_struct(IFBEngineCore)
 
 /**********************************************************************************/
 /* GRAPHICS MANAGER                                                               */
@@ -37,7 +43,6 @@ struct IFBEngineCore {
 struct IFBEngineGraphicsManager {
     IFBGFXWindow window_handle;
 };
-
 
 /**********************************************************************************/
 /* FILE MANAGER                                                                   */
@@ -62,17 +67,19 @@ struct IFBEngineThreadManager {
 /**********************************************************************************/
 
 struct IFBEngineCoreGlobals {
-    IFBChar* window_title;
+    IFBU32   core_struct_size;
     IFBU32   window_init_width;
     IFBU32   window_init_height;
+    IFBChar* window_title;
 };
 
 namespace ifb_engine {
 
     ifb_global IFBEngineCoreGlobals _global_core = {
-        IFB_ENGINE_GRAPHICS_WINDOW_TITLE,
+        IFB_ENGINE_CORE_STRUCT_SIZE,
         IFB_ENGINE_GRAPHICS_WINDOW_INIT_WIDTH,
-        IFB_ENGINE_GRAPHICS_WINDOW_INIT_HEIGHT
+        IFB_ENGINE_GRAPHICS_WINDOW_INIT_HEIGHT,
+        IFB_ENGINE_GRAPHICS_WINDOW_TITLE
     };
 
 };

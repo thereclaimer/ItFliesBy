@@ -5,7 +5,7 @@
 #include "ifb-engine-memory.hpp"
 
 struct IFBEngineContext {
-    IFBEngineMemoryManager* memory_manager;
+    IFBEngineMemory* memory;
 };
 
 #endif //IFB_ENGINE_CONTEXT_HPP

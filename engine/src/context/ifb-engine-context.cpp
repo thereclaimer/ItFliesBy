@@ -16,8 +16,8 @@ ifb_engine::context_create(
     IFBMEMStack global_stack_handle = ifb_memory::stack_create(args.global_stack_memory);
 
     //allocate the context
-    IFBEngineContext* engine_context = ifb_engine::context_initialize(global_stack_handle);
-    engine_context->memory_manager   = ifb_engine::context_allocate_engine_memory(global_stack_handle); 
+    IFBEngineContext* engine_context = ifb_engine::context_initialize             (global_stack_handle);
+    engine_context->memory           = ifb_engine::context_allocate_engine_memory (global_stack_handle); 
 
     //we're done
     return(engine_context);
@@ -27,6 +27,7 @@ ifb_engine_api const IFBB8
 ifb_engine::context_destroy(
     IFBEngineContext* engine_context) {
 
+
     return(false);
 }
     
@@ -35,7 +36,17 @@ ifb_engine_api const IFBB8
 ifb_engine::context_startup(
     IFBEngineContext* engine_context){
 
-    return(false);
+    //result
+    IFBB8 result = true;
+
+    //get a new core reference
+    IFBEngineCore* core = ifb_engine::context_frame_alloc_core(engine_context);
+
+    //start core systems
+    result &= ifb_engine::core_startup(core);
+
+    //we're done
+    return(result);
 }
 
 ifb_engine_api const IFBB8

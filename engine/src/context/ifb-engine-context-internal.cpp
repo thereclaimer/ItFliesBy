@@ -5,8 +5,9 @@
 
 namespace ifb_engine {
 
-    IFBEngineContext*       context_initialize             (IFBMEMStack stack);
-    IFBEngineMemoryManager* context_allocate_engine_memory (IFBMEMStack stack);
+    IFBEngineContext* context_initialize             (IFBMEMStack stack);
+    IFBEngineMemory*  context_allocate_engine_memory (IFBMEMStack stack);
+    IFBEngineCore*    context_frame_alloc_core       (const IFBEngineContext* engine_context);
 };
 
 inline IFBEngineContext* 
@@ -18,15 +19,33 @@ ifb_engine::context_initialize(
     return(context);    
 }
 
-inline IFBEngineMemoryManager*
+inline IFBEngineMemory*
 ifb_engine::context_allocate_engine_memory(
     IFBMEMStack stack) {
 
-    //create the memory manager
-    IFBEngineMemoryManager* memory_manager = ifb_engine::memory_manager_create(stack);
+    //allocate memory
+    IFBEngineMemory* memory = ifb_engine::memory_allocate(stack);
 
-    //allocate engine memory
-    ifb_engine::memory_manager_allocate_core_systems(memory_manager);
+    return(memory);
+}
 
-    return(memory_manager);
+inline IFBEngineCore*
+ifb_engine::context_frame_alloc_core(
+    const IFBEngineContext* engine_context) {
+
+    const IFBEngineMemory* memory = engine_context->memory;
+
+    IFBMEMArena  frame_arena      = ifb_engine::memory_arena_frame(memory->arenas);
+    const IFBU32 frame_alloc_size = ifb_engine::_global_core.core_struct_size;
+
+    //push a core struct on the arena
+    IFBEngineCore* core = (IFBEngineCore*)ifb_memory::arena_push_bytes_absolute_pointer(
+        frame_arena,
+        frame_alloc_size);
+
+    //read the core data
+    ifb_engine::memory_stack_get_core(memory->stack,core);
+
+    //we're done
+    return(core);
 }
