@@ -20,7 +20,10 @@ ifb_engine::context_memory_push_core(
         ifb_engine::_global_core.core_struct_size);
 
     //read the core data
-    ifb_engine::memory_stack_get_core(engine_context->memory,core);
+    core->memory   = engine_context->memory;
+    core->graphics = ifb_engine::memory_stack_get_manager_graphics (engine_context->memory);
+    core->threads  = ifb_engine::memory_stack_get_manager_threads  (engine_context->memory);
+    core->files    = ifb_engine::memory_stack_get_manager_files    (engine_context->memory);
 
     //we're done
     return(core);

@@ -19,6 +19,13 @@ ifb_engine::context_create(
     IFBEngineContext* engine_context = ifb_engine::memory_stack_get_context(engine_memory);
     engine_context->memory = engine_memory;
 
+    //initialize the core
+    IFBEngineCore* core = ifb_engine::context_memory_push_core(engine_context);
+    ifb_engine::core_initialize(core);
+
+    //reset context memory
+    ifb_engine::context_memory_reset(engine_context);
+
     //we're done
     return(engine_context);
 }

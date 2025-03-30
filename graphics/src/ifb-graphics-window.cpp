@@ -30,6 +30,9 @@ ifb_graphics::window_memory_initialize(
     ifb_macro_assert(memory.start);
     ifb_macro_assert(memory.size);
 
+    //zero the memory
+    ifb_memory::zero_buffer(memory);
+
     //calculate addresses
     const IFBAddr start_window = memory.start;
     const IFBAddr start_title  = start_window + ifb_macro_align_size_struct(IFBGraphicsWindow);

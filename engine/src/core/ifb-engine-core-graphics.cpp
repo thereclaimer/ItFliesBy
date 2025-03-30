@@ -1,6 +1,31 @@
 #pragma once
 
 #include "ifb-engine-core.hpp"
+#include "ifb-engine-memory.hpp"
+
+inline const IFBB8
+ifb_engine::graphics_manager_initialize(
+    IFBEngineGraphicsManager* graphics_manager,
+    IFBEngineMemory*          engine_memory) {
+
+    IFBB8 result = true;
+
+    //memory for tracking allcoations
+    IFBMemory memory;
+
+    //window memory
+    memory.size  = ifb_graphics::window_memory_size(IFB_ENGINE_GRAPHICS_WINDOW_TITLE_LENGTH);
+    memory.start = ifb_engine::memory_arena_push_bytes_absolute_address(
+        engine_memory,
+        IFBEngineArena_Core_ManagerGraphics,
+        memory.size);
+
+    graphics_manager->window_handle = ifb_graphics::window_memory_initialize(memory);
+    result &= (graphics_manager->window_handle != NULL);
+
+    return(result);
+}
+
 
 inline const IFBB8 
 ifb_engine::graphics_manager_create_and_show_window(

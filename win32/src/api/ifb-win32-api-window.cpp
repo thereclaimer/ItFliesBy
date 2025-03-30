@@ -312,7 +312,7 @@ ifb_win32::window_callback(
     WPARAM w_param,
     LPARAM l_param) {
 
-    LRESULT message_handler_result = S_FALSE;
+    LRESULT message_handler_result = false;
 
     //get the window
     IFBWin32Window* window = ifb_win32::window_assert_load(window_handle);
@@ -329,7 +329,7 @@ ifb_win32::window_callback(
         window_handle,message,w_param,l_param);
 
     //if imgui processed the event, we're done
-    if (message_handler_result) return(S_OK);
+    if (message_handler_result) return(true);
 
     //get the messasge handler
     IFBWin32WindowMessageHandler window_message_handler = NULL;
@@ -345,7 +345,7 @@ ifb_win32::window_callback(
     //get the result
     message_handler_result = (window_message_handler != NULL)
             ? window_message_handler(window) 
-            : S_FALSE; 
+            : false; 
             
     //if nothing else, get the default window result for the event
     if (!message_handler_result) {

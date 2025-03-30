@@ -20,6 +20,7 @@
 
 struct IFBEngineContext;
 struct IFBEngineContextArgs;
+struct IFBEngineMemory;
 
 /**********************************************************************************/
 /* HANDLES                                                                        */

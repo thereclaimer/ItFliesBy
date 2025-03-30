@@ -9,6 +9,7 @@
 
 //engine core
 struct IFBEngineCore;
+struct IFBEngineCoreArenas;
 
 //managers
 struct IFBEngineGraphicsManager;
@@ -20,6 +21,7 @@ struct IFBEngineThreadManager;
 /**********************************************************************************/
 
 struct IFBEngineCore {
+    IFBEngineMemory*          memory;
     IFBEngineGraphicsManager* graphics;
     IFBEngineFileManager*     files;
     IFBEngineThreadManager*   threads;
@@ -27,6 +29,7 @@ struct IFBEngineCore {
 
 namespace ifb_engine {
 
+    const IFBB8 core_initialize   (IFBEngineCore* core);
     const IFBB8 core_startup      (IFBEngineCore* core);
     const IFBB8 core_frame_start  (IFBEngineCore* core);
     const IFBB8 core_frame_render (IFBEngineCore* core);
@@ -49,6 +52,7 @@ struct IFBEngineGraphicsManager {
 
 namespace ifb_engine {
 
+    const IFBB8 graphics_manager_initialize             (IFBEngineGraphicsManager* graphics_manager, IFBEngineMemory* engine_memory);
     const IFBB8 graphics_manager_create_and_show_window (IFBEngineGraphicsManager* graphics_manager);
     const IFBB8 graphics_manager_frame_start            (IFBEngineGraphicsManager* graphics_manager);
     const IFBB8 graphics_manager_frame_render           (IFBEngineGraphicsManager* graphics_manager);
