@@ -32,7 +32,7 @@ namespace ifb_win32 {
     //message handlers
     const LRESULT   window_on_wm_size    (IFBWin32Window* window);
     const LRESULT   window_on_wm_move    (IFBWin32Window* window);
-    const LRESULT   window_on_wm_quit    (IFBWin32Window* window);
+    const LRESULT   window_on_wm_close   (IFBWin32Window* window);
     const LRESULT   window_on_wm_destroy (IFBWin32Window* window);
 };
 
@@ -192,7 +192,6 @@ ifb_win32::window_process_events(
             case WM_SYSKEYDOWN: {
 
                 const IFBKeyCode keycode = ifb_win32::user_input_keycode((IFBU32)window_message.wParam);
-
             } break;
 
             //key up
@@ -200,11 +199,6 @@ ifb_win32::window_process_events(
             case WM_SYSKEYUP: {
 
                 const IFBKeyCode keycode = ifb_win32::user_input_keycode((IFBU32)window_message.wParam);
-
-            } break;
-
-            case WM_QUIT: {
-                window->flags |= IFBPlatformWindowFlags_Closed;
             } break;
         }
 
@@ -241,7 +235,7 @@ ifb_win32::window_show(
     const IFBU32 error  = GetLastError();
 
     //set the handle
-    window->flags |= IFBPlatformWindowFlags_Visible;
+    ifb_platform::window_set_flag_visible(window->flags);
 
     //we're done
     return(true);
@@ -337,7 +331,7 @@ ifb_win32::window_callback(
 
         case WM_SIZE:    window_message_handler = ifb_win32::window_on_wm_size;    break; 
         case WM_MOVE:    window_message_handler = ifb_win32::window_on_wm_move;    break; 
-        case WM_QUIT:    window_message_handler = ifb_win32::window_on_wm_quit;    break; 
+        case WM_CLOSE:   window_message_handler = ifb_win32::window_on_wm_close;   break; 
         case WM_DESTROY: window_message_handler = ifb_win32::window_on_wm_destroy; break; 
     }
 
@@ -374,10 +368,10 @@ ifb_win32::window_on_wm_size(
     window->dims.height = window_height;
 
     //set the flag
-    window->flags |= IFBPlatformWindowFlags_Resized;
+    ifb_platform::window_set_flag_resized(window->flags);
 
     //we're done
-    return(S_OK);   
+    return(true);   
 }
 
 inline const LRESULT
@@ -393,21 +387,21 @@ ifb_win32::window_on_wm_move(
     window->pos.y = window_position_y;
 
     //set the flag
-    window->flags |= IFBPlatformWindowFlags_Moved;
+    ifb_platform::window_set_flag_moved(window->flags);
 
     //we're done
-    return(S_OK);
+    return(true);
 }
 
 inline const LRESULT 
-ifb_win32::window_on_wm_quit(
+ifb_win32::window_on_wm_close(
     IFBWin32Window* window) {
 
     //set the flag
-    window->flags |= IFBPlatformWindowFlags_Closed;
+    ifb_platform::window_set_flag_closed(window->flags);
 
     //we're done
-    return(S_OK);
+    return(true);
 }
 
 inline const LRESULT 
@@ -415,11 +409,11 @@ ifb_win32::window_on_wm_destroy(
     IFBWin32Window* window) {
 
     //set the flag
-    window->flags |= IFBPlatformWindowFlags_Closed;
+    ifb_platform::window_set_flag_closed(window->flags);
 
     //post the quit message
-    PostQuitMessage(0);
+    PostQuitMessage(true);
 
     //we're done
-    return(S_OK);
+    return(true);
 }

@@ -74,15 +74,19 @@ ifb_engine::context_main_loop (
     //get a new core reference
     IFBEngineCore* core = ifb_engine::context_memory_push_core(engine_context);
 
+    IFBB8 result  = true;
     IFBB8 running = true;
-    while (running) {
+    while (result && running) {
 
-        running &= ifb_engine::core_frame_start  (core);
-        running &= ifb_engine::core_frame_render (core);
+        result &= ifb_engine::core_frame_start  (core);
+        result &= ifb_engine::core_frame_render (core);
+
+        running &= !ifb_engine::core_should_quit(core);
     }
 
     //free memory
     ifb_engine::context_memory_reset(engine_context);
 
-    return(false);
+    //we're done
+    return(result);
 }

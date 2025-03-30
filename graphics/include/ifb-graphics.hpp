@@ -78,6 +78,9 @@ namespace ifb_graphics {
     const IFBB8    window_show              (IFBGFXWindow window_handle);
     const IFBB8    window_process_events    (IFBGFXWindow window_handle);
     const IFBB8    window_swap_buffers      (IFBGFXWindow window_handle);
+
+    IFBPlatformWindowFlags
+    window_get_flags(IFBGFXWindow window_handle);
 };
 
 

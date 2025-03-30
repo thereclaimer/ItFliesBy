@@ -106,3 +106,12 @@ ifb_graphics::window_swap_buffers(
 
     return(result);
 }
+
+IFBPlatformWindowFlags
+ifb_graphics::window_get_flags(
+    IFBGraphicsWindow* ptr_window) {
+
+    const IFBPlatformWindowFlags flags = ptr_window->flags;
+
+    return(flags);
+}

@@ -71,3 +71,13 @@ ifb_engine::graphics_manager_frame_render(
 
     return(result);
 }
+
+inline const IFBB8 
+ifb_engine::graphics_manager_window_quit_received(
+    IFBEngineGraphicsManager* graphics_manager) {
+
+    IFBPlatformWindowFlags flags         = ifb_graphics::window_get_flags(graphics_manager->window_handle);
+    const IFBB8            quit_received = ifb_platform::window_get_flag_closed(flags);
+
+    return(quit_received);
+}
