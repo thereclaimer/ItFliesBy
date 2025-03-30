@@ -10,34 +10,34 @@ namespace ifb_math {
     // instance operations
     //----------------------
 
-    void vec2_a_add_b           (IFBVec2& v2_a_add_b,    const IFBVec2& v2_a,  const IFBVec2& v2_b);
-    void vec2_a_sub_b           (IFBVec2& v2_a_sub_b,    const IFBVec2& v2_a,  const IFBVec2& v2_b);
-    void vec2_a_project_b       (IFBVec2& v2_a_proj_b,   const IFBVec2& v2_a,  const IFBVec2& v2_b);
-    void vec2_a_reject_b        (IFBVec2& v2_a_rej_b,    const IFBVec2& v2_a,  const IFBVec2& v2_b);
-    void vec2_scalar            (IFBVec2& v2_scalar,     const IFBVec2& v2_in, const ifb::f32  scalar);
-    void vec2_a_dot_b           (ifb::f32& v2_a_dot_b,    const IFBVec2& v2_a,  const IFBVec2& v2_b);
-    void vec2_magnitude         (ifb::f32& v2_magnitude,  const IFBVec2& v2_in);
-    void vec2_normalize         (IFBVec2& v2_normalized, const IFBVec2& v2_in);
+    void vec2_a_add_b           (ifb::vec2_t& v2_a_add_b,    const ifb::vec2_t& v2_a,  const ifb::vec2_t& v2_b);
+    void vec2_a_sub_b           (ifb::vec2_t& v2_a_sub_b,    const ifb::vec2_t& v2_a,  const ifb::vec2_t& v2_b);
+    void vec2_a_project_b       (ifb::vec2_t& v2_a_proj_b,   const ifb::vec2_t& v2_a,  const ifb::vec2_t& v2_b);
+    void vec2_a_reject_b        (ifb::vec2_t& v2_a_rej_b,    const ifb::vec2_t& v2_a,  const ifb::vec2_t& v2_b);
+    void vec2_scalar            (ifb::vec2_t& v2_scalar,     const ifb::vec2_t& v2_in, const ifb::f32  scalar);
+    void vec2_a_dot_b           (ifb::f32& v2_a_dot_b,    const ifb::vec2_t& v2_a,  const ifb::vec2_t& v2_b);
+    void vec2_magnitude         (ifb::f32& v2_magnitude,  const ifb::vec2_t& v2_in);
+    void vec2_normalize         (ifb::vec2_t& v2_normalized, const ifb::vec2_t& v2_in);
 
     //----------------------
     // batch operations
     //----------------------
 
-    void vec2_batch_a_add_b     (IFBVec2* v2_a_add_b,    const ifb::u32 count, const IFBVec2* v2_a,  const IFBVec2* v2_b);
-    void vec2_batch_a_sub_b     (IFBVec2* v2_a_sub_b,    const ifb::u32 count, const IFBVec2* v2_a,  const IFBVec2* v2_b);
-    void vec2_batch_a_dot_b     (ifb::f32* v2_a_dot_b,    const ifb::u32 count, const IFBVec2* v2_a,  const IFBVec2* v2_b);
-    void vec2_batch_a_project_b (IFBVec2* v2_a_proj_b,   const ifb::u32 count, const IFBVec2* v2_a,  const IFBVec2* v2_b);
-    void vec2_batch_a_reject_b  (IFBVec2* v2_a_rej_b,    const ifb::u32 count, const IFBVec2* v2_a,  const IFBVec2* v2_b);
-    void vec2_batch_scalar      (IFBVec2* v2_scalar,     const ifb::u32 count, const IFBVec2* v2_in, const ifb::f32* scalar);
-    void vec2_batch_magnitude   (ifb::f32* v2_magnitude,  const ifb::u32 count, const IFBVec2* v2_in);
-    void vec2_batch_normalize   (IFBVec2* v2_normalized, const ifb::u32 count, const IFBVec2* v2_in);
+    void vec2_batch_a_add_b     (ifb::vec2_t* v2_a_add_b,    const ifb::u32 count, const ifb::vec2_t* v2_a,  const ifb::vec2_t* v2_b);
+    void vec2_batch_a_sub_b     (ifb::vec2_t* v2_a_sub_b,    const ifb::u32 count, const ifb::vec2_t* v2_a,  const ifb::vec2_t* v2_b);
+    void vec2_batch_a_dot_b     (ifb::f32* v2_a_dot_b,    const ifb::u32 count, const ifb::vec2_t* v2_a,  const ifb::vec2_t* v2_b);
+    void vec2_batch_a_project_b (ifb::vec2_t* v2_a_proj_b,   const ifb::u32 count, const ifb::vec2_t* v2_a,  const ifb::vec2_t* v2_b);
+    void vec2_batch_a_reject_b  (ifb::vec2_t* v2_a_rej_b,    const ifb::u32 count, const ifb::vec2_t* v2_a,  const ifb::vec2_t* v2_b);
+    void vec2_batch_scalar      (ifb::vec2_t* v2_scalar,     const ifb::u32 count, const ifb::vec2_t* v2_in, const ifb::f32* scalar);
+    void vec2_batch_magnitude   (ifb::f32* v2_magnitude,  const ifb::u32 count, const ifb::vec2_t* v2_in);
+    void vec2_batch_normalize   (ifb::vec2_t* v2_normalized, const ifb::u32 count, const ifb::vec2_t* v2_in);
 };
 
 inline void
 ifb_math::vec2_a_add_b(
-          IFBVec2& v2_a_add_b,
-    const IFBVec2& v2_a,
-    const IFBVec2& v2_b) {
+          ifb::vec2_t& v2_a_add_b,
+    const ifb::vec2_t& v2_a,
+    const ifb::vec2_t& v2_b) {
 
     v2_a_add_b.x = v2_a.x + v2_b.x;
     v2_a_add_b.y = v2_a.y + v2_b.y;
@@ -45,9 +45,9 @@ ifb_math::vec2_a_add_b(
 
 inline void
 ifb_math::vec2_a_sub_b(
-          IFBVec2& v2_a_sub_b,
-    const IFBVec2& v2_a,
-    const IFBVec2& v2_b) {
+          ifb::vec2_t& v2_a_sub_b,
+    const ifb::vec2_t& v2_a,
+    const ifb::vec2_t& v2_b) {
 
     v2_a_sub_b.x = v2_a.x - v2_b.x;
     v2_a_sub_b.y = v2_a.y - v2_b.y;
@@ -56,8 +56,8 @@ ifb_math::vec2_a_sub_b(
 inline void
 ifb_math::vec2_a_dot_b(
           ifb::f32& v2_a_dot_b,
-    const IFBVec2& v2_a,
-    const IFBVec2& v2_b) {
+    const ifb::vec2_t& v2_a,
+    const ifb::vec2_t& v2_b) {
 
     const ifb::f32 v2_ax_bx = v2_a.x * v2_b.x;
     const ifb::f32 v2_ay_by = v2_a.y * v2_b.y;
@@ -67,9 +67,9 @@ ifb_math::vec2_a_dot_b(
 
 inline void
 ifb_math::vec2_a_project_b(
-          IFBVec2& v2_a_proj_b,
-    const IFBVec2& v2_a,
-    const IFBVec2& v2_b) {
+          ifb::vec2_t& v2_a_proj_b,
+    const ifb::vec2_t& v2_a,
+    const ifb::vec2_t& v2_b) {
 
     //forward declarations
     ifb::f32 v2_a_dot_b, v2_b_dot_b;
@@ -87,12 +87,12 @@ ifb_math::vec2_a_project_b(
 
 inline void
 ifb_math::vec2_a_reject_b(
-          IFBVec2& v2_a_rej_b,
-    const IFBVec2& v2_a,
-    const IFBVec2& v2_b) {
+          ifb::vec2_t& v2_a_rej_b,
+    const ifb::vec2_t& v2_a,
+    const ifb::vec2_t& v2_b) {
 
     //calculate a proj b
-    IFBVec2 v2_a_proj_b;
+    ifb::vec2_t v2_a_proj_b;
     ifb_math::vec2_a_project_b(v2_a_proj_b, v2_a, v2_b);
 
     //subtract the projection from a to get the rejection
@@ -101,8 +101,8 @@ ifb_math::vec2_a_reject_b(
 
 inline void
 ifb_math::vec2_scalar(
-          IFBVec2& v2_scalar,
-    const IFBVec2& v2_in,
+          ifb::vec2_t& v2_scalar,
+    const ifb::vec2_t& v2_in,
     const ifb::f32  scalar) {
 
     v2_scalar.x = scalar * v2_in.x; 
@@ -112,7 +112,7 @@ ifb_math::vec2_scalar(
 inline void
 ifb_math::vec2_magnitude(
           ifb::f32& v2_magnitude,
-    const IFBVec2& v2_in) {
+    const ifb::vec2_t& v2_in) {
 
     const ifb::f32 v2_xx        = v2_in.x * v2_in.x;
     const ifb::f32 v2_yy        = v2_in.y * v2_in.y;
@@ -123,8 +123,8 @@ ifb_math::vec2_magnitude(
 
 inline void
 ifb_math::vec2_normalize(
-          IFBVec2& v2_normalized,
-    const IFBVec2& v2_in) {
+          ifb::vec2_t& v2_normalized,
+    const ifb::vec2_t& v2_in) {
 
     //get the magnitude
     ifb::f32 v2_magnitude = 0;
@@ -139,18 +139,18 @@ ifb_math::vec2_normalize(
 
 inline void 
 ifb_math::vec2_batch_a_add_b(
-          IFBVec2* v2_a_add_b,
+          ifb::vec2_t* v2_a_add_b,
     const ifb::u32  count,
-    const IFBVec2* v2_a, 
-    const IFBVec2* v2_b) {
+    const ifb::vec2_t* v2_a, 
+    const ifb::vec2_t* v2_b) {
 
     for (
         ifb::u32 index = 0;
         index < count;
         ++index) {
 
-        const IFBVec2& v2_a_i = v2_a[index];
-        const IFBVec2& v2_b_i = v2_b[index];
+        const ifb::vec2_t& v2_a_i = v2_a[index];
+        const ifb::vec2_t& v2_b_i = v2_b[index];
 
         ifb_math::vec2_a_add_b(
             v2_a_add_b [index],
@@ -161,10 +161,10 @@ ifb_math::vec2_batch_a_add_b(
 
 inline void
 ifb_math::vec2_batch_a_sub_b(
-          IFBVec2* v2_a_sub_b,
+          ifb::vec2_t* v2_a_sub_b,
     const ifb::u32  count,
-    const IFBVec2* v2_a, 
-    const IFBVec2* v2_b) {
+    const ifb::vec2_t* v2_a, 
+    const ifb::vec2_t* v2_b) {
     
     for (
         ifb::u32 index = 0;
@@ -182,8 +182,8 @@ inline void
 ifb_math::vec2_batch_a_dot_b(
           ifb::f32* v2_a_dot_b,
     const ifb::u32  count,
-    const IFBVec2* v2_a, 
-    const IFBVec2* v2_b) {
+    const ifb::vec2_t* v2_a, 
+    const ifb::vec2_t* v2_b) {
 
     for (
         ifb::u32 index = 0;
@@ -199,10 +199,10 @@ ifb_math::vec2_batch_a_dot_b(
 
 inline void
 ifb_math::vec2_batch_a_project_b(
-          IFBVec2* v2_a_proj_b,
+          ifb::vec2_t* v2_a_proj_b,
     const ifb::u32  count,
-    const IFBVec2* v2_a, 
-    const IFBVec2* v2_b) {
+    const ifb::vec2_t* v2_a, 
+    const ifb::vec2_t* v2_b) {
 
     for (
         ifb::u32 index = 0;
@@ -218,10 +218,10 @@ ifb_math::vec2_batch_a_project_b(
 
 inline void
 ifb_math::vec2_batch_a_reject_b(
-          IFBVec2* v2_a_rej_b,
+          ifb::vec2_t* v2_a_rej_b,
     const ifb::u32  count,
-    const IFBVec2* v2_a, 
-    const IFBVec2* v2_b) {
+    const ifb::vec2_t* v2_a, 
+    const ifb::vec2_t* v2_b) {
 
     for (
         ifb::u32 index = 0;
@@ -237,9 +237,9 @@ ifb_math::vec2_batch_a_reject_b(
 
 inline void
 ifb_math::vec2_batch_scalar(
-          IFBVec2* v2_scalar,
+          ifb::vec2_t* v2_scalar,
     const ifb::u32  count,
-    const IFBVec2* v2_in,
+    const ifb::vec2_t* v2_in,
     const ifb::f32* scalar) {
 
     for (
@@ -258,7 +258,7 @@ inline void
 ifb_math::vec2_batch_magnitude(
           ifb::f32* v2_magnitude,
     const ifb::u32  count,
-    const IFBVec2* v2_in) {
+    const ifb::vec2_t* v2_in) {
 
     for (
         ifb::u32 index = 0;
@@ -273,9 +273,9 @@ ifb_math::vec2_batch_magnitude(
 
 inline void
 ifb_math::vec2_batch_normalize(
-          IFBVec2* v2_normalized,
+          ifb::vec2_t* v2_normalized,
     const ifb::u32  count,
-    const IFBVec2* v2_in) {
+    const ifb::vec2_t* v2_in) {
 
     for (
         ifb::u32 index = 0;

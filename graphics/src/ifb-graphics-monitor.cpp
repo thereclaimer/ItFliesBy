@@ -77,7 +77,7 @@ ifb_graphics::monitor_table_update(
              ++monitor_index) {
 
         //check for primary monitor
-        IFBPosition monitor_position_ref = monitor_array[monitor_index].position;
+        ifb::position_t monitor_position_ref = monitor_array[monitor_index].position;
         primary_monitor_found = (monitor_position_ref.x == 0 && monitor_position_ref.y == 0);
         
         //if we found the primary monitor, set the index and break
@@ -155,7 +155,7 @@ ifb_graphics::monitor_table_get_monitor_primary(
 const ifb::b8
 ifb_graphics::monitor_get_center(
     const IFBMonitor*  monitor_ptr,
-          IFBPosition* center_position_ptr) {
+          ifb::position_t* center_position_ptr) {
 
     //sanity check
     ifb_macro_assert(monitor_ptr);

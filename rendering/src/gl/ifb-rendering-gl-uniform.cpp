@@ -80,7 +80,7 @@ inline const ifb::b8
 ifb_gl::uniform_update_vec2(
     const IFBGLIDUniformVec2 uniform,
     const ifb::u32            count,
-    const IFBVec2*           vec2) {
+    const ifb::vec2_t*           vec2) {
 
     glUniform2fv(
         uniform.gl_id,
@@ -96,7 +96,7 @@ inline const ifb::b8
 ifb_gl::uniform_update_vec3(
     const IFBGLIDUniformVec3 uniform,
     const ifb::u32            count,
-    const IFBVec3*           vec3) {
+    const ifb::vec3_t*           vec3) {
 
     glUniform3fv(
         uniform.gl_id,
@@ -112,7 +112,7 @@ inline const ifb::b8
 ifb_gl::uniform_update_mat3(
     const IFBGLIDUniformMat3 uniform,
     const ifb::u32            count,
-    const IFBMat3*           mat3) {
+    const ifb::mat3_t*           mat3) {
 
     glUniformMatrix3fv(
         uniform.gl_id,

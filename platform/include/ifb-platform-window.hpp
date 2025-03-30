@@ -22,8 +22,8 @@ typedef ifb::u64 IFBPlatformWindowFlags;
 struct IFBPlatformWindow {
     ifb::utf8*               title;
     IFBPlatformWindowFlags flags;
-    IFBDimensions          dims;
-    IFBPosition            pos;
+    ifb::dimensions_t          dims;
+    ifb::position_t            pos;
     struct {
         ImGuiContext* imgui;
         IFBGLContext  opengl;

@@ -64,8 +64,8 @@ namespace ifb_graphics {
 struct IFBGraphicsWindowArgs {
     ifb::utf8*      title;
     ifb::u32        title_length;
-    IFBDimensions dims;
-    IFBPosition   pos;
+    ifb::dimensions_t dims;
+    ifb::position_t   pos;
 };  
 
 namespace ifb_graphics {
@@ -89,8 +89,8 @@ namespace ifb_graphics {
 /**********************************************************************************/
 
 struct IFBMonitor {
-    IFBDimensions dimensions;
-    IFBPosition   position;
+    ifb::dimensions_t dimensions;
+    ifb::position_t   position;
     ifb::u32        refresh_hz;
     ifb::u32        index;
 };
@@ -110,7 +110,7 @@ namespace ifb_graphics {
     const ifb::b8      monitor_table_get_monitor         (const IFBMonitorTable* monitor_table_ptr, IFBMonitor* monitor_ptr);
     const ifb::b8      monitor_table_get_monitor_primary (const IFBMonitorTable* monitor_table_ptr, IFBMonitor* monitor_ptr);
 
-    const ifb::b8      monitor_get_center                (const IFBMonitor* monitor_ptr, IFBPosition* center_position_ptr);
+    const ifb::b8      monitor_get_center                (const IFBMonitor* monitor_ptr, ifb::position_t* center_position_ptr);
 };
 
 #endif //IFB_GRAPHICS_HPP

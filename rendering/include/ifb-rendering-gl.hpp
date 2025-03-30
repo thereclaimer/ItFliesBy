@@ -57,15 +57,15 @@ typedef ifb::u32 IFBGLViewportUpdateFlags;
 
 struct IFBGLViewport {
     IFBGLViewportUpdateFlags flags;
-    IFBPosition              position;
-    IFBDimensions            dimensions;
+    ifb::position_t              position;
+    ifb::dimensions_t            dimensions;
     IFBColorNormalized       clear_color;
 };
 
 struct IFBGLViewportArgs {
     IFBMemory           memory;
-    IFBPosition         position;
-    IFBDimensions       dimensions;
+    ifb::position_t         position;
+    ifb::dimensions_t       dimensions;
     IFBColorNormalized  clear_color;
 };
 namespace ifb_gl {
@@ -142,9 +142,9 @@ namespace ifb_gl {
 
     const ifb::b8 uniform_update_u32  (const IFBGLIDUniformU32  uniform, const ifb::u32 count, const ifb::u32*  u32);
     const ifb::b8 uniform_update_f32  (const IFBGLIDUniformF32  uniform, const ifb::u32 count, const ifb::f32*  f32);
-    const ifb::b8 uniform_update_vec2 (const IFBGLIDUniformVec2 uniform, const ifb::u32 count, const IFBVec2* vec2);
-    const ifb::b8 uniform_update_vec3 (const IFBGLIDUniformVec3 uniform, const ifb::u32 count, const IFBVec3* vec3);
-    const ifb::b8 uniform_update_mat3 (const IFBGLIDUniformMat3 uniform, const ifb::u32 count, const IFBMat3* mat3);
+    const ifb::b8 uniform_update_vec2 (const IFBGLIDUniformVec2 uniform, const ifb::u32 count, const ifb::vec2_t* vec2);
+    const ifb::b8 uniform_update_vec3 (const IFBGLIDUniformVec3 uniform, const ifb::u32 count, const ifb::vec3_t* vec3);
+    const ifb::b8 uniform_update_mat3 (const IFBGLIDUniformMat3 uniform, const ifb::u32 count, const ifb::mat3_t* mat3);
 };
 
 /**********************************************************************************/

@@ -49,15 +49,18 @@ namespace ifb {
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-struct IFBVec2;
-struct IFBVec3;
-struct IFBMat3;
-struct IFBPoint;
-struct IFBLine;
-struct IFBTransform;
-struct IFBDimensions;
-struct IFBPosition;
-struct IFBDimensionsAndPosition;
+namespace ifb {
+
+    struct vec2_t;
+    struct vec3_t;
+    struct mat3_t;
+    struct point_t;
+    struct line_t;
+    struct transform_t;
+    struct dimensions_t;
+    struct position_t;
+    struct dimensions_and_position_t;
+};
 
 /**********************************************************************************/
 /* SIMD                                                                           */
@@ -72,7 +75,11 @@ struct IFBDimensionsAndPosition;
     #include <x86intrin.h>
 #endif //_MSC_VER
 
-typedef __m128 IFBXMMF128;
+namespace ifb {
+
+    typedef __m128 xmm_f128;
+}
+
 
 /**********************************************************************************/
 /* HANDLES                                                                        */
@@ -92,90 +99,107 @@ struct IFBHND64 { ifb::addr h64; };
 /* VECTORS                                                                        */
 /**********************************************************************************/
 
-struct IFBVec2 {
-    union {
-        struct {
-            ifb::f32 x;
-            ifb::f32 y;
-        };
-        ifb::f32 xy[2];
-    };
-};
+namespace ifb {
 
-struct IFBVec3 {
-    union {
-        struct {
-            ifb::f32 x;
-            ifb::f32 y;
-            ifb::f32 z;
+    struct vec2_t {
+        union {
+            struct {
+                f32 x;
+                f32 y;
+            };
+            f32 xy[2];
         };
-        ifb::f32 xyz[3];
     };
-};
 
+    struct vec3_t {
+        union {
+            struct {
+                f32 x;
+                f32 y;
+                f32 z;
+            };
+            f32 xyz[3];
+        };
+    };
+
+};
 /**********************************************************************************/
 /* MATRICES                                                                       */
 /**********************************************************************************/
 
-struct IFBMat3 {
-    union {
-        struct {
-            ifb::f32 r0c0;
-            ifb::f32 r0c1;
-            ifb::f32 r0c2;
-            ifb::f32 r1c0;
-            ifb::f32 r1c1;
-            ifb::f32 r1c2;
-            ifb::f32 r2c0;
-            ifb::f32 r2c1;
-            ifb::f32 r2c2;
+namespace ifb {
+
+    struct mat3_t {
+        union {
+            struct {
+                f32 r0c0;
+                f32 r0c1;
+                f32 r0c2;
+                f32 r1c0;
+                f32 r1c1;
+                f32 r1c2;
+                f32 r2c0;
+                f32 r2c1;
+                f32 r2c2;
+            };
+            struct {
+                vec3_t row_vec_0;
+                vec3_t row_vec_1;
+                vec3_t row_vec_2;
+            };
+            f32 array[9];        
         };
-        struct {
-            IFBVec3 row_vec_0;
-            IFBVec3 row_vec_1;
-            IFBVec3 row_vec_2;
-        };
-        ifb::f32 array[9];        
     };
+
+
+
 };
 
 /**********************************************************************************/
 /* TRANSFORMS                                                                     */
 /**********************************************************************************/
 
-struct IFBTransform {
-    IFBVec2 translation;
-    IFBVec2 scale;
-    ifb::f32  rotation_radians;
+namespace ifb {
+
+    struct transform_t {
+        vec2_t translation;
+        vec2_t scale;
+        f32    rotation_radians;
+    };
 };
 
 /**********************************************************************************/
 /* GEOMETRY                                                                       */
 /**********************************************************************************/
 
-struct IFBDimensions {
-    ifb::u32 width;
-    ifb::u32 height;
+namespace ifb {
+
+    struct dimensions_t {
+        u32 width;
+        u32 height;
+    };
+
+    struct position_t {
+        u32 x;
+        u32 y;
+    };
+
+    struct dimensions_and_position_t {
+        dimensions_t dimensions;
+        position_t   position;    
+    };
+
+    struct point_t {
+        f32 x;
+        f32 y;
+    };
+
+    struct IFBLine {
+        point_t point_a;
+        point_t point_b;
+    };
+
 };
 
-struct IFBPosition {
-    ifb::u32 x;
-    ifb::u32 y;
-};
-
-struct IFBDimensionsAndPosition {
-    IFBDimensions dimensions;
-    IFBPosition   position;    
-};
-
-struct IFBPoint {
-    ifb::f32 x;
-    ifb::f32 y;
-};
-
-struct IFBLine {
-    IFBPoint point_a;
-    IFBPoint point_b;
-};
 
 #endif //IFB_TYPES_HPP
