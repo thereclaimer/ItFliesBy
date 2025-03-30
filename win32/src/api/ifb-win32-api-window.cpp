@@ -32,14 +32,21 @@ namespace ifb_win32 {
     //message handlers
     const LRESULT   window_on_wm_size    (IFBWin32Window* window);
     const LRESULT   window_on_wm_move    (IFBWin32Window* window);
-    const LRESULT   window_on_wm_quit    (IFBWin32Window* window);
+    const LRESULT   window_on_wm_close   (IFBWin32Window* window);
     const LRESULT   window_on_wm_destroy (IFBWin32Window* window);
-
 };
 
 /**********************************************************************************/
 /* WINDOW API                                                                     */
 /**********************************************************************************/
+
+ifb_internal const IFBU32 
+ifb_win32::window_size(
+    IFBVoid) {
+
+    const IFBU32 size = ifb_macro_align_size_struct(IFBWin32Window);
+    return(size);
+}
 
 ifb_internal const IFBB8
 ifb_win32::window_create(
@@ -54,12 +61,16 @@ ifb_win32::window_create(
     // CREATE WINDOW
     //-------------------------------------------
 
+    //clear win32 window data
+    window->win32 = {0};
+
     //window class
     WNDCLASSA window_class = {0};
     window_class.lpfnWndProc   = (WNDPROC)ifb_win32::window_callback;
     window_class.hInstance     = GetModuleHandle(NULL);  
     window_class.lpszClassName = "IFBWin32Window";
     window_class.style         = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
+    window_class.cbWndExtra    = ifb_macro_align_size_struct(IFBWin32Window);
 
     //register the class
     const IFBB8 win32_is_window_class_registered = (RegisterClass(&window_class) != 0);
@@ -77,6 +88,15 @@ ifb_win32::window_create(
         NULL,
         window_class.hInstance,
         NULL);
+
+    SetWindowPos(
+        win32_handle_window,
+        NULL,
+        window->pos.x,
+        window->pos.y,
+        window->dims.width,
+        window->dims.height,
+        0);
 
     //get the device context
     const HDC win32_handle_device = GetDC(win32_handle_window);
@@ -172,7 +192,6 @@ ifb_win32::window_process_events(
             case WM_SYSKEYDOWN: {
 
                 const IFBKeyCode keycode = ifb_win32::user_input_keycode((IFBU32)window_message.wParam);
-
             } break;
 
             //key up
@@ -180,11 +199,6 @@ ifb_win32::window_process_events(
             case WM_SYSKEYUP: {
 
                 const IFBKeyCode keycode = ifb_win32::user_input_keycode((IFBU32)window_message.wParam);
-
-            } break;
-
-            case WM_QUIT: {
-                window->flags |= IFBPlatformWindowFlags_Closed;
             } break;
         }
 
@@ -221,7 +235,7 @@ ifb_win32::window_show(
     const IFBU32 error  = GetLastError();
 
     //set the handle
-    window->flags |= IFBPlatformWindowFlags_Visible;
+    ifb_platform::window_set_flag_visible(window->flags);
 
     //we're done
     return(true);
@@ -248,11 +262,10 @@ ifb_win32::window_assert_store(
     ifb_macro_assert(is_valid);
 
     //store the window
-    is_valid &= SetWindowLongPtr(
+    SetWindowLongPtr(
         window->win32.handles.window,
         GWLP_USERDATA,
         (LONG_PTR)window);
-    ifb_macro_assert(is_valid);
 }
 
 inline IFBWin32Window*
@@ -262,9 +275,12 @@ ifb_win32::window_assert_load(
     //handle
     ifb_macro_assert(win32_window_handle);
 
-    //window
+    //get the window
     IFBWin32Window* window = (IFBWin32Window*)GetWindowLongPtr(win32_window_handle,GWLP_USERDATA);
-    ifb_macro_assert(window);
+
+    //if the window is null, we can assume it hasn't been stored yet and isn't initialized
+    //just return null until there is something to check
+    if (!window) return(NULL);
 
     //properties
     IFBB8 is_valid = true;
@@ -290,17 +306,24 @@ ifb_win32::window_callback(
     WPARAM w_param,
     LPARAM l_param) {
 
-    LRESULT message_handler_result = S_FALSE;
+    LRESULT message_handler_result = false;
 
     //get the window
     IFBWin32Window* window = ifb_win32::window_assert_load(window_handle);
-    
+
+    //if it's null, the window hasn't been created and stored yet
+    //return the default process until we have something in place
+    if (!window) {
+        message_handler_result = DefWindowProc(window_handle,message,w_param,l_param);
+        return(message_handler_result);
+    }
+
     //see if imgui needs to process this event
     message_handler_result = ImGui_ImplWin32_WndProcHandler(
         window_handle,message,w_param,l_param);
 
     //if imgui processed the event, we're done
-    if (message_handler_result) return(S_OK);
+    if (message_handler_result) return(true);
 
     //get the messasge handler
     IFBWin32WindowMessageHandler window_message_handler = NULL;
@@ -308,7 +331,7 @@ ifb_win32::window_callback(
 
         case WM_SIZE:    window_message_handler = ifb_win32::window_on_wm_size;    break; 
         case WM_MOVE:    window_message_handler = ifb_win32::window_on_wm_move;    break; 
-        case WM_QUIT:    window_message_handler = ifb_win32::window_on_wm_quit;    break; 
+        case WM_CLOSE:   window_message_handler = ifb_win32::window_on_wm_close;   break; 
         case WM_DESTROY: window_message_handler = ifb_win32::window_on_wm_destroy; break; 
     }
 
@@ -316,7 +339,7 @@ ifb_win32::window_callback(
     //get the result
     message_handler_result = (window_message_handler != NULL)
             ? window_message_handler(window) 
-            : S_FALSE; 
+            : false; 
             
     //if nothing else, get the default window result for the event
     if (!message_handler_result) {
@@ -345,10 +368,10 @@ ifb_win32::window_on_wm_size(
     window->dims.height = window_height;
 
     //set the flag
-    window->flags |= IFBPlatformWindowFlags_Resized;
+    ifb_platform::window_set_flag_resized(window->flags);
 
     //we're done
-    return(S_OK);   
+    return(true);   
 }
 
 inline const LRESULT
@@ -364,21 +387,21 @@ ifb_win32::window_on_wm_move(
     window->pos.y = window_position_y;
 
     //set the flag
-    window->flags |= IFBPlatformWindowFlags_Moved;
+    ifb_platform::window_set_flag_moved(window->flags);
 
     //we're done
-    return(S_OK);
+    return(true);
 }
 
 inline const LRESULT 
-ifb_win32::window_on_wm_quit(
+ifb_win32::window_on_wm_close(
     IFBWin32Window* window) {
 
     //set the flag
-    window->flags |= IFBPlatformWindowFlags_Closed;
+    ifb_platform::window_set_flag_closed(window->flags);
 
     //we're done
-    return(S_OK);
+    return(true);
 }
 
 inline const LRESULT 
@@ -386,11 +409,11 @@ ifb_win32::window_on_wm_destroy(
     IFBWin32Window* window) {
 
     //set the flag
-    window->flags |= IFBPlatformWindowFlags_Closed;
+    ifb_platform::window_set_flag_closed(window->flags);
 
     //post the quit message
-    PostQuitMessage(0);
+    PostQuitMessage(true);
 
     //we're done
-    return(S_OK);
+    return(true);
 }

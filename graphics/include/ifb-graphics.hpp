@@ -10,10 +10,14 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
+struct IFBGraphicsWindow;
+
 struct IFBColorNormalized;
 struct IFBColorHex;
 struct IFBColor32;
 struct IFBMonitor;
+
+typedef IFBGraphicsWindow* IFBGFXWindow; 
 
 /**********************************************************************************/
 /* COLORS                                                                         */
@@ -57,32 +61,33 @@ namespace ifb_graphics {
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
-#define IFB_WINDOW_TITLE_LENGTH_MAX 255
-
-//TODO: temporary
-struct IFBGraphicsWindow : IFBPlatformWindow { };
-
 struct IFBGraphicsWindowArgs {
-    IFBMemory     memory;
     IFBChar*      title;
+    IFBU32        title_length;
     IFBDimensions dims;
     IFBPosition   pos;
 };  
 
 namespace ifb_graphics {
 
-    const IFBU32         window_memory_size              (IFBVoid);
-    IFBGraphicsWindow*   window_memory_initialize        (const IFBGraphicsWindowArgs& args);
+    const IFBU32   window_memory_size       (const IFBU32     window_title_length);
 
-    const IFBB8          window_show                     (IFBGraphicsWindow* ptr_window);
-    const IFBB8          window_frame_start              (IFBGraphicsWindow* ptr_window);
-    const IFBB8          window_frame_render             (IFBGraphicsWindow* ptr_window);
-    const IFBB8          window_context_gl_create        (IFBGraphicsWindow* ptr_window);
+    IFBGFXWindow   window_memory_initialize (const IFBMemory& memory);
+
+    const IFBB8    window_create            (IFBGFXWindow window_handle, const IFBGraphicsWindowArgs& args);
+    const IFBB8    window_show              (IFBGFXWindow window_handle);
+    const IFBB8    window_process_events    (IFBGFXWindow window_handle);
+    const IFBB8    window_swap_buffers      (IFBGFXWindow window_handle);
+
+    IFBPlatformWindowFlags
+    window_get_flags(IFBGFXWindow window_handle);
 };
+
 
 /**********************************************************************************/
 /* MONITOR                                                                        */
 /**********************************************************************************/
+
 struct IFBMonitor {
     IFBDimensions dimensions;
     IFBPosition   position;

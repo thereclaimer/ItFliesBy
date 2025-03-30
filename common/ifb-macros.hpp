@@ -34,7 +34,6 @@
 // #define ifb_macro_flags_set(flags,val)                   (val |=  (flags))  
 // #define ifb_macro_flags_clear(flags,val)                 (val &= ~(flags))  
 // #define ifb_macro_flags_toggle(flags,val)                (val ^=  (flags))
-// #define ifb_macro_flags_test(flags,val)                  (val & flags)
 // #define ifb_macro_flags_is_set(flags,val)                ifb_macro_flags_test(flags,val)
 // #define ifb_macro_flags_is_clear(flags,val)              !ifb_macro_flags_test(flags,val)
 

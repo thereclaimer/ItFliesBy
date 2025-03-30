@@ -42,11 +42,12 @@ namespace ifb_win32 {
         //----------------------------------------
         // window
         {
-            (IFBPlatformWindowCreate)        ifb_win32::window_create,         // IFBPlatformWindowCreate
-            (IFBPlatformWindowDestroy)       ifb_win32::window_destroy,        // IFBPlatformWindowDestroy
-            (IFBPlatformWindowProcessEvents) ifb_win32::window_process_events, // IFBPlatformWindowProcessEvents
-            (IFBPlatformWindowSwapBuffers)   ifb_win32::window_swap_buffers,   // IFBPlatformWindowSwapBuffers
-            (IFBPlatformWindowShow)          ifb_win32::window_show            // IFBPlatformWindowShow
+            (IFBPlatformWindowSize)          ifb_win32::window_size,
+            (IFBPlatformWindowCreate)        ifb_win32::window_create,
+            (IFBPlatformWindowDestroy)       ifb_win32::window_destroy,
+            (IFBPlatformWindowProcessEvents) ifb_win32::window_process_events,
+            (IFBPlatformWindowSwapBuffers)   ifb_win32::window_swap_buffers,
+            (IFBPlatformWindowShow)          ifb_win32::window_show
         },
         //----------------------------------------
         // monitor

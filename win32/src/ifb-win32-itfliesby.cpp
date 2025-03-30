@@ -25,8 +25,14 @@ wWinMain(
     IFBEngineContextArgs engine_args;
     engine_args.global_stack_memory.size  =          ifb_win32::_global_stack_size;
     engine_args.global_stack_memory.start = (IFBAddr)ifb_win32::_global_stack_buffer;
-    engine_args.platform_api               = ifb_win32::platform_api();
+    engine_args.platform_api              = ifb_win32::platform_api();
 
     //initialize the engine
-    const IFBENG64Context engine_context = ifb_engine::context_create(engine_args);
+    const IFBENGContext engine_context = ifb_engine::context_create(engine_args);
+
+    //engine lifetime
+    ifb_engine::context_startup   (engine_context);
+    ifb_engine::context_main_loop (engine_context);
+    ifb_engine::context_shutdown  (engine_context);
+    ifb_engine::context_destroy   (engine_context);
 }
