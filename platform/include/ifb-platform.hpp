@@ -78,7 +78,7 @@ struct IFBPlatformAPI {
 
 namespace ifb_platform {
 
-    const IFBB8 set_api (const IFBPlatformAPI* platform_api);
+    const ifb::b8 set_api (const IFBPlatformAPI* platform_api);
 
     //------------------
     // system

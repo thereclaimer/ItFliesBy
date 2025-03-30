@@ -14,21 +14,21 @@ ifb_engine::memory_allocate(
     IFBMEMStack global_stack_handle = ifb_memory::stack_create(stack_memory);
 
     //memory sizes
-    const IFBU32  memory_size_struct             = ifb_engine::_global_memory_sizes.memory_struct;
-    const IFBU16  memory_size_singleton_buffer   = ifb_engine::_global_memory_sizes.singleton_buffer;
-    const IFBU32  memory_size_arena_handle_array = ifb_engine::_global_memory_sizes.arena_handle_array;
-    const IFBU32  memory_size_arena              = ifb_engine::_global_memory_sizes.total_arena;
-    const IFBU32  memory_count_arena             = ifb_engine::_global_memory_sizes.arena_count;
-    const IFBU64  memory_size_reservation        = ifb_engine::_global_memory_sizes.total_reservation;
+    const ifb::u32  memory_size_struct             = ifb_engine::_global_memory_sizes.memory_struct;
+    const ifb::u16  memory_size_singleton_buffer   = ifb_engine::_global_memory_sizes.singleton_buffer;
+    const ifb::u32  memory_size_arena_handle_array = ifb_engine::_global_memory_sizes.arena_handle_array;
+    const ifb::u32  memory_size_arena              = ifb_engine::_global_memory_sizes.total_arena;
+    const ifb::u32  memory_count_arena             = ifb_engine::_global_memory_sizes.arena_count;
+    const ifb::u64  memory_size_reservation        = ifb_engine::_global_memory_sizes.total_reservation;
 
     //allocate stack memory
-    const IFBPtr ptr_engine_memory               = ifb_memory::stack_push_bytes_absolute_pointer (global_stack_handle, memory_size_struct);
-    const IFBPtr ptr_singleton_buffer            = ifb_memory::stack_push_bytes_absolute_pointer (global_stack_handle, memory_size_singleton_buffer);
-    const IFBPtr ptr_arena_array                 = ifb_memory::stack_push_bytes_absolute_pointer (global_stack_handle, memory_size_arena_handle_array);
+    const ifb::ptr ptr_engine_memory               = ifb_memory::stack_push_bytes_absolute_pointer (global_stack_handle, memory_size_struct);
+    const ifb::ptr ptr_singleton_buffer            = ifb_memory::stack_push_bytes_absolute_pointer (global_stack_handle, memory_size_singleton_buffer);
+    const ifb::ptr ptr_arena_array                 = ifb_memory::stack_push_bytes_absolute_pointer (global_stack_handle, memory_size_arena_handle_array);
 
     //cast pointers
     IFBEngineMemory* engine_memory               = (IFBEngineMemory*)ptr_engine_memory;
-    IFBByte*         singleton_buffer            = (IFBByte*)ptr_singleton_buffer;
+    ifb::byte*         singleton_buffer            = (ifb::byte*)ptr_singleton_buffer;
     IFBMEMArena*     arena_handle_array          = (IFBMEMArena*)ptr_arena_array;
 
     //reserve system memory
@@ -39,7 +39,7 @@ ifb_engine::memory_allocate(
 
     //commit arenas
     for (
-        IFBU32 index = 0;
+        ifb::u32 index = 0;
                index < memory_count_arena;
              ++index) {
 

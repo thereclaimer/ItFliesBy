@@ -6,7 +6,7 @@
 namespace ifb_engine {
 
     IFBEngineCore* context_memory_push_core (const IFBEngineContext* engine_context);
-    IFBVoid        context_memory_reset     (const IFBEngineContext* engine_context);
+    void        context_memory_reset     (const IFBEngineContext* engine_context);
 };
 
 inline IFBEngineCore*
@@ -29,7 +29,7 @@ ifb_engine::context_memory_push_core(
     return(core);
 }
 
-inline IFBVoid
+inline void
 ifb_engine::context_memory_reset(
     const IFBEngineContext* engine_context) {
 

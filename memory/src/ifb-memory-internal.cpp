@@ -12,9 +12,9 @@ struct IFBMemoryArena;
 
 namespace ifb_memory {
 
-    IFBVoid validate_stack       (const IFBMemoryStack*       stack);
-    IFBVoid validate_reservation (const IFBMemoryReservation* reservation);
-    IFBVoid validate_arena       (const IFBMemoryArena*       arena);
+    void validate_stack       (const IFBMemoryStack*       stack);
+    void validate_reservation (const IFBMemoryReservation* reservation);
+    void validate_arena       (const IFBMemoryArena*       arena);
 };
 
 /**********************************************************************************/
@@ -22,32 +22,32 @@ namespace ifb_memory {
 /**********************************************************************************/
 
 struct IFBMemoryStack {
-    IFBU32  size;
-    IFBU32  position;
+    ifb::u32  size;
+    ifb::u32  position;
 };
 
 struct IFBMemoryReservation {
     IFBMemoryStack* stack;
-    IFBAddr         start;
+    ifb::addr         start;
     struct {
         IFBMemoryArena* committed;
         IFBMemoryArena* decommitted;
     } arenas;
     struct {
-        IFBU32 arena;
-        IFBU32 page;
-        IFBU32 granularity;
+        ifb::u32 arena;
+        ifb::u32 page;
+        ifb::u32 granularity;
     } sizes;
-    IFBU32 page_count_used;
+    ifb::u32 page_count_used;
 };
 
 struct IFBMemoryArena {
     IFBMemoryReservation* reservation;
     IFBMemoryArena*       next;
     IFBMemoryArena*       prev;
-    IFBAddr               start;
-    IFBU32                page_number;
-    IFBU32                position;
+    ifb::addr               start;
+    ifb::u32                page_number;
+    ifb::u32                position;
 };
 
 
@@ -58,7 +58,7 @@ struct IFBMemoryArena {
 #define ifb_memory_macro_stack_push_arena(stack)             (IFBMemoryArena*)ifb_memory::stack_push_bytes_absolute_pointer(stack,IFB_MEMORY_STRUCT_SIZE_ARENA)
 #define ifb_memory_macro_stack_push_reservation(stack) (IFBMemoryReservation*)ifb_memory::stack_push_bytes_absolute_pointer(stack,IFB_MEMORY_STRUCT_SIZE_RESERVATION)
 
-inline IFBVoid
+inline void
 ifb_memory::validate_stack(
     const IFBMemoryStack* stack) {
 
@@ -68,7 +68,7 @@ ifb_memory::validate_stack(
     ifb_macro_assert(stack->position <  stack->size);
 }   
 
-inline IFBVoid
+inline void
 ifb_memory::validate_reservation(
     const IFBMemoryReservation* reservation) {
 
@@ -80,7 +80,7 @@ ifb_memory::validate_reservation(
     ifb_macro_assert(reservation->sizes.granularity);
 }
 
-inline IFBVoid
+inline void
 ifb_memory::validate_arena(
     const IFBMemoryArena* arena) {
 

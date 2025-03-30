@@ -8,43 +8,42 @@
 /* PRIMITIVES                                                                     */
 /**********************************************************************************/
 
-//signed integers
-typedef int8_t   IFBS8;
-typedef int16_t  IFBS16;
-typedef int32_t  IFBS32;
-typedef int64_t  IFBS64;
+namespace ifb {
 
-//unsigned integ 
-typedef uint8_t  IFBU8;
-typedef uint16_t IFBU16;
-typedef uint32_t IFBU32;
-typedef uint64_t IFBU64;
+    //signed integers
+    typedef int8_t  s8;
+    typedef int16_t s16;
+    typedef int32_t s32;
+    typedef int64_t s64;
 
-//floats
-typedef float    IFBF32;
-typedef double   IFBF64;
+    //unsigned integer 
+    typedef uint8_t  u8;
+    typedef uint16_t u16;
+    typedef uint32_t u32;
+    typedef uint64_t u64;
 
-//booleans
-typedef int8_t   IFBB8;
-typedef int16_t  IFBB16;
-typedef int32_t  IFBB32;
-typedef int64_t  IFBB64;
+    //floats
+    typedef float    f32;
+    typedef double   f64;
+    
+    //booleans
+    typedef int8_t   b8;
+    typedef int16_t  b16;
+    typedef int32_t  b32;
+    typedef int64_t  b64;
 
-//characters
-typedef char     IFBChar;
-typedef wchar_t  IFBWChar;
+    //chars  
+    typedef char     utf8;
+    typedef wchar_t  utf16;
 
-//memory
-typedef void     IFBVoid;
-typedef void*    IFBPtr;
-typedef uint8_t  IFBByte;
-typedef size_t   IFBSize;
-typedef IFBU32   IFBIndex;
-typedef IFBPtr   IFBHandle;
-typedef intptr_t IFBAddr;
-
-//time
-typedef uint64_t IFBTimems;
+    //memory
+    typedef void*    ptr;
+    typedef uint8_t  byte;
+    typedef intptr_t addr;
+    
+    //time
+    typedef uint64_t ms;
+};
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -79,10 +78,10 @@ typedef __m128 IFBXMMF128;
 /* HANDLES                                                                        */
 /**********************************************************************************/
 
-struct IFBHND8  { IFBU8   h8;  };
-struct IFBHND16 { IFBU16  h16; };
-struct IFBHND32 { IFBU32  h32; };
-struct IFBHND64 { IFBAddr h64; };
+struct IFBHND8  { ifb::u8   h8;  };
+struct IFBHND16 { ifb::u16  h16; };
+struct IFBHND32 { ifb::u32  h32; };
+struct IFBHND64 { ifb::addr h64; };
 
 #define IFB_HANDLE_INVALID_U8  0xFF
 #define IFB_HANDLE_INVALID_U16 0xFFFF 
@@ -96,21 +95,21 @@ struct IFBHND64 { IFBAddr h64; };
 struct IFBVec2 {
     union {
         struct {
-            IFBF32 x;
-            IFBF32 y;
+            ifb::f32 x;
+            ifb::f32 y;
         };
-        IFBF32 xy[2];
+        ifb::f32 xy[2];
     };
 };
 
 struct IFBVec3 {
     union {
         struct {
-            IFBF32 x;
-            IFBF32 y;
-            IFBF32 z;
+            ifb::f32 x;
+            ifb::f32 y;
+            ifb::f32 z;
         };
-        IFBF32 xyz[3];
+        ifb::f32 xyz[3];
     };
 };
 
@@ -121,22 +120,22 @@ struct IFBVec3 {
 struct IFBMat3 {
     union {
         struct {
-            IFBF32 r0c0;
-            IFBF32 r0c1;
-            IFBF32 r0c2;
-            IFBF32 r1c0;
-            IFBF32 r1c1;
-            IFBF32 r1c2;
-            IFBF32 r2c0;
-            IFBF32 r2c1;
-            IFBF32 r2c2;
+            ifb::f32 r0c0;
+            ifb::f32 r0c1;
+            ifb::f32 r0c2;
+            ifb::f32 r1c0;
+            ifb::f32 r1c1;
+            ifb::f32 r1c2;
+            ifb::f32 r2c0;
+            ifb::f32 r2c1;
+            ifb::f32 r2c2;
         };
         struct {
             IFBVec3 row_vec_0;
             IFBVec3 row_vec_1;
             IFBVec3 row_vec_2;
         };
-        IFBF32 array[9];        
+        ifb::f32 array[9];        
     };
 };
 
@@ -147,7 +146,7 @@ struct IFBMat3 {
 struct IFBTransform {
     IFBVec2 translation;
     IFBVec2 scale;
-    IFBF32  rotation_radians;
+    ifb::f32  rotation_radians;
 };
 
 /**********************************************************************************/
@@ -155,13 +154,13 @@ struct IFBTransform {
 /**********************************************************************************/
 
 struct IFBDimensions {
-    IFBU32 width;
-    IFBU32 height;
+    ifb::u32 width;
+    ifb::u32 height;
 };
 
 struct IFBPosition {
-    IFBU32 x;
-    IFBU32 y;
+    ifb::u32 x;
+    ifb::u32 y;
 };
 
 struct IFBDimensionsAndPosition {
@@ -170,8 +169,8 @@ struct IFBDimensionsAndPosition {
 };
 
 struct IFBPoint {
-    IFBF32 x;
-    IFBF32 y;
+    ifb::f32 x;
+    ifb::f32 y;
 };
 
 struct IFBLine {

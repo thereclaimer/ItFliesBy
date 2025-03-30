@@ -17,8 +17,8 @@ typedef IFBMemoryReservation* IFBMEMReservation;
 typedef IFBMemoryArena*       IFBMEMArena; 
 
 struct IFBMemory {
-    IFBAddr start;
-    IFBU64  size;
+    ifb::addr start;
+    ifb::u64  size;
 };
 
 /**********************************************************************************/
@@ -28,11 +28,11 @@ struct IFBMemory {
 namespace ifb_memory {
 
     IFBMEMStack       stack_create                      (const IFBMemory& stack_memory);
-    const IFBU32      stack_push_bytes_relative         (IFBMEMStack stack_handle, const IFBU32 size);
-    const IFBPtr      stack_push_bytes_absolute_pointer (IFBMEMStack stack_handle, const IFBU32 size);
-    const IFBAddr     stack_push_bytes_absolute_address (IFBMEMStack stack_handle, const IFBU32 size);
-    const IFBB8       stack_pull_bytes                  (IFBMEMStack stack_handle, const IFBU32 size);
-    const IFBPtr      stack_get_pointer                 (IFBMEMStack stack_handle, const IFBU32 offset);
+    const ifb::u32      stack_push_bytes_relative         (IFBMEMStack stack_handle, const ifb::u32 size);
+    const ifb::ptr      stack_push_bytes_absolute_pointer (IFBMEMStack stack_handle, const ifb::u32 size);
+    const ifb::addr     stack_push_bytes_absolute_address (IFBMEMStack stack_handle, const ifb::u32 size);
+    const ifb::b8       stack_pull_bytes                  (IFBMEMStack stack_handle, const ifb::u32 size);
+    const ifb::ptr      stack_get_pointer                 (IFBMEMStack stack_handle, const ifb::u32 offset);
 };
 
 /**********************************************************************************/
@@ -44,11 +44,11 @@ namespace ifb_memory {
     IFBMEMReservation
     reserve_system_memory(
               IFBMEMStack stack_handle,
-        const IFBU64      size_reservation,
-        const IFBU32      size_arena);
+        const ifb::u64      size_reservation,
+        const ifb::u32      size_arena);
 
 
-    const IFBB8 release_system_memory (IFBMEMReservation reservation_handle);
+    const ifb::b8 release_system_memory (IFBMEMReservation reservation_handle);
 };
 
 /**********************************************************************************/
@@ -59,13 +59,13 @@ namespace ifb_memory {
 
     IFBMEMArena   arena_commit                      (IFBMEMReservation reservation_handle);
 
-    const IFBB8   arena_decommit                    (IFBMEMArena arena_handle);
-    const IFBB8   arena_reset                       (IFBMEMArena arena_handle);
-    const IFBU32  arena_push_bytes_relative         (IFBMEMArena arena_handle, const IFBU32 size);
-    const IFBPtr  arena_push_bytes_absolute_pointer (IFBMEMArena arena_handle, const IFBU32 size);
-    const IFBAddr arena_push_bytes_absolute_address (IFBMEMArena arena_handle, const IFBU32 size);
-    const IFBB8   arena_pull_bytes                  (IFBMEMArena arena_handle, const IFBU32 size);
-    const IFBPtr  arena_get_pointer                 (IFBMEMArena arena_handle, const IFBU32 offset);
+    const ifb::b8   arena_decommit                    (IFBMEMArena arena_handle);
+    const ifb::b8   arena_reset                       (IFBMEMArena arena_handle);
+    const ifb::u32  arena_push_bytes_relative         (IFBMEMArena arena_handle, const ifb::u32 size);
+    const ifb::ptr  arena_push_bytes_absolute_pointer (IFBMEMArena arena_handle, const ifb::u32 size);
+    const ifb::addr arena_push_bytes_absolute_address (IFBMEMArena arena_handle, const ifb::u32 size);
+    const ifb::b8   arena_pull_bytes                  (IFBMEMArena arena_handle, const ifb::u32 size);
+    const ifb::ptr  arena_get_pointer                 (IFBMEMArena arena_handle, const ifb::u32 offset);
 };
 
 /**********************************************************************************/
@@ -74,50 +74,50 @@ namespace ifb_memory {
 
 namespace ifb_memory {
 
-    const IFBPtr  get_pointer (const IFBAddr    start,  const IFBU32 offset);
-    const IFBPtr  get_pointer (const IFBMemory& memory, const IFBU32 offset);
-          IFBVoid zero_buffer (const IFBMemory& memory);
+    const ifb::ptr  get_pointer (const ifb::addr    start,  const ifb::u32 offset);
+    const ifb::ptr  get_pointer (const IFBMemory& memory, const ifb::u32 offset);
+          void zero_buffer (const IFBMemory& memory);
 };
 
-inline const IFBPtr
+inline const ifb::ptr
 ifb_memory::get_pointer(
-    const IFBAddr start,
-    const IFBU32  offset) {
+    const ifb::addr start,
+    const ifb::u32  offset) {
 
-    const IFBAddr address = start + offset;
-    const IFBPtr  pointer = (address != 0) ? (IFBPtr)address : NULL;
+    const ifb::addr address = start + offset;
+    const ifb::ptr  pointer = (address != 0) ? (ifb::ptr)address : NULL;
 
     return(pointer);
 }
 
-inline const IFBPtr 
+inline const ifb::ptr 
 ifb_memory::get_pointer(
     const IFBMemory& memory,
-    const IFBU32     offset) {
+    const ifb::u32     offset) {
 
-    IFBB8 is_valid = true;
+    ifb::b8 is_valid = true;
     is_valid &= (memory.start != 0);
     is_valid &= (memory.size   >  offset);
 
-    const IFBAddr address = memory.start + offset;
-    const IFBPtr  pointer = is_valid ? (IFBPtr)address : NULL;
+    const ifb::addr address = memory.start + offset;
+    const ifb::ptr  pointer = is_valid ? (ifb::ptr)address : NULL;
 
     return(pointer);
 }
 
-inline IFBVoid
+inline void
 ifb_memory::zero_buffer(
     const IFBMemory& memory) {
 
-    IFBB8 is_valid = true;
+    ifb::b8 is_valid = true;
     is_valid &= (memory.start != 0);
     is_valid &= (memory.size  != 0);
     ifb_macro_assert(is_valid);
 
-    IFBByte* buffer = (IFBByte*)memory.start;
+    ifb::byte* buffer = (ifb::byte*)memory.start;
 
     for (
-        IFBU32 index = 0;
+        ifb::u32 index = 0;
                index < memory.size;
              ++index) {
         

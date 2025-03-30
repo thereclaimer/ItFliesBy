@@ -3,7 +3,7 @@
 #include "ifb-memory.hpp"
 #include "ifb-memory-internal.cpp"
 
-inline IFBVoid
+inline void
 ifb_memory::arena_reset_step_0_validate_args(
     IFBMemoryArenaReset& reset_ref) {
 
@@ -15,7 +15,7 @@ ifb_memory::arena_reset_step_0_validate_args(
     reset_ref.result &= ifb_memory_macro_is_handle_valid_arena   (reset_ref.context->handle_arena);
 }
 
-inline IFBVoid
+inline void
 ifb_memory::arena_reset_step_1_cache_properties(
     IFBMemoryArenaReset& reset_ref) {
 
@@ -31,13 +31,13 @@ ifb_memory::arena_reset_step_1_cache_properties(
     }
 }
 
-inline IFBVoid
+inline void
 ifb_memory::arena_reset_step_2_reset_arena(
     IFBMemoryArenaReset& reset_ref) {
 
     //make sure the index is valid
-    const IFBU32 arena_index = reset_ref.context->handle_arena.h32;
-    const IFBU32 arena_count = reset_ref.cache.arena_count;
+    const ifb::u32 arena_index = reset_ref.context->handle_arena.h32;
+    const ifb::u32 arena_count = reset_ref.cache.arena_count;
     reset_ref.result &= (arena_index < arena_count); 
 
     //if the index is valid, reset the arena

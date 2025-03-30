@@ -46,14 +46,14 @@ namespace ifb_engine {
 
     // create/destroy
     ifb_engine_api IFBENGContext context_create    (const IFBEngineContextArgs& args);
-    ifb_engine_api const IFBB8   context_destroy   (const IFBENGContext context_handle);
+    ifb_engine_api const ifb::b8   context_destroy   (const IFBENGContext context_handle);
         
     // startup/shutdown
-    ifb_engine_api const IFBB8   context_startup   (const IFBENGContext context_handle);
-    ifb_engine_api const IFBB8   context_shutdown  (const IFBENGContext context_handle);
+    ifb_engine_api const ifb::b8   context_startup   (const IFBENGContext context_handle);
+    ifb_engine_api const ifb::b8   context_shutdown  (const IFBENGContext context_handle);
 
     // rendering
-    ifb_engine_api const IFBB8   context_main_loop (const IFBENGContext context_handle);
+    ifb_engine_api const ifb::b8   context_main_loop (const IFBENGContext context_handle);
 };
 
 #endif //IFB_ENGINE_HPP

@@ -7,7 +7,7 @@
 /* ARENA DECOMMIT STEPS                                                           */
 /**********************************************************************************/
 
-inline IFBVoid
+inline void
 ifb_memory::arena_decommit_step_0_validate_args(
     IFBMemoryArenaDecommit& decommit_ref) {
 
@@ -19,7 +19,7 @@ ifb_memory::arena_decommit_step_0_validate_args(
     decommit_ref.result &= ifb_memory_macro_is_handle_valid_arena   (decommit_ref.context->handle_arena);
 }
 
-inline IFBVoid
+inline void
 ifb_memory::arena_decommit_step_1_cache_reservation_properties(
     IFBMemoryArenaDecommit& decommit_ref) {
 
@@ -36,22 +36,22 @@ ifb_memory::arena_decommit_step_1_cache_reservation_properties(
         decommit_ref.cache.arena_count       = reservation_internal->count_arenas;
     
         //make sure our arena index is valid
-        const IFBU32 arena_index = decommit_ref.context->handle_arena.h32;
-        const IFBU32 arena_count = decommit_ref.cache.arena_count; 
+        const ifb::u32 arena_index = decommit_ref.context->handle_arena.h32;
+        const ifb::u32 arena_count = decommit_ref.cache.arena_count; 
         decommit_ref.result &= (arena_index < arena_count);
     }
 }
 
-inline IFBVoid
+inline void
 ifb_memory::arena_decommit_step_3_decommit_memory(
     IFBMemoryArenaDecommit& decommit_ref) {
 
     if (decommit_ref.result) {
 
         //get the commit pointer
-        const IFBU32  arena_index      = decommit_ref.context->handle_arena.h32;
-        const IFBAddr arena_start_addr = decommit_ref.cache.arena_start_array[arena_index];
-        const IFBPtr  arena_start_ptr  = (IFBPtr)arena_start_addr;
+        const ifb::u32  arena_index      = decommit_ref.context->handle_arena.h32;
+        const ifb::addr arena_start_addr = decommit_ref.cache.arena_start_array[arena_index];
+        const ifb::ptr  arena_start_ptr  = (ifb::ptr)arena_start_addr;
 
         //decommit the memory
         decommit_ref.result &= ifb_platform::memory_decommit(
@@ -60,14 +60,14 @@ ifb_memory::arena_decommit_step_3_decommit_memory(
     }
 }
 
-inline IFBVoid 
+inline void 
 ifb_memory::arena_decommit_step_4_update_arena_start_array(
     IFBMemoryArenaDecommit& decommit_ref) {
 
     if (decommit_ref.result) {
 
         //update the array        
-        const IFBU32 arena_index = decommit_ref.context->handle_arena.h32;
+        const ifb::u32 arena_index = decommit_ref.context->handle_arena.h32;
         decommit_ref.cache.arena_start_array[arena_index] = 0;
     }
 }

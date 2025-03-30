@@ -2,11 +2,11 @@
 
 #include "ifb-rendering-gl.hpp"
 
-inline const IFBB8 
+inline const ifb::b8 
 ifb_gl::uniform_get_locations_in_shader_program(
     const IFBGLIDShaderProgram program,
-    const IFBU32               uniform_count,
-    const IFBChar**            uniform_names,
+    const ifb::u32               uniform_count,
+    const ifb::utf8**            uniform_names,
           IFBGLIDUniform*      uniform_array) {
 
     //sanity check
@@ -16,18 +16,18 @@ ifb_gl::uniform_get_locations_in_shader_program(
     ifb_macro_assert(uniform_array != NULL);
 
     //forward declarations
-    IFBB8       result        = true;
+    ifb::b8       result        = true;
     const GLuint gl_program_id = program.gl_id;
 
     //loop throught the uniform names and query the program for their location
     for (
-        IFBU32 uniform_index = 0;
+        ifb::u32 uniform_index = 0;
         uniform_index < uniform_count;
         ++uniform_index) {
 
         //get the current uniform reference and name
         IFBGLIDUniform& uniform_ref  = uniform_array[uniform_index];  
-        const IFBChar* uniform_name = uniform_names[uniform_index];
+        const ifb::utf8* uniform_name = uniform_names[uniform_index];
 
         //query for the uniform location
         uniform_ref.gl_id = glGetUniformLocation(gl_program_id,uniform_name);
@@ -44,11 +44,11 @@ ifb_gl::uniform_get_locations_in_shader_program(
     return(result);
 }
 
-inline const IFBB8 
+inline const ifb::b8 
 ifb_gl::uniform_update_u32(
     const IFBGLIDUniformU32 uniform,     
-    const IFBU32           count,
-    const IFBU32*          u32) {
+    const ifb::u32           count,
+    const ifb::u32*          u32) {
 
     glUniform1uiv(
         uniform.gl_id,
@@ -60,11 +60,11 @@ ifb_gl::uniform_update_u32(
     return(error == GL_NO_ERROR);
 }
 
-inline const IFBB8 
+inline const ifb::b8 
 ifb_gl::uniform_update_f32(
     const IFBGLIDUniformF32 uniform,     
-    const IFBU32           count,
-    const IFBF32*          f32) {
+    const ifb::u32           count,
+    const ifb::f32*          f32) {
 
     glUniform1fv(
         uniform.gl_id,
@@ -76,49 +76,49 @@ ifb_gl::uniform_update_f32(
     return(error == GL_NO_ERROR);
 }
 
-inline const IFBB8 
+inline const ifb::b8 
 ifb_gl::uniform_update_vec2(
     const IFBGLIDUniformVec2 uniform,
-    const IFBU32            count,
+    const ifb::u32            count,
     const IFBVec2*           vec2) {
 
     glUniform2fv(
         uniform.gl_id,
         count,
-        (IFBF32*)vec2);
+        (ifb::f32*)vec2);
 
     const GLenum error = glGetError();
 
     return(error == GL_NO_ERROR);
 }
 
-inline const IFBB8 
+inline const ifb::b8 
 ifb_gl::uniform_update_vec3(
     const IFBGLIDUniformVec3 uniform,
-    const IFBU32            count,
+    const ifb::u32            count,
     const IFBVec3*           vec3) {
 
     glUniform3fv(
         uniform.gl_id,
         count,
-        (IFBF32*)vec3);
+        (ifb::f32*)vec3);
 
     const GLenum error = glGetError();
 
     return(error == GL_NO_ERROR);
 }
 
-inline const IFBB8 
+inline const ifb::b8 
 ifb_gl::uniform_update_mat3(
     const IFBGLIDUniformMat3 uniform,
-    const IFBU32            count,
+    const ifb::u32            count,
     const IFBMat3*           mat3) {
 
     glUniformMatrix3fv(
         uniform.gl_id,
         count,
         GL_FALSE, //no transpose
-        (IFBF32*)mat3);
+        (ifb::f32*)mat3);
 
     const GLenum error = glGetError();
 

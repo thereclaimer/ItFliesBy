@@ -10,8 +10,8 @@
 namespace ifb_win32 {
 
     //global stack buffer
-    ifb_global IFBU64  _global_stack_size = IFB_WIN32_GLBOAL_MEMORY_STACK_SIZE;
-    ifb_global IFBByte _global_stack_buffer[IFB_WIN32_GLBOAL_MEMORY_STACK_SIZE];
+    ifb_global ifb::u64  _global_stack_size = IFB_WIN32_GLBOAL_MEMORY_STACK_SIZE;
+    ifb_global ifb::byte _global_stack_buffer[IFB_WIN32_GLBOAL_MEMORY_STACK_SIZE];
 };
 
 int WINAPI 
@@ -24,7 +24,7 @@ wWinMain(
     //create the engine args
     IFBEngineContextArgs engine_args;
     engine_args.global_stack_memory.size  =          ifb_win32::_global_stack_size;
-    engine_args.global_stack_memory.start = (IFBAddr)ifb_win32::_global_stack_buffer;
+    engine_args.global_stack_memory.start = (ifb::addr)ifb_win32::_global_stack_buffer;
     engine_args.platform_api              = ifb_win32::platform_api();
 
     //initialize the engine

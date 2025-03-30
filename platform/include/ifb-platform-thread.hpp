@@ -13,12 +13,12 @@ struct IFBPlatformThreadRequest;
 /* THREAD API                                                                     */
 /**********************************************************************************/
 
-typedef const IFBU32 (*IFBPlatformThreadSize)        (IFBVoid);
-typedef const IFBB8  (*IFBPlatformThreadCreate)      (const IFBPlatformThreadRequest* request);
-typedef const IFBB8  (*IFBPlatformThreadDestroy)     (const IFBPlatformThreadRequest* request);
-typedef const IFBB8  (*IFBPlatformThreadAssignCores) (const IFBPlatformThreadRequest* request);
-typedef const IFBB8  (*IFBPlatformThreadWake)        (const IFBPlatformThreadRequest* request);
-typedef const IFBB8  (*IFBPlatformThreadSleep)       (const IFBPlatformThreadRequest* request);
-typedef const IFBB8  (*IFBPlatformThreadGetStatus)   (const IFBPlatformThreadRequest* request);
+typedef const ifb::u32 (*IFBPlatformThreadSize)        (void);
+typedef const ifb::b8  (*IFBPlatformThreadCreate)      (const IFBPlatformThreadRequest* request);
+typedef const ifb::b8  (*IFBPlatformThreadDestroy)     (const IFBPlatformThreadRequest* request);
+typedef const ifb::b8  (*IFBPlatformThreadAssignCores) (const IFBPlatformThreadRequest* request);
+typedef const ifb::b8  (*IFBPlatformThreadWake)        (const IFBPlatformThreadRequest* request);
+typedef const ifb::b8  (*IFBPlatformThreadSleep)       (const IFBPlatformThreadRequest* request);
+typedef const ifb::b8  (*IFBPlatformThreadGetStatus)   (const IFBPlatformThreadRequest* request);
 
 #endif //IFB_PLATFORM_THREAD_HPP

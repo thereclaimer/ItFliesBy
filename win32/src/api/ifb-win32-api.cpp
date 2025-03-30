@@ -57,5 +57,5 @@ namespace ifb_win32 {
         }
     };
 
-    inline IFBPlatformAPI* platform_api(IFBVoid) { return(&_platform_api); }
+    inline IFBPlatformAPI* platform_api(void) { return(&_platform_api); }
 };

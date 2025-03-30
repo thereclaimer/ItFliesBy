@@ -8,9 +8,9 @@
 /**********************************************************************************/
 
 struct IFBArray : IFBDataStructure {
-    IFBU32 element_size;
-    IFBU32 element_count_total;
-    IFBU32 element_count_current;
+    ifb::u32 element_size;
+    ifb::u32 element_count_total;
+    ifb::u32 element_count_current;
 };
 
 namespace ifb_array {
@@ -27,13 +27,13 @@ namespace ifb_array {
 /* MEMORY                                                                       */
 /**********************************************************************************/
 
-IFBVoid
+void
 ifb_array::size(
     IFBArrayArgs& args) {
 
     //cache args
-    const IFBU32 element_size  = args.element_size;
-    const IFBU32 element_count = args.element_count;
+    const ifb::u32 element_size  = args.element_size;
+    const ifb::u32 element_count = args.element_count;
 
     //calculate the memory size
     args.memory_size = ifb_array_macro_size_total(args.element_size,args.element_count);
@@ -50,8 +50,8 @@ ifb_array::create(
     ifb_macro_assert(args.element_count != 0);
 
     //get the addresses
-    const IFBAddr array_start_struct = (IFBAddr)args.memory_ptr;
-    const IFBAddr array_start_data   = array_start_struct + IFB_ARRAY_STRUCT_SIZE;
+    const ifb::addr array_start_struct = (ifb::addr)args.memory_ptr;
+    const ifb::addr array_start_data   = array_start_struct + IFB_ARRAY_STRUCT_SIZE;
 
     //cast the pointer
     IFBArray* array_ptr = (IFBArray*)args.memory_ptr;
@@ -73,7 +73,7 @@ ifb_array::create(
 /* INFO                                                                           */
 /**********************************************************************************/
 
-IFBVoid
+void
 ifb_array::info(
     const IFBDS64Array  array_handle,
           IFBArrayInfo& info) {
@@ -91,7 +91,7 @@ ifb_array::info(
 /* OPERATIONS                                                                     */
 /**********************************************************************************/
 
-IFBVoid
+void
 ifb_array::clear(
     const IFBDS64Array array_handle) {
 
@@ -100,14 +100,14 @@ ifb_array::clear(
     array->element_count_current = 0;
 }
 
-const IFBB8
+const ifb::b8
 ifb_array::add(
     const IFBDS64Array array_handle,
-    const IFBU32       count,
-    const IFBPtr       element) {
+    const ifb::u32       count,
+    const ifb::ptr       element) {
 
     //sanity check
-    IFBB8 result = true;
+    ifb::b8 result = true;
     result &= (count   >  0);
     result &= (element != NULL);
     if (!result) return(false);
@@ -116,24 +116,24 @@ ifb_array::add(
     IFBArray* array = ifb_array::cast_and_assert_valid(array_handle);
 
     //make sure we can fit the element(s)
-    const IFBU32 array_count_total   = array->element_count_total;
-    const IFBU32 array_count_current = array->element_count_current;
-    const IFBU32 array_count_new     = array_count_current + count;
+    const ifb::u32 array_count_total   = array->element_count_total;
+    const ifb::u32 array_count_current = array->element_count_current;
+    const ifb::u32 array_count_new     = array_count_current + count;
     if (array_count_new > array_count_total) return(false);
 
     //calculate the end of the current array data
-    const IFBU32  array_element_size = array->element_size;
-    const IFBU32  array_size_current = array_element_size * array_count_current;
-    const IFBAddr array_end          = array->start + array_size_current;
+    const ifb::u32  array_element_size = array->element_size;
+    const ifb::u32  array_size_current = array_element_size * array_count_current;
+    const ifb::addr array_end          = array->start + array_size_current;
     
     //calculate the element source and destination
-    IFBByte*       element_destination = (IFBByte*)array_end;
-    const IFBU32   element_source_size = array_element_size * count;
-    const IFBByte* element_source      = (const IFBByte*)element;
+    ifb::byte*       element_destination = (ifb::byte*)array_end;
+    const ifb::u32   element_source_size = array_element_size * count;
+    const ifb::byte* element_source      = (const ifb::byte*)element;
 
     //copy the data
     for (
-        IFBU32 byte_index = 0;
+        ifb::u32 byte_index = 0;
                byte_index < element_source_size;
              ++byte_index) {
 
@@ -148,10 +148,10 @@ ifb_array::add(
     return(true);
 }
 
-const IFBPtr
+const ifb::ptr
 ifb_array::index(
     const IFBDS64Array array_handle,
-    const IFBU32       index) {
+    const ifb::u32       index) {
 
     //get the array
     IFBArray* array = ifb_array::cast_and_assert_valid(array_handle);
@@ -160,16 +160,16 @@ ifb_array::index(
     if (index >= array->element_count_current) return(NULL);
 
     //calculate the element pointer
-    const IFBU32  element_size    = array->element_size;
-    const IFBU32  element_offset  = element_size * index; 
-    const IFBAddr element_address = array->start + element_offset;
-    const IFBPtr  element_pointer = (IFBPtr)element_address;
+    const ifb::u32  element_size    = array->element_size;
+    const ifb::u32  element_offset  = element_size * index; 
+    const ifb::addr element_address = array->start + element_offset;
+    const ifb::ptr  element_pointer = (ifb::ptr)element_address;
 
     //we're done
     return(element_pointer);
 }
 
-const IFBB8
+const ifb::b8
 ifb_array::iterate(
     const IFBDS64Array array_handle,
           IFBIterator& iterator) {
@@ -178,7 +178,7 @@ ifb_array::iterate(
     IFBArray* array = ifb_array::cast_and_assert_valid(array_handle);
 
     //check the iterator
-    const IFBU32 array_count_current = array->element_count_current;
+    const ifb::u32 array_count_current = array->element_count_current;
     if (iterator.index >= array_count_current) {
         
         //if the iterator is greater than the current count, 
@@ -209,7 +209,7 @@ ifb_array::cast_and_assert_valid(
     IFBArray* array = (IFBArray*)array_handle.h64;
 
     //assert the properties are valid
-    IFBB8 result = true;
+    ifb::b8 result = true;
     result &= (array                        != NULL);
     result &= (array->size                  != NULL);
     result &= (array->start                 != NULL);

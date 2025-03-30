@@ -30,7 +30,7 @@ ifb_engine::context_create(
     return(engine_context);
 }
 
-ifb_engine_api const IFBB8
+ifb_engine_api const ifb::b8
 ifb_engine::context_destroy(
     IFBEngineContext* engine_context) {
 
@@ -39,12 +39,12 @@ ifb_engine::context_destroy(
 }
     
 // startup/shutdown
-ifb_engine_api const IFBB8
+ifb_engine_api const ifb::b8
 ifb_engine::context_startup(
     IFBEngineContext* engine_context){
 
     //result
-    IFBB8 result = true;
+    ifb::b8 result = true;
 
     //get a new core reference
     IFBEngineCore* core = ifb_engine::context_memory_push_core(engine_context);
@@ -59,7 +59,7 @@ ifb_engine::context_startup(
     return(result);
 }
 
-ifb_engine_api const IFBB8
+ifb_engine_api const ifb::b8
 ifb_engine::context_shutdown(
     IFBEngineContext* engine_context){
 
@@ -67,15 +67,15 @@ ifb_engine::context_shutdown(
 }
 
 // rendering
-ifb_engine_api const IFBB8 
+ifb_engine_api const ifb::b8 
 ifb_engine::context_main_loop (
     IFBEngineContext* engine_context) {
 
     //get a new core reference
     IFBEngineCore* core = ifb_engine::context_memory_push_core(engine_context);
 
-    IFBB8 result  = true;
-    IFBB8 running = true;
+    ifb::b8 result  = true;
+    ifb::b8 running = true;
     while (result && running) {
 
         result &= ifb_engine::core_frame_start  (core);

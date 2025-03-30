@@ -18,7 +18,7 @@ typedef const LRESULT (*IFBWin32WindowMessageHandler) (IFBWin32Window* window);
 namespace ifb_win32 {
 
     //load/store
-    IFBVoid         window_assert_store  (IFBWin32Window* window);
+    void         window_assert_store  (IFBWin32Window* window);
     IFBWin32Window* window_assert_load   (const HWND win32_window_handle);
 
     //callback
@@ -40,19 +40,19 @@ namespace ifb_win32 {
 /* WINDOW API                                                                     */
 /**********************************************************************************/
 
-ifb_internal const IFBU32 
+ifb_internal const ifb::u32 
 ifb_win32::window_size(
-    IFBVoid) {
+    void) {
 
-    const IFBU32 size = ifb_macro_align_size_struct(IFBWin32Window);
+    const ifb::u32 size = ifb_macro_align_size_struct(IFBWin32Window);
     return(size);
 }
 
-ifb_internal const IFBB8
+ifb_internal const ifb::b8
 ifb_win32::window_create(
     IFBWin32Window* window) {
 
-    IFBB8 result = true;
+    ifb::b8 result = true;
     
     //sanity check
     ifb_macro_assert(window);
@@ -73,7 +73,7 @@ ifb_win32::window_create(
     window_class.cbWndExtra    = ifb_macro_align_size_struct(IFBWin32Window);
 
     //register the class
-    const IFBB8 win32_is_window_class_registered = (RegisterClass(&window_class) != 0);
+    const ifb::b8 win32_is_window_class_registered = (RegisterClass(&window_class) != 0);
 
     //create the window handle
     const HWND win32_handle_window = CreateWindowA(
@@ -120,12 +120,12 @@ ifb_win32::window_create(
     preferred_format_descriptor.cColorBits = 32;
     
     //set the pixel format
-    const IFBS32 chosen_format_descriptor = ChoosePixelFormat (win32_handle_device, &preferred_format_descriptor);
-    const IFBB8  pixel_format_is_set      =  SetPixelFormat   (win32_handle_device, chosen_format_descriptor,&preferred_format_descriptor);
+    const ifb::s32 chosen_format_descriptor = ChoosePixelFormat (win32_handle_device, &preferred_format_descriptor);
+    const ifb::b8  pixel_format_is_set      =  SetPixelFormat   (win32_handle_device, chosen_format_descriptor,&preferred_format_descriptor);
 
     //create the opengl context and make it current
     const HGLRC win32_handle_opengl   = wglCreateContext (win32_handle_device);
-    const IFBB8 opengl_context_active = wglMakeCurrent   (win32_handle_device,win32_handle_opengl);
+    const ifb::b8 opengl_context_active = wglMakeCurrent   (win32_handle_device,win32_handle_opengl);
 
     //make sure that our opengl context is active
     result &= pixel_format_is_set;
@@ -143,8 +143,8 @@ ifb_win32::window_create(
     
     //initialize win32/opengl methods for imgui
     if (result) {
-        result &= (IFBB8)ImGui_ImplWin32_Init(win32_handle_window);
-        result &= (IFBB8)ImGui_ImplOpenGL3_Init("#version 330");
+        result &= (ifb::b8)ImGui_ImplWin32_Init(win32_handle_window);
+        result &= (ifb::b8)ImGui_ImplOpenGL3_Init("#version 330");
     }
 
     //make sure we have an imgui context
@@ -163,7 +163,7 @@ ifb_win32::window_create(
     return(result);    
 }
 
-ifb_internal const IFBB8 
+ifb_internal const ifb::b8 
 ifb_win32::window_destroy(
     IFBWin32Window* window) {
 
@@ -172,7 +172,7 @@ ifb_win32::window_destroy(
     return(true);
 }
 
-ifb_internal const IFBB8 
+ifb_internal const ifb::b8 
 ifb_win32::window_process_events(
     IFBWin32Window* window) {
 
@@ -191,14 +191,14 @@ ifb_win32::window_process_events(
             case WM_KEYDOWN:
             case WM_SYSKEYDOWN: {
 
-                const IFBKeyCode keycode = ifb_win32::user_input_keycode((IFBU32)window_message.wParam);
+                const IFBKeyCode keycode = ifb_win32::user_input_keycode((ifb::u32)window_message.wParam);
             } break;
 
             //key up
             case WM_KEYUP:
             case WM_SYSKEYUP: {
 
-                const IFBKeyCode keycode = ifb_win32::user_input_keycode((IFBU32)window_message.wParam);
+                const IFBKeyCode keycode = ifb_win32::user_input_keycode((ifb::u32)window_message.wParam);
             } break;
         }
 
@@ -210,7 +210,7 @@ ifb_win32::window_process_events(
     return(true);
 }
 
-ifb_internal const IFBB8 
+ifb_internal const ifb::b8 
 ifb_win32::window_swap_buffers(
     IFBWin32Window* window) {
 
@@ -226,13 +226,13 @@ ifb_win32::window_swap_buffers(
     return(true);
 }
 
-ifb_internal const IFBB8 
+ifb_internal const ifb::b8 
 ifb_win32::window_show(
     IFBWin32Window* window) {
     
     //show the window
-    const IFBB8  result = (IFBB8)ShowWindow(window->win32.handles.window,1);
-    const IFBU32 error  = GetLastError();
+    const ifb::b8  result = (ifb::b8)ShowWindow(window->win32.handles.window,1);
+    const ifb::u32 error  = GetLastError();
 
     //set the handle
     ifb_platform::window_set_flag_visible(window->flags);
@@ -245,7 +245,7 @@ ifb_win32::window_show(
 /* STORE AND LOAD                                                                 */
 /**********************************************************************************/
 
-inline IFBVoid
+inline void
 ifb_win32::window_assert_store(
     IFBWin32Window* window) {
 
@@ -253,7 +253,7 @@ ifb_win32::window_assert_store(
     ifb_macro_assert(window);
 
     //properties
-    IFBB8 is_valid = true;
+    ifb::b8 is_valid = true;
     is_valid &= (window->title                    != NULL);
     is_valid &= (window->graphics_contexts.imgui  != NULL);
     is_valid &= (window->graphics_contexts.opengl != NULL);
@@ -283,7 +283,7 @@ ifb_win32::window_assert_load(
     if (!window) return(NULL);
 
     //properties
-    IFBB8 is_valid = true;
+    ifb::b8 is_valid = true;
     is_valid &= (window->title                    != NULL);
     is_valid &= (window->graphics_contexts.imgui  != NULL);
     is_valid &= (window->graphics_contexts.opengl != NULL);
@@ -360,8 +360,8 @@ ifb_win32::window_on_wm_size(
     IFBWin32Window* window) {
 
     //get parameters
-    const IFBU32 window_width  = LOWORD(window->win32.message_params.l); 
-    const IFBU32 window_height = HIWORD(window->win32.message_params.l); 
+    const ifb::u32 window_width  = LOWORD(window->win32.message_params.l); 
+    const ifb::u32 window_height = HIWORD(window->win32.message_params.l); 
     
     //update dimensions
     window->dims.width  = window_width;
@@ -379,8 +379,8 @@ ifb_win32::window_on_wm_move(
     IFBWin32Window* window) {
 
     //get the params
-    const IFBU32 window_position_x = LOWORD(window->win32.message_params.l); 
-    const IFBU32 window_position_y = HIWORD(window->win32.message_params.l); 
+    const ifb::u32 window_position_x = LOWORD(window->win32.message_params.l); 
+    const ifb::u32 window_position_y = HIWORD(window->win32.message_params.l); 
 
     //update the position
     window->pos.x = window_position_x;

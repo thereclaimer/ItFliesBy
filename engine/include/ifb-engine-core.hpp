@@ -29,11 +29,11 @@ struct IFBEngineCore {
 
 namespace ifb_engine {
 
-    const IFBB8 core_initialize   (IFBEngineCore* core);
-    const IFBB8 core_startup      (IFBEngineCore* core);
-    const IFBB8 core_frame_start  (IFBEngineCore* core);
-    const IFBB8 core_frame_render (IFBEngineCore* core);
-    const IFBB8 core_should_quit  (IFBEngineCore* core);
+    const ifb::b8 core_initialize   (IFBEngineCore* core);
+    const ifb::b8 core_startup      (IFBEngineCore* core);
+    const ifb::b8 core_frame_start  (IFBEngineCore* core);
+    const ifb::b8 core_frame_render (IFBEngineCore* core);
+    const ifb::b8 core_should_quit  (IFBEngineCore* core);
 };
 
 #define IFB_ENGINE_CORE_STRUCT_SIZE ifb_macro_align_size_struct(IFBEngineCore)
@@ -53,11 +53,11 @@ struct IFBEngineGraphicsManager {
 
 namespace ifb_engine {
 
-    const IFBB8 graphics_manager_initialize             (IFBEngineGraphicsManager* graphics_manager, IFBEngineMemory* engine_memory);
-    const IFBB8 graphics_manager_create_and_show_window (IFBEngineGraphicsManager* graphics_manager);
-    const IFBB8 graphics_manager_frame_start            (IFBEngineGraphicsManager* graphics_manager);
-    const IFBB8 graphics_manager_frame_render           (IFBEngineGraphicsManager* graphics_manager);
-    const IFBB8 graphics_manager_window_quit_received   (IFBEngineGraphicsManager* graphics_manager);
+    const ifb::b8 graphics_manager_initialize             (IFBEngineGraphicsManager* graphics_manager, IFBEngineMemory* engine_memory);
+    const ifb::b8 graphics_manager_create_and_show_window (IFBEngineGraphicsManager* graphics_manager);
+    const ifb::b8 graphics_manager_frame_start            (IFBEngineGraphicsManager* graphics_manager);
+    const ifb::b8 graphics_manager_frame_render           (IFBEngineGraphicsManager* graphics_manager);
+    const ifb::b8 graphics_manager_window_quit_received   (IFBEngineGraphicsManager* graphics_manager);
 };
 
 /**********************************************************************************/
@@ -65,7 +65,7 @@ namespace ifb_engine {
 /**********************************************************************************/
 
 struct IFBEngineFileManager {
-    IFBU32 x;
+    ifb::u32 x;
 };
 
 
@@ -75,7 +75,7 @@ struct IFBEngineFileManager {
 /**********************************************************************************/
 
 struct IFBEngineThreadManager {
-    IFBU32 x;
+    ifb::u32 x;
 };
 
 /**********************************************************************************/
@@ -83,11 +83,11 @@ struct IFBEngineThreadManager {
 /**********************************************************************************/
 
 struct IFBEngineCoreGlobals {
-    IFBU32   core_struct_size;
-    IFBU32   window_init_width;
-    IFBU32   window_init_height;
-    IFBU32   window_title_length;
-    IFBChar* window_title;
+    ifb::u32   core_struct_size;
+    ifb::u32   window_init_width;
+    ifb::u32   window_init_height;
+    ifb::u32   window_title_length;
+    ifb::utf8* window_title;
 };
 
 namespace ifb_engine {

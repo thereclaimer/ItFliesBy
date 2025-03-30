@@ -34,7 +34,7 @@ namespace ifb_platform {
 /* PLATFORM                                                                       */
 /**********************************************************************************/
 
-const IFBB8
+const ifb::b8
 ifb_platform::set_api(
     const IFBPlatformAPI* platform_api) {
 

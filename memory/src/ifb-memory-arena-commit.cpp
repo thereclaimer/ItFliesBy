@@ -7,7 +7,7 @@
 /* ARENA COMMIT STEPS                                                             */
 /**********************************************************************************/
 
-inline IFBVoid 
+inline void 
 ifb_memory::arena_commit_step_0_validate_args(
     IFBMemoryArenaCommit& commit_ref) {
 
@@ -19,7 +19,7 @@ ifb_memory::arena_commit_step_0_validate_args(
     commit_ref.result &= ifb_memory_macro_is_handle_valid_reservation (commit_ref.context->handle_reservation);
 }
 
-inline IFBVoid
+inline void
 ifb_memory::arena_commit_step_1_cache_reservation_properties(
     IFBMemoryArenaCommit& commit_ref) {
 
@@ -47,7 +47,7 @@ ifb_memory::arena_commit_step_1_cache_reservation_properties(
     }
 }
 
-inline IFBVoid
+inline void
 ifb_memory::arena_commit_step_2_find_free_arena(
     IFBMemoryArenaCommit& commit_ref) {
 
@@ -57,12 +57,12 @@ ifb_memory::arena_commit_step_2_find_free_arena(
         commit_ref.context->handle_arena.h32 = IFB_MEMORY_INVALID_HANDLE_32;
 
         //cache constant properties
-        const IFBAddr* arena_start_array = commit_ref.cache.arrays.arena_start;  
-        const IFBU32   arena_count       = commit_ref.cache.arena_count; 
+        const ifb::addr* arena_start_array = commit_ref.cache.arrays.arena_start;  
+        const ifb::u32   arena_count       = commit_ref.cache.arena_count; 
 
         //search for a free arena
         for (
-            IFBU32 arena_index = 0;
+            ifb::u32 arena_index = 0;
                    arena_index < arena_count;
                  ++arena_index) {
 
@@ -80,24 +80,24 @@ ifb_memory::arena_commit_step_2_find_free_arena(
     }
 }
 
-inline IFBVoid 
+inline void 
 ifb_memory::arena_commit_step_3_commit_memory(
     IFBMemoryArenaCommit& commit_ref) {
 
     if (commit_ref.result) {
 
         //calculate the arena offset
-        const IFBU32 arena_index        = commit_ref.context->handle_arena.h32;
-        const IFBU32 arena_size         = commit_ref.cache.arena_size;
-        const IFBU32 arena_offset       = (arena_index * arena_size);
+        const ifb::u32 arena_index        = commit_ref.context->handle_arena.h32;
+        const ifb::u32 arena_size         = commit_ref.cache.arena_size;
+        const ifb::u32 arena_offset       = (arena_index * arena_size);
 
         //calculate the arena start
-        const IFBAddr start_reservation = commit_ref.cache.reservation_start;
-        const IFBAddr start_arena       = start_reservation + arena_offset; 
+        const ifb::addr start_reservation = commit_ref.cache.reservation_start;
+        const ifb::addr start_arena       = start_reservation + arena_offset; 
 
         //do the commit
-        const IFBPtr commit_request     = (IFBPtr)start_arena;
-        const IFBPtr commit_result      = ifb_platform::memory_commit(commit_request,arena_size);
+        const ifb::ptr commit_request     = (ifb::ptr)start_arena;
+        const ifb::ptr commit_result      = ifb_platform::memory_commit(commit_request,arena_size);
 
         //update the arena address and make sure the request and result match
         commit_ref.cache.arena_start = start_arena; 
@@ -105,15 +105,15 @@ ifb_memory::arena_commit_step_3_commit_memory(
     }
 }
 
-inline IFBVoid
+inline void
 ifb_memory::arena_commit_step_4_update_arrays(
     IFBMemoryArenaCommit& commit_ref) {
 
     if (commit_ref.result) {
     
         //get arena values
-        const IFBU32 arena_index = commit_ref.context->handle_arena.h32;
-        const IFBU32 arena_start = commit_ref.cache.arena_start;
+        const ifb::u32 arena_index = commit_ref.context->handle_arena.h32;
+        const ifb::u32 arena_start = commit_ref.cache.arena_start;
 
         //update the arrays
         commit_ref.cache.arrays.arena_start    [arena_index] = arena_start;

@@ -3,7 +3,7 @@
 #include "ifb-memory.hpp"
 #include "ifb-memory-internal.cpp"
 
-inline IFBVoid
+inline void
 ifb_memory::arena_pull_step_0_validate_args(
     IFBMemoryArenaPullBytes& pull_ref) {
 
@@ -15,7 +15,7 @@ ifb_memory::arena_pull_step_0_validate_args(
     pull_ref.result &= ifb_memory_macro_is_handle_valid_arena   (reset_ref.context->handle_arena);
 }
 
-inline IFBVoid
+inline void
 ifb_memory::arena_pull_step_1_cache_properties(
     IFBMemoryArenaPullBytes& pull_ref) {
 
@@ -32,25 +32,25 @@ ifb_memory::arena_pull_step_1_cache_properties(
     }
 }
 
-inline IFBVoid
+inline void
 ifb_memory::arena_pull_step_2_pull_bytes(
     IFBMemoryArenaPullBytes& pull_ref) {
      
-    const IFBU32 arena_pull  = pull_ref.context->input.size;
-    const IFBU32 arena_index = pull_ref.context->handle_arena;
-    const IFBU32 arena_count = pull_ref.cache.arena_count;
+    const ifb::u32 arena_pull  = pull_ref.context->input.size;
+    const ifb::u32 arena_index = pull_ref.context->handle_arena;
+    const ifb::u32 arena_count = pull_ref.cache.arena_count;
     
     //make sure the index is valid
     pull_ref.result &= (arena_index < arena_count); 
     if (pull_ref.result) {
 
         //make sure we can do the pull
-        const IFBU32 arena_position_current = pull_ref.cache.arena_position_array[arena_index]; 
+        const ifb::u32 arena_position_current = pull_ref.cache.arena_position_array[arena_index]; 
         pull_ref.result &= (arena_position_current >= arena_pull);
         if (pull_ref.result) {
             
             //update the array
-            const IFBU32 arena_position_new = arena_position_current - arena_pull;
+            const ifb::u32 arena_position_new = arena_position_current - arena_pull;
             pull_ref.cache.arena_position_array[arena_index] = arena_position_new;
         }
     }

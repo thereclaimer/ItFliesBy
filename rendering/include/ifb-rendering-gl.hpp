@@ -53,7 +53,7 @@ enum IFBGLViewportUpdateFlags_ {
     IFBGLViewportUpdateFlags_ClearColor            = IFB_BIT_FLAG_2
 };
 
-typedef IFBU32 IFBGLViewportUpdateFlags;
+typedef ifb::u32 IFBGLViewportUpdateFlags;
 
 struct IFBGLViewport {
     IFBGLViewportUpdateFlags flags;
@@ -70,17 +70,17 @@ struct IFBGLViewportArgs {
 };
 namespace ifb_gl {
 
-    const IFBU32       viewport_memory_size                              (IFBVoid);
+    const ifb::u32       viewport_memory_size                              (void);
     IFBGLViewport*     viewport_memory_initialize                        (const IFBGLViewportArgs& args);
 
-    IFBVoid            viewport_clear                                    (IFBGLViewport* viewport);
-    IFBVoid            viewport_update                                   (IFBGLViewport* viewport);
+    void            viewport_clear                                    (IFBGLViewport* viewport);
+    void            viewport_update                                   (IFBGLViewport* viewport);
 
-    inline IFBVoid     viewport_update_flags_set_position_and_dimensions (IFBGLViewportUpdateFlags& flags)       { ifb_macro_bit_set(IFBGLViewportUpdateFlags_PositionAndDimensions, flags); }
-    inline IFBVoid     viewport_update_flags_set_clear_color             (IFBGLViewportUpdateFlags& flags)       { ifb_macro_bit_set(IFBGLViewportUpdateFlags_ClearColor,            flags); }
+    inline void     viewport_update_flags_set_position_and_dimensions (IFBGLViewportUpdateFlags& flags)       { ifb_macro_bit_set(IFBGLViewportUpdateFlags_PositionAndDimensions, flags); }
+    inline void     viewport_update_flags_set_clear_color             (IFBGLViewportUpdateFlags& flags)       { ifb_macro_bit_set(IFBGLViewportUpdateFlags_ClearColor,            flags); }
 
-    inline const IFBB8 viewport_update_flags_get_position_and_dimensions (const IFBGLViewportUpdateFlags& flags) { return(ifb_macro_bit_test(IFBGLViewportUpdateFlags_PositionAndDimensions, flags)); }
-    inline const IFBB8 viewport_update_flags_get_clear_color             (const IFBGLViewportUpdateFlags& flags) { return(ifb_macro_bit_test(IFBGLViewportUpdateFlags_ClearColor,            flags)); }
+    inline const ifb::b8 viewport_update_flags_get_position_and_dimensions (const IFBGLViewportUpdateFlags& flags) { return(ifb_macro_bit_test(IFBGLViewportUpdateFlags_PositionAndDimensions, flags)); }
+    inline const ifb::b8 viewport_update_flags_get_clear_color             (const IFBGLViewportUpdateFlags& flags) { return(ifb_macro_bit_test(IFBGLViewportUpdateFlags_ClearColor,            flags)); }
 };
 
 /**********************************************************************************/
@@ -89,19 +89,19 @@ namespace ifb_gl {
 
 namespace ifb_gl {
 
-    const IFBB8
+    const ifb::b8
     shader_stage_compile(
         const GLuint              shader_stage_type,
-        const IFBU32              shader_stage_count,
-        const IFBChar**           shader_stage_buffers,
+        const ifb::u32              shader_stage_count,
+        const ifb::utf8**           shader_stage_buffers,
               IFBGLIDShaderStage* shader_stage_array); 
     
-    const IFBB8 shader_stage_compile_vertex   (const IFBU32 shader_stage_vertex_count,   const IFBChar** shader_stage_vertex_buffers,   IFBGLIDShaderStageVertex*   shader_stage_vertex_array); 
-    const IFBB8 shader_stage_compile_fragment (const IFBU32 shader_stage_fragment_count, const IFBChar** shader_stage_fragment_buffers, IFBGLIDShaderStageFragment* shader_stage_fragment_array); 
+    const ifb::b8 shader_stage_compile_vertex   (const ifb::u32 shader_stage_vertex_count,   const ifb::utf8** shader_stage_vertex_buffers,   IFBGLIDShaderStageVertex*   shader_stage_vertex_array); 
+    const ifb::b8 shader_stage_compile_fragment (const ifb::u32 shader_stage_fragment_count, const ifb::utf8** shader_stage_fragment_buffers, IFBGLIDShaderStageFragment* shader_stage_fragment_array); 
     
-    const IFBB8
+    const ifb::b8
     shader_stage_delete(
-        const IFBU32              shader_stage_count,
+        const ifb::u32              shader_stage_count,
         const IFBGLIDShaderStage* shader_stage_array);
 };
 
@@ -111,19 +111,19 @@ namespace ifb_gl {
 
 namespace ifb_gl {
 
-    const IFBB8
+    const ifb::b8
     shader_program_create(
-        const IFBU32                     shader_program_count,
+        const ifb::u32                     shader_program_count,
         const IFBGLIDShaderStageVertex*   shader_stage_array_vertex,
         const IFBGLIDShaderStageFragment* shader_stage_array_fragment,
               IFBGLIDShaderProgram*       shader_program_array);
 
-    const IFBB8
+    const ifb::b8
     shader_program_delete(
-        const IFBU32               shader_program_count,
+        const ifb::u32               shader_program_count,
         const IFBGLIDShaderProgram* shader_program_array);
 
-    const IFBB8 
+    const ifb::b8 
     shader_program_set_active(const IFBGLIDShaderProgram shader_program);
 };
 
@@ -133,18 +133,18 @@ namespace ifb_gl {
 
 namespace ifb_gl {
 
-    const IFBB8 
+    const ifb::b8 
     uniform_get_locations_in_shader_program(
         const IFBGLIDShaderProgram program,
-        const IFBU32               uniform_count,
-        const IFBChar**            uniform_names,
+        const ifb::u32               uniform_count,
+        const ifb::utf8**            uniform_names,
               IFBGLIDUniform*      uniform_array);
 
-    const IFBB8 uniform_update_u32  (const IFBGLIDUniformU32  uniform, const IFBU32 count, const IFBU32*  u32);
-    const IFBB8 uniform_update_f32  (const IFBGLIDUniformF32  uniform, const IFBU32 count, const IFBF32*  f32);
-    const IFBB8 uniform_update_vec2 (const IFBGLIDUniformVec2 uniform, const IFBU32 count, const IFBVec2* vec2);
-    const IFBB8 uniform_update_vec3 (const IFBGLIDUniformVec3 uniform, const IFBU32 count, const IFBVec3* vec3);
-    const IFBB8 uniform_update_mat3 (const IFBGLIDUniformMat3 uniform, const IFBU32 count, const IFBMat3* mat3);
+    const ifb::b8 uniform_update_u32  (const IFBGLIDUniformU32  uniform, const ifb::u32 count, const ifb::u32*  u32);
+    const ifb::b8 uniform_update_f32  (const IFBGLIDUniformF32  uniform, const ifb::u32 count, const ifb::f32*  f32);
+    const ifb::b8 uniform_update_vec2 (const IFBGLIDUniformVec2 uniform, const ifb::u32 count, const IFBVec2* vec2);
+    const ifb::b8 uniform_update_vec3 (const IFBGLIDUniformVec3 uniform, const ifb::u32 count, const IFBVec3* vec3);
+    const ifb::b8 uniform_update_mat3 (const IFBGLIDUniformMat3 uniform, const ifb::u32 count, const IFBMat3* mat3);
 };
 
 /**********************************************************************************/
@@ -153,31 +153,31 @@ namespace ifb_gl {
 
 namespace ifb_gl {
 
-    const IFBB8 buffer_create(const IFBU32 buffer_count, IFBGLIDBuffer* buffer_array);
+    const ifb::b8 buffer_create(const ifb::u32 buffer_count, IFBGLIDBuffer* buffer_array);
 
-    const IFBB8 buffer_create_vertex  (const IFBU32 vertex_buffer_count,  IFBGLIDBufferVertex*  vertex_buffer_array);
-    const IFBB8 buffer_create_element (const IFBU32 element_buffer_count, IFBGLIDBufferElement* element_buffer_array);
+    const ifb::b8 buffer_create_vertex  (const ifb::u32 vertex_buffer_count,  IFBGLIDBufferVertex*  vertex_buffer_array);
+    const ifb::b8 buffer_create_element (const ifb::u32 element_buffer_count, IFBGLIDBufferElement* element_buffer_array);
 
-    const IFBB8
+    const ifb::b8
     buffer_data_upload_vertex(
-        const IFBU32               vertex_buffer_count,
+        const ifb::u32               vertex_buffer_count,
         const IFBGLIDBufferVertex* vertex_buffer_array,
-        const IFBU32*              vertex_buffer_size_array,
-        const IFBVoid*             vertex_buffer_data);
+        const ifb::u32*              vertex_buffer_size_array,
+        const void*             vertex_buffer_data);
 
-    const IFBB8
+    const ifb::b8
     buffer_data_upload_element(
-        const IFBU32                element_buffer_count,
+        const ifb::u32                element_buffer_count,
         const IFBGLIDBufferElement* element_buffer_array,
-        const IFBU32*               element_buffer_size_array,
-        const IFBVoid*              element_buffer_data);
+        const ifb::u32*               element_buffer_size_array,
+        const void*              element_buffer_data);
 };
 
 /**********************************************************************************/
 /* VERTEX                                                                         */
 /**********************************************************************************/
 
-enum IFBGLVertexAttributeType : IFBU32 {
+enum IFBGLVertexAttributeType : ifb::u32 {
     IFBGLVertexAttributeType_S8  = 0,
     IFBGLVertexAttributeType_U8  = 1,
     IFBGLVertexAttributeType_S16 = 2,
@@ -187,7 +187,7 @@ enum IFBGLVertexAttributeType : IFBU32 {
     IFBGLVertexAttributeType_F32 = 6
 };
 
-ifb_global const IFBU32 IFB_GL_VERTEX_ATTRIBUTE_GL_TYPES[] = {
+ifb_global const ifb::u32 IFB_GL_VERTEX_ATTRIBUTE_GL_TYPES[] = {
     GL_BYTE,
     GL_UNSIGNED_BYTE,
     GL_SHORT,
@@ -197,35 +197,35 @@ ifb_global const IFBU32 IFB_GL_VERTEX_ATTRIBUTE_GL_TYPES[] = {
     GL_FLOAT
 };
 
-ifb_global const IFBU32 IFB_GL_VERTEX_ATTRIBUTE_SIZES[] = {
-    sizeof(IFBS8),  // GL_BYTE
-    sizeof(IFBU8),  // GL_UNSIGNED_BYTE
-    sizeof(IFBS16), // GL_SHORT
-    sizeof(IFBU16), // GL_UNSIGNED_SHORT
-    sizeof(IFBS32), // GL_INT
-    sizeof(IFBU32), // GL_UNSIGNED_INT
-    sizeof(IFBF32)  // GL_FLOAT
+ifb_global const ifb::u32 IFB_GL_VERTEX_ATTRIBUTE_SIZES[] = {
+    sizeof(ifb::s8),  // GL_BYTE
+    sizeof(ifb::u8),  // GL_UNSIGNED_BYTE
+    sizeof(ifb::s16), // GL_SHORT
+    sizeof(ifb::u16), // GL_UNSIGNED_SHORT
+    sizeof(ifb::s32), // GL_INT
+    sizeof(ifb::u32), // GL_UNSIGNED_INT
+    sizeof(ifb::f32)  // GL_FLOAT
 };
 
 namespace ifb_gl {
 
-    const IFBB8
+    const ifb::b8
     vertex_create(
-        const IFBU32        vertex_count,
+        const ifb::u32        vertex_count,
               IFBGLIDVertex* vertex_array);
 
-    const IFBB8
+    const ifb::b8
     vertex_enable_attributes(
         const IFBGLIDVertex             vertex_ref,
-        const IFBU32                   vertex_size,
+        const ifb::u32                   vertex_size,
         const IFBGLIDBuffer             vertex_buffer,
-        const IFBAddr               vertex_buffer_offset,
-        const IFBU32                   vertex_attribute_count,
+        const ifb::addr               vertex_buffer_offset,
+        const ifb::u32                   vertex_attribute_count,
         const IFBGLVertexAttributeType* vertex_attribute_types_array,
-        const IFBU32*                  vertex_attribute_base_offset_array);
+        const ifb::u32*                  vertex_attribute_base_offset_array);
 
     const GLenum vertex_attribute_type_get_gl_type (const IFBGLVertexAttributeType vertex_attribute_type);
-    const IFBU32 vertex_attribute_type_get_size    (const IFBGLVertexAttributeType vertex_attribute_type);
+    const ifb::u32 vertex_attribute_type_get_size    (const IFBGLVertexAttributeType vertex_attribute_type);
 };
 
 #endif //IFB_RENDERING_GL_HPP

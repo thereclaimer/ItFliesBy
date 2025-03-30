@@ -3,9 +3,9 @@
 #include "ifb-rendering-gl.hpp"
 
 
-inline const IFBB8
+inline const ifb::b8
 ifb_gl::shader_program_create(
-    const IFBU32                     shader_program_count,
+    const ifb::u32                     shader_program_count,
     const IFBGLIDShaderStageVertex*   shader_stage_array_vertex,
     const IFBGLIDShaderStageFragment* shader_stage_array_fragment,
           IFBGLIDShaderProgram*       shader_program_array) {
@@ -16,13 +16,13 @@ ifb_gl::shader_program_create(
     ifb_macro_assert(shader_stage_array_fragment != NULL);
     ifb_macro_assert(shader_program_array        != NULL);
 
-    IFBB8 result = true;
+    ifb::b8 result = true;
 
     GLint shader_program_link_status = 0;
 
     //loop through the shader programs and create them
     for (
-        IFBU32 shader_program_index = 0;
+        ifb::u32 shader_program_index = 0;
         shader_program_index < shader_program_count; 
         ++shader_program_index) {
     
@@ -59,9 +59,9 @@ ifb_gl::shader_program_create(
     return(result);
 }
 
-inline const IFBB8
+inline const ifb::b8
 ifb_gl::shader_program_delete(
-    const IFBU32               shader_program_count,
+    const ifb::u32               shader_program_count,
     const IFBGLIDShaderProgram* shader_program_array) {
 
     //sanity check
@@ -69,11 +69,11 @@ ifb_gl::shader_program_delete(
     ifb_macro_assert(shader_program_array != NULL);
 
     //forward declarations
-    IFBB8 result = true;    
+    ifb::b8 result = true;    
     
     //loop through the shader programs and delete them
     for (
-        IFBU32 shader_program_index = 0;
+        ifb::u32 shader_program_index = 0;
         shader_program_index < shader_program_count; 
         ++shader_program_index) {
     
@@ -88,7 +88,7 @@ ifb_gl::shader_program_delete(
     return(result);
 }
 
-inline const IFBB8 
+inline const ifb::b8 
 ifb_gl::shader_program_set_active(
     const IFBGLIDShaderProgram shader_program) {
 

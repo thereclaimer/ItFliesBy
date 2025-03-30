@@ -5,7 +5,7 @@
 
 namespace ifb_memory {
 
-    IFBVoid reservation_assert_valid(const IFBMemoryReservation* reservation);
+    void reservation_assert_valid(const IFBMemoryReservation* reservation);
 }
 
 /**********************************************************************************/
@@ -15,8 +15,8 @@ namespace ifb_memory {
 IFBMEMReservation
 ifb_memory::reserve_system_memory(
           IFBMemoryStack* stack,
-    const IFBU64          size_reservation,
-    const IFBU32          size_arena) {
+    const ifb::u64          size_reservation,
+    const ifb::u32          size_arena) {
 
     //validate args
     ifb_macro_assert(stack);
@@ -28,25 +28,25 @@ ifb_memory::reserve_system_memory(
     ifb_platform::system_get_info_memory(&sys_mem_info);
 
     //align sizes to system info
-    const IFBU64 size_aligned_reservation = ifb_macro_align_a_to_b(size_reservation,(IFBU64)sys_mem_info.allocation_granularity);
-    const IFBU32 size_aligned_arena       = ifb_macro_align_a_to_b(size_arena,              sys_mem_info.page_size);
+    const ifb::u64 size_aligned_reservation = ifb_macro_align_a_to_b(size_reservation,(ifb::u64)sys_mem_info.allocation_granularity);
+    const ifb::u32 size_aligned_arena       = ifb_macro_align_a_to_b(size_arena,              sys_mem_info.page_size);
 
     //reserve system memory
-    const IFBPtr  system_memory_pointer = ifb_platform::memory_reserve(size_aligned_reservation);
-    const IFBAddr system_memory_start   = (IFBAddr)system_memory_pointer;
+    const ifb::ptr  system_memory_pointer = ifb_platform::memory_reserve(size_aligned_reservation);
+    const ifb::addr system_memory_start   = (ifb::addr)system_memory_pointer;
     ifb_macro_assert(system_memory_pointer);
 
     //get the stack start
-    const IFBAddr stack_start = (IFBAddr)stack;
+    const ifb::addr stack_start = (ifb::addr)stack;
 
     //push the reservation struct on the stack
     IFBMemoryReservation* reservation = ifb_memory_macro_stack_push_reservation(stack);
     ifb_macro_assert(reservation);
 
     //calculate the struct offset
-    const IFBAddr address_stack_start       = (IFBAddr)stack;
-    const IFBAddr address_stack_reservation = (IFBAddr)reservation;
-    const IFBAddr address_stack_offset      = address_stack_reservation - address_stack_start;  
+    const ifb::addr address_stack_start       = (ifb::addr)stack;
+    const ifb::addr address_stack_reservation = (ifb::addr)reservation;
+    const ifb::addr address_stack_offset      = address_stack_reservation - address_stack_start;  
 
     //initialize the reservation
     reservation->arenas.committed   = NULL;
@@ -62,7 +62,7 @@ ifb_memory::reserve_system_memory(
     return(reservation);
 }
 
-const IFBB8      
+const ifb::b8      
 ifb_memory::release_system_memory(
     IFBMemoryReservation* reservation) {
     

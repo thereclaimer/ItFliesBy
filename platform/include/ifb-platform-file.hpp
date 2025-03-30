@@ -8,21 +8,21 @@
 /**********************************************************************************/
 
 struct IFBPlatformFileRequest {
-    IFBPtr x; //TEMPORARY
+    ifb::ptr x; //TEMPORARY
 };
 
-typedef const IFBU32 (*IFBPlatformFileROContextSize)    (IFBVoid);
-typedef const IFBB8  (*IFBPlatformFileROOpen)           (IFBPlatformFileRequest* file_ro_request);
-typedef const IFBB8  (*IFBPlatformFileROReadImmediate)  (IFBPlatformFileRequest* file_ro_request);
-typedef const IFBB8  (*IFBPlatformFileROReadAsync)      (IFBPlatformFileRequest* file_ro_request);
-typedef const IFBB8  (*IFBPlatformFileROClose)          (IFBPlatformFileRequest* file_ro_request);
+typedef const ifb::u32 (*IFBPlatformFileROContextSize)    (void);
+typedef const ifb::b8  (*IFBPlatformFileROOpen)           (IFBPlatformFileRequest* file_ro_request);
+typedef const ifb::b8  (*IFBPlatformFileROReadImmediate)  (IFBPlatformFileRequest* file_ro_request);
+typedef const ifb::b8  (*IFBPlatformFileROReadAsync)      (IFBPlatformFileRequest* file_ro_request);
+typedef const ifb::b8  (*IFBPlatformFileROClose)          (IFBPlatformFileRequest* file_ro_request);
 
-typedef const IFBU32 (*IFBPlatformFileRWContextSize)    (IFBVoid);
-typedef const IFBB8  (*IFBPlatformFileRWOpen)           (IFBPlatformFileRequest* file_rw_request);
-typedef const IFBB8  (*IFBPlatformFileRWReadImmediate)  (IFBPlatformFileRequest* file_rw_request);
-typedef const IFBB8  (*IFBPlatformFileRWReadAsync)      (IFBPlatformFileRequest* file_rw_request);
-typedef const IFBB8  (*IFBPlatformFileRWWriteImmediate) (IFBPlatformFileRequest* file_rw_request);
-typedef const IFBB8  (*IFBPlatformFileRWWriteAsync)     (IFBPlatformFileRequest* file_rw_request);
-typedef const IFBB8  (*IFBPlatformFileRWClose)          (IFBPlatformFileRequest* file_rw_request);
+typedef const ifb::u32 (*IFBPlatformFileRWContextSize)    (void);
+typedef const ifb::b8  (*IFBPlatformFileRWOpen)           (IFBPlatformFileRequest* file_rw_request);
+typedef const ifb::b8  (*IFBPlatformFileRWReadImmediate)  (IFBPlatformFileRequest* file_rw_request);
+typedef const ifb::b8  (*IFBPlatformFileRWReadAsync)      (IFBPlatformFileRequest* file_rw_request);
+typedef const ifb::b8  (*IFBPlatformFileRWWriteImmediate) (IFBPlatformFileRequest* file_rw_request);
+typedef const ifb::b8  (*IFBPlatformFileRWWriteAsync)     (IFBPlatformFileRequest* file_rw_request);
+typedef const ifb::b8  (*IFBPlatformFileRWClose)          (IFBPlatformFileRequest* file_rw_request);
 
 #endif //IFB_PLATFORM_FILE_HPP

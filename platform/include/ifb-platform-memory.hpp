@@ -7,10 +7,10 @@
 /* MEMORY API                                                                     */
 /**********************************************************************************/
 
-typedef const IFBPtr (*IFBPlatformMemoryReserve)  (const IFBU64 reservation_size);
-typedef const IFBB8  (*IFBPlatformMemoryRelease)  (const IFBPtr reservation_start, const IFBU64 reservation_size);
-typedef const IFBPtr (*IFBPlatformMemoryCommit)   (const IFBPtr commit_start,      const IFBU64 commit_size);
-typedef const IFBB8  (*IFBPlatformMemoryDecommit) (const IFBPtr commit_start,      const IFBU64 commit_size);
+typedef const ifb::ptr (*IFBPlatformMemoryReserve)  (const ifb::u64 reservation_size);
+typedef const ifb::b8  (*IFBPlatformMemoryRelease)  (const ifb::ptr reservation_start, const ifb::u64 reservation_size);
+typedef const ifb::ptr (*IFBPlatformMemoryCommit)   (const ifb::ptr commit_start,      const ifb::u64 commit_size);
+typedef const ifb::b8  (*IFBPlatformMemoryDecommit) (const ifb::ptr commit_start,      const ifb::u64 commit_size);
 
 struct IFBPlatformAPIMemory {
     IFBPlatformMemoryReserve  reserve;

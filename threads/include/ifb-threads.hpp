@@ -27,7 +27,7 @@ struct IFBThreadPoolArgs;
 struct IFBThreadPoolInit;
 
 //callback
-typedef IFBVoid (*IFBThreadTaskCallback) (IFBThread* thread_context);
+typedef void (*IFBThreadTaskCallback) (IFBThread* thread_context);
 
 //request
 struct IFBThreadRequest;
@@ -38,17 +38,17 @@ struct IFBThreadRequestHandles;
 /* THREAD                                                                         */
 /**********************************************************************************/
 
-typedef IFBU64 IFBThreadAffinityMask;
+typedef ifb::u64 IFBThreadAffinityMask;
 
 struct IFBThread {
-    IFBAddr memory_start;
-    IFBU32  platform_memory_size;
-    IFBU16  pool_index;
-    IFBU16  memory_platform;
-    IFBU16  memory_task;
-    IFBU16  description;
-    IFBU16  task;
-    IFBU16  affinity_mask;
+    ifb::addr memory_start;
+    ifb::u32  platform_memory_size;
+    ifb::u16  pool_index;
+    ifb::u16  memory_platform;
+    ifb::u16  memory_task;
+    ifb::u16  description;
+    ifb::u16  task;
+    ifb::u16  affinity_mask;
 };
 
 /**********************************************************************************/
@@ -57,53 +57,53 @@ struct IFBThread {
 
 struct IFBThreadPoolSizesCache {
     struct {
-        IFBU32 max;
-        IFBU32 thread_handle;
-        IFBU32 task_function;
-        IFBU32 affinity_mask;
-        IFBU32 platform_instance;
+        ifb::u32 max;
+        ifb::u32 thread_handle;
+        ifb::u32 task_function;
+        ifb::u32 affinity_mask;
+        ifb::u32 platform_instance;
     } other;
     struct {
-        IFBU16 total;
-        IFBU16 pool_struct_size;
-        IFBU16 platform_total;
-        IFBU16 description_buffer;
-        IFBU16 task_data;
-        IFBU16 thread_functions;
-        IFBU16 array_list_running_threads;
-        IFBU16 array_affinity_mask;  
+        ifb::u16 total;
+        ifb::u16 pool_struct_size;
+        ifb::u16 platform_total;
+        ifb::u16 description_buffer;
+        ifb::u16 task_data;
+        ifb::u16 thread_functions;
+        ifb::u16 array_list_running_threads;
+        ifb::u16 array_affinity_mask;  
     } memory;
     IFBArrayListArgs array_list_args;
 };
 
 struct IFBThreadPoolArgs {
     IFBMemory thread_pool_memory;
-    IFBU64    thread_count;
-    IFBU32    stride_task_data;
-    IFBU32    stride_thread_description; 
+    ifb::u64    thread_count;
+    ifb::u32    stride_task_data;
+    ifb::u32    stride_thread_description; 
 };
 
 struct IFBThreadPoolHeader {
     IFBMemory memory;
-    IFBU32    thread_count;
-    IFBU32    stride_description;
-    IFBU32    stride_memory_platform;
-    IFBU32    stride_memory_task;
+    ifb::u32    thread_count;
+    ifb::u32    stride_description;
+    ifb::u32    stride_memory_platform;
+    ifb::u32    stride_memory_task;
 };
 
 struct IFBThreadPoolOffsets {
-    IFBU16 description_buffer;
-    IFBU16 memory_platform;
-    IFBU16 memory_task;
-    IFBU16 array_task_functions;
-    IFBU16 array_list_running_threads;
-    IFBU16 array_affinity_mask;
+    ifb::u16 description_buffer;
+    ifb::u16 memory_platform;
+    ifb::u16 memory_task;
+    ifb::u16 array_task_functions;
+    ifb::u16 array_list_running_threads;
+    ifb::u16 array_affinity_mask;
 };
 
 struct IFBThreadPool {
     IFBThreadPoolHeader  header;
     IFBThreadPoolOffsets offsets;
-    IFBByte              padding[4];
+    ifb::byte              padding[4];
 };
 
 struct IFBThreadPoolInit {
@@ -118,14 +118,14 @@ struct IFBThreadPoolInit {
 
 struct IFBThreadRequest {
     IFBMemory memory;
-    IFBU64    thread_count;
+    ifb::u64    thread_count;
 };
 
 /**********************************************************************************/
 /* AFFINITY MASK                                                                  */
 /**********************************************************************************/
 
-enum IFBThreadAffinityMask_ : IFBU64 {
+enum IFBThreadAffinityMask_ : ifb::u64 {
     IFBThreadAffinityMask_CPU_Core_00 = IFB_BIT_FLAG_0,
     IFBThreadAffinityMask_CPU_Core_01 = IFB_BIT_FLAG_1,
     IFBThreadAffinityMask_CPU_Core_02 = IFB_BIT_FLAG_2,
@@ -163,15 +163,15 @@ enum IFBThreadAffinityMask_ : IFBU64 {
 
 namespace ifb_thread {
 
-    const IFBU32 memory_size_pool_init        (IFBVoid);
-    const IFBU32 memory_size_pool_args        (IFBVoid);
-    const IFBU32 memory_size_pool_sizes_cache (IFBVoid);
+    const ifb::u32 memory_size_pool_init        (void);
+    const ifb::u32 memory_size_pool_args        (void);
+    const ifb::u32 memory_size_pool_sizes_cache (void);
 };
 
 namespace ifb_thread {
     
-    const IFBB8 pool_create  (IFBThreadPoolInit*   init);
-    const IFBB8 pool_destroy (const IFBThreadPool* thread_pool);
+    const ifb::b8 pool_create  (IFBThreadPoolInit*   init);
+    const ifb::b8 pool_destroy (const IFBThreadPool* thread_pool);
 }
 
 #endif //IFB_THREADS_HPP

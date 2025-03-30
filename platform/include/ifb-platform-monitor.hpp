@@ -9,7 +9,7 @@
 
 struct IFBMonitor;
 
-typedef const IFBU32 (*IFBPlatformMonitorCount) (IFBVoid);
-typedef const IFBB8  (*IFBPlatformMonitorInfo)  (const IFBU32 monitor_count, IFBMonitor* monitor_array);
+typedef const ifb::u32 (*IFBPlatformMonitorCount) (void);
+typedef const ifb::b8  (*IFBPlatformMonitorInfo)  (const ifb::u32 monitor_count, IFBMonitor* monitor_array);
 
 #endif //IFB_PLATFORM_MONITOR_HPP

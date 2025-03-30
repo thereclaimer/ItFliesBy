@@ -4,7 +4,7 @@
 
 inline const IFBKeyCode 
 ifb_win32::user_input_keycode(
-    const IFBU32 win32_keycode) {
+    const ifb::u32 win32_keycode) {
         
     IFBKeyCode ifb_keycode = 0;
 

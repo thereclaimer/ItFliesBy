@@ -3,12 +3,12 @@
 #include "ifb-engine-core.hpp"
 #include "ifb-engine-memory.hpp"
 
-inline const IFBB8
+inline const ifb::b8
 ifb_engine::graphics_manager_initialize(
     IFBEngineGraphicsManager* graphics_manager,
     IFBEngineMemory*          engine_memory) {
 
-    IFBB8 result = true;
+    ifb::b8 result = true;
 
     //memory for tracking allcoations
     IFBMemory memory;
@@ -27,11 +27,11 @@ ifb_engine::graphics_manager_initialize(
 }
 
 
-inline const IFBB8 
+inline const ifb::b8 
 ifb_engine::graphics_manager_create_and_show_window(
     IFBEngineGraphicsManager* graphics_manager) {
 
-    IFBB8 result = true;
+    ifb::b8 result = true;
 
     //window args
     IFBGraphicsWindowArgs args;
@@ -50,34 +50,34 @@ ifb_engine::graphics_manager_create_and_show_window(
     return(result);
 }
 
-inline const IFBB8
+inline const ifb::b8
 ifb_engine::graphics_manager_frame_start(
     IFBEngineGraphicsManager* graphics_manager) {
 
-    IFBB8 result = true;
+    ifb::b8 result = true;
     
     result &= ifb_graphics::window_process_events(graphics_manager->window_handle);
 
     return(result);
 }
 
-inline const IFBB8
+inline const ifb::b8
 ifb_engine::graphics_manager_frame_render(
     IFBEngineGraphicsManager* graphics_manager) {
 
-    IFBB8 result = true;
+    ifb::b8 result = true;
 
     result &= ifb_graphics::window_swap_buffers(graphics_manager->window_handle);
 
     return(result);
 }
 
-inline const IFBB8 
+inline const ifb::b8 
 ifb_engine::graphics_manager_window_quit_received(
     IFBEngineGraphicsManager* graphics_manager) {
 
     IFBPlatformWindowFlags flags         = ifb_graphics::window_get_flags(graphics_manager->window_handle);
-    const IFBB8            quit_received = ifb_platform::window_get_flag_closed(flags);
+    const ifb::b8            quit_received = ifb_platform::window_get_flag_closed(flags);
 
     return(quit_received);
 }

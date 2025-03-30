@@ -8,7 +8,7 @@
 /**********************************************************************************/
 
 //handles
-typedef IFBAddr IFBDS64Handle;
+typedef ifb::addr IFBDS64Handle;
 
 struct IFBDS64Array     { IFBDS64Handle h64; };
 struct IFBDS64ArrayList { IFBDS64Handle h64; };
@@ -31,8 +31,8 @@ struct IFBStackInfo;
 struct IFBHashTableInfo;
 
 struct IFBIterator {
-    IFBPtr pointer;
-    IFBU64 index;
+    ifb::ptr pointer;
+    ifb::u64 index;
 };
 
 /**********************************************************************************/
@@ -40,31 +40,31 @@ struct IFBIterator {
 /**********************************************************************************/
 
 struct IFBArrayArgs {
-    IFBPtr memory_ptr;
-    IFBU64 memory_size;
-    IFBU32 element_size;
-    IFBU32 element_count;
+    ifb::ptr memory_ptr;
+    ifb::u64 memory_size;
+    ifb::u32 element_size;
+    ifb::u32 element_count;
 };
 struct IFBArrayInfo {
-    IFBU32 element_size;
-    IFBU32 element_count_total;
-    IFBU32 element_count_current;
+    ifb::u32 element_size;
+    ifb::u32 element_count_total;
+    ifb::u32 element_count_current;
 };
 
 namespace ifb_array {
 
     //memory
-    IFBVoid            size    (IFBArrayArgs& args);
+    void            size    (IFBArrayArgs& args);
     const IFBDS64Array create  (IFBArrayArgs& args);
     
     //info
-    IFBVoid            info    (const IFBDS64Array array_handle, IFBArrayInfo& info);
+    void            info    (const IFBDS64Array array_handle, IFBArrayInfo& info);
 
     //operations
-    IFBVoid            clear   (const IFBDS64Array array_handle);
-    const IFBB8        add     (const IFBDS64Array array_handle, const IFBU32 count, const IFBPtr element);
-    const IFBPtr       index   (const IFBDS64Array array_handle, const IFBU32 index);
-    const IFBB8        iterate (const IFBDS64Array array_handle, IFBIterator& iterator);
+    void            clear   (const IFBDS64Array array_handle);
+    const ifb::b8        add     (const IFBDS64Array array_handle, const ifb::u32 count, const ifb::ptr element);
+    const ifb::ptr       index   (const IFBDS64Array array_handle, const ifb::u32 index);
+    const ifb::b8        iterate (const IFBDS64Array array_handle, IFBIterator& iterator);
 };
 
 /**********************************************************************************/
@@ -72,37 +72,37 @@ namespace ifb_array {
 /**********************************************************************************/
 
 struct IFBArrayListArgs {
-    IFBPtr memory_ptr;
-    IFBU64 memory_size;
-    IFBU32 element_size;
-    IFBU32 element_count;    
+    ifb::ptr memory_ptr;
+    ifb::u64 memory_size;
+    ifb::u32 element_size;
+    ifb::u32 element_count;    
 };
 
 struct IFBArrayListInfo {
-    IFBU32 element_size;
-    IFBU32 element_count_total;
-    IFBU32 element_count_current;
+    ifb::u32 element_size;
+    ifb::u32 element_count_total;
+    ifb::u32 element_count_current;
 };
 
 namespace ifb_array_list {
 
     //memory
-    const IFBU32           size         (const IFBU32 element_size, const IFBU32 element_count);
+    const ifb::u32           size         (const ifb::u32 element_size, const ifb::u32 element_count);
     const IFBDS64ArrayList create       (IFBArrayListArgs& args);
 
     //info
-    IFBVoid                info         (const IFBDS64ArrayList array_list, IFBArrayListInfo& info);
+    void                info         (const IFBDS64ArrayList array_list, IFBArrayListInfo& info);
 
     //operations
-    IFBVoid                reset        (const IFBDS64ArrayList array_list);
-    const IFBB8            is_empty     (const IFBDS64ArrayList array_list);
-    const IFBPtr           first        (const IFBDS64ArrayList array_list);
-    const IFBPtr           last         (const IFBDS64ArrayList array_list);
-    const IFBB8            add_to_front (const IFBDS64ArrayList array_list, const IFBPtr element_ptr);
-    const IFBB8            add_to_end   (const IFBDS64ArrayList array_list, const IFBPtr element_ptr);
-    const IFBB8            remove       (const IFBDS64ArrayList array_list, const IFBU32 index);
-    const IFBPtr           index        (const IFBDS64ArrayList array_list, const IFBU32 index);
-    const IFBB8            insert       (const IFBDS64ArrayList array_list, const IFBU32 index, const IFBPtr element_ptr);
+    void                reset        (const IFBDS64ArrayList array_list);
+    const ifb::b8            is_empty     (const IFBDS64ArrayList array_list);
+    const ifb::ptr           first        (const IFBDS64ArrayList array_list);
+    const ifb::ptr           last         (const IFBDS64ArrayList array_list);
+    const ifb::b8            add_to_front (const IFBDS64ArrayList array_list, const ifb::ptr element_ptr);
+    const ifb::b8            add_to_end   (const IFBDS64ArrayList array_list, const ifb::ptr element_ptr);
+    const ifb::b8            remove       (const IFBDS64ArrayList array_list, const ifb::u32 index);
+    const ifb::ptr           index        (const IFBDS64ArrayList array_list, const ifb::u32 index);
+    const ifb::b8            insert       (const IFBDS64ArrayList array_list, const ifb::u32 index, const ifb::ptr element_ptr);
 };
 
 /**********************************************************************************/
@@ -110,31 +110,31 @@ namespace ifb_array_list {
 /**********************************************************************************/
 
 struct IFBStackArgs {
-    IFBPtr memory_ptr;
-    IFBU32 memory_size;
-    IFBU32 stack_size;
+    ifb::ptr memory_ptr;
+    ifb::u32 memory_size;
+    ifb::u32 stack_size;
 };
 
 struct IFBStackInfo {
-    IFBU32 size_total;
-    IFBU32 size_used;
+    ifb::u32 size_total;
+    ifb::u32 size_used;
 };
 
 namespace ifb_stack {
 
     //memory
-    IFBVoid            size           (IFBStackArgs& args);
+    void            size           (IFBStackArgs& args);
     const IFBDS64Stack init           (IFBStackArgs& args);
 
     //info
-    IFBVoid            info           (const IFBDS64Stack stack, IFBStackInfo& info);
+    void            info           (const IFBDS64Stack stack, IFBStackInfo& info);
 
     //operations
-    const IFBU32       push_relative  (const IFBDS64Stack stack, const IFBU32 size);
-    const IFBPtr       push_absolute  (const IFBDS64Stack stack, const IFBU32 size);
-    const IFBB8        pull           (const IFBDS64Stack stack, const IFBU32 size);
-    const IFBPtr       pointer        (const IFBDS64Stack stack, const IFBU32 offset);
-    IFBVoid            reset          (const IFBDS64Stack stack);
+    const ifb::u32       push_relative  (const IFBDS64Stack stack, const ifb::u32 size);
+    const ifb::ptr       push_absolute  (const IFBDS64Stack stack, const ifb::u32 size);
+    const ifb::b8        pull           (const IFBDS64Stack stack, const ifb::u32 size);
+    const ifb::ptr       pointer        (const IFBDS64Stack stack, const ifb::u32 offset);
+    void            reset          (const IFBDS64Stack stack);
 };
 
 /**********************************************************************************/
@@ -142,9 +142,9 @@ namespace ifb_stack {
 /**********************************************************************************/
 
 struct IFBQueueArgs {
-    IFBPtr memory_ptr;
-    IFBU32 memory_size;
-    IFBU32 stack_size;
+    ifb::ptr memory_ptr;
+    ifb::u32 memory_size;
+    ifb::u32 stack_size;
 };
 
 struct IFBQueueInfo {
@@ -153,18 +153,18 @@ struct IFBQueueInfo {
 
 namespace ifb_queue {
 
-    const IFBU32       size           (IFBQueueArgs& args);
+    const ifb::u32       size           (IFBQueueArgs& args);
     const IFBDS64Queue init           (IFBQueueArgs& args);
 
-    const IFBB8        reset          (const IFBDS64Queue queue);
+    const ifb::b8        reset          (const IFBDS64Queue queue);
     
-    const IFBU32       peek           (const IFBDS64Queue queue, const IFBU32 size);
-    const IFBPtr       enqueue        (const IFBDS64Queue queue, const IFBU32 size);
-    const IFBPtr       dequeue        (const IFBDS64Queue queue, const IFBU32 size);
+    const ifb::u32       peek           (const IFBDS64Queue queue, const ifb::u32 size);
+    const ifb::ptr       enqueue        (const IFBDS64Queue queue, const ifb::u32 size);
+    const ifb::ptr       dequeue        (const IFBDS64Queue queue, const ifb::u32 size);
     
-    const IFBU32       get_size_total (const IFBDS64Queue queue);
-    const IFBU32       get_size_free  (const IFBDS64Queue queue);
-    const IFBU32       get_size_used  (const IFBDS64Queue queue);
+    const ifb::u32       get_size_total (const IFBDS64Queue queue);
+    const ifb::u32       get_size_free  (const IFBDS64Queue queue);
+    const ifb::u32       get_size_used  (const IFBDS64Queue queue);
 };
 
 /**********************************************************************************/
@@ -172,34 +172,34 @@ namespace ifb_queue {
 /**********************************************************************************/
 
 struct IFBHashTableArgs {
-    IFBPtr memory_ptr;
-    IFBU32 memory_size;
-    IFBU32 element_count;
-    IFBU32 element_size;
-    IFBU32 key_length_max;
+    ifb::ptr memory_ptr;
+    ifb::u32 memory_size;
+    ifb::u32 element_count;
+    ifb::u32 element_size;
+    ifb::u32 key_length_max;
 };
 
 struct IFBHashTableInfo {
-    IFBU32 element_size;
-    IFBU32 element_count_total;
-    IFBU32 element_count_used;
-    IFBU32 key_length_max;    
+    ifb::u32 element_size;
+    ifb::u32 element_count_total;
+    ifb::u32 element_count_used;
+    ifb::u32 key_length_max;    
 };
 
 namespace ifb_hash_table {
 
     //memory
-    const IFBU32   size   (IFBHashTableArgs& args);
-    const IFBU32   init   (IFBHashTableArgs& args);
+    const ifb::u32   size   (IFBHashTableArgs& args);
+    const ifb::u32   init   (IFBHashTableArgs& args);
 
-    IFBVoid        info   (const IFBDS64HashTable hash_table, IFBHashTableInfo& info);
+    void        info   (const IFBDS64HashTable hash_table, IFBHashTableInfo& info);
 
     //operations
-    const IFBB8  insert   (const IFBDS64HashTable hash_table, const IFBChar* key, const IFBPtr element);
-    const IFBB8  remove   (const IFBDS64HashTable hash_table, const IFBChar* key);
-    const IFBPtr lookup   (const IFBDS64HashTable hash_table, const IFBChar* key);
-    const IFBU32 index_of (const IFBDS64HashTable hash_table, const IFBChar* key);
-    const IFBPtr index    (const IFBDS64HashTable hash_table, const IFBU32   index);
+    const ifb::b8  insert   (const IFBDS64HashTable hash_table, const ifb::utf8* key, const ifb::ptr element);
+    const ifb::b8  remove   (const IFBDS64HashTable hash_table, const ifb::utf8* key);
+    const ifb::ptr lookup   (const IFBDS64HashTable hash_table, const ifb::utf8* key);
+    const ifb::u32 index_of (const IFBDS64HashTable hash_table, const ifb::utf8* key);
+    const ifb::ptr index    (const IFBDS64HashTable hash_table, const ifb::u32   index);
 };
 
 #endif //IFB_DATA_STRUCTURES_HPP

@@ -46,10 +46,10 @@
 #define ifb_macro_xmm_f128_sqrt(xmm)                     _mm_sqrt_ps(xmm)
 #define ifb_macro_xmm_f128_store(f32_ptr, xmm)           _mm_store_ps(f32_ptr, xmm)
 
-#define ifb_macro_color_normalize_byte(byte)             (IFBF32)(((IFBF32)byte) / ((IFBF32)0xFF))
+#define ifb_macro_color_normalize_byte(byte)             (ifb::f32)(((ifb::f32)byte) / ((ifb::f32)0xFF))
 
-#define ifb_macro_pointer_from_offset(start,offset,type) (type*)((IFBAddr)start + (IFBAddr)offset)
+#define ifb_macro_pointer_from_offset(start,offset,type) (type*)((ifb::addr)start + (ifb::addr)offset)
 
-#define ifb_macro_pack_u8_to_u32(u8_a,u8_b,u8_c,u8_d)    (IFBU32)((((IFBU32)u8_a) << 24) | (((IFBU32)u8_b) << 16) | (((IFBU32)u8_c) << 8) | (((IFBU32)u8_d)))
+#define ifb_macro_pack_u8_to_u32(u8_a,u8_b,u8_c,u8_d)    (ifb::u32)((((ifb::u32)u8_a) << 24) | (((ifb::u32)u8_b) << 16) | (((ifb::u32)u8_c) << 8) | (((ifb::u32)u8_d)))
 
 #endif //IFB_MACROS_HPP

@@ -2,23 +2,23 @@
 
 #include "ifb-graphics.hpp"
 
-const IFBB8
+const ifb::b8
 ifb_graphics::color_normalize(
     const IFBColorHex*        ptr_color_hex,
           IFBColorNormalized* ptr_color_normalized) {
     
     //sanity check
-    IFBB8 result = true;
+    ifb::b8 result = true;
     result &= (ptr_color_hex        != NULL);
     result &= (ptr_color_normalized != NULL);    
     if (!result) return(false);
 
     //cache float values
-    const IFBF32 color_const         = (1.0f / 0xFF);
-    const IFBF32 color_hex_f32_red   = (IFBF32)ptr_color_hex->red;
-    const IFBF32 color_hex_f32_blue  = (IFBF32)ptr_color_hex->blue;
-    const IFBF32 color_hex_f32_green = (IFBF32)ptr_color_hex->green;
-    const IFBF32 color_hex_f32_alpha = (IFBF32)ptr_color_hex->alpha;
+    const ifb::f32 color_const         = (1.0f / 0xFF);
+    const ifb::f32 color_hex_f32_red   = (ifb::f32)ptr_color_hex->red;
+    const ifb::f32 color_hex_f32_blue  = (ifb::f32)ptr_color_hex->blue;
+    const ifb::f32 color_hex_f32_green = (ifb::f32)ptr_color_hex->green;
+    const ifb::f32 color_hex_f32_alpha = (ifb::f32)ptr_color_hex->alpha;
 
     //normalize the colors
     ptr_color_normalized->red   = color_const * color_hex_f32_red;
@@ -30,23 +30,23 @@ ifb_graphics::color_normalize(
     return(true);
 }
 
-const IFBB8
+const ifb::b8
 ifb_graphics::color_denormalize(
     const IFBColorNormalized* ptr_color_normalized,
           IFBColorHex*        ptr_color_hex) {
     
     //sanity check
-    IFBB8 result = true;
+    ifb::b8 result = true;
     result &= (ptr_color_hex        != NULL);
     result &= (ptr_color_normalized != NULL);    
     if (!result) return(false);
 
     //normalize the colors
-    const IFBF32 color_const = (0xFF);
-    ptr_color_hex->red       = (IFBU32)(color_const * ptr_color_normalized->red);
-    ptr_color_hex->blue      = (IFBU32)(color_const * ptr_color_normalized->blue);
-    ptr_color_hex->green     = (IFBU32)(color_const * ptr_color_normalized->green);
-    ptr_color_hex->alpha     = (IFBU32)(color_const * ptr_color_normalized->alpha);
+    const ifb::f32 color_const = (0xFF);
+    ptr_color_hex->red       = (ifb::u32)(color_const * ptr_color_normalized->red);
+    ptr_color_hex->blue      = (ifb::u32)(color_const * ptr_color_normalized->blue);
+    ptr_color_hex->green     = (ifb::u32)(color_const * ptr_color_normalized->green);
+    ptr_color_hex->alpha     = (ifb::u32)(color_const * ptr_color_normalized->alpha);
 
     //we're done
     return(true);
@@ -64,10 +64,10 @@ ifb_graphics::color_pack_hex_to_32(
     if (!color_hex_ptr) return(color);
 
     //cache the values
-    const IFBU8 u8_r = (IFBU32)color_hex_ptr->red;
-    const IFBU8 u8_b = (IFBU32)color_hex_ptr->blue;
-    const IFBU8 u8_g = (IFBU32)color_hex_ptr->green;
-    const IFBU8 u8_a = (IFBU32)color_hex_ptr->alpha;
+    const ifb::u8 u8_r = (ifb::u32)color_hex_ptr->red;
+    const ifb::u8 u8_b = (ifb::u32)color_hex_ptr->blue;
+    const ifb::u8 u8_g = (ifb::u32)color_hex_ptr->green;
+    const ifb::u8 u8_a = (ifb::u32)color_hex_ptr->alpha;
     
     //pack the color value based on the format
     switch(color_format) {
@@ -95,7 +95,7 @@ ifb_graphics::color_pack_normalized_to_32(
 
     //denormalize the color
     IFBColorHex color_hex;
-    const IFBB8 result = ifb_graphics::color_denormalize(ptr_color_normalized,&color_hex);
+    const ifb::b8 result = ifb_graphics::color_denormalize(ptr_color_normalized,&color_hex);
     if (!result) return(color); 
     
     //pack it

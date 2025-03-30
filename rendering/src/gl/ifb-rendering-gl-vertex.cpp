@@ -2,13 +2,13 @@
 
 #include "ifb-rendering-gl.hpp"
 
-inline const IFBB8
+inline const ifb::b8
 ifb_gl::vertex_create(
-    const IFBU32        vertex_count,
+    const ifb::u32        vertex_count,
           IFBGLIDVertex* vertex_array) {
 
     //forward declarations
-    IFBB8 result   = true;
+    ifb::b8 result   = true;
     GLenum gl_error = 0;  
     
     //sanity check
@@ -31,15 +31,15 @@ ifb_gl::vertex_create(
     return(result);
 }
 
-inline const IFBB8
+inline const ifb::b8
 ifb_gl::vertex_enable_attributes(
     const IFBGLIDVertex             vertex,
-    const IFBU32                   vertex_size,
+    const ifb::u32                   vertex_size,
     const IFBGLIDBuffer             vertex_buffer,
-    const IFBAddr               vertex_buffer_offset,
-    const IFBU32                   vertex_attribute_count,
+    const ifb::addr               vertex_buffer_offset,
+    const ifb::u32                   vertex_attribute_count,
     const IFBGLVertexAttributeType* vertex_attribute_types_array,
-    const IFBU32*                  vertex_attribute_base_offset_array) {
+    const ifb::u32*                  vertex_attribute_base_offset_array) {
 
     //sanity check
     ifb_macro_assert(vertex_size                        != 0);
@@ -48,7 +48,7 @@ ifb_gl::vertex_enable_attributes(
     ifb_macro_assert(vertex_attribute_base_offset_array != NULL);
 
     //forward declarations
-    IFBB8 result   = true;
+    ifb::b8 result   = true;
     GLenum gl_error = 0;
 
     //bind the vertex array
@@ -64,7 +64,7 @@ ifb_gl::vertex_enable_attributes(
 
     //loop through the attributes and enable them
     for (
-        IFBU32 vertex_attribute_index = 0;
+        ifb::u32 vertex_attribute_index = 0;
         vertex_attribute_index < vertex_attribute_count;
         ++vertex_attribute_index) {
 
@@ -73,9 +73,9 @@ ifb_gl::vertex_enable_attributes(
 
         //get the gl type, attribute size, and offset
         const GLenum    vertex_attribute_gl_type = ifb_gl::vertex_attribute_type_get_gl_type (vertex_attribute_type);
-        const IFBU32   vertex_attribute_size    = ifb_gl::vertex_attribute_type_get_size    (vertex_attribute_type);
-        const IFBU32   vertex_attribute_offset  = vertex_attribute_base_offset_array[vertex_attribute_index];
-        const IFBVoid* vertex_attribute_ptr     = (IFBVoid*)(vertex_buffer_offset + vertex_attribute_offset); 
+        const ifb::u32   vertex_attribute_size    = ifb_gl::vertex_attribute_type_get_size    (vertex_attribute_type);
+        const ifb::u32   vertex_attribute_offset  = vertex_attribute_base_offset_array[vertex_attribute_index];
+        const void* vertex_attribute_ptr     = (void*)(vertex_buffer_offset + vertex_attribute_offset); 
 
         //enable the attribute
         glEnableVertexAttribArray(vertex_attribute_index);
@@ -108,7 +108,7 @@ ifb_gl::vertex_attribute_type_get_gl_type(
     return(IFB_GL_VERTEX_ATTRIBUTE_GL_TYPES[vertex_attribute_type]);
 }
 
-inline const IFBU32 
+inline const ifb::u32 
 ifb_gl::vertex_attribute_type_get_size(
     const IFBGLVertexAttributeType vertex_attribute_type) {
 

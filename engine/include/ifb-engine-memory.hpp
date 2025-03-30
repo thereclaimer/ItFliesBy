@@ -17,8 +17,8 @@ struct IFBEngineReservation;
 struct IFBMemorySizes;
 
 //handles
-typedef IFBU16 IFBEngineArena;
-typedef IFBU16 IFBEngineSingleton;
+typedef ifb::u16 IFBEngineArena;
+typedef ifb::u16 IFBEngineSingleton;
 
 /**********************************************************************************/
 /* RESERVED MEMORY                                                                */
@@ -35,7 +35,7 @@ struct IFBEngineReservation {
 
 struct IFBEngineStack {
     IFBMEMStack global_stack_handle;
-    IFBByte*    singleton_buffer;
+    ifb::byte*    singleton_buffer;
 };
 
 namespace ifb_engine {
@@ -67,12 +67,12 @@ namespace ifb_engine {
 
 namespace ifb_engine {
 
-    const IFBB8   memory_arena_reset                       (const IFBEngineMemory* memory, const IFBEngineArena arena);
-    const IFBU32  memory_arena_push_bytes_relative         (const IFBEngineMemory* memory, const IFBEngineArena arena, const IFBU32 size);
-    const IFBPtr  memory_arena_push_bytes_absolute_pointer (const IFBEngineMemory* memory, const IFBEngineArena arena, const IFBU32 size);
-    const IFBAddr memory_arena_push_bytes_absolute_address (const IFBEngineMemory* memory, const IFBEngineArena arena, const IFBU32 size);
-    const IFBB8   memory_arena_pull_bytes                  (const IFBEngineMemory* memory, const IFBEngineArena arena, const IFBU32 size);
-    const IFBPtr  memory_arena_get_pointer                 (const IFBEngineMemory* memory, const IFBEngineArena arena, const IFBU32 offset);
+    const ifb::b8   memory_arena_reset                       (const IFBEngineMemory* memory, const IFBEngineArena arena);
+    const ifb::u32  memory_arena_push_bytes_relative         (const IFBEngineMemory* memory, const IFBEngineArena arena, const ifb::u32 size);
+    const ifb::ptr  memory_arena_push_bytes_absolute_pointer (const IFBEngineMemory* memory, const IFBEngineArena arena, const ifb::u32 size);
+    const ifb::addr memory_arena_push_bytes_absolute_address (const IFBEngineMemory* memory, const IFBEngineArena arena, const ifb::u32 size);
+    const ifb::b8   memory_arena_pull_bytes                  (const IFBEngineMemory* memory, const IFBEngineArena arena, const ifb::u32 size);
+    const ifb::ptr  memory_arena_get_pointer                 (const IFBEngineMemory* memory, const IFBEngineArena arena, const ifb::u32 offset);
 };
 
 /**********************************************************************************/
@@ -88,7 +88,7 @@ namespace ifb_engine {
 #define IFB_ENGINE_MEMORY_SIZE_ARENA_COUNT        4
 #define IFB_ENGINE_MEMORY_SIZE_ARENA_HANDLE_ARRAY IFB_ENGINE_MEMORY_SIZE_ARENA_COUNT * sizeof(IFBMEMArena)
 #define IFB_ENGINE_MEMORY_SIZE_STRUCT             ifb_macro_align_size_struct(IFBEngineMemory)
-#define IFB_ENGINE_MEMORY_SIZE_TOTAL_RESERVATION  ifb_macro_size_gigabytes((IFBU64)IFB_ENGINE_MEMORY_SIZE_GB_RESERVATION)
+#define IFB_ENGINE_MEMORY_SIZE_TOTAL_RESERVATION  ifb_macro_size_gigabytes((ifb::u64)IFB_ENGINE_MEMORY_SIZE_GB_RESERVATION)
 #define IFB_ENGINE_MEMORY_SIZE_TOTAL_ARENA        ifb_macro_size_kilobytes(IFB_ENGINE_MEMORY_SIZE_KB_ARENA)
 #define IFB_ENGINE_MEMORY_SIZE_TOTAL              \
     IFB_ENGINE_MEMORY_SIZE_SINGLETON_BUFFER   +   \
@@ -96,17 +96,17 @@ namespace ifb_engine {
     IFB_ENGINE_MEMORY_SIZE_STRUCT
 
 struct IFBMemorySizes {
-    IFBU32 gb_reservation;
-    IFBU32 kb_arena;
-    IFBU32 singleton_count;
-    IFBU16 singleton_buffer;
-    IFBU16 singleton_stride;
-    IFBU16 arena_count;
-    IFBU32 arena_handle_array;
-    IFBU32 memory_struct;
-    IFBU32 total_arena;
-    IFBU32 total_memory;
-    IFBU64 total_reservation;
+    ifb::u32 gb_reservation;
+    ifb::u32 kb_arena;
+    ifb::u32 singleton_count;
+    ifb::u16 singleton_buffer;
+    ifb::u16 singleton_stride;
+    ifb::u16 arena_count;
+    ifb::u32 arena_handle_array;
+    ifb::u32 memory_struct;
+    ifb::u32 total_arena;
+    ifb::u32 total_memory;
+    ifb::u64 total_reservation;
 };
 
 namespace ifb_engine {
@@ -151,8 +151,8 @@ enum IFBEngineArena_ {
 #define IFB_ENGINE_MEMORY_CORE_SIZE_GRAPHICS_MANAGER       ifb_macro_align_size_struct(IFBEngineGraphicsManager)
 
 struct IFBEngineMemoryGraphicsSizes {
-    IFBU32 graphics_manager_struct;
-    IFBU32 window_title_length;
+    ifb::u32 graphics_manager_struct;
+    ifb::u32 window_title_length;
 };
 
 namespace ifb_engine {

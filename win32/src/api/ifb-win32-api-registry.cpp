@@ -8,7 +8,7 @@
 
 namespace ifb_win32 {
 
-    const IFBB8
+    const ifb::b8
     registry_open_key_readonly_base(
         const HKEY   key_root,
               LPCSTR key_path,
@@ -19,14 +19,14 @@ namespace ifb_win32 {
 /* READ ONLY                                                                      */
 /**********************************************************************************/
 
-inline const IFBB8 
+inline const ifb::b8 
 ifb_win32::registry_key_open_read_only_classes_root(
     const LPCSTR key_path,
     HKEY&  key_ref) {
 
     const HKEY key_root = HKEY_CLASSES_ROOT;
 
-    const IFBB8 result = ifb_win32::registry_open_key_readonly_base(
+    const ifb::b8 result = ifb_win32::registry_open_key_readonly_base(
         key_root,
         key_path,
         key_ref);
@@ -34,14 +34,14 @@ ifb_win32::registry_key_open_read_only_classes_root(
     return(result);
 }
 
-inline const IFBB8 
+inline const ifb::b8 
 ifb_win32::registry_key_open_read_only_current_user(
     const LPCSTR key_path,
     HKEY&  key_ref) {
 
     const HKEY key_root = HKEY_CURRENT_USER;
 
-    const IFBB8 result = ifb_win32::registry_open_key_readonly_base(
+    const ifb::b8 result = ifb_win32::registry_open_key_readonly_base(
         key_root,
         key_path,
         key_ref);
@@ -49,14 +49,14 @@ ifb_win32::registry_key_open_read_only_current_user(
     return(result);
 }
 
-inline const IFBB8 
+inline const ifb::b8 
 ifb_win32::registry_key_open_read_only_local_machine(
     const LPCSTR key_path,
     HKEY&  key_ref) {
 
     const HKEY key_root = HKEY_LOCAL_MACHINE;
 
-    const IFBB8 result = ifb_win32::registry_open_key_readonly_base(
+    const ifb::b8 result = ifb_win32::registry_open_key_readonly_base(
         key_root,
         key_path,
         key_ref);
@@ -64,14 +64,14 @@ ifb_win32::registry_key_open_read_only_local_machine(
     return(result);
 }
 
-inline const IFBB8 
+inline const ifb::b8 
 ifb_win32::registry_key_open_read_only_users(
     const LPCSTR key_path,
     HKEY&  key_ref) {
 
     const HKEY key_root = HKEY_USERS;
 
-    const IFBB8 result = ifb_win32::registry_open_key_readonly_base(
+    const ifb::b8 result = ifb_win32::registry_open_key_readonly_base(
         key_root,
         key_path,
         key_ref);
@@ -79,14 +79,14 @@ ifb_win32::registry_key_open_read_only_users(
     return(result);
 }
 
-inline const IFBB8 
+inline const ifb::b8 
 ifb_win32::registry_key_open_read_only_current_config(
     const LPCSTR key_path,
     HKEY&  key_ref) {
 
     const HKEY key_root = HKEY_CURRENT_CONFIG;
 
-    const IFBB8 result = ifb_win32::registry_open_key_readonly_base(
+    const ifb::b8 result = ifb_win32::registry_open_key_readonly_base(
         key_root,
         key_path,
         key_ref);
@@ -98,7 +98,7 @@ ifb_win32::registry_key_open_read_only_current_config(
 /* CLOSE                                                                          */
 /**********************************************************************************/
 
-inline const IFBB8
+inline const ifb::b8
 ifb_win32::registry_key_close (
     const HKEY key) {
 
@@ -111,13 +111,13 @@ ifb_win32::registry_key_close (
 /* VALUES                                                                         */
 /**********************************************************************************/
 
-inline const IFBB8
+inline const ifb::b8
 ifb_win32::registry_key_read_value_u32(
     const HKEY    key,
     const LPCSTR  value_name,
-          IFBU32& value_ref) {
+          ifb::u32& value_ref) {
 
-    DWORD data_size = sizeof(IFBU32);
+    DWORD data_size = sizeof(ifb::u32);
 
     const LRESULT l_result = RegQueryValueEx(
         key,
@@ -127,16 +127,16 @@ ifb_win32::registry_key_read_value_u32(
         (LPBYTE)&value_ref,
         &data_size);
 
-    const IFBB8 result = (l_result == ERROR_SUCCESS);
+    const ifb::b8 result = (l_result == ERROR_SUCCESS);
 
     return(result);
 }
 
-inline const IFBB8
+inline const ifb::b8
 ifb_win32::registry_key_read_value_cpu_speed_mhz(
     IFBWin32RegKeyU32& key_u32) {
 
-    IFBU32 result = true;
+    ifb::u32 result = true;
     result &= ifb_win32_macro_registry_key_cpu_0               (key_u32.key);
     result &= ifb_win32_macro_registry_key_cpu_0_value_u32_mhz (key_u32.key,key_u32.value);
     return(result);
@@ -146,7 +146,7 @@ ifb_win32::registry_key_read_value_cpu_speed_mhz(
 /* INTERNAL                                                                       */
 /**********************************************************************************/
 
-inline const IFBB8
+inline const ifb::b8
 ifb_win32::registry_open_key_readonly_base(
     const HKEY    key_root,
           LPCSTR  key_path,
@@ -165,7 +165,7 @@ ifb_win32::registry_open_key_readonly_base(
         &key_ref);
 
     //check result
-    const IFBB8 result = (key_open_result == ERROR_SUCCESS);
+    const ifb::b8 result = (key_open_result == ERROR_SUCCESS);
 
     //we're done
     return(result);

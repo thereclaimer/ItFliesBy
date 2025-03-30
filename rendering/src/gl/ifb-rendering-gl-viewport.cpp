@@ -4,11 +4,11 @@
 
 #include "ifb-rendering-gl.hpp"
 
-const IFBU32
+const ifb::u32
 ifb_gl::viewport_memory_size(
-    IFBVoid) {
+    void) {
 
-    const IFBU32 size = ifb_macro_align_size_struct(IFBGLViewport);
+    const ifb::u32 size = ifb_macro_align_size_struct(IFBGLViewport);
     return(size);
 }
 
@@ -17,7 +17,7 @@ ifb_gl::viewport_memory_initialize(
     const IFBGLViewportArgs& args) {
 
     //sanity check
-    const IFBU32 size = ifb_macro_align_size_struct(IFBGLViewport);
+    const ifb::u32 size = ifb_macro_align_size_struct(IFBGLViewport);
     ifb_macro_assert(size == args.memory.size);
 
     //zero the buffer
@@ -61,20 +61,20 @@ ifb_gl::viewport_memory_initialize(
     return(viewport);
 }
 
-IFBVoid 
+void 
 ifb_gl::viewport_clear(
     IFBGLViewport* viewport) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-IFBVoid
+void
 ifb_gl::viewport_update(
     IFBGLViewport* viewport) {
 
     //cache the flags
-    const IFBB8 update_position_and_dimensions = ifb_gl::viewport_update_flags_get_position_and_dimensions (viewport->flags);
-    const IFBB8 update_clear_color             = ifb_gl::viewport_update_flags_get_clear_color             (viewport->flags);
+    const ifb::b8 update_position_and_dimensions = ifb_gl::viewport_update_flags_get_position_and_dimensions (viewport->flags);
+    const ifb::b8 update_clear_color             = ifb_gl::viewport_update_flags_get_clear_color             (viewport->flags);
 
     //update the position and dimensions
     if (update_position_and_dimensions) {
