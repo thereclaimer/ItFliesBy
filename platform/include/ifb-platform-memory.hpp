@@ -3,20 +3,19 @@
 
 #include <ifb.hpp>
 
+using namespace ifb;
+
 /**********************************************************************************/
 /* MEMORY API                                                                     */
 /**********************************************************************************/
 
-typedef const ifb::ptr (*IFBPlatformMemoryReserve)  (const ifb::u64 reservation_size);
-typedef const ifb::b8  (*IFBPlatformMemoryRelease)  (const ifb::ptr reservation_start, const ifb::u64 reservation_size);
-typedef const ifb::ptr (*IFBPlatformMemoryCommit)   (const ifb::ptr commit_start,      const ifb::u64 commit_size);
-typedef const ifb::b8  (*IFBPlatformMemoryDecommit) (const ifb::ptr commit_start,      const ifb::u64 commit_size);
+namespace ifb::platform {
 
-struct IFBPlatformAPIMemory {
-    IFBPlatformMemoryReserve  reserve;
-    IFBPlatformMemoryRelease  release;
-    IFBPlatformMemoryCommit   commit;
-    IFBPlatformMemoryDecommit decommit;
+    typedef const ptr (*api_memory_reserve_f)  (const u64 reservation_size);
+    typedef const b8  (*api_memory_release_f)  (const ptr reservation_start, const u64 reservation_size);
+    typedef const ptr (*api_memory_commit_f)   (const ptr commit_start,      const u64 commit_size);
+    typedef const b8  (*api_memory_decommit_f) (const ptr commit_start,      const u64 commit_size);
+    
 };
 
 #endif //IFB_PLATFORM_MEMORY_HPP
