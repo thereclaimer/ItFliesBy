@@ -3,23 +3,26 @@
 #include "ifb-memory.hpp"
 #include "ifb-memory-internal.cpp"
 
-mem_arena_t*
-ifb_memory::arena_commit(
-    mem_reservation_t* reservation) {
+using namespace ifb;
+using namespace ifb::memory;
+
+arena_t*
+memory::arena_commit(
+    reservation_t* reservation) {
 
     //validate the reservation
-    validate_reservation(reservation);
+    memory::validate_reservation(reservation);
 
     //get the stack
-    mem_stack_t* stack = reservation->stack; 
+    stack_t* stack = reservation->stack; 
     
-    mem_arena_t* arena = NULL;
+    arena_t* arena = NULL;
     //first, see if there is an arena on the list of decommitted arenas
     if (reservation->arenas.decommitted != NULL) {
         
         //if there is, we need to update the list
         arena = reservation->arenas.decommitted;
-        mem_arena_t* new_first_arena = arena->next;
+        arena_t* new_first_arena = arena->next;
         new_first_arena->prev = NULL;
         reservation->arenas.decommitted = new_first_arena;
     }
@@ -30,7 +33,7 @@ ifb_memory::arena_commit(
         //  2) determine the address
         
         //push the arena
-        arena = ifb_memory_macro_stack_push_arena(stack);
+        arena = macro_stack_push_arena(stack);
         ifb_macro_assert(arena);
 
         //determine the address
@@ -49,7 +52,7 @@ ifb_memory::arena_commit(
     const u32  commit_size    = reservation->sizes.arena;
 
     //do the commit
-    const ptr commit_result = ifb_platform::memory_commit(
+    const ptr commit_result = platform::memory_commit(
         commit_request,
         commit_size);
 
@@ -57,7 +60,7 @@ ifb_memory::arena_commit(
     ifb_macro_assert(commit_request == commit_result);
 
     //get the current committed arena list
-    mem_arena_t* committed_arena_list = reservation->arenas.committed;
+    arena_t* committed_arena_list = reservation->arenas.committed;
     
     //initialize the arena
     arena->prev        = NULL;
@@ -80,10 +83,10 @@ ifb_memory::arena_commit(
 }
 
 const b8
-ifb_memory::arena_decommit(
-    mem_arena_t* arena) {
+memory::arena_decommit(
+    arena_t* arena) {
 
-    validate_arena(arena);
+    memory::validate_arena(arena);
 
     ifb_macro_panic();
 
@@ -91,27 +94,26 @@ ifb_memory::arena_decommit(
 }
 
 const b8
-ifb_memory::arena_reset(
-    mem_arena_t* arena) {
+memory::arena_reset(
+    arena_t* arena) {
 
-    ifb_memory::validate_arena(arena);
+    memory::validate_arena(arena);
 
     arena->position = 0;
 
     return(false);
 }
 
-
 const u32
-ifb_memory::arena_push_bytes_relative(
-          mem_arena_t* arena,
-    const u32      size) {
+memory::arena_push_bytes_relative(
+    arena_t*  arena,
+    const u32 size) {
 
-    ifb_memory::validate_arena(arena);
+    memory::validate_arena(arena);
     ifb_macro_assert(size);
 
     //get the new arena size
-    mem_reservation_t* reservation = arena->reservation;
+    reservation_t* reservation = arena->reservation;
     const u32 arena_size         = reservation->sizes.arena;
     const u32 arena_offset       = arena->position;
     const u32 arena_position_new = arena_offset + size;
@@ -125,16 +127,16 @@ ifb_memory::arena_push_bytes_relative(
 }
 
 const ptr
-ifb_memory::arena_push_bytes_absolute_pointer(
-          mem_arena_t* arena,
-    const u32      size) {
+memory::arena_push_bytes_absolute_pointer(
+    arena_t*  arena,
+    const u32 size) {
 
     //validate args
-    ifb_memory::validate_arena(arena);
+    memory::validate_arena(arena);
     ifb_macro_assert(size);
 
     //get the new arena size
-    mem_reservation_t* reservation = arena->reservation;
+    reservation_t* reservation = arena->reservation;
     const u32 arena_size         = reservation->sizes.arena;
     const u32 arena_offset       = arena->position;
     const u32 arena_position_new = arena_offset + size;
@@ -154,16 +156,16 @@ ifb_memory::arena_push_bytes_absolute_pointer(
 }
 
 const addr
-ifb_memory::arena_push_bytes_absolute_address(
-          mem_arena_t* arena,
-    const u32      size) {
+memory::arena_push_bytes_absolute_address(
+    arena_t*  arena,
+    const u32 size) {
 
     //validate args
-    ifb_memory::validate_arena(arena);
+    memory::validate_arena(arena);
     ifb_macro_assert(size);
 
     //get the new arena size
-    mem_reservation_t* reservation        = arena->reservation;
+    reservation_t* reservation        = arena->reservation;
     const u32      arena_size         = reservation->sizes.arena;
     const u32      arena_offset       = arena->position;
     const u32      arena_position_new = arena_offset + size;
@@ -182,13 +184,14 @@ ifb_memory::arena_push_bytes_absolute_address(
 }
 
 const b8
-ifb_memory::arena_pull_bytes(
-          mem_arena_t* arena,
-    const u32      size) {
+memory::arena_pull_bytes(
+          arena_t* arena,
+    const u32          size) {
 
     //validate args
-    ifb_memory::validate_arena(arena);
+    memory::validate_arena(arena);
     ifb_macro_assert(size);
+
     ifb_macro_assert(arena->position > size);
 
     arena->position -= size;

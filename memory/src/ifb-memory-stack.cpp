@@ -3,12 +3,15 @@
 #include "ifb-memory.hpp"
 #include "ifb-memory-internal.cpp"
 
+using namespace ifb;
+using namespace ifb::memory;
+
 /**********************************************************************************/
 /* STACK                                                                          */
 /**********************************************************************************/
 
-mem_stack_t*
-ifb_memory::stack_create(
+stack_t*
+memory::stack_create(
     const memory_t& stack_memory) {
 
     //check args
@@ -18,7 +21,7 @@ ifb_memory::stack_create(
     if (!can_create) return(NULL);                              // if we can't create, we're done
 
     //cast the memory
-    mem_stack_t* stack = (mem_stack_t*)stack_memory.start;
+    stack_t* stack = (stack_t*)stack_memory.start;
     
     //initialize the stack
     stack->size     = stack_memory.size;
@@ -29,12 +32,12 @@ ifb_memory::stack_create(
 }
 
 const u32
-ifb_memory::stack_push_bytes_relative(
-          mem_stack_t* stack,
+memory::stack_push_bytes_relative(
+          stack_t* stack,
     const u32      size) {
 
     //validate stack
-    ifb_memory::validate_stack(stack);
+    memory::validate_stack(stack);
 
     //calculate the new position
     const u32 stack_size         = stack->size;
@@ -53,12 +56,12 @@ ifb_memory::stack_push_bytes_relative(
 }
 
 const ptr
-ifb_memory::stack_push_bytes_absolute_pointer(
-          mem_stack_t* stack,
+memory::stack_push_bytes_absolute_pointer(
+          stack_t* stack,
     const u32      size) {
 
     //validate stack
-    ifb_memory::validate_stack(stack);
+    memory::validate_stack(stack);
 
     //calculate the new position
     const u32 stack_size         = stack->size;
@@ -81,12 +84,12 @@ ifb_memory::stack_push_bytes_absolute_pointer(
 }
 
 const addr
-ifb_memory::stack_push_bytes_absolute_address(
-          mem_stack_t* stack,
+memory::stack_push_bytes_absolute_address(
+          stack_t* stack,
     const u32          size) {
 
     //validate stack
-    ifb_memory::validate_stack(stack);
+    memory::validate_stack(stack);
 
     //calculate the new position
     const u32 stack_size         = stack->size;
@@ -108,12 +111,12 @@ ifb_memory::stack_push_bytes_absolute_address(
 }
 
 const ptr
-ifb_memory::stack_get_pointer(
-          mem_stack_t* stack,
+memory::stack_get_pointer(
+          stack_t* stack,
     const u32          offset) {
 
     //validate stack
-    ifb_memory::validate_stack(stack);
+    memory::validate_stack(stack);
 
     //calculate the pointer
     const addr stack_offset  = ((addr)stack) + offset;
@@ -124,12 +127,12 @@ ifb_memory::stack_get_pointer(
 }
 
 const b8
-ifb_memory::stack_pull_bytes(
-          mem_stack_t* stack,
+memory::stack_pull_bytes(
+          stack_t* stack,
     const u32          size) {
 
     //validate stack
-    ifb_memory::validate_stack(stack);
+    memory::validate_stack(stack);
 
     //get sizes
     const u32 position_current = stack->position;
