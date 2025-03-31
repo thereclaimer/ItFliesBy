@@ -52,6 +52,7 @@ namespace ifb {
 namespace ifb {
 
     struct memory_t;
+    struct iterator_t;
     struct vec2_t;
     struct vec3_t;
     struct mat3_t;
@@ -64,7 +65,7 @@ namespace ifb {
 };
 
 /**********************************************************************************/
-/* FORWARD DECLARATIONS                                                           */
+/* MEMORY                                                                         */
 /**********************************************************************************/
 
 namespace ifb {
@@ -72,6 +73,11 @@ namespace ifb {
     struct memory_t {
         addr start;
         u64  size;
+    };
+
+    struct iterator_t {
+        ptr pointer;
+        u64 index;
     };
 };
 

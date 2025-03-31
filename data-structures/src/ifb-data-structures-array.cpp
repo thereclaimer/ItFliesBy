@@ -3,47 +3,50 @@
 #include "ifb-data-structures.hpp"
 #include "ifb-data-structures-internal.cpp"
 
+using namespace ifb;
+using namespace ifb::ds;
 
 /**********************************************************************************/
 /* MEMORY                                                                       */
 /**********************************************************************************/
 
-void
-array::size(
-    array_args_t& args) {
+const u32
+ds::array_memory_size(
+    const u32 element_size,
+    const u32 element_count) {
 
-    //cache args
-    const u32 element_size  = args.element_size;
-    const u32 element_count = args.element_count;
+    const u32 memory_size = 
+        element_size  +
+        element_count +
+        _globals.struct_size_array;         
 
-    //calculate the memory size
-    args.memory_size = array_macro_size_total(
-        args.element_size,
-        args.element_count);
+    return(memory_size);
 }
 
 array_t*
-array::create(
-    array_args_t& args) {
+ds::array_memory_init(
+    const u32       element_size,
+    const u32       element_count,
+    const memory_t& memory) {
+
+    //get the actual memory size
+    const u32 memory_size = array_memory_size(element_size, element_count);
 
     //sanity check
-    ifb_macro_assert(args.memory_ptr    != NULL);
-    ifb_macro_assert(args.memory_size   != 0);
-    ifb_macro_assert(args.element_size  != 0);
-    ifb_macro_assert(args.element_count != 0);
-
-    //get the addresses
-    const addr array_start_struct = (addr)args.memory_ptr;
-    const addr array_start_data   = array_start_struct + STRUCT_SIZE_ARRAY;
+    ifb_macro_assert(memory.start  != NULL);
+    ifb_macro_assert(memory.size   != memory_size);
+    ifb_macro_assert(element_size  != 0);
+    ifb_macro_assert(element_count != 0);
+    ifb_macro_assert(element_count != 0);
 
     //cast the pointer
-    array_t* array_ptr = (array_t*)args.memory_ptr;
+    array_t* array_ptr = (array_t*)memory.start;
     
     //initialize the array
-    array_ptr->start                 = array_start_data;
-    array_ptr->size                  = array_macro_size_data(args.element_size, args.element_count);
-    array_ptr->element_size          = args.element_size;
-    array_ptr->element_count_total   = args.element_count;
+    array_ptr->data_start            = memory.start + _globals.struct_size_array;
+    array_ptr->data_size             = element_size * element_count;
+    array_ptr->element_size          = element_size;
+    array_ptr->element_count_total   = element_count;
     array_ptr->element_count_current = 0;
 
     //we're done
@@ -55,11 +58,12 @@ array::create(
 /**********************************************************************************/
 
 void
-array::info(
+ds::array_info(
     array_t*      array,
     array_info_t& info) {
 
-    assert_valid(array);
+    //validate the array
+    array_assert_valid(array);
 
     //set the info
     info.element_size          = array->element_size;
@@ -72,19 +76,22 @@ array::info(
 /**********************************************************************************/
 
 void
-array::clear(
+ds::array_clear(
     array_t* array) {
 
     //get the array
-    assert_valid(array);
+    array_assert_valid(array);
     array->element_count_current = 0;
 }
 
 const b8
-array::add(
-          array_t* array,
-    const u32      count,
-    const ptr      element) {
+ds::array_add(
+    array_t*  array,
+    const u32 count,
+    const ptr element) {
+
+    //validate the array
+    array_assert_valid(array);
 
     //sanity check
     b8 result = true;
@@ -92,30 +99,28 @@ array::add(
     result &= (element != NULL);
     if (!result) return(false);
 
-    //get the array
-    assert_valid(array);
 
     //make sure we can fit the element(s)
-    const u32 array_count_total   = array->element_count_total;
-    const u32 array_count_current = array->element_count_current;
-    const u32 array_count_new     = array_count_current + count;
+    const u32 array_count_total     = array->element_count_total;
+    const u32 array_count_current   = array->element_count_current;
+    const u32 array_count_new       = array_count_current + count;
     if (array_count_new > array_count_total) return(false);
 
     //calculate the end of the current array data
-    const u32  array_element_size = array->element_size;
-    const u32  array_size_current = array_element_size * array_count_current;
-    const addr array_end          = array->start + array_size_current;
+    const u32  array_element_size   = array->element_size;
+    const u32  array_size_current   = array_element_size * array_count_current;
+    const addr array_end            = array->data_start  + array_size_current;
     
     //calculate the element source and destination
-    ifb::byte*       element_destination = (ifb::byte*)array_end;
+    byte*       element_destination = (byte*)array_end;
     const u32   element_source_size = array_element_size * count;
-    const ifb::byte* element_source      = (const ifb::byte*)element;
+    const byte* element_source      = (const byte*)element;
 
     //copy the data
     for (
         u32 byte_index = 0;
-               byte_index < element_source_size;
-             ++byte_index) {
+            byte_index < element_source_size;
+          ++byte_index) {
 
         element_destination[byte_index] = element_source[byte_index];        
     }
@@ -129,12 +134,12 @@ array::add(
 }
 
 const ptr
-array::index(
+ds::array_index(
           array_t* array,
     const u32      index) {
 
     //get the array
-    assert_valid(array);
+    array_assert_valid(array);
 
     //check the index is valid
     if (index >= array->element_count_current) return(NULL);
@@ -142,7 +147,7 @@ array::index(
     //calculate the element pointer
     const u32  element_size    = array->element_size;
     const u32  element_offset  = element_size * index; 
-    const addr element_address = array->start + element_offset;
+    const addr element_address = array->data_start + element_offset;
     const ptr  element_pointer = (ptr)element_address;
 
     //we're done
@@ -150,12 +155,12 @@ array::index(
 }
 
 const b8
-array::iterate(
+ds::array_iterate(
     array_t*    array,
     iterator_t& iterator) {
 
     //get the array
-    assert_valid(array);
+    array_assert_valid(array);
 
     //check the iterator
     const u32 array_count_current = array->element_count_current;
@@ -168,7 +173,7 @@ array::iterate(
     } 
 
     //get the pointer at the index
-    iterator.pointer = array::index(array,iterator.index);
+    iterator.pointer = array_index(array,iterator.index);
     
     //update the index
     ++iterator.index;

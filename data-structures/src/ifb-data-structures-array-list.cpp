@@ -3,16 +3,19 @@
 #include "ifb-data-structures.hpp"
 #include "ifb-data-structures-internal.cpp"
 
+using namespace ifb; 
+using namespace ifb::ds; 
+
 /**********************************************************************************/
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
 const u32
-array_list::size(
+ds::array_list_memory_size(
     const u32 element_size,
     const u32 element_count) {
 
-    const u32 array_list_size_struct = STRUCT_SIZE_ARRAY_LIST;
+    const u32 array_list_size_struct = _globals.struct_size_array_list;
     const u32 array_list_size_data   = element_size * element_count;
     const u32 array_list_size_total  = array_list_size_struct + array_list_size_data; 
 
@@ -20,31 +23,30 @@ array_list::size(
 }
 
 array_list_t*
-array_list::create(
-    array_list_args_t& args) {
+ds::array_list_memory_init(
+    const u32       element_size,
+    const u32       element_count,
+    const memory_t& memory) {
+
+    //get the actual memory size
+    const u32 memory_size = array_list_memory_size(element_size,element_count);
 
     //validate the args
     b8 args_are_valid = true;
-    args_are_valid &= (args.memory_ptr    != NULL);
-    args_are_valid &= (args.memory_size   != 0);
-    args_are_valid &= (args.element_size  != 0);
-    args_are_valid &= (args.element_count != 0);
+    args_are_valid &= (memory.start  != NULL);
+    args_are_valid &= (memory.size   == memory_size);
+    args_are_valid &= (element_size  != 0);
+    args_are_valid &= (element_count != 0);
     ifb_macro_assert(args_are_valid);
 
-    //sizes
-    const u32 array_list_size_data        = args.element_size * args.element_count;
-    const u32 array_list_size_struct      = STRUCT_SIZE_ARRAY_LIST;
-
     //cast the pointer
-    const addr array_list_start_struct    = (addr)args.memory_ptr;
-    const addr array_list_start_data      = array_list_start_struct + array_list_size_struct; 
-    array_list_t* array_list_ptr          = (array_list_t*)array_list_start_struct;
+    array_list_t* array_list_ptr          = (array_list_t*)memory.start;
 
     //intialize the array list
-    array_list_ptr->start                 = array_list_start_data;
-    array_list_ptr->size                  = array_list_size_data;    
-    array_list_ptr->element_size          = args.element_size;
-    array_list_ptr->element_count_total   = args.element_count;
+    array_list_ptr->data_start            = memory.start + _globals.struct_size_array_list;
+    array_list_ptr->data_size             = element_size * element_count;    
+    array_list_ptr->element_size          = element_size;
+    array_list_ptr->element_count_total   = element_count;
     array_list_ptr->element_count_current = 0;
 
     //we're done
@@ -56,23 +58,23 @@ array_list::create(
 /**********************************************************************************/
 
 void
-array_list::reset(
+ds::array_list_reset(
     array_list_t* array_list) {
 
     //assert the list is valid
-    array_list::assert_valid(array_list);
+    array_list_assert_valid(array_list);
     
     //reset the current count
     array_list->element_count_current = 0;
 }
 
 const b8
-array_list::remove(
+ds::array_list_remove(
     array_list_t* array_list,
     const u32     index) {
 
     //assert the list is valid
-    array_list::assert_valid(array_list);
+    array_list_assert_valid(array_list);
 
     //get the counts
     const u32 count_current = array_list->element_count_current;
@@ -85,7 +87,7 @@ array_list::remove(
     if (!can_remove) return(false);         // if we can't remove, we're done
 
     //shift the memory down
-    array_list::shift_down(array_list,index,1);
+    array_list_shift_down(array_list,index,1);
 
     //update the count
     array_list->element_count_current = count_new;    
@@ -94,12 +96,12 @@ array_list::remove(
 }
 
 const b8
-array_list::add_to_front(
+ds::array_list_add_to_front(
     array_list_t* array_list,
     const ptr           element_ptr) {
 
     //assert the list is valid
-    array_list::assert_valid(array_list);
+    array_list_assert_valid(array_list);
 
     //get the counts
     const u32 count_max     = array_list->element_count_total;
@@ -113,12 +115,12 @@ array_list::add_to_front(
     if (!can_add) return(false);       
 
     //shift everything up by the current count
-    array_list::shift_up(array_list,0,count_current);
+    array_list_shift_up(array_list,0,count_current);
 
     //add the new element to the front
     const u32   element_size = array_list->element_size;
     const byte* source       = (byte*)element_ptr; 
-    byte*       destination  = (byte*)array_list->start; 
+    byte*       destination  = (byte*)array_list->data_start; 
 
     for (
         u32 byte_index = 0;
@@ -132,12 +134,12 @@ array_list::add_to_front(
 }
 
 const b8
-array_list::add_to_end(
+ds::array_list_add_to_end(
     array_list_t* array_list,
     const ptr           element_ptr) {
 
     //assert the list is valid
-    array_list::assert_valid(array_list);
+    array_list_assert_valid(array_list);
 
     //get the counts
     const u32 count_max     = array_list->element_count_total;
@@ -153,7 +155,7 @@ array_list::add_to_end(
     //no need to shift, just calculate the start and size
     const u32   element_size       = array_list->element_size;
     const u32   destination_offset = element_size * count_current; 
-    const addr  destination_start  = array_list->start + destination_offset;
+    const addr  destination_start  = array_list->data_start + destination_offset;
     const byte* source             = (byte*)element_ptr;
     byte*       destination        = (byte*)destination_start; 
 
@@ -169,13 +171,13 @@ array_list::add_to_end(
 }
 
 const b8
-array_list::insert(
+ds::array_list_insert(
     array_list_t* array_list,
     const u32     index,
     const ptr     element_ptr) {
 
     //assert the list is valid
-    array_list::assert_valid(array_list);
+    array_list_assert_valid(array_list);
 
     //if the index is at the front or the end, 
     //just call the corresponding method
@@ -185,8 +187,8 @@ array_list::insert(
 
         //call the corresponding method
         const b8 result = is_at_front 
-            ? array_list::add_to_front (array_list, element_ptr)
-            : array_list::add_to_end   (array_list, element_ptr);
+            ? array_list_add_to_front (array_list, element_ptr)
+            : array_list_add_to_end   (array_list, element_ptr);
 
         //we're done
         return(result);
@@ -206,12 +208,12 @@ array_list::insert(
     if (!can_insert) return(false);
 
     //shift the memory up
-    array_list::shift_up(array_list,index, count_shift);
+    array_list_shift_up(array_list,index, count_shift);
 
     //copy everything over
     const u32   element_size       = array_list->element_size;
     const u32   destination_offset = element_size * index; 
-    const addr  destination_start  = array_list->start + destination_offset;
+    const addr  destination_start  = array_list->data_start + destination_offset;
     const byte* source             = (byte*)element_ptr;
     byte*       destination        = (byte*)destination_start; 
 
@@ -229,11 +231,11 @@ array_list::insert(
 
 
 const ptr
-array_list::first(
+ds::array_list_first(
     array_list_t* array_list) {
 
     //assert the list is valid
-    array_list::assert_valid(array_list);
+    array_list_assert_valid(array_list);
 
     //check if the list is empty
     const b8 list_is_empty = (array_list->element_count_current == 0); 
@@ -242,18 +244,18 @@ array_list::first(
     //otherwise, cast the data start
     const ptr element = list_is_empty
         ? NULL
-        : (ptr)array_list->start;
+        : (ptr)array_list->data_start;
 
     //we're done
     return(element);
 }
 
 const ptr
-array_list::last(
+ds::array_list_last(
     array_list_t* array_list) {
 
     //assert the list is valid
-    array_list::assert_valid(array_list);
+    array_list_assert_valid(array_list);
 
     //get the offset of the last element
     const u32 element_count  = array_list->element_count_current;
@@ -262,7 +264,7 @@ array_list::last(
 
     //get the address, if we have a valid offset
     const addr element_address = element_offset 
-        ? array_list->start + element_offset
+        ? array_list->data_start + element_offset
         : 0;
 
     //cast the element
@@ -273,12 +275,12 @@ array_list::last(
 }
 
 const ptr
-array_list::index(
+ds::array_list_index(
     array_list_t* array_list,
     const u32     index) {
 
     //assert the list is valid
-    array_list::assert_valid(array_list);
+    array_list_assert_valid(array_list);
 
     //get the offset of the last index
     const u32 element_size   = array_list->element_size;
@@ -302,12 +304,12 @@ array_list::index(
 /**********************************************************************************/
 
 void 
-array_list::info(
+ds::array_list_info(
     array_list_t*      array_list,
     array_list_info_t& info) {
     
     //assert the list is valid
-    array_list::assert_valid(array_list);
+    array_list_assert_valid(array_list);
 
     //set the info
     info.element_size          = array_list->element_size;
