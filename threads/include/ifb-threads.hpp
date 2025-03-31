@@ -11,7 +11,7 @@ using namespace ifb;
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-namespace ifb::threads {
+namespace ifb {
 
     //handles
     struct thread_h      : hnd16 { };
@@ -22,6 +22,8 @@ namespace ifb::threads {
     struct thread_status_t;
     struct thread_task_t;
     struct thread_context_t;
+
+    typedef u64 thread_affinity_mask_t;
 
     //thread pool
     struct thread_pool_t;
@@ -42,9 +44,7 @@ namespace ifb::threads {
 /**********************************************************************************/
 /* THREAD                                                                         */
 /**********************************************************************************/
-namespace ifb::threads {
-
-    typedef u64 thread_affinity_mask_t;
+namespace ifb {
 
     struct thread_t {
         addr memory_start;
@@ -62,7 +62,7 @@ namespace ifb::threads {
 /* THREAD POOL                                                                    */
 /**********************************************************************************/
 
-namespace ifb::threads {
+namespace ifb {
 
     struct thread_pool_sizes_cache_t {
         struct {
@@ -130,48 +130,54 @@ namespace ifb::threads {
 /* THREAD REQUEST                                                                 */
 /**********************************************************************************/
 
-struct thread_request_t {
-    memory_t memory;
-    u64      thread_count;
+namespace ifb {
+
+    struct thread_request_t {
+        memory_t memory;
+        u64      thread_count;
+    };
 };
 
 /**********************************************************************************/
 /* AFFINITY MASK                                                                  */
 /**********************************************************************************/
 
-enum thread_affinity_mask_e : u64 {
-    thread_affinity_mask_e_cpu_core_00 = IFB_BIT_FLAG_0,
-    thread_affinity_mask_e_cpu_core_01 = IFB_BIT_FLAG_1,
-    thread_affinity_mask_e_cpu_core_02 = IFB_BIT_FLAG_2,
-    thread_affinity_mask_e_cpu_core_03 = IFB_BIT_FLAG_3,
-    thread_affinity_mask_e_cpu_core_04 = IFB_BIT_FLAG_4,
-    thread_affinity_mask_e_cpu_core_05 = IFB_BIT_FLAG_5,
-    thread_affinity_mask_e_cpu_core_06 = IFB_BIT_FLAG_6,
-    thread_affinity_mask_e_cpu_core_07 = IFB_BIT_FLAG_7,
-    thread_affinity_mask_e_cpu_core_08 = IFB_BIT_FLAG_8,
-    thread_affinity_mask_e_cpu_core_09 = IFB_BIT_FLAG_9,
-    thread_affinity_mask_e_cpu_core_10 = IFB_BIT_FLAG_10,
-    thread_affinity_mask_e_cpu_core_11 = IFB_BIT_FLAG_11,
-    thread_affinity_mask_e_cpu_core_12 = IFB_BIT_FLAG_12,
-    thread_affinity_mask_e_cpu_core_13 = IFB_BIT_FLAG_13,
-    thread_affinity_mask_e_cpu_core_14 = IFB_BIT_FLAG_14,
-    thread_affinity_mask_e_cpu_core_15 = IFB_BIT_FLAG_15,
-    thread_affinity_mask_e_cpu_core_16 = IFB_BIT_FLAG_16,
-    thread_affinity_mask_e_cpu_core_17 = IFB_BIT_FLAG_17,
-    thread_affinity_mask_e_cpu_core_18 = IFB_BIT_FLAG_18,
-    thread_affinity_mask_e_cpu_core_19 = IFB_BIT_FLAG_19,
-    thread_affinity_mask_e_cpu_core_20 = IFB_BIT_FLAG_20,
-    thread_affinity_mask_e_cpu_core_21 = IFB_BIT_FLAG_21,
-    thread_affinity_mask_e_cpu_core_22 = IFB_BIT_FLAG_22,
-    thread_affinity_mask_e_cpu_core_23 = IFB_BIT_FLAG_23,
-    thread_affinity_mask_e_cpu_core_24 = IFB_BIT_FLAG_24,
-    thread_affinity_mask_e_cpu_core_25 = IFB_BIT_FLAG_25,
-    thread_affinity_mask_e_cpu_core_26 = IFB_BIT_FLAG_26,
-    thread_affinity_mask_e_cpu_core_27 = IFB_BIT_FLAG_27,
-    thread_affinity_mask_e_cpu_core_28 = IFB_BIT_FLAG_28,
-    thread_affinity_mask_e_cpu_core_29 = IFB_BIT_FLAG_29,
-    thread_affinity_mask_e_cpu_core_30 = IFB_BIT_FLAG_30,
-    thread_affinity_mask_e_cpu_core_31 = IFB_BIT_FLAG_31
+namespace ifb {
+
+    enum thread_affinity_mask_e : u64 {
+        thread_affinity_mask_e_cpu_core_00 = IFB_BIT_FLAG_0,
+        thread_affinity_mask_e_cpu_core_01 = IFB_BIT_FLAG_1,
+        thread_affinity_mask_e_cpu_core_02 = IFB_BIT_FLAG_2,
+        thread_affinity_mask_e_cpu_core_03 = IFB_BIT_FLAG_3,
+        thread_affinity_mask_e_cpu_core_04 = IFB_BIT_FLAG_4,
+        thread_affinity_mask_e_cpu_core_05 = IFB_BIT_FLAG_5,
+        thread_affinity_mask_e_cpu_core_06 = IFB_BIT_FLAG_6,
+        thread_affinity_mask_e_cpu_core_07 = IFB_BIT_FLAG_7,
+        thread_affinity_mask_e_cpu_core_08 = IFB_BIT_FLAG_8,
+        thread_affinity_mask_e_cpu_core_09 = IFB_BIT_FLAG_9,
+        thread_affinity_mask_e_cpu_core_10 = IFB_BIT_FLAG_10,
+        thread_affinity_mask_e_cpu_core_11 = IFB_BIT_FLAG_11,
+        thread_affinity_mask_e_cpu_core_12 = IFB_BIT_FLAG_12,
+        thread_affinity_mask_e_cpu_core_13 = IFB_BIT_FLAG_13,
+        thread_affinity_mask_e_cpu_core_14 = IFB_BIT_FLAG_14,
+        thread_affinity_mask_e_cpu_core_15 = IFB_BIT_FLAG_15,
+        thread_affinity_mask_e_cpu_core_16 = IFB_BIT_FLAG_16,
+        thread_affinity_mask_e_cpu_core_17 = IFB_BIT_FLAG_17,
+        thread_affinity_mask_e_cpu_core_18 = IFB_BIT_FLAG_18,
+        thread_affinity_mask_e_cpu_core_19 = IFB_BIT_FLAG_19,
+        thread_affinity_mask_e_cpu_core_20 = IFB_BIT_FLAG_20,
+        thread_affinity_mask_e_cpu_core_21 = IFB_BIT_FLAG_21,
+        thread_affinity_mask_e_cpu_core_22 = IFB_BIT_FLAG_22,
+        thread_affinity_mask_e_cpu_core_23 = IFB_BIT_FLAG_23,
+        thread_affinity_mask_e_cpu_core_24 = IFB_BIT_FLAG_24,
+        thread_affinity_mask_e_cpu_core_25 = IFB_BIT_FLAG_25,
+        thread_affinity_mask_e_cpu_core_26 = IFB_BIT_FLAG_26,
+        thread_affinity_mask_e_cpu_core_27 = IFB_BIT_FLAG_27,
+        thread_affinity_mask_e_cpu_core_28 = IFB_BIT_FLAG_28,
+        thread_affinity_mask_e_cpu_core_29 = IFB_BIT_FLAG_29,
+        thread_affinity_mask_e_cpu_core_30 = IFB_BIT_FLAG_30,
+        thread_affinity_mask_e_cpu_core_31 = IFB_BIT_FLAG_31
+    };
 };
 
 namespace ifb::threads {

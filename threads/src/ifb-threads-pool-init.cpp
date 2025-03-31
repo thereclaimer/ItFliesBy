@@ -5,7 +5,6 @@
 #define IFB_THREAD_POOL_INIT_MAX_SIZE 0xFFFF
 
 using namespace ifb;
-using namespace ifb::threads;
 
 namespace ifb::threads {
 
@@ -71,7 +70,7 @@ threads::pool_init_step_1_set_size_cache(
     const u32 pool_size_task_data                  = arg_thread_count * arg_thread_stride_task_data;
     const u32 pool_size_task_functions             = arg_thread_count * tmp_size_task_function;
     const u32 pool_size_array_affinity_mask        = arg_thread_count * tmp_size_affinity_mask;
-    const u32 pool_size_array_list_running_threads = ds::array_list_memory_size(tmp_size_thread_handle,arg_thread_count);
+    const u32 pool_size_array_list_running_threads = array_list::memory_size(tmp_size_thread_handle,arg_thread_count);
 
     //thread pool total size
     const u32 pool_size_total = 
