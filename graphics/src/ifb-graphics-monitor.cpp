@@ -2,13 +2,20 @@
 
 #include "ifb-graphics.hpp"
 
-const ifb::u32
-ifb_graphics::monitor_table_memory_size(
+using namespace ifb;
+namespace pfm = ifb::platform;
+namespace gfx = ifb::graphics;
+namespace mem = ifb::memory;
+
+using namespace gfx;
+
+const u32
+gfx::monitor_table_memory_size(
     void) {
 
-    const ifb::u32 count_monitors     = ifb_platform::monitor_count();
-    const ifb::u32 size_table         = ifb_macro_align_size_struct(IFBMonitorTable);
-    const ifb::u32 size_monitor       = ifb_macro_align_size_struct(IFBMonitor);
+    const ifb::u32 count_monitors     = pfm::monitor_count();
+    const ifb::u32 size_table         = ifb_macro_align_size_struct(monitor_table_t);
+    const ifb::u32 size_monitor       = ifb_macro_align_size_struct(pfm::monitor_t);
     const ifb::u32 size_monitor_array = size_monitor * count_monitors;
 
     const ifb::u32 size_total = 
@@ -18,38 +25,38 @@ ifb_graphics::monitor_table_memory_size(
     return(size_total);
 }
 
-IFBMonitorTable*
-ifb_graphics::monitor_table_memory_initialize(
-    const ifb::ptr memory) {
+monitor_table_t*
+gfx::monitor_table_memory_initialize(
+    const ptr memory) {
 
     ifb_macro_assert(memory);
 
     //size/count
-    const ifb::u32 count_monitors       = ifb_platform::monitor_count();
-    const ifb::u32 size_table           = ifb_macro_align_size_struct(IFBMonitorTable);
+    const u32 count_monitors       = pfm::monitor_count();
+    const u32 size_table           = ifb_macro_align_size_struct(monitor_table_t);
 
     //addresses
-    const ifb::addr start_monitor_table = (ifb::addr)memory;
-    const ifb::addr start_monitor_array = start_monitor_table + start_monitor_table;
+    const addr start_monitor_table = (addr)memory;
+    const addr start_monitor_array = start_monitor_table + start_monitor_table;
 
     //cast the pointer
-    IFBMonitorTable* monitor_table    = (IFBMonitorTable*)memory;
+    monitor_table_t* monitor_table    = (monitor_table_t*)memory;
     
     //initialize the table
     monitor_table->monitor_count      = count_monitors;
     monitor_table->monitor_primary    = 0;
-    monitor_table->monitor_array      = (IFBMonitor*)start_monitor_array;
+    monitor_table->monitor_array      = (pfm::monitor_t*)start_monitor_array;
 
     //update the table
-    (void)ifb_graphics::monitor_table_update(monitor_table);
+    (void)gfx::monitor_table_update(monitor_table);
 
     //we're done
     return(monitor_table);
 }
 
 const ifb::b8
-ifb_graphics::monitor_table_update(
-    IFBMonitorTable* monitor_table_ptr) {
+gfx::monitor_table_update(
+    monitor_table_t* monitor_table_ptr) {
         
     //sanity check
     ifb_macro_assert(monitor_table_ptr);
@@ -58,10 +65,10 @@ ifb_graphics::monitor_table_update(
 
     //cache properties
     const ifb::u32 monitor_count = monitor_table_ptr->monitor_count;
-    IFBMonitor*  monitor_array = monitor_table_ptr->monitor_array;
+    pfm::monitor_t*  monitor_array = monitor_table_ptr->monitor_array;
 
     //get the monitor info from the platform
-    const ifb::b8 result = ifb_platform::monitor_info(
+    const ifb::b8 result = pfm::monitor_info(
         monitor_count,
         monitor_array);
 
@@ -95,9 +102,9 @@ ifb_graphics::monitor_table_update(
 }
 
 const ifb::b8
-ifb_graphics::monitor_table_get_monitor(
-    const IFBMonitorTable* monitor_table_ptr,
-          IFBMonitor*      monitor_ptr) {
+gfx::monitor_table_get_monitor(
+    const monitor_table_t* monitor_table_ptr,
+    pfm::monitor_t*        monitor_ptr) {
 
     //sanity check
     ifb_macro_assert(monitor_table_ptr);
@@ -124,9 +131,9 @@ ifb_graphics::monitor_table_get_monitor(
 }
 
 const ifb::b8
-ifb_graphics::monitor_table_get_monitor_primary(
-    const IFBMonitorTable* monitor_table_ptr,
-          IFBMonitor*      monitor_ptr) {
+gfx::monitor_table_get_monitor_primary(
+    const monitor_table_t* monitor_table_ptr,
+    pfm::monitor_t*        monitor_ptr) {
         
     //sanity check
     ifb_macro_assert(monitor_table_ptr);
@@ -153,9 +160,9 @@ ifb_graphics::monitor_table_get_monitor_primary(
 }
 
 const ifb::b8
-ifb_graphics::monitor_get_center(
-    const IFBMonitor*  monitor_ptr,
-          ifb::position_t* center_position_ptr) {
+gfx::monitor_get_center(
+    const pfm::monitor_t* monitor_ptr,
+    position_t*           center_position_ptr) {
 
     //sanity check
     ifb_macro_assert(monitor_ptr);

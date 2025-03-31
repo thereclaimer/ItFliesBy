@@ -6,111 +6,103 @@
 #include <ifb-data-structures.hpp>
 #include <ifb-platform.hpp>
 
+using namespace ifb;
+namespace platform=ifb::platform;
+
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
+namespace ifb::graphics {
 
-struct IFBGraphicsWindow;
+    struct color_normalized_t;
+    struct color_hex_t;
+    struct color_32_t;
+    struct window_args_t;
 
-struct IFBColorNormalized;
-struct IFBColorHex;
-struct IFBColor32;
-struct IFBMonitor;
-
-typedef IFBGraphicsWindow* IFBGFXWindow; 
+    typedef platform::window_t* window_h;
+};
 
 /**********************************************************************************/
 /* COLORS                                                                         */
 /**********************************************************************************/
 
-struct IFBColorNormalized {
-    ifb::f32 red;
-    ifb::f32 blue;
-    ifb::f32 green;
-    ifb::f32 alpha;
-};
+namespace ifb::graphics {
 
-struct IFBColorHex {
-    ifb::u8 red;
-    ifb::u8 blue;
-    ifb::u8 green;
-    ifb::u8 alpha;
-};
+    struct color_normalized_t {
+        f32 red;
+        f32 blue;
+        f32 green;
+        f32 alpha;
+    };
 
-struct IFBColor32 {
-    ifb::u32 value;
-};
+    struct color_hex_t {
+        u8 red;
+        u8 blue;
+        u8 green;
+        u8 alpha;
+    };
 
-enum IFBColorFormat : ifb::u32 {
-     IFBColorFormat_RGBA = 0,
-     IFBColorFormat_ARGB = 1,
-     IFBColorFormat_ABGR = 2,
-     IFBColorFormat_BGRA = 3
-};
+    struct color_32_t {
+        u32 value;
+    };
 
-namespace ifb_graphics {
+    enum color_format_e : u32 {
+        color_format_e_rgba = 0,
+        color_format_e_argb = 1,
+        color_format_e_abgr = 2,
+        color_format_e_bgra = 3
+    };
     
-    const ifb::b8      color_normalize             (const IFBColorHex*        ptr_color_hex,        IFBColorNormalized*       ptr_color_normalized);
-    const ifb::b8      color_denormalize           (const IFBColorNormalized* ptr_color_normalized, IFBColorHex*              ptr_color_hex); 
-    
-    const IFBColor32 color_pack_hex_to_32        (const IFBColorFormat      color_format,         const IFBColorHex*        ptr_color_hex); 
-    const IFBColor32 color_pack_normalized_to_32 (const IFBColorFormat      color_format,         const IFBColorNormalized* ptr_color_normalized); 
+    const b8         color_normalize             (const color_hex_t*        ptr_color_hex,        color_normalized_t*       ptr_color_normalized);
+    const b8         color_denormalize           (const color_normalized_t* ptr_color_normalized, color_hex_t*              ptr_color_hex); 
+    const color_32_t color_pack_hex_to_32        (const color_format_e      color_format,         const color_hex_t*        ptr_color_hex); 
+    const color_32_t color_pack_normalized_to_32 (const color_format_e      color_format,         const color_normalized_t* ptr_color_normalized); 
 };
 
 /**********************************************************************************/
 /* WINDOW                                                                         */
 /**********************************************************************************/
+namespace ifb::graphics {
+    struct window_args_t {
+        utf8*        title;
+        u32          title_length;
+        dimensions_t dims;
+        position_t   pos;
+    };  
 
-struct IFBGraphicsWindowArgs {
-    ifb::utf8*      title;
-    ifb::u32        title_length;
-    ifb::dimensions_t dims;
-    ifb::position_t   pos;
-};  
 
-namespace ifb_graphics {
+    const u32   window_memory_size       (const u32       window_title_length);
+    window_h    window_memory_initialize (const memory_t& memory);
 
-    const ifb::u32   window_memory_size       (const ifb::u32     window_title_length);
+    const b8    window_create            (window_h window, const window_args_t& args);
+    const b8    window_show              (window_h window);
+    const b8    window_process_events    (window_h window);
+    const b8    window_swap_buffers      (window_h window);
 
-    IFBGFXWindow   window_memory_initialize (const IFBMemory& memory);
-
-    const ifb::b8    window_create            (IFBGFXWindow window_handle, const IFBGraphicsWindowArgs& args);
-    const ifb::b8    window_show              (IFBGFXWindow window_handle);
-    const ifb::b8    window_process_events    (IFBGFXWindow window_handle);
-    const ifb::b8    window_swap_buffers      (IFBGFXWindow window_handle);
-
-    IFBPlatformWindowFlags
-    window_get_flags(IFBGFXWindow window_handle);
+    platform::window_flags_t
+    window_get_flags(window_h window);
 };
-
 
 /**********************************************************************************/
 /* MONITOR                                                                        */
 /**********************************************************************************/
 
-struct IFBMonitor {
-    ifb::dimensions_t dimensions;
-    ifb::position_t   position;
-    ifb::u32        refresh_hz;
-    ifb::u32        index;
+namespace ifb::graphics {
+
+    struct monitor_table_t {
+        u32                  monitor_primary;
+        u32                  monitor_count;
+        platform::monitor_t* monitor_array;
+    };
+
+    const ifb::u32   monitor_table_memory_size         (void);
+    monitor_table_t* monitor_table_memory_initialize   (const ptr memory);
+
+    const b8         monitor_table_update              (monitor_table_t*           monitor_table_ptr);
+    const b8         monitor_table_get_monitor         (const monitor_table_t*     monitor_table_ptr, platform::monitor_t*  monitor_ptr);
+    const b8         monitor_table_get_monitor_primary (const monitor_table_t*     monitor_table_ptr, platform::monitor_t*  monitor_ptr);
+    const b8         monitor_get_center                (const platform::monitor_t* monitor_ptr,       position_t*           center_position_ptr);
 };
 
-struct IFBMonitorTable {
-    ifb::u32      monitor_primary;
-    ifb::u32      monitor_count;
-    IFBMonitor* monitor_array;
-};
-
-namespace ifb_graphics {
-
-    const ifb::u32     monitor_table_memory_size         (void);
-    IFBMonitorTable* monitor_table_memory_initialize   (const ifb::ptr memory);
-
-    const ifb::b8      monitor_table_update              (IFBMonitorTable* monitor_table_ptr);
-    const ifb::b8      monitor_table_get_monitor         (const IFBMonitorTable* monitor_table_ptr, IFBMonitor* monitor_ptr);
-    const ifb::b8      monitor_table_get_monitor_primary (const IFBMonitorTable* monitor_table_ptr, IFBMonitor* monitor_ptr);
-
-    const ifb::b8      monitor_get_center                (const IFBMonitor* monitor_ptr, ifb::position_t* center_position_ptr);
-};
 
 #endif //IFB_GRAPHICS_HPP
