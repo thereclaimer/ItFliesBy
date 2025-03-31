@@ -104,10 +104,13 @@ namespace ifb {
 /* HANDLES                                                                        */
 /**********************************************************************************/
 
-struct IFBHND8  { ifb::u8   h8;  };
-struct IFBHND16 { ifb::u16  h16; };
-struct IFBHND32 { ifb::u32  h32; };
-struct IFBHND64 { ifb::addr h64; };
+namespace ifb {
+
+    struct hnd8  { u8   h8;  };
+    struct hnd16 { u16  h16; };
+    struct hnd32 { u32  h32; };
+    struct hnd64 { addr h64; };
+};
 
 #define IFB_HANDLE_INVALID_U8  0xFF
 #define IFB_HANDLE_INVALID_U16 0xFFFF 

@@ -4,20 +4,23 @@
 
 #define IFB_THREAD_POOL_INIT_MAX_SIZE 0xFFFF
 
-namespace ifb_thread {
+using namespace ifb;
+using namespace ifb::threads;
 
-    void pool_init_step_0_validate_args  (IFBThreadPoolInit* init, ifb::b8& result_ref);
-    void pool_init_step_1_set_size_cache (IFBThreadPoolInit* init, ifb::b8& result_ref);
-    void pool_init_step_2_cast_memory    (IFBThreadPoolInit* init, ifb::b8& result_ref);
-    void pool_init_step_3_set_header     (IFBThreadPoolInit* init, ifb::b8& result_ref);
-    void pool_init_step_4_set_handles    (IFBThreadPoolInit* init, ifb::b8& result_ref);
-    void pool_init_step_5_validate_pool  (IFBThreadPoolInit* init, ifb::b8& result_ref);
+namespace ifb::threads {
+
+    void pool_init_step_0_validate_args  (thread_pool_init_t* init, b8& result_ref);
+    void pool_init_step_1_set_size_cache (thread_pool_init_t* init, b8& result_ref);
+    void pool_init_step_2_cast_memory    (thread_pool_init_t* init, b8& result_ref);
+    void pool_init_step_3_set_header     (thread_pool_init_t* init, b8& result_ref);
+    void pool_init_step_4_set_handles    (thread_pool_init_t* init, b8& result_ref);
+    void pool_init_step_5_validate_pool  (thread_pool_init_t* init, b8& result_ref);
 };
 
 inline void 
-ifb_thread::pool_init_step_0_validate_args(
-    IFBThreadPoolInit* init,
-    ifb::b8&             result_ref) {
+threads::pool_init_step_0_validate_args(
+    thread_pool_init_t* init,
+    b8&                 result_ref) {
 
     //check init struct
     result_ref = (init != NULL);
@@ -30,7 +33,7 @@ ifb_thread::pool_init_step_0_validate_args(
     if (!result_ref) return;
 
     //check remaining args
-    const IFBThreadPoolArgs* args = init->args;
+    const thread_pool_args_t* args = init->args;
     result_ref &= (args->thread_pool_memory.start  != 0);
     result_ref &= (args->thread_pool_memory.size   != 0);
     result_ref &= (args->thread_count              != 0);
@@ -39,39 +42,39 @@ ifb_thread::pool_init_step_0_validate_args(
 }
 
 inline void
-ifb_thread::pool_init_step_1_set_size_cache(
-    IFBThreadPoolInit* init,
-    ifb::b8&             result_ref) {
+threads::pool_init_step_1_set_size_cache(
+    thread_pool_init_t* init,
+    b8&             result_ref) {
 
     if (!result_ref) return;
 
     //store arg constants
-    IFBThreadPoolArgs* args                           = init->args;
-    const ifb::u32       arg_thread_count               = args->thread_count;
-    const ifb::u32       arg_thread_stride_description  = args->stride_thread_description;
-    const ifb::u32       arg_thread_stride_task_data    = args->stride_task_data;
+    thread_pool_args_t* args                           = init->args;
+    const u32       arg_thread_count               = args->thread_count;
+    const u32       arg_thread_stride_description  = args->stride_thread_description;
+    const u32       arg_thread_stride_task_data    = args->stride_task_data;
 
     //get the cache
-    IFBThreadPoolSizesCache* sizes_cache = init->sizes_cache;
+    thread_pool_sizes_cache_t* sizes_cache = init->sizes_cache;
 
     //temporary values
-    const ifb::u32 tmp_size_max               = IFB_THREAD_POOL_INIT_MAX_SIZE;
-    const ifb::u32 tmp_size_thread_handle     = sizeof(IFBHNDThread);
-    const ifb::u32 tmp_size_task_function     = sizeof(IFBThreadTaskCallback);;
-    const ifb::u32 tmp_size_affinity_mask     = sizeof(IFBThreadAffinityMask);;
-    const ifb::u32 tmp_size_platform_instance = ifb_platform::thread_size();;
+    const u32 tmp_size_max               = IFB_THREAD_POOL_INIT_MAX_SIZE;
+    const u32 tmp_size_thread_handle     = sizeof(thread_h);
+    const u32 tmp_size_task_function     = sizeof(thread_task_callback_f);
+    const u32 tmp_size_affinity_mask     = sizeof(thread_affinity_mask_e);
+    const u32 tmp_size_platform_instance = platform::thread_size();
 
     //thread pool properties
-    const ifb::u32 pool_size_struct                     = ifb_macro_align_size_struct(IFBThreadPool); 
-    const ifb::u32 pool_size_platform_total             = arg_thread_count * tmp_size_platform_instance;
-    const ifb::u32 pool_size_description_buffer         = arg_thread_count * arg_thread_stride_description;
-    const ifb::u32 pool_size_task_data                  = arg_thread_count * arg_thread_stride_task_data;
-    const ifb::u32 pool_size_task_functions             = arg_thread_count * tmp_size_task_function;
-    const ifb::u32 pool_size_array_affinity_mask        = arg_thread_count * tmp_size_affinity_mask;
-    const ifb::u32 pool_size_array_list_running_threads = ifb_array_list::size(tmp_size_thread_handle,arg_thread_count);
+    const u32 pool_size_struct                     = ifb_macro_align_size_struct(thread_pool_t); 
+    const u32 pool_size_platform_total             = arg_thread_count * tmp_size_platform_instance;
+    const u32 pool_size_description_buffer         = arg_thread_count * arg_thread_stride_description;
+    const u32 pool_size_task_data                  = arg_thread_count * arg_thread_stride_task_data;
+    const u32 pool_size_task_functions             = arg_thread_count * tmp_size_task_function;
+    const u32 pool_size_array_affinity_mask        = arg_thread_count * tmp_size_affinity_mask;
+    const u32 pool_size_array_list_running_threads = ds::array_list_memory_size(tmp_size_thread_handle,arg_thread_count);
 
     //thread pool total size
-    const ifb::u32 pool_size_total = 
+    const u32 pool_size_total = 
         pool_size_struct              +
         pool_size_platform_total      +
         pool_size_description_buffer  +
@@ -102,14 +105,14 @@ ifb_thread::pool_init_step_1_set_size_cache(
 }
 
 inline void
-ifb_thread::pool_init_step_2_cast_memory(
-    IFBThreadPoolInit* init,
-    ifb::b8&             result_ref) {
+threads::pool_init_step_2_cast_memory(
+    thread_pool_init_t* init,
+    b8&             result_ref) {
 
     if (!result_ref) return;
 
     //get the memory args
-    IFBThreadPoolArgs* args = init->args;
+    thread_pool_args_t* args = init->args;
     const ifb::addr args_mem_start = args->thread_pool_memory.start;
     const ifb::u64  args_mem_size  = args->thread_pool_memory.size;
 
@@ -119,23 +122,23 @@ ifb_thread::pool_init_step_2_cast_memory(
     if (!result_ref) return;
 
     //cast the memory
-    init->pointer = (IFBThreadPool*)args_mem_start;
+    init->pointer = (thread_pool_t*)args_mem_start;
 }
 
 inline void
-ifb_thread::pool_init_step_3_set_header(
-    IFBThreadPoolInit* init,
-    ifb::b8&             result_ref) {
+threads::pool_init_step_3_set_header(
+    thread_pool_init_t* init,
+    b8&             result_ref) {
 
     if (!result_ref) return;
 
     //get the pointers
-    IFBThreadPoolArgs*       args  = init->args;
-    IFBThreadPool*           pool  = init->pointer;
-    IFBThreadPoolSizesCache* sizes = init->sizes_cache;
+    thread_pool_args_t*        args  = init->args;
+    thread_pool_t*             pool  = init->pointer;
+    thread_pool_sizes_cache_t* sizes = init->sizes_cache;
 
     //initialize the header
-    IFBThreadPoolHeader& header_ref   = pool->header;
+    thread_pool_header_t& header_ref  = pool->header;
     header_ref.memory.start           = args->thread_pool_memory.start;
     header_ref.memory.size            = args->thread_pool_memory.size;
     header_ref.thread_count           = args->thread_count;
@@ -145,16 +148,16 @@ ifb_thread::pool_init_step_3_set_header(
 }
 
 inline void 
-ifb_thread::pool_init_step_4_set_handles(
-    IFBThreadPoolInit* init,
-    ifb::b8&             result_ref) {
+threads::pool_init_step_4_set_handles(
+    thread_pool_init_t* init,
+    b8&             result_ref) {
         
     if (!result_ref) return;
 
     //get the pointers
-    IFBThreadPoolArgs*       args  = init->args;
-    IFBThreadPoolSizesCache* sizes = init->sizes_cache;
-    IFBThreadPool*           pool  = init->pointer;
+    thread_pool_args_t*       args  = init->args;
+    thread_pool_sizes_cache_t* sizes = init->sizes_cache;
+    thread_pool_t*           pool  = init->pointer;
 
     //calculate offsets
     const ifb::u16 offset_description_buffer         = sizes->memory.pool_struct_size;
@@ -165,7 +168,7 @@ ifb_thread::pool_init_step_4_set_handles(
     const ifb::u16 offset_array_affinity_mask        = sizes->memory.array_list_running_threads + offset_array_list_running_threads;
 
     //set handles
-    IFBThreadPoolOffsets& offsets = pool->offsets;
+    thread_pool_offsets_t& offsets = pool->offsets;
     offsets.description_buffer         = offset_description_buffer;
     offsets.memory_platform            = offset_memory_platform;
     offsets.memory_task                = offset_memory_task;
@@ -175,16 +178,16 @@ ifb_thread::pool_init_step_4_set_handles(
 }
 
 inline void 
-ifb_thread::pool_init_step_5_validate_pool(
-    IFBThreadPoolInit* init,
-    ifb::b8&             result_ref) {
+threads::pool_init_step_5_validate_pool(
+    thread_pool_init_t* init,
+    b8&             result_ref) {
 
     if (!result_ref) return;
 
     //get the pointers
-    IFBThreadPoolArgs*       args  = init->args;
-    IFBThreadPoolSizesCache* sizes = init->sizes_cache;
-    IFBThreadPool*           pool  = init->pointer;
+    thread_pool_args_t*       args  = init->args;
+    thread_pool_sizes_cache_t* sizes = init->sizes_cache;
+    thread_pool_t*           pool  = init->pointer;
 
     //validate header
     result_ref &= (pool->header.memory.start           == args->thread_pool_memory.start);
