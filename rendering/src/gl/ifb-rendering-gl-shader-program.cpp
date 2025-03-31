@@ -4,11 +4,11 @@
 
 
 inline const ifb::b8
-ifb_gl::shader_program_create(
+ifb::gl::shader_program_create(
     const ifb::u32                     shader_program_count,
-    const IFBGLIDShaderStageVertex*   shader_stage_array_vertex,
-    const IFBGLIDShaderStageFragment* shader_stage_array_fragment,
-          IFBGLIDShaderProgram*       shader_program_array) {
+    const gl_id_shader_stage_vertex_t*   shader_stage_array_vertex,
+    const gl_id_shader_stage_fragment_t* shader_stage_array_fragment,
+          gl_id_shader_program_t*       shader_program_array) {
 
     //sanity check
     ifb_macro_assert(shader_program_count        != 0);
@@ -27,7 +27,7 @@ ifb_gl::shader_program_create(
         ++shader_program_index) {
     
         //get the current shader program reference and stage ids
-        IFBGLIDShaderProgram& shader_program_ref       = shader_program_array       [shader_program_index]; 
+        gl_id_shader_program_t& shader_program_ref       = shader_program_array       [shader_program_index]; 
         const GLuint          shader_stage_id_vertex   = shader_stage_array_vertex  [shader_program_index].gl_id;
         const GLuint          shader_stage_id_fragment = shader_stage_array_fragment[shader_program_index].gl_id;
 
@@ -60,9 +60,9 @@ ifb_gl::shader_program_create(
 }
 
 inline const ifb::b8
-ifb_gl::shader_program_delete(
+ifb::gl::shader_program_delete(
     const ifb::u32               shader_program_count,
-    const IFBGLIDShaderProgram* shader_program_array) {
+    const gl_id_shader_program_t* shader_program_array) {
 
     //sanity check
     ifb_macro_assert(shader_program_count != 0);
@@ -89,8 +89,8 @@ ifb_gl::shader_program_delete(
 }
 
 inline const ifb::b8 
-ifb_gl::shader_program_set_active(
-    const IFBGLIDShaderProgram shader_program) {
+ifb::gl::shader_program_set_active(
+    const gl_id_shader_program_t shader_program) {
 
     glUseProgram(shader_program.gl_id);
 

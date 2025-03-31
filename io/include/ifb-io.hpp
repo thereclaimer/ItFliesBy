@@ -23,7 +23,7 @@ struct IFBIO16File          : IFBHND16 { };
 /**********************************************************************************/
 
 struct IFBFileTableArgs {
-    IFBMemory memory;
+    memory_t memory;
     ifb::u32    file_count;
     ifb::u32    file_stride_path;
     ifb::u32    file_stride_context;

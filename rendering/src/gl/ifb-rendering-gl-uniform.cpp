@@ -3,11 +3,11 @@
 #include "ifb-rendering-gl.hpp"
 
 inline const ifb::b8 
-ifb_gl::uniform_get_locations_in_shader_program(
-    const IFBGLIDShaderProgram program,
+ifb::gl::uniform_get_locations_in_shader_program(
+    const gl_id_shader_program_t program,
     const ifb::u32               uniform_count,
     const ifb::utf8**            uniform_names,
-          IFBGLIDUniform*      uniform_array) {
+          gl_id_uniform*      uniform_array) {
 
     //sanity check
     ifb_macro_assert(program.gl_id != GL_ZERO);
@@ -26,7 +26,7 @@ ifb_gl::uniform_get_locations_in_shader_program(
         ++uniform_index) {
 
         //get the current uniform reference and name
-        IFBGLIDUniform& uniform_ref  = uniform_array[uniform_index];  
+        gl_id_uniform& uniform_ref  = uniform_array[uniform_index];  
         const ifb::utf8* uniform_name = uniform_names[uniform_index];
 
         //query for the uniform location
@@ -45,8 +45,8 @@ ifb_gl::uniform_get_locations_in_shader_program(
 }
 
 inline const ifb::b8 
-ifb_gl::uniform_update_u32(
-    const IFBGLIDUniformU32 uniform,     
+ifb::gl::uniform_update_u32(
+    const gl_id_uniform_u32_t uniform,     
     const ifb::u32           count,
     const ifb::u32*          u32) {
 
@@ -61,8 +61,8 @@ ifb_gl::uniform_update_u32(
 }
 
 inline const ifb::b8 
-ifb_gl::uniform_update_f32(
-    const IFBGLIDUniformF32 uniform,     
+ifb::gl::uniform_update_f32(
+    const gl_id_uniform_f32_t uniform,     
     const ifb::u32           count,
     const ifb::f32*          f32) {
 
@@ -77,8 +77,8 @@ ifb_gl::uniform_update_f32(
 }
 
 inline const ifb::b8 
-ifb_gl::uniform_update_vec2(
-    const IFBGLIDUniformVec2 uniform,
+ifb::gl::uniform_update_vec2(
+    const gl_id_uniform_vec2_t uniform,
     const ifb::u32            count,
     const ifb::vec2_t*           vec2) {
 
@@ -93,8 +93,8 @@ ifb_gl::uniform_update_vec2(
 }
 
 inline const ifb::b8 
-ifb_gl::uniform_update_vec3(
-    const IFBGLIDUniformVec3 uniform,
+ifb::gl::uniform_update_vec3(
+    const gl_id_uniform_vec3_t uniform,
     const ifb::u32            count,
     const ifb::vec3_t*           vec3) {
 
@@ -109,8 +109,8 @@ ifb_gl::uniform_update_vec3(
 }
 
 inline const ifb::b8 
-ifb_gl::uniform_update_mat3(
-    const IFBGLIDUniformMat3 uniform,
+ifb::gl::uniform_update_mat3(
+    const gl_id_uniform_mat3_t uniform,
     const ifb::u32            count,
     const ifb::mat3_t*           mat3) {
 

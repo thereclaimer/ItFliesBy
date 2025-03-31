@@ -14,7 +14,7 @@ struct IFBEngineStack;
 struct IFBEngineReservation;
 
 //sizes
-struct IFBMemorySizes;
+struct memory_tSizes;
 
 //handles
 typedef ifb::u16 IFBEngineArena;
@@ -58,7 +58,7 @@ struct IFBEngineMemory {
 
 namespace ifb_engine {
 
-    IFBEngineMemory* memory_allocate (const IFBMemory& stack_memory);    
+    IFBEngineMemory* memory_allocate (const memory_t& stack_memory);    
 }
 
 /**********************************************************************************/
@@ -95,7 +95,7 @@ namespace ifb_engine {
     IFB_ENGINE_MEMORY_SIZE_ARENA_HANDLE_ARRAY +   \
     IFB_ENGINE_MEMORY_SIZE_STRUCT
 
-struct IFBMemorySizes {
+struct memory_tSizes {
     ifb::u32 gb_reservation;
     ifb::u32 kb_arena;
     ifb::u32 singleton_count;
@@ -111,7 +111,7 @@ struct IFBMemorySizes {
 
 namespace ifb_engine {
 
-    ifb_global constexpr IFBMemorySizes _global_memory_sizes = {
+    ifb_global constexpr memory_tSizes _global_memory_sizes = {
         IFB_ENGINE_MEMORY_SIZE_GB_RESERVATION,
         IFB_ENGINE_MEMORY_SIZE_KB_ARENA,
         IFB_ENGINE_MEMORY_SIZE_SINGLETON_COUNT,

@@ -8,7 +8,7 @@
 
 ifb_internal IFBEngineMemory* 
 ifb_engine::memory_allocate(
-    const IFBMemory& stack_memory) {
+    const memory_t& stack_memory) {
 
     //create stack handle 
     IFBMEMStack global_stack_handle = ifb_memory::stack_create(stack_memory);

@@ -31,7 +31,7 @@ ifb_hash_table::memory_size(
 
 const ifb::u32
 ifb_hash_table::commit_to_arena_relative(
-          IFBMemoryArena* ptr_arena,
+          memory_tArena* ptr_arena,
     const ifb::u32          element_count,
     const ifb::u32          element_size,
     const ifb::u32          key_length_max) {
@@ -72,7 +72,7 @@ ifb_hash_table::commit_to_arena_relative(
 
 IFBHashTable*
 ifb_hash_table::commit_to_arena_absolute(
-          IFBMemoryArena* ptr_arena,
+          memory_tArena* ptr_arena,
     const ifb::u32          element_count,
     const ifb::u32          element_size,
     const ifb::u32          key_length_max) {
@@ -109,7 +109,7 @@ ifb_hash_table::commit_to_arena_absolute(
 
 IFBHashTable*
 ifb_hash_table::load_from_arena(
-          IFBMemoryArena* ptr_arena,
+          memory_tArena* ptr_arena,
     const ifb::u32          offset) {
 
     IFBHashTable* ptr_hash_table = (IFBHashTable*)ifb_memory::arena_get_pointer(ptr_arena,offset);

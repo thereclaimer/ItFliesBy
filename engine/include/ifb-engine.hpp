@@ -38,7 +38,7 @@ typedef IFBEngineContext* IFBENGContext;
 /**********************************************************************************/
 
 struct IFBEngineContextArgs {
-    IFBMemory       global_stack_memory;
+    memory_t       global_stack_memory;
     IFBPlatformAPI* platform_api;
 };
 

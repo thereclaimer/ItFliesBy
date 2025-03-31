@@ -8,7 +8,7 @@
 
 IFBStack*    
 ifb_stack::arena_load_pointer(
-          IFBMemoryArena* ptr_arena,
+          memory_tArena* ptr_arena,
     const ifb::u32          arena_offset) {
 
     IFBStack* pointer = (IFBStack*)ifb_memory::arena_get_pointer(
@@ -22,7 +22,7 @@ ifb_stack::arena_load_pointer(
 
 IFBStack*    
 ifb_stack::arena_commit_absolute(
-          IFBMemoryArena* ptr_arena,
+          memory_tArena* ptr_arena,
     const ifb::u32          stack_size) {
 
     //calculate the commit size
@@ -40,7 +40,7 @@ ifb_stack::arena_commit_absolute(
 
 const ifb::u32 
 ifb_stack::arena_commit_relative(
-          IFBMemoryArena* ptr_arena,
+          memory_tArena* ptr_arena,
     const ifb::u32          stack_size) {
 
     //calculate the commit size

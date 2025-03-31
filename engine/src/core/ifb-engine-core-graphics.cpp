@@ -11,7 +11,7 @@ ifb_engine::graphics_manager_initialize(
     ifb::b8 result = true;
 
     //memory for tracking allcoations
-    IFBMemory memory;
+    memory_t memory;
 
     //window memory
     memory.size  = ifb_graphics::window_memory_size(IFB_ENGINE_GRAPHICS_WINDOW_TITLE_LENGTH);

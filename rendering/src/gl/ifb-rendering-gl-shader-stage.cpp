@@ -3,11 +3,11 @@
 #include "ifb-rendering-gl.hpp"
 
 inline const ifb::b8
-ifb_gl::shader_stage_compile(
+ifb::gl::shader_stage_compile(
     const GLuint              shader_stage_type,
     const ifb::u32              shader_stage_count,
     const ifb::utf8**           shader_stage_buffers,
-          IFBGLIDShaderStage* shader_stage_array) {
+          gl_id_shader_stage_t* shader_stage_array) {
 
     //sanity check
     ifb_macro_assert(shader_stage_count   != 0);
@@ -25,7 +25,7 @@ ifb_gl::shader_stage_compile(
         ++shader_stage_index) {
 
         //get the current shader stage and buffer
-        IFBGLIDShaderStage& shader_stage_ref    = shader_stage_array[shader_stage_index];
+        gl_id_shader_stage_t& shader_stage_ref    = shader_stage_array[shader_stage_index];
         const ifb::utf8*     shader_stage_buffer = shader_stage_buffers[shader_stage_index];
         
         //compile the shader stage
@@ -46,12 +46,12 @@ ifb_gl::shader_stage_compile(
 }
 
 inline const ifb::b8
-ifb_gl::shader_stage_compile_vertex(
+ifb::gl::shader_stage_compile_vertex(
     const ifb::u32                   shader_stage_vertex_count,
     const ifb::utf8**                shader_stage_vertex_buffers,
-          IFBGLIDShaderStageVertex* shader_stage_vertex_array) {
+          gl_id_shader_stage_vertex_t* shader_stage_vertex_array) {
 
-    const ifb::b8 result = ifb_gl::shader_stage_compile(
+    const ifb::b8 result = ifb::gl::shader_stage_compile(
         GL_VERTEX_SHADER,
         shader_stage_vertex_count,
         shader_stage_vertex_buffers,
@@ -61,12 +61,12 @@ ifb_gl::shader_stage_compile_vertex(
 }
 
 inline const ifb::b8
-ifb_gl::shader_stage_compile_fragment(
+ifb::gl::shader_stage_compile_fragment(
     const ifb::u32                     shader_stage_fragment_count,
     const ifb::utf8**                  shader_stage_fragment_buffers,
-          IFBGLIDShaderStageFragment* shader_stage_fragment_array) {
+          gl_id_shader_stage_fragment_t* shader_stage_fragment_array) {
 
-    const ifb::b8 result = ifb_gl::shader_stage_compile(
+    const ifb::b8 result = ifb::gl::shader_stage_compile(
         GL_FRAGMENT_SHADER,
         shader_stage_fragment_count,
         shader_stage_fragment_buffers,
@@ -76,9 +76,9 @@ ifb_gl::shader_stage_compile_fragment(
 }
 
 inline const ifb::b8
-ifb_gl::shader_stage_delete(
+ifb::gl::shader_stage_delete(
     const ifb::u32             shader_stage_count,
-    const IFBGLIDShaderStage* shader_stage_array) {
+    const gl_id_shader_stage_t* shader_stage_array) {
 
     ifb_macro_assert(shader_stage_count != 0);
     ifb_macro_assert(shader_stage_array != NULL);

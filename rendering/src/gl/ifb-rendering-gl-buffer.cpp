@@ -2,11 +2,10 @@
 
 #include "ifb-rendering-gl.hpp"
 
-
 inline const ifb::b8 
-ifb_gl::buffer_create(
+ifb::gl::buffer_create(
     const ifb::u32        buffer_count, 
-          IFBGLIDBuffer* buffer_array) {
+          gl_id_tBuffer* buffer_array) {
 
     //sanity check
     ifb_macro_assert(buffer_count != 0);
@@ -27,11 +26,11 @@ ifb_gl::buffer_create(
 }
 
 inline const ifb::b8 
-ifb_gl::buffer_create_vertex(
+ifb::gl::buffer_create_vertex(
     const ifb::u32              vertex_buffer_count,
-          IFBGLIDBufferVertex* vertex_buffer_array) {
+          gl_id_buffer_vertex_t* vertex_buffer_array) {
 
-    const ifb::b8 result = ifb_gl::buffer_create(
+    const ifb::b8 result = ifb::gl::buffer_create(
         vertex_buffer_count,
         vertex_buffer_array);
 
@@ -39,11 +38,11 @@ ifb_gl::buffer_create_vertex(
 }
 
 inline const ifb::b8 
-ifb_gl::buffer_create_element(
+ifb::gl::buffer_create_element(
     const ifb::u32               element_buffer_count,
-          IFBGLIDBufferElement* element_buffer_array) {
+          gl_id_buffer_element_t* element_buffer_array) {
     
-    const ifb::b8 result = ifb_gl::buffer_create(
+    const ifb::b8 result = ifb::gl::buffer_create(
         element_buffer_count,
         element_buffer_array);
 
@@ -51,9 +50,9 @@ ifb_gl::buffer_create_element(
 }
 
 inline const ifb::b8
-ifb_gl::buffer_data_upload_vertex(
+ifb::gl::buffer_data_upload_vertex(
     const ifb::u32              vertex_buffer_count,
-    const IFBGLIDBufferVertex* vertex_buffer_array,
+    const gl_id_buffer_vertex_t* vertex_buffer_array,
     const ifb::u32*             vertex_buffer_size_array,
     const void*            vertex_buffer_data) {
 
@@ -100,9 +99,9 @@ ifb_gl::buffer_data_upload_vertex(
 }
 
 inline const ifb::b8
-ifb_gl::buffer_data_upload_element(
+ifb::gl::buffer_data_upload_element(
     const ifb::u32               element_buffer_count,
-    const IFBGLIDBufferElement* element_buffer_array,
+    const gl_id_buffer_element_t* element_buffer_array,
     const ifb::u32*              element_buffer_size_array,
     const void*             element_buffer_data) {
 
