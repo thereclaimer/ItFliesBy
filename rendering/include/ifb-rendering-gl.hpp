@@ -56,17 +56,17 @@ enum gl_viewport_update_flags_e_ {
 typedef u32 gl_viewport_update_flags_t;
 
 struct gl_viewport_t {
-    gl_viewport_update_flags_t   flags;
-    position_t                   position;
-    dimensions_t                 dimensions;
-    graphics::color_normalized_t clear_color;
+    gl_viewport_update_flags_t  flags;
+    position_t                  position;
+    dimensions_t                dimensions;
+    graphics_color_normalized_t clear_color;
 };
 
 struct gl_viewport_args_t {
-    memory_t                     memory;
-    position_t                   position;
-    dimensions_t                 dimensions;
-    graphics::color_normalized_t clear_color;
+    memory_t                    memory;
+    position_t                  position;
+    dimensions_t                dimensions;
+    graphics_color_normalized_t clear_color;
 };
 namespace ifb::gl {
 
