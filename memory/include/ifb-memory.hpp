@@ -8,128 +8,134 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-struct IFBMemoryStack;
-struct IFBMemoryReservation;
-struct IFBMemoryArena;
+namespace ifb::memory {
 
-typedef IFBMemoryStack*       IFBMEMStack;       
-typedef IFBMemoryReservation* IFBMEMReservation;
-typedef IFBMemoryArena*       IFBMEMArena; 
+    struct mem_stack_t;
+    struct mem_reservation_t;
+    struct mem_arena_t;
 
-struct IFBMemory {
-    ifb::addr start;
-    ifb::u64  size;
+    typedef mem_stack_t*       hnd_mem_stack_t;       
+    typedef mem_reservation_t* hnd_mem_reservation_t;
+    typedef mem_arena_t*       hnd_mem_arena_t; 
 };
 
 /**********************************************************************************/
 /* STACK                                                                          */
 /**********************************************************************************/
 
-namespace ifb_memory {
+namespace ifb::memory {
 
-    IFBMEMStack       stack_create                      (const IFBMemory& stack_memory);
-    const ifb::u32      stack_push_bytes_relative         (IFBMEMStack stack_handle, const ifb::u32 size);
-    const ifb::ptr      stack_push_bytes_absolute_pointer (IFBMEMStack stack_handle, const ifb::u32 size);
-    const ifb::addr     stack_push_bytes_absolute_address (IFBMEMStack stack_handle, const ifb::u32 size);
-    const ifb::b8       stack_pull_bytes                  (IFBMEMStack stack_handle, const ifb::u32 size);
-    const ifb::ptr      stack_get_pointer                 (IFBMEMStack stack_handle, const ifb::u32 offset);
+    hnd_mem_stack_t stack_create                      (const memory_t& stack_memory);
+    const u32       stack_push_bytes_relative         (hnd_mem_stack_t stack_handle, const u32 size);
+    const ptr       stack_push_bytes_absolute_pointer (hnd_mem_stack_t stack_handle, const u32 size);
+    const addr      stack_push_bytes_absolute_address (hnd_mem_stack_t stack_handle, const u32 size);
+    const b8        stack_pull_bytes                  (hnd_mem_stack_t stack_handle, const u32 size);
+    const ptr       stack_get_pointer                 (hnd_mem_stack_t stack_handle, const u32 offset);
 };
 
 /**********************************************************************************/
 /* RESERVATION                                                                    */
 /**********************************************************************************/
 
-namespace ifb_memory {
+namespace ifb::memory {
 
-    IFBMEMReservation
+    hnd_mem_reservation_t
     reserve_system_memory(
-              IFBMEMStack stack_handle,
-        const ifb::u64      size_reservation,
-        const ifb::u32      size_arena);
+              hnd_mem_stack_t stack_handle,
+        const u64         size_reservation,
+        const u32         size_arena);
 
 
-    const ifb::b8 release_system_memory (IFBMEMReservation reservation_handle);
+    const b8 release_system_memory (hnd_mem_reservation_t reservation_handle);
 };
 
 /**********************************************************************************/
 /* ARENA                                                                          */
 /**********************************************************************************/
 
-namespace ifb_memory {
+namespace ifb::memory {
 
-    IFBMEMArena   arena_commit                      (IFBMEMReservation reservation_handle);
-
-    const ifb::b8   arena_decommit                    (IFBMEMArena arena_handle);
-    const ifb::b8   arena_reset                       (IFBMEMArena arena_handle);
-    const ifb::u32  arena_push_bytes_relative         (IFBMEMArena arena_handle, const ifb::u32 size);
-    const ifb::ptr  arena_push_bytes_absolute_pointer (IFBMEMArena arena_handle, const ifb::u32 size);
-    const ifb::addr arena_push_bytes_absolute_address (IFBMEMArena arena_handle, const ifb::u32 size);
-    const ifb::b8   arena_pull_bytes                  (IFBMEMArena arena_handle, const ifb::u32 size);
-    const ifb::ptr  arena_get_pointer                 (IFBMEMArena arena_handle, const ifb::u32 offset);
+    hnd_mem_arena_t arena_commit                      (hnd_mem_reservation_t reservation_handle);
+    const b8        arena_decommit                    (hnd_mem_arena_t arena_handle);
+    const b8        arena_reset                       (hnd_mem_arena_t arena_handle);
+    const u32       arena_push_bytes_relative         (hnd_mem_arena_t arena_handle, const u32 size);
+    const ptr       arena_push_bytes_absolute_pointer (hnd_mem_arena_t arena_handle, const u32 size);
+    const addr      arena_push_bytes_absolute_address (hnd_mem_arena_t arena_handle, const u32 size);
+    const b8        arena_pull_bytes                  (hnd_mem_arena_t arena_handle, const u32 size);
+    const ptr       arena_get_pointer                 (hnd_mem_arena_t arena_handle, const u32 offset);
 };
 
 /**********************************************************************************/
 /* UTILITIES                                                                      */
 /**********************************************************************************/
 
-namespace ifb_memory {
+namespace ifb::memory {
 
-    const ifb::ptr  get_pointer (const ifb::addr    start,  const ifb::u32 offset);
-    const ifb::ptr  get_pointer (const IFBMemory& memory, const ifb::u32 offset);
-          void zero_buffer (const IFBMemory& memory);
+    const ptr  get_pointer (const addr      start,  const u32 offset);
+    const ptr  get_pointer (const memory_t& memory, const u32 offset);
+          void zero_buffer (const memory_t& memory);
 };
 
-inline const ifb::ptr
-ifb_memory::get_pointer(
-    const ifb::addr start,
-    const ifb::u32  offset) {
+/**********************************************************************************/
+/* MACROS                                                                         */
+/**********************************************************************************/
 
-    const ifb::addr address = start + offset;
-    const ifb::ptr  pointer = (address != 0) ? (ifb::ptr)address : NULL;
+#define ifb_memory_macro_stack_push_struct_absolute(stack,struct) (struct*)ifb::memory::stack_push_bytes_absolute_pointer(stack,ifb_macro_align_size_struct(struct))
+#define ifb_memory_macro_stack_push_struct_relative(stack,struct)          ifb::memory::stack_push_bytes_relative        (stack,ifb_macro_align_size_struct(struct))
+
+/**********************************************************************************/
+/* DEFINITIONS                                                                    */
+/**********************************************************************************/
+
+using namespace ifb;
+using namespace ifb::memory;
+
+namespace ifb_memory=ifb::memory;
+
+inline const ptr
+ifb_memory::get_pointer(
+    const addr start,
+    const u32  offset) {
+
+    const addr address = start + offset;
+    const ptr  pointer = (address != 0) ? (ptr)address : NULL;
 
     return(pointer);
 }
 
 inline const ifb::ptr 
 ifb_memory::get_pointer(
-    const IFBMemory& memory,
-    const ifb::u32     offset) {
+    const memory_t& memory,
+    const u32       offset) {
 
-    ifb::b8 is_valid = true;
+    b8 is_valid = true;
     is_valid &= (memory.start != 0);
     is_valid &= (memory.size   >  offset);
 
-    const ifb::addr address = memory.start + offset;
-    const ifb::ptr  pointer = is_valid ? (ifb::ptr)address : NULL;
+    const addr address = memory.start + offset;
+    const ptr  pointer = is_valid ? (ptr)address : NULL;
 
     return(pointer);
 }
 
 inline void
 ifb_memory::zero_buffer(
-    const IFBMemory& memory) {
+    const memory_t& memory) {
 
-    ifb::b8 is_valid = true;
+    b8 is_valid = true;
     is_valid &= (memory.start != 0);
     is_valid &= (memory.size  != 0);
     ifb_macro_assert(is_valid);
 
-    ifb::byte* buffer = (ifb::byte*)memory.start;
+    byte* buffer = (byte*)memory.start;
 
     for (
-        ifb::u32 index = 0;
-               index < memory.size;
-             ++index) {
+        u32 index = 0;
+            index < memory.size;
+          ++index) {
         
         buffer[index] = 0;
     }
 }
-
-/**********************************************************************************/
-/* MACROS                                                                         */
-/**********************************************************************************/
-
-#define ifb_memory_macro_stack_push_struct_absolute(stack,struct) (struct*)ifb_memory::stack_push_bytes_absolute_pointer(stack,ifb_macro_align_size_struct(struct))
-#define ifb_memory_macro_stack_push_struct_relative(stack,struct)          ifb_memory::stack_push_bytes_relative        (stack,ifb_macro_align_size_struct(struct))
 
 #endif //IFB_MEMORY_HPP

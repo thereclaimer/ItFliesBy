@@ -51,6 +51,7 @@ namespace ifb {
 
 namespace ifb {
 
+    struct memory_t;
     struct vec2_t;
     struct vec3_t;
     struct mat3_t;
@@ -60,6 +61,18 @@ namespace ifb {
     struct dimensions_t;
     struct position_t;
     struct dimensions_and_position_t;
+};
+
+/**********************************************************************************/
+/* FORWARD DECLARATIONS                                                           */
+/**********************************************************************************/
+
+namespace ifb {
+
+    struct memory_t {
+        addr start;
+        u64  size;
+    };
 };
 
 /**********************************************************************************/
