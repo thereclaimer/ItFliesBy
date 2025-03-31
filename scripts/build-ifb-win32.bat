@@ -39,8 +39,9 @@ if not exist %path_build%\obj mkdir %path_build%\obj
 :: COMPILER ARGUMENTS
 ::----------------------------------------------------------------
 
-@set cl_flags=      /Zi ^
-                    /MD ^
+@set cl_flags=      /Zi        ^
+                    /MD        ^
+                    /std:c++17 ^
                     /EHsc
 
 @set cl_output=     /Fo:%path_build%\obj\ItFliesBy.obj ^

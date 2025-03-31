@@ -6,7 +6,7 @@
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-namespace ifb_win32 {
+namespace ifb::win32 {
 
     const ifb::b8
     registry_open_key_readonly_base(
@@ -20,13 +20,13 @@ namespace ifb_win32 {
 /**********************************************************************************/
 
 inline const ifb::b8 
-ifb_win32::registry_key_open_read_only_classes_root(
+win32::registry_key_open_read_only_classes_root(
     const LPCSTR key_path,
     HKEY&  key_ref) {
 
     const HKEY key_root = HKEY_CLASSES_ROOT;
 
-    const ifb::b8 result = ifb_win32::registry_open_key_readonly_base(
+    const ifb::b8 result = win32::registry_open_key_readonly_base(
         key_root,
         key_path,
         key_ref);
@@ -35,13 +35,13 @@ ifb_win32::registry_key_open_read_only_classes_root(
 }
 
 inline const ifb::b8 
-ifb_win32::registry_key_open_read_only_current_user(
+win32::registry_key_open_read_only_current_user(
     const LPCSTR key_path,
     HKEY&  key_ref) {
 
     const HKEY key_root = HKEY_CURRENT_USER;
 
-    const ifb::b8 result = ifb_win32::registry_open_key_readonly_base(
+    const ifb::b8 result = win32::registry_open_key_readonly_base(
         key_root,
         key_path,
         key_ref);
@@ -50,13 +50,13 @@ ifb_win32::registry_key_open_read_only_current_user(
 }
 
 inline const ifb::b8 
-ifb_win32::registry_key_open_read_only_local_machine(
+win32::registry_key_open_read_only_local_machine(
     const LPCSTR key_path,
     HKEY&  key_ref) {
 
     const HKEY key_root = HKEY_LOCAL_MACHINE;
 
-    const ifb::b8 result = ifb_win32::registry_open_key_readonly_base(
+    const ifb::b8 result = win32::registry_open_key_readonly_base(
         key_root,
         key_path,
         key_ref);
@@ -65,13 +65,13 @@ ifb_win32::registry_key_open_read_only_local_machine(
 }
 
 inline const ifb::b8 
-ifb_win32::registry_key_open_read_only_users(
+win32::registry_key_open_read_only_users(
     const LPCSTR key_path,
     HKEY&  key_ref) {
 
     const HKEY key_root = HKEY_USERS;
 
-    const ifb::b8 result = ifb_win32::registry_open_key_readonly_base(
+    const ifb::b8 result = win32::registry_open_key_readonly_base(
         key_root,
         key_path,
         key_ref);
@@ -80,13 +80,13 @@ ifb_win32::registry_key_open_read_only_users(
 }
 
 inline const ifb::b8 
-ifb_win32::registry_key_open_read_only_current_config(
+win32::registry_key_open_read_only_current_config(
     const LPCSTR key_path,
     HKEY&  key_ref) {
 
     const HKEY key_root = HKEY_CURRENT_CONFIG;
 
-    const ifb::b8 result = ifb_win32::registry_open_key_readonly_base(
+    const ifb::b8 result = win32::registry_open_key_readonly_base(
         key_root,
         key_path,
         key_ref);
@@ -99,7 +99,7 @@ ifb_win32::registry_key_open_read_only_current_config(
 /**********************************************************************************/
 
 inline const ifb::b8
-ifb_win32::registry_key_close (
+win32::registry_key_close (
     const HKEY key) {
 
     const LRESULT result = RegCloseKey(key);
@@ -112,7 +112,7 @@ ifb_win32::registry_key_close (
 /**********************************************************************************/
 
 inline const ifb::b8
-ifb_win32::registry_key_read_value_u32(
+win32::registry_key_read_value_u32(
     const HKEY    key,
     const LPCSTR  value_name,
           ifb::u32& value_ref) {
@@ -133,8 +133,8 @@ ifb_win32::registry_key_read_value_u32(
 }
 
 inline const ifb::b8
-ifb_win32::registry_key_read_value_cpu_speed_mhz(
-    IFBWin32RegKeyU32& key_u32) {
+win32::registry_key_read_value_cpu_speed_mhz(
+    win32_reg_key_u32_t& key_u32) {
 
     ifb::u32 result = true;
     result &= ifb_win32_macro_registry_key_cpu_0               (key_u32.key);
@@ -147,7 +147,7 @@ ifb_win32::registry_key_read_value_cpu_speed_mhz(
 /**********************************************************************************/
 
 inline const ifb::b8
-ifb_win32::registry_open_key_readonly_base(
+win32::registry_open_key_readonly_base(
     const HKEY    key_root,
           LPCSTR  key_path,
           HKEY&   key_ref) {
