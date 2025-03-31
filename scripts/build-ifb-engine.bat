@@ -54,6 +54,7 @@ if not exist %dir_vcpkg% call vcpkg install
                     /Zi                        ^
                     /LD                        ^
                     /MD                        ^
+                    /std:c++17                 ^
                     /EHsc
 
 @set cl_out=        /Fe:%file_path_dll%        ^

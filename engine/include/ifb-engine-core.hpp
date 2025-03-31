@@ -3,43 +3,42 @@
 
 #include "ifb-engine.hpp"
 
+namespace ifb {
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
 //engine core
-struct IFBEngineCore;
-struct IFBEngineCoreArenas;
-
-//managers
-struct IFBEngineGraphicsManager;
-struct IFBEngineFileManager;
-struct IFBEngineThreadManager;
+struct engine_core_t;
+struct engine_core_arenas_t;
+struct engine_core_graphics_t;
+struct engine_core_files_t;
+struct engine_core_threads_t;
 
 /**********************************************************************************/
 /* ENGINE CORE                                                                    */
 /**********************************************************************************/
 
-struct IFBEngineCore {
-    IFBEngineMemory*          memory;
-    IFBEngineGraphicsManager* graphics;
-    IFBEngineFileManager*     files;
-    IFBEngineThreadManager*   threads;
+struct engine_core_t {
+    engine_memory_t*        memory;
+    engine_core_graphics_t* graphics;
+    engine_core_files_t*    files;
+    engine_core_threads_t*  threads;
 };
 
-namespace ifb_engine {
+namespace engine {
 
-    const ifb::b8 core_initialize   (IFBEngineCore* core);
-    const ifb::b8 core_startup      (IFBEngineCore* core);
-    const ifb::b8 core_frame_start  (IFBEngineCore* core);
-    const ifb::b8 core_frame_render (IFBEngineCore* core);
-    const ifb::b8 core_should_quit  (IFBEngineCore* core);
+    const b8 core_initialize   (engine_core_t* core);
+    const b8 core_startup      (engine_core_t* core);
+    const b8 core_frame_start  (engine_core_t* core);
+    const b8 core_frame_render (engine_core_t* core);
+    const b8 core_should_quit  (engine_core_t* core);
 };
 
-#define IFB_ENGINE_CORE_STRUCT_SIZE ifb_macro_align_size_struct(IFBEngineCore)
+#define IFB_ENGINE_CORE_STRUCT_SIZE ifb_macro_align_size_struct(engine_core_t)
 
 /**********************************************************************************/
-/* GRAPHICS MANAGER                                                               */
+/* GRAPHICS                                                                       */
 /**********************************************************************************/
 
 #define IFB_ENGINE_GRAPHICS_WINDOW_TITLE        "It Flies By (DEBUG)"
@@ -47,58 +46,58 @@ namespace ifb_engine {
 #define IFB_ENGINE_GRAPHICS_WINDOW_INIT_WIDTH   1024
 #define IFB_ENGINE_GRAPHICS_WINDOW_INIT_HEIGHT  768
 
-struct IFBEngineGraphicsManager {
-    IFBGFXWindow window_handle;
+struct engine_core_graphics_t {
+    graphics_window_h window_handle;
 };
 
-namespace ifb_engine {
+namespace engine {
 
-    const ifb::b8 graphics_manager_initialize             (IFBEngineGraphicsManager* graphics_manager, IFBEngineMemory* engine_memory);
-    const ifb::b8 graphics_manager_create_and_show_window (IFBEngineGraphicsManager* graphics_manager);
-    const ifb::b8 graphics_manager_frame_start            (IFBEngineGraphicsManager* graphics_manager);
-    const ifb::b8 graphics_manager_frame_render           (IFBEngineGraphicsManager* graphics_manager);
-    const ifb::b8 graphics_manager_window_quit_received   (IFBEngineGraphicsManager* graphics_manager);
+    const b8 core_graphics_initialize             (engine_core_graphics_t* graphics, engine_memory_t* engine_memory);
+    const b8 core_graphics_create_and_show_window (engine_core_graphics_t* graphics);
+    const b8 core_graphics_frame_start            (engine_core_graphics_t* graphics);
+    const b8 core_graphics_frame_render           (engine_core_graphics_t* graphics);
+    const b8 core_graphics_window_quit_received   (engine_core_graphics_t* graphics);
 };
 
 /**********************************************************************************/
-/* FILE MANAGER                                                                   */
+/* FILES                                                                          */
 /**********************************************************************************/
 
-struct IFBEngineFileManager {
-    ifb::u32 x;
+struct engine_files_t {
+    u32 x;
 };
 
-
-
 /**********************************************************************************/
-/* THREAD MANAGER                                                                 */
+/* THREADS                                                                        */
 /**********************************************************************************/
 
-struct IFBEngineThreadManager {
-    ifb::u32 x;
+struct engine_threads_t {
+    u32 x;
 };
 
 /**********************************************************************************/
 /* GLOBALS                                                                        */
 /**********************************************************************************/
 
-struct IFBEngineCoreGlobals {
-    ifb::u32   core_struct_size;
-    ifb::u32   window_init_width;
-    ifb::u32   window_init_height;
-    ifb::u32   window_title_length;
-    ifb::utf8* window_title;
+struct engine_core_globals_t {
+    u32   core_struct_size;
+    u32   window_init_width;
+    u32   window_init_height;
+    u32   window_title_length;
+    utf8* window_title;
 };
 
-namespace ifb_engine {
+namespace engine {
 
-    ifb_global IFBEngineCoreGlobals _global_core = {
+    ifb_global engine_core_globals_t _globals_core = {
         IFB_ENGINE_CORE_STRUCT_SIZE,
         IFB_ENGINE_GRAPHICS_WINDOW_INIT_WIDTH,
         IFB_ENGINE_GRAPHICS_WINDOW_INIT_HEIGHT,
         IFB_ENGINE_GRAPHICS_WINDOW_TITLE_LENGTH,
         IFB_ENGINE_GRAPHICS_WINDOW_TITLE
     };
-};
+
+};//namespace ifb::engine
+};//namespace ifb
 
 #endif //IFB_ENGINE_SYSTEMS_HPP

@@ -4,88 +4,90 @@
 #include "ifb-engine-context.hpp"
 #include "ifb-engine-context-internal.cpp"
 
+using namespace ifb;
+
 // create/destroy
-ifb_engine_api IFBENGContext
-ifb_engine::context_create(
-    const IFBEngineContextArgs& args) {
+ifb_engine_api engine_context_h
+engine::context_create(
+    const engine_context_args_t& args) {
 
     //set the platform api
-    ifb_macro_assert(ifb_platform::set_api(args.platform_api));
+    ifb_macro_assert(platform::set_api(args.platform_api));
 
     //allocate memory
-    IFBEngineMemory* engine_memory = ifb_engine::memory_allocate(args.global_stack_memory);
+    engine_memory_t* engine_memory = engine::memory_allocate(args.global_stack_memory);
 
     //initialize the context
-    IFBEngineContext* engine_context = ifb_engine::memory_stack_get_context(engine_memory);
+    engine_context_t* engine_context = engine::memory_stack_get_context(engine_memory);
     engine_context->memory = engine_memory;
 
     //initialize the core
-    IFBEngineCore* core = ifb_engine::context_memory_push_core(engine_context);
-    ifb_engine::core_initialize(core);
+    engine_core_t* core = engine::context_memory_push_core(engine_context);
+    engine::core_initialize(core);
 
     //reset context memory
-    ifb_engine::context_memory_reset(engine_context);
+    engine::context_memory_reset(engine_context);
 
     //we're done
     return(engine_context);
 }
 
-ifb_engine_api const ifb::b8
-ifb_engine::context_destroy(
-    IFBEngineContext* engine_context) {
+ifb_engine_api const b8
+engine::context_destroy(
+    engine_context_t* engine_context) {
 
 
     return(false);
 }
     
 // startup/shutdown
-ifb_engine_api const ifb::b8
-ifb_engine::context_startup(
-    IFBEngineContext* engine_context){
+ifb_engine_api const b8
+engine::context_startup(
+    engine_context_t* engine_context){
 
     //result
-    ifb::b8 result = true;
+    b8 result = true;
 
     //get a new core reference
-    IFBEngineCore* core = ifb_engine::context_memory_push_core(engine_context);
+    engine_core_t* core = engine::context_memory_push_core(engine_context);
 
     //start core systems
-    result &= ifb_engine::core_startup(core);
+    result &= engine::core_startup(core);
 
     //free memory
-    ifb_engine::context_memory_reset(engine_context);
+    engine::context_memory_reset(engine_context);
 
     //we're done
     return(result);
 }
 
-ifb_engine_api const ifb::b8
-ifb_engine::context_shutdown(
-    IFBEngineContext* engine_context){
+ifb_engine_api const b8
+engine::context_shutdown(
+    engine_context_t* engine_context){
 
     return(false);
 }
 
 // rendering
-ifb_engine_api const ifb::b8 
-ifb_engine::context_main_loop (
-    IFBEngineContext* engine_context) {
+ifb_engine_api const b8 
+engine::context_main_loop (
+    engine_context_t* engine_context) {
 
     //get a new core reference
-    IFBEngineCore* core = ifb_engine::context_memory_push_core(engine_context);
+    engine_core_t* core = engine::context_memory_push_core(engine_context);
 
-    ifb::b8 result  = true;
-    ifb::b8 running = true;
+    b8 result  = true;
+    b8 running = true;
     while (result && running) {
 
-        result &= ifb_engine::core_frame_start  (core);
-        result &= ifb_engine::core_frame_render (core);
+        result &= engine::core_frame_start  (core);
+        result &= engine::core_frame_render (core);
 
-        running &= !ifb_engine::core_should_quit(core);
+        running &= !engine::core_should_quit(core);
     }
 
     //free memory
-    ifb_engine::context_memory_reset(engine_context);
+    engine::context_memory_reset(engine_context);
 
     //we're done
     return(result);

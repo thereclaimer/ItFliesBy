@@ -28,11 +28,11 @@ wWinMain(
     engine_args.platform_api              = ifb_win32::platform_api();
 
     //initialize the engine
-    const IFBENGContext engine_context = ifb_engine::context_create(engine_args);
+    const IFBENGContext engine_context = engine::context_create(engine_args);
 
     //engine lifetime
-    ifb_engine::context_startup   (engine_context);
-    ifb_engine::context_main_loop (engine_context);
-    ifb_engine::context_shutdown  (engine_context);
-    ifb_engine::context_destroy   (engine_context);
+    engine::context_startup   (engine_context);
+    engine::context_main_loop (engine_context);
+    engine::context_shutdown  (engine_context);
+    engine::context_destroy   (engine_context);
 }

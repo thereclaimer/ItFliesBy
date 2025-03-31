@@ -4,9 +4,9 @@
 #include "ifb-engine-memory.hpp"
 
 inline const ifb::b8
-ifb_engine::graphics_manager_initialize(
-    IFBEngineGraphicsManager* graphics_manager,
-    IFBEngineMemory*          engine_memory) {
+engine::core_graphics_initialize(
+    engine_core_graphics_t* graphics,
+    engine_memory_t*        engine_memory) {
 
     ifb::b8 result = true;
 
@@ -14,70 +14,70 @@ ifb_engine::graphics_manager_initialize(
     memory_t memory;
 
     //window memory
-    memory.size  = ifb_graphics::window_memory_size(IFB_ENGINE_GRAPHICS_WINDOW_TITLE_LENGTH);
-    memory.start = ifb_engine::memory_arena_push_bytes_absolute_address(
+    memory.size  = graphics::window_memory_size(IFB_ENGINE_GRAPHICS_WINDOW_TITLE_LENGTH);
+    memory.start = engine::memory_arena_push_bytes_absolute_address(
         engine_memory,
-        IFBEngineArena_Core_ManagerGraphics,
+        engine_memory_arena_e_core_graphics,
         memory.size);
 
-    graphics_manager->window_handle = ifb_graphics::window_memory_initialize(memory);
-    result &= (graphics_manager->window_handle != NULL);
+    graphics->window_handle = graphics::window_memory_initialize(memory);
+    result &= (graphics->window_handle != NULL);
 
     return(result);
 }
 
 
 inline const ifb::b8 
-ifb_engine::graphics_manager_create_and_show_window(
-    IFBEngineGraphicsManager* graphics_manager) {
+engine::core_graphics_create_and_show_window(
+    engine_core_graphics_t* graphics) {
 
     ifb::b8 result = true;
 
     //window args
-    IFBGraphicsWindowArgs args;
-    args.title        = ifb_engine::_global_core.window_title;
-    args.title_length = ifb_engine::_global_core.window_title_length;
-    args.dims.width   = ifb_engine::_global_core.window_init_width; 
-    args.dims.height  = ifb_engine::_global_core.window_init_height; 
+    graphics_window_args_t args;
+    args.title        = engine::_globals_core.window_title;
+    args.title_length = engine::_globals_core.window_title_length;
+    args.dims.width   = engine::_globals_core.window_init_width; 
+    args.dims.height  = engine::_globals_core.window_init_height; 
     args.pos.x        = 0;
     args.pos.y        = 0;
 
     //create the window
-    result &= ifb_graphics::window_create (graphics_manager->window_handle,args);
-    result &= ifb_graphics::window_show   (graphics_manager->window_handle);
+    result &= graphics::window_create (graphics->window_handle,args);
+    result &= graphics::window_show   (graphics->window_handle);
 
     //we're done
     return(result);
 }
 
-inline const ifb::b8
-ifb_engine::graphics_manager_frame_start(
-    IFBEngineGraphicsManager* graphics_manager) {
+inline const b8
+engine::core_graphics_frame_start(
+    engine_core_graphics_t* graphics) {
 
     ifb::b8 result = true;
     
-    result &= ifb_graphics::window_process_events(graphics_manager->window_handle);
+    result &= graphics::window_process_events(graphics->window_handle);
 
     return(result);
 }
 
-inline const ifb::b8
-ifb_engine::graphics_manager_frame_render(
-    IFBEngineGraphicsManager* graphics_manager) {
+inline const b8
+engine::core_graphics_frame_render(
+    engine_core_graphics_t* graphics) {
 
-    ifb::b8 result = true;
+    b8 result = true;
 
-    result &= ifb_graphics::window_swap_buffers(graphics_manager->window_handle);
+    result &= graphics::window_swap_buffers(graphics->window_handle);
 
     return(result);
 }
 
-inline const ifb::b8 
-ifb_engine::graphics_manager_window_quit_received(
-    IFBEngineGraphicsManager* graphics_manager) {
+inline const b8 
+engine::core_graphics_window_quit_received(
+    engine_core_graphics_t* graphics) {
 
-    IFBPlatformWindowFlags flags         = ifb_graphics::window_get_flags(graphics_manager->window_handle);
-    const ifb::b8            quit_received = ifb_platform::window_get_flag_closed(flags);
+    platform_window_flags_t flags         = graphics::window_get_flags(graphics->window_handle);
+    const b8                quit_received = platform::window_get_flag_closed(flags);
 
     return(quit_received);
 }

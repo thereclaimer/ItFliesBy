@@ -4,8 +4,10 @@
 #include "ifb-engine.hpp"
 #include "ifb-engine-memory.hpp"
 
-struct engine_context_t {
-    engine_memory_t* memory;
-};
+namespace ifb {
 
+    struct engine_context_t {
+        engine_memory_t* memory;
+    };
+};
 #endif //IFB_ENGINE_CONTEXT_HPP

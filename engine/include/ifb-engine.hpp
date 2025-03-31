@@ -14,7 +14,7 @@
 #include <ifb-rendering-gl.hpp>
 #include <ifb-platform.hpp>
 
-using namespace ifb;
+namespace ifb {
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -35,11 +35,11 @@ typedef engine_context_t* engine_context_h;
 /**********************************************************************************/
 
 struct engine_context_args_t {
-    memory_t          global_stack_memory;
-    platform::api_t * platform_api;
+    memory_t        global_stack_memory;
+    platform_api_t* platform_api;
 };
 
-namespace ifb::engine {
+namespace engine {
 
     // create/destroy
     ifb_engine_api engine_context_h context_create    (const engine_context_args_t& args);
@@ -51,6 +51,9 @@ namespace ifb::engine {
 
     // rendering
     ifb_engine_api const b8         context_main_loop (engine_context_h context_handle);
-};
+
+}; //namespace ifb::engine
+}; //namespace ifb
+
 
 #endif //IFB_ENGINE_HPP

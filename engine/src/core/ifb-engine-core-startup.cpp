@@ -3,55 +3,53 @@
 #include "ifb-engine.hpp"
 #include "ifb-engine-core.hpp"
 
-namespace ifb_engine {
+namespace ifb::engine {
 
-    const ifb::b8 core_startup_manager_graphics (IFBEngineGraphicsManager* graphics_manager);
-    const ifb::b8 core_startup_manager_files    (IFBEngineFileManager*     file_manager);
-    const ifb::b8 core_startup_manager_threads  (IFBEngineThreadManager*   thread_manager);
-
+    const b8 core_startup_graphics (engine_core_graphics_t* graphics_manager);
+    const b8 core_startup_files    (engine_core_files_t*     file_manager);
+    const b8 core_startup_threads  (engine_core_threads_t*   thread_manager);
 };
 
+ifb_internal const b8
+engine::core_startup(
+    engine_core_t* core) {
 
-ifb_internal const ifb::b8
-ifb_engine::core_startup(
-    IFBEngineCore* core) {
+    b8 result = true;
 
-    ifb::b8 result = true;
-
-    result &= ifb_engine::core_startup_manager_graphics (core->graphics);
-    result &= ifb_engine::core_startup_manager_files    (core->files);
-    result &= ifb_engine::core_startup_manager_threads  (core->threads);
+    result &= engine::core_startup_graphics (core->graphics);
+    result &= engine::core_startup_files    (core->files);
+    result &= engine::core_startup_threads  (core->threads);
 
     return(result);
 }
 
 
-inline const ifb::b8 
-ifb_engine::core_startup_manager_graphics(
-    IFBEngineGraphicsManager* graphics_manager) {
+inline const b8 
+engine::core_startup_graphics(
+    engine_core_graphics_t* graphics_manager) {
 
-    ifb::b8 result = true;
+    b8 result = true;
 
-    result &= ifb_engine::graphics_manager_create_and_show_window(graphics_manager);
+    result &= engine::core_graphics_create_and_show_window(graphics_manager);
     
     return(result);
 }
 
-inline const ifb::b8 
-ifb_engine::core_startup_manager_files(
-    IFBEngineFileManager*     file_manager) {
+inline const b8 
+engine::core_startup_files(
+    engine_core_files_t*     file_manager) {
 
-    ifb::b8 result = true;
+    b8 result = true;
 
 
     return(result);
 }
 
-inline const ifb::b8 
-ifb_engine::core_startup_manager_threads(
-    IFBEngineThreadManager*   thread_manager) {
+inline const b8 
+engine::core_startup_threads(
+    engine_core_threads_t*   thread_manager) {
 
-    ifb::b8 result = true;
+    b8 result = true;
 
     return(result);
 }
