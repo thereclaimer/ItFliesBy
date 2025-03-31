@@ -10,11 +10,11 @@ using namespace ifb::memory;
 /* MEMORY RESERVATION                                                             */
 /**********************************************************************************/
 
-reservation_t*
+mem_reservation_t*
 memory::reserve_system_memory(
-    stack_t*  stack,
-    const u64 size_reservation,
-    const u32 size_arena) {
+    mem_stack_t* stack,
+    const u64    size_reservation,
+    const u32    size_arena) {
 
     //validate args
     ifb_macro_assert(stack);
@@ -39,7 +39,7 @@ memory::reserve_system_memory(
     const addr stack_start = (addr)stack;
 
     //push the reservation struct on the stack
-    reservation_t* reservation = macro_stack_push_reservation(stack);
+    mem_reservation_t* reservation = macro_stack_push_reservation(stack);
     ifb_macro_assert(reservation);
 
     //calculate the struct offset
@@ -63,7 +63,7 @@ memory::reserve_system_memory(
 
 const b8      
 memory::release_system_memory(
-    reservation_t* reservation) {
+    mem_reservation_t* reservation) {
     
     ifb_macro_panic();
 

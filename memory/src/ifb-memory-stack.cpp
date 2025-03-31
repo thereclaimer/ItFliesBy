@@ -10,18 +10,18 @@ using namespace ifb::memory;
 /* STACK                                                                          */
 /**********************************************************************************/
 
-stack_t*
+mem_stack_t*
 memory::stack_create(
     const memory_t& stack_memory) {
 
     //check args
-    b8 can_create = true;                                            // we can create the stack IF...
+    b8 can_create = true;                                               // we can create the stack IF...
     can_create &= (stack_memory.start != NULL);                         //...the memory isn't null AND
     can_create &= (stack_memory.size  >= IFB_MEMORY_STRUCT_SIZE_STACK); //...we can fit the struct in the memory
-    if (!can_create) return(NULL);                              // if we can't create, we're done
+    if (!can_create) return(NULL);                                      // if we can't create, we're done
 
     //cast the memory
-    stack_t* stack = (stack_t*)stack_memory.start;
+    mem_stack_t* stack = (mem_stack_t*)stack_memory.start;
     
     //initialize the stack
     stack->size     = stack_memory.size;
@@ -33,8 +33,8 @@ memory::stack_create(
 
 const u32
 memory::stack_push_bytes_relative(
-          stack_t* stack,
-    const u32      size) {
+    mem_stack_t* stack,
+    const u32    size) {
 
     //validate stack
     memory::validate_stack(stack);
@@ -57,8 +57,8 @@ memory::stack_push_bytes_relative(
 
 const ptr
 memory::stack_push_bytes_absolute_pointer(
-          stack_t* stack,
-    const u32      size) {
+    mem_stack_t* stack,
+    const u32    size) {
 
     //validate stack
     memory::validate_stack(stack);
@@ -85,8 +85,8 @@ memory::stack_push_bytes_absolute_pointer(
 
 const addr
 memory::stack_push_bytes_absolute_address(
-          stack_t* stack,
-    const u32          size) {
+    mem_stack_t* stack,
+    const u32    size) {
 
     //validate stack
     memory::validate_stack(stack);
@@ -112,8 +112,8 @@ memory::stack_push_bytes_absolute_address(
 
 const ptr
 memory::stack_get_pointer(
-          stack_t* stack,
-    const u32          offset) {
+    mem_stack_t* stack,
+    const u32    offset) {
 
     //validate stack
     memory::validate_stack(stack);
@@ -128,8 +128,8 @@ memory::stack_get_pointer(
 
 const b8
 memory::stack_pull_bytes(
-          stack_t* stack,
-    const u32          size) {
+    mem_stack_t* stack,
+    const u32    size) {
 
     //validate stack
     memory::validate_stack(stack);
@@ -137,7 +137,7 @@ memory::stack_pull_bytes(
     //get sizes
     const u32 position_current = stack->position;
     const u32 position_dif     = position_current - IFB_MEMORY_STRUCT_SIZE_STACK; 
-    const u32 position_new     = stack->position - size;
+    const u32 position_new     = stack->position  - size;
 
     //make sure we can pull
     //there has to be at least enough memory for the stack struct

@@ -10,13 +10,13 @@
 /**********************************************************************************/
 namespace ifb::memory {
 
-    struct stack_t;
-    struct reservation_t;
-    struct arena_t;
+    struct mem_stack_t;
+    struct mem_reservation_t;
+    struct mem_arena_t;
 
-    typedef stack_t*       stack_h;       
-    typedef reservation_t* reservation_h;
-    typedef arena_t*       arena_h; 
+    typedef mem_stack_t*       mem_stack_h;       
+    typedef mem_reservation_t* mem_reservation_h;
+    typedef mem_arena_t*       mem_arena_h; 
 };
 
 /**********************************************************************************/
@@ -24,12 +24,12 @@ namespace ifb::memory {
 /**********************************************************************************/
 namespace ifb::memory {
 
-    stack_h    stack_create                      (const memory_t& stack_memory);
-    const u32  stack_push_bytes_relative         (stack_h stack, const u32 size);
-    const ptr  stack_push_bytes_absolute_pointer (stack_h stack, const u32 size);
-    const addr stack_push_bytes_absolute_address (stack_h stack, const u32 size);
-    const b8   stack_pull_bytes                  (stack_h stack, const u32 size);
-    const ptr  stack_get_pointer                 (stack_h stack, const u32 offset);
+    mem_stack_h stack_create                      (const memory_t& stack_memory);
+    const u32   stack_push_bytes_relative         (mem_stack_h stack, const u32 size);
+    const ptr   stack_push_bytes_absolute_pointer (mem_stack_h stack, const u32 size);
+    const addr  stack_push_bytes_absolute_address (mem_stack_h stack, const u32 size);
+    const b8    stack_pull_bytes                  (mem_stack_h stack, const u32 size);
+    const ptr   stack_get_pointer                 (mem_stack_h stack, const u32 offset);
 };
 
 /**********************************************************************************/
@@ -37,14 +37,14 @@ namespace ifb::memory {
 /**********************************************************************************/
 namespace ifb::memory {
 
-    reservation_h
+    mem_reservation_h
     reserve_system_memory(
-        stack_h   stack,
-        const u64 size_reservation,
-        const u32 size_arena);
+        mem_stack_h stack,
+        const u64   size_reservation,
+        const u32   size_arena);
 
 
-    const b8 release_system_memory (reservation_h reservation);
+    const b8 release_system_memory (mem_reservation_h reservation);
 };
 
 /**********************************************************************************/
@@ -52,14 +52,14 @@ namespace ifb::memory {
 /**********************************************************************************/
 namespace ifb::memory {
 
-    arena_h    arena_commit                      (reservation_h reservation);
-    const b8   arena_decommit                    (arena_h arena);
-    const b8   arena_reset                       (arena_h arena);
-    const u32  arena_push_bytes_relative         (arena_h arena, const u32 size);
-    const ptr  arena_push_bytes_absolute_pointer (arena_h arena, const u32 size);
-    const addr arena_push_bytes_absolute_address (arena_h arena, const u32 size);
-    const b8   arena_pull_bytes                  (arena_h arena, const u32 size);
-    const ptr  arena_get_pointer                 (arena_h arena, const u32 offset);
+    mem_arena_h arena_commit                      (mem_reservation_h reservation);
+    const b8    arena_decommit                    (mem_arena_h arena);
+    const b8    arena_reset                       (mem_arena_h arena);
+    const u32   arena_push_bytes_relative         (mem_arena_h arena, const u32 size);
+    const ptr   arena_push_bytes_absolute_pointer (mem_arena_h arena, const u32 size);
+    const addr  arena_push_bytes_absolute_address (mem_arena_h arena, const u32 size);
+    const b8    arena_pull_bytes                  (mem_arena_h arena, const u32 size);
+    const ptr   arena_get_pointer                 (mem_arena_h arena, const u32 offset);
 };
 
 /**********************************************************************************/
