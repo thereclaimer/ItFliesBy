@@ -4,14 +4,13 @@
 #include "ifb-data-structures-internal.cpp"
 
 using namespace ifb;
-using namespace ifb::ds;
 
 /**********************************************************************************/
 /* MEMORY                                                                       */
 /**********************************************************************************/
 
 const u32
-ds::array_memory_size(
+array::memory_size(
     const u32 element_size,
     const u32 element_count) {
 
@@ -24,13 +23,13 @@ ds::array_memory_size(
 }
 
 array_t*
-ds::array_memory_init(
+array::memory_init(
     const u32       element_size,
     const u32       element_count,
     const memory_t& memory) {
 
     //get the actual memory size
-    const u32 memory_size = array_memory_size(element_size, element_count);
+    const u32 memory_size = array::memory_size(element_size, element_count);
 
     //sanity check
     ifb_macro_assert(memory.start  != NULL);
@@ -58,7 +57,7 @@ ds::array_memory_init(
 /**********************************************************************************/
 
 void
-ds::array_info(
+array::info(
     array_t*      array,
     array_info_t& info) {
 
@@ -76,7 +75,7 @@ ds::array_info(
 /**********************************************************************************/
 
 void
-ds::array_clear(
+array::clear(
     array_t* array) {
 
     //get the array
@@ -85,7 +84,7 @@ ds::array_clear(
 }
 
 const b8
-ds::array_add(
+array::add(
     array_t*  array,
     const u32 count,
     const ptr element) {
@@ -134,7 +133,7 @@ ds::array_add(
 }
 
 const ptr
-ds::array_index(
+array::index(
           array_t* array,
     const u32      index) {
 
@@ -155,7 +154,7 @@ ds::array_index(
 }
 
 const b8
-ds::array_iterate(
+array::iterate(
     array_t*    array,
     iterator_t& iterator) {
 
@@ -173,7 +172,7 @@ ds::array_iterate(
     } 
 
     //get the pointer at the index
-    iterator.pointer = array_index(array,iterator.index);
+    iterator.pointer = array::index(array,iterator.index);
     
     //update the index
     ++iterator.index;

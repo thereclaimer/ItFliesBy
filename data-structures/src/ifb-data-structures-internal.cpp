@@ -4,7 +4,7 @@
 
 using namespace ifb;
 
-namespace ifb::ds {
+namespace ifb {
 
     struct data_structure_t {
         addr data_start;
@@ -46,7 +46,7 @@ namespace ifb::ds {
 #define STRUCT_SIZE_QUEUE       ifb_macro_align_size_struct(queue_t)
 #define STRUCT_SIZE_HASH_TABLE  ifb_macro_align_size_struct(hash_table_t)
 
-namespace ifb::ds {
+namespace ifb {
 
     struct globals_t {
         u32 struct_size_array;

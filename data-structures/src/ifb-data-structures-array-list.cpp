@@ -4,14 +4,13 @@
 #include "ifb-data-structures-internal.cpp"
 
 using namespace ifb; 
-using namespace ifb::ds; 
 
 /**********************************************************************************/
 /* MEMORY                                                                         */
 /**********************************************************************************/
 
 const u32
-ds::array_list_memory_size(
+array_list::memory_size(
     const u32 element_size,
     const u32 element_count) {
 
@@ -23,13 +22,13 @@ ds::array_list_memory_size(
 }
 
 array_list_t*
-ds::array_list_memory_init(
+array_list::memory_init(
     const u32       element_size,
     const u32       element_count,
     const memory_t& memory) {
 
     //get the actual memory size
-    const u32 memory_size = array_list_memory_size(element_size,element_count);
+    const u32 memory_size = array_list::memory_size(element_size,element_count);
 
     //validate the args
     b8 args_are_valid = true;
@@ -58,7 +57,7 @@ ds::array_list_memory_init(
 /**********************************************************************************/
 
 void
-ds::array_list_reset(
+array_list::reset(
     array_list_t* array_list) {
 
     //assert the list is valid
@@ -69,7 +68,7 @@ ds::array_list_reset(
 }
 
 const b8
-ds::array_list_remove(
+array_list::remove(
     array_list_t* array_list,
     const u32     index) {
 
@@ -96,7 +95,7 @@ ds::array_list_remove(
 }
 
 const b8
-ds::array_list_add_to_front(
+array_list::add_to_front(
     array_list_t* array_list,
     const ptr           element_ptr) {
 
@@ -134,7 +133,7 @@ ds::array_list_add_to_front(
 }
 
 const b8
-ds::array_list_add_to_end(
+array_list::add_to_end(
     array_list_t* array_list,
     const ptr           element_ptr) {
 
@@ -171,7 +170,7 @@ ds::array_list_add_to_end(
 }
 
 const b8
-ds::array_list_insert(
+array_list::insert(
     array_list_t* array_list,
     const u32     index,
     const ptr     element_ptr) {
@@ -187,8 +186,8 @@ ds::array_list_insert(
 
         //call the corresponding method
         const b8 result = is_at_front 
-            ? array_list_add_to_front (array_list, element_ptr)
-            : array_list_add_to_end   (array_list, element_ptr);
+            ? array_list::add_to_front (array_list, element_ptr)
+            : array_list::add_to_end   (array_list, element_ptr);
 
         //we're done
         return(result);
@@ -231,7 +230,7 @@ ds::array_list_insert(
 
 
 const ptr
-ds::array_list_first(
+array_list::first(
     array_list_t* array_list) {
 
     //assert the list is valid
@@ -251,7 +250,7 @@ ds::array_list_first(
 }
 
 const ptr
-ds::array_list_last(
+array_list::last(
     array_list_t* array_list) {
 
     //assert the list is valid
@@ -275,7 +274,7 @@ ds::array_list_last(
 }
 
 const ptr
-ds::array_list_index(
+array_list::index(
     array_list_t* array_list,
     const u32     index) {
 
@@ -304,7 +303,7 @@ ds::array_list_index(
 /**********************************************************************************/
 
 void 
-ds::array_list_info(
+array_list::info(
     array_list_t*      array_list,
     array_list_info_t& info) {
     
