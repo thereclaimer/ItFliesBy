@@ -3,12 +3,11 @@
 #include "ifb-graphics.hpp"
 
 using namespace ifb;
-using namespace ifb::graphics;
 
 const b8
 graphics::color_normalize(
-    const color_hex_t*  ptr_color_hex,
-    color_normalized_t* ptr_color_normalized) {
+    const graphics_color_hex_t*  ptr_color_hex,
+    graphics_color_normalized_t* ptr_color_normalized) {
     
     //sanity check
     b8 result = true;
@@ -35,8 +34,8 @@ graphics::color_normalize(
 
 const b8
 graphics::color_denormalize(
-    const color_normalized_t* ptr_color_normalized,
-    color_hex_t*              ptr_color_hex) {
+    const graphics_color_normalized_t* ptr_color_normalized,
+    graphics_color_hex_t*              ptr_color_hex) {
     
     //sanity check
     b8 result = true;
@@ -57,12 +56,12 @@ graphics::color_denormalize(
 
 
 
-const color_32_t
+const graphics_color_32_t
 graphics::color_pack_hex_to_32(
-    const color_format_e color_format,    
-    const color_hex_t*   color_hex_ptr) {
+    const graphics_color_format_e color_format,    
+    const graphics_color_hex_t*   color_hex_ptr) {
 
-    color_32_t color;
+    graphics_color_32_t color;
     color.value = 0;
 
     //sanity check
@@ -76,10 +75,10 @@ graphics::color_pack_hex_to_32(
     
     //pack the color value based on the format
     switch(color_format) {
-        case (color_format_e_rgba): color.value = ifb_macro_pack_u8_to_u32(u8_r, u8_b, u8_g, u8_a); break;
-        case (color_format_e_argb): color.value = ifb_macro_pack_u8_to_u32(u8_a, u8_b, u8_g, u8_r); break;
-        case (color_format_e_abgr): color.value = ifb_macro_pack_u8_to_u32(u8_a, u8_g, u8_b, u8_r); break;
-        case (color_format_e_bgra): color.value = ifb_macro_pack_u8_to_u32(u8_r, u8_g, u8_b, u8_a); break;
+        case (graphics_color_format_e_rgba): color.value = ifb_macro_pack_u8_to_u32(u8_r, u8_b, u8_g, u8_a); break;
+        case (graphics_color_format_e_argb): color.value = ifb_macro_pack_u8_to_u32(u8_a, u8_b, u8_g, u8_r); break;
+        case (graphics_color_format_e_abgr): color.value = ifb_macro_pack_u8_to_u32(u8_a, u8_g, u8_b, u8_r); break;
+        case (graphics_color_format_e_bgra): color.value = ifb_macro_pack_u8_to_u32(u8_r, u8_g, u8_b, u8_a); break;
         default: break;    
     }
 
@@ -87,19 +86,19 @@ graphics::color_pack_hex_to_32(
     return(color);
 }
 
-const color_32_t
+const graphics_color_32_t
 graphics::color_pack_normalized_to_32(
-    const color_format_e      color_format,    
-    const color_normalized_t* ptr_color_normalized) {
+    const graphics_color_format_e      color_format,    
+    const graphics_color_normalized_t* ptr_color_normalized) {
 
-    color_32_t color;
+    graphics_color_32_t color;
     color.value = 0;
 
     //sanity check
     if (!ptr_color_normalized) return(color);
 
     //denormalize the color
-    color_hex_t color_hex;
+    graphics_color_hex_t color_hex;
     const b8 result = graphics::color_denormalize(ptr_color_normalized,&color_hex);
     if (!result) return(color); 
     
