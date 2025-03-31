@@ -7,7 +7,6 @@
 #include <ifb-platform.hpp>
 
 using namespace ifb;
-namespace platform=ifb::platform;
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
@@ -63,6 +62,7 @@ namespace ifb::graphics {
 /* WINDOW                                                                         */
 /**********************************************************************************/
 namespace ifb::graphics {
+
     struct window_args_t {
         utf8*        title;
         u32          title_length;
@@ -103,6 +103,5 @@ namespace ifb::graphics {
     const b8         monitor_table_get_monitor_primary (const monitor_table_t*     monitor_table_ptr, platform::monitor_t*  monitor_ptr);
     const b8         monitor_get_center                (const platform::monitor_t* monitor_ptr,       position_t*           center_position_ptr);
 };
-
 
 #endif //IFB_GRAPHICS_HPP

@@ -3,8 +3,7 @@
 #include "ifb-graphics.hpp"
 
 using namespace ifb;
-namespace platform=ifb::platform;
-namespace graphics=ifb::graphics;
+using namespace ifb::graphics;
 
 const b8
 graphics::color_normalize(
@@ -55,6 +54,8 @@ graphics::color_denormalize(
     //we're done
     return(true);
 }
+
+
 
 const color_32_t
 graphics::color_pack_hex_to_32(
