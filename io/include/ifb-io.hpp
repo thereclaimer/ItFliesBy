@@ -5,35 +5,35 @@
 #include <ifb-memory.hpp>
 #include <ifb-data-structures.hpp>
 
+using namespace ifb;
+
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-//handles
-struct IFBIO64FileTable     : IFBHND64 { };  
-struct IFBIO64FileArrayList : IFBHND64 { };       
-struct IFBIO16File          : IFBHND16 { };       
+namespace ifb::io {
 
-//callbacks
-// typedef ifb::u32 (*IFBFileAsyncCallback) (IFBFileContext* file_context);
-// struct  IFBFileAsyncCallbacks;
+    //handles
+    struct file_table_h      : hnd64 { };  
+    struct file_array_list_h : hnd64 { };       
+    struct file_h            : hnd16 { };       
+};
 
 /**********************************************************************************/
 /* FILE TABLE                                                                     */
 /**********************************************************************************/
 
-struct IFBFileTableArgs {
-    memory_t memory;
-    ifb::u32    file_count;
-    ifb::u32    file_stride_path;
-    ifb::u32    file_stride_context;
+namespace ifb::io {
+
+    struct file_table_args_t {
+        memory_t memory;
+        u32      file_count;
+        u32      file_stride_path;
+        u32      file_stride_context;
+    };
+
+    const u32          file_table_memory_size       (const u32          file_count);
+    const file_table_h file_table_memory_initialize (file_table_args_t& file_table_args);
 };
-
-namespace ifb_io { 
-
-    const ifb::u32           file_table_memory_size       (const ifb::u32      file_count);
-    const IFBIO64FileTable file_table_memory_initialize (IFBFileTableArgs& file_table_args);
-};
-
 
 #endif //IFB_IO_HPP
