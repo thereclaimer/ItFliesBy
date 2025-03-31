@@ -35,7 +35,7 @@ namespace ifb {
         platform_system_info_cpu_cache_t cache_l3;
     };
 
-    struct system_info_memory_t {
+    struct platform_system_info_memory_t {
         u32 page_size;
         u32 allocation_granularity;
     };

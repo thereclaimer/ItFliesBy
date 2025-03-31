@@ -10,7 +10,7 @@ using namespace ifb::memory;
 /* STACK                                                                          */
 /**********************************************************************************/
 
-mem_stack_t*
+memory_stack_t*
 memory::stack_create(
     const memory_t& stack_memory) {
 
@@ -21,7 +21,7 @@ memory::stack_create(
     if (!can_create) return(NULL);                                      // if we can't create, we're done
 
     //cast the memory
-    mem_stack_t* stack = (mem_stack_t*)stack_memory.start;
+    memory_stack_t* stack = (memory_stack_t*)stack_memory.start;
     
     //initialize the stack
     stack->size     = stack_memory.size;
@@ -33,7 +33,7 @@ memory::stack_create(
 
 const u32
 memory::stack_push_bytes_relative(
-    mem_stack_t* stack,
+    memory_stack_t* stack,
     const u32    size) {
 
     //validate stack
@@ -57,7 +57,7 @@ memory::stack_push_bytes_relative(
 
 const ptr
 memory::stack_push_bytes_absolute_pointer(
-    mem_stack_t* stack,
+    memory_stack_t* stack,
     const u32    size) {
 
     //validate stack
@@ -85,7 +85,7 @@ memory::stack_push_bytes_absolute_pointer(
 
 const addr
 memory::stack_push_bytes_absolute_address(
-    mem_stack_t* stack,
+    memory_stack_t* stack,
     const u32    size) {
 
     //validate stack
@@ -112,7 +112,7 @@ memory::stack_push_bytes_absolute_address(
 
 const ptr
 memory::stack_get_pointer(
-    mem_stack_t* stack,
+    memory_stack_t* stack,
     const u32    offset) {
 
     //validate stack
@@ -128,7 +128,7 @@ memory::stack_get_pointer(
 
 const b8
 memory::stack_pull_bytes(
-    mem_stack_t* stack,
+    memory_stack_t* stack,
     const u32    size) {
 
     //validate stack

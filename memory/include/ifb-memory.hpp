@@ -8,15 +8,15 @@
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
-namespace ifb::memory {
+namespace ifb {
 
-    struct mem_stack_t;
-    struct mem_reservation_t;
-    struct mem_arena_t;
+    struct  memory_stack_t;
+    struct  memory_reservation_t;
+    struct  memory_arena_t;
 
-    typedef mem_stack_t*       mem_stack_h;       
-    typedef mem_reservation_t* mem_reservation_h;
-    typedef mem_arena_t*       mem_arena_h; 
+    typedef memory_stack_t*       memory_stack_h;       
+    typedef memory_reservation_t* memory_reservation_h;
+    typedef memory_arena_t*       memory_arena_h; 
 };
 
 /**********************************************************************************/
@@ -24,12 +24,12 @@ namespace ifb::memory {
 /**********************************************************************************/
 namespace ifb::memory {
 
-    mem_stack_h stack_create                      (const memory_t& stack_memory);
-    const u32   stack_push_bytes_relative         (mem_stack_h stack, const u32 size);
-    const ptr   stack_push_bytes_absolute_pointer (mem_stack_h stack, const u32 size);
-    const addr  stack_push_bytes_absolute_address (mem_stack_h stack, const u32 size);
-    const b8    stack_pull_bytes                  (mem_stack_h stack, const u32 size);
-    const ptr   stack_get_pointer                 (mem_stack_h stack, const u32 offset);
+    memory_stack_h stack_create                      (const memory_t& stack_memory);
+    const u32      stack_push_bytes_relative         (memory_stack_h stack, const u32 size);
+    const ptr      stack_push_bytes_absolute_pointer (memory_stack_h stack, const u32 size);
+    const addr     stack_push_bytes_absolute_address (memory_stack_h stack, const u32 size);
+    const b8       stack_pull_bytes                  (memory_stack_h stack, const u32 size);
+    const ptr      stack_get_pointer                 (memory_stack_h stack, const u32 offset);
 };
 
 /**********************************************************************************/
@@ -37,14 +37,13 @@ namespace ifb::memory {
 /**********************************************************************************/
 namespace ifb::memory {
 
-    mem_reservation_h
+    memory_reservation_h
     reserve_system_memory(
-        mem_stack_h stack,
+        memory_stack_h stack,
         const u64   size_reservation,
         const u32   size_arena);
 
-
-    const b8 release_system_memory (mem_reservation_h reservation);
+    const b8 release_system_memory (memory_reservation_h reservation);
 };
 
 /**********************************************************************************/
@@ -52,14 +51,14 @@ namespace ifb::memory {
 /**********************************************************************************/
 namespace ifb::memory {
 
-    mem_arena_h arena_commit                      (mem_reservation_h reservation);
-    const b8    arena_decommit                    (mem_arena_h arena);
-    const b8    arena_reset                       (mem_arena_h arena);
-    const u32   arena_push_bytes_relative         (mem_arena_h arena, const u32 size);
-    const ptr   arena_push_bytes_absolute_pointer (mem_arena_h arena, const u32 size);
-    const addr  arena_push_bytes_absolute_address (mem_arena_h arena, const u32 size);
-    const b8    arena_pull_bytes                  (mem_arena_h arena, const u32 size);
-    const ptr   arena_get_pointer                 (mem_arena_h arena, const u32 offset);
+    memory_arena_h arena_commit                      (memory_reservation_h reservation);
+    const b8       arena_decommit                    (memory_arena_h arena);
+    const b8       arena_reset                       (memory_arena_h arena);
+    const u32      arena_push_bytes_relative         (memory_arena_h arena, const u32 size);
+    const ptr      arena_push_bytes_absolute_pointer (memory_arena_h arena, const u32 size);
+    const addr     arena_push_bytes_absolute_address (memory_arena_h arena, const u32 size);
+    const b8       arena_pull_bytes                  (memory_arena_h arena, const u32 size);
+    const ptr      arena_get_pointer                 (memory_arena_h arena, const u32 offset);
 };
 
 /**********************************************************************************/

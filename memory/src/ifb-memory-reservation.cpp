@@ -10,9 +10,9 @@ using namespace ifb::memory;
 /* MEMORY RESERVATION                                                             */
 /**********************************************************************************/
 
-mem_reservation_t*
+memory_reservation_t*
 memory::reserve_system_memory(
-    mem_stack_t* stack,
+    memory_stack_t* stack,
     const u64    size_reservation,
     const u32    size_arena) {
 
@@ -22,7 +22,7 @@ memory::reserve_system_memory(
     ifb_macro_assert(size_arena);
 
     //get system info
-    platform::system_info_memory_t sys_mem_info;
+    platform_system_info_memory_t sys_mem_info;
     platform::system_get_info_memory(&sys_mem_info);
 
     //align sizes to system info
@@ -39,7 +39,7 @@ memory::reserve_system_memory(
     const addr stack_start = (addr)stack;
 
     //push the reservation struct on the stack
-    mem_reservation_t* reservation = macro_stack_push_reservation(stack);
+    memory_reservation_t* reservation = macro_stack_push_reservation(stack);
     ifb_macro_assert(reservation);
 
     //calculate the struct offset
@@ -63,7 +63,7 @@ memory::reserve_system_memory(
 
 const b8      
 memory::release_system_memory(
-    mem_reservation_t* reservation) {
+    memory_reservation_t* reservation) {
     
     ifb_macro_panic();
 
