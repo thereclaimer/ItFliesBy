@@ -8,7 +8,7 @@
 #include "ifb-win32-api-registry.cpp"
 // #include "ifb-win32-file.cpp"
 
-namespace ifb_win32 {
+namespace ifb::win32 {
 
     ifb_global platform_api_t _platform_api = {
 
