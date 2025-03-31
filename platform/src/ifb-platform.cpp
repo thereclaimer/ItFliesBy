@@ -13,45 +13,45 @@ namespace ifb::platform {
     //------------------
     // system
     //------------------
-    api_system_get_info_cpu_f    system_get_info_cpu;
-    api_system_get_info_memory_f system_get_info_memory;
-    api_system_time_ms_f         system_time_ms;
-    api_system_sleep_f           system_sleep;
-    api_system_debug_print_f     system_debug_print;
+    platform_api_system_get_info_cpu_f    system_get_info_cpu;
+    platform_api_system_get_info_memory_f system_get_info_memory;
+    platform_api_system_time_ms_f         system_time_ms;
+    platform_api_system_sleep_f           system_sleep;
+    platform_api_system_debug_print_f     system_debug_print;
 
     //------------------
     // memory
     //------------------
-    api_memory_reserve_f        memory_reserve;
-    api_memory_release_f        memory_release;
-    api_memory_commit_f         memory_commit;
-    api_memory_decommit_f       memory_decommit;
+    platform_api_memory_reserve_f        memory_reserve;
+    platform_api_memory_release_f        memory_release;
+    platform_api_memory_commit_f         memory_commit;
+    platform_api_memory_decommit_f       memory_decommit;
 
     //------------------
     // thread
     //------------------
-    api_thread_size_f           thread_size;
-    api_thread_create_f         thread_create;
-    api_thread_destroy_f        thread_destroy;
-    api_thread_assign_cores_f   thread_assign_cores;
-    api_thread_wake_f           thread_wake;
-    api_thread_sleep_f          thread_sleep;
+    platform_api_thread_size_f           thread_size;
+    platform_api_thread_create_f         thread_create;
+    platform_api_thread_destroy_f        thread_destroy;
+    platform_api_thread_assign_cores_f   thread_assign_cores;
+    platform_api_thread_wake_f           thread_wake;
+    platform_api_thread_sleep_f          thread_sleep;
 
     //------------------
     // window
     //------------------
-    api_window_size_f           window_size;
-    api_window_create_f         window_create;
-    api_window_destroy_f        window_destroy;
-    api_window_process_events_f window_process_events;
-    api_window_swap_buffers_f   window_swap_buffers;
-    api_window_show_f           window_show;
+    platform_api_window_size_f           window_size;
+    platform_api_window_create_f         window_create;
+    platform_api_window_destroy_f        window_destroy;
+    platform_api_window_process_events_f window_process_events;
+    platform_api_window_swap_buffers_f   window_swap_buffers;
+    platform_api_window_show_f           window_show;
 
     //------------------
     // monitor
     //------------------
-    api_monitor_count_f         monitor_count;
-    api_monitor_info_f          monitor_info;
+    platform_api_monitor_count_f         monitor_count;
+    platform_api_monitor_info_f          monitor_info;
 };
 
 /**********************************************************************************/
@@ -60,7 +60,7 @@ namespace ifb::platform {
 
 const b8
 platform::set_api(
-    const api_t* api) {
+    const platform_api_t* api) {
 
     if (!api) return(false);
 
