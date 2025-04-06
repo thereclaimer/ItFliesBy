@@ -54,6 +54,7 @@ if not exist %dir_vcpkg% call vcpkg install
                     /Zi                        ^
                     /LD                        ^
                     /MD                        ^
+                    /std:c++17                 ^
                     /EHsc
 
 @set cl_out=        /Fe:%file_path_dll%        ^
@@ -94,7 +95,6 @@ if not exist %dir_vcpkg% call vcpkg install
 @set link_libs=     ItFliesBy.Memory.lib         ^
                     ItFliesBy.Graphics.lib       ^
                     ItFliesBy.DataStructures.lib ^
-                    ItFliesBy.Rendering.lib      ^
                     ItFliesBy.Platform.lib       ^
                     glew32.lib                   ^
                     opengl32.lib

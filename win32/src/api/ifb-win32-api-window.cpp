@@ -13,13 +13,13 @@ ImGui_ImplWin32_WndProcHandler(
     WPARAM wParam,
     LPARAM lParam);
 
-typedef const LRESULT (*IFBWin32WindowMessageHandler) (IFBWin32Window* window);
+typedef const LRESULT (*win32_window_message_handler_f) (win32_window_t* window);
 
-namespace ifb_win32 {
+namespace ifb::win32 {
 
     //load/store
-    IFBVoid         window_assert_store  (IFBWin32Window* window);
-    IFBWin32Window* window_assert_load   (const HWND win32_window_handle);
+    void            window_assert_store  (win32_window_t* window);
+    win32_window_t* window_assert_load   (const HWND win32_window_handle);
 
     //callback
     LRESULT CALLBACK
@@ -30,29 +30,29 @@ namespace ifb_win32 {
         LPARAM l_param);
 
     //message handlers
-    const LRESULT   window_on_wm_size    (IFBWin32Window* window);
-    const LRESULT   window_on_wm_move    (IFBWin32Window* window);
-    const LRESULT   window_on_wm_close   (IFBWin32Window* window);
-    const LRESULT   window_on_wm_destroy (IFBWin32Window* window);
+    const LRESULT   window_on_wm_size    (win32_window_t* window);
+    const LRESULT   window_on_wm_move    (win32_window_t* window);
+    const LRESULT   window_on_wm_close   (win32_window_t* window);
+    const LRESULT   window_on_wm_destroy (win32_window_t* window);
 };
 
 /**********************************************************************************/
 /* WINDOW API                                                                     */
 /**********************************************************************************/
 
-ifb_internal const IFBU32 
-ifb_win32::window_size(
-    IFBVoid) {
+ifb_internal const u32 
+win32::window_size(
+    void) {
 
-    const IFBU32 size = ifb_macro_align_size_struct(IFBWin32Window);
+    const u32 size = ifb_macro_align_size_struct(win32_window_t);
     return(size);
 }
 
-ifb_internal const IFBB8
-ifb_win32::window_create(
-    IFBWin32Window* window) {
+ifb_internal const b8
+win32::window_create(
+    win32_window_t* window) {
 
-    IFBB8 result = true;
+    b8 result = true;
     
     //sanity check
     ifb_macro_assert(window);
@@ -66,14 +66,14 @@ ifb_win32::window_create(
 
     //window class
     WNDCLASSA window_class = {0};
-    window_class.lpfnWndProc   = (WNDPROC)ifb_win32::window_callback;
+    window_class.lpfnWndProc   = (WNDPROC)win32::window_callback;
     window_class.hInstance     = GetModuleHandle(NULL);  
-    window_class.lpszClassName = "IFBWin32Window";
+    window_class.lpszClassName = "win32_window_t";
     window_class.style         = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
-    window_class.cbWndExtra    = ifb_macro_align_size_struct(IFBWin32Window);
+    window_class.cbWndExtra    = ifb_macro_align_size_struct(win32_window_t);
 
     //register the class
-    const IFBB8 win32_is_window_class_registered = (RegisterClass(&window_class) != 0);
+    const b8 win32_is_window_class_registered = (RegisterClass(&window_class) != 0);
 
     //create the window handle
     const HWND win32_handle_window = CreateWindowA(
@@ -120,12 +120,12 @@ ifb_win32::window_create(
     preferred_format_descriptor.cColorBits = 32;
     
     //set the pixel format
-    const IFBS32 chosen_format_descriptor = ChoosePixelFormat (win32_handle_device, &preferred_format_descriptor);
-    const IFBB8  pixel_format_is_set      =  SetPixelFormat   (win32_handle_device, chosen_format_descriptor,&preferred_format_descriptor);
+    const s32 chosen_format_descriptor = ChoosePixelFormat (win32_handle_device, &preferred_format_descriptor);
+    const b8  pixel_format_is_set      =  SetPixelFormat   (win32_handle_device, chosen_format_descriptor,&preferred_format_descriptor);
 
     //create the opengl context and make it current
     const HGLRC win32_handle_opengl   = wglCreateContext (win32_handle_device);
-    const IFBB8 opengl_context_active = wglMakeCurrent   (win32_handle_device,win32_handle_opengl);
+    const b8 opengl_context_active = wglMakeCurrent   (win32_handle_device,win32_handle_opengl);
 
     //make sure that our opengl context is active
     result &= pixel_format_is_set;
@@ -143,8 +143,8 @@ ifb_win32::window_create(
     
     //initialize win32/opengl methods for imgui
     if (result) {
-        result &= (IFBB8)ImGui_ImplWin32_Init(win32_handle_window);
-        result &= (IFBB8)ImGui_ImplOpenGL3_Init("#version 330");
+        result &= (b8)ImGui_ImplWin32_Init(win32_handle_window);
+        result &= (b8)ImGui_ImplOpenGL3_Init("#version 330");
     }
 
     //make sure we have an imgui context
@@ -157,24 +157,24 @@ ifb_win32::window_create(
     window->graphics_contexts.imgui  = imgui_context; 
 
     //store the window
-    ifb_win32::window_assert_store(window);
+    win32::window_assert_store(window);
 
     //we're done
     return(result);    
 }
 
-ifb_internal const IFBB8 
-ifb_win32::window_destroy(
-    IFBWin32Window* window) {
+ifb_internal const b8 
+win32::window_destroy(
+    win32_window_t* window) {
 
     PostQuitMessage(0);
 
     return(true);
 }
 
-ifb_internal const IFBB8 
-ifb_win32::window_process_events(
-    IFBWin32Window* window) {
+ifb_internal const b8 
+win32::window_process_events(
+    win32_window_t* window) {
 
     //start a new imgui frame if we have a context
     ImGui_ImplOpenGL3_NewFrame();
@@ -191,14 +191,14 @@ ifb_win32::window_process_events(
             case WM_KEYDOWN:
             case WM_SYSKEYDOWN: {
 
-                const IFBKeyCode keycode = ifb_win32::user_input_keycode((IFBU32)window_message.wParam);
+                const key_code_t keycode = win32::user_input_keycode((u32)window_message.wParam);
             } break;
 
             //key up
             case WM_KEYUP:
             case WM_SYSKEYUP: {
 
-                const IFBKeyCode keycode = ifb_win32::user_input_keycode((IFBU32)window_message.wParam);
+                const key_code_t keycode = win32::user_input_keycode((u32)window_message.wParam);
             } break;
         }
 
@@ -210,9 +210,9 @@ ifb_win32::window_process_events(
     return(true);
 }
 
-ifb_internal const IFBB8 
-ifb_win32::window_swap_buffers(
-    IFBWin32Window* window) {
+ifb_internal const b8 
+win32::window_swap_buffers(
+    win32_window_t* window) {
 
     //render imgui
     //TODO: may move this to graphics library
@@ -226,16 +226,16 @@ ifb_win32::window_swap_buffers(
     return(true);
 }
 
-ifb_internal const IFBB8 
-ifb_win32::window_show(
-    IFBWin32Window* window) {
+ifb_internal const b8 
+win32::window_show(
+    win32_window_t* window) {
     
     //show the window
-    const IFBB8  result = (IFBB8)ShowWindow(window->win32.handles.window,1);
-    const IFBU32 error  = GetLastError();
+    const b8  result = (b8)ShowWindow(window->win32.handles.window,1);
+    const u32 error  = GetLastError();
 
     //set the handle
-    ifb_platform::window_set_flag_visible(window->flags);
+    platform::window_set_flag_visible(window->flags);
 
     //we're done
     return(true);
@@ -245,15 +245,15 @@ ifb_win32::window_show(
 /* STORE AND LOAD                                                                 */
 /**********************************************************************************/
 
-inline IFBVoid
-ifb_win32::window_assert_store(
-    IFBWin32Window* window) {
+inline void
+win32::window_assert_store(
+    win32_window_t* window) {
 
     //window
     ifb_macro_assert(window);
 
     //properties
-    IFBB8 is_valid = true;
+    b8 is_valid = true;
     is_valid &= (window->title                    != NULL);
     is_valid &= (window->graphics_contexts.imgui  != NULL);
     is_valid &= (window->graphics_contexts.opengl != NULL);
@@ -268,22 +268,22 @@ ifb_win32::window_assert_store(
         (LONG_PTR)window);
 }
 
-inline IFBWin32Window*
-ifb_win32::window_assert_load(
+inline win32_window_t*
+win32::window_assert_load(
     const HWND win32_window_handle) {
 
     //handle
     ifb_macro_assert(win32_window_handle);
 
     //get the window
-    IFBWin32Window* window = (IFBWin32Window*)GetWindowLongPtr(win32_window_handle,GWLP_USERDATA);
+    win32_window_t* window = (win32_window_t*)GetWindowLongPtr(win32_window_handle,GWLP_USERDATA);
 
     //if the window is null, we can assume it hasn't been stored yet and isn't initialized
     //just return null until there is something to check
     if (!window) return(NULL);
 
     //properties
-    IFBB8 is_valid = true;
+    b8 is_valid = true;
     is_valid &= (window->title                    != NULL);
     is_valid &= (window->graphics_contexts.imgui  != NULL);
     is_valid &= (window->graphics_contexts.opengl != NULL);
@@ -300,7 +300,7 @@ ifb_win32::window_assert_load(
 /**********************************************************************************/
 
 ifb_internal LRESULT CALLBACK
-ifb_win32::window_callback(
+win32::window_callback(
     HWND   window_handle,
     UINT   message,
     WPARAM w_param,
@@ -309,7 +309,7 @@ ifb_win32::window_callback(
     LRESULT message_handler_result = false;
 
     //get the window
-    IFBWin32Window* window = ifb_win32::window_assert_load(window_handle);
+    win32_window_t* window = win32::window_assert_load(window_handle);
 
     //if it's null, the window hasn't been created and stored yet
     //return the default process until we have something in place
@@ -326,13 +326,13 @@ ifb_win32::window_callback(
     if (message_handler_result) return(true);
 
     //get the messasge handler
-    IFBWin32WindowMessageHandler window_message_handler = NULL;
+    win32_window_message_handler_f window_message_handler = NULL;
     switch (message) {
 
-        case WM_SIZE:    window_message_handler = ifb_win32::window_on_wm_size;    break; 
-        case WM_MOVE:    window_message_handler = ifb_win32::window_on_wm_move;    break; 
-        case WM_CLOSE:   window_message_handler = ifb_win32::window_on_wm_close;   break; 
-        case WM_DESTROY: window_message_handler = ifb_win32::window_on_wm_destroy; break; 
+        case WM_SIZE:    window_message_handler = win32::window_on_wm_size;    break; 
+        case WM_MOVE:    window_message_handler = win32::window_on_wm_move;    break; 
+        case WM_CLOSE:   window_message_handler = win32::window_on_wm_close;   break; 
+        case WM_DESTROY: window_message_handler = win32::window_on_wm_destroy; break; 
     }
 
     //if we have a message handler
@@ -356,60 +356,60 @@ ifb_win32::window_callback(
 /**********************************************************************************/
 
 inline const LRESULT 
-ifb_win32::window_on_wm_size(
-    IFBWin32Window* window) {
+win32::window_on_wm_size(
+    win32_window_t* window) {
 
     //get parameters
-    const IFBU32 window_width  = LOWORD(window->win32.message_params.l); 
-    const IFBU32 window_height = HIWORD(window->win32.message_params.l); 
+    const u32 window_width  = LOWORD(window->win32.message_params.l); 
+    const u32 window_height = HIWORD(window->win32.message_params.l); 
     
     //update dimensions
     window->dims.width  = window_width;
     window->dims.height = window_height;
 
     //set the flag
-    ifb_platform::window_set_flag_resized(window->flags);
+    platform::window_set_flag_resized(window->flags);
 
     //we're done
     return(true);   
 }
 
 inline const LRESULT
-ifb_win32::window_on_wm_move(
-    IFBWin32Window* window) {
+win32::window_on_wm_move(
+    win32_window_t* window) {
 
     //get the params
-    const IFBU32 window_position_x = LOWORD(window->win32.message_params.l); 
-    const IFBU32 window_position_y = HIWORD(window->win32.message_params.l); 
+    const u32 window_position_x = LOWORD(window->win32.message_params.l); 
+    const u32 window_position_y = HIWORD(window->win32.message_params.l); 
 
     //update the position
     window->pos.x = window_position_x;
     window->pos.y = window_position_y;
 
     //set the flag
-    ifb_platform::window_set_flag_moved(window->flags);
+    platform::window_set_flag_moved(window->flags);
 
     //we're done
     return(true);
 }
 
 inline const LRESULT 
-ifb_win32::window_on_wm_close(
-    IFBWin32Window* window) {
+win32::window_on_wm_close(
+    win32_window_t* window) {
 
     //set the flag
-    ifb_platform::window_set_flag_closed(window->flags);
+    platform::window_set_flag_closed(window->flags);
 
     //we're done
     return(true);
 }
 
 inline const LRESULT 
-ifb_win32::window_on_wm_destroy(
-    IFBWin32Window* window) {
+win32::window_on_wm_destroy(
+    win32_window_t* window) {
 
     //set the flag
-    ifb_platform::window_set_flag_closed(window->flags);
+    platform::window_set_flag_closed(window->flags);
 
     //post the quit message
     PostQuitMessage(true);

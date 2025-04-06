@@ -2,65 +2,65 @@
 
 #include "ifb-memory.hpp"
 
+using namespace ifb;
+
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-struct IFBMemoryStack;
-struct IFBMemoryReservation;
-struct IFBMemoryArena;
+namespace ifb::memory {
 
-namespace ifb_memory {
-
-    IFBVoid validate_stack       (const IFBMemoryStack*       stack);
-    IFBVoid validate_reservation (const IFBMemoryReservation* reservation);
-    IFBVoid validate_arena       (const IFBMemoryArena*       arena);
+    void validate_stack       (const memory_stack_t*       stack);
+    void validate_reservation (const memory_reservation_t* reservation);
+    void validate_arena       (const memory_arena_t*       arena);
 };
 
 /**********************************************************************************/
-/* MEMORY MANAGER DEFINITIONS                                                     */
+/* DEFINITIONS                                                                     */
 /**********************************************************************************/
 
-struct IFBMemoryStack {
-    IFBU32  size;
-    IFBU32  position;
+namespace ifb {
+
+    struct memory_stack_t {
+        u32 size;
+        u32 position;
+    };
+
+    struct memory_reservation_t {
+        memory_stack_t* stack;
+        addr            start;
+        struct {
+            memory_arena_t* committed;
+            memory_arena_t* decommitted;
+        } arenas;
+        struct {
+            u32 arena;
+            u32 page;
+            u32 granularity;
+        } sizes;
+        u32 page_count_used;
+    };
+
+    struct memory_arena_t {
+        memory_reservation_t* reservation;
+        memory_arena_t*       next;
+        memory_arena_t*       prev;
+        addr                  start;
+        u32                   page_number;
+        u32                   position;
+    };
 };
 
-struct IFBMemoryReservation {
-    IFBMemoryStack* stack;
-    IFBAddr         start;
-    struct {
-        IFBMemoryArena* committed;
-        IFBMemoryArena* decommitted;
-    } arenas;
-    struct {
-        IFBU32 arena;
-        IFBU32 page;
-        IFBU32 granularity;
-    } sizes;
-    IFBU32 page_count_used;
-};
+#define IFB_MEMORY_STRUCT_SIZE_STACK       ifb_macro_align_size_struct(memory_stack_t)
+#define IFB_MEMORY_STRUCT_SIZE_RESERVATION ifb_macro_align_size_struct(memory_reservation_t)
+#define IFB_MEMORY_STRUCT_SIZE_ARENA       ifb_macro_align_size_struct(memory_arena_t)
 
-struct IFBMemoryArena {
-    IFBMemoryReservation* reservation;
-    IFBMemoryArena*       next;
-    IFBMemoryArena*       prev;
-    IFBAddr               start;
-    IFBU32                page_number;
-    IFBU32                position;
-};
+#define macro_stack_push_arena(stack)             (memory_arena_t*)ifb::memory::stack_push_bytes_absolute_pointer (stack, IFB_MEMORY_STRUCT_SIZE_ARENA)
+#define macro_stack_push_reservation(stack) (memory_reservation_t*)ifb::memory::stack_push_bytes_absolute_pointer (stack, IFB_MEMORY_STRUCT_SIZE_RESERVATION)
 
-
-#define IFB_MEMORY_STRUCT_SIZE_STACK       ifb_macro_align_size_struct(IFBMemoryStack)
-#define IFB_MEMORY_STRUCT_SIZE_RESERVATION ifb_macro_align_size_struct(IFBMemoryReservation)
-#define IFB_MEMORY_STRUCT_SIZE_ARENA       ifb_macro_align_size_struct(IFBMemoryArena)
-
-#define ifb_memory_macro_stack_push_arena(stack)             (IFBMemoryArena*)ifb_memory::stack_push_bytes_absolute_pointer(stack,IFB_MEMORY_STRUCT_SIZE_ARENA)
-#define ifb_memory_macro_stack_push_reservation(stack) (IFBMemoryReservation*)ifb_memory::stack_push_bytes_absolute_pointer(stack,IFB_MEMORY_STRUCT_SIZE_RESERVATION)
-
-inline IFBVoid
-ifb_memory::validate_stack(
-    const IFBMemoryStack* stack) {
+inline void
+memory::validate_stack(
+    const memory_stack_t* stack) {
 
     ifb_macro_assert(stack);
     ifb_macro_assert(stack->size     >= IFB_MEMORY_STRUCT_SIZE_STACK);
@@ -68,9 +68,9 @@ ifb_memory::validate_stack(
     ifb_macro_assert(stack->position <  stack->size);
 }   
 
-inline IFBVoid
-ifb_memory::validate_reservation(
-    const IFBMemoryReservation* reservation) {
+inline void
+memory::validate_reservation(
+    const memory_reservation_t* reservation) {
 
     ifb_macro_assert(reservation);
     ifb_macro_assert(reservation->stack);
@@ -80,9 +80,9 @@ ifb_memory::validate_reservation(
     ifb_macro_assert(reservation->sizes.granularity);
 }
 
-inline IFBVoid
-ifb_memory::validate_arena(
-    const IFBMemoryArena* arena) {
+inline void
+memory::validate_arena(
+    const memory_arena_t* arena) {
 
     ifb_macro_assert(arena);
     ifb_macro_assert(arena->reservation);

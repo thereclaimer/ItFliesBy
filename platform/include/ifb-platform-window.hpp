@@ -3,60 +3,67 @@
 
 #include <ifb.hpp>
 
+using namespace ifb;
+
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
+namespace ifb {
 
-typedef IFBVoid* IFBGLContext;
+    typedef void* gl_context_t;
 
-enum IFBPlatformWindowFlags_ {
-    IFBPlatformWindowFlags_None    = 0,
-    IFBPlatformWindowFlags_Closed  = 1,
-    IFBPlatformWindowFlags_Visible = 2,
-    IFBPlatformWindowFlags_Resized = 3,
-    IFBPlatformWindowFlags_Moved   = 4,
-};
+    enum platform_window_flags_e {
+        platform_window_flags_e_none    = 0,
+        platform_window_flags_e_closed  = 1,
+        platform_window_flags_e_visible = 2,
+        platform_window_flags_e_resized = 3,
+        platform_window_flags_e_moved   = 4,
+    };
 
-typedef IFBU64 IFBPlatformWindowFlags; 
+    typedef u64 platform_window_flags_t; 
 
-struct IFBPlatformWindow {
-    IFBChar*               title;
-    IFBPlatformWindowFlags flags;
-    IFBDimensions          dims;
-    IFBPosition            pos;
-    struct {
-        ImGuiContext* imgui;
-        IFBGLContext  opengl;
-    } graphics_contexts;
+    struct platform_window_t {
+        utf8*                   title;
+        platform_window_flags_t flags;
+        dimensions_t            dims;
+        position_t              pos;
+        struct {
+            ImGuiContext* imgui;
+            gl_context_t  opengl;
+        } graphics_contexts;
+    };
 };
 
 /**********************************************************************************/
 /* WINDOW                                                                         */
 /**********************************************************************************/
 
-typedef const IFBU32  (*IFBPlatformWindowSize)          (IFBVoid);
-typedef const IFBB8   (*IFBPlatformWindowCreate)        (IFBPlatformWindow* window);
-typedef const IFBB8   (*IFBPlatformWindowDestroy)       (IFBPlatformWindow* window);
-typedef const IFBB8   (*IFBPlatformWindowProcessEvents) (IFBPlatformWindow* window);
-typedef const IFBB8   (*IFBPlatformWindowSwapBuffers)   (IFBPlatformWindow* window);
-typedef const IFBB8   (*IFBPlatformWindowShow)          (IFBPlatformWindow* window);
+namespace ifb {
 
-namespace ifb_platform {
+    typedef const u32 (*platform_api_window_size_f)           (void);
+    typedef const b8  (*platform_api_window_create_f)         (platform_window_t* window);
+    typedef const b8  (*platform_api_window_destroy_f)        (platform_window_t* window);
+    typedef const b8  (*platform_api_window_process_events_f) (platform_window_t* window);
+    typedef const b8  (*platform_api_window_swap_buffers_f)   (platform_window_t* window);
+    typedef const b8  (*platform_api_window_show_f)           (platform_window_t* window);
+};
 
-    inline IFBVoid     window_set_flag_closed    (IFBPlatformWindowFlags& flags) { ifb_macro_bit_set(IFBPlatformWindowFlags_Closed,  flags); }
-    inline IFBVoid     window_set_flag_visible   (IFBPlatformWindowFlags& flags) { ifb_macro_bit_set(IFBPlatformWindowFlags_Visible, flags); }
-    inline IFBVoid     window_set_flag_resized   (IFBPlatformWindowFlags& flags) { ifb_macro_bit_set(IFBPlatformWindowFlags_Resized, flags); }
-    inline IFBVoid     window_set_flag_moved     (IFBPlatformWindowFlags& flags) { ifb_macro_bit_set(IFBPlatformWindowFlags_Moved,   flags); }
+namespace ifb::platform {
 
-    inline const IFBB8 window_get_flag_closed    (IFBPlatformWindowFlags& flags) { return(ifb_macro_bit_test(IFBPlatformWindowFlags_Closed,  flags)); }
-    inline const IFBB8 window_get_flag_visible   (IFBPlatformWindowFlags& flags) { return(ifb_macro_bit_test(IFBPlatformWindowFlags_Visible, flags)); }
-    inline const IFBB8 window_get_flag_resized   (IFBPlatformWindowFlags& flags) { return(ifb_macro_bit_test(IFBPlatformWindowFlags_Resized, flags)); }
-    inline const IFBB8 window_get_flag_moved     (IFBPlatformWindowFlags& flags) { return(ifb_macro_bit_test(IFBPlatformWindowFlags_Moved,   flags)); }
+    inline void     window_set_flag_closed    (platform_window_flags_t& flags) { ifb_macro_bit_set(platform_window_flags_e_closed,  flags); }
+    inline void     window_set_flag_visible   (platform_window_flags_t& flags) { ifb_macro_bit_set(platform_window_flags_e_visible, flags); }
+    inline void     window_set_flag_resized   (platform_window_flags_t& flags) { ifb_macro_bit_set(platform_window_flags_e_resized, flags); }
+    inline void     window_set_flag_moved     (platform_window_flags_t& flags) { ifb_macro_bit_set(platform_window_flags_e_moved,   flags); }
 
-    inline IFBVoid     window_clear_flag_closed  (IFBPlatformWindowFlags& flags) { ifb_macro_bit_clear(IFBPlatformWindowFlags_Closed,  flags); }
-    inline IFBVoid     window_clear_flag_visible (IFBPlatformWindowFlags& flags) { ifb_macro_bit_clear(IFBPlatformWindowFlags_Visible, flags); }
-    inline IFBVoid     window_clear_flag_resized (IFBPlatformWindowFlags& flags) { ifb_macro_bit_clear(IFBPlatformWindowFlags_Resized, flags); }
-    inline IFBVoid     window_clear_flag_moved   (IFBPlatformWindowFlags& flags) { ifb_macro_bit_clear(IFBPlatformWindowFlags_Moved,   flags); }
+    inline const b8 window_get_flag_closed    (platform_window_flags_t& flags) { return(ifb_macro_bit_test(platform_window_flags_e_closed,  flags)); }
+    inline const b8 window_get_flag_visible   (platform_window_flags_t& flags) { return(ifb_macro_bit_test(platform_window_flags_e_visible, flags)); }
+    inline const b8 window_get_flag_resized   (platform_window_flags_t& flags) { return(ifb_macro_bit_test(platform_window_flags_e_resized, flags)); }
+    inline const b8 window_get_flag_moved     (platform_window_flags_t& flags) { return(ifb_macro_bit_test(platform_window_flags_e_moved,   flags)); }
+
+    inline void     window_clear_flag_closed  (platform_window_flags_t& flags) { ifb_macro_bit_clear(platform_window_flags_e_closed,  flags); }
+    inline void     window_clear_flag_visible (platform_window_flags_t& flags) { ifb_macro_bit_clear(platform_window_flags_e_visible, flags); }
+    inline void     window_clear_flag_resized (platform_window_flags_t& flags) { ifb_macro_bit_clear(platform_window_flags_e_resized, flags); }
+    inline void     window_clear_flag_moved   (platform_window_flags_t& flags) { ifb_macro_bit_clear(platform_window_flags_e_moved,   flags); }
 };
 
 #endif //IFB_PLATFORM_WINDOW_HPP

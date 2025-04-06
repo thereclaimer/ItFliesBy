@@ -18,5 +18,5 @@ struct IFBFileArrayList : IFBDS64ArrayList { };
 /**********************************************************************************/
 
 struct IFBFileTable {
-    IFBU32 memory_size;
+    ifb::u32 memory_size;
 };

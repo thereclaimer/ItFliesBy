@@ -2,11 +2,11 @@
 
 #include "ifb-win32.hpp"
 
-ifb_internal const IFBB8
-ifb_win32::system_get_info_cpu(
-    IFBSystemCPUInfo* cpu_info) {
+ifb_internal const b8
+win32::system_get_info_cpu(
+    platform_system_info_cpu_t* cpu_info) {
     
-    IFBB8 result = (cpu_info != NULL);
+    b8 result = (cpu_info != NULL);
     if (!result) return(false);
 
     //buffer for logical processor info
@@ -16,17 +16,17 @@ ifb_win32::system_get_info_cpu(
     // size of this buffer could be, but given
     // we are just querying for a couple of numbers
     // I don't expect this to be a wumbo size buffer
-    const IFBU32 result_buffer_size = 4096;
-    IFBByte      result_buffer[result_buffer_size];
+    const u32 result_buffer_size = 4096;
+    byte      result_buffer[result_buffer_size];
     
     //get the win32 system info and processor count
     SYSTEM_INFO win32_sys_info;
     GetSystemInfo(&win32_sys_info);
-    const IFBU32 parent_core_number = GetCurrentProcessorNumber();
+    const u32 parent_core_number = GetCurrentProcessorNumber();
 
     //get the cpu speed from the registry
-    IFBWin32RegKeyU32 reg_key_cpu_mhz;
-    result &= ifb_win32::registry_key_read_value_cpu_speed_mhz(reg_key_cpu_mhz);
+    win32_reg_key_u32_t reg_key_cpu_mhz;
+    result &= win32::registry_key_read_value_cpu_speed_mhz(reg_key_cpu_mhz);
 
     //make sure the information we need will fit in the result buffer
     DWORD result_length = 0;
@@ -48,17 +48,17 @@ ifb_win32::system_get_info_cpu(
     // do that until we get to the end of the buffer, or we hit the
     // max number of iterations we could reasonably expect
 
-    const IFBU32 max_iterations  = 64;
-    IFBU32 iteration_count       = 0;
-    IFBU32 processor_info_offset = 0;
-    IFBU32 l1_cache_size, l2_cache_size, l3_cache_size = 0;
-    IFBU32 l1_cache_line, l2_cache_line, l3_cache_line = 0;
-    IFBU32 count_cores_physical = 0;
-    IFBU32 count_cores_logical  = 0;
+    const u32 max_iterations  = 64;
+    u32 iteration_count       = 0;
+    u32 processor_info_offset = 0;
+    u32 l1_cache_size, l2_cache_size, l3_cache_size = 0;
+    u32 l1_cache_line, l2_cache_line, l3_cache_line = 0;
+    u32 count_cores_physical = 0;
+    u32 count_cores_logical  = 0;
 
     //if we have an invalid result at this point, 
     //don't bother going any further
-    IFBB8  advance_buffer = result;
+    b8  advance_buffer = result;
 
     //advance through the buffer
     while (advance_buffer) {
@@ -134,9 +134,9 @@ ifb_win32::system_get_info_cpu(
     return(result);
 }
 
-ifb_internal const IFBB8
-ifb_win32::system_get_info_memory(
-    IFBSystemMemoryInfo* memory_info) {
+ifb_internal const b8
+win32::system_get_info_memory(
+    platform_system_info_memory_t* memory_info) {
 
     if (!memory_info) return(false);
 
@@ -152,24 +152,24 @@ ifb_win32::system_get_info_memory(
     return(true);
 }
 
-ifb_internal const IFBU64
-ifb_win32::system_time_ms(
-    IFBVoid) {
+ifb_internal const u64
+win32::system_time_ms(
+    void) {
 
     ifb_macro_panic();
     return(0L);
 }
 
-ifb_internal IFBVoid 
-ifb_win32::system_sleep(
-    const IFBU32 ms) {
+ifb_internal void 
+win32::system_sleep(
+    const u32 ms) {
 
     ifb_macro_panic();
 }
 
-ifb_internal IFBVoid
-ifb_win32::system_debug_print(
-    const IFBChar* debug_string) {
+ifb_internal void
+win32::system_debug_print(
+    const utf8* debug_string) {
 
     ifb_macro_panic();
 }

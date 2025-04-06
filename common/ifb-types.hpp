@@ -8,57 +8,78 @@
 /* PRIMITIVES                                                                     */
 /**********************************************************************************/
 
-//signed integers
-typedef int8_t   IFBS8;
-typedef int16_t  IFBS16;
-typedef int32_t  IFBS32;
-typedef int64_t  IFBS64;
+namespace ifb {
 
-//unsigned integ 
-typedef uint8_t  IFBU8;
-typedef uint16_t IFBU16;
-typedef uint32_t IFBU32;
-typedef uint64_t IFBU64;
+    //signed integers
+    typedef int8_t  s8;
+    typedef int16_t s16;
+    typedef int32_t s32;
+    typedef int64_t s64;
 
-//floats
-typedef float    IFBF32;
-typedef double   IFBF64;
+    //unsigned integer 
+    typedef uint8_t  u8;
+    typedef uint16_t u16;
+    typedef uint32_t u32;
+    typedef uint64_t u64;
 
-//booleans
-typedef int8_t   IFBB8;
-typedef int16_t  IFBB16;
-typedef int32_t  IFBB32;
-typedef int64_t  IFBB64;
+    //floats
+    typedef float    f32;
+    typedef double   f64;
+    
+    //booleans
+    typedef int8_t   b8;
+    typedef int16_t  b16;
+    typedef int32_t  b32;
+    typedef int64_t  b64;
 
-//characters
-typedef char     IFBChar;
-typedef wchar_t  IFBWChar;
+    //chars  
+    typedef char     utf8;
+    typedef wchar_t  utf16;
 
-//memory
-typedef void     IFBVoid;
-typedef void*    IFBPtr;
-typedef uint8_t  IFBByte;
-typedef size_t   IFBSize;
-typedef IFBU32   IFBIndex;
-typedef IFBPtr   IFBHandle;
-typedef intptr_t IFBAddr;
-
-//time
-typedef uint64_t IFBTimems;
+    //memory
+    typedef void*    ptr;
+    typedef uint8_t  byte;
+    typedef intptr_t addr;
+    
+    //time
+    typedef uint64_t ms;
+};
 
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-struct IFBVec2;
-struct IFBVec3;
-struct IFBMat3;
-struct IFBPoint;
-struct IFBLine;
-struct IFBTransform;
-struct IFBDimensions;
-struct IFBPosition;
-struct IFBDimensionsAndPosition;
+namespace ifb {
+
+    struct memory_t;
+    struct iterator_t;
+    struct vec2_t;
+    struct vec3_t;
+    struct mat3_t;
+    struct point_t;
+    struct line_t;
+    struct transform_t;
+    struct dimensions_t;
+    struct position_t;
+    struct dimensions_and_position_t;
+};
+
+/**********************************************************************************/
+/* MEMORY                                                                         */
+/**********************************************************************************/
+
+namespace ifb {
+
+    struct memory_t {
+        addr start;
+        u64  size;
+    };
+
+    struct iterator_t {
+        ptr pointer;
+        u64 index;
+    };
+};
 
 /**********************************************************************************/
 /* SIMD                                                                           */
@@ -73,16 +94,23 @@ struct IFBDimensionsAndPosition;
     #include <x86intrin.h>
 #endif //_MSC_VER
 
-typedef __m128 IFBXMMF128;
+namespace ifb {
+
+    typedef __m128 xmm_f128;
+}
+
 
 /**********************************************************************************/
 /* HANDLES                                                                        */
 /**********************************************************************************/
 
-struct IFBHND8  { IFBU8   h8;  };
-struct IFBHND16 { IFBU16  h16; };
-struct IFBHND32 { IFBU32  h32; };
-struct IFBHND64 { IFBAddr h64; };
+namespace ifb {
+
+    struct hnd8  { u8   h8;  };
+    struct hnd16 { u16  h16; };
+    struct hnd32 { u32  h32; };
+    struct hnd64 { addr h64; };
+};
 
 #define IFB_HANDLE_INVALID_U8  0xFF
 #define IFB_HANDLE_INVALID_U16 0xFFFF 
@@ -93,90 +121,107 @@ struct IFBHND64 { IFBAddr h64; };
 /* VECTORS                                                                        */
 /**********************************************************************************/
 
-struct IFBVec2 {
-    union {
-        struct {
-            IFBF32 x;
-            IFBF32 y;
-        };
-        IFBF32 xy[2];
-    };
-};
+namespace ifb {
 
-struct IFBVec3 {
-    union {
-        struct {
-            IFBF32 x;
-            IFBF32 y;
-            IFBF32 z;
+    struct vec2_t {
+        union {
+            struct {
+                f32 x;
+                f32 y;
+            };
+            f32 xy[2];
         };
-        IFBF32 xyz[3];
     };
-};
 
+    struct vec3_t {
+        union {
+            struct {
+                f32 x;
+                f32 y;
+                f32 z;
+            };
+            f32 xyz[3];
+        };
+    };
+
+};
 /**********************************************************************************/
 /* MATRICES                                                                       */
 /**********************************************************************************/
 
-struct IFBMat3 {
-    union {
-        struct {
-            IFBF32 r0c0;
-            IFBF32 r0c1;
-            IFBF32 r0c2;
-            IFBF32 r1c0;
-            IFBF32 r1c1;
-            IFBF32 r1c2;
-            IFBF32 r2c0;
-            IFBF32 r2c1;
-            IFBF32 r2c2;
+namespace ifb {
+
+    struct mat3_t {
+        union {
+            struct {
+                f32 r0c0;
+                f32 r0c1;
+                f32 r0c2;
+                f32 r1c0;
+                f32 r1c1;
+                f32 r1c2;
+                f32 r2c0;
+                f32 r2c1;
+                f32 r2c2;
+            };
+            struct {
+                vec3_t row_vec_0;
+                vec3_t row_vec_1;
+                vec3_t row_vec_2;
+            };
+            f32 array[9];        
         };
-        struct {
-            IFBVec3 row_vec_0;
-            IFBVec3 row_vec_1;
-            IFBVec3 row_vec_2;
-        };
-        IFBF32 array[9];        
     };
+
+
+
 };
 
 /**********************************************************************************/
 /* TRANSFORMS                                                                     */
 /**********************************************************************************/
 
-struct IFBTransform {
-    IFBVec2 translation;
-    IFBVec2 scale;
-    IFBF32  rotation_radians;
+namespace ifb {
+
+    struct transform_t {
+        vec2_t translation;
+        vec2_t scale;
+        f32    rotation_radians;
+    };
 };
 
 /**********************************************************************************/
 /* GEOMETRY                                                                       */
 /**********************************************************************************/
 
-struct IFBDimensions {
-    IFBU32 width;
-    IFBU32 height;
+namespace ifb {
+
+    struct dimensions_t {
+        u32 width;
+        u32 height;
+    };
+
+    struct position_t {
+        u32 x;
+        u32 y;
+    };
+
+    struct dimensions_and_position_t {
+        dimensions_t dimensions;
+        position_t   position;    
+    };
+
+    struct point_t {
+        f32 x;
+        f32 y;
+    };
+
+    struct IFBLine {
+        point_t point_a;
+        point_t point_b;
+    };
+
 };
 
-struct IFBPosition {
-    IFBU32 x;
-    IFBU32 y;
-};
-
-struct IFBDimensionsAndPosition {
-    IFBDimensions dimensions;
-    IFBPosition   position;    
-};
-
-struct IFBPoint {
-    IFBF32 x;
-    IFBF32 y;
-};
-
-struct IFBLine {
-    IFBPoint point_a;
-    IFBPoint point_b;
-};
 
 #endif //IFB_TYPES_HPP

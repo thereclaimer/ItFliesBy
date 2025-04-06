@@ -14,46 +14,46 @@
 #include <ifb-rendering-gl.hpp>
 #include <ifb-platform.hpp>
 
+namespace ifb {
+
 /**********************************************************************************/
 /* FORWARD DECLARATIONS                                                           */
 /**********************************************************************************/
 
-struct IFBEngineContext;
-struct IFBEngineContextArgs;
-struct IFBEngineMemory;
+struct engine_context_t;
+struct engine_context_t;
+struct engine_memory_t;
 
 /**********************************************************************************/
 /* HANDLES                                                                        */
 /**********************************************************************************/
 
-typedef IFBHND8  IFBENG8Handle;
-typedef IFBHND16 IFBENG16Handle;
-typedef IFBHND32 IFBENG32Handle;
-typedef IFBHND64 IFBENG64Handle;
-
-typedef IFBEngineContext* IFBENGContext;
+typedef engine_context_t* engine_context_h;
 
 /**********************************************************************************/
 /* CONTEXT                                                                        */
 /**********************************************************************************/
 
-struct IFBEngineContextArgs {
-    IFBMemory       global_stack_memory;
-    IFBPlatformAPI* platform_api;
+struct engine_context_args_t {
+    memory_t        global_stack_memory;
+    platform_api_t* platform_api;
 };
 
-namespace ifb_engine {
+namespace engine {
 
     // create/destroy
-    ifb_engine_api IFBENGContext context_create    (const IFBEngineContextArgs& args);
-    ifb_engine_api const IFBB8   context_destroy   (const IFBENGContext context_handle);
+    ifb_engine_api engine_context_h context_create    (const engine_context_args_t& args);
+    ifb_engine_api const b8         context_destroy   (engine_context_h context_handle);
         
     // startup/shutdown
-    ifb_engine_api const IFBB8   context_startup   (const IFBENGContext context_handle);
-    ifb_engine_api const IFBB8   context_shutdown  (const IFBENGContext context_handle);
+    ifb_engine_api const b8         context_startup   (engine_context_h context_handle);
+    ifb_engine_api const b8         context_shutdown  (engine_context_h context_handle);
 
     // rendering
-    ifb_engine_api const IFBB8   context_main_loop (const IFBENGContext context_handle);
-};
+    ifb_engine_api const b8         context_main_loop (engine_context_h context_handle);
+
+}; //namespace ifb::engine
+}; //namespace ifb
+
 
 #endif //IFB_ENGINE_HPP

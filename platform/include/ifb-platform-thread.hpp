@@ -3,22 +3,22 @@
 
 #include <ifb.hpp>
 
-/**********************************************************************************/
-/* FORWARD DECLARATIONS                                                           */
-/**********************************************************************************/
-
-struct IFBPlatformThreadRequest;
+using namespace ifb;
 
 /**********************************************************************************/
 /* THREAD API                                                                     */
 /**********************************************************************************/
 
-typedef const IFBU32 (*IFBPlatformThreadSize)        (IFBVoid);
-typedef const IFBB8  (*IFBPlatformThreadCreate)      (const IFBPlatformThreadRequest* request);
-typedef const IFBB8  (*IFBPlatformThreadDestroy)     (const IFBPlatformThreadRequest* request);
-typedef const IFBB8  (*IFBPlatformThreadAssignCores) (const IFBPlatformThreadRequest* request);
-typedef const IFBB8  (*IFBPlatformThreadWake)        (const IFBPlatformThreadRequest* request);
-typedef const IFBB8  (*IFBPlatformThreadSleep)       (const IFBPlatformThreadRequest* request);
-typedef const IFBB8  (*IFBPlatformThreadGetStatus)   (const IFBPlatformThreadRequest* request);
+namespace ifb {
+
+    struct platform_thread_request_t;
+
+    typedef const u32 (*platform_api_thread_size_f)         (void);
+    typedef const b8  (*platform_api_thread_create_f)       (const platform_thread_request_t* request);
+    typedef const b8  (*platform_api_thread_destroy_f)      (const platform_thread_request_t* request);
+    typedef const b8  (*platform_api_thread_assign_cores_f) (const platform_thread_request_t* request);
+    typedef const b8  (*platform_api_thread_wake_f)         (const platform_thread_request_t* request);
+    typedef const b8  (*platform_api_thread_sleep_f)        (const platform_thread_request_t* request);
+};
 
 #endif //IFB_PLATFORM_THREAD_HPP

@@ -4,18 +4,21 @@
 
 #include "ifb-threads.hpp"
 
-const IFBU32 
-ifb_thread::memory_size_pool_args(
-    IFBVoid) {
+using namespace ifb;
+using namespace ifb::threads;
 
-    const IFBU32 size = ifb_macro_align_size_struct(IFBThreadPoolArgs);
+const u32 
+threads::memory_size_pool_args(
+    void) {
+
+    const u32 size = ifb_macro_align_size_struct(thread_pool_args_t);
     return(size);
 }
 
-const IFBU32
-ifb_thread::memory_size_pool_sizes_cache(
-    IFBVoid){
+const u32
+threads::memory_size_pool_sizes_cache(
+    void){
 
-    const IFBU32 size = ifb_macro_align_size_struct(IFBThreadPoolSizesCache);
+    const u32 size = ifb_macro_align_size_struct(thread_pool_sizes_cache_t);
     return(size);
 }

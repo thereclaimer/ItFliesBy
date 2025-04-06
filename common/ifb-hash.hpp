@@ -16,35 +16,35 @@ namespace ifb_hash {
 
     const IFBHash 
     get_hash(
-        const IFBChar* c_str,
-        const IFBU32   c_str_length_max);
+        const ifb::utf8* c_str,
+        const ifb::u32   c_str_length_max);
 
-    const IFBB8
+    const ifb::b8
     collision_check(
         const IFBHash* hash_value_array_ptr,
-        const IFBU32   hash_value_array_count,
+        const ifb::u32   hash_value_array_count,
         const IFBHash  hash_value);
     
-    const IFBB8
+    const ifb::b8
     find_next_clear_value(
         const IFBHash*  in_hash_value_array_ptr,
-        const IFBU32    in_hash_value_array_count,
-              IFBU32&  out_hash_index_ref);
+        const ifb::u32    in_hash_value_array_count,
+              ifb::u32&  out_hash_index_ref);
 
-    const IFBB8
+    const ifb::b8
     search(
         const IFBHash* in_hash_value_array_ptr,
-        const IFBU32   in_hash_value_array_count,
+        const ifb::u32   in_hash_value_array_count,
         const IFBHash  in_hash_value,
-              IFBU32& out_hash_index_ref);
+              ifb::u32& out_hash_index_ref);
     
-    const IFBB8
+    const ifb::b8
     search(
         const IFBHash* hash_value_array_ptr,
-        const IFBU32   hash_value_array_count,
+        const ifb::u32   hash_value_array_count,
         const IFBHash  hash_value);
 
-    const IFBB8
+    const ifb::b8
     hash_is_clear(
         const IFBHash& hash_value);
 };
@@ -56,19 +56,19 @@ namespace ifb_hash {
 struct IFBHash {
     union {
         struct {
-            IFBU32 h1;
-            IFBU32 h2;
-            IFBU32 h3;
-            IFBU32 h4;
+            ifb::u32 h1;
+            ifb::u32 h2;
+            ifb::u32 h3;
+            ifb::u32 h4;
         };
-        IFBU32 h[4];
+        ifb::u32 h[4];
     };
 };
 
 inline const IFBHash 
 ifb_hash::get_hash(
-    const IFBChar* c_str,
-    const IFBU32   c_str_length_max) {
+    const ifb::utf8* c_str,
+    const ifb::u32   c_str_length_max) {
     
     IFBHash hash_value;
     hash_value = {0};
@@ -77,7 +77,7 @@ ifb_hash::get_hash(
     if (!c_str) return(hash_value);
 
     //get the safe length of the string
-    const IFBU32 c_str_length = strnlen_s(c_str,c_str_length_max - 1) + 1;
+    const ifb::u32 c_str_length = strnlen_s(c_str,c_str_length_max - 1) + 1;
 
     //do the hash
     meow_u128 meow_hash_value = MeowHash(MeowDefaultSeed,c_str_length,(void*)c_str);
@@ -89,10 +89,10 @@ ifb_hash::get_hash(
     return(hash_value);
 }
 
-inline const IFBB8
+inline const ifb::b8
 ifb_hash::collision_check(
     const IFBHash* hash_value_array_ptr,
-    const IFBU32  hash_value_array_count,
+    const ifb::u32  hash_value_array_count,
     const IFBHash  hash_value) {
 
     if (
@@ -106,7 +106,7 @@ ifb_hash::collision_check(
     __m128i xmm_reg_0 = _mm_loadu_epi32(hash_value.h);
 
     for (
-        IFBU32 hash_index = 0;
+        ifb::u32 hash_index = 0;
                hash_index < hash_value_array_count;
              ++hash_index) {
 
@@ -124,11 +124,11 @@ ifb_hash::collision_check(
     return(false); 
 }
 
-inline const IFBB8
+inline const ifb::b8
 ifb_hash::find_next_clear_value(
     const IFBHash*  in_hash_value_array_ptr,
-    const IFBU32   in_hash_value_array_count,
-          IFBU32& out_hash_index_ref) {
+    const ifb::u32   in_hash_value_array_count,
+          ifb::u32& out_hash_index_ref) {
 
     __m128i xmm_reg;
 
@@ -147,12 +147,12 @@ ifb_hash::find_next_clear_value(
     return(false);
 }
 
-inline const IFBB8
+inline const ifb::b8
 ifb_hash::search(
     const IFBHash* in_hash_value_array_ptr,
-    const IFBU32   in_hash_value_array_count,
+    const ifb::u32   in_hash_value_array_count,
     const IFBHash  in_hash_value,
-          IFBU32& out_hash_index_ref) {
+          ifb::u32& out_hash_index_ref) {
 
     if (
         in_hash_value_array_ptr   == NULL ||  
@@ -183,10 +183,10 @@ ifb_hash::search(
     return(false); 
 }
 
-inline const IFBB8
+inline const ifb::b8
 ifb_hash::search(
     const IFBHash* hash_value_array_ptr,
-    const IFBU32   hash_value_array_count,
+    const ifb::u32   hash_value_array_count,
     const IFBHash  hash_value) {
 
     if (
@@ -200,7 +200,7 @@ ifb_hash::search(
     __m128i xmm_reg_0 = _mm_loadu_epi32(hash_value.h);
 
     for (
-        IFBU32 hash_index = 0;
+        ifb::u32 hash_index = 0;
                 hash_index < hash_value_array_count;
                 ++hash_index) {
 
@@ -219,11 +219,11 @@ ifb_hash::search(
 }
 
 
-inline const IFBB8
+inline const ifb::b8
 ifb_hash::hash_is_clear(
     const IFBHash& hash_value) {
 
-    IFBB8 is_clear = true;
+    ifb::b8 is_clear = true;
 
     is_clear &= (hash_value.h1 == 0);
     is_clear &= (hash_value.h2 == 0);

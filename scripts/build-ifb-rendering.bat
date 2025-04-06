@@ -40,9 +40,10 @@ if not exist %path_build%\lib mkdir %path_build%\lib
 :: COMPILER ARGUMENTS
 ::----------------------------------------------------------------
 
-@set cl_flags=      /c    ^
-                    /MD   ^
-                    /Z7   ^
+@set cl_flags=      /c         ^
+                    /MD        ^
+                    /Z7        ^
+                    /std:c++17 ^
                     /EHsc
 
 @set cl_output=     /Fo:%path_build%\obj\ItFliesBy.Rendering.obj

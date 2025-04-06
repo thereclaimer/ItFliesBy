@@ -45,11 +45,11 @@
 
 // struct IFBShader : IFBIDShader {
 //     IFBIDArena            arena_id;              
-//     IFBGLIDShaderProgram  gl_shader_program;
-//     IFBGLIDVertex         gl_vertex;
-//     IFBAddr           vertex_buffer_start;
-//     IFBU32               vertex_buffer_size;
-//     IFBU32               vertex_buffer_position;
+//     gl_id_shader_program_t  gl_shader_program;
+//     gl_id_tVertex         gl_vertex;
+//     ifb::addr           vertex_buffer_start;
+//     ifb::u32               vertex_buffer_size;
+//     ifb::u32               vertex_buffer_position;
 // };
 
 // /**********************************************************************************/
@@ -58,17 +58,17 @@
 
 // struct IFBBufferVertex : IFBIDBufferVertex {
 //     IFBIDTag            tag;
-//     IFBGLIDBufferVertex gl_vertex_buffer;
-//     IFBU32             size;
-//     IFBU32             stride;
+//     gl_id_buffer_vertex_t gl_vertex_buffer;
+//     ifb::u32             size;
+//     ifb::u32             stride;
 //     IFBHND              data_handle;
 // };
 
 // struct IFBBufferElement : IFBIDBufferElement {
-//     IFBU32              count;
-//     IFBU32*             data;
+//     ifb::u32              count;
+//     ifb::u32*             data;
 //     IFBIDTag             tag;
-//     IFBGLIDBufferElement gl_element_buffer; 
+//     gl_id_buffer_element_t gl_element_buffer; 
 // };
 
 // /**********************************************************************************/
@@ -78,50 +78,50 @@
 // struct IFBUniformU32 : IFBIDUniformU32 {
 //     IFBIDShader    shader;
 //     IFBIDTag       tag;
-//     IFBGLIDUniform gl_uniform;
-//     IFBU32        count;
+//     gl_id_uniform gl_uniform;
+//     ifb::u32        count;
 // };
 
 // struct IFBUniformF32 : IFBIDUniformF32 {
 //     IFBIDShader    shader;
 //     IFBIDTag       tag;
-//     IFBGLIDUniform gl_uniform;
-//     IFBU32        count;
+//     gl_id_uniform gl_uniform;
+//     ifb::u32        count;
 // };
 
 // struct IFBUniformVec2 : IFBIDUniformVec2 {
 //     IFBIDShader    shader;
 //     IFBIDTag       tag;
-//     IFBGLIDUniform gl_uniform;
-//     IFBU32        count;
+//     gl_id_uniform gl_uniform;
+//     ifb::u32        count;
 // };
 
 // struct IFBUniformVec3 : IFBIDUniformVec3 {
 //     IFBIDShader    shader;
 //     IFBIDTag       tag;
-//     IFBGLIDUniform gl_uniform;
-//     IFBU32        count;
+//     gl_id_uniform gl_uniform;
+//     ifb::u32        count;
 // };
 
 // struct IFBUniformMat3 : IFBIDUniformMat3 {
 //     IFBIDShader    shader;
 //     IFBIDTag       tag;
-//     IFBGLIDUniform gl_uniform;
-//     IFBU32        count;
+//     gl_id_uniform gl_uniform;
+//     ifb::u32        count;
 // };
 
 // struct IFBUniformColor : IFBIDUniformColor {
 //     IFBIDShader    shader;
 //     IFBIDTag       tag;
-//     IFBGLIDUniform gl_uniform;
-//     IFBU32        count;
+//     gl_id_uniform gl_uniform;
+//     ifb::u32        count;
 // };
 
 // struct IFBUniformSpriteAtlas : IFBIDUniformSpriteAtlas {
 //     IFBIDShader    shader;
 //     IFBIDTag       tag;
-//     IFBGLIDUniform gl_uniform;
-//     IFBU32        count;
+//     gl_id_uniform gl_uniform;
+//     ifb::u32        count;
 // };
 
 #endif //IFB_RENDERING_HPP

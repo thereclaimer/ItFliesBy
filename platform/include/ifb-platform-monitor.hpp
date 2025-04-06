@@ -3,13 +3,23 @@
 
 #include <ifb.hpp>
 
+using namespace ifb;
+
 /**********************************************************************************/
 /* MONITOR                                                                        */
 /**********************************************************************************/
 
-struct IFBMonitor;
+namespace ifb {
 
-typedef const IFBU32 (*IFBPlatformMonitorCount) (IFBVoid);
-typedef const IFBB8  (*IFBPlatformMonitorInfo)  (const IFBU32 monitor_count, IFBMonitor* monitor_array);
+   struct platform_monitor_t {
+        dimensions_t dimensions;
+        position_t   position;
+        u32          refresh_hz;
+        u32          index;
+    };
+    
+    typedef const u32 (*platform_api_monitor_count_f) (void);
+    typedef const b8  (*platform_api_monitor_info_f)  (const u32 monitor_count, platform_monitor_t* monitor_array);
+};
 
 #endif //IFB_PLATFORM_MONITOR_HPP

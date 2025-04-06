@@ -4,50 +4,50 @@
 
 #define macro_calculate_stack_pointer(memory,singleton,type) (type*)&memory->stack.singleton_buffer[singleton]
 
-inline IFBEngineContext*
-ifb_engine::memory_stack_get_context(
-    const IFBEngineMemory* memory) {
+inline engine_context_t*
+engine::memory_stack_get_context(
+    const engine_memory_t* memory) {
 
-    IFBEngineContext* pointer = macro_calculate_stack_pointer(
+    engine_context_t* pointer = macro_calculate_stack_pointer(
         memory, 
-        IFBEngineSingleton_Context,
-        IFBEngineContext);
+        engine_memory_singleton_e_context,
+        engine_context_t);
 
     return(pointer);
 }
 
-inline IFBEngineGraphicsManager*
-ifb_engine::memory_stack_get_manager_graphics(
-    const IFBEngineMemory* memory) {
+inline engine_core_graphics_t*
+engine::memory_stack_get_core_graphics(
+    const engine_memory_t* memory) {
 
-    IFBEngineGraphicsManager* pointer = macro_calculate_stack_pointer(
+    engine_core_graphics_t* pointer = macro_calculate_stack_pointer(
         memory,
-        IFBEngineSingleton_Core_ManagerGraphics,
-        IFBEngineGraphicsManager);
+        engine_memory_arena_e_core_graphics,
+        engine_core_graphics_t);
     
     return(pointer);
 }
 
-inline IFBEngineFileManager*
-ifb_engine::memory_stack_get_manager_files(
-    const IFBEngineMemory* memory) {
+inline engine_core_files_t*
+engine::memory_stack_get_core_files(
+    const engine_memory_t* memory) {
 
-    IFBEngineFileManager* pointer = macro_calculate_stack_pointer(
+    engine_core_files_t* pointer = macro_calculate_stack_pointer(
         memory,
-        IFBEngineSingleton_Core_ManagerFiles,
-        IFBEngineFileManager);
+        engine_memory_arena_e_core_threads,
+        engine_core_files_t);
     
     return(pointer);
 }
 
-inline IFBEngineThreadManager*
-ifb_engine::memory_stack_get_manager_threads(
-    const IFBEngineMemory* memory) {
+inline engine_core_threads_t*
+engine::memory_stack_get_core_threads(
+    const engine_memory_t* memory) {
 
-    IFBEngineThreadManager* pointer = macro_calculate_stack_pointer(
+    engine_core_threads_t* pointer = macro_calculate_stack_pointer(
         memory,
-        IFBEngineSingleton_Core_ManagerThreads,
-        IFBEngineThreadManager);
+        engine_memory_arena_e_core_files,
+        engine_core_threads_t);
 
     return(pointer);
 }
