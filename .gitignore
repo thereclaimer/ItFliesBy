@@ -2,3 +2,5 @@ build
 **.rdbg
 vcpkg_installed
 .idea
+.cache
+compile_commands.json
