@@ -34,7 +34,7 @@ if not exist %path_build%\bin mkdir %path_build%\bin
 if not exist %path_build%\obj mkdir %path_build%\obj
 if not exist %path_build%\lib mkdir %path_build%\lib
 
-::----------------------------------------------------------------
+::---------------------------------------------------------------
 :: COMPILER ARGUMENTS
 ::----------------------------------------------------------------
 
