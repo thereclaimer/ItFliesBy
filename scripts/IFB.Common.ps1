@@ -18,19 +18,20 @@ $Script:BuildTools = [PSCustomObject]@{
     Linker    = 'link.exe'  
 }
 
-$Script:DebugOutDirs = [PSCustomObject]@{
+
+$Script:OutDirsDebug = [PSCustomObject]@{
     Bin = 'build\debug\bin'
     Obj = 'build\debug\obj'
     Lib = 'build\debug\lib'
 }
 
-$Script:ReleaseOutDirs = [PSCustomObject]@{
+$Script:OutDirsRelease = [PSCustomObject]@{
     Bin = 'build\release\bin'
     Obj = 'build\release\obj'
     Lib = 'build\release\lib'
 }
 
-$Script:CompilerDebugFlags = @(
+$Script:CompilerFlagsDebug = @(
     '/nologo',            # startup banner disabled
     '/c',                 # compile without linking
     '/MD',                # link against multithreaded runtime library (MSVCRT.dll)
@@ -41,16 +42,29 @@ $Script:CompilerDebugFlags = @(
     '/D_HAS_EXCEPTIONS=0' # disable exceptions for STL and CRT
 ) -join ' '
 
-function Export-IFBDebugOutDirs {
+function Export-IFBOutDirsDebug {
 
-	if (!(Test-Path -Path $Script:DebugOutDirs.Bin)) { New-Item -ItemType Directory -Path $Script:DebugOutDirs.Bin }
-	if (!(Test-Path -Path $Script:DebugOutDirs.Obj)) { New-Item -ItemType Directory -Path $Script:DebugOutDirs.Obj }
-	if (!(Test-Path -Path $Script:DebugOutDirs.Lib)) { New-Item -ItemType Directory -Path $Script:DebugOutDirs.Lib }
+	if (!(Test-Path -Path $Script:OutDirsDebug.Bin)) { New-Item -ItemType Directory -Path $Script:OutDirsDebug.Bin }
+	if (!(Test-Path -Path $Script:OutDirsDebug.Obj)) { New-Item -ItemType Directory -Path $Script:OutDirsDebug.Obj }
+	if (!(Test-Path -Path $Script:OutDirsDebug.Lib)) { New-Item -ItemType Directory -Path $Script:OutDirsDebug.Lib }
 }
 
-function Export-IFBReleaseOutDirs {
+function Export-IFBOutDirsRelease {
 
-	if (!(Test-Path -Path $Script:ReleaseOutDirs.Bin)) { New-Item -ItemType Directory -Path $Script:ReleaseOutDirs.Bin }
-	if (!(Test-Path -Path $Script:ReleaseOutDirs.Obj)) { New-Item -ItemType Directory -Path $Script:ReleaseOutDirs.Obj }
-	if (!(Test-Path -Path $Script:ReleaseOutDirs.Lib)) { New-Item -ItemType Directory -Path $Script:ReleaseOutDirs.Lib }
+	if (!(Test-Path -Path $Script:OutDirsRelease.Bin)) { New-Item -ItemType Directory -Path $Script:OutDirsRelease.Bin }
+	if (!(Test-Path -Path $Script:OutDirsRelease.Obj)) { New-Item -ItemType Directory -Path $Script:OutDirsRelease.Obj }
+	if (!(Test-Path -Path $Script:OutDirsRelease.Lib)) { New-Item -ItemType Directory -Path $Script:OutDirsRelease.Lib }
+}
+
+function Invoke-IFBCleanBuild {
+
+    Export-IFBOutDirsDebug
+    Export-IFBOutDirsRelease
+
+    Remove-Item ($Script:OutDirsDebug.Bin   + "\*") -Recurse -Force
+    Remove-Item ($Script:OutDirsDebug.Obj   + "\*") -Recurse -Force
+    Remove-Item ($Script:OutDirsDebug.Lib   + "\*") -Recurse -Force
+    Remove-Item ($Script:OutDirsRelease.Bin + "\*") -Recurse -Force
+    Remove-Item ($Script:OutDirsRelease.Obj + "\*") -Recurse -Force
+    Remove-Item ($Script:OutDirsRelease.Lib + "\*") -Recurse -Force
 }

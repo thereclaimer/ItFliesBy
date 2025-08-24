@@ -6,15 +6,15 @@ pushd ..
 @set dir_lib=    build\debug\lib
 @set dir_obj=    build\debug\obj
 
-@set cl_in=      platform\src\ifb-win32-main.cpp
-@set cl_out=     /Fo:build\debug\obj\ItFliesBy.obj
-@set cl_include= /Iplatform\include /Iplatform\src
+@set cl_in=      engine\src\ifb-engine.cpp
+@set cl_out=     /Fo:build\debug\obj\ItFliesBy.Engine.obj
+@set cl_include= /Iengine\include /Iengine\src
 @set cl_flags=   /nologo /c /MD /Z7 /EHs- /std:c++17 /Od /D_HAS_EXCEPTIONS=0
 
-@set link_in=    ItFliesBy.obj ItFliesBy.Engine.lib user32.lib kernel32.lib
-@set link_out=   /OUT:build\debug\bin\ItFliesBy.dll
-@set link_path=  /LIBPATH:build\debug\obj /LIBPATH:build\debug\lib
-@set link_flags= /nologo /SUBSYSTEM:WINDOWS /DEBUG
+@set link_in=    /nologo /SUBSYSTEM:WINDOWS /DEBUG /DLL
+@set link_out=   /LIBPATH:build\debug\obj /LIBPATH:build\debug\lib
+@set link_path=  ItFliesBy.obj user32.lib kernel32.lib
+@set link_flags= /OUT:build\debug\bin\ItFliesBy.Engine.dll /IMPLIB:build\debug\lib\ItFliesBy.Engine.lib
 
 @set cmd_cl=     cl.exe   %cl_in%      %cl_out%    %cl_include% %cl_flags%
 @set cmd_link=   link.exe %link_flags% %link_path% %link_in%    %link_out%

@@ -1,9 +1,13 @@
 {
 	"folders": [
 		{
-			"path": "..",
-			"name": "IFB"
+			"name": "IFB",
+			"path": "../"
 		},
+		{
+			"name": "SLDLib",
+			"path": "../sld"
+		}
 	],
 	"settings": {
 		"files.associations": {
