@@ -18,7 +18,6 @@ $Script:BuildTools = [PSCustomObject]@{
     Linker    = 'link.exe'  
 }
 
-
 $Script:OutDirsDebug = [PSCustomObject]@{
     Bin = 'build\debug\bin'
     Obj = 'build\debug\obj'
