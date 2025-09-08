@@ -4,6 +4,7 @@
 #include <sld.hpp>
 
 #define IFB_ENG_API      extern
+#define IFB_ENG_FUNC     static
 #define IFB_ENG_INTERNAL static
 #define IFB_ENG_INLINE   static inline
 
@@ -42,6 +43,7 @@ namespace ifb {
     typedef sld::c32 eng_c32;
 
     // memory
+    typedef void       eng_void;
     typedef sld::byte  eng_byte;
     typedef sld::addr  eng_addr;
     typedef sld::vptr  eng_vptr;

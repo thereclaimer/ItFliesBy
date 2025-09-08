@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ifb-engine-memory-internal.cpp"
+#include "ifb-engine-memory-internal.hpp"
 
 using namespace sld;
 
@@ -42,4 +42,27 @@ namespace ifb {
         return(mngr);
     }
 
+    IFB_ENG_INLINE eng_mem_res_platform_t*
+    eng_mem_mngr_get_res_platform(
+        void) {
+
+        static eng_mem_mngr_t& mem_mngr = eng_mem_mngr_instance();
+        return(mem_mngr.res_platform);
+    }
+
+    IFB_ENG_INLINE eng_mem_res_core_t*
+    eng_mem_mngr_get_res_core(
+        void) {
+
+        static eng_mem_mngr_t& mem_mngr = eng_mem_mngr_instance();
+        return(mem_mngr.res_core);
+    }
+
+    IFB_ENG_INLINE eng_mem_res_file_t*
+    eng_mem_mngr_get_res_file(
+        void) {
+
+        static eng_mem_mngr_t& mem_mngr = eng_mem_mngr_instance();
+        return(mem_mngr.res_file);
+    }
 };
