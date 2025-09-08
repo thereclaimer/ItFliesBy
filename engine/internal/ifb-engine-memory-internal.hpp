@@ -1,4 +1,5 @@
-#pragma once
+#ifndef IFB_ENGINE_MEMORY_INTERNAL_HPP
+#ifndef IFB_ENGINE_MEMORY_INTERNAL_HPP
 
 #include <sld-memory.hpp>
 #include "ifb-engine-memory.hpp"
@@ -22,3 +23,5 @@ namespace ifb {
 
 
 };
+
+#endif // IFB_ENGINE_MEMORY_INTERNAL_HPP
