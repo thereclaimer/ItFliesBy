@@ -2,6 +2,7 @@
 #define IFB_ENGINE_HPP
 
 #include <sld.hpp>
+#include <sld-buffer.hpp>
 
 #define IFB_ENG_API      extern
 #define IFB_ENG_FUNC     static
@@ -98,6 +99,11 @@ namespace ifb {
         eng_error_e32_module_memory   = 0x00020000, 
         eng_error_e32_module_file     = 0x00030000
     };
+
+    //-------------------------------------------------------------------
+    // DATA STRUCTURES
+    //-------------------------------------------------------------------
+    typedef sld::buffer_t eng_buffer_t;
 };
 
 #endif //IFB_ENGINE_HPP

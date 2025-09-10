@@ -7,7 +7,7 @@
 namespace ifb {
 
     typedef sld::reservation_t eng_mem_res_t;
-    typedef sld::arnea_t       eng_mem_arena_t;
+    typedef sld::arena_t       eng_mem_arena_t;
 
     struct eng_mem_res_platform_t : eng_mem_res_t { };
     struct eng_mem_res_core_t     : eng_mem_res_t { };
