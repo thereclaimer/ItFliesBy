@@ -22,6 +22,9 @@ namespace ifb {
         eng_asset_type_e32_sound = 2
     };
 
+    struct eng_asset_type_u32_t : eng_u32_t       { };
+    struct eng_asset_id_u128_t  : eng_hash_u128_t { };
+
     struct eng_asset_buffer_t {
         eng_byte* data;
         eng_u64   size;

@@ -53,6 +53,14 @@ $Script:CompilerFlagsDebugDLL = @(
     '/D_HAS_EXCEPTIONS=0' # disable exceptions for STL and CRT
 ) -join ' '
 
+$Script:SLDLib = [PSCustomObject]@{
+    Include      = 'sld\include'
+    Lib          = 'sld\build\debug\lib'
+    VcpkgBin     = 'sld\vcpkg_installed\x64-windows\bin'  
+    VcpkgInclude = 'sld\vcpkg_installed\x64-windows\include'  
+    VcpkgLib     = 'sld\vcpkg_installed\x64-windows\lib'  
+} 
+
 function Export-IFBOutDirsDebug {
 
 	if (!(Test-Path -Path $Script:OutDirsDebug.Bin)) { New-Item -ItemType Directory -Path $Script:OutDirsDebug.Bin }

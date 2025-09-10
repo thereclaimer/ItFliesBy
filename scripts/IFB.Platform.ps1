@@ -23,8 +23,11 @@ $Script:PlatformDebugCompileArgs = [PSCustomObject]@{
     In      = 'platform\src\ifb-win32-main.cpp' 
     Out     = '/Fo:' + $Script:OutDirsDebug.Obj + '\' + $Script:PlatformOut.Obj
     Include = @(
-    '/I' + 'platform\include'
-    '/I' + 'platform\src'
+        '/I' + 'platform\include'
+        '/I' + 'platform\src'
+        '/I' + 'engine\include'
+        '/I' + 'sld\include'
+        '/I' + 'sld\vcpkg_installed\x64-windows\include'
     ) -join ' '
     Flags = $Script:CompilerFlagsDebug    
 }
@@ -54,7 +57,7 @@ $Script:PlatformDebugLinkArgs = [PSCustomObject]@{
     In = @(
         $Script:PlatformOut.Obj
         $Script:EngineOut.Lib
-        "user32.lib",
+        "user32.lib"
         "kernel32.lib"
     ) -join ' '
     Out = '/OUT:' + $Script:OutDirsDebug.Bin + '\' + $Script:PlatformOut.Exe

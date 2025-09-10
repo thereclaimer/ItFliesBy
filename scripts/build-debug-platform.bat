@@ -8,7 +8,7 @@ pushd ..
 
 @set cl_in=      platform\src\ifb-win32-main.cpp
 @set cl_out=     /Fo:build\debug\obj\ItFliesBy.obj
-@set cl_include= /Iplatform\include /Iplatform\src
+@set cl_include= /Iplatform\include /Iplatform\src /Iengine\include /Isld\include /Isld\vcpkg_installed\x64-windows\include
 @set cl_flags=   /nologo /c /MD /Z7 /EHs- /std:c++17 /Od /D_HAS_EXCEPTIONS=0
 
 @set link_in=    ItFliesBy.obj ItFliesBy.Engine.lib user32.lib kernel32.lib

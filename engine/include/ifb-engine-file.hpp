@@ -2,6 +2,7 @@
 #define IFB_ENG_FILE_HPP
 
 #include "ifb-engine.hpp"
+#include <sld-os.hpp>
 
 #ifndef    IFB_ENG_FILE_PATH_SIZE
 #   define IFB_ENG_FILE_PATH_SIZE 128

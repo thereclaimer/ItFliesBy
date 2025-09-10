@@ -5,18 +5,6 @@
 . $PSScriptRoot\IFB.Common.ps1
 
 ############################
-# SLDLib
-############################
-
-$Script:SLDLib = [PSCustomObject]@{
-    Include      = 'sld\include'
-    Lib          = 'sld\build\debug\lib'
-    VcpkgBin     = 'sld\vcpkg_installed\x64-windows\bin'  
-    VcpkgInclude = 'sld\vcpkg_installed\x64-windows\include'  
-    VcpkgLib     = 'sld\vcpkg_installed\x64-windows\lib'  
-} 
-
-############################
 # OUTPUT
 ############################
 
