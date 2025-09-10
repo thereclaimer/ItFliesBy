@@ -3,8 +3,10 @@
 
 #include <sld.hpp>
 #include <sld-buffer.hpp>
+#include <sld-hash.hpp>
+#include <sld-string.hpp>
 
-#define IFB_ENG_API      extern
+#define IFB_ENG_API      __declspec(dllexport)
 #define IFB_ENG_FUNC     static
 #define IFB_ENG_INTERNAL static
 #define IFB_ENG_INLINE   static inline
@@ -100,10 +102,20 @@ namespace ifb {
         eng_error_e32_module_file     = 0x00030000
     };
 
+
+    //-------------------------------------------------------------------
+    // STRINGS
+    //-------------------------------------------------------------------
+    
+    typedef sld::str8_t  eng_str8_t;
+    typedef sld::str16_t eng_str16_t;
+
     //-------------------------------------------------------------------
     // DATA STRUCTURES
     //-------------------------------------------------------------------
+    
     typedef sld::buffer_t eng_buffer_t;
+    typedef sld::hash_t   eng_hash_u128_t;
 };
 
 #endif //IFB_ENGINE_HPP

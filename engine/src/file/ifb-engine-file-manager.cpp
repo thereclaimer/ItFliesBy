@@ -155,6 +155,7 @@ namespace ifb {
     eng_file_mngr_close(
         const eng_file_h32_t file_handle) {
 
+        return(false);
     }
 
     IFB_ENG_FUNC bool

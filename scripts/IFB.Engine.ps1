@@ -40,6 +40,7 @@ $Script:EngineDebugCompileArgs = [PSCustomObject]@{
     '/I' + 'engine\src'
     '/I' + 'engine\src\file'
     '/I' + 'engine\src\memory'
+    '/I' + 'engine\src\asset'
     '/I' + 'sld\include'
     '/I' + 'sld\vcpkg_installed\x64-windows\include'
     ) -join ' '
