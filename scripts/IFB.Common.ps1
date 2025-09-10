@@ -41,6 +41,18 @@ $Script:CompilerFlagsDebug = @(
     '/D_HAS_EXCEPTIONS=0' # disable exceptions for STL and CRT
 ) -join ' '
 
+$Script:CompilerFlagsDebugDLL = @(
+    '/nologo',            # startup banner disabled
+    '/c',                 # compile without linking
+    '/MD',                # link against multithreaded runtime library (MSVCRT.dll)
+    '/LD',                # build .dll 
+    '/Z7',                # generate debug info
+    '/EHs-',              # disable exception handling
+    '/std:c++17',         # c++17 standard mode
+    '/Od',                # disable optimizations
+    '/D_HAS_EXCEPTIONS=0' # disable exceptions for STL and CRT
+) -join ' '
+
 function Export-IFBOutDirsDebug {
 
 	if (!(Test-Path -Path $Script:OutDirsDebug.Bin)) { New-Item -ItemType Directory -Path $Script:OutDirsDebug.Bin }

@@ -11,6 +11,8 @@ namespace ifb {
     typedef sld::os_file_handle_t           eng_file_os_handle_t;
     typedef sld::os_file_error_t            eng_file_os_error_t;
     typedef sld::os_file_async_context_t    eng_file_os_async_context_t;
+    typedef sld::os_file_os_context_t       eng_file_os_context_t;
+    typedef sld::os_file_callback_context_t eng_file_callback_context_t;
 
     struct eng_file_t;
     struct eng_file_mngr_t;

@@ -5,6 +5,18 @@
 . $PSScriptRoot\IFB.Common.ps1
 
 ############################
+# SLDLib
+############################
+
+$Script:SLDLib = [PSCustomObject]@{
+    Include      = 'sld\include'
+    Lib          = 'sld\build\debug\lib'
+    VcpkgBin     = 'sld\vcpkg_installed\x64-windows\bin'  
+    VcpkgInclude = 'sld\vcpkg_installed\x64-windows\include'  
+    VcpkgLib     = 'sld\vcpkg_installed\x64-windows\lib'  
+} 
+
+############################
 # OUTPUT
 ############################
 
@@ -24,9 +36,14 @@ $Script:EngineDebugCompileArgs = [PSCustomObject]@{
     Out     = '/Fo:' + $Script:OutDirsDebug.Obj + '\' + $Script:EngineOut.Obj
     Include = @(
     '/I' + 'engine\include'
+    '/I' + 'engine\internal'
     '/I' + 'engine\src'
+    '/I' + 'engine\src\file'
+    '/I' + 'engine\src\memory'
+    '/I' + 'sld\include'
+    '/I' + 'sld\vcpkg_installed\x64-windows\include'
     ) -join ' '
-    Flags = $Script:CompilerFlagsDebug    
+    Flags = $Script:CompilerFlagsDebugDLL    
 }
 
 $Script:EngineDebugCompileExpression = @(
@@ -51,10 +68,14 @@ $Script:EngineDebugLinkArgs = [PSCustomObject]@{
     LibPath = @(
         "/LIBPATH:" + $Script:OutDirsDebug.Obj
         "/LIBPATH:" + $Script:OutDirsDebug.Lib
+        "/LIBPATH:" + $Script:SLDLib.Lib
+        "/LIBPATH:" + $Script:SLDLib.VcpkgLib
     ) -join ' '
     LinkIn = @(
+        "ItFliesBy.Engine.obj"
         "user32.lib",
-        "kernel32.lib"
+        "kernel32.lib",
+        "SLD.Win32.lib"
     ) -join ' '
     LinkOut = @(
         '/OUT:'    + $Script:OutDirsDebug.Bin + '\' + $Script:EngineOut.Dll
@@ -88,10 +109,10 @@ pushd ..
 @set cl_include= $($Script:EngineDebugCompileArgs.Include)
 @set cl_flags=   $($Script:EngineDebugCompileArgs.Flags)
 
-@set link_in=    $($Script:EngineDebugLinkArgs.Flags)
-@set link_out=   $($Script:EngineDebugLinkArgs.LibPath)
-@set link_path=  $($Script:EngineDebugLinkArgs.LinkIn)
-@set link_flags= $($Script:EngineDebugLinkArgs.LinkOut)
+@set link_in=    $($Script:EngineDebugLinkArgs.LinkIn)
+@set link_out=   $($Script:EngineDebugLinkArgs.LinkOut)
+@set link_path=  $($Script:EngineDebugLinkArgs.LibPath)
+@set link_flags= $($Script:EngineDebugLinkArgs.Flags)
 
 @set cmd_cl=     $($Script:BuildTools.Compiler)   %cl_in%      %cl_out%    %cl_include% %cl_flags%
 @set cmd_link=   $($Script:BuildTools.Linker) %link_flags% %link_path% %link_in%    %link_out%

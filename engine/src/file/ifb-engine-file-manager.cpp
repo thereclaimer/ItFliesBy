@@ -13,19 +13,19 @@ namespace ifb {
     static eng_file_os_context_t       _os_context       [IFB_ENG_FILE_TABLE_CAPACITY];
     static eng_file_callback_context_t _callback_context [IFB_ENG_FILE_TABLE_CAPACITY];
     static eng_file_t                  _file             [IFB_ENG_FILE_TABLE_CAPACITY];
-    static byte                        _path_buffer      [IFB_ENG_FILE_TABLE_CAPACITY * IFB_ENG_FILE_PATH_SIZE];
+    static eng_c8                      _path_buffer      [IFB_ENG_FILE_TABLE_CAPACITY * IFB_ENG_FILE_PATH_SIZE];
 
     //-------------------------------------------------------------------
     // DECLARATIONS
     //-------------------------------------------------------------------
  
-    eng_file_t*      eng_file_mngr_get_next_closed      (void);
-    eng_file_t*      eng_file_mngr_get_next_open        (void);
-    void             eng_file_mngr_add_closed           (eng_file_t* file);
-    void             eng_file_mngr_add_open             (eng_file_t* file);
-    eng_void         eng_file_mngr_async_callback_read  (const eng_void* data, const eng_file_os_error_t error, const eng_u32 bytes_transferred);
-    eng_void         eng_file_mngr_async_callback_write (const eng_void* data, const eng_file_os_error_t error, const eng_u32 bytes_transferred);
-    eng_error_s32_t  eng_file_mngr_error_os_to_eng      (const eng_file_os_error_t    os_error);  
+    eng_file_t*           eng_file_mngr_get_next_closed      (void);
+    eng_file_t*           eng_file_mngr_get_next_open        (void);
+    void                  eng_file_mngr_add_closed           (eng_file_t* file);
+    void                  eng_file_mngr_add_open             (eng_file_t* file);
+    eng_void              eng_file_mngr_async_callback_read  (const eng_void* data, const eng_file_os_error_t error, const eng_u32 bytes_transferred);
+    eng_void              eng_file_mngr_async_callback_write (const eng_void* data, const eng_file_os_error_t error, const eng_u32 bytes_transferred);
+    const eng_error_s32_t eng_file_mngr_error_os_to_eng      (const eng_file_os_error_t    os_error);  
 
     //-------------------------------------------------------------------
     // API
@@ -40,14 +40,14 @@ namespace ifb {
 
         if (file == NULL) return(handle);
 
-        static const sld::os_file_flags_t os_flags = (
-            os_file_flag_e_async        |
-            os_file_flag_e_read         |
-            os_file_flag_e_share_read   |
-            os_file_flag_e_share_write  |
-            os_file_flag_e_share_delete |
-            os_file_flag_e_overwrite
-        );
+        static const sld::os_file_flags_t os_flags = {
+            sld::os_file_flag_e_async        |
+            sld::os_file_flag_e_read         |
+            sld::os_file_flag_e_share_read   |
+            sld::os_file_flag_e_share_write  |
+            sld::os_file_flag_e_share_delete |
+            sld::os_file_flag_e_overwrite
+        };
 
         sld::os_file_error_t os_error = sld::os_file_open(
             file->os_handle,
@@ -56,16 +56,16 @@ namespace ifb {
 
         _file_mngr.last_error = eng_file_mngr_error_os_to_eng(os_error); 
 
-        if (_file_mngr.last_error != eng_file_error_e32_success) {
+        if (_file_mngr.last_error.val != eng_file_error_e32_success) {
             eng_file_mngr_add_closed(file);
             return(handle);
         }        
 
         eng_mem_arena_t* arena = sld::arena_commit(_file_mngr.reservation);
         if (file->arena == NULL) {
-            _file_mngr.last_error = eng_file_error_e32_arena_commit_fail;
+            _file_mngr.last_error.val = eng_file_error_e32_arena_commit_fail;
             eng_file_mngr_add_closed(file);
-            return(handle)            
+            return(handle);            
         }
 
         file->arena              = arena;
@@ -81,7 +81,7 @@ namespace ifb {
             ++index) {
 
             const eng_c8 c = file_path[index];
-            file->path[index] = c;
+            file->path.cstr[index] = c;
 
             if (c == 0) break;
         }
@@ -99,7 +99,7 @@ namespace ifb {
 
         if (file == NULL) return(handle);
 
-        static const sld::os_file_flags_t os_flags = (
+        static const sld::os_file_flags_t os_flags = {
             sld::os_file_flag_e_async        |
             sld::os_file_flag_e_read         |
             sld::os_file_flag_e_write        |
@@ -107,7 +107,7 @@ namespace ifb {
             sld::os_file_flag_e_share_write  |
             sld::os_file_flag_e_share_delete |
             sld::os_file_flag_e_overwrite
-        );
+        };
 
         sld::os_file_error_t os_error = sld::os_file_open(
             file->os_handle,
@@ -117,16 +117,16 @@ namespace ifb {
         _file_mngr.last_error = eng_file_mngr_error_os_to_eng(os_error); 
 
 
-        if (_file_mngr.last_error != eng_file_error_e32_success) {
+        if (_file_mngr.last_error.val != eng_file_error_e32_success) {
             eng_file_mngr_add_closed(file);
             return(handle);
         }        
         
-        file->arena = sld::arena_commit(_file_mngr.reservation);
+        eng_mem_arena_t* arena = sld::arena_commit(_file_mngr.reservation);
         if (file->arena == NULL) {
-            _file_mngr.last_error = eng_file_error_e32_arena_commit_fail;
+            _file_mngr.last_error.val = eng_file_error_e32_arena_commit_fail;
             eng_file_mngr_add_closed(file);
-            return(handle)            
+            return(handle);          
         }
 
         file->arena              = arena;
@@ -142,7 +142,7 @@ namespace ifb {
             ++index) {
 
             const eng_c8 c = file_path[index];
-            file->path[index] = c;
+            file->path.cstr[index] = c;
 
             if (c == 0) break;
         }
@@ -157,26 +157,25 @@ namespace ifb {
 
     }
 
-    IFB_ENG_FUNC const bool
+    IFB_ENG_FUNC bool
     eng_file_mngr_get_size(
         const eng_file_h32_t file_handle,
         eng_u64&             size) {
 
         eng_file_t* file = eng_file_mngr_get_file(file_handle);
         if (file == NULL) {
-            _file_mngr.last_error = eng_file_error_e32_invalid_file;
+            _file_mngr.last_error.val = eng_file_error_e32_invalid_file;
             return(false);
         } 
 
-        eng_file_os_context_t* os_context = file->os_context;
-        os_context->error = sld::os_file_size(
-            os_context->handle,
+        const eng_file_os_error_t os_error = sld::os_file_size(
+            file->os_handle,
             size
         );
 
-        file->last_error = eng_file_mngr_error_os_to_eng(os_context->error);
+        file->last_error = eng_file_mngr_error_os_to_eng(os_error);
         
-        const eng_bool result = (file->last_error == eng_file_error_e32_success);  
+        const eng_bool result = (file->last_error.val == eng_file_error_e32_success);  
         return(result);
     }
 
@@ -187,7 +186,7 @@ namespace ifb {
 
         eng_file_t* file = eng_file_mngr_get_file(file_handle);
         if (file == NULL) {
-            _file_mngr.last_error = eng_file_error_e32_invalid_file;
+            _file_mngr.last_error.val = eng_file_error_e32_invalid_file;
             return(false);
         } 
         
@@ -202,7 +201,7 @@ namespace ifb {
 
         eng_file_t* file = eng_file_mngr_get_file(file_handle);
         if (file == NULL) {
-            _file_mngr.last_error = eng_file_error_e32_invalid_file;
+            _file_mngr.last_error.val = eng_file_error_e32_invalid_file;
             return(false);
         } 
         
@@ -217,7 +216,7 @@ namespace ifb {
 
         eng_file_t* file = eng_file_mngr_get_file(file_handle);
         if (file == NULL) {
-            _file_mngr.last_error = eng_file_error_e32_invalid_file;
+            _file_mngr.last_error.val = eng_file_error_e32_invalid_file;
             return(false);
         } 
         
@@ -235,8 +234,9 @@ namespace ifb {
 
         const eng_file_t* file = eng_file_mngr_get_file(file_handle);
 
-        const eng_file_error_s32_t last_error = (file != NULL)
-            ? file->last_error
+        eng_file_error_s32_t last_error;
+        last_error.val = (file != NULL)
+            ? file->last_error.val
             : eng_file_error_e32_invalid_file;
     
         return(last_error);
@@ -249,20 +249,19 @@ namespace ifb {
         // validate the file and make sure there's no pending operation
         eng_file_t* file = eng_file_mngr_get_file(file_handle);
         if (!file) {
-            _file_mngr.last_error = eng_file_error_e32_invalid_file;
+            _file_mngr.last_error.val = eng_file_error_e32_invalid_file;
             return(false);
         }
-        if (file->flags & eng_file_flag_e32_io_pending) {
+        if (file->flags.val & eng_file_flag_e32_io_pending) {
             return(false);
         }
 
         // set the read and pending io flags
-        file->flags |= (eng_file_flag_e32_read | eng_file_flag_e32_io_pending);
+        file->flags.val |= (eng_file_flag_e32_read | eng_file_flag_e32_io_pending);
 
         // initialize the async context
         eng_file_os_async_context_t& async_context = file->os_async_context;
         async_context.callback->data  = (eng_void*)file;
-        async_context.callback->error = eng_file_error_e32_success;
         async_context.callback->func  = _file_mngr.os_callback_read; 
 
         // do the async read
@@ -275,15 +274,15 @@ namespace ifb {
         // set the last error
         // update flags if we didn't succeed
         file->last_error      = eng_file_mngr_error_os_to_eng(os_error);
-        const bool is_success = (file->last_error != eng_file_error_e32_success);
+        const bool is_success = (file->last_error.val != eng_file_error_e32_success);
         if (!is_success) {
-            file->flags &= ~(eng_file_flag_e32_read | eng_file_flag_e32_io_pending);
-            file->flags |= ~(eng_file_flag_e32_error);
+            file->flags.val &= ~(eng_file_flag_e32_read | eng_file_flag_e32_io_pending);
+            file->flags.val |= ~(eng_file_flag_e32_error);
         }
         return(is_success);
     }
 
-    IFB_ENG_FUNC void
+    IFB_ENG_FUNC bool
     eng_file_mngr_write(
         const eng_file_h32_t     file_handle,
         const eng_file_buffer_t& file_buffer) {
@@ -291,20 +290,19 @@ namespace ifb {
         // validate the file and make sure there's no pending operation
         eng_file_t* file = eng_file_mngr_get_file(file_handle);
         if (!file) {
-            _file_mngr.last_error = eng_file_error_e32_invalid_file;
+            _file_mngr.last_error.val = eng_file_error_e32_invalid_file;
             return(false);
         }
-        if (file->flags & eng_file_flag_e32_io_pending) {
+        if (file->flags.val & eng_file_flag_e32_io_pending) {
             return(false);
         }
 
         // set the write and pending io flags
-        file->flags |= eng_file_flag_e32_write | eng_file_flag_e32_io_pending;
+        file->flags.val |= eng_file_flag_e32_write | eng_file_flag_e32_io_pending;
 
         // initialize the async context
         eng_file_os_async_context_t& async_context = file->os_async_context;
         async_context.callback->data  = (eng_void*)file;
-        async_context.callback->error = eng_file_error_e32_success;
         async_context.callback->func  = _file_mngr.os_callback_write;
         
         // do the async read
@@ -317,10 +315,10 @@ namespace ifb {
         // set the last error
         // update flags if we didn't succeed
         file->last_error      = eng_file_mngr_error_os_to_eng(os_error);
-        const bool is_success = (file->last_error != eng_file_error_e32_success);
+        const bool is_success = (file->last_error.val != eng_file_error_e32_success);
         if (!is_success) {
-            file->flags &= ~(eng_file_flag_e32_write | eng_file_flag_e32_io_pending);
-            file->flags |= ~(eng_file_flag_e32_error);
+            file->flags.val &= ~(eng_file_flag_e32_write | eng_file_flag_e32_io_pending);
+            file->flags.val |= ~(eng_file_flag_e32_error);
         }
         return(is_success);
     }
@@ -329,38 +327,35 @@ namespace ifb {
     // INTERNAL
     //-------------------------------------------------------------------
 
-    IFB_ENG_INTERNAL eng_file_mngr_t&
+    IFB_ENG_INTERNAL void
     eng_file_mngr_init(
         void) {
 
-        const bool is_initialized = (file_mngr.capacity != 0);  
-        if (!is_initialized) {
+        const bool is_initialized = (_file_mngr.capacity != 0);  
+        if (is_initialized) return;
 
-            _file_mngr.reservation       = eng_mem_mngr_get_res_file();
-            _file_mngr.os_callback_read  = eng_file_mngr_async_callback_read;
-            _file_mngr.os_callback_write = eng_file_mngr_async_callback_write;
-            _file_mngr.buffer_size       = sld::size_kilobytes(IFB_ENG_FILE_BUFFER_SIZE_KB);
-            _file_mngr.capacity          = IFB_ENG_FILE_TABLE_CAPACITY;
-            _file_mngr.path_size         = IFB_ENG_FILE_PATH_SIZE;
-            _file_mngr.list.closed       = _file;
+        _file_mngr.reservation       = eng_mem_mngr_get_res_file();
+        _file_mngr.os_callback_read  = eng_file_mngr_async_callback_read;
+        _file_mngr.os_callback_write = eng_file_mngr_async_callback_write;
+        _file_mngr.buffer_size       = sld::size_kilobytes(IFB_ENG_FILE_BUFFER_SIZE_KB);
+        _file_mngr.capacity          = IFB_ENG_FILE_TABLE_CAPACITY;
+        _file_mngr.path_size         = IFB_ENG_FILE_PATH_SIZE;
+        _file_mngr.list.closed       = _file;
 
-            for (
-                eng_u32 file_index = 0;
-                file_index < _file_mngr.capacity;
-                ++file_index) {
+        for (
+            eng_u32 file_index = 0;
+            file_index < _file_mngr.capacity;
+            ++file_index) {
 
-                eng_file_t* current = &file[file_index];
+            eng_file_t* current = &_file[file_index];
 
-                current->next                      = (file_index < (_file_mngr.capacity - 1)) ? &file[file_index + 1] : NULL;
-                current->prev                      = (file_index > 0)                         ? &file[file_index - 1] : NULL;
-                current->path.cstr                 = &_path_buffer      [file_index * _file_mngr.path_size];
-                current->os_async_context.callback = &_callback_context [file_index];
-                current->os_async_context.os       = &_os_context       [file_index]; 
-                current->index                     = file_index;
-            }
-        };
-
-        return(file_mngr);
+            current->next                      = (file_index < (_file_mngr.capacity - 1)) ? &_file[file_index + 1] : NULL;
+            current->prev                      = (file_index > 0)                         ? &_file[file_index - 1] : NULL;
+            current->path.cstr                 = &_path_buffer      [file_index * _file_mngr.path_size];
+            current->os_async_context.callback = &_callback_context [file_index];
+            current->os_async_context.os       = &_os_context       [file_index]; 
+            current->index                     = file_index;
+        }
     }
 
     IFB_ENG_INTERNAL eng_void
@@ -373,12 +368,10 @@ namespace ifb {
 
         eng_file_t* file = (eng_file_t*)data;
 
-        file->last_error         = eng_file_mngr_error_os_to_eng(os_error);
-        file->buffer.transferred = bytes_transferred;
-
-        eng_file_flags_u32_t& flags = file_mngr.array.flags [os_context->eng_handle]; 
-        flags &= ~(eng_file_flag_e32_pending | eng_file_flag_e32_read);
-        flags |=  (file_error == eng_file_error_e32_success)
+        file->last_error          = eng_file_mngr_error_os_to_eng(os_error);
+        file->buffer.transferred  = bytes_transferred;
+        file->flags.val          &= ~(eng_file_flag_e32_io_pending | eng_file_flag_e32_read);
+        file->flags.val          |=  (file->last_error.val == eng_file_error_e32_success)
             ? eng_file_flag_e32_io_complete
             : eng_file_flag_e32_error; 
     }
@@ -393,12 +386,10 @@ namespace ifb {
 
         eng_file_t* file = (eng_file_t*)data;
 
-        file->last_error         = eng_file_mngr_error_os_to_eng(os_error);
-        file->buffer.transferred = bytes_transferred;
-
-        eng_file_flags_u32_t& flags = file_mngr.array.flags [os_context->eng_handle]; 
-        flags &= ~(eng_file_flag_e32_pending | eng_file_flag_e32_write);
-        flags |=  (file_error == eng_file_error_e32_success)
+        file->last_error          = eng_file_mngr_error_os_to_eng(os_error);
+        file->buffer.transferred  = bytes_transferred;
+        file->flags.val          &= ~(eng_file_flag_e32_io_pending | eng_file_flag_e32_write);
+        file->flags.val          |=  (file->last_error.val == eng_file_error_e32_success)
             ? eng_file_flag_e32_io_complete
             : eng_file_flag_e32_error; 
     }
@@ -437,9 +428,11 @@ namespace ifb {
 
         constexpr eng_u32 os_error_map_count = sizeof(os_error_map) / sizeof(eng_error_s32_t);
 
-        const eng_error_s32_t eng_error = (os_error.val < 0 || os_error.val > os_error_map_count)
+
+        const eng_error_s32_t eng_error = {(os_error.val < 0 || os_error.val > os_error_map_count)
             ? eng_file_error_e32_unknown
-            : os_error_map[os_error.val];
+            : os_error_map[os_error.val].val
+        };
 
         return(eng_error);
     }
@@ -450,7 +443,7 @@ namespace ifb {
 
         if (file_handle.val >= _file_mngr.capacity) return(NULL);
 
-        eng_file_t* file     = (eng_file_t*)_file[file_handle.val]; 
+        eng_file_t* file     = &_file[file_handle.val]; 
         const bool  is_valid = (file->index == file_handle.val);
         
         return(is_valid ? file : NULL);
@@ -460,13 +453,13 @@ namespace ifb {
     eng_file_mngr_get_next_closed(
         void) {
 
-        eng_file_t* closed = file_mngr.list.closed;
+        eng_file_t* closed = _file_mngr.list.closed;
 
         if (closed) {
 
             eng_file_t* next = closed->next;
             if (next) next->prev = NULL;
-            file_mngr.list.closed = next;
+            _file_mngr.list.closed = next;
             closed->next = NULL;
             closed->prev = NULL;
         }
@@ -478,13 +471,13 @@ namespace ifb {
     eng_file_mngr_get_next_open(
         void) {
 
-        eng_file_t* open = file_mngr.list.opened;
+        eng_file_t* open = _file_mngr.list.opened;
 
         if (open) {
 
             eng_file_t* next = open->next;
-            if (next) next->prev = NULL;
-            file_mngr.list.open = next;
+            if (next) next->prev   = NULL;
+            _file_mngr.list.opened = next;
             open->next = NULL;
             open->prev = NULL;
         }
