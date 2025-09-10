@@ -76,7 +76,10 @@ $Script:EngineDebugLinkArgs = [PSCustomObject]@{
         "ItFliesBy.Engine.obj"
         "user32.lib",
         "kernel32.lib",
-        "SLD.Win32.lib"
+        "SLD.Win32.lib",
+        "Gdi32.lib",
+        "imgui.lib"
+        "opengl32.lib"
     ) -join ' '
     LinkOut = @(
         '/OUT:'    + $Script:OutDirsDebug.Bin + '\' + $Script:EngineOut.Dll
