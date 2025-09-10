@@ -2,147 +2,90 @@
 #define IFB_ENGINE_MEMORY_HPP
 
 #include "ifb-engine.hpp"
-#include "ifb-engine-core.hpp"
 
 namespace ifb {
-/**********************************************************************************/
-/* FORWARD DECLARATIONS                                                           */
-/**********************************************************************************/
 
-//memory
-struct engine_memory_t;
-struct engine_memory_stack_t;
-struct engine_memory_reservation_t;
+    // primitive types
+    struct eng_mem_h32_arena_t;
+    struct eng_mem_h32_alctr_block_t;
+    struct eng_mem_h32_alctr_stack_t;
+    struct eng_mem_h32_alctr_heap_t;
+    struct eng_mem_u32_res_type_t;
 
-//sizes
-struct engine_memory_sizes_t;
+    // structured types
+    struct eng_mem_res_info_t;
+    struct eng_mem_arena_info_t;
+    struct eng_mem_alctr_block_info_t;
+    struct eng_mem_alctr_stack_info_t;
+    struct eng_mem_alctr_heap_info_t;
 
-//handles
-typedef u16 engine_memory_arena_t;
-typedef u16 engine_memory_singleton_t;
+    IFB_ENG_API const eng_error_s32_t           eng_mem_last_error             (void);
+    
+    IFB_ENG_API eng_bool                        eng_mem_res_get_info           (const eng_mem_u32_res_type_t in_res, eng_mem_res_info_t& out_info);
 
-/**********************************************************************************/
-/* RESERVED MEMORY                                                                */
-/**********************************************************************************/
+    IFB_ENG_API const eng_mem_h32_arena_t       eng_mem_arena_commit           (const eng_mem_u32_res_type_t res);
+    IFB_ENG_API eng_bool                        eng_mem_arena_decommit         (const eng_mem_h32_arena_t arena_hnd);
+    IFB_ENG_API eng_byte*                       eng_mem_arena_get_ptr          (const eng_mem_h32_arena_t arena_hnd, const eng_u32 offset);    
+    IFB_ENG_API eng_byte*                       eng_mem_arena_push_bytes_abs   (const eng_mem_h32_arena_t arena_hnd, const eng_u32 size, const eng_u32 align = 0);
+    IFB_ENG_API eng_u32                         eng_mem_arena_push_bytes_rel   (const eng_mem_h32_arena_t arena_hnd, const eng_u32 size, const eng_u32 align = 0);
+    IFB_ENG_API eng_bool                        eng_mem_arena_pull_bytes       (const eng_mem_h32_arena_t arena_hnd, const eng_u32 size, const eng_u32 align = 0);
+    IFB_ENG_API const eng_mem_h32_alctr_block_t eng_mem_arena_push_alctr_block (const eng_mem_h32_arena_t arena_hnd, const eng_u32 block_size, const eng_u32 block_count);
+    IFB_ENG_API const eng_mem_h32_alctr_stack_t eng_mem_arena_push_alctr_stack (const eng_mem_h32_arena_t arena_hnd, const eng_u32 stack_size);
+    IFB_ENG_API const eng_mem_h32_alctr_heap_t  eng_mem_arena_push_alctr_heap  (const eng_mem_h32_arena_t arena_hnd, const eng_u32 heap_size, const eng_u32 alloc_size_min, const eng_u32 alloc_size_max);
+    IFB_ENG_API eng_bool                        eng_mem_arena_get_info         (const eng_mem_h32_arena_t in_arena_hnd, eng_mem_arena_info_t& out_info);
 
-struct engine_memory_reservation_t {
-    memory_reservation_h system_reservation_handle;
-    memory_arena_h*      arena_handle_array;
-};
+    IFB_ENG_API eng_byte*                       eng_mem_alctr_block_alloc_abs  (const eng_mem_h32_alctr_block_t b_alctr_hnd);
+    IFB_ENG_API eng_byte*                       eng_mem_alctr_block_alloc_rel  (const eng_mem_h32_alctr_block_t b_alctr_hnd);
+    IFB_ENG_API eng_bool                        eng_mem_alctr_block_free       (const eng_mem_h32_alctr_block_t b_alctr_hnd, const eng_byte* mem);
 
-/**********************************************************************************/
-/* STACK MEMORY                                                                   */
-/**********************************************************************************/
+    IFB_ENG_API eng_byte*                       eng_mem_alctr_stack_push_abs   (const eng_mem_h32_alctr_block_t b_alctr_hnd);
+    IFB_ENG_API eng_byte*                       eng_mem_alctr_stack_push_rel   (const eng_mem_h32_alctr_block_t b_alctr_hnd);
+    IFB_ENG_API eng_bool                        eng_mem_alctr_stack_pull       (const eng_mem_h32_alctr_block_t b_alctr_hnd, const eng_byte* mem);
 
-struct engine_memory_stack_t {
-    memory_stack_h  global_stack_handle;
-    byte*           singleton_buffer;
-};
+    IFB_ENG_API eng_byte*                       eng_mem_alctr_heap_alloc_abs   (const eng_mem_h32_alctr_block_t b_alctr_hnd);
+    IFB_ENG_API eng_byte*                       eng_mem_alctr_heap_alloc_rel   (const eng_mem_h32_alctr_block_t b_alctr_hnd);
+    IFB_ENG_API eng_bool                        eng_mem_alctr_heap_free        (const eng_mem_h32_alctr_block_t b_alctr_hnd, const eng_byte* mem);
 
-namespace engine {
-
-    engine_context_t*       memory_stack_get_context       (const engine_memory_t* memory);
-    engine_core_graphics_t* memory_stack_get_core_graphics (const engine_memory_t* memory);
-    engine_core_files_t*    memory_stack_get_core_files    (const engine_memory_t* memory);
-    engine_core_threads_t*  memory_stack_get_core_threads  (const engine_memory_t* memory);
-};
-
-/**********************************************************************************/
-/* MEMORY                                                                         */
-/**********************************************************************************/
-
-struct engine_memory_t {
-    engine_memory_stack_t       stack;
-    engine_memory_reservation_t reservation;
-};
-
-namespace engine {
-
-    engine_memory_t* memory_allocate (const memory_t& stack_memory);    
-}
-
-/**********************************************************************************/
-/* ARENAS                                                                         */
-/**********************************************************************************/
-
-namespace engine {
-
-    const b8   memory_arena_reset                       (const engine_memory_t* memory, const engine_memory_arena_t arena);
-    const u32  memory_arena_push_bytes_relative         (const engine_memory_t* memory, const engine_memory_arena_t arena, const u32 size);
-    const ptr  memory_arena_push_bytes_absolute_pointer (const engine_memory_t* memory, const engine_memory_arena_t arena, const u32 size);
-    const addr memory_arena_push_bytes_absolute_address (const engine_memory_t* memory, const engine_memory_arena_t arena, const u32 size);
-    const b8   memory_arena_pull_bytes                  (const engine_memory_t* memory, const engine_memory_arena_t arena, const u32 size);
-    const ptr  memory_arena_get_pointer                 (const engine_memory_t* memory, const engine_memory_arena_t arena, const u32 offset);
-};
-
-/**********************************************************************************/
-/* MEMORY MANAGER SIZES                                                           */
-/**********************************************************************************/
-
-//memory sizes
-#define IFB_ENGINE_MEMORY_SIZE_GB_RESERVATION     4
-#define IFB_ENGINE_MEMORY_SIZE_KB_ARENA           64
-#define IFB_ENGINE_MEMORY_SIZE_SINGLETON_COUNT    4
-#define IFB_ENGINE_MEMORY_SIZE_SINGLETON_BUFFER   0xFFFF
-#define IFB_ENGINE_MEMORY_SIZE_SINGLETON_STRIDE   IFB_ENGINE_MEMORY_SIZE_SINGLETON_BUFFER / IFB_ENGINE_MEMORY_SIZE_SINGLETON_COUNT
-#define IFB_ENGINE_MEMORY_SIZE_ARENA_COUNT        4
-#define IFB_ENGINE_MEMORY_SIZE_ARENA_HANDLE_ARRAY IFB_ENGINE_MEMORY_SIZE_ARENA_COUNT * sizeof(memory_arena_h)
-#define IFB_ENGINE_MEMORY_SIZE_STRUCT             ifb_macro_align_size_struct(engine_memory_t)
-#define IFB_ENGINE_MEMORY_SIZE_TOTAL_RESERVATION  ifb_macro_size_gigabytes((u64)IFB_ENGINE_MEMORY_SIZE_GB_RESERVATION)
-#define IFB_ENGINE_MEMORY_SIZE_TOTAL_ARENA        ifb_macro_size_kilobytes(IFB_ENGINE_MEMORY_SIZE_KB_ARENA)
-#define IFB_ENGINE_MEMORY_SIZE_TOTAL              \
-    IFB_ENGINE_MEMORY_SIZE_SINGLETON_BUFFER   +   \
-    IFB_ENGINE_MEMORY_SIZE_ARENA_HANDLE_ARRAY +   \
-    IFB_ENGINE_MEMORY_SIZE_STRUCT
-
-struct engine_memory_globals {
-    u32 gb_reservation;
-    u32 kb_arena;
-    u32 singleton_count;
-    u16 singleton_buffer;
-    u16 singleton_stride;
-    u16 arena_count;
-    u32 arena_handle_array;
-    u32 memory_struct;
-    u32 total_arena;
-    u32 total_memory;
-    u64 total_reservation;
-};
-
-namespace engine {
-
-    ifb_global constexpr engine_memory_globals _globals_memory = {
-        IFB_ENGINE_MEMORY_SIZE_GB_RESERVATION,
-        IFB_ENGINE_MEMORY_SIZE_KB_ARENA,
-        IFB_ENGINE_MEMORY_SIZE_SINGLETON_COUNT,
-        IFB_ENGINE_MEMORY_SIZE_SINGLETON_BUFFER,
-        IFB_ENGINE_MEMORY_SIZE_SINGLETON_STRIDE,
-        IFB_ENGINE_MEMORY_SIZE_ARENA_COUNT,
-        IFB_ENGINE_MEMORY_SIZE_ARENA_HANDLE_ARRAY,
-        IFB_ENGINE_MEMORY_SIZE_STRUCT,
-        IFB_ENGINE_MEMORY_SIZE_TOTAL_ARENA,
-        IFB_ENGINE_MEMORY_SIZE_TOTAL,
-        IFB_ENGINE_MEMORY_SIZE_TOTAL_RESERVATION
+    enum eng_mem_e32_error_ {
+        eng_mem_e32_error_success            = 0x10020000,
+        eng_mem_e32_error_warning            = 0x00020000,
+        eng_mem_e32_error_failure            = 0x80020000,
+        eng_mem_e32_error_failed_to_reserve  = 0x80020001,
+        eng_mem_e32_error_failed_to_release  = 0x80020002,
+        eng_mem_e32_error_failed_to_commit   = 0x80020003,
+        eng_mem_e32_error_failed_to_decommit = 0x80020004,
     };
-};
 
-//singletons
-enum engine_memory_singleton_e {
-    engine_memory_singleton_e_context       = (0 * IFB_ENGINE_MEMORY_SIZE_SINGLETON_STRIDE),
-    engine_memory_singleton_e_core_graphics = (1 * IFB_ENGINE_MEMORY_SIZE_SINGLETON_STRIDE),
-    engine_memory_singleton_e_core_threads  = (2 * IFB_ENGINE_MEMORY_SIZE_SINGLETON_STRIDE),
-    engine_memory_singleton_e_core_files    = (3 * IFB_ENGINE_MEMORY_SIZE_SINGLETON_STRIDE),
-    engine_memory_singleton_e_count         = 4
-};
+    enum eng_mem_e32_res_type_ {
+        eng_mem_e32_res_type_platform = 0,
+        eng_mem_e32_res_type_core     = 1,
+        eng_mem_e32_res_type_file     = 2
+    };
 
-//arenas
-enum engine_memory_arena_e {
-    engine_memory_arena_e_context       = 0,
-    engine_memory_arena_e_core_graphics = 1,
-    engine_memory_arena_e_core_threads  = 2,
-    engine_memory_arena_e_core_files    = 3,
-};
+    struct eng_mem_h32_arena_t       : eng_h32_t { };
+    struct eng_mem_h32_alctr_block_t : eng_h32_t { };
+    struct eng_mem_h32_alctr_stack_t : eng_h32_t { };
+    struct eng_mem_h32_alctr_heap_t  : eng_h32_t { };
+    struct eng_mem_u32_res_type_t    : eng_u32_t { };
 
-}; //namespace ifb
+    struct eng_mem_res_info_t {
+        eng_addr               start;
+        eng_u32                size_kb_total;
+        eng_u32                size_kb_used;
+        eng_u32                size_kb_free;
+        eng_u32                size_kb_arena;
+    };
+
+    struct eng_mem_arena_info_t {
+        eng_addr               start;
+        eng_mem_u32_res_type_t res_type;
+        eng_mem_h32_arena_t    handle;
+        eng_u32_t              size_kb_total;
+        eng_u32_t              size_kb_free;
+        eng_u32_t              size_kb_used;
+        eng_error_s32_t        last_error;
+    };
+
+};
 
 #endif //IFB_ENGINE_MEMORY_HPP

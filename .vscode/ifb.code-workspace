@@ -1,0 +1,43 @@
+{
+	"folders": [
+		{
+			"name": "IFB",
+			"path": "../"
+		},
+		{
+			"name": "SLDLib",
+			"path": "../sld"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"utility": "cpp",
+			"xutility": "cpp",
+			"compare": "cpp",
+			"format": "cpp",
+			"functional": "cpp",
+			"memory": "cpp",
+			"ratio": "cpp",
+			"tuple": "cpp",
+			"type_traits": "cpp",
+			"xmemory": "cpp",
+			"xstring": "cpp",
+			"xtr1common": "cpp",
+			"ios": "cpp",
+			"xfacet": "cpp",
+			"xiosbase": "cpp",
+			"xlocale": "cpp",
+			"xlocinfo": "cpp",
+			"xlocnum": "cpp",
+			"xstddef": "cpp",
+			"atomic": "cpp",
+			"iterator": "cpp",
+			"glew.c": "cpp",
+			"initializer_list": "cpp",
+			"system_error": "cpp",
+			"exception": "cpp",
+			"limits": "cpp",
+			"cstdint": "cpp"
+		}
+	}
+}

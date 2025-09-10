@@ -1,0 +1,3 @@
+[submodule "sld"]
+	path = sld
+	url = https://github.com/thereclaimer/SLDLib
