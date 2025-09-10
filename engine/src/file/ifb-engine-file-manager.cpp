@@ -9,10 +9,11 @@ namespace ifb {
     // STATIC
     //-------------------------------------------------------------------
 
-    static eng_file_mngr_t       _file_mngr;
-    static eng_file_os_context_t _os_context  [IFB_ENG_FILE_TABLE_CAPACITY];
-    static eng_file_t            _file        [IFB_ENG_FILE_TABLE_CAPACITY];
-    static byte                  _path_buffer [IFB_ENG_FILE_TABLE_CAPACITY * IFB_ENG_FILE_PATH_SIZE];
+    static eng_file_mngr_t             _file_mngr;
+    static eng_file_os_context_t       _os_context       [IFB_ENG_FILE_TABLE_CAPACITY];
+    static eng_file_callback_context_t _callback_context [IFB_ENG_FILE_TABLE_CAPACITY];
+    static eng_file_t                  _file             [IFB_ENG_FILE_TABLE_CAPACITY];
+    static byte                        _path_buffer      [IFB_ENG_FILE_TABLE_CAPACITY * IFB_ENG_FILE_PATH_SIZE];
 
     //-------------------------------------------------------------------
     // DECLARATIONS
@@ -22,8 +23,8 @@ namespace ifb {
     eng_file_t*      eng_file_mngr_get_next_open        (void);
     void             eng_file_mngr_add_closed           (eng_file_t* file);
     void             eng_file_mngr_add_open             (eng_file_t* file);
-    eng_void         eng_file_mngr_async_callback_read  (const eng_file_os_context_t* async_context);
-    eng_void         eng_file_mngr_async_callback_write (const eng_file_os_context_t* async_context);
+    eng_void         eng_file_mngr_async_callback_read  (const eng_void* data, const eng_file_os_error_t error, const eng_u32 bytes_transferred);
+    eng_void         eng_file_mngr_async_callback_write (const eng_void* data, const eng_file_os_error_t error, const eng_u32 bytes_transferred);
     eng_error_s32_t  eng_file_mngr_error_os_to_eng      (const eng_file_os_error_t    os_error);  
 
     //-------------------------------------------------------------------
@@ -86,7 +87,6 @@ namespace ifb {
         }
 
         handle.val = file->index;
-
         return(handle);
     }
 
@@ -260,11 +260,10 @@ namespace ifb {
         file->flags |= (eng_file_flag_e32_read | eng_file_flag_e32_io_pending);
 
         // initialize the async context
-        sld::os_file_async_context_t async_context;
-        async_context.callback.func  = _file_mngr.os_callback_read;
-        async_context.callback.data  = (void*)file;
-        async_context.callback.error = eng_file_error_e32_success; 
-        async_context.os             = file->os_context;
+        eng_file_os_async_context_t& async_context = file->os_async_context;
+        async_context.callback->data  = (eng_void*)file;
+        async_context.callback->error = eng_file_error_e32_success;
+        async_context.callback->func  = _file_mngr.os_callback_read; 
 
         // do the async read
         const sld::os_file_error_t os_error = sld::os_file_read_async(
@@ -303,12 +302,11 @@ namespace ifb {
         file->flags |= eng_file_flag_e32_write | eng_file_flag_e32_io_pending;
 
         // initialize the async context
-        sld::os_file_async_context_t async_context;
-        async_context.callback.func  = _file_mngr.os_callback_write;
-        async_context.callback.data  = (void*)file;
-        async_context.callback.error = eng_file_error_e32_success; 
-        async_context.os             = file->os_context;
-
+        eng_file_os_async_context_t& async_context = file->os_async_context;
+        async_context.callback->data  = (eng_void*)file;
+        async_context.callback->error = eng_file_error_e32_success;
+        async_context.callback->func  = _file_mngr.os_callback_write;
+        
         // do the async read
         const sld::os_file_error_t os_error = sld::os_file_write_async(
             file->os_handle,
@@ -352,12 +350,13 @@ namespace ifb {
                 ++file_index) {
 
                 eng_file_t* current = &file[file_index];
-                current->next       = (file_index < (_file_mngr.capacity - 1)) ? &file[file_index + 1] : NULL;
-                current->prev       = (file_index > 0)                         ? &file[file_index - 1] : NULL;
-                current->path       = &path         [file_index]; 
-                current->os_context = &os_context   [file_index];
-                current->path.cstr  = &_path_buffer [file_index * _file_mngr.path_size];
-                current->index      = file_index;
+
+                current->next                      = (file_index < (_file_mngr.capacity - 1)) ? &file[file_index + 1] : NULL;
+                current->prev                      = (file_index > 0)                         ? &file[file_index - 1] : NULL;
+                current->path.cstr                 = &_path_buffer      [file_index * _file_mngr.path_size];
+                current->os_async_context.callback = &_callback_context [file_index];
+                current->os_async_context.os       = &_os_context       [file_index]; 
+                current->index                     = file_index;
             }
         };
 
@@ -366,9 +365,9 @@ namespace ifb {
 
     IFB_ENG_INTERNAL eng_void
     eng_file_mngr_async_callback_read(
-        const eng_void*       data,
-        const os_file_error_t os_error,
-        const eng_u32         bytes_transferred) {
+        const eng_void*           data,
+        const eng_file_os_error_t os_error,
+        const eng_u32             bytes_transferred) {
         
         if (!data) return;
 
@@ -386,9 +385,9 @@ namespace ifb {
 
     IFB_ENG_INTERNAL eng_void
     eng_file_mngr_async_callback_write(
-        const eng_void*       data,
-        const os_file_error_t os_error,
-        const eng_u32         bytes_transferred) {
+        const eng_void*           data,
+        const eng_file_os_error_t os_error,
+        const eng_u32             bytes_transferred) {
 
         if (!data) return;
 
