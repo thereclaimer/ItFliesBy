@@ -12,7 +12,7 @@
 $Script:PlatformOut = [PSCustomObject]@{
     Obj = 'ItFliesBy.obj'
     Pdb = 'ItFliesBy.pdb'
-    Exe = 'ItFliesBy.dll'
+    Exe = 'ItFliesBy.exe'
 }
 
 ############################

@@ -12,7 +12,7 @@ pushd ..
 @set cl_flags=   /nologo /c /MD /Z7 /EHs- /std:c++17 /Od /D_HAS_EXCEPTIONS=0
 
 @set link_in=    ItFliesBy.obj ItFliesBy.Engine.lib user32.lib kernel32.lib
-@set link_out=   /OUT:build\debug\bin\ItFliesBy.dll
+@set link_out=   /OUT:build\debug\bin\ItFliesBy.exe
 @set link_path=  /LIBPATH:build\debug\obj /LIBPATH:build\debug\lib
 @set link_flags= /nologo /SUBSYSTEM:WINDOWS /DEBUG
 
