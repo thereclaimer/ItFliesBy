@@ -35,24 +35,28 @@ namespace ifb {
     eng_file_mngr_open_ro(
         const eng_c8* file_path) {
 
+        // get the next unopened file struct
         eng_file_h32_t handle = { IFB_ENG_FILE_H32_INVALID };
         eng_file_t*    file   = eng_file_mngr_get_next_closed ();
-
         if (file == NULL) return(handle);
 
-        static const sld::os_file_flags_t os_flags = {
-            sld::os_file_flag_e_async        |
-            sld::os_file_flag_e_read         |
-            sld::os_file_flag_e_share_read   |
-            sld::os_file_flag_e_share_write  |
-            sld::os_file_flag_e_share_delete |
-            sld::os_file_flag_e_overwrite
+        // config
+        static const sld::os_file_access_flags_t access_flags = { sld::os_file_access_flag_e_read };
+        static const sld::os_file_share_flags_t  share_flags  = { sld::os_file_share_flag_e_read  };
+        static const sld::os_file_mode_t         mode         = { sld::os_file_mode_e_open_always };
+        static const eng_bool                    is_async     = false;
+        static const sld::os_file_config_t os_file_config = {
+            access_flags,
+            share_flags,
+            mode,
+            is_async
         };
 
+        // open the file
         sld::os_file_error_t os_error = sld::os_file_open(
             file->os_handle,
             file_path,
-            os_flags);
+            os_file_config);
 
         _file_mngr.last_error = eng_file_mngr_error_os_to_eng(os_error); 
 
@@ -61,6 +65,7 @@ namespace ifb {
             return(handle);
         }        
 
+        // commit memory
         eng_mem_arena_t* arena = sld::arena_commit(_file_mngr.reservation);
         if (arena == NULL) {
             _file_mngr.last_error.val = eng_file_error_e32_arena_commit_fail;
@@ -68,6 +73,7 @@ namespace ifb {
             return(handle);            
         }
 
+        // initialize file
         file->arena              = arena;
         file->buffer.data        = (byte*)arena->stack.start;
         file->buffer.size        = arena->stack.size;
@@ -75,6 +81,7 @@ namespace ifb {
         file->buffer.offset      = 0;
         file->buffer.transferred = 0;
 
+        // copy path
         for (
             eng_u32 index = 0;
             index < _file_mngr.path_size;
@@ -86,6 +93,7 @@ namespace ifb {
             if (c == 0) break;
         }
 
+        // set the handle
         handle.val = file->index;
         return(handle);
     }
@@ -94,25 +102,28 @@ namespace ifb {
     eng_file_mngr_open_rw(
         const eng_c8* file_path) {
 
+        // get the next unopened file struct
         eng_file_h32_t handle = {IFB_ENG_FILE_H32_INVALID};
         eng_file_t*    file   = eng_file_mngr_get_next_closed ();
-
         if (file == NULL) return(handle);
 
-        static const sld::os_file_flags_t os_flags = {
-            sld::os_file_flag_e_async        |
-            sld::os_file_flag_e_read         |
-            sld::os_file_flag_e_write        |
-            sld::os_file_flag_e_share_read   |
-            sld::os_file_flag_e_share_write  |
-            sld::os_file_flag_e_share_delete |
-            sld::os_file_flag_e_overwrite
+        // config
+        static const sld::os_file_access_flags_t access_flags = { sld::os_file_access_flag_e_read | sld::os_file_access_flag_e_write };
+        static const sld::os_file_share_flags_t  share_flags  = { sld::os_file_share_flag_e_read  };
+        static const sld::os_file_mode_t         mode         = { sld::os_file_mode_e_open_always };
+        static const eng_bool                    is_async     = false;
+        static const sld::os_file_config_t os_file_config = {
+            access_flags,
+            share_flags,
+            mode,
+            is_async
         };
 
+        // open the file
         sld::os_file_error_t os_error = sld::os_file_open(
             file->os_handle,
             file_path,
-            os_flags);
+            os_file_config);
 
         _file_mngr.last_error = eng_file_mngr_error_os_to_eng(os_error); 
 
@@ -120,7 +131,8 @@ namespace ifb {
             eng_file_mngr_add_closed(file);
             return(handle);
         }        
-        
+
+        // commit memory        
         eng_mem_arena_t* arena = sld::arena_commit(_file_mngr.reservation);
         if (arena == NULL) {
             _file_mngr.last_error.val = eng_file_error_e32_arena_commit_fail;
@@ -128,6 +140,7 @@ namespace ifb {
             return(handle);          
         }
 
+        // initialize the file
         file->arena              = arena;
         file->buffer.data        = (byte*)arena->stack.start;
         file->buffer.size        = arena->stack.size;
@@ -135,6 +148,7 @@ namespace ifb {
         file->buffer.offset      = 0;
         file->buffer.transferred = 0;
 
+        // copy path
         for (
             eng_u32 index = 0;
             index < _file_mngr.path_size;
@@ -146,6 +160,7 @@ namespace ifb {
             if (c == 0) break;
         }
 
+        // set the handle
         handle.val = file->index; 
         return(handle);
     }
@@ -332,13 +347,8 @@ namespace ifb {
 
         // set the write and pending io flags
         file->flags.val |= eng_file_flag_e32_write | eng_file_flag_e32_io_pending;
-
-        // initialize the async context
-        eng_file_os_async_context_t& async_context = file->os_async_context;
-        async_context.callback->data  = (eng_void*)file;
-        async_context.callback->func  = _file_mngr.os_callback_write;
         
-        // do the async write
+        // do the write
         const sld::os_file_error_t os_error = sld::os_file_write(
             file->os_handle,
             file->buffer
