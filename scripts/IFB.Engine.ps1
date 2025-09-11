@@ -26,6 +26,7 @@ $Script:EngineDebugCompileArgs = [PSCustomObject]@{
     '/I' + 'engine\include'
     '/I' + 'engine\internal'
     '/I' + 'engine\src'
+    '/I' + 'engine\src\core'
     '/I' + 'engine\src\file'
     '/I' + 'engine\src\memory'
     '/I' + 'engine\src\asset'

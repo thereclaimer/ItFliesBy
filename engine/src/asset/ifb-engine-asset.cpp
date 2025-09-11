@@ -12,12 +12,12 @@ namespace ifb {
 
         static const eng_u32 stride = sizeof(eng_asset_name_str8_t); 
 
-        const bool is_args_valid = (
-            in_count != 0    &&
-            in_name  != NULL && 
-            out_id   != NULL
+        eng_id_generate(
+            in_count,
+            stride,
+            (eng_byte*)in_name,
+            out_id
         );
 
-        (void)sld::hash_data_batch(in_count, (eng_byte*)in_name, stride, (eng_hash_u128_t*)out_id);
     }
 };
