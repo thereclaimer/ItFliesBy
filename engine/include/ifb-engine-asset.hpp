@@ -5,8 +5,14 @@
 #include "ifb-engine-file.hpp"
 #include "ifb-engine-id.hpp"
 
+#ifndef    IFB_ASSET_DB_PATH   
+#   define IFB_ASSET_DB_PATH     "IFB.AssetDB.ifb"
+#endif
+#ifndef    IFB_ASSET_CONFIG_PATH   
+#   define IFB_ASSET_CONFIG_PATH "IFB.AssetConfig.xml"
+#endif
 #ifndef    IFB_ASSET_NAME_SIZE
-#   define IFB_ASSET_NAME_SIZE 32 
+#   define IFB_ASSET_NAME_SIZE   32 
 #endif
 
 namespace ifb {
@@ -21,8 +27,8 @@ namespace ifb {
     struct eng_asset_name_str8_t;
     struct eng_asset_buffer_t;
 
-    IFB_ENG_API void eng_asset_generate_id   (const eng_u32 i_count, const eng_asset_name_str8_t* i_name, eng_asset_id_u128_t* o_id);
-    IFB_ENG_API void eng_asset_name_sanitize (const eng_u32 i_count, eng_asset_name_str8_t* io_name);
+    IFB_ENG_API void                        eng_asset_generate_id         (const eng_u32 i_count, const eng_asset_name_str8_t* i_name, eng_asset_id_u128_t* o_id);
+    IFB_ENG_API void                        eng_asset_name_sanitize       (const eng_u32 i_count, eng_asset_name_str8_t* io_name);
 
     IFB_ENG_API bool                        eng_asset_mngr_load_text      (const eng_asset_id_u128_t id, eng_asset_buffer_t& buffer);
     IFB_ENG_API bool                        eng_asset_mngr_load_image     (const eng_asset_id_u128_t id, eng_asset_buffer_t& buffer);
@@ -49,8 +55,7 @@ namespace ifb {
         eng_asset_size_u64_t offset;
         eng_asset_size_u64_t size;
         eng_asset_type_u32_t type;
-
-    }; 
+    };
 
     struct eng_asset_name_str8_t {
         eng_c8 chars[IFB_ASSET_NAME_SIZE];

@@ -157,10 +157,9 @@ namespace ifb {
         return(false);
     }
 
-    IFB_ENG_FUNC bool
+    IFB_ENG_FUNC const eng_u64
     eng_file_mngr_get_size(
-        const eng_file_h32_t file_handle,
-        eng_u64&             size) {
+        const eng_file_h32_t file_handle) {
 
         eng_file_t* file = eng_file_mngr_get_file(file_handle);
         if (file == NULL) {
@@ -168,6 +167,7 @@ namespace ifb {
             return(false);
         } 
 
+        eng_u64 size = 0;
         const eng_file_os_error_t os_error = sld::os_file_size(
             file->os_handle,
             size
@@ -175,53 +175,47 @@ namespace ifb {
 
         file->last_error = eng_file_mngr_error_os_to_eng(os_error);
         
-        const eng_bool result = (file->last_error.val == eng_file_error_e32_success);  
-        return(result);
+        return(size);
     }
 
-    IFB_ENG_FUNC bool
+    IFB_ENG_FUNC const eng_file_flags_u32_t
     eng_file_mngr_get_flags(
-        const eng_file_h32_t  file_handle,
-        eng_file_flags_u32_t& flags) {
+        const eng_file_h32_t file_handle) {
 
         eng_file_t* file = eng_file_mngr_get_file(file_handle);
-        if (file == NULL) {
-            _file_mngr.last_error.val = eng_file_error_e32_invalid_file;
-            return(false);
-        } 
         
-        flags = file->flags;
-        return(true);
+        eng_file_flags_u32_t flags;
+        flags.val = (file != NULL) 
+            ? file->flags.val
+            : eng_file_error_e32_invalid_file; 
+
+        return(flags);
     }
 
-    IFB_ENG_FUNC bool
+    IFB_ENG_FUNC const eng_c8*
     eng_file_mngr_get_path(
-        const eng_file_h32_t file_handle,
-        eng_file_path_t&     path) {
+        const eng_file_h32_t file_handle) {
 
         eng_file_t* file = eng_file_mngr_get_file(file_handle);
         if (file == NULL) {
             _file_mngr.last_error.val = eng_file_error_e32_invalid_file;
-            return(false);
+            return(NULL);
         } 
         
-        path = file->path;
-        return(true);
+        return(file->path.cstr);
     }
 
-    IFB_ENG_API bool
+    IFB_ENG_API eng_file_buffer_t*
     eng_file_mngr_get_buffer (
-        const eng_file_h32_t file_handle,
-        eng_file_buffer_t&   file_buffer) {
+        const eng_file_h32_t file_handle) {
 
         eng_file_t* file = eng_file_mngr_get_file(file_handle);
         if (file == NULL) {
             _file_mngr.last_error.val = eng_file_error_e32_invalid_file;
-            return(false);
+            return(NULL);
         } 
         
-        file_buffer = file->buffer;
-        return(true);
+        return(&file->buffer);
     }
 
     IFB_ENG_API const eng_file_error_s32_t
@@ -283,9 +277,48 @@ namespace ifb {
     }
 
     IFB_ENG_FUNC bool
+    eng_file_mngr_read_async(
+        const eng_file_h32_t file_handle) {
+
+        // validate the file and make sure there's no pending operation
+        eng_file_t* file = eng_file_mngr_get_file(file_handle);
+        if (!file) {
+            _file_mngr.last_error.val = eng_file_error_e32_invalid_file;
+            return(false);
+        }
+        if (file->flags.val & eng_file_flag_e32_io_pending) {
+            return(false);
+        }
+
+        // set the read and pending io flags
+        file->flags.val |= (eng_file_flag_e32_read | eng_file_flag_e32_io_pending);
+
+        // initialize the async context
+        eng_file_os_async_context_t& async_context = file->os_async_context;
+        async_context.callback->data  = (eng_void*)file;
+        async_context.callback->func  = _file_mngr.os_callback_read; 
+
+        // do the async read
+        const sld::os_file_error_t os_error = sld::os_file_read_async(
+            file->os_handle,
+            file->buffer,
+            async_context
+        );
+
+        // set the last error
+        // update flags if we didn't succeed
+        file->last_error      = eng_file_mngr_error_os_to_eng(os_error);
+        const bool is_success = (file->last_error.val != eng_file_error_e32_success);
+        if (!is_success) {
+            file->flags.val &= ~(eng_file_flag_e32_read | eng_file_flag_e32_io_pending);
+            file->flags.val |= ~(eng_file_flag_e32_error);
+        }
+        return(is_success);
+    }
+
+    IFB_ENG_FUNC bool
     eng_file_mngr_write(
-        const eng_file_h32_t     file_handle,
-        const eng_file_buffer_t& file_buffer) {
+        const eng_file_h32_t file_handle) {
 
         // validate the file and make sure there's no pending operation
         eng_file_t* file = eng_file_mngr_get_file(file_handle);
@@ -305,7 +338,46 @@ namespace ifb {
         async_context.callback->data  = (eng_void*)file;
         async_context.callback->func  = _file_mngr.os_callback_write;
         
-        // do the async read
+        // do the async write
+        const sld::os_file_error_t os_error = sld::os_file_write(
+            file->os_handle,
+            file->buffer
+        );
+
+        // set the last error
+        // update flags if we didn't succeed
+        file->last_error      = eng_file_mngr_error_os_to_eng(os_error);
+        const bool is_success = (file->last_error.val != eng_file_error_e32_success);
+        if (!is_success) {
+            file->flags.val &= ~(eng_file_flag_e32_write | eng_file_flag_e32_io_pending);
+            file->flags.val |= ~(eng_file_flag_e32_error);
+        }
+        return(is_success);
+    }
+
+    IFB_ENG_FUNC bool
+    eng_file_mngr_write_async(
+        const eng_file_h32_t file_handle) {
+
+        // validate the file and make sure there's no pending operation
+        eng_file_t* file = eng_file_mngr_get_file(file_handle);
+        if (!file) {
+            _file_mngr.last_error.val = eng_file_error_e32_invalid_file;
+            return(false);
+        }
+        if (file->flags.val & eng_file_flag_e32_io_pending) {
+            return(false);
+        }
+
+        // set the write and pending io flags
+        file->flags.val |= eng_file_flag_e32_write | eng_file_flag_e32_io_pending;
+
+        // initialize the async context
+        eng_file_os_async_context_t& async_context = file->os_async_context;
+        async_context.callback->data  = (eng_void*)file;
+        async_context.callback->func  = _file_mngr.os_callback_write;
+        
+        // do the async write
         const sld::os_file_error_t os_error = sld::os_file_write_async(
             file->os_handle,
             file->buffer,
