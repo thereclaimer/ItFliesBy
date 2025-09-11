@@ -10,6 +10,9 @@ wWinMain(
     PWSTR     pCmdLine,
     int       nCmdShow) {
 
+    ifb::eng_init();
+    const ifb::eng_file_h32_t test_file = ifb::eng_file_mngr_open_rw("test.txt");
+
     ifb::eng_asset_name_str8_t names[] = {
         { "connor" },
         { "jig"    },

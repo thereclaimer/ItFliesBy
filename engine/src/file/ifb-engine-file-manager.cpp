@@ -62,7 +62,7 @@ namespace ifb {
         }        
 
         eng_mem_arena_t* arena = sld::arena_commit(_file_mngr.reservation);
-        if (file->arena == NULL) {
+        if (arena == NULL) {
             _file_mngr.last_error.val = eng_file_error_e32_arena_commit_fail;
             eng_file_mngr_add_closed(file);
             return(handle);            
@@ -116,14 +116,13 @@ namespace ifb {
 
         _file_mngr.last_error = eng_file_mngr_error_os_to_eng(os_error); 
 
-
         if (_file_mngr.last_error.val != eng_file_error_e32_success) {
             eng_file_mngr_add_closed(file);
             return(handle);
         }        
         
         eng_mem_arena_t* arena = sld::arena_commit(_file_mngr.reservation);
-        if (file->arena == NULL) {
+        if (arena == NULL) {
             _file_mngr.last_error.val = eng_file_error_e32_arena_commit_fail;
             eng_file_mngr_add_closed(file);
             return(handle);          

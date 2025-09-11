@@ -116,6 +116,13 @@ namespace ifb {
     
     typedef sld::buffer_t eng_buffer_t;
     typedef sld::hash_t   eng_hash_u128_t;
+
+    //-------------------------------------------------------------------
+    // API
+    //-------------------------------------------------------------------
+
+    IFB_ENG_API bool eng_init (void);
+
 };
 
 #endif //IFB_ENGINE_HPP
