@@ -23,5 +23,9 @@ wWinMain(
 
     const ifb::eng_id_u128_t test = ifb::eng_id_init(0,1,2,3);
 
+    ifb::eng_asset_name_str8_t name_test = {"AbCd$eF G 01239  x"};
+    
+    ifb::eng_asset_name_sanitize(1, &name_test);
+
     return(S_OK);
 }
