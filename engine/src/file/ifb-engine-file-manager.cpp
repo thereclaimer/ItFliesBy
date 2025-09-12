@@ -347,7 +347,15 @@ namespace ifb {
 
         // set the write and pending io flags
         file->flags.val |= eng_file_flag_e32_write | eng_file_flag_e32_io_pending;
-        
+
+        // ensure we don't include null terminator        
+        const eng_u32  terminator_index = (file->buffer.length - 1);
+        const eng_c8   last_char        = file->buffer.data[terminator_index];
+        const eng_bool is_terminated    = (last_char == 0);
+        if (is_terminated) {
+            --file->buffer.length;
+        }
+
         // do the write
         const sld::os_file_error_t os_error = sld::os_file_write(
             file->os_handle,
