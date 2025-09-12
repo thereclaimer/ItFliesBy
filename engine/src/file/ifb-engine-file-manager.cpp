@@ -66,7 +66,7 @@ namespace ifb {
         }        
 
         // commit memory
-        eng_mem_arena_t* arena = sld::arena_commit(_file_mngr.reservation);
+        eng_mem_arena_t* arena = eng_mem_mngr_arena_commit_file(); 
         if (arena == NULL) {
             _file_mngr.last_error.val = eng_file_error_e32_arena_commit_fail;
             eng_file_mngr_add_closed(file);
@@ -133,7 +133,7 @@ namespace ifb {
         }        
 
         // commit memory        
-        eng_mem_arena_t* arena = sld::arena_commit(_file_mngr.reservation);
+        eng_mem_arena_t* arena = eng_mem_mngr_arena_commit_file(); 
         if (arena == NULL) {
             _file_mngr.last_error.val = eng_file_error_e32_arena_commit_fail;
             eng_file_mngr_add_closed(file);
@@ -141,7 +141,7 @@ namespace ifb {
         }
 
         // initialize the file
-        file->arena              = arena;
+        file->arena                 = arena;
         file->os_buffer.data        = (byte*)arena->stack.start;
         file->os_buffer.size        = arena->stack.size;
         file->os_buffer.length      = 0;
@@ -462,7 +462,6 @@ namespace ifb {
         const bool is_initialized = (_file_mngr.capacity != 0);  
         if (is_initialized) return;
 
-        _file_mngr.reservation       = eng_mem_mngr_get_res_file();
         _file_mngr.os_callback_read  = eng_file_mngr_async_callback_read;
         _file_mngr.os_callback_write = eng_file_mngr_async_callback_write;
         _file_mngr.buffer_size       = sld::size_kilobytes(IFB_ENG_FILE_BUFFER_SIZE_KB);

@@ -12,8 +12,8 @@ wWinMain(
 
     ifb::eng_init();
 
-    const ifb::eng_file_h32_t test_file        = ifb::eng_file_mngr_open_rw("test.txt");
-    const ifb::eng_c8         test_data[]      = "TESTTESTTEST";
+    const ifb::eng_file_h32_t test_file   = ifb::eng_file_mngr_open_rw("test.txt");
+    const ifb::eng_c8         test_data[] = "TESTTESTTEST";
  
     ifb::eng_file_write_buffer_t write_buffer;
     write_buffer.cursor = 0;

@@ -6,23 +6,26 @@
 
 namespace ifb {
 
+    typedef eng_error_s32_t    eng_mem_error_s32_t;
     typedef sld::reservation_t eng_mem_res_t;
     typedef sld::arena_t       eng_mem_arena_t;
 
-    struct eng_mem_res_platform_t : eng_mem_res_t { };
-    struct eng_mem_res_core_t     : eng_mem_res_t { };
-    struct eng_mem_res_file_t     : eng_mem_res_t { };
-
     struct eng_mem_mngr_t {
-        eng_mem_res_platform_t* res_platform;
-        eng_mem_res_core_t*     res_core;
-        eng_mem_res_file_t*     res_file;
+        struct {
+            eng_mem_res_t* platform;
+            eng_mem_res_t* core;
+            eng_mem_res_t* file;
+            eng_mem_res_t* asset;
+        } res;
+        eng_mem_error_s32_t last_error;
     };
 
-    bool                    eng_mem_mngr_init             (void);
-    eng_mem_res_platform_t* eng_mem_mngr_get_res_platform (void);
-    eng_mem_res_core_t*     eng_mem_mngr_get_res_core     (void);
-    eng_mem_res_file_t*     eng_mem_mngr_get_res_file     (void);
+    bool              eng_mem_mngr_init                  (void);
+    eng_mem_arena_t*  eng_mem_mngr_arena_commit_platform (void);   
+    eng_mem_arena_t*  eng_mem_mngr_arena_commit_core     (void);   
+    eng_mem_arena_t*  eng_mem_mngr_arena_commit_file     (void);   
+    eng_mem_arena_t*  eng_mem_mngr_arena_commit_asset    (void);   
+    bool              eng_mem_mngr_arena_decommit        (eng_mem_arena_t* arena);
 
 };
 

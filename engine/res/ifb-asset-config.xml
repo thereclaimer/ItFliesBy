@@ -1,29 +1,28 @@
 <ifb>
-    <text>
+    <text path="">
         <asset name="" path ="" />
         <asset name="" path ="" />
         <asset name="" path ="" />
-    </text>
+    </text path="">
         <asset name="" path ="" />
         <asset name="" path ="" />
         <asset name="" path ="" />
-    <image>
+    <image path="">
         <asset name="" path ="" />
         <asset name="" path ="" />
         <asset name="" path ="" />
-    </image>
+    </image path="">
         <asset name="" path ="" />
         <asset name="" path ="" />
         <asset name="" path ="" />
-    <sound>
+    <sound path="">
         <asset name="" path ="" />
         <asset name="" path ="" />
         <asset name="" path ="" />
     </sound>
-    <font>
+    <font path="">
         <asset name="" path ="" />
         <asset name="" path ="" />
         <asset name="" path ="" />
     </font>
-
 </ifb>

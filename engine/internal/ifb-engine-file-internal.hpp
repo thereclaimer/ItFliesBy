@@ -36,7 +36,6 @@ namespace ifb {
     };
 
     struct eng_file_mngr_t {
-        eng_mem_res_t*                 reservation;
         eng_file_os_async_callback_f   os_callback_read;
         eng_file_os_async_callback_f   os_callback_write;
         eng_u64                        buffer_size;
