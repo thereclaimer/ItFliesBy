@@ -78,7 +78,7 @@ namespace ifb {
         file->buffer.data        = (byte*)arena->stack.start;
         file->buffer.size        = arena->stack.size;
         file->buffer.length      = 0;
-        file->buffer.offset      = 0;
+        file->buffer.cursor      = 0;
         file->buffer.transferred = 0;
 
         // copy path
@@ -145,7 +145,7 @@ namespace ifb {
         file->buffer.data        = (byte*)arena->stack.start;
         file->buffer.size        = arena->stack.size;
         file->buffer.length      = 0;
-        file->buffer.offset      = 0;
+        file->buffer.cursor      = 0;
         file->buffer.transferred = 0;
 
         // copy path

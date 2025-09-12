@@ -17,7 +17,7 @@ wWinMain(
 
     ifb::eng_file_buffer_t* test_file_buffer = ifb::eng_file_mngr_get_buffer(test_file);
     test_file_buffer->length = sizeof(test_file_data);    
-    test_file_buffer->offset = 0; 
+    test_file_buffer->cursor = 0; 
 
     memmove_s(
         test_file_buffer->data,
