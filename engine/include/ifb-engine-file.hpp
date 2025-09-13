@@ -20,8 +20,8 @@ namespace ifb {
 
     typedef eng_error_s32_t eng_file_error_s32_t;
 
-    struct eng_file_h32_t       : eng_h32_t             { };
-    struct eng_file_flags_u32_t : eng_u32_t             { };
+    struct eng_file_h32_t       : eng_h32_t { };
+    struct eng_file_flags_u32_t : eng_u32_t { };
     struct eng_file_path_t;
 
     struct eng_file_buffer_t {

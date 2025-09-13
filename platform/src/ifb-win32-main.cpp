@@ -15,10 +15,10 @@ wWinMain(
     const ifb::eng_file_h32_t test_file   = ifb::eng_file_mngr_open_rw("test.txt");
     const ifb::eng_c8         test_data[] = "TESTTESTTEST";
  
-    ifb::eng_file_write_buffer_t write_buffer;
+    ifb::eng_file_buffer_t write_buffer;
     write_buffer.cursor = 0;
     write_buffer.data   = (ifb::eng_byte*)test_data;
-    write_buffer.length = sizeof(test_data);
+    write_buffer.size   = sizeof(test_data);
 
     ifb::eng_file_mngr_write(test_file, write_buffer);
 

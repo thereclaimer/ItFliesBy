@@ -351,8 +351,8 @@ namespace ifb {
 
     IFB_ENG_FUNC bool
     eng_file_mngr_write(
-        const eng_file_h32_t     file_handle,
-        eng_file_write_buffer_t& write_buffer) {
+        const eng_file_h32_t file_handle,
+        eng_file_buffer_t&   write_buffer) {
 
         // validate the file and make sure there's no pending operation
         eng_file_t* file = eng_file_mngr_get_file(file_handle);
@@ -360,7 +360,7 @@ namespace ifb {
             _file_mngr.last_error.val = eng_file_error_e32_invalid_file;
             return(false);
         }
-        const bool is_args_valid = (write_buffer.length != 0 && write_buffer.data != NULL);
+        const bool is_args_valid = (write_buffer.size != 0 && write_buffer.data != NULL);
         if (!is_args_valid) {
             file->last_error.val = eng_file_error_e32_invalid_args;
             return(false);
@@ -372,7 +372,7 @@ namespace ifb {
 
         // update the buffer
         file->os_buffer.cursor      = write_buffer.cursor;
-        file->os_buffer.length      = (write_buffer.length <= file->os_buffer.size) ? write_buffer.length : file->os_buffer.size;
+        file->os_buffer.length      = (write_buffer.size <= file->os_buffer.size) ? write_buffer.size : file->os_buffer.size;
         file->os_buffer.transferred = 0;
         for (
             eng_u32 char_index = 0;
@@ -398,7 +398,7 @@ namespace ifb {
             file->os_handle,
             file->os_buffer
         );
-        write_buffer.length_written = file->os_buffer.transferred;
+        write_buffer.transferred = file->os_buffer.transferred;
 
         // set the last error
         // update flags if we didn't succeed
