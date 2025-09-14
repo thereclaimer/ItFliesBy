@@ -20,7 +20,7 @@ pushd ..
 @set cl_eng_include= /Iengine\include /Iengine\internal /Iengine\src /Iengine\src\core /Iengine\src\file /Iengine\src\memory /Iengine\src\asset /Isld\include /Isld\external /Isld\vcpkg_installed\x64-windows\include
 @set cl_eng_flags=   /nologo /c /MD /LD /Z7 /EHs- /std:c++17 /Od /D_HAS_EXCEPTIONS=0
 
-@set link_eng_in=    ItFliesBy.Engine.obj user32.lib kernel32.lib SLD.Win32.lib Gdi32.lib imgui.lib opengl32.lib
+@set link_eng_in=    ItFliesBy.Engine.obj user32.lib kernel32.lib SLD.Win32.lib Gdi32.lib imgui.lib opengl32.lib pugixml.lib
 @set link_eng_out=   /OUT:build\debug\bin\ItFliesBy.Engine.dll /IMPLIB:build\debug\lib\ItFliesBy.Engine.lib
 @set link_eng_path=  /LIBPATH:build\debug\obj /LIBPATH:build\debug\lib /LIBPATH:sld\build\debug\lib /LIBPATH:sld\vcpkg_installed\x64-windows\lib
 @set link_eng_flags= /nologo /SUBSYSTEM:WINDOWS /DEBUG /DLL
