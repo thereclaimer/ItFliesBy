@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ifb-engine-id.hpp"
+#include "ifb-engine-hash.hpp"
 
 namespace ifb {
 
@@ -19,7 +19,7 @@ namespace ifb {
         );
         if (!is_valid) return;
 
-        (eng_void)sld::hash_data_batch(
+        (eng_void)eng_hash_data_batch(
             in_count,
             in_data,
             in_stride,

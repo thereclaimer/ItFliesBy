@@ -27,7 +27,7 @@ pushd ..
 
 @set cl_pfm_in=      platform\src\ifb-win32-main.cpp
 @set cl_pfm_out=     /Fo:build\debug\obj\ItFliesBy.obj
-@set cl_pfm_include= /Iplatform\include /Iplatform\src /Iengine\include /Isld\include /Isld\vcpkg_installed\x64-windows\include
+@set cl_pfm_include= /Iplatform\include /Iplatform\src /Iengine\include /Isld\include /Isld\external /Isld\vcpkg_installed\x64-windows\include
 @set cl_pfm_flags=   /nologo /c /MD /Z7 /EHs- /std:c++17 /Od /D_HAS_EXCEPTIONS=0
 
 @set link_pfm_in=    ItFliesBy.obj ItFliesBy.Engine.lib user32.lib kernel32.lib

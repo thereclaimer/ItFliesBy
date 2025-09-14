@@ -114,27 +114,7 @@ namespace ifb {
     // DATA STRUCTURES
     //-------------------------------------------------------------------
     
-    typedef sld::buffer_t     eng_buffer_t;
-    typedef sld::hash_t       eng_hash_u128_t;
-    typedef sld::hash_state_t eng_hash_u128_state_t;
-    typedef sld::hash_seed_t  eng_hash_u128_seed_t;
-
-    //-------------------------------------------------------------------
-    // GLOBALS
-    //-------------------------------------------------------------------
-
-    constexpr eng_hash_u128_seed_t _eng_hash_seed = {
-        "maytheroadriseto" 
-        "meetyouthewindbe"
-        "alwaysatyourback"
-        "thesunshinewarmu"
-        "ponyourfacethera"
-        "insfallsoftupony"
-        "ougodholdyouinth"
-        "epalmofhishand"
-    };
-
-
+    typedef sld::buffer_t eng_buffer_t;
 
     //-------------------------------------------------------------------
     // API
