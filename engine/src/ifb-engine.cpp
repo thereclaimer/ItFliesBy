@@ -32,6 +32,10 @@ namespace ifb {
             xml_mem_granularity
         );
 
+        sld::xml_doc_t*    doc    = sld::xml_memory_alloc_doc    ();
+        sld::xml_node_t*   node   = sld::xml_memory_alloc_node   ();
+        sld::xml_attrib_t* attrib = sld::xml_memory_alloc_attrib ();
+
         free(xml_mem_start);
         return(is_init);
     }
