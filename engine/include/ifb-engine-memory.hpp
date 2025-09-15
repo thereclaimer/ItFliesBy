@@ -53,16 +53,16 @@ namespace ifb {
     IFB_ENG_API const eng_mem_h32_alctr_heap_t  eng_mem_arena_push_alctr_heap  (const eng_mem_h32_arena_t arena_hnd, const eng_u32 heap_size, const eng_u32 alloc_size_min, const eng_u32 alloc_size_max);
     IFB_ENG_API eng_bool                        eng_mem_arena_get_info         (const eng_mem_h32_arena_t in_arena_hnd, eng_mem_arena_info_t& out_info);
 
-    IFB_ENG_API eng_byte*                       eng_mem_alctr_block_alloc_abs  (const eng_mem_h32_alctr_block_t b_alctr_hnd);
-    IFB_ENG_API eng_byte*                       eng_mem_alctr_block_alloc_rel  (const eng_mem_h32_alctr_block_t b_alctr_hnd);
+    IFB_ENG_API eng_byte*                       eng_mem_alctr_block_alctr_abs  (const eng_mem_h32_alctr_block_t b_alctr_hnd);
+    IFB_ENG_API eng_byte*                       eng_mem_alctr_block_alctr_rel  (const eng_mem_h32_alctr_block_t b_alctr_hnd);
     IFB_ENG_API eng_bool                        eng_mem_alctr_block_free       (const eng_mem_h32_alctr_block_t b_alctr_hnd, const eng_byte* mem);
 
     IFB_ENG_API eng_byte*                       eng_mem_alctr_stack_push_abs   (const eng_mem_h32_alctr_block_t b_alctr_hnd);
     IFB_ENG_API eng_byte*                       eng_mem_alctr_stack_push_rel   (const eng_mem_h32_alctr_block_t b_alctr_hnd);
     IFB_ENG_API eng_bool                        eng_mem_alctr_stack_pull       (const eng_mem_h32_alctr_block_t b_alctr_hnd, const eng_byte* mem);
 
-    IFB_ENG_API eng_byte*                       eng_mem_alctr_heap_alloc_abs   (const eng_mem_h32_alctr_block_t b_alctr_hnd);
-    IFB_ENG_API eng_byte*                       eng_mem_alctr_heap_alloc_rel   (const eng_mem_h32_alctr_block_t b_alctr_hnd);
+    IFB_ENG_API eng_byte*                       eng_mem_alctr_heap_alctr_abs   (const eng_mem_h32_alctr_block_t b_alctr_hnd);
+    IFB_ENG_API eng_byte*                       eng_mem_alctr_heap_alctr_rel   (const eng_mem_h32_alctr_block_t b_alctr_hnd);
     IFB_ENG_API eng_bool                        eng_mem_alctr_heap_free        (const eng_mem_h32_alctr_block_t b_alctr_hnd, const eng_byte* mem);
 
     enum eng_mem_e32_error_ {

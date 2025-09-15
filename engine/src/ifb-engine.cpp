@@ -1,5 +1,7 @@
 #pragma once
 
+#include <sld-xml.hpp>
+
 #include "ifb-engine.hpp"
 #include "ifb-engine-memory-internal.hpp"
 #include "ifb-engine-file-internal.hpp"
@@ -20,6 +22,17 @@ namespace ifb {
         eng_mem_mngr_init  ();
         eng_file_mngr_init ();
 
+        const sld::u64 xml_mem_size        = sld::size_megabytes(1);
+        const sld::u64 xml_mem_granularity = sld::size_kilobytes(1);
+        void*          xml_mem_start       = malloc(xml_mem_size); 
+
+        sld::xml_memory_init(
+            xml_mem_start,
+            xml_mem_size,
+            xml_mem_granularity
+        );
+
+        free(xml_mem_start);
         return(is_init);
     }
 
