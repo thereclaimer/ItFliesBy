@@ -14,32 +14,32 @@ wWinMain(
 
     ifb::eng_init();
 
-    // const ifb::eng_file_h32_t test_file   = ifb::eng_file_mngr_open_rw("test.txt");
-    // const ifb::eng_c8         test_data[] = "TESTTESTTEST";
+    const ifb::eng_file_h32_t test_file   = ifb::eng_file_mngr_open_rw("test.txt");
+    const ifb::eng_c8         test_data[] = "TESTTESTTEST";
  
-    // ifb::eng_file_buffer_t write_buffer;
-    // write_buffer.cursor = 0;
-    // write_buffer.data   = (ifb::eng_byte*)test_data;
-    // write_buffer.size   = sizeof(test_data);
+    ifb::eng_file_buffer_t write_buffer;
+    write_buffer.cursor = 0;
+    write_buffer.data   = (ifb::eng_byte*)test_data;
+    write_buffer.size   = sizeof(test_data);
 
-    // ifb::eng_file_mngr_write(test_file, write_buffer);
+    ifb::eng_file_mngr_write(test_file, write_buffer);
 
-    // ifb::eng_asset_name_str8_t names[] = {
-    //     { "connor" },
-    //     { "jig"    },
-    //     { "rosie"  },
-    //     { "liam"   }
-    // };
+    ifb::eng_asset_name_str8_t names[] = {
+        { "connor" },
+        { "jig"    },
+        { "rosie"  },
+        { "liam"   }
+    };
 
-    // ifb::eng_asset_id_u128_t id[3];
+    ifb::eng_asset_id_u128_t id[3];
 
-    // ifb::eng_asset_generate_id(3, names, id);
+    ifb::eng_asset_generate_id(3, names, id);
 
-    // const ifb::eng_id_u128_t test = ifb::eng_id_init(0,1,2,3);
+    const ifb::eng_id_u128_t test = ifb::eng_id_init(0,1,2,3);
 
-    // ifb::eng_asset_name_str8_t name_test = {"AbCd$eF G 01239  x"};
+    ifb::eng_asset_name_str8_t name_test = {"AbCd$eF G 01239  x"};
     
-    // ifb::eng_asset_name_sanitize(1, &name_test);
+    ifb::eng_asset_name_sanitize(1, &name_test);
 
     return(S_OK);
 }
