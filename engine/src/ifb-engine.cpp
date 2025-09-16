@@ -36,7 +36,12 @@ namespace ifb {
         sld::xml_node_t*   node   = sld::xml_memory_alloc_node   ();
         sld::xml_attrib_t* attrib = sld::xml_memory_alloc_attrib ();
 
+        sld::xml_memory_free_doc    (doc);
+        sld::xml_memory_free_node   (node);
+        sld::xml_memory_free_attrib (attrib);
+
         free(xml_mem_start);
+
         return(is_init);
     }
 
