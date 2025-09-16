@@ -22,22 +22,8 @@ namespace ifb {
         eng_mem_mngr_init  ();
         eng_file_mngr_init ();
 
-        const sld::u64 xml_mem_size        = sld::size_megabytes(1);
-        const sld::u64 xml_mem_granularity = sld::size_kilobytes(1);
-        void*          xml_mem_start       = malloc(xml_mem_size); 
-
-        sld::xml_memory_init(
-            xml_mem_start,
-            xml_mem_size,
-            xml_mem_granularity
-        );
-
-        sld::xml_doc_t*    doc    = sld::xml_memory_alloc_doc    ();
-        sld::xml_node_t*   node   = sld::xml_memory_alloc_node   ();
-        sld::xml_attrib_t* attrib = sld::xml_memory_alloc_attrib ();
-
-        const bool    is_valid = sld::xml_doc_add_child_node (doc, "test", node);
-        const eng_u64 size     = sld::xml_doc_buffer_size    (doc);
+        const sld::u64 xml_mem_size  = sld::size_megabytes(1);
+        void*          xml_mem_start = malloc(xml_mem_size); 
 
         byte data[128];
         eng_buffer_t xml_file_buffer;
@@ -45,11 +31,17 @@ namespace ifb {
         xml_file_buffer.size   = sizeof(data);
         xml_file_buffer.length = 0;
 
-        sld::xml_doc_buffer_write(doc, xml_file_buffer);
+        sld::xml_memory_init(
+            xml_mem_start,
+            xml_mem_size
+        );
 
-        sld::xml_memory_free_doc    (doc);
-        sld::xml_memory_free_node   (node);
-        sld::xml_memory_free_attrib (attrib);
+        const sld::xml_hnd_doc_t  doc  = sld::xml_doc_create(); 
+        const sld::xml_hnd_node_t node = sld::xml_doc_add_child_node (doc, "test"); 
+        const eng_u64             size = sld::xml_doc_buffer_size    (doc);
+
+        sld::xml_doc_buffer_write (doc, xml_file_buffer);
+        sld::xml_doc_destroy      (doc);
 
         free(xml_mem_start);
 
