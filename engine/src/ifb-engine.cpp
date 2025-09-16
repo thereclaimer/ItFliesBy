@@ -36,6 +36,17 @@ namespace ifb {
         sld::xml_node_t*   node   = sld::xml_memory_alloc_node   ();
         sld::xml_attrib_t* attrib = sld::xml_memory_alloc_attrib ();
 
+        const bool    is_valid = sld::xml_doc_add_child_node (doc, "test", node);
+        const eng_u64 size     = sld::xml_doc_buffer_size    (doc);
+
+        byte data[128];
+        eng_buffer_t xml_file_buffer;
+        xml_file_buffer.data   = data;
+        xml_file_buffer.size   = sizeof(data);
+        xml_file_buffer.length = 0;
+
+        sld::xml_doc_buffer_write(doc, xml_file_buffer);
+
         sld::xml_memory_free_doc    (doc);
         sld::xml_memory_free_node   (node);
         sld::xml_memory_free_attrib (attrib);
