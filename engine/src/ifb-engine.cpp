@@ -5,9 +5,11 @@
 #include "ifb-engine.hpp"
 #include "ifb-engine-memory-internal.hpp"
 #include "ifb-engine-file-internal.hpp"
+#include "ifb-engine-core-internal.hpp"
 
 #include "ifb-engine-file-manager.cpp"
 #include "ifb-engine-asset.cpp"
+#include "ifb-engine-core.cpp"
 #include "ifb-engine-core-id.cpp"
 #include "ifb-engine-core-image.cpp"
 #include "ifb-engine-memory-manager.cpp"
@@ -21,9 +23,7 @@ namespace ifb {
 
         eng_mem_mngr_init  ();
         eng_file_mngr_init ();
-
-        const sld::u64 xml_mem_size  = sld::size_megabytes(1);
-        void*          xml_mem_start = malloc(xml_mem_size); 
+        eng_core_init      ();
 
         byte data[128];
         eng_buffer_t xml_file_buffer;
@@ -31,19 +31,12 @@ namespace ifb {
         xml_file_buffer.size   = sizeof(data);
         xml_file_buffer.length = 0;
 
-        sld::xml_memory_init(
-            xml_mem_start,
-            xml_mem_size
-        );
-
         const sld::xml_hnd_doc_t  doc  = sld::xml_doc_create(); 
         const sld::xml_hnd_node_t node = sld::xml_doc_add_child_node (doc, "test"); 
         const eng_u64             size = sld::xml_doc_buffer_size    (doc);
 
         sld::xml_doc_buffer_write (doc, xml_file_buffer);
         sld::xml_doc_destroy      (doc);
-
-        free(xml_mem_start);
 
         return(is_init);
     }

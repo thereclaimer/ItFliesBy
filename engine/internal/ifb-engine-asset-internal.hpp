@@ -169,8 +169,9 @@ namespace ifb {
 
 
     struct eng_asset_config_t {
-        eng_mem_arena_t* arena;
-        eng_file_h32_t   xml_file;
+        eng_mem_arena_t*  arena;
+        eng_file_h32_t    file;
+        eng_xml_h32_doc_t xml_doc;
     };
 
     struct eng_asset_config_node_t {

@@ -21,18 +21,30 @@ namespace ifb {
             assert(is_decommit);
         }
 
+        // create the document
+        eng_xml_h32_doc_t xml_doc = sld::xml_doc_create();
+        assert(xml_doc.val != SLD_XML_INVALID_HANDLE);
+
         // open the file
-        static const eng_c8* xml_file_path   = IFB_ENG_ASSET_CONFIG_PATH;
-        const eng_file_h32_t xml_file_handle = eng_file_mngr_open_rw(xml_file_handle);
+        static const eng_c8* file_path   = IFB_ENG_ASSET_CONFIG_PATH;
+        const eng_file_h32_t file_handle = eng_file_mngr_open_rw(file_path);
+        assert(file_handle.val != IFB_ENG_FILE_H32_INVALID);
 
-
+        // initialize the config
+        config->arena   = arena;
+        config->file    = file_handle;
+        config->xml_doc = xml_doc;
+        return(config);
     }
 
     IFB_ENG_FUNC void
     eng_asset_config_destroy(
         eng_asset_config_t* config) {
 
-        eng_asset_config_validate(config);
+        eng_asset_config_validate   (config);
+        eng_file_mngr_close         (config->file);
+        sld::xml_doc_destroy        (config->xml_doc);
+        eng_mem_mngr_arena_decommit (config->arena);
     }
 
     IFB_ENG_FUNC void
