@@ -31,4 +31,7 @@ namespace ifb {
 #define eng_mem_mngr_arena_push_struct(arena, struct) (struct*)sld::arena_push_bytes(arena, sizeof(struct))
 #define eng_mem_mngr_arena_pull_struct(arena, struct)          sld::arena_pull_bytes(arena, sizeof(struct))
 
+#define eng_mem_mngr_arena_push_struct_array(arena, count, struct) (struct*)sld::arena_push_bytes(arena, (count * sizeof(struct)))
+#define eng_mem_mngr_arena_pull_struct_array(arena, count, struct)          sld::arena_pull_bytes(arena, (count * sizeof(struct)))
+
 #endif // IFB_ENGINE_MEMORY_INTERNAL_HPP
