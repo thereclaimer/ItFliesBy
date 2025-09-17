@@ -79,7 +79,6 @@ namespace ifb {
 
         }
 
-
         // initialize the structure
         _db.arena        = NULL;
         _db.table.text   = &_db_table_text;

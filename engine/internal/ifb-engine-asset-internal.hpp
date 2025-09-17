@@ -1,6 +1,8 @@
 #ifndef IFB_ENG_ASSET_INTERNAL_HPP
 #define IFB_ENG_ASSET_INTERNAL_HPP
 
+#include <sld-xml.hpp>
+
 #include "ifb-engine-asset.hpp"
 #include "ifb-engine-memory-internal.hpp"
 #include "ifb-engine-file-internal.hpp"
@@ -133,6 +135,64 @@ namespace ifb {
     struct eng_asset_db_builder_t {
         eng_file_h32_t config_file_handle;
     };
+
+    //-------------------------------------------------------------------
+    // DATABASE CONFIG
+    //-------------------------------------------------------------------
+
+    struct eng_asset_config_xml_properties_t {
+        struct {
+            static constexpr eng_c8* ifb_assets = "ifb-assets";
+            static constexpr eng_c8* text       = "text";
+            static constexpr eng_c8* image      = "image";
+            static constexpr eng_c8* sound      = "sound";
+            static constexpr eng_c8* font       = "font";
+            static constexpr eng_c8* asset      = "asset";
+        } node;
+        struct {
+            static constexpr eng_c8* name = "name"; 
+            static constexpr eng_c8* path = "path"; 
+        } attrib;
+        static constexpr eng_c8* default_config = 
+            "<ifb-assets>"
+                "<text path=\"../assets/text\">"
+                "</text>"
+                "<image path=\"../assets/image\">"
+                "</image>"
+                "<sound path=\"../assets/sound\">"
+                "</sound>"
+                "<font path=\"../assets/font\">"
+                "</font>"
+            "</ifb-assets>";
+    };
+
+
+
+    struct eng_asset_config_t {
+        eng_mem_arena_t* arena;
+        eng_file_h32_t   xml_file;
+    };
+
+    struct eng_asset_config_node_t {
+        eng_u32 count;
+        struct {
+            eng_asset_name_str8_t* name;
+            eng_asset_path_str8_t* path;
+        } array;
+    };
+ 
+    eng_asset_config_t* eng_asset_config_create           (void);    
+    void                eng_asset_config_destroy          (eng_asset_config_t* const config);
+    void                eng_asset_config_validate         (eng_asset_config_t* const config);
+    void                eng_asset_config_load_default     (eng_asset_config_t* const config);
+    void                eng_asset_config_node_read_text   (eng_asset_config_t* const config, eng_asset_config_node_t& node);
+    void                eng_asset_config_node_read_image  (eng_asset_config_t* const config, eng_asset_config_node_t& node);
+    void                eng_asset_config_node_read_sound  (eng_asset_config_t* const config, eng_asset_config_node_t& node);
+    void                eng_asset_config_node_read_font   (eng_asset_config_t* const config, eng_asset_config_node_t& node);
+    void                eng_asset_config_node_write_text  (eng_asset_config_t* const config, eng_asset_config_node_t& node);
+    void                eng_asset_config_node_write_image (eng_asset_config_t* const config, eng_asset_config_node_t& node);
+    void                eng_asset_config_node_write_sound (eng_asset_config_t* const config, eng_asset_config_node_t& node);
+    void                eng_asset_config_node_write_font  (eng_asset_config_t* const config, eng_asset_config_node_t& node);
 };
 
 #endif //IFB_ENG_ASSET_INTERNAL_HPP

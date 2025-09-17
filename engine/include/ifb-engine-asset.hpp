@@ -17,6 +17,9 @@
 #ifndef    IFB_ENG_ASSET_NAME_SIZE
 #   define IFB_ENG_ASSET_NAME_SIZE   32 
 #endif
+#ifndef    IFB_ENG_ASSET_PATH_SIZE
+#   define IFB_ENG_ASSET_PATH_SIZE   32 
+#endif
 
 namespace ifb {
 
@@ -73,13 +76,16 @@ namespace ifb {
         eng_c8 chars[IFB_ENG_ASSET_NAME_SIZE];
     };
 
+    struct eng_asset_path_str8_t {
+        eng_c8 chars[IFB_ENG_ASSET_PATH_SIZE];
+    };
+
     struct eng_asset_t {
         eng_asset_name_str8_t* name;        
         eng_asset_index_t      index;
         eng_asset_id_u128_t    id;
         eng_asset_buffer_t     buffer;
     };
-
 };
 
 #endif //IFB_ENGINE_ASSET_HPP

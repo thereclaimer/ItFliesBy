@@ -5,6 +5,7 @@
 #include <sld-buffer.hpp>
 #include <sld-hash.hpp>
 #include <sld-string.hpp>
+#include <sld-xml.hpp>
 
 #define IFB_ENG_API      __declspec(dllexport)
 #define IFB_ENG_FUNC     static
@@ -102,7 +103,6 @@ namespace ifb {
         eng_error_e32_module_file     = 0x00030000
     };
 
-
     //-------------------------------------------------------------------
     // STRINGS
     //-------------------------------------------------------------------
@@ -115,6 +115,14 @@ namespace ifb {
     //-------------------------------------------------------------------
     
     typedef sld::buffer_t eng_buffer_t;
+
+    //-------------------------------------------------------------------
+    // DATA FORMATS
+    //-------------------------------------------------------------------
+
+    typedef sld::xml_hnd_doc_t    eng_xml_h32_doc_t;
+    typedef sld::xml_hnd_node_t   eng_xml_h32_node_t;
+    typedef sld::xml_hnd_attrib_t eng_xml_h32_attrib_t;
 
     //-------------------------------------------------------------------
     // API

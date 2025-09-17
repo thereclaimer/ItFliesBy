@@ -26,7 +26,9 @@ namespace ifb {
     eng_mem_arena_t*  eng_mem_mngr_arena_commit_file     (void);   
     eng_mem_arena_t*  eng_mem_mngr_arena_commit_asset    (void);   
     bool              eng_mem_mngr_arena_decommit        (eng_mem_arena_t* arena);
-
 };
+
+#define eng_mem_mngr_arena_push_struct(arena, struct) (struct*)sld::arena_push_bytes(arena, sizeof(struct))
+#define eng_mem_mngr_arena_pull_struct(arena, struct)          sld::arena_pull_bytes(arena, sizeof(struct))
 
 #endif // IFB_ENGINE_MEMORY_INTERNAL_HPP

@@ -21,6 +21,12 @@
 #ifndef    IFB_ENG_MEM_SIZE_KB_FILE_ARENA
 #   define IFB_ENG_MEM_SIZE_KB_FILE_ARENA     1000    // 1 MB
 #endif
+#ifndef    IFB_ENG_MEM_SIZE_KB_ASSET_RES 
+#   define IFB_ENG_MEM_SIZE_KB_ASSET_RES      1000000 // 1 GB
+#endif
+#ifndef    IFB_ENG_MEM_SIZE_KB_ASSET_ARENA
+#   define IFB_ENG_MEM_SIZE_KB_ASSET_ARENA    64000   // 64 MB
+#endif
 
 namespace ifb {
 
@@ -78,7 +84,8 @@ namespace ifb {
     enum eng_mem_e32_res_type_ {
         eng_mem_e32_res_type_platform = 0,
         eng_mem_e32_res_type_core     = 1,
-        eng_mem_e32_res_type_file     = 2
+        eng_mem_e32_res_type_file     = 2,
+        eng_mem_e32_res_type_asset    = 3
     };
 
     struct eng_mem_h32_arena_t       : eng_h32_t { };
