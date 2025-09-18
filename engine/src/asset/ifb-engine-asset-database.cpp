@@ -17,24 +17,28 @@ namespace ifb {
 
         is_init = true;
 
-        // initialize the header buffer 
-        eng_file_buffer_t header_buffer;
-        header_buffer.data        = _db_file_header.data;
-        header_buffer.size        = _db_file_header_data_size;
-        header_buffer.transferred = 0;
-        header_buffer.cursor      = 0;
+        // initialize the header
+        eng_asset_db_file_header_t file_header;
+        file_header.buffer.data        = _db_file_header_data;
+        file_header.buffer.size        = _db_file_header_data_size;
+        file_header.buffer.cursor      = 0;
+        file_header.buffer.length      = 0;
+        file_header.buffer.transferred = 0;
+        file_header.verif.data         = (eng_c8*)&file_header.buffer.data[0];
+        file_header.verif.length       = _db_file_verif_size - 1;
+        file_header.hash.val.as_u64[0] = 0;
+        file_header.hash.val.as_u64[1] = 0;
+        file_header.index.count        = 0;
+        file_header.index.array        = (eng_asset_db_file_index_t*)&file_header.buffer.data[file_header.verif.length];
 
-        // open the file, get the size, and read the header
-        const eng_file_h32_t file_handle     = eng_file_mngr_open_ro  (_db_file_path_cstr);
-        const eng_u64        file_size       = eng_file_mngr_get_size (file_handle); 
-        const eng_bool       is_valid_read   = eng_file_mngr_read     (file_handle, header_buffer);
-        const eng_bool       is_valid_length = (
-            file_size                 >= header_buffer.size &&
-            header_buffer.transferred == header_buffer.size
-        );
-
-        is_init &= is_valid_read;
-        is_init &= is_valid_length;
+        // open the file and get the size
+        const eng_file_h32_t file_handle = eng_file_mngr_open_ro  (_db_file_path_cstr);
+        const eng_u64        file_size   = eng_file_mngr_get_size (file_handle); 
+        
+        // read the file header
+        is_init &= eng_file_mngr_read(file_handle, file_header.buffer);
+        is_init &= (file_size                      >= file_header.buffer.length); 
+        is_init &= (file_header.buffer.transferred == file_header.buffer.size);
         if (!is_init) return(is_init);
 
         // check the verification string
@@ -60,11 +64,10 @@ namespace ifb {
             index_num < eng_asset_type_e32_count - 1;
             ++index_num) {
 
-            eng_asset_db_file_index_t& index_current             = _db_file_header.index_array[index_num];
-            eng_asset_db_file_index_t& index_next                = _db_file_header.index_array[index_num + 1];
+            eng_asset_db_file_index_t& index_current             = _db_file_header.index.array[index_num];
+            eng_asset_db_file_index_t& index_next                = _db_file_header.index.array[index_num + 1];
             const eng_u32              index_next_start_expected = (index_current.start + index_current.size); 
             is_init &= (index_next.start == index_next_start_expected);
-
         }
 
         // initialize the structure
