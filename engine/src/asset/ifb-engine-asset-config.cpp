@@ -80,18 +80,110 @@ namespace ifb {
 
     IFB_ENG_FUNC bool
     eng_asset_config_node_read_text(
-        eng_asset_config_t* const config,
-        eng_asset_config_node_t&  node) {
+        eng_asset_config_t* const  config,
+        eng_asset_config_assets_t& node) {
 
         eng_asset_config_validate(config);
 
-        sld::xml_doc_reset(config->xml_doc);
+        const bool did_read = eng_asset_config_node_read_assets(
+            config, node, _properties.node.text
+        );
+    
+        return(did_read);
+    }
+
+    IFB_ENG_FUNC bool
+    eng_asset_config_node_read_image(
+        eng_asset_config_t* const config,
+        eng_asset_config_assets_t&  node) {
+
+        eng_asset_config_validate(config);
+
+        const bool did_read = eng_asset_config_node_read_assets(
+            config, node, _properties.node.image
+        );
+    
+        return(did_read);
+    }
+
+    IFB_ENG_FUNC bool
+    eng_asset_config_node_read_sound(
+        eng_asset_config_t* const config,
+        eng_asset_config_assets_t&  node) {
+
+        eng_asset_config_validate(config);
+
+        const bool did_read = eng_asset_config_node_read_assets(
+            config, node, _properties.node.sound
+        );
+    
+        return(did_read);
+
+    }
+
+    IFB_ENG_FUNC bool
+    eng_asset_config_node_read_font(
+        eng_asset_config_t* const config,
+        eng_asset_config_assets_t&  node) {
+
+        eng_asset_config_validate(config);
+
+        const bool did_read = eng_asset_config_node_read_assets(
+            config, node, _properties.node.font
+        );
+    
+        return(did_read);
+
+    }
+
+    IFB_ENG_FUNC void
+    eng_asset_config_node_write_text(
+        eng_asset_config_t* const config,
+        eng_asset_config_assets_t&  node) {
+
+        eng_asset_config_validate(config);
+
+    }
+
+    IFB_ENG_FUNC void
+    eng_asset_config_node_write_image(
+        eng_asset_config_t* const config,
+        eng_asset_config_assets_t&  node) {
+
+        eng_asset_config_validate(config);
+    
+    }
+
+    IFB_ENG_FUNC void
+    eng_asset_config_node_write_sound(
+        eng_asset_config_t* const config,
+        eng_asset_config_assets_t&  node) {
+
+        eng_asset_config_validate(config);
+
+    }
+
+    IFB_ENG_FUNC void
+    eng_asset_config_node_write_font(
+        eng_asset_config_t* const config,
+        eng_asset_config_assets_t&  node) {
+
+        eng_asset_config_validate(config);
+
+    }
+
+
+    IFB_ENG_FUNC bool
+    eng_asset_config_node_read_assets(
+        eng_asset_config_t* const  config,
+        eng_asset_config_assets_t& node,
+        const eng_c8*              type_name) {
 
         bool is_mem_ok = sld::arena_roll_back(config->arena);
         assert(is_mem_ok);
 
-        eng_xml_h32_node_t text_node = sld::xml_doc_get_child_node(_properties.node.text);
-        bool did_read = (text_node.val != SLD_XML_INVALID_HANDLE); 
+        const eng_xml_h32_node_t config_node = sld::xml_doc_get_child_node(type_name);
+        bool did_read = (config_node.val != SLD_XML_INVALID_HANDLE); 
         if (did_read) {
 
             // allocate memory
@@ -103,19 +195,13 @@ namespace ifb {
             is_mem_ok       &= (node.array.path != NULL);            
             assert(is_mem_ok);
 
-            sld::str8_t name_str = {
-                NULL,                         // chars
-                sizeof(eng_asset_name_str8_t) // size
-            };
-            sld::str8_t path_str = {
-                NULL,                         // chars
-                sizeof(eng_asset_path_str8_t) // size
-            };
+            sld::str8_t name_str = { NULL,  sizeof(eng_asset_name_str8_t) };
+            sld::str8_t path_str = { NULL,  sizeof(eng_asset_path_str8_t) };
             sld::xml_attrib_value_t attrib_asset_name;
             sld::xml_attrib_value_t attrib_asset_path;
             eng_u32 index = 0;
             for (
-                eng_xml_h32_node_t asset_node =  sld::xml_node_get_child(text_node, _properties.node.asset);
+                eng_xml_h32_node_t asset_node =  sld::xml_node_get_child(config_node, _properties.node.asset);
                 asset_node.val                != SLD_XML_INVALID_HANDLE;
                 asset_node                    =  sld::xml_node_get_sibling(asset_node, _properties.node.asset)) {
 
@@ -133,70 +219,6 @@ namespace ifb {
         }
 
         sld::xml_doc_reset(config->xml_doc);
+        return(did_read);
     }
-
-    IFB_ENG_FUNC void
-    eng_asset_config_node_read_image(
-        eng_asset_config_t* const config,
-        eng_asset_config_node_t&  node) {
-
-        eng_asset_config_validate(config);
-
-    }
-
-    IFB_ENG_FUNC void
-    eng_asset_config_node_read_sound(
-        eng_asset_config_t* const config,
-        eng_asset_config_node_t&  node) {
-
-        eng_asset_config_validate(config);
-
-    }
-
-    IFB_ENG_FUNC void
-    eng_asset_config_node_read_font(
-        eng_asset_config_t* const config,
-        eng_asset_config_node_t&  node) {
-
-        eng_asset_config_validate(config);
-
-    }
-
-    IFB_ENG_FUNC void
-    eng_asset_config_node_write_text(
-        eng_asset_config_t* const config,
-        eng_asset_config_node_t&  node) {
-
-        eng_asset_config_validate(config);
-
-    }
-
-    IFB_ENG_FUNC void
-    eng_asset_config_node_write_image(
-        eng_asset_config_t* const config,
-        eng_asset_config_node_t&  node) {
-
-        eng_asset_config_validate(config);
-
-    }
-
-    IFB_ENG_FUNC void
-    eng_asset_config_node_write_sound(
-        eng_asset_config_t* const config,
-        eng_asset_config_node_t&  node) {
-
-        eng_asset_config_validate(config);
-
-    }
-
-    IFB_ENG_FUNC void
-    eng_asset_config_node_write_font(
-        eng_asset_config_t* const config,
-        eng_asset_config_node_t&  node) {
-
-        eng_asset_config_validate(config);
-
-    }
-
-
 };
