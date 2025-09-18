@@ -16,7 +16,7 @@ namespace ifb {
 
         // allocate memory
         auto config = eng_mem_mngr_arena_push_struct(arena, eng_asset_config_t);
-        if (!config && ) {
+        if (!config) {
             const eng_bool is_decommit = eng_mem_mngr_arena_decommit(arena);
             assert(is_decommit);
         }
@@ -56,8 +56,8 @@ namespace ifb {
 
         eng_bool is_valid = (config != NULL);
         if (is_valid) {
-            is_valid &= (config->arena        != NULL);
-            is_valid &= (config->xml_file.val != IFB_ENG_FILE_H32_INVALID);
+            is_valid &= (config->arena       != NULL);
+            is_valid &= (config->xml_doc.val != IFB_ENG_FILE_H32_INVALID);
         }
         assert(is_valid);
     }
@@ -70,9 +70,9 @@ namespace ifb {
 
         static const eng_u32 size           = sizeof(_properties.default_config);
         static eng_buffer_t  default_buffer = {
-            _properties.default_config, // data
-            size,                       // size
-            size                        // length
+            (byte*)_properties.default_config, // data
+            size,                              // size
+            size                               // length
         };
 
         sld::xml_doc_buffer_read(config->xml_doc, default_buffer);
@@ -118,7 +118,6 @@ namespace ifb {
         );
     
         return(did_read);
-
     }
 
     IFB_ENG_FUNC bool
@@ -133,10 +132,9 @@ namespace ifb {
         );
     
         return(did_read);
-
     }
 
-    IFB_ENG_FUNC void
+    IFB_ENG_FUNC bool
     eng_asset_config_node_write_text(
         eng_asset_config_t* const config,
         eng_asset_config_assets_t&  node) {
@@ -145,7 +143,7 @@ namespace ifb {
 
     }
 
-    IFB_ENG_FUNC void
+    IFB_ENG_FUNC bool
     eng_asset_config_node_write_image(
         eng_asset_config_t* const config,
         eng_asset_config_assets_t&  node) {
@@ -154,7 +152,7 @@ namespace ifb {
     
     }
 
-    IFB_ENG_FUNC void
+    IFB_ENG_FUNC bool
     eng_asset_config_node_write_sound(
         eng_asset_config_t* const config,
         eng_asset_config_assets_t&  node) {
@@ -163,7 +161,7 @@ namespace ifb {
 
     }
 
-    IFB_ENG_FUNC void
+    IFB_ENG_FUNC bool
     eng_asset_config_node_write_font(
         eng_asset_config_t* const config,
         eng_asset_config_assets_t&  node) {
@@ -182,12 +180,12 @@ namespace ifb {
         bool is_mem_ok = sld::arena_roll_back(config->arena);
         assert(is_mem_ok);
 
-        const eng_xml_h32_node_t config_node = sld::xml_doc_get_child_node(type_name);
+        const eng_xml_h32_node_t config_node = sld::xml_doc_get_child_node(config->xml_doc, type_name);
         bool did_read = (config_node.val != SLD_XML_INVALID_HANDLE); 
         if (did_read) {
 
             // allocate memory
-            node.count      =  sld::xml_node_get_child_count(_properties.node.asset);
+            node.count      =  sld::xml_node_get_child_count(config_node, _properties.node.asset);
             is_mem_ok       =  sld::arena_save_position(config->arena);
             node.array.name =  eng_mem_mngr_arena_push_struct_array(config->arena, node.count, eng_asset_name_str8_t);
             node.array.path =  eng_mem_mngr_arena_push_struct_array(config->arena, node.count, eng_asset_path_str8_t);
@@ -205,8 +203,8 @@ namespace ifb {
                 asset_node.val                != SLD_XML_INVALID_HANDLE;
                 asset_node                    =  sld::xml_node_get_sibling(asset_node, _properties.node.asset)) {
 
-                did_read &= sld::xml_node_get_attrib_utf8(asset_node, _properties.attrib.name, &attrib_asset_name); 
-                did_read &= sld::xml_node_get_attrib_utf8(asset_node, _properties.attrib.path, &attrib_asset_path);
+                did_read &= sld::xml_node_get_attrib_utf8(asset_node, _properties.attrib.name, attrib_asset_name); 
+                did_read &= sld::xml_node_get_attrib_utf8(asset_node, _properties.attrib.path, attrib_asset_path);
 
                 name_str.chars = node.array.name[index].chars;
                 path_str.chars = node.array.path[index].chars;
@@ -219,6 +217,20 @@ namespace ifb {
         }
 
         sld::xml_doc_reset(config->xml_doc);
+        return(did_read);
+    }
+
+    IFB_ENG_FUNC bool
+    eng_asset_config_node_write_assets(
+        eng_asset_config_t* const  config,
+        eng_asset_config_assets_t& node,
+        const eng_c8*              type_name) {
+
+        const eng_xml_h32_node_t config_node = sld::xml_doc_get_child_node(config->xml_doc, type_name);
+        bool did_read = (config_node.val != SLD_XML_INVALID_HANDLE); 
+      
+        //TODO
+
         return(did_read);
     }
 };

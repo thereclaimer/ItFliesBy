@@ -3,6 +3,8 @@
 
 #include <sld-xml.hpp>
 
+#include "ifb-engine.hpp"
+#include "ifb-engine-hash.hpp"
 #include "ifb-engine-asset.hpp"
 #include "ifb-engine-memory-internal.hpp"
 #include "ifb-engine-file-internal.hpp"
@@ -180,19 +182,28 @@ namespace ifb {
         } array;
     };
  
-    IFB_ENG_FUNC eng_asset_config_t* eng_asset_config_create           (void);    
-    IFB_ENG_FUNC void                eng_asset_config_destroy          (eng_asset_config_t* const config);
-    IFB_ENG_FUNC void                eng_asset_config_validate         (eng_asset_config_t* const config);
-    IFB_ENG_FUNC void                eng_asset_config_load_default     (eng_asset_config_t* const config);
-    IFB_ENG_FUNC bool                eng_asset_config_node_read_text   (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC bool                eng_asset_config_node_read_image  (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC bool                eng_asset_config_node_read_sound  (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC bool                eng_asset_config_node_read_font   (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC bool                eng_asset_config_node_write_text  (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC bool                eng_asset_config_node_write_image (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC bool                eng_asset_config_node_write_sound (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC bool                eng_asset_config_node_write_font  (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC bool                eng_asset_config_node_read_assets (eng_asset_config_t* const config, eng_asset_config_assets_t& node, const eng_c8* type_name);
+    static eng_asset_db_t             _db;
+    static eng_asset_db_file_t        _db_file;
+    static eng_asset_db_file_header_t _db_file_header;
+    static eng_asset_db_table_t       _db_table_text;
+    static eng_asset_db_table_t       _db_table_image;
+    static eng_asset_db_table_t       _db_table_sound;
+    static eng_asset_db_table_t       _db_table_font;
+
+    IFB_ENG_FUNC eng_asset_config_t* eng_asset_config_create            (void);    
+    IFB_ENG_FUNC void                eng_asset_config_destroy           (eng_asset_config_t* const config);
+    IFB_ENG_FUNC void                eng_asset_config_validate          (eng_asset_config_t* const config);
+    IFB_ENG_FUNC void                eng_asset_config_load_default      (eng_asset_config_t* const config);
+    IFB_ENG_FUNC bool                eng_asset_config_node_read_text    (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
+    IFB_ENG_FUNC bool                eng_asset_config_node_read_image   (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
+    IFB_ENG_FUNC bool                eng_asset_config_node_read_sound   (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
+    IFB_ENG_FUNC bool                eng_asset_config_node_read_font    (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
+    IFB_ENG_FUNC bool                eng_asset_config_node_write_text   (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
+    IFB_ENG_FUNC bool                eng_asset_config_node_write_image  (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
+    IFB_ENG_FUNC bool                eng_asset_config_node_write_sound  (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
+    IFB_ENG_FUNC bool                eng_asset_config_node_write_font   (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
+    IFB_ENG_FUNC bool                eng_asset_config_node_read_assets  (eng_asset_config_t* const config, eng_asset_config_assets_t& node, const eng_c8* type_name);
+    IFB_ENG_FUNC bool                eng_asset_config_node_write_assets (eng_asset_config_t* const config, eng_asset_config_assets_t& node, const eng_c8* type_name);
 };
 
 #endif //IFB_ENG_ASSET_INTERNAL_HPP

@@ -5,18 +5,6 @@
 namespace ifb {
 
     //-------------------------------------------------------------------
-    // GLOBALS
-    //-------------------------------------------------------------------
-
-    static eng_asset_db_t             _db;
-    static eng_asset_db_file_t        _db_file;
-    static eng_asset_db_file_header_t _db_file_header;
-    static eng_asset_db_table_t       _db_table_text;
-    static eng_asset_db_table_t       _db_table_image;
-    static eng_asset_db_table_t       _db_table_sound;
-    static eng_asset_db_table_t       _db_table_font;
-
-    //-------------------------------------------------------------------
     // INTERNAL
     //-------------------------------------------------------------------
 
@@ -80,40 +68,32 @@ namespace ifb {
         }
 
         // initialize the structure
-        _db.arena        = NULL;
-        _db.table.text   = &_db_table_text;
-        _db.table.image  = &_db_table_image;
-        _db.table.sound  = &_db_table_sound;
-        _db.table.font   = &_db_table_font;
-        _db.file         = &_db.file;
-        _db.file->handle = NULL;
-        _db.file->size   = 0;
-        _db.file->header = &_db_file_header;
-
-
+        _db.arena            = NULL;
+        _db.table.text       = &_db_table_text;
+        _db.table.image      = &_db_table_image;
+        _db.table.sound      = &_db_table_sound;
+        _db.table.font       = &_db_table_font;
+        _db.file             = _db.file;
+        _db.file->handle.val = IFB_ENG_FILE_H32_INVALID;
+        _db.file->size       = 0;
+        _db.file->header     = &_db_file_header;
 
         // verify the data
         for (
             eng_u32 index = 0;
-            index < _db_file_verif_size
+            index < _db_file_verif_size;
             ++index) {
 
-            const eng_c8 c =  read_buffer.data[index];
-            
+            const eng_c8 c  = header_buffer.data[index];
             is_init        &= (c == _db_file_verif_cstr[index]);
         }
 
         // commit arena
         eng_mem_arena_t* arena = eng_mem_mngr_arena_commit_asset(); 
-
         is_init &= (arena != NULL);
-        if (!is_init) return(is_init);
-
 
 
         return(is_init);
-        
-
     }
 
 };
