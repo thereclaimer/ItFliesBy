@@ -403,7 +403,7 @@ namespace ifb {
         // set the last error
         // update flags if we didn't succeed
         file->last_error      = eng_file_mngr_error_os_to_eng(os_error);
-        const bool is_success = (file->last_error.val != eng_file_error_e32_success);
+        const bool is_success = (file->last_error.val == eng_file_error_e32_success);
         if (!is_success) {
             file->flags.val &= ~(eng_file_flag_e32_write | eng_file_flag_e32_io_pending);
             file->flags.val |= ~(eng_file_flag_e32_error);

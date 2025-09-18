@@ -144,18 +144,18 @@ namespace ifb {
 
     struct eng_asset_config_xml_properties_t {
         struct {
-            static constexpr eng_c8* ifb_assets = "ifb-assets";
-            static constexpr eng_c8* text       = "text";
-            static constexpr eng_c8* image      = "image";
-            static constexpr eng_c8* sound      = "sound";
-            static constexpr eng_c8* font       = "font";
-            static constexpr eng_c8* asset      = "asset";
+            static constexpr eng_c8 ifb_assets [] = "ifb-assets";
+            static constexpr eng_c8 text       [] = "text";
+            static constexpr eng_c8 image      [] = "image";
+            static constexpr eng_c8 sound      [] = "sound";
+            static constexpr eng_c8 font       [] = "font";
+            static constexpr eng_c8 asset      [] = "asset";
         } node;
         struct {
-            static constexpr eng_c8* name = "name"; 
-            static constexpr eng_c8* path = "path"; 
+            static constexpr eng_c8 name [] = "name"; 
+            static constexpr eng_c8 path [] = "path"; 
         } attrib;
-        static constexpr eng_c8* default_config = 
+        static constexpr eng_c8 default_config[] = 
             "<ifb-assets>"
                 "<text path=\"../assets/text\">"
                 "</text>"
@@ -190,20 +190,23 @@ namespace ifb {
     static eng_asset_db_table_t       _db_table_sound;
     static eng_asset_db_table_t       _db_table_font;
 
-    IFB_ENG_FUNC eng_asset_config_t* eng_asset_config_create            (void);    
-    IFB_ENG_FUNC void                eng_asset_config_destroy           (eng_asset_config_t* const config);
-    IFB_ENG_FUNC void                eng_asset_config_validate          (eng_asset_config_t* const config);
-    IFB_ENG_FUNC void                eng_asset_config_load_default      (eng_asset_config_t* const config);
-    IFB_ENG_FUNC bool                eng_asset_config_node_read_text    (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC bool                eng_asset_config_node_read_image   (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC bool                eng_asset_config_node_read_sound   (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC bool                eng_asset_config_node_read_font    (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC bool                eng_asset_config_node_write_text   (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC bool                eng_asset_config_node_write_image  (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC bool                eng_asset_config_node_write_sound  (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC bool                eng_asset_config_node_write_font   (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC bool                eng_asset_config_node_read_assets  (eng_asset_config_t* const config, eng_asset_config_assets_t& node, const eng_c8* type_name);
-    IFB_ENG_FUNC bool                eng_asset_config_node_write_assets (eng_asset_config_t* const config, eng_asset_config_assets_t& node, const eng_c8* type_name);
+    IFB_ENG_FUNC eng_asset_config_t* eng_asset_config_create              (void);    
+    IFB_ENG_FUNC eng_void            eng_asset_config_destroy             (eng_asset_config_t* const config);
+    IFB_ENG_FUNC eng_void            eng_asset_config_validate            (eng_asset_config_t* const config);
+    IFB_ENG_FUNC eng_void            eng_asset_config_load_default        (eng_asset_config_t* const config);
+    IFB_ENG_FUNC eng_void            eng_asset_config_save_file           (eng_asset_config_t* const config);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_text      (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_image     (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_sound     (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_font      (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_text     (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_image    (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_sound    (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_font     (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_assets    (eng_asset_config_t* const config, eng_asset_config_assets_t& node, const eng_c8* type_name);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_assets   (eng_asset_config_t* const config, eng_asset_config_assets_t& node, const eng_c8* type_name);
+    IFB_ENG_FUNC eng_u64             eng_asset_config_get_xml_buffer_size (eng_asset_config_t* const config);
+    IFB_ENG_FUNC eng_void            eng_asset_config_get_xml_buffer      (eng_asset_config_t* const config, eng_buffer_t& buffer);
 };
 
 #endif //IFB_ENG_ASSET_INTERNAL_HPP

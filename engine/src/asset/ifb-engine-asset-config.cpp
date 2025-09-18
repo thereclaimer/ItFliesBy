@@ -22,7 +22,8 @@ namespace ifb {
         }
 
         // save memory position
-        assert(sld::arena_save_position(config->arena));
+        const eng_bool is_mem_ok = sld::arena_save_position(arena); 
+        assert(is_mem_ok);
 
         // create the document
         eng_xml_h32_doc_t xml_doc = sld::xml_doc_create();
@@ -76,6 +77,31 @@ namespace ifb {
         };
 
         sld::xml_doc_buffer_read(config->xml_doc, default_buffer);
+    }
+
+    IFB_ENG_FUNC eng_void
+    eng_asset_config_save_file(
+        eng_asset_config_t* const config) {
+        
+        eng_asset_config_validate(config);
+
+        // allocate memory
+        const eng_u64  buffer_size = sld::xml_doc_buffer_length (config->xml_doc);  
+        eng_byte*      buffer_data = sld::arena_push_bytes      (config->arena, buffer_size); 
+        assert(buffer_size != 0 && buffer_data != NULL);
+
+        // initialize file buffer
+        eng_file_buffer_t xml_file_buffer;
+        xml_file_buffer.data        = buffer_data;
+        xml_file_buffer.size        = buffer_size; 
+        xml_file_buffer.length      = 0;
+        xml_file_buffer.cursor      = 0;
+        xml_file_buffer.transferred = 0;
+
+        bool did_save = true;
+        did_save &= sld::xml_doc_buffer_write (config->xml_doc, xml_file_buffer);
+        did_save &= eng_file_mngr_write       (config->file,    xml_file_buffer); 
+        assert(did_save);
     }
 
     IFB_ENG_FUNC bool
@@ -232,5 +258,28 @@ namespace ifb {
         //TODO
 
         return(did_read);
+    }
+
+    IFB_ENG_FUNC eng_u64
+    eng_asset_config_get_xml_buffer_size(
+        eng_asset_config_t* const config) {
+
+        eng_asset_config_validate(config);
+
+        const eng_u64 size = sld::xml_doc_buffer_length(config->xml_doc);
+        return(size);
+    }
+
+    IFB_ENG_FUNC eng_void
+    eng_asset_config_get_xml_buffer(
+        eng_asset_config_t* const config,
+        eng_buffer_t&             buffer) {
+
+        const eng_bool did_write = sld::xml_doc_buffer_write(
+            config->xml_doc,
+            buffer
+        );
+
+        assert(did_write);
     }
 };

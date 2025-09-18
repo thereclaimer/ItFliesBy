@@ -34,19 +34,16 @@ namespace ifb {
         eng_file_mngr_init ();
         eng_core_init      ();
 
-        byte data[128];
-        eng_buffer_t xml_file_buffer;
-        xml_file_buffer.data   = data;
-        xml_file_buffer.size   = sizeof(data);
-        xml_file_buffer.length = 0;
+        eng_byte      buffer_data[1024];
+        eng_buffer_t  xml_buffer;
+        xml_buffer.data   = buffer_data;
+        xml_buffer.size   = 1024;
+        xml_buffer.length = 0;
 
-        const sld::xml_hnd_doc_t  doc  = sld::xml_doc_create(); 
-        const sld::xml_hnd_node_t node = sld::xml_doc_add_child_node (doc, "test"); 
-        const eng_u64             size = sld::xml_doc_buffer_size    (doc);
-
-        sld::xml_doc_buffer_write (doc, xml_file_buffer);
-        sld::xml_doc_destroy      (doc);
-
+        eng_asset_config_t* asset_config = eng_asset_config_create();
+        eng_asset_config_load_default (asset_config);
+        eng_asset_config_save_file    (asset_config);
+        eng_asset_config_destroy      (asset_config);
 
         return(is_init);
     }
