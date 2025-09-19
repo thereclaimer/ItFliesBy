@@ -4,14 +4,22 @@
 
 namespace ifb {
 
+    constexpr eng_c8  _db_file_default_header[]  = 
+        "IFBASSETDATABASE"                                                                              // (16 bytes) verification string
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"                              // (16 bytes) hash (everything after this point)
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"  // (24 bytes) text table index
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"  // (24 bytes) image table index
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"  // (24 bytes) sound table index
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"; // (24 bytes) font table index
+
     constexpr eng_u32 _db_file_index_array_size  = (sizeof(eng_asset_db_file_index_t) * eng_asset_type_e32_count);
     constexpr eng_c8  _db_file_path_cstr  []     = IFB_ENG_ASSET_DB_PATH;
     constexpr eng_c8  _db_file_verif_cstr []     = IFB_ENG_ASSET_VERIF_STR;
     constexpr eng_u32 _db_file_verif_size        = sizeof(_db_file_verif_cstr) - 1; 
-    constexpr eng_u32 _db_file_header_data_size  = _db_file_verif_size + sizeof(eng_hash_u128_t) + _db_file_index_array_size;
     constexpr eng_u32 _db_file_start_verif_data  = 0;
     constexpr eng_u32 _db_file_start_hash        = _db_file_verif_size;
     constexpr eng_u32 _db_file_start_index_array = _db_file_start_hash + sizeof(eng_hash_u128_t);
+    constexpr eng_u32 _db_file_header_size       = sizeof(_db_file_default_header); 
 
     IFB_ENG_FUNC eng_asset_db_file_t*
     eng_asset_db_file_create(
@@ -23,7 +31,7 @@ namespace ifb {
 
         // allocate memory and open the file
         eng_asset_db_file_t* db_file     = eng_mem_arena_push_struct(arena, eng_asset_db_file_t);
-        eng_byte*            header_data = eng_mem_arena_push_bytes (arena, _db_file_header_data_size); 
+        eng_byte*            header_data = eng_mem_arena_push_bytes (arena, _db_file_header_size); 
         eng_file_h32_t       file_handle = eng_file_mngr_open_rw    (_db_file_path_cstr);
 
         // sanity check
@@ -50,7 +58,7 @@ namespace ifb {
         db_file->verif.length              = _db_file_verif_size;
         db_file->hash                      = ptr_hash; 
         db_file->header_buffer.data        = header_data;
-        db_file->header_buffer.size        = _db_file_header_data_size;
+        db_file->header_buffer.size        = _db_file_header_size;
         db_file->header_buffer.length      = 0;
         db_file->header_buffer.cursor      = 0;
         db_file->header_buffer.transferred = 0;

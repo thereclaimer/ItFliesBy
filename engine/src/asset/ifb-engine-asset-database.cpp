@@ -61,7 +61,7 @@ namespace ifb {
 
         bool is_valid = (db != NULL);
         if (is_valid) {
-            is_valid &= sld::arena_validate(db->arena) 
+            is_valid &= sld::arena_validate(db->arena); 
             is_valid &= (db->file        != NULL);
             is_valid &= (db->table.text  != NULL);
             is_valid &= (db->table.image != NULL);
