@@ -8,28 +8,28 @@ namespace ifb {
     eng_asset_db_create(
         void) {
 
-        // create the file struct
-        eng_asset_db_file_t* db_file = eng_asset_db_file_create();
-        if (!db_file) return(NULL);
-
-        // commit arena
-        eng_mem_arena_t* arena = eng_mem_arena_commit_asset();
-        if (!arena) return(NULL);
-
-        // allocate memory
+        bool can_init = true;
+        
+        // create structures and allocate memory
+        eng_asset_db_file_t*  db_file   = eng_asset_db_file_create ();
+        eng_asset_config_t*   config    = eng_asset_config_create  ();
+        eng_mem_arena_t*      arena     = eng_mem_arena_commit_asset();
         eng_asset_db_t*       db        = eng_mem_arena_push_struct       (arena, eng_asset_db_t);        
         eng_asset_db_table_t* db_tables = eng_mem_arena_push_struct_array (arena, eng_asset_type_e32_count, eng_asset_db_table_t);
-        bool can_init = true;
+        can_init &= (db_file   != NULL);
+        can_init &= (config    != NULL);
+        can_init &= (arena     != NULL);
         can_init &= (db        != NULL);
         can_init &= (db_tables != NULL);
         if (!can_init) {
-            assert(eng_mem_arena_decommit(arena));
+            if (arena) assert(eng_mem_arena_decommit(arena));
             return(NULL);
         }
 
         // initialize the struct
         db->arena       = arena;
         db->file        = db_file;
+        db->config      = config;
         db->table.text  = &db_tables [eng_asset_type_e32_text];
         db->table.image = &db_tables [eng_asset_type_e32_image];
         db->table.sound = &db_tables [eng_asset_type_e32_sound];

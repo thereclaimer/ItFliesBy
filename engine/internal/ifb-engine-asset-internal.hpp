@@ -108,6 +108,7 @@ namespace ifb {
     struct eng_asset_db_t {
         eng_mem_arena_t*     arena;
         eng_asset_db_file_t* file;
+        eng_asset_config_t*  config;
         struct {
             eng_asset_db_table_t* text;
             eng_asset_db_table_t* image;

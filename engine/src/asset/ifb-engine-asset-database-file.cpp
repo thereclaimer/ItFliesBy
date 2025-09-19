@@ -114,9 +114,6 @@ namespace ifb {
             const eng_c8 c = db_file->verif.data[index];
             is_valid_header &= (c == _db_file_verif_cstr[index]);
         }
-
-
-
         return(is_valid_header);
     }
 
