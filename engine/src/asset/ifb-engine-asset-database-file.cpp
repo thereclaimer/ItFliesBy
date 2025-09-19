@@ -72,18 +72,44 @@ namespace ifb {
     }
 
     IFB_ENG_FUNC void
-    eng_asset_db_file_read(
+    eng_asset_db_file_validate(
         eng_asset_db_file_t* const db_file) {
+
+        eng_bool is_valid = (db_file != NULL);
+        if (!is_valid) {
+
+            is_valid &= (db_file->handle.val         != IFB_ENG_FILE_H32_INVALID); 
+            is_valid &= (db_file->index_array        != NULL);
+            is_valid &= (db_file->verif.data         != NULL);
+            is_valid &= (db_file->verif.length       == _db_file_verif_size); 
+            is_valid &= (db_file->hash               != NULL); 
+            is_valid &= (db_file->header_buffer.data != NULL);
+            is_valid &= (db_file->header_buffer.size != _db_file_header_size);
+            is_valid &= (db_file->arena              != NULL);          
+        }
+        assert(is_valid);
     }
 
     IFB_ENG_FUNC void
-    eng_asset_db_file_write(
+    eng_asset_db_file_read_header(
+        eng_asset_db_file_t* const db_file) {
+
+        eng_asset_db_file_validate(db_file);
+
+        eng_bool is_read = eng_file_mngr_read(db_file->handle, db_file->header_buffer);
+        assert(is_read);
+    }
+
+    IFB_ENG_FUNC void
+    eng_asset_db_file_write_header(
         eng_asset_db_file_t* const db_file) {
     }
 
     IFB_ENG_FUNC void
     eng_asset_db_file_write_default(
         eng_asset_db_file_t* const db_file) {
+
+        eng_asset_db_file_validate(db_file);
 
         static eng_file_buffer_t default_buffer;
         default_buffer.data        = (byte*)_db_file_default_header;

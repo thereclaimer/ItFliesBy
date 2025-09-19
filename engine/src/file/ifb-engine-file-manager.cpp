@@ -271,7 +271,8 @@ namespace ifb {
 
     IFB_ENG_FUNC bool
     eng_file_mngr_read(
-        const eng_file_h32_t file_handle) {
+        const eng_file_h32_t file_handle,
+        eng_file_buffer_t&   read_buffer) {
 
         // validate the file and make sure there's no pending operation
         eng_file_t* file = eng_file_mngr_get_file(file_handle);
@@ -291,12 +292,19 @@ namespace ifb {
         async_context.callback->data  = (eng_void*)file;
         async_context.callback->func  = _file_mngr.os_callback_read; 
 
-        // do the async read
-        const sld::os_file_error_t os_error = sld::os_file_read_async(
+        file->os_buffer.data   = read_buffer.data;
+        file->os_buffer.size   = read_buffer.size;
+        file->os_buffer.cursor = read_buffer.cursor;
+
+        // do the read
+        const sld::os_file_error_t os_error = sld::os_file_read(
             file->os_handle,
-            file->os_buffer,
-            async_context
+            file->os_buffer
         );
+
+        file->os_buffer.cursor      = read_buffer.cursor;
+        file->os_buffer.length      = read_buffer.length;
+        file->os_buffer.transferred = read_buffer.transferred;
 
         // set the last error
         // update flags if we didn't succeed

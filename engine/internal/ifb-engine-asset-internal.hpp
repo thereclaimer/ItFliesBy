@@ -149,8 +149,9 @@ namespace ifb {
 
     IFB_ENG_FUNC eng_asset_db_file_t* eng_asset_db_file_create        (void);
     IFB_ENG_FUNC void                 eng_asset_db_file_destroy       (eng_asset_db_file_t* const db_file);
-    IFB_ENG_FUNC void                 eng_asset_db_file_read          (eng_asset_db_file_t* const db_file);
-    IFB_ENG_FUNC void                 eng_asset_db_file_write         (eng_asset_db_file_t* const db_file);
+    IFB_ENG_FUNC void                 eng_asset_db_file_validate      (eng_asset_db_file_t* const db_file);
+    IFB_ENG_FUNC void                 eng_asset_db_file_read_header   (eng_asset_db_file_t* const db_file);
+    IFB_ENG_FUNC void                 eng_asset_db_file_write_header  (eng_asset_db_file_t* const db_file);
     IFB_ENG_FUNC void                 eng_asset_db_file_write_default (eng_asset_db_file_t* const db_file);
 
     //-------------------------------------------------------------------
