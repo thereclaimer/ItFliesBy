@@ -5,12 +5,13 @@
 namespace ifb {
 
     constexpr eng_c8  _db_file_default_header[]  = 
-        "IFBASSETDATABASE"                                                                              // (16 bytes) verification string
-        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"                              // (16 bytes) hash (everything after this point)
-        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"  // (24 bytes) text table index
-        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"  // (24 bytes) image table index
-        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"  // (24 bytes) sound table index
-        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"; // (24 bytes) font table index
+        "IFBASSETDATABASE"                                                                                  // (16 bytes) verification string
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"                                  // (16 bytes) hash (everything after this point)
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"  // (24 bytes) text table index
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"  // (24 bytes) image table index
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"  // (24 bytes) sound table index
+        "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"; // (24 bytes) font table index
+
 
     constexpr eng_u32 _db_file_index_array_size  = (sizeof(eng_asset_db_file_index_t) * eng_asset_type_e32_count);
     constexpr eng_c8  _db_file_path_cstr  []     = IFB_ENG_ASSET_DB_PATH;
@@ -90,14 +91,15 @@ namespace ifb {
         assert(is_valid);
     }
 
-    IFB_ENG_FUNC void
+    IFB_ENG_FUNC eng_bool
     eng_asset_db_file_read_header(
         eng_asset_db_file_t* const db_file) {
 
         eng_asset_db_file_validate(db_file);
 
-        eng_bool is_read = eng_file_mngr_read(db_file->handle, db_file->header_buffer);
-        assert(is_read);
+        eng_bool is_read = true;
+        is_read &= eng_file_mngr_read(db_file->handle, db_file->header_buffer);
+        return(is_read);        
     }
 
     IFB_ENG_FUNC void
@@ -106,7 +108,7 @@ namespace ifb {
     }
 
     IFB_ENG_FUNC void
-    eng_asset_db_file_write_default(
+    eng_asset_db_file_write_header_default(
         eng_asset_db_file_t* const db_file) {
 
         eng_asset_db_file_validate(db_file);

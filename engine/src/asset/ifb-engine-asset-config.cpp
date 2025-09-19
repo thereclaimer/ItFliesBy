@@ -102,6 +102,7 @@ namespace ifb {
         did_save &= sld::xml_doc_buffer_write (config->xml_doc, xml_file_buffer);
         did_save &= eng_file_mngr_write       (config->file,    xml_file_buffer); 
         assert(did_save);
+
     }
 
     IFB_ENG_FUNC bool

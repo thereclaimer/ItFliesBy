@@ -147,12 +147,12 @@ namespace ifb {
         eng_file_h32_t config_file_handle;
     };
 
-    IFB_ENG_FUNC eng_asset_db_file_t* eng_asset_db_file_create        (void);
-    IFB_ENG_FUNC void                 eng_asset_db_file_destroy       (eng_asset_db_file_t* const db_file);
-    IFB_ENG_FUNC void                 eng_asset_db_file_validate      (eng_asset_db_file_t* const db_file);
-    IFB_ENG_FUNC void                 eng_asset_db_file_read_header   (eng_asset_db_file_t* const db_file);
-    IFB_ENG_FUNC void                 eng_asset_db_file_write_header  (eng_asset_db_file_t* const db_file);
-    IFB_ENG_FUNC void                 eng_asset_db_file_write_default (eng_asset_db_file_t* const db_file);
+    IFB_ENG_FUNC eng_asset_db_file_t* eng_asset_db_file_create               (void);
+    IFB_ENG_FUNC eng_void             eng_asset_db_file_destroy              (eng_asset_db_file_t* const db_file);
+    IFB_ENG_FUNC eng_void             eng_asset_db_file_validate             (eng_asset_db_file_t* const db_file);
+    IFB_ENG_FUNC eng_bool             eng_asset_db_file_read_header          (eng_asset_db_file_t* const db_file);
+    IFB_ENG_FUNC eng_void             eng_asset_db_file_write_header         (eng_asset_db_file_t* const db_file);
+    IFB_ENG_FUNC eng_void             eng_asset_db_file_write_header_default (eng_asset_db_file_t* const db_file);
 
     //-------------------------------------------------------------------
     // CONFIG
@@ -216,17 +216,6 @@ namespace ifb {
             eng_asset_path_str8_t* path;
         } array;
     };
-
-    //-------------------------------------------------------------------
-    // GLOBALS
-    //-------------------------------------------------------------------
-
-
-    static eng_asset_db_t             _db;
-    static eng_asset_db_table_t       _db_table_text;
-    static eng_asset_db_table_t       _db_table_image;
-    static eng_asset_db_table_t       _db_table_sound;
-    static eng_asset_db_table_t       _db_table_font;
 };
 
 #endif //IFB_ENG_ASSET_INTERNAL_HPP

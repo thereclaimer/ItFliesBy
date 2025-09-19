@@ -18,16 +18,12 @@
 
 namespace ifb {
 
-    typedef eng_error_s32_t eng_file_error_s32_t;
+    typedef eng_error_s32_t       eng_file_error_s32_t;
+    typedef sld::os_file_buffer_t eng_file_buffer_t;
 
     struct eng_file_h32_t       : eng_h32_t { };
     struct eng_file_flags_u32_t : eng_u32_t { };
     struct eng_file_path_t;
-
-    struct eng_file_buffer_t : eng_buffer_t {
-        eng_u64 cursor;
-        eng_u64 transferred;
-    };
 
     IFB_ENG_API const eng_file_h32_t       eng_file_mngr_open_ro        (const eng_c8*         file_path);
     IFB_ENG_API const eng_file_h32_t       eng_file_mngr_open_rw        (const eng_c8*         file_path);
