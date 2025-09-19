@@ -34,6 +34,7 @@ namespace ifb {
         eng_asset_db_file_t* db_file     = eng_mem_arena_push_struct(arena, eng_asset_db_file_t);
         eng_byte*            header_data = eng_mem_arena_push_bytes (arena, _db_file_header_size); 
         eng_file_h32_t       file_handle = eng_file_mngr_open_rw    (_db_file_path_cstr);
+        assert(eng_mem_arena_save_position(arena));
 
         // sanity check
         bool can_create = true;
@@ -97,9 +98,26 @@ namespace ifb {
 
         eng_asset_db_file_validate(db_file);
 
-        eng_bool is_read = true;
-        is_read &= eng_file_mngr_read(db_file->handle, db_file->header_buffer);
-        return(is_read);        
+        //get the header and check the size
+        eng_bool      is_valid_header = true;
+        const eng_u64 file_size       = eng_file_mngr_get_size(db_file->handle);
+        is_valid_header &= file_size >= (_db_file_header_size - 1); // account for null terminator
+        is_valid_header &= eng_file_mngr_read(db_file->handle, db_file->header_buffer);
+        if (!is_valid_header) return(is_valid_header);
+
+        // check the verification string
+        for (
+            eng_u32 index = 0;
+            index < _db_file_verif_size;
+            ++index) {
+
+            const eng_c8 c = db_file->verif.data[index];
+            is_valid_header &= (c == _db_file_verif_cstr[index]);
+        }
+
+
+
+        return(is_valid_header);
     }
 
     IFB_ENG_FUNC void
