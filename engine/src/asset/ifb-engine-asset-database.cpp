@@ -4,99 +4,98 @@
 
 namespace ifb {
 
-    //-------------------------------------------------------------------
-    // INTERNAL
-    //-------------------------------------------------------------------
+    IFB_ENG_FUNC eng_asset_db_t*
+    eng_asset_db_create(
+        void) {
 
-    IFB_ENG_INTERNAL eng_bool
-    eng_asset_db_init(
-        const eng_hash_u128_t db_file_hash) {
-
-        static bool is_init = false;
-        if (is_init) return(is_init);
-
-        is_init = true;
-
-        // initialize the header
-        eng_asset_db_file_header_t file_header;
-        file_header.buffer.data        = _db_file_header_data;
-        file_header.buffer.size        = _db_file_header_data_size;
-        file_header.buffer.cursor      = 0;
-        file_header.buffer.length      = 0;
-        file_header.buffer.transferred = 0;
-        file_header.verif.data         = (eng_c8*)&file_header.buffer.data[0];
-        file_header.verif.length       = _db_file_verif_size - 1;
-        file_header.hash.val.as_u64[0] = 0;
-        file_header.hash.val.as_u64[1] = 0;
-        file_header.index.count        = 0;
-        file_header.index.array        = (eng_asset_db_file_index_t*)&file_header.buffer.data[file_header.verif.length];
-
-        // open the file and get the size
-        const eng_file_h32_t file_handle = eng_file_mngr_open_ro  (_db_file_path_cstr);
-        const eng_u64        file_size   = eng_file_mngr_get_size (file_handle); 
-        
-        // read the file header
-        is_init &= eng_file_mngr_read(file_handle, file_header.buffer);
-        is_init &= (file_size                      >= file_header.buffer.length); 
-        is_init &= (file_header.buffer.transferred == file_header.buffer.size);
-        if (!is_init) return(is_init);
-
-        // check the verification string
-        for (
-            eng_u32 char_index = 0;
-            char_index < _db_file_verif_size;
-            ++char_index) {
-
-            const eng_c8 c  = _db_file_header.verif.data[char_index];
-            is_init        &= (c == _db_file_verif_cstr[char_index]);
-        }
-        if (!is_init) return(is_init);
-
-        // check the hash
-        is_init &= db_file_hash.val.as_u64[0] == _db_file_header.hash.val.as_u64[0]; 
-        is_init &= db_file_hash.val.as_u64[1] == _db_file_header.hash.val.as_u64[1]; 
-        if (!is_init) return(is_init);
-
-        // check the indexes
-        static const eng_u32 index_size = sizeof(eng_asset_db_file_index_t);
-        for (
-            eng_u32 index_num = 0;
-            index_num < eng_asset_type_e32_count - 1;
-            ++index_num) {
-
-            eng_asset_db_file_index_t& index_current             = _db_file_header.index.array[index_num];
-            eng_asset_db_file_index_t& index_next                = _db_file_header.index.array[index_num + 1];
-            const eng_u32              index_next_start_expected = (index_current.start + index_current.size); 
-            is_init &= (index_next.start == index_next_start_expected);
-        }
-
-        // initialize the structure
-        _db.arena            = NULL;
-        _db.table.text       = &_db_table_text;
-        _db.table.image      = &_db_table_image;
-        _db.table.sound      = &_db_table_sound;
-        _db.table.font       = &_db_table_font;
-        _db.file             = _db.file;
-        _db.file->handle.val = IFB_ENG_FILE_H32_INVALID;
-        _db.file->size       = 0;
-        _db.file->header     = &_db_file_header;
-
-        // verify the data
-        for (
-            eng_u32 index = 0;
-            index < _db_file_verif_size;
-            ++index) {
-
-            const eng_c8 c  = header_buffer.data[index];
-            is_init        &= (c == _db_file_verif_cstr[index]);
-        }
+        // create the file struct
+        eng_asset_db_file_t* db_file = eng_asset_db_file_create();
+        if (!db_file) return(NULL);
 
         // commit arena
-        eng_mem_arena_t* arena = eng_mem_mngr_arena_commit_asset(); 
-        is_init &= (arena != NULL);
+        eng_mem_arena_t* arena = eng_mem_arena_commit_asset();
+        if (!arena) return(NULL);
 
+        // allocate memory
+        eng_asset_db_t*       db        = eng_mem_arena_push_struct       (arena, eng_asset_db_t);        
+        eng_asset_db_table_t* db_tables = eng_mem_arena_push_struct_array (arena, eng_asset_type_e32_count, eng_asset_db_table_t);
+        bool can_init = true;
+        can_init &= (db        != NULL);
+        can_init &= (db_tables != NULL);
+        if (!can_init) {
+            assert(eng_mem_arena_decommit(arena));
+            return(NULL);
+        }
 
-        return(is_init);
+        // initialize the struct
+        db->arena       = arena;
+        db->file        = db_file;
+        db->table.text  = &db_tables [eng_asset_type_e32_text];
+        db->table.image = &db_tables [eng_asset_type_e32_image];
+        db->table.sound = &db_tables [eng_asset_type_e32_sound];
+        db->table.font  = &db_tables [eng_asset_type_e32_font];
+        return(db);
     }
 
+    IFB_ENG_FUNC eng_void
+    eng_asset_db_destroy(
+        eng_asset_db_t* const db) {
+
+        eng_asset_db_validate     (db);
+        eng_asset_db_file_destroy (db->file);
+        
+        const eng_bool did_decommit = eng_mem_arena_decommit(db->arena);
+        assert(did_decommit);
+
+        db->arena       = NULL;
+        db->file        = NULL;
+        db->table.text  = NULL;
+        db->table.image = NULL;
+        db->table.sound = NULL;
+        db->table.font  = NULL;
+    }
+
+    IFB_ENG_FUNC eng_void
+    eng_asset_db_validate(
+        eng_asset_db_t* const db) {
+
+        bool is_valid = (db != NULL);
+        if (is_valid) {
+            is_valid &= sld::arena_validate(db->arena) 
+            is_valid &= (db->file        != NULL);
+            is_valid &= (db->table.text  != NULL);
+            is_valid &= (db->table.image != NULL);
+            is_valid &= (db->table.sound != NULL);
+            is_valid &= (db->table.font  != NULL);
+        }
+        assert(is_valid);
+    }
+
+    IFB_ENG_FUNC eng_bool
+    eng_asset_db_load_text(
+        eng_asset_db_t* const  db,
+        eng_asset_db_record_t& record) {
+
+    }
+
+    IFB_ENG_FUNC eng_bool
+    eng_asset_db_load_image(
+        eng_asset_db_t* const  db,
+        eng_asset_db_record_t& record) {
+
+    }
+
+    IFB_ENG_FUNC eng_bool
+    eng_asset_db_load_sound(
+        eng_asset_db_t* const  db,
+        eng_asset_db_record_t& record) {
+
+    }
+
+    IFB_ENG_FUNC eng_bool
+    eng_asset_db_load_font(
+        eng_asset_db_t* const  db,
+        eng_asset_db_record_t& record) {
+
+    }
 };

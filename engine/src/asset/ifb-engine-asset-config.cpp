@@ -11,13 +11,13 @@ namespace ifb {
         void) {
 
         // get an arena
-        eng_mem_arena_t* arena = eng_mem_mngr_arena_commit_asset();
+        eng_mem_arena_t* arena = eng_mem_arena_commit_asset();
         if (!arena) return(NULL);
 
         // allocate memory
-        auto config = eng_mem_mngr_arena_push_struct(arena, eng_asset_config_t);
+        auto config = eng_mem_arena_push_struct(arena, eng_asset_config_t);
         if (!config) {
-            const eng_bool is_decommit = eng_mem_mngr_arena_decommit(arena);
+            const eng_bool is_decommit = eng_mem_arena_decommit(arena);
             assert(is_decommit);
         }
 
@@ -48,7 +48,7 @@ namespace ifb {
         eng_asset_config_validate   (config);
         eng_file_mngr_close         (config->file);
         sld::xml_doc_destroy        (config->xml_doc);
-        eng_mem_mngr_arena_decommit (config->arena);
+        eng_mem_arena_decommit (config->arena);
     }
 
     IFB_ENG_FUNC void
@@ -213,8 +213,8 @@ namespace ifb {
             // allocate memory
             node.count      =  sld::xml_node_get_child_count(config_node, _properties.node.asset);
             is_mem_ok       =  sld::arena_save_position(config->arena);
-            node.array.name =  eng_mem_mngr_arena_push_struct_array(config->arena, node.count, eng_asset_name_str8_t);
-            node.array.path =  eng_mem_mngr_arena_push_struct_array(config->arena, node.count, eng_asset_path_str8_t);
+            node.array.name =  eng_mem_arena_push_struct_array(config->arena, node.count, eng_asset_name_str8_t);
+            node.array.path =  eng_mem_arena_push_struct_array(config->arena, node.count, eng_asset_path_str8_t);
             is_mem_ok       &= (node.array.name != NULL);            
             is_mem_ok       &= (node.array.path != NULL);            
             assert(is_mem_ok);

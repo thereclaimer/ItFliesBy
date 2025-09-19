@@ -36,7 +36,7 @@ namespace ifb {
     }
 
     IFB_ENG_INTERNAL eng_mem_arena_t*
-    eng_mem_mngr_arena_commit_platform(
+    eng_mem_arena_commit_platform(
         void) {
 
         assert(_mem_mngr.res.platform);
@@ -51,7 +51,7 @@ namespace ifb {
     }
 
     IFB_ENG_INTERNAL eng_mem_arena_t*
-    eng_mem_mngr_arena_commit_core(
+    eng_mem_arena_commit_core(
         void) {
 
         assert(_mem_mngr.res.core);
@@ -66,7 +66,7 @@ namespace ifb {
     }
 
     IFB_ENG_INTERNAL eng_mem_arena_t*
-    eng_mem_mngr_arena_commit_file(
+    eng_mem_arena_commit_file(
         void) {
 
         assert(_mem_mngr.res.file);
@@ -81,7 +81,7 @@ namespace ifb {
     }
 
     IFB_ENG_INTERNAL eng_mem_arena_t*
-    eng_mem_mngr_arena_commit_asset(
+    eng_mem_arena_commit_asset(
         void) {
 
         assert(_mem_mngr.res.asset);
@@ -95,8 +95,8 @@ namespace ifb {
         return(arena);
     }
 
-    IFB_ENG_INTERNAL bool
-    eng_mem_mngr_arena_decommit(
+    IFB_ENG_INTERNAL eng_bool
+    eng_mem_arena_decommit(
         eng_mem_arena_t* arena) {
 
         assert(arena);

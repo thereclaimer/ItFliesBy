@@ -66,7 +66,7 @@ namespace ifb {
         }        
 
         // commit memory
-        eng_mem_arena_t* arena = eng_mem_mngr_arena_commit_file(); 
+        eng_mem_arena_t* arena = eng_mem_arena_commit_file(); 
         if (arena == NULL) {
             _file_mngr.last_error.val = eng_file_error_e32_arena_commit_fail;
             eng_file_mngr_add_closed(file);
@@ -133,7 +133,7 @@ namespace ifb {
         }        
 
         // commit memory        
-        eng_mem_arena_t* arena = eng_mem_mngr_arena_commit_file(); 
+        eng_mem_arena_t* arena = eng_mem_arena_commit_file(); 
         if (arena == NULL) {
             _file_mngr.last_error.val = eng_file_error_e32_arena_commit_fail;
             eng_file_mngr_add_closed(file);

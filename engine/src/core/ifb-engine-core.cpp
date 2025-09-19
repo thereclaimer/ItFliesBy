@@ -10,7 +10,7 @@ namespace ifb {
     eng_core_init(
         void) {
 
-        _core_mem.xml_arena = eng_mem_mngr_arena_commit_core();
+        _core_mem.xml_arena = eng_mem_arena_commit_core();
         assert(_core_mem.xml_arena);
 
         sld::xml_memory_init_from_arena(_core_mem.xml_arena);
