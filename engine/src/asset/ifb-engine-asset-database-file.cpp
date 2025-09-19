@@ -19,7 +19,7 @@ namespace ifb {
     constexpr eng_u32 _db_file_start_verif_data  = 0;
     constexpr eng_u32 _db_file_start_hash        = _db_file_verif_size;
     constexpr eng_u32 _db_file_start_index_array = _db_file_start_hash + sizeof(eng_hash_u128_t);
-    constexpr eng_u32 _db_file_header_size       = sizeof(_db_file_default_header); 
+    constexpr eng_u32 _db_file_header_size       = sizeof(_db_file_default_header) - 1; 
 
     IFB_ENG_FUNC eng_asset_db_file_t*
     eng_asset_db_file_create(
@@ -81,5 +81,18 @@ namespace ifb {
         eng_asset_db_file_t* const db_file) {
     }
 
+    IFB_ENG_FUNC void
+    eng_asset_db_file_write_default(
+        eng_asset_db_file_t* const db_file) {
 
+        static eng_file_buffer_t default_buffer;
+        default_buffer.data        = (byte*)_db_file_default_header;
+        default_buffer.size        = _db_file_header_size;
+        default_buffer.length      = _db_file_header_size;
+        default_buffer.cursor      = 0;
+        default_buffer.transferred = 0;
+
+        eng_bool did_write = eng_file_mngr_write(db_file->handle, default_buffer);
+        assert(did_write);
+    }
 };
