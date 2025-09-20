@@ -197,7 +197,6 @@ namespace ifb {
 
     }
 
-
     IFB_ENG_FUNC bool
     eng_asset_config_node_read_assets(
         eng_asset_config_t* const  config,
@@ -256,8 +255,16 @@ namespace ifb {
         const eng_xml_h32_node_t config_node = sld::xml_doc_get_child_node(config->xml_doc, type_name);
         bool did_read = (config_node.val != SLD_XML_INVALID_HANDLE); 
       
-        //TODO
+        for (
+            eng_u32 index = 0;
+            index < node.count;
+            ++index) {
 
+            sld::xml_node_add_child()
+
+        }
+
+        sld::xml_doc_reset(config->xml_doc);
         return(did_read);
     }
 
