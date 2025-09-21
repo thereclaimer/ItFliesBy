@@ -11,13 +11,13 @@ namespace ifb {
         void) {
 
         // get an arena
-        eng_mem_arena_t* arena = eng_mem_mngr_arena_commit_asset();
+        eng_mem_arena_t* arena = eng_mem_arena_commit_asset();
         if (!arena) return(NULL);
 
         // allocate memory
-        auto config = eng_mem_mngr_arena_push_struct(arena, eng_asset_config_t);
+        auto config = eng_mem_arena_push_struct(arena, eng_asset_config_t);
         if (!config) {
-            const eng_bool is_decommit = eng_mem_mngr_arena_decommit(arena);
+            const eng_bool is_decommit = eng_mem_arena_decommit(arena);
             assert(is_decommit);
         }
 
@@ -48,7 +48,7 @@ namespace ifb {
         eng_asset_config_validate   (config);
         eng_file_mngr_close         (config->file);
         sld::xml_doc_destroy        (config->xml_doc);
-        eng_mem_mngr_arena_decommit (config->arena);
+        eng_mem_arena_decommit (config->arena);
     }
 
     IFB_ENG_FUNC void
@@ -102,6 +102,7 @@ namespace ifb {
         did_save &= sld::xml_doc_buffer_write (config->xml_doc, xml_file_buffer);
         did_save &= eng_file_mngr_write       (config->file,    xml_file_buffer); 
         assert(did_save);
+
     }
 
     IFB_ENG_FUNC bool
@@ -196,7 +197,6 @@ namespace ifb {
 
     }
 
-
     IFB_ENG_FUNC bool
     eng_asset_config_node_read_assets(
         eng_asset_config_t* const  config,
@@ -213,8 +213,8 @@ namespace ifb {
             // allocate memory
             node.count      =  sld::xml_node_get_child_count(config_node, _properties.node.asset);
             is_mem_ok       =  sld::arena_save_position(config->arena);
-            node.array.name =  eng_mem_mngr_arena_push_struct_array(config->arena, node.count, eng_asset_name_str8_t);
-            node.array.path =  eng_mem_mngr_arena_push_struct_array(config->arena, node.count, eng_asset_path_str8_t);
+            node.array.name =  eng_mem_arena_push_struct_array(config->arena, node.count, eng_asset_name_str8_t);
+            node.array.path =  eng_mem_arena_push_struct_array(config->arena, node.count, eng_asset_path_str8_t);
             is_mem_ok       &= (node.array.name != NULL);            
             is_mem_ok       &= (node.array.path != NULL);            
             assert(is_mem_ok);
@@ -255,8 +255,16 @@ namespace ifb {
         const eng_xml_h32_node_t config_node = sld::xml_doc_get_child_node(config->xml_doc, type_name);
         bool did_read = (config_node.val != SLD_XML_INVALID_HANDLE); 
       
-        //TODO
+        for (
+            eng_u32 index = 0;
+            index < node.count;
+            ++index) {
 
+            sld::xml_node_add_child()
+
+        }
+
+        sld::xml_doc_reset(config->xml_doc);
         return(did_read);
     }
 

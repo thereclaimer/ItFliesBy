@@ -23,7 +23,6 @@ namespace ifb {
     eng_file_t* eng_file_mngr_get_file (const eng_file_h32_t file_handle);
 
     struct eng_file_t {
-        eng_file_os_buffer_t         os_buffer;    
         eng_file_error_s32_t         last_error;
         eng_file_flags_u32_t         flags;
         eng_file_t*                  next;
