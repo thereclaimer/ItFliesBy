@@ -16,6 +16,7 @@
 #endif
 #ifndef    IFB_ENG_ASSET_CSTR_SIZE
 #   define IFB_ENG_ASSET_CSTR_SIZE   32 
+#endif
 
 namespace ifb {
 
@@ -56,12 +57,8 @@ namespace ifb {
         eng_asset_u64_size_t size;
     };
 
-    struct eng_asset_name_str8_t {
-        eng_c8 chars[IFB_ENG_ASSET_NAME_SIZE];
-    };
-
-    struct eng_asset_path_str8_t {
-        eng_c8 chars[IFB_ENG_ASSET_PATH_SIZE];
+    struct eng_asset_cstr_t {
+        eng_c8 chars[IFB_ENG_ASSET_CSTR_SIZE];
     };
 };
 

@@ -16,6 +16,8 @@ namespace ifb {
     // TYPES
     //-------------------------------------------------------------------
 
+    typedef sld::block_alctr_t eng_asset_block_alctr_t; 
+
     struct eng_asset_block_t;
     struct eng_asset_slot_t;
 
@@ -40,14 +42,12 @@ namespace ifb {
     //-------------------------------------------------------------------
     // ASSET
     //-------------------------------------------------------------------
-    
-    struct eng_asset_block_allocator_t : sld::block_alctr_t { };
 
     struct eng_asset_slot_t {
-        eng_asset_block_allocator_t* allocator;
-        eng_asset_slot_t*            next;
-        eng_asset_slot_t*            prev;
-        eng_mem_arena_t*             arena;
+        eng_asset_block_alctr_t* alctr;
+        eng_asset_slot_t*        next;
+        eng_asset_slot_t*        prev;
+        eng_mem_arena_t*         arena;
     };
 
     struct eng_asset_t {
@@ -180,9 +180,9 @@ namespace ifb {
     struct eng_asset_config_assets_t {
         eng_u32 count;
         struct {
-            eng_xml_h32_node_t*    node;
-            eng_asset_name_str8_t* name;
-            eng_asset_path_str8_t* path;
+            eng_xml_h32_node_t* node;
+            eng_asset_cstr_t*   name;
+            eng_asset_cstr_t*   path;
         } array;
     };
 };

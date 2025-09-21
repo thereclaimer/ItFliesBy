@@ -11,9 +11,9 @@ namespace ifb {
     // DATA STRUCTURES
     //-------------------------------------------------------------------
 
-    typedef sld::hash_t       eng_hash_u128_t;
-    typedef sld::hash_state_t eng_hash_u128_state_t;
-    typedef sld::hash_seed_t  eng_hash_u128_seed_t;
+    typedef sld::hash128_t       eng_hash_u128_t;
+    typedef sld::hash128_state_t eng_hash_u128_state_t;
+    typedef sld::hash128_seed_t  eng_hash_u128_seed_t;
 
     //-------------------------------------------------------------------
     // DECLARATIONS
@@ -53,7 +53,7 @@ namespace ifb {
         const eng_byte* data,
         const eng_u32   length) {
 
-        const eng_hash_u128_t hash = sld::hash_data(
+        const eng_hash_u128_t hash = sld::hash128_data(
             _eng_hash_seed,
             data,
             length            
@@ -69,7 +69,7 @@ namespace ifb {
         const eng_u32    stride,
         eng_hash_u128_t* hashes) {
 
-        const eng_bool is_hashed = sld::hash_data_batch(
+        const eng_bool is_hashed = sld::hash128_data_batch(
             _eng_hash_seed,
             count,
             data,
@@ -86,7 +86,7 @@ namespace ifb {
         const eng_byte* data_b,
         const eng_u32   length) {
 
-        const eng_bool is_equal = sld::hash_is_equal(
+        const eng_bool is_equal = sld::hash128_is_equal(
             _eng_hash_seed,
             data_a,
             data_b,
@@ -102,7 +102,7 @@ namespace ifb {
         const eng_byte*        data,
         const eng_u32          length) {
 
-        const eng_bool is_equal = sld::hash_is_equal(
+        const eng_bool is_equal = sld::hash128_is_equal(
             _eng_hash_seed,
             hash,
             data,
@@ -119,7 +119,7 @@ namespace ifb {
         const eng_hash_u128_t* array,
         eng_u32&               index) {
 
-        const eng_bool is_found = sld::hash_search(
+        const eng_bool is_found = sld::hash128_search(
             count,
             search,
             array,
@@ -133,7 +133,7 @@ namespace ifb {
     eng_hash_block_begin(
         eng_hash_u128_state_t& state) {
 
-        sld::hash_block_begin(state,_eng_hash_seed);
+        sld::hash128_block_begin(state,_eng_hash_seed);
     }
 
     IFB_ENG_INLINE void
@@ -142,14 +142,14 @@ namespace ifb {
         const eng_u64          block_size,
         const eng_byte*        block_data) {
 
-        sld::hash_block_consume(state, block_size, block_data);
+        sld::hash128_block_consume(state, block_size, block_data);
     }
 
     IFB_ENG_INLINE const eng_hash_u128_t
     eng_hash_block_end(
         eng_hash_u128_state_t& state) {
 
-        const eng_hash_u128_t hash = sld::hash_block_end(state);
+        const eng_hash_u128_t hash = sld::hash128_block_end(state);
         return(hash);
     }
 };

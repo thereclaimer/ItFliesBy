@@ -259,14 +259,14 @@ namespace ifb {
             // allocate memory
             node.count      =  sld::xml_node_get_child_count(config_node, _properties.node.asset);
             is_mem_ok       =  sld::arena_save_position(config->arena);
-            node.array.name =  eng_mem_arena_push_struct_array(config->arena, node.count, eng_asset_name_str8_t);
-            node.array.path =  eng_mem_arena_push_struct_array(config->arena, node.count, eng_asset_path_str8_t);
+            node.array.name =  eng_mem_arena_push_struct_array(config->arena, node.count, eng_asset_cstr_t);
+            node.array.path =  eng_mem_arena_push_struct_array(config->arena, node.count, eng_asset_cstr_t);
             is_mem_ok       &= (node.array.name != NULL);            
             is_mem_ok       &= (node.array.path != NULL);            
             assert(is_mem_ok);
 
-            sld::str8_t name_str = { NULL,  sizeof(eng_asset_name_str8_t) };
-            sld::str8_t path_str = { NULL,  sizeof(eng_asset_path_str8_t) };
+            sld::str8_t name_str = { NULL,  sizeof(eng_asset_cstr_t) };
+            sld::str8_t path_str = { NULL,  sizeof(eng_asset_cstr_t) };
             sld::xml_attrib_value_t attrib_asset_name;
             sld::xml_attrib_value_t attrib_asset_path;
             eng_u32 index = 0;

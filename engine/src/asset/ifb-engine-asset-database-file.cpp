@@ -13,7 +13,7 @@ namespace ifb {
         "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"; // (24 bytes) font table index
 
 
-    constexpr eng_u32 _db_file_index_array_size  = (sizeof(eng_asset_db_file_index_t) * eng_asset_type_e32_count);
+    constexpr eng_u32 _db_file_index_array_size  = (sizeof(eng_asset_db_file_index_t) * eng_asset_e32_type_count);
     constexpr eng_c8  _db_file_path_cstr  []     = IFB_ENG_ASSET_DB_PATH;
     constexpr eng_c8  _db_file_verif_cstr []     = IFB_ENG_ASSET_VERIF_STR;
     constexpr eng_u32 _db_file_verif_size        = sizeof(_db_file_verif_cstr) - 1; 
@@ -53,7 +53,7 @@ namespace ifb {
 
         // initialize the struct
         db_file->handle                    = file_handle;
-        db_file->index_count               = eng_asset_type_e32_count;
+        db_file->index_count               = eng_asset_e32_type_count;
         db_file->index_array               = NULL;
         db_file->size                      = 0;
         db_file->verif.data                = (eng_c8*)ptr_verif_data;

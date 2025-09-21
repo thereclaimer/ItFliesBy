@@ -7,7 +7,6 @@
 namespace ifb {
 
     typedef eng_byte eng_img_data_t;
-    typedef eng_u32  eng_img_size_u32_t;
 
     struct eng_img_t;
     struct eng_img_info_t;
@@ -17,9 +16,9 @@ namespace ifb {
     IFB_ENG_API bool eng_img_load     (const eng_file_h32_t file_h, eng_img_buffer_t& img_buffer);
 
     struct eng_img_buffer_t {
-        eng_img_data_t*    data;
-        eng_img_size_u32_t size;
-        eng_img_size_u32_t channels;
+        eng_img_data_t* data;
+        eng_u32         size;
+        eng_u32         channels;
     };
 
     struct eng_img_info_t {
