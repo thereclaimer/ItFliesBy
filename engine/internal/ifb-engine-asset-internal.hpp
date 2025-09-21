@@ -2,6 +2,7 @@
 #define IFB_ENG_ASSET_INTERNAL_HPP
 
 #include <sld-xml.hpp>
+#include <sld-allocator.hpp>
 
 #include "ifb-engine.hpp"
 #include "ifb-engine-hash.hpp"
@@ -40,24 +41,17 @@ namespace ifb {
     // ASSET
     //-------------------------------------------------------------------
     
+    struct eng_asset_block_allocator_t : sld::block_alctr_t { };
+
     struct eng_asset_slot_t {
-        eng_u64            block_size;
-        eng_u32            block_count_free;
-        eng_u32            block_count_used;
-        eng_asset_block_t* block_list_free;
-        eng_asset_block_t* block_list_used;        
-        eng_mem_arena_t*   arena;
-        eng_asset_slot_t*  next;
-        eng_asset_slot_t*  prev;
+        eng_asset_block_allocator_t* allocator;
+        eng_asset_slot_t*            next;
+        eng_asset_slot_t*            prev;
+        eng_mem_arena_t*             arena;
     };
 
-    struct eng_asset_block_t {
-        eng_asset_id_u128_t  id;
-        eng_asset_type_u32_t type;
-        eng_u32              size;
-        eng_byte*            data;
-        eng_asset_block_t*   next;
-        eng_asset_block_t*   prev; 
+    struct eng_asset_t {
+        eng_asset_slot_t* slot;
     };
 
     //-------------------------------------------------------------------
@@ -90,15 +84,15 @@ namespace ifb {
         eng_u32   row_count;
         eng_pad32 pad;
         struct {
-            eng_asset_id_u128_t* id;
-            eng_u32*             size;
-            eng_u64*             offset;
-            eng_u64*             handle;
+            eng_asset_u32_id_t* id;
+            eng_u32*            size;
+            eng_u64*            offset;
+            eng_u64*            handle;
         } col;
     };
 
     struct eng_asset_db_record_t {
-        eng_asset_id_u128_t id;
+        eng_asset_u32_id_t  id;
         eng_u32             index;
         eng_u32             size;
         eng_u64             offset;
@@ -176,32 +170,6 @@ namespace ifb {
     IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_font     (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
     IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_assets    (eng_asset_config_t* const config, eng_asset_config_assets_t& node, const eng_c8* type_name);
     IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_assets   (eng_asset_config_t* const config, eng_asset_config_assets_t& node, const eng_c8* type_name);
-
-    struct eng_asset_config_xml_properties_t {
-        struct {
-            static constexpr eng_c8 ifb_assets [] = "ifb-assets";
-            static constexpr eng_c8 text       [] = "text";
-            static constexpr eng_c8 image      [] = "image";
-            static constexpr eng_c8 sound      [] = "sound";
-            static constexpr eng_c8 font       [] = "font";
-            static constexpr eng_c8 asset      [] = "asset";
-        } node;
-        struct {
-            static constexpr eng_c8 name [] = "name"; 
-            static constexpr eng_c8 path [] = "path"; 
-        } attrib;
-        static constexpr eng_c8 default_config[] = 
-            "<ifb-assets>"
-                "<text path=\"../assets/text\">"
-                "</text>"
-                "<image path=\"../assets/image\">"
-                "</image>"
-                "<sound path=\"../assets/sound\">"
-                "</sound>"
-                "<font path=\"../assets/font\">"
-                "</font>"
-            "</ifb-assets>";
-    };
 
     struct eng_asset_config_t {
         eng_mem_arena_t*  arena;

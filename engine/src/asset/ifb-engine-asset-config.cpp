@@ -4,6 +4,32 @@
 
 namespace ifb {
 
+    struct eng_asset_config_xml_properties_t {
+        struct {
+            static constexpr eng_c8 ifb_assets [] = "ifb-assets";
+            static constexpr eng_c8 text       [] = "text";
+            static constexpr eng_c8 image      [] = "image";
+            static constexpr eng_c8 sound      [] = "sound";
+            static constexpr eng_c8 font       [] = "font";
+            static constexpr eng_c8 asset      [] = "asset";
+        } node;
+        struct {
+            static constexpr eng_c8 name [] = "name"; 
+            static constexpr eng_c8 path [] = "path"; 
+        } attrib;
+        static constexpr eng_c8 default_config[] = 
+            "<ifb-assets>"
+                "<text path=\"../assets/text\">"
+                "</text>"
+                "<image path=\"../assets/image\">"
+                "</image>"
+                "<sound path=\"../assets/sound\">"
+                "</sound>"
+                "<font path=\"../assets/font\">"
+                "</font>"
+            "</ifb-assets>";
+    };
+
     constexpr eng_asset_config_xml_properties_t _properties;
 
     IFB_ENG_FUNC eng_asset_config_t*
@@ -45,10 +71,10 @@ namespace ifb {
     eng_asset_config_destroy(
         eng_asset_config_t* config) {
 
-        eng_asset_config_validate   (config);
-        eng_file_mngr_close         (config->file);
-        sld::xml_doc_destroy        (config->xml_doc);
-        eng_mem_arena_decommit (config->arena);
+        eng_asset_config_validate (config);
+        eng_file_mngr_close       (config->file);
+        sld::xml_doc_destroy      (config->xml_doc);
+        eng_mem_arena_decommit    (config->arena);
     }
 
     IFB_ENG_FUNC void
