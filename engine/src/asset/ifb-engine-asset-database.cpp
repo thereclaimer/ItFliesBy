@@ -87,7 +87,7 @@ namespace ifb {
             index < _db_file_verif_size;
             ++index) {
 
-            const eng_c8 c  = header_buffer.data[index];
+            const eng_c8 c  = _db_file_header.buffer.data[index];
             is_init        &= (c == _db_file_verif_cstr[index]);
         }
 
