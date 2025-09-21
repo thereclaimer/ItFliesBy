@@ -253,19 +253,27 @@ namespace ifb {
         const eng_c8*              type_name) {
 
         const eng_xml_h32_node_t config_node = sld::xml_doc_get_child_node(config->xml_doc, type_name);
-        bool did_read = (config_node.val != SLD_XML_INVALID_HANDLE); 
-      
-        for (
-            eng_u32 index = 0;
-            index < node.count;
-            ++index) {
+        bool did_write = (config_node.val != SLD_XML_INVALID_HANDLE); 
+        if (did_write) {
 
-            sld::xml_node_add_child()
+            sld::xml_attrib_value_t attrib_name;
+            sld::xml_attrib_value_t attrib_path;
 
+            for (
+                eng_u32 index = 0;
+                index < node.count;
+                ++index) {
+
+                attrib_name.as_utf8 = node.array.name[index].chars;
+                attrib_path.as_utf8 = node.array.path[index].chars;
+
+                const eng_xml_h32_node_t asset_node = sld::xml_node_add_child(config_node, _properties.node.asset);
+                did_write &= sld::xml_node_set_attrib_utf8(asset_node, _properties.attrib.name, attrib_name);
+                did_write &= sld::xml_node_set_attrib_utf8(asset_node, _properties.attrib.path, attrib_path);
+            }
         }
-
         sld::xml_doc_reset(config->xml_doc);
-        return(did_read);
+        return(did_write);
     }
 
     IFB_ENG_FUNC eng_u64
