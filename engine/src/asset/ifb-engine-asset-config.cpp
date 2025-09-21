@@ -168,6 +168,11 @@ namespace ifb {
 
         eng_asset_config_validate(config);
 
+        const bool did_write = eng_asset_config_node_write_assets(
+            config, node, _properties.node.text
+        );
+
+        return(did_write);
     }
 
     IFB_ENG_FUNC bool
@@ -177,6 +182,11 @@ namespace ifb {
 
         eng_asset_config_validate(config);
     
+        const bool did_write = eng_asset_config_node_write_assets(
+            config, node, _properties.node.image
+        );
+
+        return(did_write);
     }
 
     IFB_ENG_FUNC bool
@@ -186,6 +196,11 @@ namespace ifb {
 
         eng_asset_config_validate(config);
 
+        const bool did_write = eng_asset_config_node_write_assets(
+            config, node, _properties.node.sound
+        );
+
+        return(did_write);
     }
 
     IFB_ENG_FUNC bool
@@ -195,6 +210,11 @@ namespace ifb {
 
         eng_asset_config_validate(config);
 
+        const bool did_write = eng_asset_config_node_write_assets(
+            config, node, _properties.node.font
+        );
+
+        return(did_write);
     }
 
     IFB_ENG_FUNC bool
@@ -272,6 +292,7 @@ namespace ifb {
                 did_write &= sld::xml_node_set_attrib_utf8(asset_node, _properties.attrib.path, attrib_path);
             }
         }
+
         sld::xml_doc_reset(config->xml_doc);
         return(did_write);
     }
