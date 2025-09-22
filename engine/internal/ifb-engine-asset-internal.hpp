@@ -133,7 +133,7 @@ namespace ifb {
         eng_asset_db_file_index_t* index_array;
         eng_u64                    size;
         eng_asset_db_file_verif_t  verif;
-        eng_hash128_t*           hash;
+        eng_hash128_t*             hash;
         eng_file_buffer_t          header_buffer;
         eng_mem_arena_t*           arena;
     };
@@ -168,15 +168,15 @@ namespace ifb {
     IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_image    (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
     IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_sound    (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
     IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_font     (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_assets    (eng_asset_config_t* const config, eng_asset_config_assets_t& node, const eng_c8* type_name);
-    IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_assets   (eng_asset_config_t* const config, eng_asset_config_assets_t& node, const eng_c8* type_name);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_assets    (eng_asset_config_t* const config, eng_asset_config_assets_t& node, eng_xml_h32_node_t xml_type);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_assets   (eng_asset_config_t* const config, eng_asset_config_assets_t& node, eng_xml_h32_node_t xml_type);
 
     struct eng_asset_config_t {
         eng_mem_arena_t*   arena;
         eng_file_h32_t     file;
         struct {
             eng_xml_h32_doc_t  doc;
-            eng_xml_h32_node_t ifb_root_node;
+            eng_xml_h32_node_t node_root;
             eng_xml_h32_node_t node_text;
             eng_xml_h32_node_t node_image;
             eng_xml_h32_node_t node_sound;
