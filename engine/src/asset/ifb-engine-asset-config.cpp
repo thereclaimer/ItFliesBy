@@ -298,7 +298,7 @@ namespace ifb {
         eng_asset_config_assets_t& node,
         const eng_c8*              type_name) {
 
-        const eng_xml_h32_node_t config_node = sld::xml_doc_get_child_node(config->xml_doc, type_name);
+        const eng_xml_h32_node_t config_node = sld::xml_doc_get_or_add_child_node(config->xml_doc, type_name);
         bool did_write = (config_node.val != SLD_XML_INVALID_HANDLE); 
         if (did_write) {
 

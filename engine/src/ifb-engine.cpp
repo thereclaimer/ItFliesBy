@@ -34,9 +34,27 @@ namespace ifb {
         eng_file_mngr_init ();
         eng_core_init      ();
 
-        eng_asset_db_file_t* db_file = eng_asset_db_file_create();
-        eng_asset_db_file_write_header_default (db_file);
-        eng_asset_db_file_read_header          (db_file);
+        eng_asset_cstr_t asset_names[3] = {
+            {"name1"},
+            {"name2"},
+            {"name3"}
+        };
+        eng_asset_cstr_t asset_paths[3] = {
+            {"path1"},
+            {"path2"},
+            {"path3"}
+        };
+
+        eng_asset_config_assets_t assets;
+        assets.count = 3;
+        assets.array.name = asset_names;
+        assets.array.path = asset_paths;
+
+        eng_asset_config_t* config = eng_asset_config_create();
+        const bool did_write_config = eng_asset_config_node_write_image(config, assets);
+
+
+
 
 
         return(is_init);

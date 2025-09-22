@@ -101,7 +101,7 @@ namespace ifb {
         eng_error_e32_module_core     = 0x00010000, 
         eng_error_e32_module_memory   = 0x00020000, 
         eng_error_e32_module_file     = 0x00030000,
-        eng_error_e32_module_file     = 0x00040000
+        eng_error_e32_module_asset    = 0x00040000
     };
 
     //-------------------------------------------------------------------
