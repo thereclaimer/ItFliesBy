@@ -133,7 +133,7 @@ namespace ifb {
         eng_asset_db_file_index_t* index_array;
         eng_u64                    size;
         eng_asset_db_file_verif_t  verif;
-        eng_hash_u128_t*           hash;
+        eng_hash128_t*           hash;
         eng_file_buffer_t          header_buffer;
         eng_mem_arena_t*           arena;
     };

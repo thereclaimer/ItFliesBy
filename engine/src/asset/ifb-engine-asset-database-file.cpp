@@ -19,7 +19,7 @@ namespace ifb {
     constexpr eng_u32 _db_file_verif_size        = sizeof(_db_file_verif_cstr) - 1; 
     constexpr eng_u32 _db_file_start_verif_data  = 0;
     constexpr eng_u32 _db_file_start_hash        = _db_file_verif_size;
-    constexpr eng_u32 _db_file_start_index_array = _db_file_start_hash + sizeof(eng_hash_u128_t);
+    constexpr eng_u32 _db_file_start_index_array = _db_file_start_hash + sizeof(eng_hash128_t);
     constexpr eng_u32 _db_file_header_size       = sizeof(_db_file_default_header) - 1; 
 
     IFB_ENG_FUNC eng_asset_db_file_t*
@@ -48,7 +48,7 @@ namespace ifb {
 
         // calculate pointers
         eng_byte*          ptr_verif_data  =                     &header_data[_db_file_start_verif_data];
-        eng_hash_u128_t*   ptr_hash        =   (eng_hash_u128_t*)&header_data[_db_file_start_hash];  
+        eng_hash128_t*   ptr_hash        =   (eng_hash128_t*)&header_data[_db_file_start_hash];  
         eng_asset_index_t* ptr_index_array = (eng_asset_index_t*)&header_data[_db_file_start_index_array]; 
 
         // initialize the struct
