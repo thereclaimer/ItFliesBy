@@ -50,11 +50,10 @@ namespace ifb {
         assets.array.name = asset_names;
         assets.array.path = asset_paths;
 
-        eng_asset_config_t* config = eng_asset_config_create();
+        eng_asset_config_t* config  = eng_asset_config_create();
         const bool did_write_config = eng_asset_config_node_write_image(config, assets);
 
-
-
+        eng_asset_config_save_file(config);
 
 
         return(is_init);

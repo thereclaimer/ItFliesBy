@@ -63,7 +63,7 @@ namespace ifb {
         // initialize the config
         config->arena   = arena;
         config->file    = file_handle;
-        config->xml_doc = xml_doc;
+        config->xml.doc = xml_doc;
         return(config);
     }
 
@@ -73,7 +73,7 @@ namespace ifb {
 
         eng_asset_config_validate (config);
         eng_file_mngr_close       (config->file);
-        sld::xml_doc_destroy      (config->xml_doc);
+        sld::xml_doc_destroy      (config->xml.doc);
         eng_mem_arena_decommit    (config->arena);
     }
 
@@ -84,7 +84,7 @@ namespace ifb {
         eng_bool is_valid = (config != NULL);
         if (is_valid) {
             is_valid &= (config->arena       != NULL);
-            is_valid &= (config->xml_doc.val != IFB_ENG_FILE_H32_INVALID);
+            is_valid &= (config->xml.doc.val != IFB_ENG_FILE_H32_INVALID);
         }
         assert(is_valid);
     }
@@ -102,7 +102,7 @@ namespace ifb {
             size                               // length
         };
 
-        sld::xml_doc_buffer_read(config->xml_doc, default_buffer);
+        sld::xml_doc_buffer_read(config->xml.doc, default_buffer);
     }
 
     IFB_ENG_FUNC eng_void
@@ -112,7 +112,7 @@ namespace ifb {
         eng_asset_config_validate(config);
 
         // allocate memory
-        const eng_u64  buffer_size = sld::xml_doc_buffer_length (config->xml_doc);  
+        const eng_u64  buffer_size = sld::xml_doc_buffer_length (config->xml.doc);  
         eng_byte*      buffer_data = sld::arena_push_bytes      (config->arena, buffer_size); 
         assert(buffer_size != 0 && buffer_data != NULL);
 
@@ -125,7 +125,7 @@ namespace ifb {
         xml_file_buffer.transferred = 0;
 
         bool did_save = true;
-        did_save &= sld::xml_doc_buffer_write (config->xml_doc, xml_file_buffer);
+        did_save &= sld::xml_doc_buffer_write (config->xml.doc, xml_file_buffer);
         did_save &= eng_file_mngr_write       (config->file,    xml_file_buffer); 
         assert(did_save);
 
@@ -252,7 +252,7 @@ namespace ifb {
         bool is_mem_ok = sld::arena_roll_back(config->arena);
         assert(is_mem_ok);
 
-        const eng_xml_h32_node_t config_node = sld::xml_doc_get_child_node(config->xml_doc, type_name);
+        const eng_xml_h32_node_t config_node = sld::xml_doc_get_child_node(config->xml.doc, type_name);
         bool did_read = (config_node.val != SLD_XML_INVALID_HANDLE); 
         if (did_read) {
 
@@ -273,7 +273,7 @@ namespace ifb {
             for (
                 eng_xml_h32_node_t asset_node =  sld::xml_node_get_child(config_node, _properties.node.asset);
                 asset_node.val                != SLD_XML_INVALID_HANDLE;
-                asset_node                    =  sld::xml_node_get_sibling(asset_node, _properties.node.asset)) {
+                asset_node                    =  sld::xml_node_get_next_sibling(asset_node, _properties.node.asset)) {
 
                 did_read &= sld::xml_node_get_attrib_utf8(asset_node, _properties.attrib.name, attrib_asset_name); 
                 did_read &= sld::xml_node_get_attrib_utf8(asset_node, _properties.attrib.path, attrib_asset_path);
@@ -288,7 +288,7 @@ namespace ifb {
             }
         }
 
-        sld::xml_doc_reset(config->xml_doc);
+        sld::xml_doc_reset(config->xml.doc);
         return(did_read);
     }
 
@@ -298,7 +298,7 @@ namespace ifb {
         eng_asset_config_assets_t& node,
         const eng_c8*              type_name) {
 
-        const eng_xml_h32_node_t config_node = sld::xml_doc_get_or_add_child_node(config->xml_doc, type_name);
+        const eng_xml_h32_node_t config_node = sld::xml_doc_get_or_add_child_node(config->xml.doc, type_name);
         bool did_write = (config_node.val != SLD_XML_INVALID_HANDLE); 
         if (did_write) {
 
@@ -319,7 +319,7 @@ namespace ifb {
             }
         }
 
-        sld::xml_doc_reset(config->xml_doc);
+        sld::xml_doc_reset(config->xml.doc);
         return(did_write);
     }
 
@@ -329,7 +329,7 @@ namespace ifb {
 
         eng_asset_config_validate(config);
 
-        const eng_u64 size = sld::xml_doc_buffer_length(config->xml_doc);
+        const eng_u64 size = sld::xml_doc_buffer_length(config->xml.doc);
         return(size);
     }
 
@@ -339,7 +339,7 @@ namespace ifb {
         eng_buffer_t&             buffer) {
 
         const eng_bool did_write = sld::xml_doc_buffer_write(
-            config->xml_doc,
+            config->xml.doc,
             buffer
         );
 

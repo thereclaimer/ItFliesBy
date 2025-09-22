@@ -172,9 +172,16 @@ namespace ifb {
     IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_assets   (eng_asset_config_t* const config, eng_asset_config_assets_t& node, const eng_c8* type_name);
 
     struct eng_asset_config_t {
-        eng_mem_arena_t*  arena;
-        eng_file_h32_t    file;
-        eng_xml_h32_doc_t xml_doc;
+        eng_mem_arena_t*   arena;
+        eng_file_h32_t     file;
+        struct {
+            eng_xml_h32_doc_t  doc;
+            eng_xml_h32_node_t ifb_root_node;
+            eng_xml_h32_node_t node_text;
+            eng_xml_h32_node_t node_image;
+            eng_xml_h32_node_t node_sound;
+            eng_xml_h32_node_t node_font;
+        } xml;
     };
 
     struct eng_asset_config_assets_t {
