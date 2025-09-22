@@ -265,8 +265,8 @@ namespace ifb {
             is_mem_ok       &= (node.array.path != NULL);            
             assert(is_mem_ok);
 
-            sld::str8_t name_str = { NULL,  sizeof(eng_asset_cstr_t) };
-            sld::str8_t path_str = { NULL,  sizeof(eng_asset_cstr_t) };
+            sld::cstr_t name_str = { NULL,  sizeof(eng_asset_cstr_t) };
+            sld::cstr_t path_str = { NULL,  sizeof(eng_asset_cstr_t) };
             sld::xml_attrib_value_t attrib_asset_name;
             sld::xml_attrib_value_t attrib_asset_path;
             eng_u32 index = 0;
@@ -280,8 +280,8 @@ namespace ifb {
 
                 name_str.chars = node.array.name[index].chars;
                 path_str.chars = node.array.path[index].chars;
-                sld::str8_copy(name_str, attrib_asset_name.as_utf8, name_str.size);
-                sld::str8_copy(path_str, attrib_asset_path.as_utf8, path_str.size);
+                sld::cstr_copy(name_str, attrib_asset_name.as_utf8, name_str.size);
+                sld::cstr_copy(path_str, attrib_asset_path.as_utf8, path_str.size);
             
                 ++index;
                 assert(index < node.count);

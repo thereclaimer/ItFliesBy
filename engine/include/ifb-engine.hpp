@@ -100,15 +100,16 @@ namespace ifb {
         eng_error_e32_module_platform = 0x00000000, 
         eng_error_e32_module_core     = 0x00010000, 
         eng_error_e32_module_memory   = 0x00020000, 
-        eng_error_e32_module_file     = 0x00030000
+        eng_error_e32_module_file     = 0x00030000,
+        eng_error_e32_module_file     = 0x00040000
     };
 
     //-------------------------------------------------------------------
     // STRINGS
     //-------------------------------------------------------------------
     
-    typedef sld::str8_t  eng_str8_t;
-    typedef sld::str16_t eng_str16_t;
+    typedef sld::cstr_t  eng_cstr_t;
+    typedef sld::wstr_t eng_wstr_t;
 
     //-------------------------------------------------------------------
     // DATA STRUCTURES
