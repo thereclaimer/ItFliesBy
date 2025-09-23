@@ -29,7 +29,7 @@ namespace ifb {
     struct eng_asset_db_record_t;
 
     struct eng_asset_config_t;
-    struct eng_asset_config_assets_t;
+    struct eng_asset_config_node_t;
     struct eng_asset_config_xml_properties_t;
 
     struct eng_asset_db_t;
@@ -161,16 +161,16 @@ namespace ifb {
     IFB_ENG_FUNC eng_void            eng_asset_config_read_file           (eng_asset_config_t* const config);
     IFB_ENG_FUNC eng_u64             eng_asset_config_get_xml_buffer_size (eng_asset_config_t* const config);
     IFB_ENG_FUNC eng_void            eng_asset_config_get_xml_buffer      (eng_asset_config_t* const config, eng_buffer_t& buffer);
-    IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_text      (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_image     (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_sound     (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_font      (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_text     (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_image    (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_sound    (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_font     (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
-    IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_assets    (eng_asset_config_t* const config, eng_asset_config_assets_t& node, eng_xml_h32_node_t xml_type);
-    IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_assets   (eng_asset_config_t* const config, eng_asset_config_assets_t& node, eng_xml_h32_node_t xml_type);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_text      (eng_asset_config_t* const config, eng_asset_config_node_t& assets);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_image     (eng_asset_config_t* const config, eng_asset_config_node_t& assets);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_sound     (eng_asset_config_t* const config, eng_asset_config_node_t& assets);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_font      (eng_asset_config_t* const config, eng_asset_config_node_t& assets);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_text     (eng_asset_config_t* const config, eng_asset_config_node_t& assets);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_image    (eng_asset_config_t* const config, eng_asset_config_node_t& assets);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_sound    (eng_asset_config_t* const config, eng_asset_config_node_t& assets);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_font     (eng_asset_config_t* const config, eng_asset_config_node_t& assets);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_assets    (eng_asset_config_t* const config, eng_asset_config_node_t& node, eng_xml_h32_node_t xml_type);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_assets   (eng_asset_config_t* const config, eng_asset_config_node_t& node, eng_xml_h32_node_t xml_type);
 
     struct eng_asset_config_t {
         eng_mem_arena_t*   arena;
@@ -185,7 +185,7 @@ namespace ifb {
         } xml;
     };
 
-    struct eng_asset_config_assets_t {
+    struct eng_asset_config_node_t {
         eng_u32 count;
         struct {
             eng_asset_cstr_t* name;

@@ -37,7 +37,7 @@ namespace ifb {
         eng_asset_config_t* asset_config = eng_asset_config_create();
         eng_asset_config_read_file(asset_config);
 
-        eng_asset_config_assets_t assets;
+        eng_asset_config_node_t assets;
         eng_bool did_read = eng_asset_config_node_read_image(asset_config, assets);
 
         return(is_init);

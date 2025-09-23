@@ -207,7 +207,7 @@ namespace ifb {
     IFB_ENG_FUNC bool
     eng_asset_config_node_read_text(
         eng_asset_config_t* const  config,
-        eng_asset_config_assets_t& node) {
+        eng_asset_config_node_t& node) {
 
         eng_asset_config_validate(config);
 
@@ -226,7 +226,7 @@ namespace ifb {
     IFB_ENG_FUNC bool
     eng_asset_config_node_read_image(
         eng_asset_config_t* const config,
-        eng_asset_config_assets_t&  node) {
+        eng_asset_config_node_t&  node) {
 
         eng_asset_config_validate(config);
 
@@ -245,7 +245,7 @@ namespace ifb {
     IFB_ENG_FUNC bool
     eng_asset_config_node_read_sound(
         eng_asset_config_t* const config,
-        eng_asset_config_assets_t&  node) {
+        eng_asset_config_node_t&  node) {
 
         eng_asset_config_validate(config);
 
@@ -264,7 +264,7 @@ namespace ifb {
     IFB_ENG_FUNC bool
     eng_asset_config_node_read_font(
         eng_asset_config_t* const config,
-        eng_asset_config_assets_t&  node) {
+        eng_asset_config_node_t&  node) {
 
         eng_asset_config_validate(config);
 
@@ -283,7 +283,7 @@ namespace ifb {
     IFB_ENG_FUNC bool
     eng_asset_config_node_write_text(
         eng_asset_config_t* const config,
-        eng_asset_config_assets_t&  node) {
+        eng_asset_config_node_t&  node) {
 
         eng_asset_config_validate(config);
 
@@ -302,7 +302,7 @@ namespace ifb {
     IFB_ENG_FUNC bool
     eng_asset_config_node_write_image(
         eng_asset_config_t* const config,
-        eng_asset_config_assets_t&  node) {
+        eng_asset_config_node_t&  node) {
 
         eng_asset_config_validate(config);    
 
@@ -321,7 +321,7 @@ namespace ifb {
     IFB_ENG_FUNC bool
     eng_asset_config_node_write_sound(
         eng_asset_config_t* const config,
-        eng_asset_config_assets_t&  node) {
+        eng_asset_config_node_t&  node) {
 
         eng_asset_config_validate(config);
 
@@ -340,7 +340,7 @@ namespace ifb {
     IFB_ENG_FUNC bool
     eng_asset_config_node_write_font(
         eng_asset_config_t* const config,
-        eng_asset_config_assets_t&  node) {
+        eng_asset_config_node_t&  node) {
 
         eng_asset_config_validate(config);
 
@@ -359,7 +359,7 @@ namespace ifb {
     IFB_ENG_FUNC bool
     eng_asset_config_node_read_assets(
         eng_asset_config_t* const  config,
-        eng_asset_config_assets_t& node,
+        eng_asset_config_node_t& node,
         eng_xml_h32_node_t         xml_type) {
 
         bool is_mem_ok = sld::arena_roll_back(config->arena);
@@ -407,7 +407,7 @@ namespace ifb {
     IFB_ENG_FUNC bool
     eng_asset_config_node_write_assets(
         eng_asset_config_t* const  config,
-        eng_asset_config_assets_t& node,
+        eng_asset_config_node_t& node,
         eng_xml_h32_node_t         xml_type) {
 
         bool did_write = (xml_type.val != SLD_XML_INVALID_HANDLE); 
