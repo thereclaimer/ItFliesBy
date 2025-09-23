@@ -431,7 +431,7 @@ namespace ifb {
     //-------------------------------------------------------------------
 
     IFB_ENG_INTERNAL void
-    eng_file_mngr_init(
+    eng_file_mngr_startup(
         void) {
 
         const bool is_initialized = (_file_mngr.capacity != 0);  

@@ -12,7 +12,6 @@ namespace ifb {
 
     struct eng_mem_mngr_t {
         struct {
-            eng_mem_res_t* platform;
             eng_mem_res_t* core;
             eng_mem_res_t* file;
             eng_mem_res_t* asset;
@@ -20,8 +19,7 @@ namespace ifb {
         eng_mem_error_s32_t last_error;
     };
 
-    IFB_ENG_FUNC bool              eng_mem_mngr_init             (void);
-    IFB_ENG_FUNC eng_mem_arena_t*  eng_mem_arena_commit_platform (void);   
+    IFB_ENG_FUNC bool              eng_mem_mngr_startup          (void);
     IFB_ENG_FUNC eng_mem_arena_t*  eng_mem_arena_commit_core     (void);   
     IFB_ENG_FUNC eng_mem_arena_t*  eng_mem_arena_commit_file     (void);   
     IFB_ENG_FUNC eng_mem_arena_t*  eng_mem_arena_commit_asset    (void);   

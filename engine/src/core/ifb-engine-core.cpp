@@ -4,17 +4,47 @@
 
 namespace ifb {
 
-    static eng_core_mem_t _core_mem;
+    static eng_core_t _core;
 
-    IFB_ENG_FUNC void
-    eng_core_init(
+    IFB_ENG_API eng_bool
+    eng_core_startup(
         void) {
 
-        _core_mem.xml_arena = eng_mem_arena_commit_core();
-        assert(_core_mem.xml_arena);
+        // start managers
+        eng_mem_mngr_startup  ();
+        eng_file_mngr_startup ();
 
-        sld::xml_memory_init_from_arena(_core_mem.xml_arena);
+        // allocate core memory
+        _core.arenas.xml = eng_mem_arena_commit_core();
+        assert(_core.arenas.xml);
+
+        sld::xml_memory_init_from_arena(_core.arenas.xml);
+
+        return(true); 
     }
+
+    IFB_ENG_API eng_bool
+    eng_core_shutdown(
+        void) {
+
+        return(false);
+    }
+
+    IFB_ENG_API eng_bool
+    eng_core_update(
+        void) {
+
+        return(false);
+        return(false);
+    }
+
+    IFB_ENG_API eng_bool
+    eng_core_render(
+        void) {
+
+        return(false);
+    }
+
 
 };
 

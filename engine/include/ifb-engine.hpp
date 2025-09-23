@@ -126,13 +126,6 @@ namespace ifb {
     typedef sld::xml_hnd_doc_t    eng_xml_h32_doc_t;
     typedef sld::xml_hnd_node_t   eng_xml_h32_node_t;
     typedef sld::xml_hnd_attrib_t eng_xml_h32_attrib_t;
-
-    //-------------------------------------------------------------------
-    // API
-    //-------------------------------------------------------------------
-
-    IFB_ENG_API bool eng_init (void);
-
 };
 
 #endif //IFB_ENGINE_HPP

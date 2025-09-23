@@ -5,9 +5,10 @@
 
 namespace ifb {
 
-    struct eng_core_mem_t {
-        eng_mem_arena_t* xml_arena;
+    struct eng_core_t {
+        struct {
+            eng_mem_arena_t* xml;
+        } arenas;
     };
 
-    void eng_core_init(void);
 };
