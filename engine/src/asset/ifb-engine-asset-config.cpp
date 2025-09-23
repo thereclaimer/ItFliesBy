@@ -4,33 +4,27 @@
 
 namespace ifb {
 
-    struct eng_asset_config_xml_properties_t {
-        struct {
-            static constexpr eng_c8 ifb_assets [] = "ifb-assets";
-            static constexpr eng_c8 text       [] = "text";
-            static constexpr eng_c8 image      [] = "image";
-            static constexpr eng_c8 sound      [] = "sound";
-            static constexpr eng_c8 font       [] = "font";
-            static constexpr eng_c8 asset      [] = "asset";
-        } node;
-        struct {
-            static constexpr eng_c8 name [] = "name"; 
-            static constexpr eng_c8 path [] = "path"; 
-        } attrib;
-        static constexpr eng_c8 default_config[] = 
-            "<ifb-assets>"
-                "<text path=\"../assets/text\">"
-                "</text>"
-                "<image path=\"../assets/image\">"
-                "</image>"
-                "<sound path=\"../assets/sound\">"
-                "</sound>"
-                "<font path=\"../assets/font\">"
-                "</font>"
-            "</ifb-assets>";
-    };
+    constexpr eng_c8 _xml_cstr_node_ifb_assets [] = "ifb-assets";
+    constexpr eng_c8 _xml_cstr_node_text       [] = "text";
+    constexpr eng_c8 _xml_cstr_node_image      [] = "image";
+    constexpr eng_c8 _xml_cstr_node_sound      [] = "sound";
+    constexpr eng_c8 _xml_cstr_node_font       [] = "font";
+    constexpr eng_c8 _xml_cstr_node_asset      [] = "asset";
 
-    constexpr eng_asset_config_xml_properties_t _properties;
+    constexpr eng_c8 _xml_cstr_attrib_name     [] = "name"; 
+    constexpr eng_c8 _xml_cstr_attrib_path     [] = "path"; 
+
+    constexpr eng_c8 _xml_cstr_default_config  [] = 
+        "<ifb-assets>"
+            "<text path=\"../assets/text\">"
+            "</text>"
+            "<image path=\"../assets/image\">"
+            "</image>"
+            "<sound path=\"../assets/sound\">"
+            "</sound>"
+            "<font path=\"../assets/font\">"
+            "</font>"
+        "</ifb-assets>";
 
     IFB_ENG_FUNC eng_asset_config_t*
     eng_asset_config_create(
@@ -53,11 +47,11 @@ namespace ifb {
 
         // create the document and nodes
         eng_xml_h32_doc_t  xml_doc        = sld::xml_doc_create         ();
-        eng_xml_h32_node_t xml_node_root  = sld::xml_doc_add_child_node (xml_doc,       _properties.node.ifb_assets);
-        eng_xml_h32_node_t xml_node_text  = sld::xml_node_add_child     (xml_node_root, _properties.node.text); 
-        eng_xml_h32_node_t xml_node_image = sld::xml_node_add_child     (xml_node_root, _properties.node.image); 
-        eng_xml_h32_node_t xml_node_sound = sld::xml_node_add_child     (xml_node_root, _properties.node.sound); 
-        eng_xml_h32_node_t xml_node_font  = sld::xml_node_add_child     (xml_node_root, _properties.node.font); 
+        eng_xml_h32_node_t xml_node_root  = sld::xml_doc_add_child_node (xml_doc,       _xml_cstr_node_ifb_assets);
+        eng_xml_h32_node_t xml_node_text  = sld::xml_node_add_child     (xml_node_root, _xml_cstr_node_text); 
+        eng_xml_h32_node_t xml_node_image = sld::xml_node_add_child     (xml_node_root, _xml_cstr_node_image); 
+        eng_xml_h32_node_t xml_node_sound = sld::xml_node_add_child     (xml_node_root, _xml_cstr_node_sound); 
+        eng_xml_h32_node_t xml_node_font  = sld::xml_node_add_child     (xml_node_root, _xml_cstr_node_font); 
         assert(xml_doc.val        != SLD_XML_INVALID_HANDLE);
         assert(xml_node_root.val  != SLD_XML_INVALID_HANDLE);
         assert(xml_node_text.val  != SLD_XML_INVALID_HANDLE);
@@ -110,22 +104,22 @@ namespace ifb {
 
         eng_asset_config_validate(config);
 
-        static const eng_u32 size           = sizeof(_properties.default_config);
+        static const eng_u32 size           = sizeof(_xml_cstr_default_config);
         static eng_buffer_t  default_buffer = {
-            (byte*)_properties.default_config, // data
-            size,                              // size
-            size                               // length
+            (byte*)_xml_cstr_default_config, // data
+            size,                            // size
+            size                             // length
         };
 
         sld::xml_memory_reset();
         sld::xml_doc_buffer_read(config->xml.doc, default_buffer);
 
         config->xml.doc        = sld::xml_doc_create         ();
-        config->xml.node_root  = sld::xml_doc_add_child_node (config->xml.doc,       _properties.node.ifb_assets);
-        config->xml.node_text  = sld::xml_node_add_child     (config->xml.node_root, _properties.node.text); 
-        config->xml.node_image = sld::xml_node_add_child     (config->xml.node_root, _properties.node.image); 
-        config->xml.node_sound = sld::xml_node_add_child     (config->xml.node_root, _properties.node.sound); 
-        config->xml.node_font  = sld::xml_node_add_child     (config->xml.node_root, _properties.node.font);
+        config->xml.node_root  = sld::xml_doc_add_child_node (config->xml.doc,       _xml_cstr_node_ifb_assets);
+        config->xml.node_text  = sld::xml_node_add_child     (config->xml.node_root, _xml_cstr_node_text); 
+        config->xml.node_image = sld::xml_node_add_child     (config->xml.node_root, _xml_cstr_node_image); 
+        config->xml.node_sound = sld::xml_node_add_child     (config->xml.node_root, _xml_cstr_node_sound); 
+        config->xml.node_font  = sld::xml_node_add_child     (config->xml.node_root, _xml_cstr_node_font);
         assert(config->xml.doc.val        != SLD_XML_INVALID_HANDLE);
         assert(config->xml.node_root.val  != SLD_XML_INVALID_HANDLE);
         assert(config->xml.node_text.val  != SLD_XML_INVALID_HANDLE);
@@ -325,7 +319,7 @@ namespace ifb {
         if (did_read) {
 
             // allocate memory
-            node.count      =  sld::xml_node_get_child_count(xml_type, _properties.node.asset);
+            node.count      =  sld::xml_node_get_child_count(xml_type, _xml_cstr_node_asset);
             is_mem_ok       =  sld::arena_save_position(config->arena);
             node.array.name =  eng_mem_arena_push_struct_array(config->arena, node.count, eng_asset_cstr_t);
             node.array.path =  eng_mem_arena_push_struct_array(config->arena, node.count, eng_asset_cstr_t);
@@ -339,12 +333,12 @@ namespace ifb {
             sld::xml_attrib_value_t attrib_asset_path;
             eng_u32 index = 0;
             for (
-                eng_xml_h32_node_t asset_node =  sld::xml_node_get_child(xml_type, _properties.node.asset);
+                eng_xml_h32_node_t asset_node =  sld::xml_node_get_child(xml_type, _xml_cstr_node_asset);
                 asset_node.val                != SLD_XML_INVALID_HANDLE;
-                asset_node                    =  sld::xml_node_get_next_sibling(asset_node, _properties.node.asset)) {
+                asset_node                    =  sld::xml_node_get_next_sibling(asset_node, _xml_cstr_node_asset)) {
 
-                did_read &= sld::xml_attrib_get_val_utf8(asset_node, _properties.attrib.name, attrib_asset_name); 
-                did_read &= sld::xml_attrib_get_val_utf8(asset_node, _properties.attrib.path, attrib_asset_path);
+                did_read &= sld::xml_attrib_get_val_utf8(asset_node, _xml_cstr_attrib_name, attrib_asset_name); 
+                did_read &= sld::xml_attrib_get_val_utf8(asset_node, _xml_cstr_attrib_path, attrib_asset_path);
 
                 name_str.chars = node.array.name[index].chars;
                 path_str.chars = node.array.path[index].chars;
@@ -380,9 +374,9 @@ namespace ifb {
                 attrib_name.as_utf8 = node.array.name[index].chars;
                 attrib_path.as_utf8 = node.array.path[index].chars;
 
-                const eng_xml_h32_node_t asset_node = sld::xml_node_add_child(xml_type, _properties.node.asset);
-                did_write &= sld::xml_attrib_set_val_utf8(asset_node, _properties.attrib.name, attrib_name);
-                did_write &= sld::xml_attrib_set_val_utf8(asset_node, _properties.attrib.path, attrib_path);
+                const eng_xml_h32_node_t asset_node = sld::xml_node_add_child(xml_type, _xml_cstr_node_asset);
+                did_write &= sld::xml_attrib_set_val_utf8(asset_node, _xml_cstr_attrib_name, attrib_name);
+                did_write &= sld::xml_attrib_set_val_utf8(asset_node, _xml_cstr_attrib_path, attrib_path);
             }
         }
 
