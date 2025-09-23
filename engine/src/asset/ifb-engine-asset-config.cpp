@@ -4,17 +4,17 @@
 
 namespace ifb {
 
-    constexpr eng_c8 _xml_cstr_node_ifb_assets [] = "ifb-assets";
-    constexpr eng_c8 _xml_cstr_node_text       [] = "text";
-    constexpr eng_c8 _xml_cstr_node_image      [] = "image";
-    constexpr eng_c8 _xml_cstr_node_sound      [] = "sound";
-    constexpr eng_c8 _xml_cstr_node_font       [] = "font";
-    constexpr eng_c8 _xml_cstr_node_asset      [] = "asset";
+    constexpr eng_cchar _xml_cstr_node_ifb_assets [] = "ifb-assets";
+    constexpr eng_cchar _xml_cstr_node_text       [] = "text";
+    constexpr eng_cchar _xml_cstr_node_image      [] = "image";
+    constexpr eng_cchar _xml_cstr_node_sound      [] = "sound";
+    constexpr eng_cchar _xml_cstr_node_font       [] = "font";
+    constexpr eng_cchar _xml_cstr_node_asset      [] = "asset";
 
-    constexpr eng_c8 _xml_cstr_attrib_name     [] = "name"; 
-    constexpr eng_c8 _xml_cstr_attrib_path     [] = "path"; 
+    constexpr eng_cchar _xml_cstr_attrib_name     [] = "name"; 
+    constexpr eng_cchar _xml_cstr_attrib_path     [] = "path"; 
 
-    constexpr eng_c8 _xml_cstr_default_config  [] = 
+    constexpr eng_cchar _xml_cstr_default_config  [] = 
         "<ifb-assets>"
             "<text path=\"../assets/text\">"
             "</text>"
@@ -60,8 +60,8 @@ namespace ifb {
         assert(xml_node_font.val  != SLD_XML_INVALID_HANDLE);
 
         // open the file
-        static const eng_c8* file_path   = IFB_ENG_ASSET_CONFIG_PATH;
-        const eng_file_h32_t file_handle = eng_file_mngr_open_rw(file_path);
+        static const eng_cchar* file_path   = IFB_ENG_ASSET_CONFIG_PATH;
+        const eng_file_h32_t    file_handle = eng_file_mngr_open_rw(file_path);
         assert(file_handle.val != IFB_ENG_FILE_H32_INVALID);
 
         // initialize the config

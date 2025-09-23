@@ -45,6 +45,8 @@ namespace ifb {
     typedef sld::c8  eng_c8;
     typedef sld::c16 eng_c16;
     typedef sld::c32 eng_c32;
+    typedef sld::c8  eng_cchar;
+    typedef sld::c16 eng_wchar;
 
     // memory
     typedef void       eng_void;
