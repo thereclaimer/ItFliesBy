@@ -136,8 +136,13 @@ namespace ifb {
 
         // allocate memory
         const eng_u64  buffer_size = sld::xml_doc_buffer_length (config->xml.doc);  
+        const eng_bool is_mem_ok   = sld::arena_roll_back       (config->arena);
         eng_byte*      buffer_data = sld::arena_push_bytes      (config->arena, buffer_size); 
-        assert(buffer_size != 0 && buffer_data != NULL);
+        assert(
+            buffer_size != 0    &&
+            buffer_data != NULL &&
+            is_mem_ok   == true
+        );
 
         // initialize file buffer
         eng_file_buffer_t xml_file_buffer;
@@ -147,10 +152,55 @@ namespace ifb {
         xml_file_buffer.cursor      = 0;
         xml_file_buffer.transferred = 0;
 
+        // write the buffer and reset the arena
         bool did_save = true;
         did_save &= sld::xml_doc_buffer_write (config->xml.doc, xml_file_buffer);
-        did_save &= eng_file_mngr_write       (config->file,    xml_file_buffer); 
+        did_save &= eng_file_mngr_write       (config->file,    xml_file_buffer);
         assert(did_save);
+    }
+
+    IFB_ENG_FUNC eng_void
+    eng_asset_config_read_file(
+        eng_asset_config_t* const config) {
+
+        eng_asset_config_validate(config);
+
+        // get the file size
+        const eng_u64 size = eng_file_mngr_get_size(config->file);
+        if (size == 0) return;
+
+        // allocate memory
+        eng_bool  is_mem_ok  = sld::arena_roll_back  (config->arena);
+        eng_byte* config_mem = sld::arena_push_bytes (config->arena, size);
+        assert(is_mem_ok && config_mem != NULL);
+
+        // initialize the file buffer
+        eng_file_buffer_t file_buffer;
+        file_buffer.data        = config_mem;
+        file_buffer.size        = size;
+        file_buffer.length      = 0;
+        file_buffer.cursor      = 0;
+        file_buffer.transferred = 0;
+
+        // read the xml
+        eng_bool did_read = true; 
+        sld::xml_doc_reset                   (config->xml.doc);
+        did_read &= eng_file_mngr_read       (config->file, file_buffer);
+        did_read &= sld::xml_doc_buffer_read (config->xml.doc, file_buffer);
+        assert(did_read);
+
+        // initialize the other nodes
+        config->xml.node_root  = sld::xml_doc_get_child_node (config->xml.doc,       _xml_cstr_node_ifb_assets);
+        config->xml.node_text  = sld::xml_node_get_child     (config->xml.node_root, _xml_cstr_node_text); 
+        config->xml.node_image = sld::xml_node_get_child     (config->xml.node_root, _xml_cstr_node_image); 
+        config->xml.node_sound = sld::xml_node_get_child     (config->xml.node_root, _xml_cstr_node_sound); 
+        config->xml.node_font  = sld::xml_node_get_child     (config->xml.node_root, _xml_cstr_node_font);
+        assert(config->xml.doc.val        != SLD_XML_INVALID_HANDLE);
+        assert(config->xml.node_root.val  != SLD_XML_INVALID_HANDLE);
+        assert(config->xml.node_text.val  != SLD_XML_INVALID_HANDLE);
+        assert(config->xml.node_image.val != SLD_XML_INVALID_HANDLE);
+        assert(config->xml.node_sound.val != SLD_XML_INVALID_HANDLE);
+        assert(config->xml.node_font.val  != SLD_XML_INVALID_HANDLE);
 
     }
 
@@ -340,13 +390,13 @@ namespace ifb {
                 did_read &= sld::xml_attrib_get_val_utf8(asset_node, _xml_cstr_attrib_name, attrib_asset_name); 
                 did_read &= sld::xml_attrib_get_val_utf8(asset_node, _xml_cstr_attrib_path, attrib_asset_path);
 
+                assert(index < node.count);
                 name_str.chars = node.array.name[index].chars;
                 path_str.chars = node.array.path[index].chars;
                 sld::cstr_copy(name_str, attrib_asset_name.as_utf8, name_str.size);
                 sld::cstr_copy(path_str, attrib_asset_path.as_utf8, path_str.size);
             
                 ++index;
-                assert(index < node.count);
             }
         }
 

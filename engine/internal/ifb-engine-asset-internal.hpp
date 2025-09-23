@@ -158,6 +158,7 @@ namespace ifb {
     IFB_ENG_FUNC eng_void            eng_asset_config_validate            (eng_asset_config_t* const config);
     IFB_ENG_FUNC eng_void            eng_asset_config_load_default        (eng_asset_config_t* const config);
     IFB_ENG_FUNC eng_void            eng_asset_config_save_file           (eng_asset_config_t* const config);
+    IFB_ENG_FUNC eng_void            eng_asset_config_read_file           (eng_asset_config_t* const config);
     IFB_ENG_FUNC eng_u64             eng_asset_config_get_xml_buffer_size (eng_asset_config_t* const config);
     IFB_ENG_FUNC eng_void            eng_asset_config_get_xml_buffer      (eng_asset_config_t* const config, eng_buffer_t& buffer);
     IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_text      (eng_asset_config_t* const config, eng_asset_config_assets_t& assets);
@@ -187,9 +188,8 @@ namespace ifb {
     struct eng_asset_config_assets_t {
         eng_u32 count;
         struct {
-            eng_xml_h32_node_t* node;
-            eng_asset_cstr_t*   name;
-            eng_asset_cstr_t*   path;
+            eng_asset_cstr_t* name;
+            eng_asset_cstr_t* path;
         } array;
     };
 };

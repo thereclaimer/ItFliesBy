@@ -10,10 +10,10 @@
 #   define IFB_ENG_MEM_SIZE_KB_PLATFORM_ARENA 64      // 64 KB
 #endif
 #ifndef    IFB_ENG_MEM_SIZE_KB_CORE_RES 
-#   define IFB_ENG_MEM_SIZE_KB_CORE_RES       64000   // 64 MB
+#   define IFB_ENG_MEM_SIZE_KB_CORE_RES       256000  // 256 MB
 #endif
 #ifndef    IFB_ENG_MEM_SIZE_KB_CORE_ARENA
-#   define IFB_ENG_MEM_SIZE_KB_CORE_ARENA     64      // 64 KB
+#   define IFB_ENG_MEM_SIZE_KB_CORE_ARENA     256     // 256 KB
 #endif
 #ifndef    IFB_ENG_MEM_SIZE_KB_FILE_RES 
 #   define IFB_ENG_MEM_SIZE_KB_FILE_RES       1000000 // 1 GB
