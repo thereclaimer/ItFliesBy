@@ -3,6 +3,31 @@
 
 #include "ifb-engine.hpp"
 
+#ifndef    IFB_ENG_MEM_SIZE_KB_PLATFORM_RES  
+#   define IFB_ENG_MEM_SIZE_KB_PLATFORM_RES   64000   // 64 MB
+#endif
+#ifndef    IFB_ENG_MEM_SIZE_KB_PLATFORM_ARENA
+#   define IFB_ENG_MEM_SIZE_KB_PLATFORM_ARENA 64      // 64 KB
+#endif
+#ifndef    IFB_ENG_MEM_SIZE_KB_CORE_RES 
+#   define IFB_ENG_MEM_SIZE_KB_CORE_RES       256000  // 256 MB
+#endif
+#ifndef    IFB_ENG_MEM_SIZE_KB_CORE_ARENA
+#   define IFB_ENG_MEM_SIZE_KB_CORE_ARENA     256     // 256 KB
+#endif
+#ifndef    IFB_ENG_MEM_SIZE_KB_FILE_RES 
+#   define IFB_ENG_MEM_SIZE_KB_FILE_RES       1000000 // 1 GB
+#endif
+#ifndef    IFB_ENG_MEM_SIZE_KB_FILE_ARENA
+#   define IFB_ENG_MEM_SIZE_KB_FILE_ARENA     1000    // 1 MB
+#endif
+#ifndef    IFB_ENG_MEM_SIZE_KB_ASSET_RES 
+#   define IFB_ENG_MEM_SIZE_KB_ASSET_RES      1000000 // 1 GB
+#endif
+#ifndef    IFB_ENG_MEM_SIZE_KB_ASSET_ARENA
+#   define IFB_ENG_MEM_SIZE_KB_ASSET_ARENA    64000   // 64 MB
+#endif
+
 namespace ifb {
 
     // primitive types
@@ -34,16 +59,16 @@ namespace ifb {
     IFB_ENG_API const eng_mem_h32_alctr_heap_t  eng_mem_arena_push_alctr_heap  (const eng_mem_h32_arena_t arena_hnd, const eng_u32 heap_size, const eng_u32 alloc_size_min, const eng_u32 alloc_size_max);
     IFB_ENG_API eng_bool                        eng_mem_arena_get_info         (const eng_mem_h32_arena_t in_arena_hnd, eng_mem_arena_info_t& out_info);
 
-    IFB_ENG_API eng_byte*                       eng_mem_alctr_block_alloc_abs  (const eng_mem_h32_alctr_block_t b_alctr_hnd);
-    IFB_ENG_API eng_byte*                       eng_mem_alctr_block_alloc_rel  (const eng_mem_h32_alctr_block_t b_alctr_hnd);
+    IFB_ENG_API eng_byte*                       eng_mem_alctr_block_alctr_abs  (const eng_mem_h32_alctr_block_t b_alctr_hnd);
+    IFB_ENG_API eng_byte*                       eng_mem_alctr_block_alctr_rel  (const eng_mem_h32_alctr_block_t b_alctr_hnd);
     IFB_ENG_API eng_bool                        eng_mem_alctr_block_free       (const eng_mem_h32_alctr_block_t b_alctr_hnd, const eng_byte* mem);
 
     IFB_ENG_API eng_byte*                       eng_mem_alctr_stack_push_abs   (const eng_mem_h32_alctr_block_t b_alctr_hnd);
     IFB_ENG_API eng_byte*                       eng_mem_alctr_stack_push_rel   (const eng_mem_h32_alctr_block_t b_alctr_hnd);
     IFB_ENG_API eng_bool                        eng_mem_alctr_stack_pull       (const eng_mem_h32_alctr_block_t b_alctr_hnd, const eng_byte* mem);
 
-    IFB_ENG_API eng_byte*                       eng_mem_alctr_heap_alloc_abs   (const eng_mem_h32_alctr_block_t b_alctr_hnd);
-    IFB_ENG_API eng_byte*                       eng_mem_alctr_heap_alloc_rel   (const eng_mem_h32_alctr_block_t b_alctr_hnd);
+    IFB_ENG_API eng_byte*                       eng_mem_alctr_heap_alctr_abs   (const eng_mem_h32_alctr_block_t b_alctr_hnd);
+    IFB_ENG_API eng_byte*                       eng_mem_alctr_heap_alctr_rel   (const eng_mem_h32_alctr_block_t b_alctr_hnd);
     IFB_ENG_API eng_bool                        eng_mem_alctr_heap_free        (const eng_mem_h32_alctr_block_t b_alctr_hnd, const eng_byte* mem);
 
     enum eng_mem_e32_error_ {
@@ -59,7 +84,8 @@ namespace ifb {
     enum eng_mem_e32_res_type_ {
         eng_mem_e32_res_type_platform = 0,
         eng_mem_e32_res_type_core     = 1,
-        eng_mem_e32_res_type_file     = 2
+        eng_mem_e32_res_type_file     = 2,
+        eng_mem_e32_res_type_asset    = 3
     };
 
     struct eng_mem_h32_arena_t       : eng_h32_t { };

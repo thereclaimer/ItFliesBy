@@ -3,7 +3,7 @@
 	"tasks": [
 		{
 			"label":   "Build Debug Win32",
-			"command": "build-debug-platform.bat",
+			"command": "build-debug-all.bat",
 			"args":[
             ],
 			"options": {

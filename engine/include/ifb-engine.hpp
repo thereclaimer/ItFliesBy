@@ -3,8 +3,11 @@
 
 #include <sld.hpp>
 #include <sld-buffer.hpp>
+#include <sld-hash.hpp>
+#include <sld-string.hpp>
+#include <sld-xml.hpp>
 
-#define IFB_ENG_API      extern
+#define IFB_ENG_API      __declspec(dllexport)
 #define IFB_ENG_FUNC     static
 #define IFB_ENG_INTERNAL static
 #define IFB_ENG_INLINE   static inline
@@ -42,6 +45,8 @@ namespace ifb {
     typedef sld::c8  eng_c8;
     typedef sld::c16 eng_c16;
     typedef sld::c32 eng_c32;
+    typedef sld::c8  eng_cchar;
+    typedef sld::c16 eng_wchar;
 
     // memory
     typedef void       eng_void;
@@ -97,13 +102,37 @@ namespace ifb {
         eng_error_e32_module_platform = 0x00000000, 
         eng_error_e32_module_core     = 0x00010000, 
         eng_error_e32_module_memory   = 0x00020000, 
-        eng_error_e32_module_file     = 0x00030000
+        eng_error_e32_module_file     = 0x00030000,
+        eng_error_e32_module_asset    = 0x00040000
     };
+
+    //-------------------------------------------------------------------
+    // STRINGS
+    //-------------------------------------------------------------------
+    
+    typedef sld::cstr_t  eng_cstr_t;
+    typedef sld::wstr_t eng_wstr_t;
 
     //-------------------------------------------------------------------
     // DATA STRUCTURES
     //-------------------------------------------------------------------
+    
     typedef sld::buffer_t eng_buffer_t;
+
+    //-------------------------------------------------------------------
+    // DATA FORMATS
+    //-------------------------------------------------------------------
+
+    typedef sld::xml_hnd_doc_t    eng_xml_h32_doc_t;
+    typedef sld::xml_hnd_node_t   eng_xml_h32_node_t;
+    typedef sld::xml_hnd_attrib_t eng_xml_h32_attrib_t;
+
+    //-------------------------------------------------------------------
+    // API
+    //-------------------------------------------------------------------
+
+    IFB_ENG_API bool eng_init (void);
+
 };
 
 #endif //IFB_ENGINE_HPP

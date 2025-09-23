@@ -5,18 +5,6 @@
 . $PSScriptRoot\IFB.Common.ps1
 
 ############################
-# SLDLib
-############################
-
-$Script:SLDLib = [PSCustomObject]@{
-    Include      = 'sld\include'
-    Lib          = 'sld\build\debug\lib'
-    VcpkgBin     = 'sld\vcpkg_installed\x64-windows\bin'  
-    VcpkgInclude = 'sld\vcpkg_installed\x64-windows\include'  
-    VcpkgLib     = 'sld\vcpkg_installed\x64-windows\lib'  
-} 
-
-############################
 # OUTPUT
 ############################
 
@@ -38,8 +26,10 @@ $Script:EngineDebugCompileArgs = [PSCustomObject]@{
     '/I' + 'engine\include'
     '/I' + 'engine\internal'
     '/I' + 'engine\src'
+    '/I' + 'engine\src\core'
     '/I' + 'engine\src\file'
     '/I' + 'engine\src\memory'
+    '/I' + 'engine\src\asset'
     '/I' + 'sld\include'
     '/I' + 'sld\vcpkg_installed\x64-windows\include'
     ) -join ' '
@@ -75,7 +65,10 @@ $Script:EngineDebugLinkArgs = [PSCustomObject]@{
         "ItFliesBy.Engine.obj"
         "user32.lib",
         "kernel32.lib",
-        "SLD.Win32.lib"
+        "SLD.Win32.lib",
+        "Gdi32.lib",
+        "imgui.lib"
+        "opengl32.lib"
     ) -join ' '
     LinkOut = @(
         '/OUT:'    + $Script:OutDirsDebug.Bin + '\' + $Script:EngineOut.Dll

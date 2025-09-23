@@ -2,6 +2,7 @@
 #define IFB_ENG_FILE_HPP
 
 #include "ifb-engine.hpp"
+#include <sld-os.hpp>
 
 #ifndef    IFB_ENG_FILE_PATH_SIZE
 #   define IFB_ENG_FILE_PATH_SIZE 128
@@ -17,23 +18,24 @@
 
 namespace ifb {
 
-    typedef eng_error_s32_t eng_file_error_s32_t;
+    typedef eng_error_s32_t       eng_file_error_s32_t;
+    typedef sld::os_file_buffer_t eng_file_buffer_t;
 
-    struct eng_file_h32_t       : eng_h32_t             { };
-    struct eng_file_flags_u32_t : eng_u32_t             { };
-    struct eng_file_buffer_t    : sld::os_file_buffer_t { }; 
+    struct eng_file_h32_t       : eng_h32_t { };
+    struct eng_file_flags_u32_t : eng_u32_t { };
     struct eng_file_path_t;
 
     IFB_ENG_API const eng_file_h32_t       eng_file_mngr_open_ro        (const eng_c8*         file_path);
     IFB_ENG_API const eng_file_h32_t       eng_file_mngr_open_rw        (const eng_c8*         file_path);
-    IFB_ENG_API bool                       eng_file_mngr_close          (const eng_file_h32_t  file_handle);
-    IFB_ENG_API bool                       eng_file_mngr_get_size       (const eng_file_h32_t  file_handle, eng_u64&                 size);
-    IFB_ENG_API bool                       eng_file_mngr_get_flags      (const eng_file_h32_t  file_handle, eng_file_flags_u32_t&    flags);
-    IFB_ENG_API bool                       eng_file_mngr_get_buffer     (const eng_file_h32_t  file_handle, eng_file_buffer_t& file_buffer);
-    IFB_ENG_API bool                       eng_file_mngr_get_path       (const eng_file_h32_t  file_handle, eng_file_path_t&         path);
+    IFB_ENG_API eng_bool                   eng_file_mngr_close          (const eng_file_h32_t  file_handle);
+    IFB_ENG_API const eng_u64              eng_file_mngr_get_size       (const eng_file_h32_t  file_handle);
+    IFB_ENG_API const eng_file_flags_u32_t eng_file_mngr_get_flags      (const eng_file_h32_t  file_handle);
+    IFB_ENG_API const eng_c8*              eng_file_mngr_get_path       (const eng_file_h32_t  file_handle);
     IFB_ENG_API const eng_file_error_s32_t eng_file_mngr_get_last_error (const eng_file_h32_t  file_handle = { IFB_ENG_FILE_H32_INVALID} );
-    IFB_ENG_API bool                       eng_file_mngr_read           (const eng_file_h32_t  file_handle);
-    IFB_ENG_API bool                       eng_file_mngr_write          (const eng_file_h32_t  file_handle);
+    IFB_ENG_API eng_bool                   eng_file_mngr_read           (const eng_file_h32_t  file_handle, eng_file_buffer_t& read_buffer);
+    IFB_ENG_API eng_bool                   eng_file_mngr_write          (const eng_file_h32_t  file_handle, eng_file_buffer_t& write_buffer);
+    IFB_ENG_API eng_bool                   eng_file_mngr_read_async     (const eng_file_h32_t  file_handle);
+    IFB_ENG_API eng_bool                   eng_file_mngr_write_async    (const eng_file_h32_t  file_handle);
 
     enum eng_file_flag_e32_ {
         eng_file_flag_e32_none        = 0,
