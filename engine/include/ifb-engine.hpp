@@ -123,9 +123,10 @@ namespace ifb {
     // DATA FORMATS
     //-------------------------------------------------------------------
 
-    typedef sld::xml_hnd_doc_t    eng_xml_h32_doc_t;
-    typedef sld::xml_hnd_node_t   eng_xml_h32_node_t;
-    typedef sld::xml_hnd_attrib_t eng_xml_h32_attrib_t;
+
+    typedef sld::xml_doc_t    eng_xml_doc_t;
+    typedef sld::xml_node_t   eng_xml_node_t;
+    typedef sld::xml_attrib_t eng_xml_attrib_t;
 };
 
 #endif //IFB_ENGINE_HPP
