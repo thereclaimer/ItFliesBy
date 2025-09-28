@@ -4,7 +4,6 @@
 
 namespace ifb {
 
-    static eng_core_t _core;
 
     IFB_ENG_API eng_bool
     eng_core_startup(
@@ -15,13 +14,14 @@ namespace ifb {
         eng_file_mngr_startup ();
 
         // allocate core memory
-        _core.arenas.xml = eng_mem_arena_commit_core();
-        assert(_core.arenas.xml);
+        _eng_core_arenas.xml_arena = eng_mem_arena_commit_core();
+        assert(_eng_core_arenas.xml_arena);
         
         // initialize xml
-        sld::xml_parser_init(
-            (void*)_eng_core_static_memory.xml_parser.start,
-                   _eng_core_static_memory.xml_parser.size);
+        sld::xml_parser_init((void*)_eng_core_xml_memory, ENG_CORE_XML_MEMORY_SIZE);
+
+        // open and show the window
+        eng_core_platform_window_open_and_show();
 
         return(true); 
     }
@@ -38,7 +38,6 @@ namespace ifb {
         void) {
 
         return(false);
-        return(false);
     }
 
     IFB_ENG_API eng_bool
@@ -47,7 +46,6 @@ namespace ifb {
 
         return(false);
     }
-
 
 };
 
