@@ -19,16 +19,10 @@ namespace ifb {
         const eng_u64 size_asset_res      = size_kilobytes (IFB_ENG_MEM_SIZE_KB_ASSET_RES); 
         const eng_u64 size_asset_arena    = size_kilobytes (IFB_ENG_MEM_SIZE_KB_ASSET_ARENA);
 
-        _mem_mngr.res.core     = reservation_acquire(size_core_res,     size_core_arena);
-        _mem_mngr.res.file     = reservation_acquire(size_file_res,     size_file_arena);
-        _mem_mngr.res.asset    = reservation_acquire(size_asset_res,    size_asset_arena);
-
-        const eng_bool is_init = (
-            _mem_mngr.res.core  != NULL &&
-            _mem_mngr.res.file  != NULL &&
-            _mem_mngr.res.asset != NULL
-        ); 
-        
+        eng_bool is_init = true;
+        is_init &= reservation_acquire(&_mem_mngr.res.core,  size_core_res,  size_core_arena);
+        is_init &= reservation_acquire(&_mem_mngr.res.file,  size_file_res,  size_file_arena);
+        is_init &= reservation_acquire(&_mem_mngr.res.asset, size_asset_res, size_asset_arena);
         return(is_init);  
     }
 
@@ -36,9 +30,7 @@ namespace ifb {
     eng_mem_arena_commit_core(
         void) {
 
-        assert(_mem_mngr.res.core);
-
-        eng_mem_arena_t* arena = sld::arena_commit(_mem_mngr.res.core);
+        eng_mem_arena_t* arena = sld::arena_commit(&_mem_mngr.res.core);
 
         _mem_mngr.last_error.val = (arena != NULL)
             ? eng_mem_e32_error_success 
@@ -51,9 +43,7 @@ namespace ifb {
     eng_mem_arena_commit_file(
         void) {
 
-        assert(_mem_mngr.res.file);
-
-        eng_mem_arena_t* arena = sld::arena_commit(_mem_mngr.res.file);
+        eng_mem_arena_t* arena = sld::arena_commit(&_mem_mngr.res.file);
 
         _mem_mngr.last_error.val = (arena != NULL)
             ? eng_mem_e32_error_success 
@@ -66,9 +56,7 @@ namespace ifb {
     eng_mem_arena_commit_asset(
         void) {
 
-        assert(_mem_mngr.res.asset);
-
-        eng_mem_arena_t* arena = sld::arena_commit(_mem_mngr.res.asset);
+        eng_mem_arena_t* arena = sld::arena_commit(&_mem_mngr.res.asset);
 
         _mem_mngr.last_error.val = (arena != NULL)
             ? eng_mem_e32_error_success 

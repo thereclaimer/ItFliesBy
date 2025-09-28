@@ -17,11 +17,11 @@ namespace ifb {
         // allocate core memory
         _core.arenas.xml = eng_mem_arena_commit_core();
         assert(_core.arenas.xml);
-
+        
         // initialize xml
-        const eng_u32   xml_parser_size   = sld::size_megabytes   (1);
-        const eng_void* xml_parser_memory = sld::arena_push_bytes (_core.arenas.xml, xml_parser_size);
-        sld::xml_parser_init(xml_parser_memory, xml_parser_size);
+        sld::xml_parser_init(
+            (void*)_eng_core_static_memory.xml_parser.start,
+                   _eng_core_static_memory.xml_parser.size);
 
         return(true); 
     }

@@ -12,9 +12,9 @@ namespace ifb {
 
     struct eng_mem_mngr_t {
         struct {
-            eng_mem_res_t* core;
-            eng_mem_res_t* file;
-            eng_mem_res_t* asset;
+            eng_mem_res_t core;
+            eng_mem_res_t file;
+            eng_mem_res_t asset;
         } res;
         eng_mem_error_s32_t last_error;
     };
