@@ -37,14 +37,18 @@ namespace ifb {
     eng_core_update(
         void) {
 
-        return(false);
+        eng_core_platform_window_process_events();
+
+        return(true);
     }
 
     IFB_ENG_API eng_bool
     eng_core_render(
         void) {
 
-        return(false);
+        eng_core_platform_window_swap_buffers();
+
+        return(true);
     }
 
 };

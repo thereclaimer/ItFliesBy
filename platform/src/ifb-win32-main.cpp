@@ -12,7 +12,13 @@ wWinMain(
     PWSTR     pCmdLine,
     int       nCmdShow) {
 
-    ifb::eng_core_startup();
-    
+    bool is_running = ifb::eng_core_startup();
+
+    while (is_running) {
+
+        is_running &= ifb::eng_core_update();
+        is_running &= ifb::eng_core_render();
+    };
+
     return(S_OK);
 }

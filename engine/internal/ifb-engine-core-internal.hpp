@@ -38,6 +38,7 @@ namespace ifb {
         sld::os_window_handle_t   handle;
         sld::os_window_size_t     default_size;
         sld::os_window_position_t default_position;
+        sld::os_window_update_t   update;
     };
 
     //-------------------------------------------------------------------
@@ -52,5 +53,7 @@ namespace ifb {
     // METHODS
     //-------------------------------------------------------------------
 
-    void eng_core_platform_window_open_and_show (void);
+    SLD_FUNC void eng_core_platform_window_open_and_show  (void);
+    SLD_FUNC void eng_core_platform_window_process_events (void);
+    SLD_FUNC void eng_core_platform_window_swap_buffers   (void);
 };

@@ -27,4 +27,20 @@ namespace ifb {
         sld::os_window_show(_eng_core_platform_window.handle);
     }
 
+    SLD_FUNC void
+    eng_core_platform_window_process_events(
+        void) {
+
+        _eng_core_platform_window.last_error = sld::os_window_update(
+            _eng_core_platform_window.handle,
+            _eng_core_platform_window.update
+        );
+    }
+
+    SLD_FUNC void
+    eng_core_platform_window_swap_buffers(
+        void) {
+
+        _eng_core_platform_window.last_error = sld::os_window_swap_buffers(_eng_core_platform_window.handle);
+    }
 };
