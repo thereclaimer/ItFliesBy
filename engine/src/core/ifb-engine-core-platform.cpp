@@ -4,7 +4,11 @@
 
 namespace ifb {
 
-    SLD_FUNC void
+    //-------------------------------------------------------------------
+    // WINDOW
+    //-------------------------------------------------------------------
+
+    IFB_ENG_FUNC void
     eng_core_platform_window_open_and_show(
         void) {
 
@@ -22,12 +26,11 @@ namespace ifb {
             _eng_core_platform_window.default_position
         );
 
-
         // show the window
         sld::os_window_show(_eng_core_platform_window.handle);
     }
 
-    SLD_FUNC void
+    IFB_ENG_FUNC void
     eng_core_platform_window_process_events(
         void) {
 
@@ -37,10 +40,34 @@ namespace ifb {
         );
     }
 
-    SLD_FUNC void
+    IFB_ENG_FUNC void
     eng_core_platform_window_swap_buffers(
         void) {
 
         _eng_core_platform_window.last_error = sld::os_window_swap_buffers(_eng_core_platform_window.handle);
     }
+
+    //-------------------------------------------------------------------
+    // MONITOR
+    //-------------------------------------------------------------------
+
+    IFB_ENG_FUNC void
+    eng_core_platform_monitor_info_init(
+        void) {
+
+        // allocate the info array
+        _eng_core_platform_monitor_info.array = eng_mem_arena_push_struct_array(
+            _eng_core_arenas.platform,
+            ENG_CORE_PLATFORM_MONITOR_COUNT_MAX,
+            sld::os_monitor_info_t
+        );
+        assert(_eng_core_platform_monitor_info.array);
+
+        // get monitor working area and info
+        sld::os_monitor_working_area (_eng_core_platform_monitor_info.working_area);
+        sld::os_monitor_info         (_eng_core_platform_monitor_info.array);
+
+
+    }
+
 };

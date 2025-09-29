@@ -20,5 +20,5 @@
 
 #include "ifb-engine-core-id.cpp"
 #include "ifb-engine-core-image.cpp"
-#include "ifb-engine-core-platform-window.cpp"
+#include "ifb-engine-core-platform.cpp"
 #include "ifb-engine-core.cpp"
