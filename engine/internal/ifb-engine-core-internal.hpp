@@ -45,8 +45,8 @@ namespace ifb {
     struct eng_core_window_t {
         eng_core_window_error_t  last_error;
         eng_core_window_handle_t handle;
-        eng_dims_size_t          size;
-        eng_dims_pos_t           position;
+        eng_dims_u32_size_t      size;
+        eng_dims_u32_pos_t       position;
         eng_core_window_update_t update;
     };
 
@@ -54,7 +54,7 @@ namespace ifb {
         eng_core_monitor_handle_t primary;         
         eng_core_monitor_handle_t active;         
         eng_u32                   count;
-        eng_dims_size_t           virtual_size;
+        eng_dims_u32_size_t       virtual_size;
         eng_pad32                 padding;
         struct {
             eng_u32*                   position_x;
@@ -71,8 +71,8 @@ namespace ifb {
     };
     struct eng_core_monitor_info_t {
         eng_core_monitor_handle_t os_handle;
-        eng_dims_size_t          size;
-        eng_dims_pos_t            pos;
+        eng_dims_u32_size_t       size;
+        eng_dims_u32_pos_t        pos;
         eng_core_monitor_name_t   name;
     };
 
@@ -100,8 +100,8 @@ namespace ifb {
     IFB_ENG_FUNC void     eng_core_monitor_table_init               (void);
     IFB_ENG_FUNC void     eng_core_monitor_table_refresh            (void);
     IFB_ENG_FUNC eng_u32  eng_core_monitor_table_search             (const eng_core_monitor_handle_t monitor);
-    IFB_ENG_FUNC void     eng_core_monitor_get_size                 (const eng_core_monitor_handle_t monitor, eng_dims_size_t&         size);
-    IFB_ENG_FUNC void     eng_core_monitor_get_position             (const eng_core_monitor_handle_t monitor, eng_dims_pos_t&          pos);
+    IFB_ENG_FUNC void     eng_core_monitor_get_size                 (const eng_core_monitor_handle_t monitor, eng_dims_u32_size_t&     size);
+    IFB_ENG_FUNC void     eng_core_monitor_get_position             (const eng_core_monitor_handle_t monitor, eng_dims_u32_pos_t&      pos);
     IFB_ENG_FUNC void     eng_core_monitor_get_name                 (const eng_core_monitor_handle_t monitor, eng_core_monitor_name_t& name);
     IFB_ENG_FUNC void     eng_core_monitor_get_info                 (const eng_core_monitor_handle_t monitor, eng_core_monitor_info_t& info);
 

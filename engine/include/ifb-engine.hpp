@@ -6,6 +6,7 @@
 #include <sld-hash.hpp>
 #include <sld-string.hpp>
 #include <sld-xml.hpp>
+#include <sld-geometry.hpp>
 
 #define IFB_ENG_API      __declspec(dllexport)
 #define IFB_ENG_FUNC     static
@@ -120,40 +121,16 @@ namespace ifb {
     typedef sld::buffer_t eng_buffer_t;
 
     //-------------------------------------------------------------------
-    // DIMENSIONS
+    // GEOMETRY
     //-------------------------------------------------------------------
 
-    struct eng_dims_size_t {
-        eng_u32 width;
-        eng_u32 height;
-    };
+    typedef sld::dims_u32_t      eng_dims_u32_t;
+    typedef sld::dims_u32_size_t eng_dims_u32_size_t;
+    typedef sld::dims_u32_pos_t  eng_dims_u32_pos_t;
 
-    struct eng_dims_pos_t {
-        eng_u32 x;
-        eng_u32 y;
-    };
-
-    struct eng_dims_t {
-        eng_dims_size_t size;
-        eng_dims_pos_t  pos;
-    };
-
-    IFB_ENG_INLINE eng_u32
-    eng_dims_area(
-        const eng_dims_size_t& size) {
-
-        const eng_u32 area = (size.width * size.height);
-        return(area);
-    }
-
-    IFB_ENG_INLINE eng_void
-    eng_dims_center(
-        const eng_dims_size_t& size,
-        eng_dims_pos_t&        center) {
-        
-        center.x = (size.width  / 2);
-        center.y = (size.height / 2);
-    }
+    typedef sld::dims_f32_t      eng_dims_f32_t;
+    typedef sld::dims_f32_size_t eng_dims_f32_size_t;
+    typedef sld::dims_f32_pos_t  eng_dims_f32_pos_t;
 
     //-------------------------------------------------------------------
     // DATA FORMATS

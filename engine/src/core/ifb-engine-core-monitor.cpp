@@ -134,7 +134,7 @@ namespace ifb {
     IFB_ENG_FUNC void
     eng_core_monitor_get_size(
         const eng_core_monitor_handle_t monitor,
-        eng_dims_size_t&                   size) {
+        eng_dims_u32_size_t&                   size) {
 
         bool is_valid = true; 
         is_valid &= eng_core_monitor_table_validate();
@@ -150,7 +150,7 @@ namespace ifb {
     IFB_ENG_FUNC void
     eng_core_monitor_get_position(
         const eng_core_monitor_handle_t monitor,
-        eng_dims_pos_t&                    pos) {
+        eng_dims_u32_pos_t&                    pos) {
 
         bool is_valid = true; 
         is_valid &= eng_core_monitor_table_validate();
