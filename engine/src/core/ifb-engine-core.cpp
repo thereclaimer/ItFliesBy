@@ -23,8 +23,10 @@ namespace ifb {
         sld::xml_parser_init((void*)_eng_core_xml_memory, ENG_CORE_XML_MEMORY_SIZE);
         
         // initialize platform
-        eng_core_platform_monitor_table_init();
-        eng_core_platform_window_open_and_show();
+        eng_core_monitor_table_init ();
+        eng_core_window_init        ();
+        eng_core_window_center_to_primary_monitor();
+        eng_core_window_open_and_show();
 
         return(true); 
     }
@@ -40,7 +42,7 @@ namespace ifb {
     eng_core_update(
         void) {
 
-        eng_core_platform_window_process_events();
+        eng_core_window_process_events();
 
         return(true);
     }
@@ -49,7 +51,7 @@ namespace ifb {
     eng_core_render(
         void) {
 
-        eng_core_platform_window_swap_buffers();
+        eng_core_window_swap_buffers();
 
         return(true);
     }
