@@ -364,13 +364,12 @@ namespace ifb {
             is_mem_ok       &= (node.array.path != NULL);            
             assert(is_mem_ok);
 
-            eng_cchar* tmp_name;
-            eng_cchar* tmp_path;
+            constexpr eng_u32 asset_cstr_size = sizeof(eng_asset_cstr_t); 
+            eng_cstr_t        dst_cstr_name   = { NULL, asset_cstr_size};
+            eng_cstr_t        dst_cstr_path   = { NULL, asset_cstr_size};
+            eng_cstr_t        src_cstr_name   = { NULL, asset_cstr_size};
+            eng_cstr_t        src_cstr_path   = { NULL, asset_cstr_size};
 
-            eng_cstr_t name_cstr = { NULL, sizeof(eng_asset_cstr_t)};
-            eng_cstr_t path_cstr = { NULL, sizeof(eng_asset_cstr_t)};
-
-            constexpr eng_u32 size_asset_cstr = sizeof(eng_asset_cstr_t); 
             for (
                 eng_u32 index = 0;
                 index < node.count;
@@ -380,14 +379,16 @@ namespace ifb {
                 did_read &= sld::xml_node_get_next_sibling (config->xml.node.asset, _xml_cstr_node_asset,  config->xml.node.asset);
                 did_read &= sld::xml_node_get_attrib       (config->xml.node.asset, _xml_cstr_attrib_name, config->xml.attrib.name);
                 did_read &= sld::xml_node_get_attrib       (config->xml.node.asset, _xml_cstr_attrib_path, config->xml.attrib.path);
-                did_read &= sld::xml_attrib_get_val_utf8   (config->xml.attrib.name, tmp_name); 
-                did_read &= sld::xml_attrib_get_val_utf8   (config->xml.attrib.path, tmp_path);
+                did_read &= sld::xml_attrib_get_val_utf8   (config->xml.attrib.name, src_cstr_name.chars); 
+                did_read &= sld::xml_attrib_get_val_utf8   (config->xml.attrib.path, src_cstr_path.chars);
 
                 // copy the name and path 
-                name_cstr.chars = node.array.name[index].chars;
-                path_cstr.chars = node.array.path[index].chars;
-                sld::cstr_copy(name_cstr, tmp_name, size_asset_cstr);
-                sld::cstr_copy(path_cstr, tmp_path, size_asset_cstr);
+                dst_cstr_name.chars              =  node.array.name[index].chars;
+                dst_cstr_path.chars              =  node.array.path[index].chars;
+                const eng_u32 length_copied_name =  sld::cstr_copy(dst_cstr_name, src_cstr_name);
+                const eng_u32 length_copied_path =  sld::cstr_copy(dst_cstr_path, src_cstr_path);
+                did_read                         &= (length_copied_name > 0);           
+                did_read                         &= (length_copied_path > 0);           
             }
         }
 

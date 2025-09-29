@@ -110,7 +110,7 @@ namespace ifb {
     // STRINGS
     //-------------------------------------------------------------------
     
-    typedef sld::cstr_t  eng_cstr_t;
+    typedef sld::cstr_t eng_cstr_t;
     typedef sld::wstr_t eng_wstr_t;
 
     //-------------------------------------------------------------------
@@ -120,9 +120,44 @@ namespace ifb {
     typedef sld::buffer_t eng_buffer_t;
 
     //-------------------------------------------------------------------
-    // DATA FORMATS
+    // DIMENSIONS
     //-------------------------------------------------------------------
 
+    struct eng_dims_size_t {
+        eng_u32 width;
+        eng_u32 height;
+    };
+
+    struct eng_dims_pos_t {
+        eng_u32 x;
+        eng_u32 y;
+    };
+
+    struct eng_dims_t {
+        eng_dims_size_t size;
+        eng_dims_pos_t  pos;
+    };
+
+    IFB_ENG_INLINE eng_u32
+    eng_dims_area(
+        const eng_dims_size_t& size) {
+
+        const eng_u32 area = (size.width * size.height);
+        return(area);
+    }
+
+    IFB_ENG_INLINE eng_void
+    eng_dims_center(
+        const eng_dims_size_t& size,
+        eng_dims_pos_t&        center) {
+        
+        center.x = (size.width  / 2);
+        center.y = (size.height / 2);
+    }
+
+    //-------------------------------------------------------------------
+    // DATA FORMATS
+    //-------------------------------------------------------------------
 
     typedef sld::xml_doc_t    eng_xml_doc_t;
     typedef sld::xml_node_t   eng_xml_node_t;

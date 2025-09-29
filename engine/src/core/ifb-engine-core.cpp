@@ -23,8 +23,8 @@ namespace ifb {
         sld::xml_parser_init((void*)_eng_core_xml_memory, ENG_CORE_XML_MEMORY_SIZE);
         
         // initialize platform
+        eng_core_platform_monitor_table_init();
         eng_core_platform_window_open_and_show();
-        eng_core_platform_monitor_info_init();
 
         return(true); 
     }
