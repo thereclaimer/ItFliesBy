@@ -2,7 +2,7 @@
 #define IFB_ENG_ASSET_INTERNAL_HPP
 
 #include <sld-xml.hpp>
-#include <sld-allocator.hpp>
+#include <sld-memory.hpp>
 
 #include "ifb-engine.hpp"
 #include "ifb-engine-hash.hpp"
@@ -16,7 +16,8 @@ namespace ifb {
     // TYPES
     //-------------------------------------------------------------------
 
-    typedef sld::block_alctr_t eng_asset_block_alctr_t; 
+    typedef sld::block_allocator_t eng_asset_block_alctr_t; 
+    typedef sld::xml_stack_t       eng_asset_config_xml_stack_t;
 
     struct eng_asset_block_t;
     struct eng_asset_slot_t;
@@ -169,19 +170,27 @@ namespace ifb {
     IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_image    (eng_asset_config_t* const config, eng_asset_config_node_t& assets);
     IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_sound    (eng_asset_config_t* const config, eng_asset_config_node_t& assets);
     IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_font     (eng_asset_config_t* const config, eng_asset_config_node_t& assets);
-    IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_assets    (eng_asset_config_t* const config, eng_asset_config_node_t& node, eng_xml_h32_node_t xml_type);
-    IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_assets   (eng_asset_config_t* const config, eng_asset_config_node_t& node, eng_xml_h32_node_t xml_type);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_read_assets    (eng_asset_config_t* const config, eng_asset_config_node_t& node, eng_xml_node_t* xml_type);
+    IFB_ENG_FUNC eng_bool            eng_asset_config_node_write_assets   (eng_asset_config_t* const config, eng_asset_config_node_t& node, eng_xml_node_t* xml_type);
 
     struct eng_asset_config_t {
-        eng_mem_arena_t*   arena;
-        eng_file_h32_t     file;
+        eng_mem_arena_t* arena;
+        eng_file_h32_t   file;
         struct {
-            eng_xml_h32_doc_t  doc;
-            eng_xml_h32_node_t node_root;
-            eng_xml_h32_node_t node_text;
-            eng_xml_h32_node_t node_image;
-            eng_xml_h32_node_t node_sound;
-            eng_xml_h32_node_t node_font;
+            eng_asset_config_xml_stack_t* stack;
+            eng_xml_doc_t*                doc;
+            struct {
+                eng_xml_node_t* root;
+                eng_xml_node_t* text;
+                eng_xml_node_t* image;
+                eng_xml_node_t* sound;
+                eng_xml_node_t* font;
+                eng_xml_node_t* asset;
+            } node;
+            struct {
+                eng_xml_attrib_t* name;
+                eng_xml_attrib_t* path;
+            } attrib;
         } xml;
     };
 

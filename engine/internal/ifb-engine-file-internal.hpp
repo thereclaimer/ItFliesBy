@@ -19,7 +19,7 @@ namespace ifb {
     struct eng_file_t;
     struct eng_file_mngr_t;
 
-    void        eng_file_mngr_init     (void);
+    void        eng_file_mngr_startup  (void);
     eng_file_t* eng_file_mngr_get_file (const eng_file_h32_t file_handle);
 
     struct eng_file_t {

@@ -6,6 +6,7 @@
 #include <sld-hash.hpp>
 #include <sld-string.hpp>
 #include <sld-xml.hpp>
+#include <sld-geometry.hpp>
 
 #define IFB_ENG_API      __declspec(dllexport)
 #define IFB_ENG_FUNC     static
@@ -110,7 +111,7 @@ namespace ifb {
     // STRINGS
     //-------------------------------------------------------------------
     
-    typedef sld::cstr_t  eng_cstr_t;
+    typedef sld::cstr_t eng_cstr_t;
     typedef sld::wstr_t eng_wstr_t;
 
     //-------------------------------------------------------------------
@@ -120,19 +121,24 @@ namespace ifb {
     typedef sld::buffer_t eng_buffer_t;
 
     //-------------------------------------------------------------------
+    // GEOMETRY
+    //-------------------------------------------------------------------
+
+    typedef sld::dims_u32_t      eng_dims_u32_t;
+    typedef sld::dims_u32_size_t eng_dims_u32_size_t;
+    typedef sld::dims_u32_pos_t  eng_dims_u32_pos_t;
+
+    typedef sld::dims_f32_t      eng_dims_f32_t;
+    typedef sld::dims_f32_size_t eng_dims_f32_size_t;
+    typedef sld::dims_f32_pos_t  eng_dims_f32_pos_t;
+
+    //-------------------------------------------------------------------
     // DATA FORMATS
     //-------------------------------------------------------------------
 
-    typedef sld::xml_hnd_doc_t    eng_xml_h32_doc_t;
-    typedef sld::xml_hnd_node_t   eng_xml_h32_node_t;
-    typedef sld::xml_hnd_attrib_t eng_xml_h32_attrib_t;
-
-    //-------------------------------------------------------------------
-    // API
-    //-------------------------------------------------------------------
-
-    IFB_ENG_API bool eng_init (void);
-
+    typedef sld::xml_doc_t    eng_xml_doc_t;
+    typedef sld::xml_node_t   eng_xml_node_t;
+    typedef sld::xml_attrib_t eng_xml_attrib_t;
 };
 
 #endif //IFB_ENGINE_HPP

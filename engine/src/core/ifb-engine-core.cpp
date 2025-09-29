@@ -4,16 +4,56 @@
 
 namespace ifb {
 
-    static eng_core_mem_t _core_mem;
-
-    IFB_ENG_FUNC void
-    eng_core_init(
+    IFB_ENG_API eng_bool
+    eng_core_startup(
         void) {
 
-        _core_mem.xml_arena = eng_mem_arena_commit_core();
-        assert(_core_mem.xml_arena);
+        // start managers
+        eng_mem_mngr_startup  ();
+        eng_file_mngr_startup ();
 
-        sld::xml_memory_init_from_arena(_core_mem.xml_arena);
+        // allocate core memory
+        _eng_core_arenas.xml      = eng_mem_arena_commit_core();
+        _eng_core_arenas.platform = eng_mem_arena_commit_core();
+        eng_bool is_mem_ok = true;
+        is_mem_ok &= (_eng_core_arenas.xml      != NULL);
+        is_mem_ok &= (_eng_core_arenas.platform != NULL);
+        
+        // initialize xml
+        sld::xml_parser_init((void*)_eng_core_xml_memory, ENG_CORE_XML_MEMORY_SIZE);
+        
+        // initialize platform
+        eng_core_monitor_table_init ();
+        eng_core_window_init        ();
+        eng_core_window_center_to_primary_monitor();
+        eng_core_window_open_and_show();
+
+        return(true); 
+    }
+
+    IFB_ENG_API eng_bool
+    eng_core_shutdown(
+        void) {
+
+        return(false);
+    }
+
+    IFB_ENG_API eng_bool
+    eng_core_update(
+        void) {
+
+        eng_core_window_process_events();
+
+        return(true);
+    }
+
+    IFB_ENG_API eng_bool
+    eng_core_render(
+        void) {
+
+        eng_core_window_swap_buffers();
+
+        return(true);
     }
 
 };

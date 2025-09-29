@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ifb-engine.hpp>
-#include <ifb-engine-asset.hpp>
+#include <ifb-engine-core.hpp>
 
 #include "ifb-win32.hpp"
 
@@ -12,6 +12,13 @@ wWinMain(
     PWSTR     pCmdLine,
     int       nCmdShow) {
 
-    ifb::eng_init();
+    bool is_running = ifb::eng_core_startup();
+
+    while (is_running) {
+
+        is_running &= ifb::eng_core_update();
+        is_running &= ifb::eng_core_render();
+    };
+
     return(S_OK);
 }

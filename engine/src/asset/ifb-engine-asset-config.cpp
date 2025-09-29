@@ -32,47 +32,49 @@ namespace ifb {
 
         // get an arena
         eng_mem_arena_t* arena = eng_mem_arena_commit_asset();
-        if (!arena) return(NULL);
+        assert(arena);
+
+        // check stack size
+        const u32 xml_stack_size     = sld::size_kilobytes(IFB_ENG_ASSET_XML_STACK_SIZE_KB);
+        const u32 xml_stack_size_min = sld::xml_stack_minimum_size();
+        assert(xml_stack_size >= xml_stack_size_min);
 
         // allocate memory
-        auto config = eng_mem_arena_push_struct(arena, eng_asset_config_t);
-        if (!config) {
-            const eng_bool is_decommit = eng_mem_arena_decommit(arena);
-            assert(is_decommit);
-        }
+        eng_asset_config_t* config           = eng_mem_arena_push_struct (arena, eng_asset_config_t);
+        void*               xml_stack_memory = eng_mem_arena_push_bytes  (arena, xml_stack_size);
 
-        // save memory position
-        const eng_bool is_mem_ok = sld::arena_save_position(arena); 
+        // check allocations and save position
+        eng_bool is_mem_ok = true;        
+        is_mem_ok &= sld::arena_save_position(arena); 
+        is_mem_ok &= (config           != NULL);
+        is_mem_ok &= (xml_stack_memory != NULL);
         assert(is_mem_ok);
 
-        // create the document and nodes
-        eng_xml_h32_doc_t  xml_doc        = sld::xml_doc_create         ();
-        eng_xml_h32_node_t xml_node_root  = sld::xml_doc_add_child_node (xml_doc,       _xml_cstr_node_ifb_assets);
-        eng_xml_h32_node_t xml_node_text  = sld::xml_node_add_child     (xml_node_root, _xml_cstr_node_text); 
-        eng_xml_h32_node_t xml_node_image = sld::xml_node_add_child     (xml_node_root, _xml_cstr_node_image); 
-        eng_xml_h32_node_t xml_node_sound = sld::xml_node_add_child     (xml_node_root, _xml_cstr_node_sound); 
-        eng_xml_h32_node_t xml_node_font  = sld::xml_node_add_child     (xml_node_root, _xml_cstr_node_font); 
-        assert(xml_doc.val        != SLD_XML_INVALID_HANDLE);
-        assert(xml_node_root.val  != SLD_XML_INVALID_HANDLE);
-        assert(xml_node_text.val  != SLD_XML_INVALID_HANDLE);
-        assert(xml_node_image.val != SLD_XML_INVALID_HANDLE);
-        assert(xml_node_sound.val != SLD_XML_INVALID_HANDLE);
-        assert(xml_node_font.val  != SLD_XML_INVALID_HANDLE);
-
-        // open the file
-        static const eng_cchar* file_path   = IFB_ENG_ASSET_CONFIG_PATH;
-        const eng_file_h32_t    file_handle = eng_file_mngr_open_rw(file_path);
-        assert(file_handle.val != IFB_ENG_FILE_H32_INVALID);
-
         // initialize the config
-        config->arena          = arena;
-        config->file           = file_handle;
-        config->xml.doc        = xml_doc;
-        config->xml.node_root  = xml_node_root;
-        config->xml.node_text  = xml_node_text;
-        config->xml.node_image = xml_node_image;
-        config->xml.node_sound = xml_node_sound;
-        config->xml.node_font  = xml_node_font;
+        config->arena           = arena;
+        config->file            = eng_file_mngr_open_rw      (IFB_ENG_ASSET_CONFIG_PATH); 
+        config->xml.stack       = sld::xml_stack_init        (xml_stack_memory, xml_stack_size); 
+        config->xml.doc         = sld::xml_stack_push_doc    (config->xml.stack);
+        config->xml.node.text   = sld::xml_stack_push_node   (config->xml.stack);
+        config->xml.node.image  = sld::xml_stack_push_node   (config->xml.stack);
+        config->xml.node.sound  = sld::xml_stack_push_node   (config->xml.stack);
+        config->xml.node.font   = sld::xml_stack_push_node   (config->xml.stack);
+        config->xml.node.asset  = sld::xml_stack_push_node   (config->xml.stack);
+        config->xml.attrib.name = sld::xml_stack_push_attrib (config->xml.stack);
+        config->xml.attrib.path = sld::xml_stack_push_attrib (config->xml.stack);
+
+        // check config and return
+        bool is_init = true;
+        is_init &= (config->file.val        != IFB_ENG_FILE_H32_INVALID);
+        is_init &= (config->xml.stack       != NULL);
+        is_init &= (config->xml.doc         != NULL);
+        is_init &= (config->xml.node.text   != NULL);
+        is_init &= (config->xml.node.image  != NULL);
+        is_init &= (config->xml.node.sound  != NULL);
+        is_init &= (config->xml.node.font   != NULL);
+        is_init &= (config->xml.attrib.name != NULL);
+        is_init &= (config->xml.attrib.path != NULL);
+        assert(is_init);
         return(config);
     }
 
@@ -82,7 +84,6 @@ namespace ifb {
 
         eng_asset_config_validate (config);
         eng_file_mngr_close       (config->file);
-        sld::xml_doc_destroy      (config->xml.doc);
         eng_mem_arena_decommit    (config->arena);
     }
 
@@ -92,8 +93,17 @@ namespace ifb {
 
         eng_bool is_valid = (config != NULL);
         if (is_valid) {
-            is_valid &= (config->arena       != NULL);
-            is_valid &= (config->xml.doc.val != IFB_ENG_FILE_H32_INVALID);
+            is_valid &= (config->arena           != NULL);
+            is_valid &= (config->file.val        != IFB_ENG_FILE_H32_INVALID);
+            is_valid &= (config->xml.stack       != NULL);
+            is_valid &= (config->xml.doc         != NULL);
+            is_valid &= (config->xml.node.text   != NULL);
+            is_valid &= (config->xml.node.image  != NULL);
+            is_valid &= (config->xml.node.sound  != NULL);
+            is_valid &= (config->xml.node.font   != NULL);
+            is_valid &= (config->xml.node.asset  != NULL);
+            is_valid &= (config->xml.attrib.name != NULL);
+            is_valid &= (config->xml.attrib.path != NULL);
         }
         assert(is_valid);
     }
@@ -111,21 +121,12 @@ namespace ifb {
             size                             // length
         };
 
-        sld::xml_memory_reset();
-        sld::xml_doc_buffer_read(config->xml.doc, default_buffer);
+        // reset the xml document
+        sld::xml_doc_reset(config->xml.doc);
 
-        config->xml.doc        = sld::xml_doc_create         ();
-        config->xml.node_root  = sld::xml_doc_add_child_node (config->xml.doc,       _xml_cstr_node_ifb_assets);
-        config->xml.node_text  = sld::xml_node_add_child     (config->xml.node_root, _xml_cstr_node_text); 
-        config->xml.node_image = sld::xml_node_add_child     (config->xml.node_root, _xml_cstr_node_image); 
-        config->xml.node_sound = sld::xml_node_add_child     (config->xml.node_root, _xml_cstr_node_sound); 
-        config->xml.node_font  = sld::xml_node_add_child     (config->xml.node_root, _xml_cstr_node_font);
-        assert(config->xml.doc.val        != SLD_XML_INVALID_HANDLE);
-        assert(config->xml.node_root.val  != SLD_XML_INVALID_HANDLE);
-        assert(config->xml.node_text.val  != SLD_XML_INVALID_HANDLE);
-        assert(config->xml.node_image.val != SLD_XML_INVALID_HANDLE);
-        assert(config->xml.node_sound.val != SLD_XML_INVALID_HANDLE);
-        assert(config->xml.node_font.val  != SLD_XML_INVALID_HANDLE);
+        // read the default buffer
+        bool did_read = sld::xml_doc_buffer_read(config->xml.doc, default_buffer);
+        assert(did_read);
     }
 
     IFB_ENG_FUNC eng_void
@@ -182,26 +183,14 @@ namespace ifb {
         file_buffer.cursor      = 0;
         file_buffer.transferred = 0;
 
-        // read the xml
+        // reset the xml
         eng_bool did_read = true; 
-        sld::xml_doc_reset                   (config->xml.doc);
-        did_read &= eng_file_mngr_read       (config->file, file_buffer);
+        sld::xml_doc_reset(config->xml.doc);
+
+        // read and parse the xml
+        did_read &= eng_file_mngr_read       (config->file,    file_buffer);
         did_read &= sld::xml_doc_buffer_read (config->xml.doc, file_buffer);
         assert(did_read);
-
-        // initialize the other nodes
-        config->xml.node_root  = sld::xml_doc_get_child_node (config->xml.doc,       _xml_cstr_node_ifb_assets);
-        config->xml.node_text  = sld::xml_node_get_child     (config->xml.node_root, _xml_cstr_node_text); 
-        config->xml.node_image = sld::xml_node_get_child     (config->xml.node_root, _xml_cstr_node_image); 
-        config->xml.node_sound = sld::xml_node_get_child     (config->xml.node_root, _xml_cstr_node_sound); 
-        config->xml.node_font  = sld::xml_node_get_child     (config->xml.node_root, _xml_cstr_node_font);
-        assert(config->xml.doc.val        != SLD_XML_INVALID_HANDLE);
-        assert(config->xml.node_root.val  != SLD_XML_INVALID_HANDLE);
-        assert(config->xml.node_text.val  != SLD_XML_INVALID_HANDLE);
-        assert(config->xml.node_image.val != SLD_XML_INVALID_HANDLE);
-        assert(config->xml.node_sound.val != SLD_XML_INVALID_HANDLE);
-        assert(config->xml.node_font.val  != SLD_XML_INVALID_HANDLE);
-
     }
 
     IFB_ENG_FUNC bool
@@ -212,12 +201,12 @@ namespace ifb {
         eng_asset_config_validate(config);
 
         bool is_valid = true;
-        is_valid &= (config->xml.node_root.val != SLD_XML_INVALID_HANDLE); 
-        is_valid &= (config->xml.node_text.val != SLD_XML_INVALID_HANDLE); 
+        is_valid &= (config->xml.node.root != NULL); 
+        is_valid &= (config->xml.node.text != NULL); 
         assert(is_valid);
 
         const bool did_read = eng_asset_config_node_read_assets(
-            config, node, config->xml.node_text
+            config, node, config->xml.node.text
         );
     
         return(did_read);
@@ -231,12 +220,12 @@ namespace ifb {
         eng_asset_config_validate(config);
 
         bool is_valid = true;
-        is_valid &= (config->xml.node_root.val  != SLD_XML_INVALID_HANDLE); 
-        is_valid &= (config->xml.node_image.val != SLD_XML_INVALID_HANDLE); 
+        is_valid &= (config->xml.node.root  != NULL); 
+        is_valid &= (config->xml.node.image != NULL); 
         assert(is_valid);
 
         const bool did_read = eng_asset_config_node_read_assets(
-            config, node, config->xml.node_image
+            config, node, config->xml.node.image
         );
     
         return(did_read);
@@ -250,12 +239,12 @@ namespace ifb {
         eng_asset_config_validate(config);
 
         bool is_valid = true;
-        is_valid &= (config->xml.node_root.val  != SLD_XML_INVALID_HANDLE); 
-        is_valid &= (config->xml.node_sound.val != SLD_XML_INVALID_HANDLE); 
+        is_valid &= (config->xml.node.root  != NULL); 
+        is_valid &= (config->xml.node.sound != NULL); 
         assert(is_valid);
 
         const bool did_read = eng_asset_config_node_read_assets(
-            config, node, config->xml.node_sound
+            config, node, config->xml.node.sound
         );
     
         return(did_read);
@@ -269,12 +258,12 @@ namespace ifb {
         eng_asset_config_validate(config);
 
         bool is_valid = true;
-        is_valid &= (config->xml.node_root.val  != SLD_XML_INVALID_HANDLE); 
-        is_valid &= (config->xml.node_font.val != SLD_XML_INVALID_HANDLE); 
+        is_valid &= (config->xml.node.root  != NULL); 
+        is_valid &= (config->xml.node.font != NULL); 
         assert(is_valid);
 
         const bool did_read = eng_asset_config_node_read_assets(
-            config, node, config->xml.node_font
+            config, node, config->xml.node.font
         );
     
         return(did_read);
@@ -288,12 +277,12 @@ namespace ifb {
         eng_asset_config_validate(config);
 
         bool is_valid = true;
-        is_valid &= (config->xml.node_root.val  != SLD_XML_INVALID_HANDLE); 
-        is_valid &= (config->xml.node_text.val != SLD_XML_INVALID_HANDLE); 
+        is_valid &= (config->xml.node.root  != NULL); 
+        is_valid &= (config->xml.node.text != NULL); 
         assert(is_valid);
 
         const bool did_write = eng_asset_config_node_write_assets(
-            config, node, config->xml.node_text
+            config, node, config->xml.node.text
         );
 
         return(did_write);
@@ -307,12 +296,12 @@ namespace ifb {
         eng_asset_config_validate(config);    
 
         bool is_valid = true;
-        is_valid &= (config->xml.node_root.val  != SLD_XML_INVALID_HANDLE); 
-        is_valid &= (config->xml.node_image.val != SLD_XML_INVALID_HANDLE); 
+        is_valid &= (config->xml.node.root  != NULL); 
+        is_valid &= (config->xml.node.image != NULL); 
         assert(is_valid);
 
         const bool did_write = eng_asset_config_node_write_assets(
-            config, node, config->xml.node_image
+            config, node, config->xml.node.image
         );
 
         return(did_write);
@@ -326,12 +315,12 @@ namespace ifb {
         eng_asset_config_validate(config);
 
         bool is_valid = true;
-        is_valid &= (config->xml.node_root.val  != SLD_XML_INVALID_HANDLE); 
-        is_valid &= (config->xml.node_sound.val != SLD_XML_INVALID_HANDLE); 
+        is_valid &= (config->xml.node.root  != NULL); 
+        is_valid &= (config->xml.node.sound != NULL); 
         assert(is_valid);
 
         const bool did_write = eng_asset_config_node_write_assets(
-            config, node, config->xml.node_sound
+            config, node, config->xml.node.sound
         );
         
         return(did_write);
@@ -345,12 +334,12 @@ namespace ifb {
         eng_asset_config_validate(config);
 
         bool is_valid = true;
-        is_valid &= (config->xml.node_root.val != SLD_XML_INVALID_HANDLE); 
-        is_valid &= (config->xml.node_font.val != SLD_XML_INVALID_HANDLE); 
+        is_valid &= (config->xml.node.root != NULL); 
+        is_valid &= (config->xml.node.font != NULL); 
         assert(is_valid);
 
         const bool did_write = eng_asset_config_node_write_assets(
-            config, node, config->xml.node_font
+            config, node, config->xml.node.font
         );
 
         return(did_write);
@@ -359,74 +348,77 @@ namespace ifb {
     IFB_ENG_FUNC bool
     eng_asset_config_node_read_assets(
         eng_asset_config_t* const  config,
-        eng_asset_config_node_t& node,
-        eng_xml_h32_node_t         xml_type) {
+        eng_asset_config_node_t&   node,
+        eng_xml_node_t*            xml_type) {
 
-        bool is_mem_ok = sld::arena_roll_back(config->arena);
-        assert(is_mem_ok);
-
-        bool did_read = (xml_type.val != SLD_XML_INVALID_HANDLE); 
+        // get the first asset node if there is any
+        bool did_read = sld::xml_node_get_child(xml_type, _xml_cstr_node_asset, config->xml.node.asset);
         if (did_read) {
 
             // allocate memory
             node.count      =  sld::xml_node_get_child_count(xml_type, _xml_cstr_node_asset);
-            is_mem_ok       =  sld::arena_save_position(config->arena);
             node.array.name =  eng_mem_arena_push_struct_array(config->arena, node.count, eng_asset_cstr_t);
             node.array.path =  eng_mem_arena_push_struct_array(config->arena, node.count, eng_asset_cstr_t);
+            bool is_mem_ok  = true;
             is_mem_ok       &= (node.array.name != NULL);            
             is_mem_ok       &= (node.array.path != NULL);            
             assert(is_mem_ok);
 
-            sld::cstr_t name_str = { NULL,  sizeof(eng_asset_cstr_t) };
-            sld::cstr_t path_str = { NULL,  sizeof(eng_asset_cstr_t) };
-            sld::xml_attrib_value_t attrib_asset_name;
-            sld::xml_attrib_value_t attrib_asset_path;
-            eng_u32 index = 0;
-            for (
-                eng_xml_h32_node_t asset_node =  sld::xml_node_get_child(xml_type, _xml_cstr_node_asset);
-                asset_node.val                != SLD_XML_INVALID_HANDLE;
-                asset_node                    =  sld::xml_node_get_next_sibling(asset_node, _xml_cstr_node_asset)) {
-
-                did_read &= sld::xml_attrib_get_val_utf8(asset_node, _xml_cstr_attrib_name, attrib_asset_name); 
-                did_read &= sld::xml_attrib_get_val_utf8(asset_node, _xml_cstr_attrib_path, attrib_asset_path);
-
-                assert(index < node.count);
-                name_str.chars = node.array.name[index].chars;
-                path_str.chars = node.array.path[index].chars;
-                sld::cstr_copy(name_str, attrib_asset_name.as_utf8, name_str.size);
-                sld::cstr_copy(path_str, attrib_asset_path.as_utf8, path_str.size);
-            
-                ++index;
-            }
-        }
-
-        sld::xml_doc_reset(config->xml.doc);
-        return(did_read);
-    }
-
-    IFB_ENG_FUNC bool
-    eng_asset_config_node_write_assets(
-        eng_asset_config_t* const  config,
-        eng_asset_config_node_t& node,
-        eng_xml_h32_node_t         xml_type) {
-
-        bool did_write = (xml_type.val != SLD_XML_INVALID_HANDLE); 
-        if (did_write) {
-
-            sld::xml_attrib_value_t attrib_name;
-            sld::xml_attrib_value_t attrib_path;
+            constexpr eng_u32 asset_cstr_size = sizeof(eng_asset_cstr_t); 
+            eng_cstr_t        dst_cstr_name   = { NULL, asset_cstr_size};
+            eng_cstr_t        dst_cstr_path   = { NULL, asset_cstr_size};
+            eng_cstr_t        src_cstr_name   = { NULL, asset_cstr_size};
+            eng_cstr_t        src_cstr_path   = { NULL, asset_cstr_size};
 
             for (
                 eng_u32 index = 0;
                 index < node.count;
                 ++index) {
 
-                attrib_name.as_utf8 = node.array.name[index].chars;
-                attrib_path.as_utf8 = node.array.path[index].chars;
+                // read the next asset node and attributes
+                did_read &= sld::xml_node_get_next_sibling (config->xml.node.asset, _xml_cstr_node_asset,  config->xml.node.asset);
+                did_read &= sld::xml_node_get_attrib       (config->xml.node.asset, _xml_cstr_attrib_name, config->xml.attrib.name);
+                did_read &= sld::xml_node_get_attrib       (config->xml.node.asset, _xml_cstr_attrib_path, config->xml.attrib.path);
+                did_read &= sld::xml_attrib_get_val_utf8   (config->xml.attrib.name, src_cstr_name.chars); 
+                did_read &= sld::xml_attrib_get_val_utf8   (config->xml.attrib.path, src_cstr_path.chars);
 
-                const eng_xml_h32_node_t asset_node = sld::xml_node_add_child(xml_type, _xml_cstr_node_asset);
-                did_write &= sld::xml_attrib_set_val_utf8(asset_node, _xml_cstr_attrib_name, attrib_name);
-                did_write &= sld::xml_attrib_set_val_utf8(asset_node, _xml_cstr_attrib_path, attrib_path);
+                // copy the name and path 
+                dst_cstr_name.chars              =  node.array.name[index].chars;
+                dst_cstr_path.chars              =  node.array.path[index].chars;
+                const eng_u32 length_copied_name =  sld::cstr_copy(dst_cstr_name, src_cstr_name);
+                const eng_u32 length_copied_path =  sld::cstr_copy(dst_cstr_path, src_cstr_path);
+                did_read                         &= (length_copied_name > 0);           
+                did_read                         &= (length_copied_path > 0);           
+            }
+        }
+
+        sld::xml_doc_reset(config->xml.doc);
+        assert(sld::arena_roll_back(config->arena));
+        return(did_read);
+    }
+
+    IFB_ENG_FUNC bool
+    eng_asset_config_node_write_assets(
+        eng_asset_config_t* const config,
+        eng_asset_config_node_t&  node,
+        eng_xml_node_t*           xml_type) {
+
+        bool did_write = (xml_type != NULL); 
+        if (did_write) {
+
+            for (
+                eng_u32 index = 0;
+                index < node.count;
+                ++index) {
+
+                sld::xml_utf8_t* name_chars = node.array.name[index].chars;
+                sld::xml_utf8_t* path_chars = node.array.path[index].chars;
+
+                did_write &= sld::xml_node_add_child      (xml_type, _xml_cstr_node_asset, config->xml.node.asset);
+                did_write &= sld::xml_node_add_attrib     (config->xml.node.asset,  _xml_cstr_attrib_name,config->xml.attrib.name);
+                did_write &= sld::xml_node_add_attrib     (config->xml.node.asset,  _xml_cstr_attrib_path,config->xml.attrib.path);
+                did_write &= sld::xml_attrib_set_val_utf8 (config->xml.attrib.name, name_chars);
+                did_write &= sld::xml_attrib_set_val_utf8 (config->xml.attrib.path, path_chars);
             }
         }
 

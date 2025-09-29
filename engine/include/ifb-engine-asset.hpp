@@ -17,6 +17,9 @@
 #ifndef    IFB_ENG_ASSET_CSTR_SIZE
 #   define IFB_ENG_ASSET_CSTR_SIZE   32 
 #endif
+#ifndef    IFB_ENG_ASSET_XML_STACK_SIZE_KB
+#   define IFB_ENG_ASSET_XML_STACK_SIZE_KB 4
+#endif
 
 namespace ifb {
 
