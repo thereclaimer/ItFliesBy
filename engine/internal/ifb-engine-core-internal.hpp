@@ -48,6 +48,7 @@ namespace ifb {
     };
 
     struct eng_core_platform_monitor_table_t {
+        eng_core_monitor_os_handle_t primary_monitor;         
         eng_core_monitor_os_handle_t active_monitor;         
         eng_u32                      count;
         eng_dims_size_t              virtual_size;
@@ -79,7 +80,9 @@ namespace ifb {
     IFB_ENG_FUNC void eng_core_platform_window_process_events (void);
     IFB_ENG_FUNC void eng_core_platform_window_swap_buffers   (void);
 
-    IFB_ENG_FUNC void eng_core_platform_monitor_table_init    (void);
+    IFB_ENG_FUNC eng_bool eng_core_platform_monitor_table_validate (void);
+    IFB_ENG_FUNC void     eng_core_platform_monitor_table_init     (void);
+    IFB_ENG_FUNC void     eng_core_platform_monitor_table_refresh  (void);
 
 };
 
