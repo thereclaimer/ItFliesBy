@@ -4,7 +4,6 @@
 
 namespace ifb {
 
-
     IFB_ENG_API eng_bool
     eng_core_startup(
         void) {
@@ -14,8 +13,8 @@ namespace ifb {
         eng_file_mngr_startup ();
 
         // allocate core memory
-        _eng_core_arenas.xml_arena = eng_mem_arena_commit_core();
-        assert(_eng_core_arenas.xml_arena);
+        _eng_core_arenas.xml = eng_mem_arena_commit_core();
+        assert(_eng_core_arenas.xml);
         
         // initialize xml
         sld::xml_parser_init((void*)_eng_core_xml_memory, ENG_CORE_XML_MEMORY_SIZE);

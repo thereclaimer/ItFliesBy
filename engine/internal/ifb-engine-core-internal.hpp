@@ -24,13 +24,15 @@ namespace ifb {
 
     struct eng_core_arenas_t;
     struct eng_core_platform_window_t;
+    struct eng_core_platform_monitors_t;
 
     //-------------------------------------------------------------------
     // DEFINITIONS
     //-------------------------------------------------------------------
 
     struct eng_core_arenas_t {
-        eng_mem_arena_t* xml_arena;
+        eng_mem_arena_t* xml;
+        eng_mem_arena_t* platform;
     };
 
     struct eng_core_platform_window_t {
@@ -39,6 +41,11 @@ namespace ifb {
         sld::os_window_size_t     default_size;
         sld::os_window_position_t default_position;
         sld::os_window_update_t   update;
+    };
+
+    struct eng_core_platform_monitors_t {
+        eng_u32                        count;
+        sld::os_monitor_screen_size_t* screen_size_array;
     };
 
     //-------------------------------------------------------------------
