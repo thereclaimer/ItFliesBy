@@ -23,3 +23,5 @@
 #include "ifb-engine-core-monitor.cpp"
 #include "ifb-engine-core-window.cpp"
 #include "ifb-engine-core.cpp"
+
+#include "ifb-engine-gui.cpp"

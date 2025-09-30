@@ -17,7 +17,7 @@ pushd ..
 
 @set cl_eng_in=      engine\src\ifb-engine.cpp
 @set cl_eng_out=     /Fo:build\debug\obj\ItFliesBy.Engine.obj
-@set cl_eng_include= /Iengine\include /Iengine\internal /Iengine\src /Iengine\src\core /Iengine\src\file /Iengine\src\memory /Iengine\src\asset /Isld\include /Isld\external /Isld\vcpkg_installed\x64-windows\include
+@set cl_eng_include= /Iengine\include /Iengine\internal /Iengine\src /Iengine\src\core /Iengine\src\file /Iengine\src\memory /Iengine\src\asset /Iengine\src\gui /Isld\include /Isld\external /Isld\vcpkg_installed\x64-windows\include
 @set cl_eng_flags=   /nologo /c /MD /LD /Z7 /EHs- /std:c++17 /Od /D_HAS_EXCEPTIONS=0
 
 @set link_eng_in=    ItFliesBy.Engine.obj user32.lib kernel32.lib SLD.Win32.lib Gdi32.lib imgui.lib opengl32.lib pugixml.lib zlib-ng.lib

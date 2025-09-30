@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ifb-engine-core-internal.hpp"
-
+#include "ifb-engine-gui-internal.hpp"
 namespace ifb {
 
     IFB_ENG_API eng_bool
@@ -51,6 +51,7 @@ namespace ifb {
     eng_core_render(
         void) {
 
+        eng_gui_render();
         eng_core_window_swap_buffers();
 
         return(true);
