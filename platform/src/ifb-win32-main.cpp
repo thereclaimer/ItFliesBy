@@ -18,6 +18,7 @@ wWinMain(
 
         is_running &= ifb::eng_core_update();
         is_running &= ifb::eng_core_render();
+        is_running &= !ifb::eng_core_should_quit();
     };
 
     return(S_OK);

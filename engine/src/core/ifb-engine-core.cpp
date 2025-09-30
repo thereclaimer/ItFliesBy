@@ -57,5 +57,15 @@ namespace ifb {
         return(true);
     }
 
+    IFB_ENG_API eng_bool
+    eng_core_should_quit(
+        void) {
+
+        eng_bool eng_core_should_quit = false;
+
+        eng_core_should_quit |= (_eng_core_window.update.events.val & sld::os_window_event_e_quit);
+
+        return(eng_core_should_quit);
+    }
 };
 
