@@ -28,6 +28,9 @@ namespace ifb {
         eng_core_window_center_to_primary_monitor ();
         eng_core_window_open_and_show             ();
 
+        // initialize gui
+        eng_gui_init();
+
         return(true); 
     }
 
