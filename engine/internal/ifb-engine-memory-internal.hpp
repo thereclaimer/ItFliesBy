@@ -6,6 +6,16 @@
 
 namespace ifb {
 
+    constexpr eng_u64 ENG_MEM_SIZE_RES_CORE    = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_RES_CORE); 
+    constexpr eng_u64 ENG_MEM_SIZE_RES_FILE    = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_RES_FILE); 
+    constexpr eng_u64 ENG_MEM_SIZE_RES_ASSET   = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_RES_ASSET); 
+    constexpr eng_u64 ENG_MEM_SIZE_RES_GUI     = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_RES_GUI);
+
+    constexpr eng_u64 ENG_MEM_SIZE_ARENA_CORE  = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_ARENA_CORE); 
+    constexpr eng_u64 ENG_MEM_SIZE_ARENA_FILE  = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_ARENA_FILE);
+    constexpr eng_u64 ENG_MEM_SIZE_ARENA_ASSET = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_ARENA_ASSET);
+    constexpr eng_u64 ENG_MEM_SIZE_ARENA_GUI   = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_ARENA_GUI);
+
     typedef eng_error_s32_t    eng_mem_error_s32_t;
     typedef sld::reservation_t eng_mem_res_t;
     typedef sld::arena_t       eng_mem_arena_t;
@@ -15,6 +25,7 @@ namespace ifb {
             eng_mem_res_t core;
             eng_mem_res_t file;
             eng_mem_res_t asset;
+            eng_mem_res_t gui;
         } res;
         eng_mem_error_s32_t last_error;
     };
