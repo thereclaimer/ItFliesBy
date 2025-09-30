@@ -23,10 +23,10 @@ namespace ifb {
         sld::xml_parser_init((void*)_eng_core_xml_memory, ENG_CORE_XML_MEMORY_SIZE);
         
         // initialize platform
-        eng_core_monitor_table_init ();
-        eng_core_window_init        ();
-        eng_core_window_center_to_primary_monitor();
-        eng_core_window_open_and_show();
+        eng_core_monitor_table_init               ();
+        eng_core_window_init                      ();
+        eng_core_window_center_to_primary_monitor ();
+        eng_core_window_open_and_show             ();
 
         return(true); 
     }
@@ -35,7 +35,15 @@ namespace ifb {
     eng_core_shutdown(
         void) {
 
-        return(false);
+        //////////////////////////
+        // TODO(SAM):
+        // - close all windows
+        // - close all files
+        // - sync and exit all threads
+        // - release all memory
+        //////////////////////////
+
+        return(true);
     }
 
     IFB_ENG_API eng_bool

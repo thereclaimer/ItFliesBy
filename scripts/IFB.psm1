@@ -1,6 +1,7 @@
 . $PSScriptRoot\IFB.Common.ps1
 . $PSScriptRoot\IFB.Platform.ps1
 . $PSScriptRoot\IFB.Engine.ps1
+. $PSScriptRoot\IFB.Tools.ps1
 
 Export-ModuleMember -Function Invoke-IFBEngineBuildDebug
 Export-ModuleMember -Function Export-IFBEngineBuildDebug
