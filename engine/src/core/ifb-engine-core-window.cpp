@@ -1,7 +1,9 @@
 #include "ifb-engine-core-internal.hpp"
+#include <sld.hpp>
 
 namespace ifb {
 
+ 
     IFB_ENG_FUNC void
     eng_core_window_init(
         void) {
@@ -11,6 +13,15 @@ namespace ifb {
         _eng_core_window.size.height = ENG_CORE_WINDOW_DEFAULT_HEIGHT;
         _eng_core_window.position.x  = ENG_CORE_WINDOW_DEFAULT_SCREEN_X;
         _eng_core_window.position.y  = ENG_CORE_WINDOW_DEFAULT_SCREEN_Y;
+
+        // allocate memory
+        sld::os_input_queue_keyboard_t* input_queue_struct_key_up   = (sld::os_input_queue_keyboard_t*)sld::queue_init_from_arena(_eng_core_arenas.platform, ENG_CORE_WINDOW_INPUT_QUEUE_KEYBOARD_SIZE, ENG_CORE_WINDOW_INPUT_QUEUE_KEYBOARD_STRIDE); 
+        sld::os_input_queue_keyboard_t* input_queue_struct_key_down = (sld::os_input_queue_keyboard_t*)sld::queue_init_from_arena(_eng_core_arenas.platform, ENG_CORE_WINDOW_INPUT_QUEUE_KEYBOARD_SIZE, ENG_CORE_WINDOW_INPUT_QUEUE_KEYBOARD_STRIDE);
+
+        bool is_mem_ok = true;
+        is_mem_ok &= (input_queue_struct_key_up   != NULL); 
+        is_mem_ok &= (input_queue_struct_key_down != NULL); 
+        assert(is_mem_ok);
     }
 
     IFB_ENG_FUNC void

@@ -11,14 +11,17 @@ namespace ifb {
     // CONSTANTS
     //-------------------------------------------------------------------
 
-    constexpr eng_cchar ENG_CORE_WINDOW_TITLE[]           = "It Flies By";
-    constexpr eng_u32   ENG_CORE_XML_MEMORY_SIZE          = sld::size_megabytes(1); 
-    constexpr eng_u32   ENG_CORE_WINDOW_DEFAULT_WIDTH     = 1024;
-    constexpr eng_u32   ENG_CORE_WINDOW_DEFAULT_HEIGHT    = 768;
-    constexpr eng_u32   ENG_CORE_WINDOW_DEFAULT_SCREEN_X  = 0;
-    constexpr eng_u32   ENG_CORE_WINDOW_DEFAULT_SCREEN_Y  = 0;
-    constexpr eng_u32   ENG_CORE_MONITOR_COUNT_MAX        = 16;
-    constexpr eng_u32   ENG_CORE_MONITOR_NAME_BUFFER_SIZE = (ENG_CORE_MONITOR_COUNT_MAX * sld::OS_MONITOR_NAME_WIDTH); 
+    constexpr eng_cchar ENG_CORE_WINDOW_TITLE[]                     = "It Flies By";
+    constexpr eng_u32   ENG_CORE_XML_MEMORY_SIZE                    = sld::size_megabytes(1); 
+    constexpr eng_u32   ENG_CORE_WINDOW_DEFAULT_WIDTH               = 1024;
+    constexpr eng_u32   ENG_CORE_WINDOW_DEFAULT_HEIGHT              = 768;
+    constexpr eng_u32   ENG_CORE_WINDOW_DEFAULT_SCREEN_X            = 0;
+    constexpr eng_u32   ENG_CORE_WINDOW_DEFAULT_SCREEN_Y            = 0;
+    constexpr eng_u32   ENG_CORE_WINDOW_INPUT_QUEUE_COUNT           = 8;
+    constexpr eng_u32   ENG_CORE_WINDOW_INPUT_QUEUE_KEYBOARD_SIZE   = sizeof(sld::os_input_keycode_t) * ENG_CORE_WINDOW_INPUT_QUEUE_COUNT;
+    constexpr eng_u32   ENG_CORE_WINDOW_INPUT_QUEUE_KEYBOARD_STRIDE = sizeof(sld::os_input_keycode_t);
+    constexpr eng_u32   ENG_CORE_MONITOR_COUNT_MAX                  = 16;
+    constexpr eng_u32   ENG_CORE_MONITOR_NAME_BUFFER_SIZE           = (ENG_CORE_MONITOR_COUNT_MAX * sld::OS_MONITOR_NAME_WIDTH); 
 
     //-------------------------------------------------------------------
     // TYPES
@@ -30,7 +33,7 @@ namespace ifb {
     typedef sld::os_window_error_t   eng_core_window_error_t;
 
     struct eng_core_arenas_t;
-    struct ENG_CORE_WINDOW_t;
+    struct eng_core_window_t;
     struct eng_core_platform_monitors_t;
 
     //-------------------------------------------------------------------
