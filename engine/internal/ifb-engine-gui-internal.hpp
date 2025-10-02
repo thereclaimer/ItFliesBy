@@ -23,7 +23,8 @@ namespace ifb {
         eng_gui_e32_flag_assets_open_image = sld::bit_value(2),
         eng_gui_e32_flag_assets_open_sound = sld::bit_value(3),
         eng_gui_e32_flag_assets_open_font  = sld::bit_value(4),
-        eng_gui_e32_flag_assets_database   = sld::bit_value(5)
+        eng_gui_e32_flag_assets_config     = sld::bit_value(5),
+        eng_gui_e32_flag_assets_database   = sld::bit_value(6)
     };
 
     struct eng_gui_menu_bar_state_t {
@@ -35,18 +36,15 @@ namespace ifb {
     IFB_ENG_FUNC eng_void eng_gui_render      (eng_void);
     IFB_ENG_FUNC eng_void eng_gui_main_window (eng_void);
 
-    IFB_ENG_FUNC eng_void eng_gui_imgui       (eng_void);
-
-    struct eng_gui_t {
-        eng_gui_u32_flags_imgui_t imgui_flags;
-    };
+    IFB_ENG_FUNC eng_void eng_gui_imgui        (eng_void);
+    IFB_ENG_FUNC eng_void eng_gui_asset_config (eng_void);
 
     static eng_gui_menu_bar_state_t _eng_gui_menu_bar_state;
 
-    IFB_ENG_INLINE void eng_gui_imgui_window_open      (const eng_u32 imgui_window) { _eng_gui_menu_bar_state.imgui.val |=  imgui_window;               }
-    IFB_ENG_INLINE void eng_gui_imgui_window_close     (const eng_u32 imgui_window) { _eng_gui_menu_bar_state.imgui.val &= ~imgui_window;               }
-    IFB_ENG_INLINE bool eng_gui_imgui_window_is_open   (const eng_u32 imgui_window) { return(_eng_gui_menu_bar_state.imgui.val & imgui_window);         }
-    IFB_ENG_INLINE void eng_gui_imgui_window_reset_all (void)                       { _eng_gui_menu_bar_state.imgui.val = eng_gui_e32_flag_imgui_none;  }
+    IFB_ENG_INLINE void eng_gui_imgui_window_open      (const eng_u32 imgui_window)   { _eng_gui_menu_bar_state.imgui.val |=  imgui_window;               }
+    IFB_ENG_INLINE void eng_gui_imgui_window_close     (const eng_u32 imgui_window)   { _eng_gui_menu_bar_state.imgui.val &= ~imgui_window;               }
+    IFB_ENG_INLINE bool eng_gui_imgui_window_is_open   (const eng_u32 imgui_window)   { return(_eng_gui_menu_bar_state.imgui.val & imgui_window);         }
+    IFB_ENG_INLINE void eng_gui_imgui_window_reset_all (void)                         { _eng_gui_menu_bar_state.imgui.val = eng_gui_e32_flag_imgui_none;  }
 
     IFB_ENG_INLINE void eng_gui_assets_window_open      (const eng_u32 assets_window) { _eng_gui_menu_bar_state.assets.val |=  assets_window;             }
     IFB_ENG_INLINE void eng_gui_assets_window_close     (const eng_u32 assets_window) { _eng_gui_menu_bar_state.assets.val &= ~assets_window;             }

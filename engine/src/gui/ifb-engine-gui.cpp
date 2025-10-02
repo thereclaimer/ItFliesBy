@@ -25,6 +25,7 @@ namespace ifb {
  
         eng_gui_main_window();
         eng_gui_imgui();
+        eng_gui_asset_config();
     }
 
     IFB_ENG_FUNC eng_void
@@ -52,17 +53,17 @@ namespace ifb {
 
                     ImGui::MenuItem(cstr_menu_item_imgui_base_demo, NULL, &open_imgui_base_demo);
                     ImGui::MenuItem(cstr_menu_item_imgui_plot_demo, NULL, &open_imgui_plot_demo);
+                    ImGui::EndMenu();
                     
                     if (open_imgui_base_demo) eng_gui_imgui_window_open  (eng_gui_e32_flag_imgui_base_demo);
                     if (open_imgui_plot_demo) eng_gui_imgui_window_open  (eng_gui_e32_flag_imgui_plot_demo);
-
-                    ImGui::EndMenu();
                 }
                 
                 if (ImGui::BeginMenu(cstr_menu_assets)) {
                     
                     constexpr eng_cchar cstr_menu_assets_open_file     [] = "Open File";                
-                    constexpr eng_cchar cstr_menu_item_assets_database [] = "Asset Database";
+                    constexpr eng_cchar cstr_menu_item_assets_database [] = "Database";
+                    constexpr eng_cchar cstr_menu_item_assets_config   [] = "Config";
                     constexpr eng_cchar cstr_menu_item_assets_text     [] = "Text";
                     constexpr eng_cchar cstr_menu_item_assets_image    [] = "Image";
                     constexpr eng_cchar cstr_menu_item_assets_sound    [] = "sound";
@@ -72,6 +73,7 @@ namespace ifb {
                     eng_bool open_image    = eng_gui_assets_window_is_open (eng_gui_e32_flag_assets_open_image);
                     eng_bool open_sound    = eng_gui_assets_window_is_open (eng_gui_e32_flag_assets_open_sound);
                     eng_bool open_font     = eng_gui_assets_window_is_open (eng_gui_e32_flag_assets_open_font);
+                    eng_bool open_config   = eng_gui_assets_window_is_open (eng_gui_e32_flag_assets_config);
                     eng_bool open_database = eng_gui_assets_window_is_open (eng_gui_e32_flag_assets_database);
                     eng_gui_assets_window_reset_all();
 
@@ -81,22 +83,20 @@ namespace ifb {
                         ImGui::MenuItem(cstr_menu_item_assets_image, NULL, &open_image);
                         ImGui::MenuItem(cstr_menu_item_assets_sound, NULL, &open_sound);
                         ImGui::MenuItem(cstr_menu_item_assets_font,  NULL, &open_font);
-
-                        if (open_text)  eng_gui_assets_window_open(eng_gui_e32_flag_assets_open_text);
-                        if (open_image) eng_gui_assets_window_open(eng_gui_e32_flag_assets_open_image);
-                        if (open_sound) eng_gui_assets_window_open(eng_gui_e32_flag_assets_open_sound);
-                        if (open_font)  eng_gui_assets_window_open(eng_gui_e32_flag_assets_open_font);
-
                         ImGui::EndMenu();
                     }
 
+                    ImGui::MenuItem(cstr_menu_item_assets_config, NULL,   &open_config);
                     ImGui::MenuItem(cstr_menu_item_assets_database, NULL, &open_database);
-
-                    if (open_database) eng_gui_assets_window_open(eng_gui_e32_flag_assets_database);
-
                     ImGui::EndMenu();
-                }
 
+                    if (open_text)     eng_gui_assets_window_open(eng_gui_e32_flag_assets_open_text);
+                    if (open_image)    eng_gui_assets_window_open(eng_gui_e32_flag_assets_open_image);
+                    if (open_sound)    eng_gui_assets_window_open(eng_gui_e32_flag_assets_open_sound);
+                    if (open_font)     eng_gui_assets_window_open(eng_gui_e32_flag_assets_open_font);
+                    if (open_config)   eng_gui_assets_window_open(eng_gui_e32_flag_assets_config);
+                    if (open_database) eng_gui_assets_window_open(eng_gui_e32_flag_assets_database);
+                }
                 ImGui::EndMenuBar();
             }
         }
