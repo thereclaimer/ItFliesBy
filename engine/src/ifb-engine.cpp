@@ -25,3 +25,4 @@
 #include "ifb-engine-core.cpp"
 
 #include "ifb-engine-gui.cpp"
+#include "ifb-engine-gui-imgui.cpp"
