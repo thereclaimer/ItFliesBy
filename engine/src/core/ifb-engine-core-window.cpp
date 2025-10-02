@@ -1,7 +1,16 @@
 #include "ifb-engine-core-internal.hpp"
+#include <sld.hpp>
+
+#define window_has_event_key_down()             (_eng_core_window.update.events.val & sld::os_window_event_e_key_down)
+#define window_has_event_key_up()               (_eng_core_window.update.events.val & sld::os_window_event_e_key_up)
+#define window_keyboard_count_keys_down()       _eng_core_window.update.keyboard->key_count.down
+#define window_keyboard_count_keys_up()         _eng_core_window.update.keyboard->key_count.up
+#define window_keyboard_get_keycode_down(index) _eng_core_window.update.keyboard->keycode_array.down[index]; 
+#define window_keyboard_get_keycode_up(index)   _eng_core_window.update.keyboard->keycode_array.up[index]; 
+#define window_keyboard_reset()                 sld::input_keyboard_reset(_eng_core_window.update.keyboard)
 
 namespace ifb {
-
+ 
     IFB_ENG_FUNC void
     eng_core_window_init(
         void) {
@@ -11,6 +20,13 @@ namespace ifb {
         _eng_core_window.size.height = ENG_CORE_WINDOW_DEFAULT_HEIGHT;
         _eng_core_window.position.x  = ENG_CORE_WINDOW_DEFAULT_SCREEN_X;
         _eng_core_window.position.y  = ENG_CORE_WINDOW_DEFAULT_SCREEN_Y;
+
+        // allocate memory
+        _eng_core_window.update.keyboard = eng_mem_arena_push_struct(_eng_core_arenas.platform, sld::input_keyboard_t);
+
+        bool is_mem_ok = true;
+        is_mem_ok &= (_eng_core_window.update.keyboard   != NULL); 
+        assert(is_mem_ok);
     }
 
     IFB_ENG_FUNC void
@@ -43,10 +59,49 @@ namespace ifb {
     eng_core_window_process_events(
         void) {
 
+        // get the window update
         _eng_core_window.last_error = sld::os_window_update(
             _eng_core_window.handle,
             _eng_core_window.update
         );
+
+        const bool is_key_down     = window_has_event_key_down();
+        const bool is_key_up       = window_has_event_key_up();
+        const u32  count_keys_down = window_keyboard_count_keys_down();
+        const u32  count_keys_up   = window_keyboard_count_keys_up();
+        
+        bool update_is_valid = true;
+        update_is_valid &= (!is_key_down && count_keys_down == 0) || (is_key_down && count_keys_down > 0);
+        update_is_valid &= (!is_key_up   && count_keys_up   == 0) || (is_key_up   && count_keys_up   > 0);
+        assert(update_is_valid);
+
+        if (is_key_down) {
+
+            for (
+                eng_u32 key_index = 0;
+                key_index < count_keys_down;
+                ++key_index) {
+
+                const sld::input_keycode_t keycode = window_keyboard_get_keycode_down(key_index); 
+
+                if (keycode.val == sld::os_input_keycode_e_a) {
+                    assert(false);
+                }
+            }
+        }
+
+        if (is_key_up) {
+            
+            for (
+                eng_u32 key_index = 0;
+                key_index < count_keys_up;
+                ++key_index) {
+
+                const sld::input_keycode_t keycode = window_keyboard_get_keycode_up(key_index); 
+            }
+        }
+
+        window_keyboard_reset();
     }
 
     IFB_ENG_FUNC void

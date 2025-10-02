@@ -12,17 +12,11 @@ namespace ifb {
     eng_mem_mngr_startup(
         void) {
 
-        const eng_u64 size_core_res       = size_kilobytes (IFB_ENG_MEM_SIZE_KB_CORE_RES); 
-        const eng_u64 size_core_arena     = size_kilobytes (IFB_ENG_MEM_SIZE_KB_CORE_ARENA); 
-        const eng_u64 size_file_res       = size_kilobytes (IFB_ENG_MEM_SIZE_KB_FILE_RES); 
-        const eng_u64 size_file_arena     = size_kilobytes (IFB_ENG_MEM_SIZE_KB_FILE_ARENA);
-        const eng_u64 size_asset_res      = size_kilobytes (IFB_ENG_MEM_SIZE_KB_ASSET_RES); 
-        const eng_u64 size_asset_arena    = size_kilobytes (IFB_ENG_MEM_SIZE_KB_ASSET_ARENA);
-
         eng_bool is_init = true;
-        is_init &= reservation_acquire(&_mem_mngr.res.core,  size_core_res,  size_core_arena);
-        is_init &= reservation_acquire(&_mem_mngr.res.file,  size_file_res,  size_file_arena);
-        is_init &= reservation_acquire(&_mem_mngr.res.asset, size_asset_res, size_asset_arena);
+        is_init &= reservation_acquire (&_mem_mngr.res.core,  ENG_MEM_SIZE_RES_CORE,  ENG_MEM_SIZE_ARENA_CORE);
+        is_init &= reservation_acquire (&_mem_mngr.res.file,  ENG_MEM_SIZE_RES_FILE,  ENG_MEM_SIZE_ARENA_FILE);
+        is_init &= reservation_acquire (&_mem_mngr.res.asset, ENG_MEM_SIZE_RES_ASSET, ENG_MEM_SIZE_ARENA_ASSET);
+        is_init &= reservation_acquire (&_mem_mngr.res.gui,   ENG_MEM_SIZE_RES_GUI,   ENG_MEM_SIZE_ARENA_GUI);
         return(is_init);  
     }
 

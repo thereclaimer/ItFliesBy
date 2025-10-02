@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ifb-engine-core-internal.hpp"
-
+#include "ifb-engine-gui-internal.hpp"
 namespace ifb {
 
     IFB_ENG_API eng_bool
@@ -23,10 +23,13 @@ namespace ifb {
         sld::xml_parser_init((void*)_eng_core_xml_memory, ENG_CORE_XML_MEMORY_SIZE);
         
         // initialize platform
-        eng_core_monitor_table_init ();
-        eng_core_window_init        ();
-        eng_core_window_center_to_primary_monitor();
-        eng_core_window_open_and_show();
+        eng_core_monitor_table_init               ();
+        eng_core_window_init                      ();
+        eng_core_window_center_to_primary_monitor ();
+        eng_core_window_open_and_show             ();
+
+        // initialize gui
+        eng_gui_init();
 
         return(true); 
     }
@@ -35,7 +38,15 @@ namespace ifb {
     eng_core_shutdown(
         void) {
 
-        return(false);
+        //////////////////////////
+        // TODO(SAM):
+        // - close all windows
+        // - close all files
+        // - sync and exit all threads
+        // - release all memory
+        //////////////////////////
+
+        return(true);
     }
 
     IFB_ENG_API eng_bool
@@ -51,10 +62,21 @@ namespace ifb {
     eng_core_render(
         void) {
 
+        eng_gui_render();
         eng_core_window_swap_buffers();
 
         return(true);
     }
 
+    IFB_ENG_API eng_bool
+    eng_core_should_quit(
+        void) {
+
+        eng_bool eng_core_should_quit = false;
+
+        eng_core_should_quit |= (_eng_core_window.update.events.val & sld::os_window_event_e_quit);
+
+        return(eng_core_should_quit);
+    }
 };
 

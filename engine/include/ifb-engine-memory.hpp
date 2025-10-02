@@ -6,23 +6,29 @@
 #ifndef    IFB_ENG_MEM_SIZE_KB_PLATFORM_RES  
 #   define IFB_ENG_MEM_SIZE_KB_PLATFORM_RES   64000   // 64 MB
 #endif
-#ifndef    IFB_ENG_MEM_SIZE_KB_CORE_RES 
-#   define IFB_ENG_MEM_SIZE_KB_CORE_RES       256000  // 256 MB
+#ifndef    IFB_ENG_MEM_SIZE_KB_RES_CORE 
+#   define IFB_ENG_MEM_SIZE_KB_RES_CORE       256000  // 256 MB
 #endif
-#ifndef    IFB_ENG_MEM_SIZE_KB_CORE_ARENA
-#   define IFB_ENG_MEM_SIZE_KB_CORE_ARENA     256     // 256 KB
+#ifndef    IFB_ENG_MEM_SIZE_KB_ARENA_CORE
+#   define IFB_ENG_MEM_SIZE_KB_ARENA_CORE     256     // 256 KB
 #endif
-#ifndef    IFB_ENG_MEM_SIZE_KB_FILE_RES 
-#   define IFB_ENG_MEM_SIZE_KB_FILE_RES       1000000 // 1 GB
+#ifndef    IFB_ENG_MEM_SIZE_KB_RES_FILE 
+#   define IFB_ENG_MEM_SIZE_KB_RES_FILE       1000000 // 1 GB
 #endif
-#ifndef    IFB_ENG_MEM_SIZE_KB_FILE_ARENA
-#   define IFB_ENG_MEM_SIZE_KB_FILE_ARENA     1000    // 1 MB
+#ifndef    IFB_ENG_MEM_SIZE_KB_ARENA_FILE
+#   define IFB_ENG_MEM_SIZE_KB_ARENA_FILE     1000    // 1 MB
 #endif
-#ifndef    IFB_ENG_MEM_SIZE_KB_ASSET_RES 
-#   define IFB_ENG_MEM_SIZE_KB_ASSET_RES      1000000 // 1 GB
+#ifndef    IFB_ENG_MEM_SIZE_KB_RES_ASSET 
+#   define IFB_ENG_MEM_SIZE_KB_RES_ASSET      1000000 // 1 GB
 #endif
-#ifndef    IFB_ENG_MEM_SIZE_KB_ASSET_ARENA
-#   define IFB_ENG_MEM_SIZE_KB_ASSET_ARENA    64000   // 64 MB
+#ifndef    IFB_ENG_MEM_SIZE_KB_ARENA_ASSET
+#   define IFB_ENG_MEM_SIZE_KB_ARENA_ASSET    64000   // 64 MB
+#endif
+#ifndef    IFB_ENG_MEM_SIZE_KB_RES_GUI
+#   define IFB_ENG_MEM_SIZE_KB_RES_GUI        4000    // 4 MB
+#endif
+#ifndef    IFB_ENG_MEM_SIZE_KB_ARENA_GUI
+#   define IFB_ENG_MEM_SIZE_KB_ARENA_GUI      4       // 64 MB
 #endif
 
 namespace ifb {
