@@ -8,9 +8,10 @@ namespace ifb {
     eng_core_startup(
         void) {
 
-        // start managers
-        eng_mem_mngr_startup  ();
-        eng_file_mngr_startup ();
+        // start managers 
+        eng_mem_mngr_startup   ();
+        eng_file_mngr_startup  ();
+        eng_asset_mngr_startup ();
 
         // allocate core memory
         _eng_core_arenas.xml      = eng_mem_arena_commit_core();

@@ -32,12 +32,16 @@ namespace ifb {
         eng_gui_u32_flags_assets_t assets;
     };
 
-    IFB_ENG_FUNC eng_void eng_gui_init        (eng_void);
-    IFB_ENG_FUNC eng_void eng_gui_render      (eng_void);
-    IFB_ENG_FUNC eng_void eng_gui_main_window (eng_void);
+    IFB_ENG_FUNC eng_void eng_gui_init               (eng_void);
+    IFB_ENG_FUNC eng_void eng_gui_render             (eng_void);
+    IFB_ENG_FUNC eng_void eng_gui_main_window        (eng_void);
 
-    IFB_ENG_FUNC eng_void eng_gui_imgui        (eng_void);
-    IFB_ENG_FUNC eng_void eng_gui_asset_config (eng_void);
+    IFB_ENG_FUNC eng_void eng_gui_imgui              (eng_void);
+    IFB_ENG_FUNC eng_void eng_gui_asset_config       (eng_void);
+    IFB_ENG_FUNC eng_void eng_gui_asset_config_text  (eng_void);
+    IFB_ENG_FUNC eng_void eng_gui_asset_config_image (eng_void);
+    IFB_ENG_FUNC eng_void eng_gui_asset_config_sound (eng_void);
+    IFB_ENG_FUNC eng_void eng_gui_asset_config_font  (eng_void);
 
     static eng_gui_menu_bar_state_t _eng_gui_menu_bar_state;
 
