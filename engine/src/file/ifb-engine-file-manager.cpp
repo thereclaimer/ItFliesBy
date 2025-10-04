@@ -13,7 +13,7 @@ namespace ifb {
     static eng_file_os_context_t       _os_context       [IFB_ENG_FILE_TABLE_CAPACITY];
     static eng_file_callback_context_t _callback_context [IFB_ENG_FILE_TABLE_CAPACITY];
     static eng_file_t                  _file             [IFB_ENG_FILE_TABLE_CAPACITY];
-    static eng_c8                      _path_buffer      [IFB_ENG_FILE_TABLE_CAPACITY * IFB_ENG_FILE_PATH_SIZE];
+    static cchar                      _path_buffer      [IFB_ENG_FILE_TABLE_CAPACITY * IFB_ENG_FILE_PATH_SIZE];
 
     //-------------------------------------------------------------------
     // DECLARATIONS
@@ -23,8 +23,8 @@ namespace ifb {
     eng_file_t*           eng_file_mngr_get_next_open        (void);
     void                  eng_file_mngr_add_closed           (eng_file_t* file);
     void                  eng_file_mngr_add_open             (eng_file_t* file);
-    eng_void              eng_file_mngr_async_callback_read  (const eng_void* data, const eng_file_os_error_t error, const eng_u32 bytes_transferred);
-    eng_void              eng_file_mngr_async_callback_write (const eng_void* data, const eng_file_os_error_t error, const eng_u32 bytes_transferred);
+    void              eng_file_mngr_async_callback_read  (const void* data, const eng_file_os_error_t error, const u32 bytes_transferred);
+    void              eng_file_mngr_async_callback_write (const void* data, const eng_file_os_error_t error, const u32 bytes_transferred);
     const eng_error_s32_t eng_file_mngr_error_os_to_eng      (const eng_file_os_error_t    os_error);  
 
     //-------------------------------------------------------------------
@@ -33,7 +33,7 @@ namespace ifb {
 
     IFB_ENG_FUNC const eng_file_h32_t
     eng_file_mngr_open_ro(
-        const eng_c8* file_path) {
+        const cchar* file_path) {
 
         // get the next unopened file struct
         eng_file_h32_t handle = { IFB_ENG_FILE_H32_INVALID };
@@ -44,7 +44,7 @@ namespace ifb {
         static const sld::os_file_access_flags_t access_flags = { sld::os_file_access_flag_e_read };
         static const sld::os_file_share_flags_t  share_flags  = { sld::os_file_share_flag_e_read  };
         static const sld::os_file_mode_t         mode         = { sld::os_file_mode_e_open_always };
-        static const eng_bool                    is_async     = false;
+        static const bool                    is_async     = false;
         static const sld::os_file_config_t os_file_config = {
             access_flags,
             share_flags,
@@ -78,11 +78,11 @@ namespace ifb {
 
         // copy path
         for (
-            eng_u32 index = 0;
+            u32 index = 0;
             index < _file_mngr.path_size;
             ++index) {
 
-            const eng_c8 c = file_path[index];
+            const cchar c = file_path[index];
             file->path.cstr[index] = c;
 
             if (c == 0) break;
@@ -95,7 +95,7 @@ namespace ifb {
 
     IFB_ENG_FUNC const eng_file_h32_t
     eng_file_mngr_open_rw(
-        const eng_c8* file_path) {
+        const cchar* file_path) {
 
         // get the next unopened file struct
         eng_file_h32_t handle = {IFB_ENG_FILE_H32_INVALID};
@@ -106,7 +106,7 @@ namespace ifb {
         static const sld::os_file_access_flags_t access_flags = { sld::os_file_access_flag_e_read | sld::os_file_access_flag_e_write };
         static const sld::os_file_share_flags_t  share_flags  = { sld::os_file_share_flag_e_read  };
         static const sld::os_file_mode_t         mode         = { sld::os_file_mode_e_open_always };
-        static const eng_bool                    is_async     = false;
+        static const bool                    is_async     = false;
         static const sld::os_file_config_t os_file_config = {
             access_flags,
             share_flags,
@@ -140,11 +140,11 @@ namespace ifb {
 
         // copy path
         for (
-            eng_u32 index = 0;
+            u32 index = 0;
             index < _file_mngr.path_size;
             ++index) {
 
-            const eng_c8 c = file_path[index];
+            const cchar c = file_path[index];
             file->path.cstr[index] = c;
 
             if (c == 0) break;
@@ -162,7 +162,7 @@ namespace ifb {
         return(false);
     }
 
-    IFB_ENG_FUNC const eng_u64
+    IFB_ENG_FUNC const u64
     eng_file_mngr_get_size(
         const eng_file_h32_t file_handle) {
 
@@ -172,7 +172,7 @@ namespace ifb {
             return(false);
         } 
 
-        eng_u64 size = 0;
+        u64 size = 0;
         const eng_file_os_error_t os_error = sld::os_file_size(
             file->os_handle,
             size
@@ -197,7 +197,7 @@ namespace ifb {
         return(flags);
     }
 
-    IFB_ENG_FUNC const eng_c8*
+    IFB_ENG_FUNC const cchar*
     eng_file_mngr_get_path(
         const eng_file_h32_t file_handle) {
 
@@ -213,9 +213,9 @@ namespace ifb {
     IFB_ENG_API bool
     eng_file_mngr_update_buffer(
         const eng_file_h32_t file_handle,
-        const eng_u32        length,
-        const eng_u32        cursor,
-        const eng_byte*      data) {
+        const u32        length,
+        const u32        cursor,
+        const byte*      data) {
 
         eng_file_t* file = eng_file_mngr_get_file(file_handle);
         if (file == NULL) {
@@ -263,7 +263,7 @@ namespace ifb {
 
         // initialize the async context
         eng_file_os_async_context_t& async_context = file->os_async_context;
-        async_context.callback->data  = (eng_void*)file;
+        async_context.callback->data  = (void*)file;
         async_context.callback->func  = _file_mngr.os_callback_read; 
 
         // do the read
@@ -317,7 +317,7 @@ namespace ifb {
 
     //     // initialize the async context
     //     eng_file_os_async_context_t& async_context = file->os_async_context;
-    //     async_context.callback->data  = (eng_void*)file;
+    //     async_context.callback->data  = (void*)file;
     //     async_context.callback->func  = _file_mngr.os_callback_read; 
 
     //     // do the async read
@@ -360,9 +360,9 @@ namespace ifb {
         }
 
         // ensure we don't include null terminator        
-        const eng_u32  terminator_index = (write_buffer.length - 1);
-        const eng_c8   last_char        = write_buffer.data[terminator_index];
-        const eng_bool is_terminated    = (last_char == 0);
+        const u32  terminator_index = (write_buffer.length - 1);
+        const cchar   last_char        = write_buffer.data[terminator_index];
+        const bool is_terminated    = (last_char == 0);
         if (is_terminated) {
             --write_buffer.length;
         }
@@ -405,7 +405,7 @@ namespace ifb {
 
     //     // initialize the async context
     //     eng_file_os_async_context_t& async_context = file->os_async_context;
-    //     async_context.callback->data  = (eng_void*)file;
+    //     async_context.callback->data  = (void*)file;
     //     async_context.callback->func  = _file_mngr.os_callback_write;
         
     //     // do the async write
@@ -445,7 +445,7 @@ namespace ifb {
         _file_mngr.list.closed       = _file;
 
         for (
-            eng_u32 file_index = 0;
+            u32 file_index = 0;
             file_index < _file_mngr.capacity;
             ++file_index) {
 
@@ -460,11 +460,11 @@ namespace ifb {
         }
     }
 
-    IFB_ENG_INTERNAL eng_void
+    IFB_ENG_INTERNAL void
     eng_file_mngr_async_callback_read(
-        const eng_void*           data,
+        const void*           data,
         const eng_file_os_error_t os_error,
-        const eng_u32             bytes_transferred) {
+        const u32             bytes_transferred) {
         
         if (!data) return;
 
@@ -477,11 +477,11 @@ namespace ifb {
             : eng_file_flag_e32_error; 
     }
 
-    IFB_ENG_INTERNAL eng_void
+    IFB_ENG_INTERNAL void
     eng_file_mngr_async_callback_write(
-        const eng_void*           data,
+        const void*           data,
         const eng_file_os_error_t os_error,
-        const eng_u32             bytes_transferred) {
+        const u32             bytes_transferred) {
 
         if (!data) return;
 
@@ -526,7 +526,7 @@ namespace ifb {
             { eng_file_error_e32_device_failure      }, // os_file_error_e_device_failure
         };
 
-        constexpr eng_u32 os_error_map_count = sizeof(os_error_map) / sizeof(eng_error_s32_t);
+        constexpr u32 os_error_map_count = sizeof(os_error_map) / sizeof(eng_error_s32_t);
 
 
         const eng_error_s32_t eng_error = {(os_error.val < 0 || os_error.val > os_error_map_count)

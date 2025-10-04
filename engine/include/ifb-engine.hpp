@@ -20,78 +20,73 @@ namespace ifb {
     //-------------------------------------------------------------------
 
     // signed integers
-    typedef sld::s8  eng_s8;
-    typedef sld::s16 eng_s16;
-    typedef sld::s32 eng_s32;
-    typedef sld::s64 eng_s64;
+    typedef sld::s8  s8;
+    typedef sld::s16 s16;
+    typedef sld::s32 s32;
+    typedef sld::s64 s64;
 
     // unsigned integers
-    typedef sld::u8  eng_u8;
-    typedef sld::u16 eng_u16;
-    typedef sld::u32 eng_u32;
-    typedef sld::u64 eng_u64;
+    typedef sld::u8  u8;
+    typedef sld::u16 u16;
+    typedef sld::u32 u32;
+    typedef sld::u64 u64;
     
     // floats
-    typedef sld::f32 eng_f32;
-    typedef sld::f64 eng_f64;
+    typedef sld::f32 f32;
+    typedef sld::f64 f64;
     
     // booleans
-    typedef bool     eng_bool;
-    typedef sld::b8  eng_b8;
-    typedef sld::b16 eng_b16;
-    typedef sld::b32 eng_b32;
-    typedef sld::b64 eng_b64;
+    typedef sld::b8  b8;
+    typedef sld::b16 b16;
+    typedef sld::b32 b32;
+    typedef sld::b64 b64;
 
     // chars  
-    typedef sld::c8  eng_c8;
-    typedef sld::c16 eng_c16;
-    typedef sld::c32 eng_c32;
-    typedef sld::c8  eng_cchar;
-    typedef sld::c16 eng_wchar;
+    typedef sld::c8  cchar;
+    typedef sld::c16 wchar;
 
     // memory
-    typedef void       eng_void;
-    typedef sld::byte  eng_byte;
-    typedef sld::addr  eng_addr;
-    typedef sld::vptr  eng_vptr;
-    typedef sld::pad8  eng_pad8;
-    typedef sld::pad16 eng_pad16;
-    typedef sld::pad32 eng_pad32;
-    typedef sld::pad64 eng_pad64;
+    typedef sld::byte  byte;
+    typedef sld::addr  addr;
+    typedef sld::vptr  vptr;
+    typedef sld::pad8  pad8;
+    typedef sld::pad16 pad16;
+    typedef sld::pad32 pad32;
+    typedef sld::pad64 pad64;
 
     // structured
-    typedef sld::s8_t   eng_s8_t;
-    typedef sld::s16_t  eng_s16_t;
-    typedef sld::s32_t  eng_s32_t;
-    typedef sld::s64_t  eng_s64_t;
-    typedef sld::u8_t   eng_u8_t;
-    typedef sld::u16_t  eng_u16_t;
-    typedef sld::u32_t  eng_u32_t;
-    typedef sld::u64_t  eng_u64_t;
-    typedef sld::f32_t  eng_f32_t;
-    typedef sld::f64_t  eng_f64_t;
-    typedef sld::b8_t   eng_b8_t;
-    typedef sld::b16_t  eng_b16_t;
-    typedef sld::b32_t  eng_b32_t;
-    typedef sld::b64_t  eng_b64_t;
-    typedef sld::c8_t   eng_c8_t;
-    typedef sld::c16_t  eng_c16_t;
-    typedef sld::c32_t  eng_c32_t;
-    typedef sld::byte_t eng_byte_t;
-    typedef sld::addr_t eng_addr_t;
-    typedef sld::vptr_t eng_vptr_t;
+    typedef sld::s8_t   s8_t;
+    typedef sld::s16_t  s16_t;
+    typedef sld::s32_t  s32_t;
+    typedef sld::s64_t  s64_t;
+    typedef sld::u8_t   u8_t;
+    typedef sld::u16_t  u16_t;
+    typedef sld::u32_t  u32_t;
+    typedef sld::u64_t  u64_t;
+    typedef sld::f32_t  f32_t;
+    typedef sld::f64_t  f64_t;
+    typedef sld::b8_t   b8_t;
+    typedef sld::b16_t  b16_t;
+    typedef sld::b32_t  b32_t;
+    typedef sld::b64_t  b64_t;
+    typedef sld::c8_t   c8_t;
+    typedef sld::c16_t  c16_t;
+    typedef sld::c32_t  c32_t;
+    typedef sld::byte_t byte_t;
+    typedef sld::addr_t addr_t;
+    typedef sld::vptr_t vptr_t;
 
     // handles
-    struct eng_h8_t  : eng_u8_t  { };
-    struct eng_h16_t : eng_u16_t { };
-    struct eng_h32_t : eng_u32_t { };
-    struct eng_h64_t : eng_u64_t { };
+    struct h8_t  : u8_t  { };
+    struct h16_t : u16_t { };
+    struct h32_t : u32_t { };
+    struct h64_t : u64_t { };
 
     //-------------------------------------------------------------------
     // ERROR
     //-------------------------------------------------------------------
 
-    struct eng_error_s32_t : eng_s32_t { };
+    struct eng_error_s32_t : s32_t { };
 
     enum eng_error_e32_type_ {
         eng_error_e32_type_success = 0x10000000,
@@ -111,34 +106,34 @@ namespace ifb {
     // STRINGS
     //-------------------------------------------------------------------
     
-    typedef sld::cstr_t eng_cstr_t;
-    typedef sld::wstr_t eng_wstr_t;
+    typedef sld::cstr_t cstr_t;
+    typedef sld::wstr_t wstr_t;
 
     //-------------------------------------------------------------------
     // DATA STRUCTURES
     //-------------------------------------------------------------------
     
-    typedef sld::buffer_t eng_buffer_t;
+    typedef sld::buffer_t buffer_t;
 
     //-------------------------------------------------------------------
     // GEOMETRY
     //-------------------------------------------------------------------
 
-    typedef sld::dims_u32_t      eng_dims_u32_t;
-    typedef sld::dims_u32_size_t eng_dims_u32_size_t;
-    typedef sld::dims_u32_pos_t  eng_dims_u32_pos_t;
+    typedef sld::dims_u32_t      dims_u32_t;
+    typedef sld::dims_u32_size_t dims_u32_size_t;
+    typedef sld::dims_u32_pos_t  dims_u32_pos_t;
 
-    typedef sld::dims_f32_t      eng_dims_f32_t;
-    typedef sld::dims_f32_size_t eng_dims_f32_size_t;
-    typedef sld::dims_f32_pos_t  eng_dims_f32_pos_t;
+    typedef sld::dims_f32_t      dims_f32_t;
+    typedef sld::dims_f32_size_t dims_f32_size_t;
+    typedef sld::dims_f32_pos_t  dims_f32_pos_t;
 
     //-------------------------------------------------------------------
     // DATA FORMATS
     //-------------------------------------------------------------------
 
-    typedef sld::xml_doc_t    eng_xml_doc_t;
-    typedef sld::xml_node_t   eng_xml_node_t;
-    typedef sld::xml_attrib_t eng_xml_attrib_t;
+    typedef sld::xml_doc_t    xml_doc_t;
+    typedef sld::xml_node_t   xml_node_t;
+    typedef sld::xml_attrib_t xml_attrib_t;
 };
 
 #endif //IFB_ENGINE_HPP

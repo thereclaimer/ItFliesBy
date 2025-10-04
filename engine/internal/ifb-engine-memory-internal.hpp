@@ -6,15 +6,15 @@
 
 namespace ifb {
 
-    constexpr eng_u64 ENG_MEM_SIZE_RES_CORE    = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_RES_CORE); 
-    constexpr eng_u64 ENG_MEM_SIZE_RES_FILE    = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_RES_FILE); 
-    constexpr eng_u64 ENG_MEM_SIZE_RES_ASSET   = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_RES_ASSET); 
-    constexpr eng_u64 ENG_MEM_SIZE_RES_GUI     = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_RES_GUI);
+    constexpr u64 ENG_MEM_SIZE_RES_CORE    = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_RES_CORE); 
+    constexpr u64 ENG_MEM_SIZE_RES_FILE    = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_RES_FILE); 
+    constexpr u64 ENG_MEM_SIZE_RES_ASSET   = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_RES_ASSET); 
+    constexpr u64 ENG_MEM_SIZE_RES_GUI     = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_RES_GUI);
 
-    constexpr eng_u64 ENG_MEM_SIZE_ARENA_CORE  = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_ARENA_CORE); 
-    constexpr eng_u64 ENG_MEM_SIZE_ARENA_FILE  = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_ARENA_FILE);
-    constexpr eng_u64 ENG_MEM_SIZE_ARENA_ASSET = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_ARENA_ASSET);
-    constexpr eng_u64 ENG_MEM_SIZE_ARENA_GUI   = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_ARENA_GUI);
+    constexpr u64 ENG_MEM_SIZE_ARENA_CORE  = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_ARENA_CORE); 
+    constexpr u64 ENG_MEM_SIZE_ARENA_FILE  = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_ARENA_FILE);
+    constexpr u64 ENG_MEM_SIZE_ARENA_ASSET = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_ARENA_ASSET);
+    constexpr u64 ENG_MEM_SIZE_ARENA_GUI   = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_ARENA_GUI);
 
     typedef eng_error_s32_t    eng_mem_error_s32_t;
     typedef sld::reservation_t eng_mem_res_t;
@@ -36,14 +36,14 @@ namespace ifb {
     IFB_ENG_FUNC eng_mem_arena_t*  eng_mem_arena_commit_asset    (void);   
     IFB_ENG_FUNC bool              eng_mem_arena_decommit        (eng_mem_arena_t* arena);
 
-    IFB_ENG_INLINE eng_byte*       eng_mem_arena_push_bytes    (eng_mem_arena_t* arena, const eng_u64 size, const eng_u64 alignment = 0) { return(sld::arena_push_bytes    (arena, size, alignment)); }
-    IFB_ENG_INLINE eng_bool        eng_mem_arena_pull_bytes    (eng_mem_arena_t* arena, const eng_u64 size, const eng_u64 alignment = 0) { return(sld::arena_pull_bytes    (arena, size, alignment)); }
-    IFB_ENG_INLINE eng_bool        eng_mem_arena_reset         (eng_mem_arena_t* arena)                                                  { return(sld::arena_reset         (arena));                  }
-    IFB_ENG_INLINE eng_bool        eng_mem_arena_roll_back     (eng_mem_arena_t* arena)                                                  { return(sld::arena_roll_back     (arena));                  }
-    IFB_ENG_INLINE eng_bool        eng_mem_arena_save_position (eng_mem_arena_t* arena)                                                  { return(sld::arena_save_position (arena));                  }
-    IFB_ENG_INLINE eng_u64         eng_mem_arena_size_total    (eng_mem_arena_t* arena)                                                  { return(sld::arena_size_total    (arena));                  }
-    IFB_ENG_INLINE eng_u64         eng_mem_arena_size_free     (eng_mem_arena_t* arena)                                                  { return(sld::arena_size_free     (arena));                  }
-    IFB_ENG_INLINE eng_u64         eng_mem_arena_size_used     (eng_mem_arena_t* arena)                                                  { return(sld::arena_size_used     (arena));                  }
+    IFB_ENG_INLINE byte*       eng_mem_arena_push_bytes    (eng_mem_arena_t* arena, const u64 size, const u64 alignment = 0) { return(sld::arena_push_bytes    (arena, size, alignment)); }
+    IFB_ENG_INLINE bool        eng_mem_arena_pull_bytes    (eng_mem_arena_t* arena, const u64 size, const u64 alignment = 0) { return(sld::arena_pull_bytes    (arena, size, alignment)); }
+    IFB_ENG_INLINE bool        eng_mem_arena_reset         (eng_mem_arena_t* arena)                                                  { return(sld::arena_reset         (arena));                  }
+    IFB_ENG_INLINE bool        eng_mem_arena_roll_back     (eng_mem_arena_t* arena)                                                  { return(sld::arena_roll_back     (arena));                  }
+    IFB_ENG_INLINE bool        eng_mem_arena_save_position (eng_mem_arena_t* arena)                                                  { return(sld::arena_save_position (arena));                  }
+    IFB_ENG_INLINE u64         eng_mem_arena_size_total    (eng_mem_arena_t* arena)                                                  { return(sld::arena_size_total    (arena));                  }
+    IFB_ENG_INLINE u64         eng_mem_arena_size_free     (eng_mem_arena_t* arena)                                                  { return(sld::arena_size_free     (arena));                  }
+    IFB_ENG_INLINE u64         eng_mem_arena_size_used     (eng_mem_arena_t* arena)                                                  { return(sld::arena_size_used     (arena));                  }
 };
 
 #define eng_mem_arena_push_struct(arena, struct)              (struct*)sld::arena_push_bytes(arena, sizeof(struct))

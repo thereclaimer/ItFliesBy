@@ -2,7 +2,7 @@
 
 namespace ifb {
 
-    IFB_ENG_FUNC eng_bool
+    IFB_ENG_FUNC bool
     eng_core_monitor_table_validate(
         void) {
 
@@ -20,15 +20,15 @@ namespace ifb {
     eng_core_monitor_table_init(
         void) {
 
-        static eng_bool is_init = false;
+        static bool is_init = false;
         assert(!is_init);
 
         // initialize the table
-        _eng_core_monitor_table.array.position_x = eng_core_platform_arena_push_struct_array (ENG_CORE_MONITOR_COUNT_MAX,        eng_u32);
-        _eng_core_monitor_table.array.position_y = eng_core_platform_arena_push_struct_array (ENG_CORE_MONITOR_COUNT_MAX,        eng_u32);
-        _eng_core_monitor_table.array.width      = eng_core_platform_arena_push_struct_array (ENG_CORE_MONITOR_COUNT_MAX,        eng_u32);
-        _eng_core_monitor_table.array.height     = eng_core_platform_arena_push_struct_array (ENG_CORE_MONITOR_COUNT_MAX,        eng_u32);
-        _eng_core_monitor_table.array.name       = eng_core_platform_arena_push_struct_array (ENG_CORE_MONITOR_NAME_BUFFER_SIZE, eng_cchar);
+        _eng_core_monitor_table.array.position_x = eng_core_platform_arena_push_struct_array (ENG_CORE_MONITOR_COUNT_MAX,        u32);
+        _eng_core_monitor_table.array.position_y = eng_core_platform_arena_push_struct_array (ENG_CORE_MONITOR_COUNT_MAX,        u32);
+        _eng_core_monitor_table.array.width      = eng_core_platform_arena_push_struct_array (ENG_CORE_MONITOR_COUNT_MAX,        u32);
+        _eng_core_monitor_table.array.height     = eng_core_platform_arena_push_struct_array (ENG_CORE_MONITOR_COUNT_MAX,        u32);
+        _eng_core_monitor_table.array.name       = eng_core_platform_arena_push_struct_array (ENG_CORE_MONITOR_NAME_BUFFER_SIZE, cchar);
         _eng_core_monitor_table.array.handle     = eng_core_platform_arena_push_struct_array (ENG_CORE_MONITOR_COUNT_MAX,        eng_core_monitor_handle_t);
 
         // check the table
@@ -73,7 +73,7 @@ namespace ifb {
         cstr_t monitor_name_cstr_src = { NULL, sld::OS_MONITOR_NAME_WIDTH};
         cstr_t monitor_name_cstr_dst = { NULL, sld::OS_MONITOR_NAME_WIDTH};
         for (
-            eng_u32 monitor = 0;
+            u32 monitor = 0;
             monitor < _eng_core_monitor_table.count;
             ++monitor) {
 
@@ -93,7 +93,7 @@ namespace ifb {
             assert(is_monitor_valid);
 
             // copy the name
-            const eng_u32 name_str_offset = (monitor * sld::OS_MONITOR_NAME_WIDTH); 
+            const u32 name_str_offset = (monitor * sld::OS_MONITOR_NAME_WIDTH); 
             monitor_name_cstr_src.chars   = &info.name_cstr                              [name_str_offset];
             monitor_name_cstr_dst.chars   = &_eng_core_monitor_table.array.name [name_str_offset];
             (void)sld::cstr_copy(monitor_name_cstr_dst, monitor_name_cstr_src);          
@@ -107,7 +107,7 @@ namespace ifb {
         }
     }
 
-    IFB_ENG_FUNC eng_u32
+    IFB_ENG_FUNC u32
     eng_core_monitor_table_search(
         const eng_core_monitor_handle_t monitor) {
 
@@ -116,8 +116,8 @@ namespace ifb {
         is_valid &= (monitor.val != NULL);
         assert(is_valid);
 
-        eng_u32  index    = 0;
-        eng_bool is_found = false;
+        u32  index    = 0;
+        bool is_found = false;
         for (
             index;
             index < _eng_core_monitor_table.count;
@@ -134,14 +134,14 @@ namespace ifb {
     IFB_ENG_FUNC void
     eng_core_monitor_get_size(
         const eng_core_monitor_handle_t monitor,
-        eng_dims_u32_size_t&                   size) {
+        dims_u32_size_t&                   size) {
 
         bool is_valid = true; 
         is_valid &= eng_core_monitor_table_validate();
         is_valid &= (monitor.val != NULL);
         assert(is_valid);
 
-        const eng_u32 index = eng_core_monitor_table_search(monitor);
+        const u32 index = eng_core_monitor_table_search(monitor);
 
         size.width  = _eng_core_monitor_table.array.width  [index];
         size.height = _eng_core_monitor_table.array.height [index];
@@ -150,14 +150,14 @@ namespace ifb {
     IFB_ENG_FUNC void
     eng_core_monitor_get_position(
         const eng_core_monitor_handle_t monitor,
-        eng_dims_u32_pos_t&                    pos) {
+        dims_u32_pos_t&                    pos) {
 
         bool is_valid = true; 
         is_valid &= eng_core_monitor_table_validate();
         is_valid &= (monitor.val != NULL);
         assert(is_valid);
 
-        const eng_u32 index = eng_core_monitor_table_search(monitor);
+        const u32 index = eng_core_monitor_table_search(monitor);
 
         pos.x = _eng_core_monitor_table.array.position_x [index];
         pos.y = _eng_core_monitor_table.array.position_y [index];
@@ -173,13 +173,13 @@ namespace ifb {
         is_valid &= (monitor.val != NULL);
         assert(is_valid);
 
-        const eng_u32 index = eng_core_monitor_table_search(monitor);
+        const u32 index = eng_core_monitor_table_search(monitor);
 
-        eng_cstr_t dst;
+        cstr_t dst;
         dst.chars = name.cstr;
         dst.size  = sld::OS_MONITOR_NAME_WIDTH;
 
-        eng_cstr_t src;
+        cstr_t src;
         src.chars = &_eng_core_monitor_table.array.name[index * sld::OS_MONITOR_NAME_WIDTH];  
         src.size  = sld::OS_MONITOR_NAME_WIDTH;
 
@@ -196,14 +196,14 @@ namespace ifb {
         is_valid &= (monitor.val != NULL);
         assert(is_valid);
 
-        const eng_u32 index = eng_core_monitor_table_search(monitor);
+        const u32 index = eng_core_monitor_table_search(monitor);
 
         info.size.width  = _eng_core_monitor_table.array.width      [index];
         info.size.height = _eng_core_monitor_table.array.height     [index];
         info.pos.x       = _eng_core_monitor_table.array.position_x [index];
         info.pos.y       = _eng_core_monitor_table.array.position_y [index];
 
-        eng_cstr_t dst, src;
+        cstr_t dst, src;
         dst.chars = info.name.cstr;
         src.chars = &_eng_core_monitor_table.array.name[index * sld::OS_MONITOR_NAME_WIDTH];  
         dst.size  = sld::OS_MONITOR_NAME_WIDTH;

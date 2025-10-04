@@ -4,7 +4,7 @@
 
 namespace ifb {
 
-    constexpr eng_c8  _db_file_default_header[]  = 
+    constexpr cchar  _db_file_default_header[]  = 
         "IFBASSETDATABASE"                                                                                  // (16 bytes) verification string
         "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"                                  // (16 bytes) hash (everything after this point)
         "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"  // (24 bytes) text table index
@@ -13,14 +13,14 @@ namespace ifb {
         "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"; // (24 bytes) font table index
 
 
-    constexpr eng_u32 _db_file_index_array_size  = (sizeof(eng_asset_db_file_index_t) * eng_asset_e32_type_count);
-    constexpr eng_c8  _db_file_path_cstr  []     = IFB_ENG_ASSET_DB_PATH;
-    constexpr eng_c8  _db_file_verif_cstr []     = IFB_ENG_ASSET_VERIF_STR;
-    constexpr eng_u32 _db_file_verif_size        = sizeof(_db_file_verif_cstr) - 1; 
-    constexpr eng_u32 _db_file_start_verif_data  = 0;
-    constexpr eng_u32 _db_file_start_hash        = _db_file_verif_size;
-    constexpr eng_u32 _db_file_start_index_array = _db_file_start_hash + sizeof(eng_hash128_t);
-    constexpr eng_u32 _db_file_header_size       = sizeof(_db_file_default_header) - 1; 
+    constexpr u32   _db_file_index_array_size  = (sizeof(eng_asset_db_file_index_t) * eng_asset_e32_type_count);
+    constexpr cchar _db_file_path_cstr  []     = IFB_ENG_ASSET_DB_PATH;
+    constexpr cchar _db_file_verif_cstr []     = IFB_ENG_ASSET_VERIF_STR;
+    constexpr u32   _db_file_verif_size        = sizeof(_db_file_verif_cstr) - 1; 
+    constexpr u32   _db_file_start_verif_data  = 0;
+    constexpr u32   _db_file_start_hash        = _db_file_verif_size;
+    constexpr u32   _db_file_start_index_array = _db_file_start_hash + sizeof(eng_hash128_t);
+    constexpr u32   _db_file_header_size       = sizeof(_db_file_default_header) - 1; 
 
     IFB_ENG_FUNC void
     eng_asset_db_file_create(
@@ -32,7 +32,7 @@ namespace ifb {
 
         // allocate memory and open the file
         eng_asset_db_file_t* db_file     = eng_mem_arena_push_struct(arena, eng_asset_db_file_t);
-        eng_byte*            header_data = eng_mem_arena_push_bytes (arena, _db_file_header_size); 
+        byte*            header_data = eng_mem_arena_push_bytes (arena, _db_file_header_size); 
         eng_file_h32_t       file_handle = eng_file_mngr_open_rw    (_db_file_path_cstr);
         assert(eng_mem_arena_save_position(arena));
 
@@ -44,7 +44,7 @@ namespace ifb {
         assert(can_create);
 
         // calculate pointers
-        eng_byte*          ptr_verif_data  =                     &header_data[_db_file_start_verif_data];
+        byte*          ptr_verif_data  =                     &header_data[_db_file_start_verif_data];
         eng_hash128_t*     ptr_hash        =     (eng_hash128_t*)&header_data[_db_file_start_hash];  
         eng_asset_index_t* ptr_index_array = (eng_asset_index_t*)&header_data[_db_file_start_index_array]; 
 
@@ -53,7 +53,7 @@ namespace ifb {
         db_file->index_count               = eng_asset_e32_type_count;
         db_file->index_array               = NULL;
         db_file->size                      = 0;
-        db_file->verif.data                = (eng_c8*)ptr_verif_data;
+        db_file->verif.data                = (cchar*)ptr_verif_data;
         db_file->verif.length              = _db_file_verif_size;
         db_file->hash                      = ptr_hash; 
         db_file->header_buffer.data        = header_data;
@@ -74,7 +74,7 @@ namespace ifb {
     eng_asset_db_file_validate(
         void) {
 
-        eng_bool is_valid = (_eng_asset_mngr.db_file != NULL);
+        bool is_valid = (_eng_asset_mngr.db_file != NULL);
         if (!is_valid) {
 
             is_valid &= (_eng_asset_mngr.db_file->handle.val         != IFB_ENG_FILE_H32_INVALID); 
@@ -89,26 +89,26 @@ namespace ifb {
         assert(is_valid);
     }
 
-    IFB_ENG_FUNC eng_bool
+    IFB_ENG_FUNC bool
     eng_asset_db_file_read_header(
         void) {
 
         eng_asset_db_file_validate();
 
         //get the header and check the size
-        eng_bool      is_valid_header = true;
-        const eng_u64 file_size       = eng_file_mngr_get_size(_eng_asset_mngr.db_file->handle);
+        bool      is_valid_header = true;
+        const u64 file_size       = eng_file_mngr_get_size(_eng_asset_mngr.db_file->handle);
         is_valid_header &= file_size >= (_db_file_header_size - 1); // account for null terminator
         is_valid_header &= eng_file_mngr_read(_eng_asset_mngr.db_file->handle, _eng_asset_mngr.db_file->header_buffer);
         if (!is_valid_header) return(is_valid_header);
 
         // check the verification string
         for (
-            eng_u32 index = 0;
+            u32 index = 0;
             index < _db_file_verif_size;
             ++index) {
 
-            const eng_c8 c = _eng_asset_mngr.db_file->verif.data[index];
+            const cchar c = _eng_asset_mngr.db_file->verif.data[index];
             is_valid_header &= (c == _db_file_verif_cstr[index]);
         }
         return(is_valid_header);
@@ -132,7 +132,7 @@ namespace ifb {
         default_buffer.cursor      = 0;
         default_buffer.transferred = 0;
 
-        eng_bool did_write = eng_file_mngr_write(_eng_asset_mngr.db_file->handle, default_buffer);
+        bool did_write = eng_file_mngr_write(_eng_asset_mngr.db_file->handle, default_buffer);
         assert(did_write);
     }
 };

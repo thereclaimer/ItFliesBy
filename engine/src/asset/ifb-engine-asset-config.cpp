@@ -4,17 +4,17 @@
 
 namespace ifb {
 
-    constexpr eng_cchar _xml_cstr_node_ifb_assets [] = "ifb-assets";
-    constexpr eng_cchar _xml_cstr_node_text       [] = "text";
-    constexpr eng_cchar _xml_cstr_node_image      [] = "image";
-    constexpr eng_cchar _xml_cstr_node_sound      [] = "sound";
-    constexpr eng_cchar _xml_cstr_node_font       [] = "font";
-    constexpr eng_cchar _xml_cstr_node_asset      [] = "asset";
+    constexpr cchar _xml_cstr_node_ifb_assets [] = "ifb-assets";
+    constexpr cchar _xml_cstr_node_text       [] = "text";
+    constexpr cchar _xml_cstr_node_image      [] = "image";
+    constexpr cchar _xml_cstr_node_sound      [] = "sound";
+    constexpr cchar _xml_cstr_node_font       [] = "font";
+    constexpr cchar _xml_cstr_node_asset      [] = "asset";
 
-    constexpr eng_cchar _xml_cstr_attrib_name     [] = "name"; 
-    constexpr eng_cchar _xml_cstr_attrib_path     [] = "path"; 
+    constexpr cchar _xml_cstr_attrib_name     [] = "name"; 
+    constexpr cchar _xml_cstr_attrib_path     [] = "path"; 
 
-    constexpr eng_cchar _xml_cstr_default_config  [] = 
+    constexpr cchar _xml_cstr_default_config  [] = 
         "<ifb-assets>"
             "<text path=\"../assets/text\">"
             "</text>"
@@ -28,9 +28,9 @@ namespace ifb {
 
     static eng_asset_config_t* _config;
 
-    IFB_ENG_FUNC eng_void
+    IFB_ENG_FUNC void
     eng_asset_config_create(
-        eng_void) {
+        void) {
 
         // get an arena
         eng_mem_arena_t* arena = eng_mem_arena_commit_asset();
@@ -46,7 +46,7 @@ namespace ifb {
         void* xml_stack_memory = eng_mem_arena_push_bytes  (arena, xml_stack_size);
 
         // check allocations and save position
-        eng_bool is_mem_ok = true;        
+        bool is_mem_ok = true;        
         is_mem_ok &= sld::arena_save_position(arena); 
         is_mem_ok &= (_eng_asset_mngr.config != NULL);
         is_mem_ok &= (xml_stack_memory       != NULL);
@@ -92,7 +92,7 @@ namespace ifb {
     eng_asset_config_validate(
         void) {
 
-        eng_bool is_valid = (_eng_asset_mngr.config != NULL);
+        bool is_valid = (_eng_asset_mngr.config != NULL);
         if (is_valid) {
             is_valid &= (_eng_asset_mngr.config->arena           != NULL);
             is_valid &= (_eng_asset_mngr.config->file.val        != IFB_ENG_FILE_H32_INVALID);
@@ -115,8 +115,8 @@ namespace ifb {
 
         eng_asset_config_validate();
 
-        static const eng_u32 size           = sizeof(_xml_cstr_default_config);
-        static eng_buffer_t  default_buffer = {
+        static const u32 size           = sizeof(_xml_cstr_default_config);
+        static buffer_t  default_buffer = {
             (byte*)_xml_cstr_default_config, // data
             size,                            // size
             size                             // length
@@ -130,16 +130,16 @@ namespace ifb {
         assert(did_read);
     }
 
-    IFB_ENG_FUNC eng_void
+    IFB_ENG_FUNC void
     eng_asset_config_save_file(
         void) {
         
         eng_asset_config_validate();
 
         // allocate memory
-        const eng_u64  buffer_size = sld::xml_doc_buffer_length (_eng_asset_mngr.config->xml.doc);  
-        const eng_bool is_mem_ok   = sld::arena_roll_back       (_eng_asset_mngr.config->arena);
-        eng_byte*      buffer_data = sld::arena_push_bytes      (_eng_asset_mngr.config->arena, buffer_size); 
+        const u64  buffer_size = sld::xml_doc_buffer_length (_eng_asset_mngr.config->xml.doc);  
+        const bool is_mem_ok   = sld::arena_roll_back       (_eng_asset_mngr.config->arena);
+        byte*      buffer_data = sld::arena_push_bytes      (_eng_asset_mngr.config->arena, buffer_size); 
         assert(
             buffer_size != 0    &&
             buffer_data != NULL &&
@@ -161,19 +161,19 @@ namespace ifb {
         assert(did_save);
     }
 
-    IFB_ENG_FUNC eng_void
+    IFB_ENG_FUNC void
     eng_asset_config_read_file(
         eng_asset_config_t* const config) {
 
         eng_asset_config_validate();
 
         // get the file size
-        const eng_u64 size = eng_file_mngr_get_size(_eng_asset_mngr.config->file);
+        const u64 size = eng_file_mngr_get_size(_eng_asset_mngr.config->file);
         if (size == 0) return;
 
         // allocate memory
-        eng_bool  is_mem_ok  = sld::arena_roll_back  (_eng_asset_mngr.config->arena);
-        eng_byte* config_mem = sld::arena_push_bytes (_eng_asset_mngr.config->arena, size);
+        bool  is_mem_ok  = sld::arena_roll_back  (_eng_asset_mngr.config->arena);
+        byte* config_mem = sld::arena_push_bytes (_eng_asset_mngr.config->arena, size);
         assert(is_mem_ok && config_mem != NULL);
 
         // initialize the file buffer
@@ -185,7 +185,7 @@ namespace ifb {
         file_buffer.transferred = 0;
 
         // reset the xml
-        eng_bool did_read = true; 
+        bool did_read = true; 
         sld::xml_doc_reset(_eng_asset_mngr.config->xml.doc);
 
         // read and parse the xml
@@ -341,7 +341,7 @@ namespace ifb {
     IFB_ENG_FUNC bool
     eng_asset_config_node_read_assets(
         eng_asset_config_node_t& node,
-        eng_xml_node_t*          xml_type) {
+        xml_node_t*          xml_type) {
 
         // get the first asset node if there is any
         bool did_read = sld::xml_node_get_child(xml_type, _xml_cstr_node_asset, _eng_asset_mngr.config->xml.node.asset);
@@ -356,14 +356,14 @@ namespace ifb {
             is_mem_ok       &= (node.array.path != NULL);            
             assert(is_mem_ok);
 
-            constexpr eng_u32 asset_cstr_size = sizeof(eng_asset_cstr_t); 
-            eng_cstr_t        dst_cstr_name   = { NULL, asset_cstr_size};
-            eng_cstr_t        dst_cstr_path   = { NULL, asset_cstr_size};
-            eng_cstr_t        src_cstr_name   = { NULL, asset_cstr_size};
-            eng_cstr_t        src_cstr_path   = { NULL, asset_cstr_size};
+            constexpr u32 asset_cstr_size = sizeof(eng_asset_cstr_t); 
+            cstr_t        dst_cstr_name   = { NULL, asset_cstr_size};
+            cstr_t        dst_cstr_path   = { NULL, asset_cstr_size};
+            cstr_t        src_cstr_name   = { NULL, asset_cstr_size};
+            cstr_t        src_cstr_path   = { NULL, asset_cstr_size};
 
             for (
-                eng_u32 index = 0;
+                u32 index = 0;
                 index < node.count;
                 ++index) {
 
@@ -377,8 +377,8 @@ namespace ifb {
                 // copy the name and path 
                 dst_cstr_name.chars              =  node.array.name[index].chars;
                 dst_cstr_path.chars              =  node.array.path[index].chars;
-                const eng_u32 length_copied_name =  sld::cstr_copy(dst_cstr_name, src_cstr_name);
-                const eng_u32 length_copied_path =  sld::cstr_copy(dst_cstr_path, src_cstr_path);
+                const u32 length_copied_name =  sld::cstr_copy(dst_cstr_name, src_cstr_name);
+                const u32 length_copied_path =  sld::cstr_copy(dst_cstr_path, src_cstr_path);
                 did_read                         &= (length_copied_name > 0);           
                 did_read                         &= (length_copied_path > 0);           
             }
@@ -392,13 +392,13 @@ namespace ifb {
     IFB_ENG_FUNC bool
     eng_asset_config_node_write_assets(
         eng_asset_config_node_t&  node,
-        eng_xml_node_t*           xml_type) {
+        xml_node_t*           xml_type) {
 
         bool did_write = (xml_type != NULL); 
         if (did_write) {
 
             for (
-                eng_u32 index = 0;
+                u32 index = 0;
                 index < node.count;
                 ++index) {
 
@@ -417,20 +417,20 @@ namespace ifb {
         return(did_write);
     }
 
-    IFB_ENG_FUNC eng_u64
+    IFB_ENG_FUNC u64
     eng_asset_config_get_xml_buffer_size() {
 
         eng_asset_config_validate();
 
-        const eng_u64 size = sld::xml_doc_buffer_length(_eng_asset_mngr.config->xml.doc);
+        const u64 size = sld::xml_doc_buffer_length(_eng_asset_mngr.config->xml.doc);
         return(size);
     }
 
-    IFB_ENG_FUNC eng_void
+    IFB_ENG_FUNC void
     eng_asset_config_get_xml_buffer(
-        eng_buffer_t& buffer) {
+        buffer_t& buffer) {
 
-        const eng_bool did_write = sld::xml_doc_buffer_write(
+        const bool did_write = sld::xml_doc_buffer_write(
             _eng_asset_mngr.config->xml.doc,
             buffer
         );

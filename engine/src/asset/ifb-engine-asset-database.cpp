@@ -28,13 +28,13 @@ namespace ifb {
         _eng_asset_mngr.db = db;
     }
 
-    IFB_ENG_FUNC eng_void
+    IFB_ENG_FUNC void
     eng_asset_db_destroy(
         void) {
 
         eng_asset_db_validate();
 
-        const eng_bool did_decommit = eng_mem_arena_decommit(_eng_asset_mngr.db->arena);
+        const bool did_decommit = eng_mem_arena_decommit(_eng_asset_mngr.db->arena);
         assert(did_decommit);
 
         _eng_asset_mngr.db->arena       = NULL;
@@ -44,7 +44,7 @@ namespace ifb {
         _eng_asset_mngr.db->table.font  = NULL;
     }
 
-    IFB_ENG_FUNC eng_void
+    IFB_ENG_FUNC void
     eng_asset_db_validate(
         void) {
 
@@ -59,28 +59,28 @@ namespace ifb {
         assert(is_valid);
     }
 
-    IFB_ENG_FUNC eng_bool
+    IFB_ENG_FUNC bool
     eng_asset_db_load_text(
         eng_asset_db_t* const  db,
         eng_asset_db_record_t& record) {
 
     }
 
-    IFB_ENG_FUNC eng_bool
+    IFB_ENG_FUNC bool
     eng_asset_db_load_image(
         eng_asset_db_t* const  db,
         eng_asset_db_record_t& record) {
 
     }
 
-    IFB_ENG_FUNC eng_bool
+    IFB_ENG_FUNC bool
     eng_asset_db_load_sound(
         eng_asset_db_t* const  db,
         eng_asset_db_record_t& record) {
 
     }
 
-    IFB_ENG_FUNC eng_bool
+    IFB_ENG_FUNC bool
     eng_asset_db_load_font(
         eng_asset_db_t* const  db,
         eng_asset_db_record_t& record) {

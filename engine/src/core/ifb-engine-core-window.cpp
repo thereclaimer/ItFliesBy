@@ -78,7 +78,7 @@ namespace ifb {
         if (is_key_down) {
 
             for (
-                eng_u32 key_index = 0;
+                u32 key_index = 0;
                 key_index < count_keys_down;
                 ++key_index) {
 
@@ -93,7 +93,7 @@ namespace ifb {
         if (is_key_up) {
             
             for (
-                eng_u32 key_index = 0;
+                u32 key_index = 0;
                 key_index < count_keys_up;
                 ++key_index) {
 
@@ -115,11 +115,11 @@ namespace ifb {
     eng_core_window_center_to_monitor(
         const eng_core_monitor_handle_t monitor) {
 
-        eng_dims_u32_size_t monitor_size;
-        eng_dims_u32_pos_t  monitor_center;
-        eng_dims_u32_pos_t  window_center;
+        dims_u32_size_t monitor_size;
+        dims_u32_pos_t  monitor_center;
+        dims_u32_pos_t  window_center;
 
-        const eng_bool should_reset_window = (_eng_core_window.size.width == 0 || _eng_core_window.size.height == 0); 
+        const bool should_reset_window = (_eng_core_window.size.width == 0 || _eng_core_window.size.height == 0); 
         if (should_reset_window) {
             _eng_core_window.size.width  = ENG_CORE_WINDOW_DEFAULT_WIDTH;
             _eng_core_window.size.height = ENG_CORE_WINDOW_DEFAULT_HEIGHT;
@@ -133,13 +133,13 @@ namespace ifb {
     eng_core_window_center_to_primary_monitor(
         void) {
 
-        const eng_bool should_reset_window = (_eng_core_window.size.width == 0 || _eng_core_window.size.height == 0); 
+        const bool should_reset_window = (_eng_core_window.size.width == 0 || _eng_core_window.size.height == 0); 
         if (should_reset_window) {
             _eng_core_window.size.width  = ENG_CORE_WINDOW_DEFAULT_WIDTH;
             _eng_core_window.size.height = ENG_CORE_WINDOW_DEFAULT_HEIGHT;
         }
 
-        eng_dims_u32_size_t monitor_size;
+        dims_u32_size_t monitor_size;
         eng_core_monitor_get_size      (_eng_core_monitor_table.primary,     monitor_size);
         sld::dims_u32_center_a_inside_b(_eng_core_window.size, monitor_size, _eng_core_window.position);
     }

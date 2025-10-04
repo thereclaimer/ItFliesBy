@@ -4,7 +4,7 @@
 #include "ifb-engine-gui-internal.hpp"
 namespace ifb {
 
-    IFB_ENG_API eng_bool
+    IFB_ENG_API bool
     eng_core_startup(
         void) {
 
@@ -16,7 +16,7 @@ namespace ifb {
         // allocate core memory
         _eng_core_arenas.xml      = eng_mem_arena_commit_core();
         _eng_core_arenas.platform = eng_mem_arena_commit_core();
-        eng_bool is_mem_ok = true;
+        bool is_mem_ok = true;
         is_mem_ok &= (_eng_core_arenas.xml      != NULL);
         is_mem_ok &= (_eng_core_arenas.platform != NULL);
         
@@ -35,7 +35,7 @@ namespace ifb {
         return(true); 
     }
 
-    IFB_ENG_API eng_bool
+    IFB_ENG_API bool
     eng_core_shutdown(
         void) {
 
@@ -50,7 +50,7 @@ namespace ifb {
         return(true);
     }
 
-    IFB_ENG_API eng_bool
+    IFB_ENG_API bool
     eng_core_update(
         void) {
 
@@ -59,7 +59,7 @@ namespace ifb {
         return(true);
     }
 
-    IFB_ENG_API eng_bool
+    IFB_ENG_API bool
     eng_core_render(
         void) {
 
@@ -69,11 +69,11 @@ namespace ifb {
         return(true);
     }
 
-    IFB_ENG_API eng_bool
+    IFB_ENG_API bool
     eng_core_should_quit(
         void) {
 
-        eng_bool eng_core_should_quit = false;
+        bool eng_core_should_quit = false;
 
         eng_core_should_quit |= (_eng_core_window.update.events.val & sld::os_window_event_e_quit);
 

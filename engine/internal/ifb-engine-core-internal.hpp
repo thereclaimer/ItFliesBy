@@ -11,17 +11,17 @@ namespace ifb {
     // CONSTANTS
     //-------------------------------------------------------------------
 
-    constexpr eng_cchar ENG_CORE_WINDOW_TITLE[]                     = "It Flies By";
-    constexpr eng_u32   ENG_CORE_XML_MEMORY_SIZE                    = sld::size_megabytes(1); 
-    constexpr eng_u32   ENG_CORE_WINDOW_DEFAULT_WIDTH               = 1024;
-    constexpr eng_u32   ENG_CORE_WINDOW_DEFAULT_HEIGHT              = 768;
-    constexpr eng_u32   ENG_CORE_WINDOW_DEFAULT_SCREEN_X            = 0;
-    constexpr eng_u32   ENG_CORE_WINDOW_DEFAULT_SCREEN_Y            = 0;
-    constexpr eng_u32   ENG_CORE_WINDOW_INPUT_QUEUE_COUNT           = 8;
-    constexpr eng_u32   ENG_CORE_WINDOW_INPUT_QUEUE_KEYBOARD_SIZE   = sizeof(sld::os_input_keycode_t) * ENG_CORE_WINDOW_INPUT_QUEUE_COUNT;
-    constexpr eng_u32   ENG_CORE_WINDOW_INPUT_QUEUE_KEYBOARD_STRIDE = sizeof(sld::os_input_keycode_t);
-    constexpr eng_u32   ENG_CORE_MONITOR_COUNT_MAX                  = 16;
-    constexpr eng_u32   ENG_CORE_MONITOR_NAME_BUFFER_SIZE           = (ENG_CORE_MONITOR_COUNT_MAX * sld::OS_MONITOR_NAME_WIDTH); 
+    constexpr cchar ENG_CORE_WINDOW_TITLE[]                     = "It Flies By";
+    constexpr u32   ENG_CORE_XML_MEMORY_SIZE                    = sld::size_megabytes(1); 
+    constexpr u32   ENG_CORE_WINDOW_DEFAULT_WIDTH               = 1024;
+    constexpr u32   ENG_CORE_WINDOW_DEFAULT_HEIGHT              = 768;
+    constexpr u32   ENG_CORE_WINDOW_DEFAULT_SCREEN_X            = 0;
+    constexpr u32   ENG_CORE_WINDOW_DEFAULT_SCREEN_Y            = 0;
+    constexpr u32   ENG_CORE_WINDOW_INPUT_QUEUE_COUNT           = 8;
+    constexpr u32   ENG_CORE_WINDOW_INPUT_QUEUE_KEYBOARD_SIZE   = sizeof(sld::os_input_keycode_t) * ENG_CORE_WINDOW_INPUT_QUEUE_COUNT;
+    constexpr u32   ENG_CORE_WINDOW_INPUT_QUEUE_KEYBOARD_STRIDE = sizeof(sld::os_input_keycode_t);
+    constexpr u32   ENG_CORE_MONITOR_COUNT_MAX                  = 16;
+    constexpr u32   ENG_CORE_MONITOR_NAME_BUFFER_SIZE           = (ENG_CORE_MONITOR_COUNT_MAX * sld::OS_MONITOR_NAME_WIDTH); 
 
     //-------------------------------------------------------------------
     // TYPES
@@ -48,34 +48,34 @@ namespace ifb {
     struct eng_core_window_t {
         eng_core_window_error_t  last_error;
         eng_core_window_handle_t handle;
-        eng_dims_u32_size_t      size;
-        eng_dims_u32_pos_t       position;
+        dims_u32_size_t      size;
+        dims_u32_pos_t       position;
         eng_core_window_update_t update;
     };
 
     struct eng_core_monitor_table_t {
         eng_core_monitor_handle_t primary;         
         eng_core_monitor_handle_t active;         
-        eng_u32                   count;
-        eng_dims_u32_size_t       virtual_size;
-        eng_pad32                 padding;
+        u32                       count;
+        dims_u32_size_t       virtual_size;
+        pad32                     padding;
         struct {
-            eng_u32*                   position_x;
-            eng_u32*                   position_y;
-            eng_u32*                   width;
-            eng_u32*                   height;
-            eng_cchar*                 name;
+            u32*                   position_x;
+            u32*                   position_y;
+            u32*                   width;
+            u32*                   height;
+            cchar*                 name;
             eng_core_monitor_handle_t* handle;
         } array;
     };
 
     struct eng_core_monitor_name_t {
-        eng_cchar cstr[sld::OS_MONITOR_NAME_WIDTH];
+        cchar cstr[sld::OS_MONITOR_NAME_WIDTH];
     };
     struct eng_core_monitor_info_t {
         eng_core_monitor_handle_t os_handle;
-        eng_dims_u32_size_t       size;
-        eng_dims_u32_pos_t        pos;
+        dims_u32_size_t       size;
+        dims_u32_pos_t        pos;
         eng_core_monitor_name_t   name;
     };
 
@@ -83,7 +83,7 @@ namespace ifb {
     // SINGLETONS
     //-------------------------------------------------------------------
 
-    static eng_byte                 _eng_core_xml_memory[ENG_CORE_XML_MEMORY_SIZE]; 
+    static byte                 _eng_core_xml_memory[ENG_CORE_XML_MEMORY_SIZE]; 
     static eng_core_arenas_t        _eng_core_arenas;
     static eng_core_window_t        _eng_core_window;
     static eng_core_monitor_table_t _eng_core_monitor_table;
@@ -99,12 +99,12 @@ namespace ifb {
     IFB_ENG_FUNC void     eng_core_window_center_to_monitor         (const eng_core_monitor_handle_t monitor);
     IFB_ENG_FUNC void     eng_core_window_center_to_primary_monitor (void);
 
-    IFB_ENG_FUNC eng_bool eng_core_monitor_table_validate           (void);
+    IFB_ENG_FUNC bool eng_core_monitor_table_validate           (void);
     IFB_ENG_FUNC void     eng_core_monitor_table_init               (void);
     IFB_ENG_FUNC void     eng_core_monitor_table_refresh            (void);
-    IFB_ENG_FUNC eng_u32  eng_core_monitor_table_search             (const eng_core_monitor_handle_t monitor);
-    IFB_ENG_FUNC void     eng_core_monitor_get_size                 (const eng_core_monitor_handle_t monitor, eng_dims_u32_size_t&     size);
-    IFB_ENG_FUNC void     eng_core_monitor_get_position             (const eng_core_monitor_handle_t monitor, eng_dims_u32_pos_t&      pos);
+    IFB_ENG_FUNC u32  eng_core_monitor_table_search             (const eng_core_monitor_handle_t monitor);
+    IFB_ENG_FUNC void     eng_core_monitor_get_size                 (const eng_core_monitor_handle_t monitor, dims_u32_size_t&     size);
+    IFB_ENG_FUNC void     eng_core_monitor_get_position             (const eng_core_monitor_handle_t monitor, dims_u32_pos_t&      pos);
     IFB_ENG_FUNC void     eng_core_monitor_get_name                 (const eng_core_monitor_handle_t monitor, eng_core_monitor_name_t& name);
     IFB_ENG_FUNC void     eng_core_monitor_get_info                 (const eng_core_monitor_handle_t monitor, eng_core_monitor_info_t& info);
 

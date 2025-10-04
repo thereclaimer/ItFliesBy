@@ -12,7 +12,7 @@ namespace ifb {
     eng_mem_mngr_startup(
         void) {
 
-        eng_bool is_init = true;
+        bool is_init = true;
         is_init &= reservation_acquire (&_mem_mngr.res.core,  ENG_MEM_SIZE_RES_CORE,  ENG_MEM_SIZE_ARENA_CORE);
         is_init &= reservation_acquire (&_mem_mngr.res.file,  ENG_MEM_SIZE_RES_FILE,  ENG_MEM_SIZE_ARENA_FILE);
         is_init &= reservation_acquire (&_mem_mngr.res.asset, ENG_MEM_SIZE_RES_ASSET, ENG_MEM_SIZE_ARENA_ASSET);
@@ -59,7 +59,7 @@ namespace ifb {
         return(arena);
     }
 
-    IFB_ENG_INTERNAL eng_bool
+    IFB_ENG_INTERNAL bool
     eng_mem_arena_decommit(
         eng_mem_arena_t* arena) {
 
