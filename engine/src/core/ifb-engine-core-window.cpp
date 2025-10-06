@@ -85,7 +85,7 @@ namespace ifb {
                 const sld::input_keycode_t keycode = window_keyboard_get_keycode_down(key_index); 
 
                 if (keycode.val == sld::os_input_keycode_e_a) {
-                    assert(false);
+                    // assert(false);
                 }
             }
         }

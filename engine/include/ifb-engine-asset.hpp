@@ -6,16 +6,16 @@
 #include "ifb-engine-id.hpp"
 
 #ifndef    IFB_ENG_ASSET_DB_PATH   
-#   define IFB_ENG_ASSET_DB_PATH     "IFB.AssetDB.ifb"
+#   define IFB_ENG_ASSET_DB_PATH           "IFB.AssetDB.ifb"
 #endif
 #ifndef    IFB_ENG_ASSET_VERIF_STR   
-#   define IFB_ENG_ASSET_VERIF_STR   "IFBASSETDATABASE"
+#   define IFB_ENG_ASSET_VERIF_STR         "IFBASSETDATABASE"
 #endif
 #ifndef    IFB_ENG_ASSET_CONFIG_PATH   
-#   define IFB_ENG_ASSET_CONFIG_PATH "IFB.AssetConfig.xml"
+#   define IFB_ENG_ASSET_CONFIG_PATH       "IFB.AssetConfig.xml"
 #endif
 #ifndef    IFB_ENG_ASSET_CSTR_SIZE
-#   define IFB_ENG_ASSET_CSTR_SIZE   32 
+#   define IFB_ENG_ASSET_CSTR_SIZE         32 
 #endif
 #ifndef    IFB_ENG_ASSET_XML_STACK_SIZE_KB
 #   define IFB_ENG_ASSET_XML_STACK_SIZE_KB 4

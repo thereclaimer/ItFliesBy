@@ -2,12 +2,16 @@
 #define IFB_ENGINE_GUI_INTERNAL_HPP
 
 #include <imgui.h>
+#include <imgui/L2DFileDialog.h>
 
 #include "ifb-engine.hpp"
 
 namespace ifb {
 
+    constexpr cchar ENG_GUI_UNNAMED_WIDGET[] = "###";
+
     struct eng_gui_t;
+    struct eng_gui_label_t;
     struct eng_gui_u32_flags_imgui_t  : u32_t { };
     struct eng_gui_u32_flags_assets_t : u32_t { };
 
@@ -30,6 +34,14 @@ namespace ifb {
     struct eng_gui_menu_bar_state_t {
         eng_gui_u32_flags_imgui_t  imgui;
         eng_gui_u32_flags_assets_t assets;
+    };
+
+    struct eng_gui_label_t {
+        cchar buffer[32];
+    };
+
+    struct eng_gui_input_cstr_t {
+        cchar buffer[128];
     };
 
     IFB_ENG_FUNC void eng_gui_init               (void);
@@ -59,6 +71,37 @@ namespace ifb {
 
     struct eng_gui_text_dims_t : dims_f32_size_t { };
 
+    IFB_ENG_INLINE u32
+    eng_gui_get_unique_id(
+        void) {
+
+        static u32 id = 0xFFFFFFFF;
+        ++id;
+        return(id);
+    }
+
+    IFB_ENG_INLINE eng_gui_label_t
+    eng_gui_get_unique_label(
+        const cchar* label_text) {
+
+        const u32 id = eng_gui_get_unique_id();
+
+        eng_gui_label_t label;
+        sprintf_s(label.buffer, sizeof(label), "%s##%d",label_text, id);
+
+        return(label);
+    }
+
+    IFB_ENG_INLINE eng_gui_label_t
+    eng_gui_get_label(
+        const cchar* label_text) {
+
+        eng_gui_label_t label;
+        sprintf_s(label.buffer, sizeof(label), "%s",label_text);
+
+        return(label);
+    }
+
     IFB_ENG_INLINE eng_gui_text_dims_t
     eng_gui_text_dims(
         void) {
@@ -70,31 +113,42 @@ namespace ifb {
     }
 
     struct eng_gui_text_input_t {
-        const cchar* label_button;
-        const cchar* label_text_box;
-        const cchar* input_name;
-        cstr_t       input_cstr;
-        bool         button_clicked;
+        u32                  input_id;
+        u32                  text_id;
+        eng_gui_label_t      label_button;
+        eng_gui_label_t      label_text_box;
+        eng_gui_input_cstr_t input_string;
+        bool                 button_clicked;
     };
+
+    IFB_ENG_INLINE eng_gui_text_input_t
+    eng_gui_text_input_init(
+        const cchar* label_button,
+        const cchar* label_input) {
+
+        eng_gui_text_input_t input;
+        input.input_id       = eng_gui_get_unique_id    ();
+        input.text_id        = eng_gui_get_unique_id    ();
+        input.label_button   = eng_gui_get_unique_label (label_button);
+        input.label_text_box = eng_gui_get_label        (label_input);
+        input.button_clicked = false;
+
+        memset(input.input_string.buffer, 0, sizeof(input.input_string));
+        return(input);
+    }
 
     IFB_ENG_INLINE void
     eng_gui_text_input(
         eng_gui_text_input_t* text_input,
         const u32             count = 1) {
 
-        constexpr u32 col_index_label  = 0;
-        constexpr u32 col_index_text   = 1;
-        constexpr u32 col_index_button = 2;
-        constexpr u32 col_count        = 3;
+        constexpr u32 col_index_label   = 0;
+        constexpr u32 col_index_text    = 1;
+        constexpr u32 col_index_button  = 2;
+        constexpr u32 col_count         = 3;
+        constexpr u32 input_string_size = sizeof(eng_gui_input_cstr_t);
 
-        static eng_gui_text_dims_t text_dims = eng_gui_text_dims();
-
-        constexpr ImGuiTableFlags table_flags = (
-            0
-        );
-
-        if (ImGui::BeginTable("input-table",col_count)) {
-
+        if (ImGui::BeginTable("###",col_count)) {
 
             for (
                 u32 index = 0;
@@ -104,19 +158,22 @@ namespace ifb {
                 eng_gui_text_input_t& current_text_input = text_input[index];
 
                 ImGui::TableNextRow();
-                
-                ImGui::TableSetColumnIndex(col_index_label);
-                ImGui::Text(current_text_input.label_text_box);
 
-                ImGui::TableSetColumnIndex(col_index_text);
-                ImGui::InputText(current_text_input.input_name, current_text_input.input_cstr.chars, current_text_input.input_cstr.size);
+                ImGui::TableSetColumnIndex (col_index_label);
+                ImGui::Text(current_text_input.label_text_box.buffer);
 
+                ImGui::TableSetColumnIndex (col_index_text);
+                ImGui::PushID(current_text_input.label_text_box.buffer);
+                ImGui::InputText("###", &current_text_input.input_string.buffer[0], input_string_size);
                 ImGui::TableSetColumnIndex(col_index_button);
-                current_text_input.button_clicked = ImGui::Button(current_text_input.label_button);
+                ImGui::PopID();
+
+                current_text_input.button_clicked = ImGui::Button(current_text_input.label_button.buffer);
             }
 
             ImGui::EndTable();
         }
+
     };
 
 };
