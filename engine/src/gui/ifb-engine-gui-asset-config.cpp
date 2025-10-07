@@ -42,6 +42,7 @@ namespace ifb {
     eng_gui_asset_config_path_input(
         void) {
 
+        constexpr u32 input_size       = sizeof(eng_gui_input_cstr_t); 
         constexpr u32 path_input_file  = 0; 
         constexpr u32 path_input_dir   = 1; 
         constexpr u32 path_input_count = 2; 
@@ -52,11 +53,17 @@ namespace ifb {
         };
         eng_gui_text_input(path_text_input_array, path_input_count);
 
-        const u32  input_size = sizeof(eng_gui_input_cstr_t);
+        static bool      is_dialog_open_file     = false;
+        static bool      is_dialog_open_dir      = false;
+        const  bool      is_clicked_button_file  = path_text_input_array[path_input_file].button_clicked; 
+        const  bool      is_clicked_button_dir   = path_text_input_array[path_input_dir].button_clicked; 
+        const  bool      should_open_dialog_file = (is_dialog_open_file || is_clicked_button_file);
+        const  bool      should_open_dialog_dir  = (is_dialog_open_dir  || is_clicked_button_dir);
 
-        if (path_text_input_array[path_input_file].button_clicked) {
+        if (should_open_dialog_file) {
 
-            FileDialog::file_dialog_open      = true;
+            is_dialog_open_file               = true;            
+            FileDialog::file_dialog_open      = is_dialog_open_file;
             FileDialog::file_dialog_open_type = FileDialog::FileDialogType::OpenFile;
             cchar* input_buffer               = path_text_input_array[path_input_file].input_string.buffer; 
 
@@ -67,11 +74,14 @@ namespace ifb {
                     input_size
                 );
             }
+
+            is_dialog_open_file = FileDialog::file_dialog_open;
         }
 
-        if (path_text_input_array[path_input_dir].button_clicked) {
+        if (should_open_dialog_dir) {
 
-            FileDialog::file_dialog_open      = true;
+            is_dialog_open_dir                = true;
+            FileDialog::file_dialog_open      = is_dialog_open_dir;
             FileDialog::file_dialog_open_type = FileDialog::FileDialogType::SelectFolder;
             cchar*      input_buffer          = path_text_input_array[path_input_dir].input_string.buffer; 
 
@@ -82,6 +92,8 @@ namespace ifb {
                     input_size
                 );
             }
+
+            is_dialog_open_dir = FileDialog::file_dialog_open;
         }
     }
 

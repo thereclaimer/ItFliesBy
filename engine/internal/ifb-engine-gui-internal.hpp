@@ -146,29 +146,32 @@ namespace ifb {
         constexpr u32 col_index_text    = 1;
         constexpr u32 col_index_button  = 2;
         constexpr u32 col_count         = 3;
-        constexpr u32 input_string_size = sizeof(eng_gui_input_cstr_t);
+        constexpr u32 input_size        = sizeof(eng_gui_input_cstr_t);
 
-        if (ImGui::BeginTable("###",col_count)) {
+        if (ImGui::BeginTable(ENG_GUI_UNNAMED_WIDGET,col_count)) {
 
             for (
                 u32 index = 0;
                 index < count;
                 ++index) {
 
-                eng_gui_text_input_t& current_text_input = text_input[index];
+                cchar* input_label  = text_input[index].label_text_box.buffer;
+                cchar* input_buffer = text_input[index].input_string.buffer;
+                cchar* button_label = text_input[index].label_button.buffer;
+                bool&  is_clicked   = text_input[index].button_clicked;
 
                 ImGui::TableNextRow();
 
                 ImGui::TableSetColumnIndex (col_index_label);
-                ImGui::Text(current_text_input.label_text_box.buffer);
+                ImGui::Text                (input_label);
 
                 ImGui::TableSetColumnIndex (col_index_text);
-                ImGui::PushID(current_text_input.label_text_box.buffer);
-                ImGui::InputText("###", &current_text_input.input_string.buffer[0], input_string_size);
-                ImGui::TableSetColumnIndex(col_index_button);
-                ImGui::PopID();
+                ImGui::PushID              (input_label);
+                ImGui::InputText           (ENG_GUI_UNNAMED_WIDGET, input_buffer, input_size);
+                ImGui::PopID               ();
 
-                current_text_input.button_clicked = ImGui::Button(current_text_input.label_button.buffer);
+                ImGui::TableSetColumnIndex (col_index_button);
+                is_clicked = ImGui::Button (button_label);
             }
 
             ImGui::EndTable();
