@@ -63,6 +63,11 @@ namespace ifb {
     struct eng_asset_cstr_t {
         cchar chars[IFB_ENG_ASSET_CSTR_SIZE];
     };
+
+    struct eng_asset_config_cstr_t {
+        eng_asset_cstr_t name;
+        eng_asset_cstr_t path;
+    };
 };
 
 #endif //IFB_ENGINE_ASSET_HPP

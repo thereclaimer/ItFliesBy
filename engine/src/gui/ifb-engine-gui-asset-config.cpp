@@ -13,7 +13,12 @@ namespace ifb {
     constexpr cchar CSTR_PATH_INPUT_ASSET_DIR_INPUT_LABEL_TEXT [] = "Asset Directory:";
     constexpr cchar CSTR_INPUT_BUTTON_SUBMIT_FILE              [] = "Submit File";
     constexpr cchar CSTR_INPUT_BUTTON_SUBMIT_DIR               [] = "Submit Dir";
-    
+
+    struct gui_asset_config_t {
+        eng_gui_input_cstr_t asset_folder;
+        eng_gui_input_cstr_t asset_config;
+    };
+
     IFB_ENG_FUNC void
     eng_gui_asset_config(
         void) {
@@ -103,7 +108,7 @@ namespace ifb {
 
         const ImGuiTreeNodeFlags header_flags = ImGuiTreeNodeFlags_None;
         if (ImGui::CollapsingHeader(CSTR_HEADER_LABEL_TEXT)) {
-
+            
         }
     }
 

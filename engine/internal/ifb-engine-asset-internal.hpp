@@ -29,7 +29,7 @@ namespace ifb {
     struct eng_asset_db_builder_t;
     struct eng_asset_db_record_t;
 
-    struct eng_asset_config_t;
+    struct eng_asset_config_file_t;
     struct eng_asset_config_node_t;
     struct eng_asset_config_xml_properties_t;
 
@@ -68,7 +68,7 @@ namespace ifb {
         } slot_list;
         eng_asset_db_t*      db;
         eng_asset_db_file_t* db_file;
-        eng_asset_config_t*  config;
+        eng_asset_config_file_t*  config;
     };
 
     static eng_asset_mngr_t _eng_asset_mngr;
@@ -178,7 +178,7 @@ namespace ifb {
     IFB_ENG_FUNC bool eng_asset_config_node_read_assets    (eng_asset_config_node_t& node, xml_node_t* xml_type);
     IFB_ENG_FUNC bool eng_asset_config_node_write_assets   (eng_asset_config_node_t& node, xml_node_t* xml_type);
 
-    struct eng_asset_config_t {
+    struct eng_asset_config_file_t {
         eng_mem_arena_t* arena;
         eng_file_h32_t   file;
         struct {

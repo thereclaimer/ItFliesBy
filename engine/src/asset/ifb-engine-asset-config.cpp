@@ -26,7 +26,7 @@ namespace ifb {
             "</font>"
         "</ifb-assets>";
 
-    static eng_asset_config_t* _config;
+    static eng_asset_config_file_t* _config;
 
     IFB_ENG_FUNC void
     eng_asset_config_create(
@@ -42,7 +42,7 @@ namespace ifb {
         assert(xml_stack_size >= xml_stack_size_min);
 
         // allocate memory
-        _eng_asset_mngr.config = eng_mem_arena_push_struct (arena, eng_asset_config_t);
+        _eng_asset_mngr.config = eng_mem_arena_push_struct (arena, eng_asset_config_file_t);
         void* xml_stack_memory = eng_mem_arena_push_bytes  (arena, xml_stack_size);
 
         // check allocations and save position
@@ -163,7 +163,7 @@ namespace ifb {
 
     IFB_ENG_FUNC void
     eng_asset_config_read_file(
-        eng_asset_config_t* const config) {
+        eng_asset_config_file_t* const config) {
 
         eng_asset_config_validate();
 
