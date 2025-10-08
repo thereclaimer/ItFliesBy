@@ -116,7 +116,7 @@ namespace ifb {
         eng_asset_config_validate();
 
         static const u32 size           = sizeof(_xml_cstr_default_config);
-        static buffer_t  default_buffer = {
+        static data_buffer_t  default_buffer = {
             (byte*)_xml_cstr_default_config, // data
             size,                            // size
             size                             // length
@@ -126,7 +126,7 @@ namespace ifb {
         sld::xml_doc_reset(_eng_asset_mngr.config->xml.doc);
 
         // read the default buffer
-        const bool did_read = sld::xml_doc_buffer_read(_eng_asset_mngr.config->xml.doc, default_buffer);
+        const bool did_read = sld::xml_doc_buffer_read(_eng_asset_mngr.config->xml.doc, &default_buffer);
         assert(did_read);
     }
 
@@ -156,7 +156,7 @@ namespace ifb {
 
         // write the buffer and reset the arena
         bool did_save = true;
-        did_save &= sld::xml_doc_buffer_write (_eng_asset_mngr.config->xml.doc, xml_file_buffer);
+        did_save &= sld::xml_doc_buffer_write (_eng_asset_mngr.config->xml.doc, &xml_file_buffer);
         did_save &= eng_file_mngr_write       (_eng_asset_mngr.config->file,    xml_file_buffer);
         assert(did_save);
     }
@@ -190,7 +190,7 @@ namespace ifb {
 
         // read and parse the xml
         did_read &= eng_file_mngr_read       (_eng_asset_mngr.config->file,    file_buffer);
-        did_read &= sld::xml_doc_buffer_read (_eng_asset_mngr.config->xml.doc, file_buffer);
+        did_read &= sld::xml_doc_buffer_read (_eng_asset_mngr.config->xml.doc, &file_buffer);
         assert(did_read);
     }
 
@@ -428,7 +428,7 @@ namespace ifb {
 
     IFB_ENG_FUNC void
     eng_asset_config_get_xml_buffer(
-        buffer_t& buffer) {
+        data_buffer_t* buffer) {
 
         const bool did_write = sld::xml_doc_buffer_write(
             _eng_asset_mngr.config->xml.doc,

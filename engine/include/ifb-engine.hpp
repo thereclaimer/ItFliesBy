@@ -2,7 +2,7 @@
 #define IFB_ENGINE_HPP
 
 #include <sld.hpp>
-#include <sld-buffer.hpp>
+#include <sld-collections.hpp>
 #include <sld-hash.hpp>
 #include <sld-string.hpp>
 #include <sld-xml.hpp>
@@ -111,9 +111,9 @@ namespace ifb {
 
     //-------------------------------------------------------------------
     // DATA STRUCTURES
-    //-------------------------------------------------------------------
+    //-------------------------------------------------------------------g
     
-    typedef sld::buffer_t buffer_t;
+    typedef sld::data_buffer_t data_buffer_t;
 
     //-------------------------------------------------------------------
     // GEOMETRY

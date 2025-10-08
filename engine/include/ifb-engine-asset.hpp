@@ -31,7 +31,7 @@ namespace ifb {
     struct eng_asset_h32_sound_t : h32_t       { };
     struct eng_asset_h32_font_t  : h32_t       { };
 
-    struct eng_asset_buffer_t : buffer_t { };
+    struct eng_asset_buffer_t : data_buffer_t { };
     struct eng_asset_cstr_t;
 
     typedef u64 eng_asset_u64_size_t;
