@@ -380,8 +380,8 @@ namespace ifb {
                 // copy the name and path 
                 dst_cstr_name.chars          =  node.array.name[index].chars;
                 dst_cstr_path.chars          =  node.array.path[index].chars;
-                const u32 length_copied_name =  sld::str_copy(&dst_cstr_name, &src_cstr_name);
-                const u32 length_copied_path =  sld::str_copy(&dst_cstr_path, &src_cstr_path);
+                const u32 length_copied_name =  dst_cstr_name.copy_from(&src_cstr_name);
+                const u32 length_copied_path =  dst_cstr_path.copy_from(&src_cstr_path);
                 did_read                     &= (length_copied_name > 0);           
                 did_read                     &= (length_copied_path > 0);           
             }

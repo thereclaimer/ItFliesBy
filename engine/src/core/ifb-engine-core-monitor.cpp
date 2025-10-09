@@ -94,9 +94,9 @@ namespace ifb {
 
             // copy the name
             const u32 name_str_offset = (monitor * sld::OS_MONITOR_NAME_WIDTH); 
-            monitor_name_cstr_src.chars   = &info.name_cstr                              [name_str_offset];
+            monitor_name_cstr_src.chars   = &info.name_cstr                     [name_str_offset];
             monitor_name_cstr_dst.chars   = &_eng_core_monitor_table.array.name [name_str_offset];
-            (void)sld::str_copy(&monitor_name_cstr_dst, &monitor_name_cstr_src);          
+            (void)monitor_name_cstr_dst.copy_from(&monitor_name_cstr_src);
 
             // set remaining properties
             _eng_core_monitor_table.array.position_x [monitor] = info.position_x;    
@@ -183,7 +183,7 @@ namespace ifb {
         src.chars = &_eng_core_monitor_table.array.name[index * sld::OS_MONITOR_NAME_WIDTH];  
         src.size  = sld::OS_MONITOR_NAME_WIDTH;
 
-        (void)sld::str_copy(&dst, &src);
+        (void)dst.copy_from(&src);
     }
 
     IFB_ENG_FUNC void
@@ -208,6 +208,6 @@ namespace ifb {
         src.chars = &_eng_core_monitor_table.array.name[index * sld::OS_MONITOR_NAME_WIDTH];  
         dst.size  = sld::OS_MONITOR_NAME_WIDTH;
         src.size  = sld::OS_MONITOR_NAME_WIDTH;
-        (void)sld::str_copy(&dst, &src);
+        (void)dst.copy_from(&src);
     }
 };
