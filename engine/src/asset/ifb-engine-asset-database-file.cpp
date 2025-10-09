@@ -31,10 +31,10 @@ namespace ifb {
         assert(arena);
 
         // allocate memory and open the file
-        eng_asset_db_file_t* db_file     = eng_mem_arena_push_struct(arena, eng_asset_db_file_t);
-        byte*            header_data = eng_mem_arena_push_bytes (arena, _db_file_header_size); 
+        eng_asset_db_file_t* db_file     = arena->push_struct<eng_asset_db_file_t>();
+        byte*                header_data = arena->push_bytes(_db_file_header_size); 
         eng_file_h32_t       file_handle = eng_file_mngr_open_rw    (_db_file_path_cstr);
-        assert(eng_mem_arena_save_position(arena));
+        arena->save_position();
 
         // sanity check
         bool can_create = true;

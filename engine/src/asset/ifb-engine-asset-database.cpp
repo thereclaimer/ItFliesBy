@@ -12,8 +12,8 @@ namespace ifb {
         
         // create structures and allocate memory
         eng_mem_arena_t*      arena     = eng_mem_arena_commit_asset();
-        eng_asset_db_t*       db        = eng_mem_arena_push_struct       (arena, eng_asset_db_t);        
-        eng_asset_db_table_t* db_tables = eng_mem_arena_push_struct_array (arena, eng_asset_e32_type_count, eng_asset_db_table_t);
+        eng_asset_db_t*       db        = arena->push_struct<eng_asset_db_t>();        
+        eng_asset_db_table_t* db_tables = arena->push_struct<eng_asset_db_table_t>(eng_asset_e32_type_count);
         can_init &= (arena     != NULL);
         can_init &= (db        != NULL);
         can_init &= (db_tables != NULL);
@@ -50,7 +50,6 @@ namespace ifb {
 
         bool is_valid = (_eng_asset_mngr.db != NULL);
         if (is_valid) {
-            is_valid &= sld::arena_validate(_eng_asset_mngr.db->arena); 
             is_valid &= (_eng_asset_mngr.db->table.text  != NULL);
             is_valid &= (_eng_asset_mngr.db->table.image != NULL);
             is_valid &= (_eng_asset_mngr.db->table.sound != NULL);

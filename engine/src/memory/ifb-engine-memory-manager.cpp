@@ -13,10 +13,10 @@ namespace ifb {
         void) {
 
         bool is_init = true;
-        is_init &= reservation_acquire (&_mem_mngr.res.core,  ENG_MEM_SIZE_RES_CORE,  ENG_MEM_SIZE_ARENA_CORE);
-        is_init &= reservation_acquire (&_mem_mngr.res.file,  ENG_MEM_SIZE_RES_FILE,  ENG_MEM_SIZE_ARENA_FILE);
-        is_init &= reservation_acquire (&_mem_mngr.res.asset, ENG_MEM_SIZE_RES_ASSET, ENG_MEM_SIZE_ARENA_ASSET);
-        is_init &= reservation_acquire (&_mem_mngr.res.gui,   ENG_MEM_SIZE_RES_GUI,   ENG_MEM_SIZE_ARENA_GUI);
+        is_init &= _mem_mngr.res.core.acquire_system_memory  (ENG_MEM_SIZE_RES_CORE,  ENG_MEM_SIZE_ARENA_CORE);
+        is_init &= _mem_mngr.res.file.acquire_system_memory  (ENG_MEM_SIZE_RES_FILE,  ENG_MEM_SIZE_ARENA_FILE);
+        is_init &= _mem_mngr.res.asset.acquire_system_memory (ENG_MEM_SIZE_RES_ASSET, ENG_MEM_SIZE_ARENA_ASSET);
+        is_init &= _mem_mngr.res.gui.acquire_system_memory   (ENG_MEM_SIZE_RES_GUI,   ENG_MEM_SIZE_ARENA_GUI);
         return(is_init);  
     }
 
@@ -24,7 +24,7 @@ namespace ifb {
     eng_mem_arena_commit_core(
         void) {
 
-        eng_mem_arena_t* arena = sld::arena_commit(&_mem_mngr.res.core);
+        eng_mem_arena_t* arena = _mem_mngr.res.core.commit_arena();  
 
         _mem_mngr.last_error.val = (arena != NULL)
             ? eng_mem_e32_error_success 
@@ -37,7 +37,7 @@ namespace ifb {
     eng_mem_arena_commit_file(
         void) {
 
-        eng_mem_arena_t* arena = sld::arena_commit(&_mem_mngr.res.file);
+        eng_mem_arena_t* arena = _mem_mngr.res.file.commit_arena();  
 
         _mem_mngr.last_error.val = (arena != NULL)
             ? eng_mem_e32_error_success 
@@ -50,7 +50,7 @@ namespace ifb {
     eng_mem_arena_commit_asset(
         void) {
 
-        eng_mem_arena_t* arena = sld::arena_commit(&_mem_mngr.res.asset);
+        eng_mem_arena_t* arena = _mem_mngr.res.asset.commit_arena();  
 
         _mem_mngr.last_error.val = (arena != NULL)
             ? eng_mem_e32_error_success 
@@ -65,7 +65,7 @@ namespace ifb {
 
         assert(arena);
 
-        const bool is_decommitted = sld::arena_decommit(arena);
+        const bool is_decommitted = arena->decommit(); 
 
         _mem_mngr.last_error.val = (is_decommitted)
             ? eng_mem_e32_error_success 

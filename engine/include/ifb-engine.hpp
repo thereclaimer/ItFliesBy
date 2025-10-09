@@ -2,7 +2,6 @@
 #define IFB_ENGINE_HPP
 
 #include <sld.hpp>
-#include <sld-collections.hpp>
 #include <sld-hash.hpp>
 #include <sld-string.hpp>
 #include <sld-xml.hpp>

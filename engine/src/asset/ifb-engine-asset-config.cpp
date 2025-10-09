@@ -42,12 +42,12 @@ namespace ifb {
         assert(xml_stack_size >= xml_stack_size_min);
 
         // allocate memory
-        _eng_asset_mngr.config = eng_mem_arena_push_struct (arena, eng_asset_config_file_t);
-        void* xml_stack_memory = eng_mem_arena_push_bytes  (arena, xml_stack_size);
+        _eng_asset_mngr.config = arena->push_struct<eng_asset_config_file_t>();
+        void* xml_stack_memory = arena->push_bytes(xml_stack_size);
+        arena->save_position(); 
 
-        // check allocations and save position
+        // check allocations
         bool is_mem_ok = true;        
-        is_mem_ok &= sld::arena_save_position(arena); 
         is_mem_ok &= (_eng_asset_mngr.config != NULL);
         is_mem_ok &= (xml_stack_memory       != NULL);
         assert(is_mem_ok);
@@ -137,14 +137,11 @@ namespace ifb {
         eng_asset_config_validate();
 
         // allocate memory
+        arena_t* config_arena = _eng_asset_mngr.config->arena;
+
         const u64  buffer_size = sld::xml_doc_buffer_length (_eng_asset_mngr.config->xml.doc);  
-        const bool is_mem_ok   = sld::arena_roll_back       (_eng_asset_mngr.config->arena);
-        byte*      buffer_data = sld::arena_push_bytes      (_eng_asset_mngr.config->arena, buffer_size); 
-        assert(
-            buffer_size != 0    &&
-            buffer_data != NULL &&
-            is_mem_ok   == true
-        );
+        byte* buffer_data = config_arena->push_bytes(buffer_size); 
+        assert(buffer_size != 0 && buffer_data != NULL);
 
         // initialize file buffer
         eng_file_buffer_t xml_file_buffer;
@@ -159,6 +156,8 @@ namespace ifb {
         did_save &= sld::xml_doc_buffer_write (_eng_asset_mngr.config->xml.doc, &xml_file_buffer);
         did_save &= eng_file_mngr_write       (_eng_asset_mngr.config->file,    xml_file_buffer);
         assert(did_save);
+
+        config_arena->roll_back();
     }
 
     IFB_ENG_FUNC void
@@ -172,9 +171,9 @@ namespace ifb {
         if (size == 0) return;
 
         // allocate memory
-        bool  is_mem_ok  = sld::arena_roll_back  (_eng_asset_mngr.config->arena);
-        byte* config_mem = sld::arena_push_bytes (_eng_asset_mngr.config->arena, size);
-        assert(is_mem_ok && config_mem != NULL);
+        arena_t* config_arena = _eng_asset_mngr.config->arena;
+        byte* config_mem = config_arena->push_bytes(size);
+        assert(config_mem != NULL);
 
         // initialize the file buffer
         eng_file_buffer_t file_buffer;
@@ -192,6 +191,8 @@ namespace ifb {
         did_read &= eng_file_mngr_read       (_eng_asset_mngr.config->file,    file_buffer);
         did_read &= sld::xml_doc_buffer_read (_eng_asset_mngr.config->xml.doc, &file_buffer);
         assert(did_read);
+
+        config_arena->roll_back();
     }
 
     IFB_ENG_FUNC bool
@@ -343,14 +344,16 @@ namespace ifb {
         eng_asset_config_node_t& node,
         xml_node_t*          xml_type) {
 
+        arena_t* config_arena = _eng_asset_mngr.config->arena; 
+
         // get the first asset node if there is any
         bool did_read = sld::xml_node_get_child(xml_type, _xml_cstr_node_asset, _eng_asset_mngr.config->xml.node.asset);
         if (did_read) {
 
             // allocate memory
             node.count      =  sld::xml_node_get_child_count(xml_type, _xml_cstr_node_asset);
-            node.array.name =  eng_mem_arena_push_struct_array(_eng_asset_mngr.config->arena, node.count, eng_asset_cstr_t);
-            node.array.path =  eng_mem_arena_push_struct_array(_eng_asset_mngr.config->arena, node.count, eng_asset_cstr_t);
+            node.array.name =  config_arena->push_struct<eng_asset_cstr_t>(node.count);
+            node.array.path =  config_arena->push_struct<eng_asset_cstr_t>(node.count);
             bool is_mem_ok  = true;
             is_mem_ok       &= (node.array.name != NULL);            
             is_mem_ok       &= (node.array.path != NULL);            
@@ -375,17 +378,17 @@ namespace ifb {
                 did_read &= sld::xml_attrib_get_val_utf8   (_eng_asset_mngr.config->xml.attrib.path, src_cstr_path.chars);
 
                 // copy the name and path 
-                dst_cstr_name.chars              =  node.array.name[index].chars;
-                dst_cstr_path.chars              =  node.array.path[index].chars;
-                const u32 length_copied_name =  sld::cstr_copy(dst_cstr_name, src_cstr_name);
-                const u32 length_copied_path =  sld::cstr_copy(dst_cstr_path, src_cstr_path);
-                did_read                         &= (length_copied_name > 0);           
-                did_read                         &= (length_copied_path > 0);           
+                dst_cstr_name.chars          =  node.array.name[index].chars;
+                dst_cstr_path.chars          =  node.array.path[index].chars;
+                const u32 length_copied_name =  sld::str_copy(&dst_cstr_name, &src_cstr_name);
+                const u32 length_copied_path =  sld::str_copy(&dst_cstr_path, &src_cstr_path);
+                did_read                     &= (length_copied_name > 0);           
+                did_read                     &= (length_copied_path > 0);           
             }
         }
 
         sld::xml_doc_reset(_eng_asset_mngr.config->xml.doc);
-        assert(sld::arena_roll_back(_eng_asset_mngr.config->arena));
+        config_arena->roll_back();
         return(did_read);
     }
 

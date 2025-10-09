@@ -24,12 +24,12 @@ namespace ifb {
         assert(!is_init);
 
         // initialize the table
-        _eng_core_monitor_table.array.position_x = eng_core_platform_arena_push_struct_array (ENG_CORE_MONITOR_COUNT_MAX,        u32);
-        _eng_core_monitor_table.array.position_y = eng_core_platform_arena_push_struct_array (ENG_CORE_MONITOR_COUNT_MAX,        u32);
-        _eng_core_monitor_table.array.width      = eng_core_platform_arena_push_struct_array (ENG_CORE_MONITOR_COUNT_MAX,        u32);
-        _eng_core_monitor_table.array.height     = eng_core_platform_arena_push_struct_array (ENG_CORE_MONITOR_COUNT_MAX,        u32);
-        _eng_core_monitor_table.array.name       = eng_core_platform_arena_push_struct_array (ENG_CORE_MONITOR_NAME_BUFFER_SIZE, cchar);
-        _eng_core_monitor_table.array.handle     = eng_core_platform_arena_push_struct_array (ENG_CORE_MONITOR_COUNT_MAX,        eng_core_monitor_handle_t);
+        _eng_core_monitor_table.array.position_x = _eng_core_arenas.platform->push_struct<u32>(ENG_CORE_MONITOR_COUNT_MAX);
+        _eng_core_monitor_table.array.position_y = _eng_core_arenas.platform->push_struct<u32>(ENG_CORE_MONITOR_COUNT_MAX);
+        _eng_core_monitor_table.array.width      = _eng_core_arenas.platform->push_struct<u32>(ENG_CORE_MONITOR_COUNT_MAX);
+        _eng_core_monitor_table.array.height     = _eng_core_arenas.platform->push_struct<u32>(ENG_CORE_MONITOR_COUNT_MAX);
+        _eng_core_monitor_table.array.name       = _eng_core_arenas.platform->push_struct<cchar>(ENG_CORE_MONITOR_NAME_BUFFER_SIZE);
+        _eng_core_monitor_table.array.handle     = _eng_core_arenas.platform->push_struct<eng_core_monitor_handle_t>(ENG_CORE_MONITOR_COUNT_MAX);
 
         // check the table
         is_init = true;
@@ -96,7 +96,7 @@ namespace ifb {
             const u32 name_str_offset = (monitor * sld::OS_MONITOR_NAME_WIDTH); 
             monitor_name_cstr_src.chars   = &info.name_cstr                              [name_str_offset];
             monitor_name_cstr_dst.chars   = &_eng_core_monitor_table.array.name [name_str_offset];
-            (void)sld::cstr_copy(monitor_name_cstr_dst, monitor_name_cstr_src);          
+            (void)sld::str_copy(&monitor_name_cstr_dst, &monitor_name_cstr_src);          
 
             // set remaining properties
             _eng_core_monitor_table.array.position_x [monitor] = info.position_x;    
@@ -183,7 +183,7 @@ namespace ifb {
         src.chars = &_eng_core_monitor_table.array.name[index * sld::OS_MONITOR_NAME_WIDTH];  
         src.size  = sld::OS_MONITOR_NAME_WIDTH;
 
-        (void)sld::cstr_copy(dst, src);
+        (void)sld::str_copy(&dst, &src);
     }
 
     IFB_ENG_FUNC void
@@ -208,6 +208,6 @@ namespace ifb {
         src.chars = &_eng_core_monitor_table.array.name[index * sld::OS_MONITOR_NAME_WIDTH];  
         dst.size  = sld::OS_MONITOR_NAME_WIDTH;
         src.size  = sld::OS_MONITOR_NAME_WIDTH;
-        (void)sld::cstr_copy(dst, src);
+        (void)sld::str_copy(&dst, &src);
     }
 };

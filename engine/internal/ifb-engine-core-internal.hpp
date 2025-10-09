@@ -83,7 +83,7 @@ namespace ifb {
     // SINGLETONS
     //-------------------------------------------------------------------
 
-    static byte                 _eng_core_xml_memory[ENG_CORE_XML_MEMORY_SIZE]; 
+    static byte                     _eng_core_xml_memory[ENG_CORE_XML_MEMORY_SIZE]; 
     static eng_core_arenas_t        _eng_core_arenas;
     static eng_core_window_t        _eng_core_window;
     static eng_core_monitor_table_t _eng_core_monitor_table;
@@ -92,22 +92,20 @@ namespace ifb {
     // METHODS
     //-------------------------------------------------------------------
 
-    IFB_ENG_FUNC void     eng_core_window_init                      (void);
-    IFB_ENG_FUNC void     eng_core_window_open_and_show             (void);
-    IFB_ENG_FUNC void     eng_core_window_process_events            (void);
-    IFB_ENG_FUNC void     eng_core_window_swap_buffers              (void);
-    IFB_ENG_FUNC void     eng_core_window_center_to_monitor         (const eng_core_monitor_handle_t monitor);
-    IFB_ENG_FUNC void     eng_core_window_center_to_primary_monitor (void);
+    IFB_ENG_FUNC void eng_core_window_init                      (void);
+    IFB_ENG_FUNC void eng_core_window_open_and_show             (void);
+    IFB_ENG_FUNC void eng_core_window_process_events            (void);
+    IFB_ENG_FUNC void eng_core_window_swap_buffers              (void);
+    IFB_ENG_FUNC void eng_core_window_center_to_monitor         (const eng_core_monitor_handle_t monitor);
+    IFB_ENG_FUNC void eng_core_window_center_to_primary_monitor (void);
 
     IFB_ENG_FUNC bool eng_core_monitor_table_validate           (void);
-    IFB_ENG_FUNC void     eng_core_monitor_table_init               (void);
-    IFB_ENG_FUNC void     eng_core_monitor_table_refresh            (void);
+    IFB_ENG_FUNC void eng_core_monitor_table_init               (void);
+    IFB_ENG_FUNC void eng_core_monitor_table_refresh            (void);
     IFB_ENG_FUNC u32  eng_core_monitor_table_search             (const eng_core_monitor_handle_t monitor);
-    IFB_ENG_FUNC void     eng_core_monitor_get_size                 (const eng_core_monitor_handle_t monitor, dims_u32_size_t&     size);
-    IFB_ENG_FUNC void     eng_core_monitor_get_position             (const eng_core_monitor_handle_t monitor, dims_u32_pos_t&      pos);
-    IFB_ENG_FUNC void     eng_core_monitor_get_name                 (const eng_core_monitor_handle_t monitor, eng_core_monitor_name_t& name);
-    IFB_ENG_FUNC void     eng_core_monitor_get_info                 (const eng_core_monitor_handle_t monitor, eng_core_monitor_info_t& info);
+    IFB_ENG_FUNC void eng_core_monitor_get_size                 (const eng_core_monitor_handle_t monitor, dims_u32_size_t&     size);
+    IFB_ENG_FUNC void eng_core_monitor_get_position             (const eng_core_monitor_handle_t monitor, dims_u32_pos_t&      pos);
+    IFB_ENG_FUNC void eng_core_monitor_get_name                 (const eng_core_monitor_handle_t monitor, eng_core_monitor_name_t& name);
+    IFB_ENG_FUNC void eng_core_monitor_get_info                 (const eng_core_monitor_handle_t monitor, eng_core_monitor_info_t& info);
 
 };
-
-#define eng_core_platform_arena_push_struct_array(count, type) eng_mem_arena_push_struct_array(_eng_core_arenas.platform, count, type)

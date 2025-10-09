@@ -22,7 +22,7 @@ namespace ifb {
         _eng_core_window.position.y  = ENG_CORE_WINDOW_DEFAULT_SCREEN_Y;
 
         // allocate memory
-        _eng_core_window.update.keyboard = eng_mem_arena_push_struct(_eng_core_arenas.platform, sld::input_keyboard_t);
+        _eng_core_window.update.keyboard = _eng_core_arenas.platform->push_struct<sld::input_keyboard_t>();
 
         bool is_mem_ok = true;
         is_mem_ok &= (_eng_core_window.update.keyboard   != NULL); 
