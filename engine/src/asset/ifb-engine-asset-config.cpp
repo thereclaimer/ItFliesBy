@@ -116,7 +116,7 @@ namespace ifb {
         eng_asset_config_validate();
 
         static const u32 size           = sizeof(_xml_cstr_default_config);
-        static data_buffer_t  default_buffer = {
+        static buffer_t default_buffer = {
             (byte*)_xml_cstr_default_config, // data
             size,                            // size
             size                             // length
@@ -431,7 +431,7 @@ namespace ifb {
 
     IFB_ENG_FUNC void
     eng_asset_config_get_xml_buffer(
-        data_buffer_t* buffer) {
+        buffer_t* buffer) {
 
         const bool did_write = sld::xml_doc_buffer_write(
             _eng_asset_mngr.config->xml.doc,

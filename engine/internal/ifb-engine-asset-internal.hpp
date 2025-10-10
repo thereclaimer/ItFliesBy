@@ -166,7 +166,7 @@ namespace ifb {
     IFB_ENG_FUNC void eng_asset_config_save_file           (void);
     IFB_ENG_FUNC void eng_asset_config_read_file           (void);
     IFB_ENG_FUNC u64  eng_asset_config_get_xml_buffer_size (void);
-    IFB_ENG_FUNC void eng_asset_config_get_xml_buffer      (data_buffer_t* data_buffer);
+    IFB_ENG_FUNC void eng_asset_config_get_xml_buffer      (buffer_t* data_buffer);
     IFB_ENG_FUNC bool eng_asset_config_node_read_text      (eng_asset_config_node_t& assets);
     IFB_ENG_FUNC bool eng_asset_config_node_read_image     (eng_asset_config_node_t& assets);
     IFB_ENG_FUNC bool eng_asset_config_node_read_sound     (eng_asset_config_node_t& assets);

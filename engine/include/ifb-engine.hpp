@@ -112,7 +112,7 @@ namespace ifb {
     // DATA STRUCTURES
     //-------------------------------------------------------------------g
     
-    typedef sld::data_buffer_t data_buffer_t;
+    typedef sld::buffer_t buffer_t;
 
     //-------------------------------------------------------------------
     // GEOMETRY

@@ -20,6 +20,9 @@ namespace ifb {
         is_mem_ok &= (_eng_core_arenas.xml      != NULL);
         is_mem_ok &= (_eng_core_arenas.platform != NULL);
         
+        eng_mem_arena_t* arena = eng_mem_arena_commit_core();
+        arena->decommit();
+
         // initialize xml
         sld::xml_parser_init((void*)_eng_core_xml_memory, ENG_CORE_XML_MEMORY_SIZE);
         
