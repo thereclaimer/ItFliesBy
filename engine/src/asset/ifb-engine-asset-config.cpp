@@ -137,7 +137,7 @@ namespace ifb {
         eng_asset_config_validate();
 
         // allocate memory
-        arena_t* config_arena = _eng_asset_mngr.config->arena;
+        memory_arena_t* config_arena = _eng_asset_mngr.config->arena;
 
         const u64  buffer_size = sld::xml_doc_buffer_length (_eng_asset_mngr.config->xml.doc);  
         byte* buffer_data = config_arena->push_bytes(buffer_size); 
@@ -171,7 +171,7 @@ namespace ifb {
         if (size == 0) return;
 
         // allocate memory
-        arena_t* config_arena = _eng_asset_mngr.config->arena;
+        memory_arena_t* config_arena = _eng_asset_mngr.config->arena;
         byte* config_mem = config_arena->push_bytes(size);
         assert(config_mem != NULL);
 
@@ -344,7 +344,7 @@ namespace ifb {
         eng_asset_config_node_t& node,
         xml_node_t*          xml_type) {
 
-        arena_t* config_arena = _eng_asset_mngr.config->arena; 
+        memory_arena_t* config_arena = _eng_asset_mngr.config->arena; 
 
         // get the first asset node if there is any
         bool did_read = sld::xml_node_get_child(xml_type, _xml_cstr_node_asset, _eng_asset_mngr.config->xml.node.asset);
