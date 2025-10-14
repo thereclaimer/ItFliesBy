@@ -1,5 +1,6 @@
 #include "ifb-engine-core-internal.hpp"
 #include <sld.hpp>
+#include <sld-arena.hpp>
 
 #define window_has_event_key_down()             (_eng_core_window.update.events.val & sld::os_window_event_e_key_down)
 #define window_has_event_key_up()               (_eng_core_window.update.events.val & sld::os_window_event_e_key_up)
@@ -22,10 +23,10 @@ namespace ifb {
         _eng_core_window.position.y  = ENG_CORE_WINDOW_DEFAULT_SCREEN_Y;
 
         // allocate memory
-        _eng_core_window.update.keyboard = _eng_core_arenas.platform->push_struct<sld::input_keyboard_t>();
+        _eng_core_window.update.keyboard = sld::arena_push_struct<sld::input_keyboard_t>(_eng_core_arenas.platform);        
 
         bool is_mem_ok = true;
-        is_mem_ok &= (_eng_core_window.update.keyboard   != NULL); 
+        is_mem_ok &= (_eng_core_window.update.keyboard != NULL); 
         assert(is_mem_ok);
     }
 

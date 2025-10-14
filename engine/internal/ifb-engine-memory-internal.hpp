@@ -2,6 +2,9 @@
 #define IFB_ENGINE_MEMORY_INTERNAL_HPP
 
 #include <sld-memory.hpp>
+#include <sld-arena-allocator.hpp>
+#include <sld-arena.hpp>
+
 #include "ifb-engine-memory.hpp"
 
 namespace ifb {
@@ -16,26 +19,36 @@ namespace ifb {
     constexpr u64 ENG_MEM_SIZE_ARENA_ASSET = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_ARENA_ASSET);
     constexpr u64 ENG_MEM_SIZE_ARENA_GUI   = sld::size_kilobytes (IFB_ENG_MEM_SIZE_KB_ARENA_GUI);
 
-    typedef eng_error_s32_t    eng_mem_error_s32_t;
-    typedef sld::reservation_t eng_mem_res_t;
-    typedef sld::arena_t       eng_mem_arena_t;
+    using eng_mem_error_s32_t   = eng_error_s32_t; 
+    using eng_mem_arena_t       = sld::arena_t; 
+    using eng_mem_alctr_arena_t = sld::arena_allocator_t;
 
-    struct eng_mem_mngr_t {
-        struct {
-            eng_mem_res_t core;
-            eng_mem_res_t file;
-            eng_mem_res_t asset;
-            eng_mem_res_t gui;
-        } res;
-        eng_mem_error_s32_t last_error;
+    static eng_mem_alctr_arena_t _alctr_arena_core;
+    static eng_mem_alctr_arena_t _alctr_arena_file;
+    static eng_mem_alctr_arena_t _alctr_arena_asset;
+    static eng_mem_alctr_arena_t _alctr_arena_gui;
+
+    struct eng_mem_arena_alctrs_t {
+        eng_mem_alctr_arena_t* core;
+        eng_mem_alctr_arena_t* file;
+        eng_mem_alctr_arena_t* asset;
+        eng_mem_alctr_arena_t* gui;
     };
 
-    IFB_ENG_FUNC bool              eng_mem_mngr_startup          (void);
+    struct eng_mem_mngr_t {
+        eng_mem_arena_alctrs_t arena_allocators;
+        eng_mem_error_s32_t    last_error;
+    };
+
+    IFB_ENG_FUNC void              eng_mem_mngr_startup          (void);
+    
     IFB_ENG_FUNC eng_mem_arena_t*  eng_mem_arena_commit_core     (void);   
     IFB_ENG_FUNC eng_mem_arena_t*  eng_mem_arena_commit_file     (void);   
-    IFB_ENG_FUNC eng_mem_arena_t*  eng_mem_arena_commit_asset    (void);   
-    IFB_ENG_FUNC bool              eng_mem_arena_decommit        (eng_mem_arena_t* arena);
-
+    IFB_ENG_FUNC eng_mem_arena_t*  eng_mem_arena_commit_asset    (void);
+    
+    IFB_ENG_FUNC void              eng_mem_arena_decommit_core   (eng_mem_arena_t* arena);   
+    IFB_ENG_FUNC void              eng_mem_arena_decommit_file   (eng_mem_arena_t* arena);   
+    IFB_ENG_FUNC void              eng_mem_arena_decommit_asset  (eng_mem_arena_t* arena);
 };
 
 

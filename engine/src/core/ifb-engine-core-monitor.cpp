@@ -21,25 +21,26 @@ namespace ifb {
         void) {
 
         static bool is_init = false;
-        assert(!is_init);
+        if (!is_init) {
+    
+            // initialize the table
+            _eng_core_monitor_table.array.position_x = sld::arena_push_struct<u32>(_eng_core_arenas.platform, ENG_CORE_MONITOR_COUNT_MAX);
+            _eng_core_monitor_table.array.position_y = sld::arena_push_struct<u32>(_eng_core_arenas.platform, ENG_CORE_MONITOR_COUNT_MAX);
+            _eng_core_monitor_table.array.width      = sld::arena_push_struct<u32>(_eng_core_arenas.platform, ENG_CORE_MONITOR_COUNT_MAX);
+            _eng_core_monitor_table.array.height     = sld::arena_push_struct<u32>(_eng_core_arenas.platform, ENG_CORE_MONITOR_COUNT_MAX);
+            _eng_core_monitor_table.array.name       = sld::arena_push_struct<cchar>(_eng_core_arenas.platform, ENG_CORE_MONITOR_NAME_BUFFER_SIZE);
+            _eng_core_monitor_table.array.handle     = sld::arena_push_struct<eng_core_monitor_handle_t>(_eng_core_arenas.platform, ENG_CORE_MONITOR_COUNT_MAX);
 
-        // initialize the table
-        _eng_core_monitor_table.array.position_x = _eng_core_arenas.platform->push_struct<u32>(ENG_CORE_MONITOR_COUNT_MAX);
-        _eng_core_monitor_table.array.position_y = _eng_core_arenas.platform->push_struct<u32>(ENG_CORE_MONITOR_COUNT_MAX);
-        _eng_core_monitor_table.array.width      = _eng_core_arenas.platform->push_struct<u32>(ENG_CORE_MONITOR_COUNT_MAX);
-        _eng_core_monitor_table.array.height     = _eng_core_arenas.platform->push_struct<u32>(ENG_CORE_MONITOR_COUNT_MAX);
-        _eng_core_monitor_table.array.name       = _eng_core_arenas.platform->push_struct<cchar>(ENG_CORE_MONITOR_NAME_BUFFER_SIZE);
-        _eng_core_monitor_table.array.handle     = _eng_core_arenas.platform->push_struct<eng_core_monitor_handle_t>(ENG_CORE_MONITOR_COUNT_MAX);
-
-        // check the table
-        is_init = true;
-        is_init &= (_eng_core_monitor_table.array.position_x != NULL);
-        is_init &= (_eng_core_monitor_table.array.position_y != NULL);
-        is_init &= (_eng_core_monitor_table.array.width      != NULL);
-        is_init &= (_eng_core_monitor_table.array.height     != NULL);
-        is_init &= (_eng_core_monitor_table.array.name       != NULL);
-        is_init &= (_eng_core_monitor_table.array.handle     != NULL);        
-        assert(is_init);
+            // check the table
+            is_init = true;
+            is_init &= (_eng_core_monitor_table.array.position_x != NULL);
+            is_init &= (_eng_core_monitor_table.array.position_y != NULL);
+            is_init &= (_eng_core_monitor_table.array.width      != NULL);
+            is_init &= (_eng_core_monitor_table.array.height     != NULL);
+            is_init &= (_eng_core_monitor_table.array.name       != NULL);
+            is_init &= (_eng_core_monitor_table.array.handle     != NULL);        
+            assert(is_init);
+        }
 
         // do the first refresh
         eng_core_monitor_table_refresh();     
