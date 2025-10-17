@@ -3,6 +3,7 @@
 
 #include <sld-xml.hpp>
 #include <sld-memory.hpp>
+#include <sld-block-allocator.hpp>
 
 #include "ifb-engine.hpp"
 #include "ifb-engine-hash.hpp"
@@ -16,8 +17,7 @@ namespace ifb {
     // TYPES
     //-------------------------------------------------------------------
 
-    typedef sld::block_allocator_t eng_asset_block_alctr_t; 
-    typedef sld::xml_stack_t       eng_asset_config_xml_stack_t;
+    using eng_asset_block_alctr_t = sld::block_allocator_t;
 
     struct eng_asset_block_t;
     struct eng_asset_slot_t;
@@ -148,64 +148,15 @@ namespace ifb {
         eng_file_h32_t config_file_handle;
     };
 
-    IFB_ENG_FUNC void eng_asset_db_file_create               (void);
-    IFB_ENG_FUNC void eng_asset_db_file_destroy              (void);
-    IFB_ENG_FUNC void eng_asset_db_file_validate             (void);
-    IFB_ENG_FUNC bool eng_asset_db_file_read_header          (void);
-    IFB_ENG_FUNC void eng_asset_db_file_write_header         (void);
-    IFB_ENG_FUNC void eng_asset_db_file_write_header_default (void);
-
     //-------------------------------------------------------------------
     // CONFIG
     //-------------------------------------------------------------------
 
-    IFB_ENG_FUNC void eng_asset_config_create              (void);    
-    IFB_ENG_FUNC void eng_asset_config_destroy             (void);
-    IFB_ENG_FUNC void eng_asset_config_validate            (void);
-    IFB_ENG_FUNC void eng_asset_config_load_default        (void);
-    IFB_ENG_FUNC void eng_asset_config_save_file           (void);
-    IFB_ENG_FUNC void eng_asset_config_read_file           (void);
-    IFB_ENG_FUNC u64  eng_asset_config_get_xml_buffer_size (void);
-    IFB_ENG_FUNC void eng_asset_config_get_xml_buffer      (buffer_t* data_buffer);
-    IFB_ENG_FUNC bool eng_asset_config_node_read_text      (eng_asset_config_node_t& assets);
-    IFB_ENG_FUNC bool eng_asset_config_node_read_image     (eng_asset_config_node_t& assets);
-    IFB_ENG_FUNC bool eng_asset_config_node_read_sound     (eng_asset_config_node_t& assets);
-    IFB_ENG_FUNC bool eng_asset_config_node_read_font      (eng_asset_config_node_t& assets);
-    IFB_ENG_FUNC bool eng_asset_config_node_write_text     (eng_asset_config_node_t& assets);
-    IFB_ENG_FUNC bool eng_asset_config_node_write_image    (eng_asset_config_node_t& assets);
-    IFB_ENG_FUNC bool eng_asset_config_node_write_sound    (eng_asset_config_node_t& assets);
-    IFB_ENG_FUNC bool eng_asset_config_node_write_font     (eng_asset_config_node_t& assets);
-    IFB_ENG_FUNC bool eng_asset_config_node_read_assets    (eng_asset_config_node_t& node, xml_node_t* xml_type);
-    IFB_ENG_FUNC bool eng_asset_config_node_write_assets   (eng_asset_config_node_t& node, xml_node_t* xml_type);
-
-    struct eng_asset_config_file_t {
-        eng_mem_arena_t* arena;
-        eng_file_h32_t   file;
-        struct {
-            eng_asset_config_xml_stack_t* stack;
-            xml_doc_t*                doc;
-            struct {
-                xml_node_t* root;
-                xml_node_t* text;
-                xml_node_t* image;
-                xml_node_t* sound;
-                xml_node_t* font;
-                xml_node_t* asset;
-            } node;
-            struct {
-                xml_attrib_t* name;
-                xml_attrib_t* path;
-            } attrib;
-        } xml;
+    struct eng_asset_config_t {
     };
 
-    struct eng_asset_config_node_t {
-        u32 count;
-        struct {
-            eng_asset_cstr_t* name;
-            eng_asset_cstr_t* path;
-        } array;
-    };
+
+
 };
 
 #endif //IFB_ENG_ASSET_INTERNAL_HPP

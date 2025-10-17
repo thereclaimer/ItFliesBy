@@ -3,7 +3,8 @@
 
 #include <sld.hpp>
 #include <sld-hash.hpp>
-#include <sld-string.hpp>
+#include <sld-cstr.hpp>
+#include <sld-wstr.hpp>
 #include <sld-xml.hpp>
 #include <sld-geometry.hpp>
 
@@ -130,9 +131,9 @@ namespace ifb {
     // DATA FORMATS
     //-------------------------------------------------------------------
 
-    typedef sld::xml_doc_t    xml_doc_t;
-    typedef sld::xml_node_t   xml_node_t;
-    typedef sld::xml_attrib_t xml_attrib_t;
+    using xml_doc_t    = sld::xml_doc_t;
+    using xml_node_t   = sld::xml_node_t;
+    using xml_attrib_t = sld::xml_attrib_t;
 };
 
 #endif //IFB_ENGINE_HPP

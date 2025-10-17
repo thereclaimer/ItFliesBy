@@ -13,14 +13,6 @@ namespace ifb {
         eng_file_mngr_startup  ();
         eng_asset_mngr_startup ();
 
-        // allocate core memory
-        _eng_core_arenas.xml      = eng_mem_arena_commit_core();
-        _eng_core_arenas.platform = eng_mem_arena_commit_core();
-        bool is_mem_ok = true;
-        is_mem_ok &= (_eng_core_arenas.xml      != NULL);
-        is_mem_ok &= (_eng_core_arenas.platform != NULL);
-        
-
         // initialize xml
         sld::xml_init();
         
