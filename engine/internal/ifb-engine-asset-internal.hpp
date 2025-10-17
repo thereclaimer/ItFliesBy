@@ -29,10 +29,6 @@ namespace ifb {
     struct eng_asset_db_builder_t;
     struct eng_asset_db_record_t;
 
-    struct eng_asset_config_file_t;
-    struct eng_asset_config_node_t;
-    struct eng_asset_config_xml_properties_t;
-
     struct eng_asset_db_t;
     struct eng_asset_db_file_index_t;
     struct eng_asset_db_file_verif_t;
@@ -68,7 +64,6 @@ namespace ifb {
         } slot_list;
         eng_asset_db_t*      db;
         eng_asset_db_file_t* db_file;
-        eng_asset_config_file_t*  config;
     };
 
     static eng_asset_mngr_t _eng_asset_mngr;
